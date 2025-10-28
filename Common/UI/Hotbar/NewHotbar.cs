@@ -12,6 +12,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.GameContent.RGB;
 using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.Localization;
@@ -96,6 +97,14 @@ public sealed class NewHotbar : SmartUiState
 			Textures.Add("SkillDenialIcons", ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/SkillDenialIcons"));
 		}
 
+		// Make sure the player doesn't spam smart cursor if hovering over the hotbar
+		Rectangle hoverBox = new(20, 20, 546, 78);
+
+		if (hoverBox.Contains(Main.MouseScreen.ToPoint()))
+		{
+			Main.LocalPlayer.mouseInterface = true;
+		}
+
 		float prog;
 
 		if (LocalCombatMode)
@@ -140,7 +149,7 @@ public sealed class NewHotbar : SmartUiState
 	{
 		string text = Lang.inter[37].Value; // "Item" when no item is held
 		Item item = Main.LocalPlayer.HeldItem;
-		
+
 		if (item.Name != null && item.Name != string.Empty)
 		{
 			text = item.AffixName(); // Otherwise the name of the item
@@ -396,7 +405,7 @@ public sealed class NewHotbar : SmartUiState
 			string text = Language.GetText("Mods.PathOfTerraria.SkillFailReasons.NeedsWeapon").WithFormatArgs(skill.WeaponType).Value;
 			tooltips.Add(new("WeaponType", $"[c/{color.Hex3()}:{text}]", 0.5f));
 		}
-		
+
 		if (!canUse && failure.Reason == SkillFailReason.Other)
 		{
 			tooltips.Add(new("Denial", $"[c/FF0000:{failure.Description.Value}]", 0.5f));
@@ -428,10 +437,19 @@ public sealed class NewHotbar : SmartUiState
 		}
 
 		tooltips.Add(new("Cooldown", Language.GetText("Mods.PathOfTerraria.Skills.CooldownLine").WithFormatArgs($"{skill.MaxCooldown / 60f:#0.##}").Value, 5));
-		tooltips.Add(new("Tags", GetDisplayTags(skill.Tags()), 0.25f));
+
+		if (ItemSlot.ShiftInUse)
+		{
+			tooltips.Add(new("Tags", GetDisplayTags(skill.Tags(), true), 0.25f));
+		}
+		else
+		{
+			tooltips.Add(new("NoTags", $"[c/888888:{Language.GetTextValue("Mods.PathOfTerraria.Skills.ShowTags")}]", 0.25f));
+		}
+
 		tooltips.Add(new("Empty", "\n", 0.3f));
 		skill.ModifyTooltips(tooltips);
-		tooltips.Sort((x, y) => x.Slot.CompareTo(y.Slot));
+		tooltips.Sort(static (x, y) => x.Slot.CompareTo(y.Slot));
 
 		List<DrawableTooltipLine> lines = [];
 
@@ -441,7 +459,7 @@ public sealed class NewHotbar : SmartUiState
 			Vector2 scale = Vector2.One;
 			Color color = Color.White;
 
-			if (line.Name is "Tags" or "Keybind" or "NoKeybind")
+			if (line.Name is "Tags" or "Keybind" or "NoKeybind" or "NoTags")
 			{
 				scale = new(0.8f);
 			}
@@ -453,20 +471,20 @@ public sealed class NewHotbar : SmartUiState
 
 			lines.Add(drawable);
 		}
-		
+
 		Tooltip.Create(new TooltipDescription
 		{
 			Identifier = "Skill",
-			SimpleTitle = title,
+			SimpleTitle = title + GetDisplayTags(skill.Tags(), false),
 			Lines = lines,
 			VisibilityTimeInTicks = 0,
 			Stability = 1,
 		});
 	}
 
-	private static string GetDisplayTags(SkillTags tags)
+	private static string GetDisplayTags(SkillTags tags, bool shifting)
 	{
-		string text = Language.GetTextValue("Mods.PathOfTerraria.Skills.TagsLine");
+		string text = shifting ? Language.GetTextValue("Mods.PathOfTerraria.Skills.TagsLine") + "  " : "";
 
 		foreach (Enum value in Enum.GetValues<SkillTags>())
 		{
@@ -475,10 +493,26 @@ public sealed class NewHotbar : SmartUiState
 			// Only show singular tags, not compound tags like Elemental
 			if (System.Numerics.BitOperations.PopCount((ulong)tag) == 1 && tags.HasFlag(tag))
 			{
-				text += " " + Language.GetTextValue("Mods.PathOfTerraria.Skills.Tags." + tag) + ",";
+				string name = "";
+				string tagTex = $"[tex/s1.00,h,y=-4:{PoTMod.ModName}/Assets/UI/SkillTagIcons/{tag}]";
+
+				if (shifting)
+				{
+					text += $"{tagTex}[c/888888:{Language.GetTextValue("Mods.PathOfTerraria.Skills.Tags." + tag)}], ";
+				}
+				else
+				{
+					text += $" {name}{tagTex}";
+				}
 			}
 		}
 
+		if (shifting)
+		{
+			text = text[..^2];
+		}
+
+		text += " ";
 		return text[..^1];
 	}
 
@@ -510,7 +544,8 @@ public sealed class NewHotbar : SmartUiState
 		}
 	}
 
-	private void DrawSelector(SpriteBatch spriteBatch, float opacity) {
+	private void DrawSelector(SpriteBatch spriteBatch, float opacity)
+	{
 		Texture2D select = Textures["HotbarSelector"].Value;
 
 		// Render the special selector, which is always visible.
@@ -531,7 +566,7 @@ public sealed class NewHotbar : SmartUiState
 	private void DrawHotkeys(SpriteBatch spriteBatch, float off)
 	{
 		//Don't draw hotkeys if the player isn't holding the first item in their inventory, as this is when these are visible
-		if (!IsHoldingFirstHotbarItem())
+		if (!LocalCombatMode)
 		{
 			return;
 		}
@@ -574,12 +609,12 @@ public sealed class NewHotbar : SmartUiState
 	{
 		ChatManager.DrawColorCodedStringWithShadow(spriteBatch, _font, letter, position, color, 0f, Vector2.Zero, new Vector2(scale));
 	}
-	
+
 	private static bool TryGetKeybindName(ModKeybind key, bool trim, [NotNullWhen(true)] out string result)
 	{
 		string name = key.GetAssignedKeys().FirstOrDefault();
 		result = null;
-		
+
 		if (string.IsNullOrEmpty(name))
 		{
 			return false;
@@ -599,20 +634,8 @@ public sealed class NewHotbar : SmartUiState
 		{
 			result = name;
 		}
-		
-		return true;
-	}
 
-	/// <summary>
-	/// Checks if the first item in their inventory is being hovered. This is what should draw the combat hotbar
-	/// </summary>
-	/// <returns></returns>
-	private static bool IsHoldingFirstHotbarItem()
-	{
-		Player player = Main.LocalPlayer;
-		Item firstItem = player.inventory[0];
-		Item heldItem = Main.LocalPlayer.HeldItem;
-		return heldItem == firstItem;
+		return true;
 	}
 }
 
@@ -626,6 +649,7 @@ public class HijackHotbarClick : ModSystem
 	private void StopClickOnHotbar(On_Main.orig_GUIHotbarDrawInner orig, Main self)
 	{
 		bool hbLocked = Main.LocalPlayer.hbLocked; // Lock hotbar for the original method so we don't fight against vanilla
+
 		try
 		{
 			Main.LocalPlayer.hbLocked = true;
@@ -715,9 +739,8 @@ public class HijackHotbarClick : ModSystem
 			for (int i = start; i <= end; i++) // This mimics how Terraria handles clicking on the slots by default. Almost entirely grabbed from the vanilla method this detours.
 			{
 				var pos = new Rectangle(
-					BaseXOffset
-					+ (Math.Min(i, NumLargeSlots) * (LargeXSize + LargeXOffset))
-					+ (i >= NumLargeSlots ? LargeToSmallXOffset : 0)
+					BaseXOffset + (Math.Min(i, NumLargeSlots) * (LargeXSize + LargeXOffset)) 
+					+ (i >= NumLargeSlots ? LargeToSmallXOffset : 0) 
 					+ (Math.Max(0, i - NumLargeSlots) * (SmallXSize + SmallXOffset)),
 					BaseYOffset,
 					i < NumLargeSlots ? LargeXSize : SmallXSize,

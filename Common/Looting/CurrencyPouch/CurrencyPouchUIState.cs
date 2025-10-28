@@ -1,7 +1,6 @@
 ﻿using PathOfTerraria.Common.Looting.VirtualBagUI;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.UI;
-using PathOfTerraria.Common.UI.Armor.Elements;
 using PathOfTerraria.Common.UI.Components;
 using PathOfTerraria.Common.UI.Elements;
 using PathOfTerraria.Content.Items.Currency;
@@ -10,7 +9,6 @@ using PathOfTerraria.Core.UI;
 using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
 using System.Collections.Generic;
-using System.ComponentModel;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
@@ -24,8 +22,6 @@ internal class CurrencyPouchUIState : UIState, IMutuallyExclusiveUI
 {
 	public const int SlotContext = ItemSlot.Context.ChestItem;
 	public const string Identifier = "Currency Pouch UI";
-
-	//private static readonly Item[] _backingSlot = [new()];
 
 	private static CurrencyPouchBackUI _backdrop = null;
 
@@ -64,7 +60,7 @@ internal class CurrencyPouchUIState : UIState, IMutuallyExclusiveUI
 
 		BuildItemSlots(_backdrop);
 
-		UIElement container = _backdrop.AddElement(new UIElement(), x => x.SetDimensions((0, 170), (0, 62), (0, 54), (0, 54)));
+		UIElement container = _backdrop.AddElement(new UIElement(), x => x.SetDimensions((0, 172), (0, 64), (0, 54), (0, 54)));
 
 		var wrapper = new UIImageItemSlot.SlotWrapper(() => SlottedItem, x => SlottedItem = x);
 		Asset<Texture2D> back = ModContent.Request<Texture2D>("PathOfTerraria/Assets/UI/CurrencyWeaponIcon", AssetRequestMode.ImmediateLoad);
@@ -100,6 +96,7 @@ internal class CurrencyPouchUIState : UIState, IMutuallyExclusiveUI
 		TryAppendSingleItem<CorruptShard>(backdrop, new Vector2(180, 11));
 		TryAppendSingleItem<AscendantShard>(backdrop, new Vector2(238, 12));
 		TryAppendSingleItem<ShiftingShard>(backdrop, new Vector2(242, 76));
+		TryAppendSingleItem<SeveranceShard>(backdrop, new Vector2(294, 72));
 		TryAppendSingleItem<RadiantShard>(backdrop, new Vector2(290, 12));
 		TryAppendSingleItem<EchoingShard>(backdrop, new Vector2(342, 14));
 	}
