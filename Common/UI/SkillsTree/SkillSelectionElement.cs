@@ -1,6 +1,5 @@
 ﻿using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.ModPlayers;
-using PathOfTerraria.Common.UI.Guide;
 using PathOfTerraria.Common.UI.Hotbar;
 using Terraria.GameContent;
 using Terraria.Localization;
@@ -11,25 +10,27 @@ namespace PathOfTerraria.Common.UI.SkillsTree;
 
 internal class SkillSelectionElement : UIElement
 {
-	private readonly Skill _skill;
-	private readonly SkillSelectionPanel _parentPanel;
+	public delegate void OnClick(UIElement parent, SkillSelectionElement self);
 
-	public SkillSelectionElement(Skill skill, int index, SkillSelectionPanel parentPanel)
+	internal readonly Skill Skill;
+
+	private readonly OnClick _onClick;
+
+	public SkillSelectionElement(Skill skill, OnClick click)
 	{
-		_skill = skill;
-		_parentPanel = parentPanel;
-		_skill.LevelTo(1);
+		Skill = skill;
+		_onClick = click;
+		Skill.LevelTo(1);
+
 		Width.Set(skill.Size.X, 0);
 		Height.Set(skill.Size.Y, 0);
-		Top.Set(60, 0);
-		Left.Set(25 + 75 * index, 0);
 	}
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
 		base.Draw(spriteBatch);
 
-		Texture2D tex = ModContent.Request<Texture2D>(_skill.Texture).Value;
+		Texture2D tex = ModContent.Request<Texture2D>(Skill.Texture).Value;
 		SkillFailure fail = default;
 
 		if (tex == null)
@@ -39,9 +40,9 @@ internal class SkillSelectionElement : UIElement
 
 		if (ContainsPoint(Main.MouseScreen))
 		{
-			if (Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>().HasSkill(_skill.Name) || _skill.CanEquipSkill(Main.LocalPlayer, ref fail))
+			if (Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>().HasSkill(Skill.Name) || Skill.CanEquipSkill(Main.LocalPlayer, ref fail))
 			{
-				NewHotbar.DrawSkillHoverTooltips(_skill, null, true);
+				NewHotbar.DrawSkillHoverTooltips(Skill, null, true);
 			}
 			else
 			{
@@ -54,12 +55,13 @@ internal class SkillSelectionElement : UIElement
 		}
 
 		Vector2 position = GetDimensions().Position() + new Vector2(Width.Pixels / 2, Height.Pixels / 2);
-		spriteBatch.Draw(tex, position, null, _skill.CanEquipSkill(Main.LocalPlayer, ref fail) ? Color.White : Color.Gray, 0f, tex.Size() / 2f, 1f, SpriteEffects.None, 0f);
+		Color color = Skill.CanEquipSkill(Main.LocalPlayer, ref fail) ? Color.White : new Color(50, 50, 50);
+		spriteBatch.Draw(tex, position, null, color, 0f, tex.Size() / 2f, 1f, SpriteEffects.None, 0f);
 
-		if (Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>().HasSkill(_skill.Name))
+		if (Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>().HasSkill(Skill.Name))
 		{
 			Vector2 texPos = position - new Vector2(0, Height.Pixels / 2f) * 0.8f;
-			string text = $"{_skill.Level}/{_skill.MaxLevel}";
+			string text = $"{Skill.Level}/{Skill.MaxLevel}";
 			Vector2 textSize = FontAssets.ItemStack.Value.MeasureString(text);
 			ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, text, texPos, Color.White, 0f, textSize / 2f, Vector2.One);
 		}
@@ -67,20 +69,12 @@ internal class SkillSelectionElement : UIElement
 	
 	public override void LeftClick(UIMouseEvent evt)
 	{
-		SkillCombatPlayer skillCombatPlayer = Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>();
-
-		if (skillCombatPlayer.TryAddSkill(_skill))
-		{
-			_parentPanel.SelectedSkill = _skill;
-			_parentPanel.RebuildTree();
-
-			Main.LocalPlayer.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.SelectedSkill);
-		}
+		_onClick.Invoke(Parent, this);
 	}
 
 	public override void RightClick(UIMouseEvent evt)
 	{
 		SkillCombatPlayer skillCombatPlayer = Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>();
-		skillCombatPlayer.TryRemoveSkill(_skill);
+		skillCombatPlayer.TryRemoveSkill(Skill);
 	}
 }

@@ -1,7 +1,9 @@
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.UI.SkillSelect;
 using PathOfTerraria.Core.Items;
+using PathOfTerraria.Core.UI;
 using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
 using ReLogic.Graphics;
@@ -300,6 +302,20 @@ public sealed class NewHotbar : SmartUiState
 
 		SkillCombatPlayer skillCombatPlayer = Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>();
 		var skillRect = new Rectangle(268 + 52 * skillIndex, (int)(8 + off) + TextureSize - 25, TextureSize, TextureSize);
+		bool hovering = skillRect.Contains(Main.MouseScreen.ToPoint());
+
+		if (Main.mouseLeft && Main.mouseLeftRelease && hovering)
+		{
+			if (UIManager.TryGet(SkillSelectUI.Identifier, out UIManager.UIStateData data) && data.Enabled)
+			{
+				UIManager.TryDisable(SkillSelectUI.Identifier);
+			}
+			else
+			{
+				var value = new SkillSelectUI(new Point16(skillRect.X, skillRect.Bottom + 8), skillIndex);
+				UIManager.Register(SkillSelectUI.Identifier, "Vanilla: Inventory", value, 0, InterfaceScaleType.UI, true);
+			}
+		}
 
 		if (skillCombatPlayer.HotbarSkills[skillIndex] is null)
 		{
@@ -355,7 +371,7 @@ public sealed class NewHotbar : SmartUiState
 			}
 		}
 
-		if (skillRect.Contains(Main.MouseScreen.ToPoint()))
+		if (hovering)
 		{
 			DrawSkillHoverTooltips(skill, skillIndex);
 
