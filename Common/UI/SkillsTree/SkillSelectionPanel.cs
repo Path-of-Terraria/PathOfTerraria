@@ -6,10 +6,8 @@ using PathOfTerraria.Content.SkillAugments;
 using PathOfTerraria.Core.UI.SmartUI;
 using System.Collections.Generic;
 using Terraria.Localization;
-using Terraria.ModLoader.Core;
 using Terraria.ModLoader.UI;
 using Terraria.UI;
-using static PathOfTerraria.Common.UI.SkillsTree.SkillSelectionElement;
 
 namespace PathOfTerraria.Common.UI.SkillsTree;
 
