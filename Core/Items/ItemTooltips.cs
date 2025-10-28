@@ -302,7 +302,7 @@ public sealed partial class ItemTooltips : GlobalItem
 				OverrideColor = Colors.Levels,
 			};
 			AddNewTooltipLine(item, tooltips, itemLevelLine);
-			AddSeparator(item, Mod, tooltips);
+			AddSeparator(item, tooltips);
 		}
 
 		if (!string.IsNullOrWhiteSpace(staticData.AltUseDescription.Value))
@@ -313,7 +313,7 @@ public sealed partial class ItemTooltips : GlobalItem
 		if (!string.IsNullOrWhiteSpace(staticData.Description.Value))
 		{
 			AddNewTooltipLine(item, tooltips, new(Mod, "Description", staticData.Description.Value));
-			AddSeparator(item, Mod, tooltips);
+			AddSeparator(item, tooltips);
 		}
 
 		if (item.damage > 0)
@@ -528,9 +528,9 @@ public sealed partial class ItemTooltips : GlobalItem
 	/// <summary>
 	/// Adds a simple separator into the tooltips. This is done using the texture tag.
 	/// </summary>
-	internal static void AddSeparator(Item item, Mod mod, List<TooltipLine> lines)
+	internal static void AddSeparator(Item item, List<TooltipLine> lines)
 	{
-		var tooltip = new TooltipLine(mod, "Separator" + _seperatorCount, "");
+		var tooltip = new TooltipLine(PoTMod.Instance, "Separator" + _seperatorCount, "");
 
 		if (item is not null)
 		{

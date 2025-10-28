@@ -223,7 +223,7 @@ public sealed class AffixTooltips
 
 			if (lastImplicit && !tip.Implicit)
 			{
-				ItemTooltips.AddSeparator(null, PoTMod.Instance, tooltips);
+				ItemTooltips.AddSeparator(null, tooltips);
 			}
 
 			string name = tip.Implicit ? "Implicit" : "Affix";
