@@ -383,6 +383,7 @@ public sealed class NewHotbar : SmartUiState
 
 			if (Main.mouseMiddle && Main.mouseMiddleRelease && !SmartUiLoader.GetUiState<TreeState>().Visible && skill.Tree is not null)
 			{
+				Main.mouseMiddleRelease = false;
 				TreeState tree = SmartUiLoader.GetUiState<TreeState>();
 				tree.Toggle();
 				tree.TabPanel.SetActivePage("SkillTree");
