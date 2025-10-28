@@ -56,16 +56,24 @@ public struct TooltipCache
 }
 
 /// <summary>
-/// Draws any amount of popup tooltip swhen various elements of the UI are hovered over.
+/// Draws any amount of popup tooltips when various elements of the UI are hovered over.
 /// </summary>
 public class Tooltip : SmartUiState
 {
-	private struct TooltipInstance
+	internal struct TooltipInstance
 	{
 		public TooltipDescription Description;
 		public TooltipCache Cache;
 		public ulong EndTime;
 	}
+
+	internal static TooltipCache? CachedTooltip = default;
+
+	/// <summary>
+	/// Suppresses drawing in PreDrawTooltip, as we need it to get information *before* actually drawing the tooltip. 
+	/// Also blocks Wikithis's drawing functionality in <see cref="WikithisCompatibility"/>.
+	/// </summary>
+	internal static bool SuppressDrawing = false;
 
 	private static readonly List<TooltipInstance> tooltips = [];
 
@@ -74,6 +82,17 @@ public class Tooltip : SmartUiState
 	public override int DepthPriority => 2;
 
 	public override bool Visible => true;
+
+	public override void Load()
+	{
+		On_Main.Update += JustStopDrawcode;
+	}
+
+	private static void JustStopDrawcode(On_Main.orig_Update orig, Main self, GameTime gameTime)
+	{
+		using var _ = ValueOverride.Create(ref SuppressDrawing, true);
+		orig(self, gameTime);
+	}
 
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{
@@ -179,7 +198,7 @@ public class Tooltip : SmartUiState
 		// Scope for usings.
 		{
 			// This stops PreDrawTooltipLine from rendering and returning false, and thus gives an accurate line count.
-			using var _ = ValueOverride.Create(ref WikithisCompatibility.StopDrawcode, true);
+			using var _ = ValueOverride.Create(ref SuppressDrawing, true);
 
 			for (int i = 0; i < lineCount; i++)
 			{
@@ -229,6 +248,8 @@ public class Tooltip : SmartUiState
 		// Adjust to screen bounds.
 		cache.Position.X = Math.Max(0, Math.Min(cache.Position.X, Main.screenWidth - cache.OuterSize.X));
 		cache.Position.Y = Math.Max(0, Math.Min(cache.Position.Y, Main.screenHeight - cache.OuterSize.Y));
+
+		CachedTooltip = cache;
 	}
 
 	private static void ResolveTooltipCollisions(Span<TooltipInstance> tooltips)
