@@ -105,9 +105,9 @@ public readonly struct ElementalDamage
 		};
 	}
 
-	public void ApplyBuff(Entity entity, int elementalDamageDealt)
+	public static void ApplyBuff(ElementType elementType, Entity entity, int elementalDamageDealt)
 	{
-		switch (ElementType)
+		switch (elementType)
 		{
 			case ElementType.Fire when entity is NPC burningNPC:
 				IgnitedDebuff.ApplyTo(burningNPC, (int)(elementalDamageDealt * 0.9f));
@@ -118,7 +118,7 @@ public readonly struct ElementalDamage
 
 				if (duration > 0.3f)
 				{
-					frozenNPC.AddBuff(GetBuffType(ElementType), (int)(duration * 60));
+					frozenNPC.AddBuff(GetBuffType(elementType), (int)(duration * 60));
 				}
 
 				frozenNPC.GetGlobalNPC<FreezeNPC>().Frozen = true;
@@ -131,11 +131,11 @@ public readonly struct ElementalDamage
 
 				if (entity is NPC npc)
 				{
-					npc.AddBuff(GetBuffType(ElementType), MaxTime);
+					npc.AddBuff(GetBuffType(elementType), MaxTime);
 				}
 				else if (entity is Player player)
 				{
-					player.AddBuff(GetBuffType(ElementType), MaxTime);
+					player.AddBuff(GetBuffType(elementType), MaxTime);
 				}
 
 				break;
@@ -149,9 +149,9 @@ public readonly struct ElementalDamage
 	/// <param name="info"></param>
 	/// <param name="defaultPercent"></param>
 	/// <returns></returns>
-	internal bool CanDebuff(Entity entity, NPC.HitInfo info, bool defaultPercent)
+	internal static bool CanDebuff(ElementType type, Entity entity, NPC.HitInfo info, bool defaultPercent)
 	{
-		return ElementType switch
+		return type switch
 		{
 			ElementType.Fire => info.Crit,
 			ElementType.Cold => entity is NPC { boss: false } && info.Crit,

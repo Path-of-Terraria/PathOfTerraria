@@ -174,21 +174,6 @@ PercentIncreasedMaximumManaPassive: {
 	// Tooltip: +{0}% Increased Maximum Mana
 }
 
-IncreasedFireDamagePassive: {
-	// Name: Increased Fire Damage
-	// Tooltip: +{0}% Increased Fire Damage
-}
-
-IncreasedLightningDamagePassive: {
-	// Name: Increased Lightning Damage
-	// Tooltip: +{0}% Increased Lightning Damage
-}
-
-IncreasedColdDamagePassive: {
-	// Name: Increased Cold Damage
-	// Tooltip: +{0}% Increased Cold Damage
-}
-
 IncreasedMagicAndSummonDamagePassive: {
 	// Name: Increased Magic and Summon Damage
 	// Tooltip: +{0}% increased magic and summon damage
@@ -341,20 +326,40 @@ WhipReachMastery: {
 
 ReducedSkillCooldownPassive: {
 	// Name: Reduced Skill Cooldown
-	// Tooltip: 10% reduced skill cooldown per level
+	// Tooltip: +{0}% reduced skill cooldown per level
 }
 
 AddedFireDamageConversionPassive: {
-	// Name: AddedFireDamageConversionPassive
-	// Tooltip: ""
+	// Name: Added Fire Damage Conversion
+	// Tooltip: +{0}% fire damage conversion
 }
 
 AddedColdDamageConversionPassive: {
-	// Name: AddedColdDamageConversionPassive
-	// Tooltip: ""
+	// Name: Added Cold Damage Conversion
+	// Tooltip: +{0}% cold damage conversion
 }
 
 AddedLightningDamageConversionPassive: {
-	// Name: AddedLightningDamageConversionPassive
-	// Tooltip: ""
+	// Name: Added Lightning Damage Conversion
+	// Tooltip: +{0}% lightning damage conversion
+}
+
+ChanceToChillPassive: {
+	// Name: Chance to Chill
+	// Tooltip: +{0}% chance to apply Chilled
+}
+
+ChanceToFreezePassive: {
+	// Name: Chance to Freeze
+	// Tooltip: +{0}% chance to roll Freeze
+}
+
+ChanceToIgnitePassive: {
+	// Name: Chance to Ignite
+	// Tooltip: +{0}% chance to apply Ignited
+}
+
+PercentStrongManaPotionsPassive: {
+	// Name: Stronger Mana Potions
+	// Tooltip: +{0}% stronger mana potions
 }

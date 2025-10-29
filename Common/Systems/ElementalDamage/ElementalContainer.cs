@@ -86,12 +86,16 @@ public class ElementInstance(ElementType type, bool isGeneric)
 
 	public ElementalDamage DamageModifier = new(type);
 
-	// Copied from original implementation, where this also did nothing
-	public float Multiplier = 0;
+	/// <summary>
+	/// This value is kept despite having never done anything. It does not do anything currently either.<br/>
+	/// If you use it, make sure you also add in functionality, then remove this comment.
+	/// </summary>
+	[Obsolete("This is unused, and does nothing.", true)]
+	public float Multiplier = 1;
 
 	public void Reset(bool resetModifiers)
 	{
-		Multiplier = 1;
+		//Multiplier = 1;
 		Resistance = 0;
 
 		if (resetModifiers)

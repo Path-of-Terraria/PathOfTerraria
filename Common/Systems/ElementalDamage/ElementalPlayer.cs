@@ -191,13 +191,17 @@ public class ElementalPlayer : ModPlayer
 				{
 					// Calculate total elemental damage for debuff purposes (includes base weapon damage)
 					int totalElementalDamageForDebuff = (int)(finalDamage * totalConversion) + flatDamage;
-					TryAddElementBuff(target, element.DamageModifier, totalElementalDamageForDebuff, optionalHitInfo.Value);
+					TryAddElementBuff(target, element.DamageModifier.ElementType, totalElementalDamageForDebuff, optionalHitInfo.Value);
 				}
 			}
 		}
 	}
 
-	private static bool TryAddElementBuff(Entity target, ElementalDamage damage, int elementalDamageDone, NPC.HitInfo hitInfo)
+	/// <summary>
+	/// Used to apply elemental debuffs. This can be called manually from any <see cref="ModPlayer.OnHitNPC(NPC, NPC.HitInfo, int)"/>.
+	/// </summary>
+	/// <exception cref="ArgumentException"></exception>
+	internal static bool TryAddElementBuff(Entity target, ElementType elementType, int elementalDamageDone, NPC.HitInfo hitInfo)
 	{
 		int lifeMax = target switch
 		{
@@ -210,16 +214,16 @@ public class ElementalPlayer : ModPlayer
 
 		if (DebugMessages)
 		{
-			Main.NewText($"[DEBUG] Chance to debuff for {damage.ElementType}: {chance * 100:0.##}%");
+			Main.NewText($"[DEBUG] Chance to debuff for {elementType}: {chance * 100:0.##}%");
 		}
 
-		if (elementalDamageDone > 0 && damage.CanDebuff(target, hitInfo, chance > Main.rand.NextFloat()))
+		if (elementalDamageDone > 0 && ElementalDamage.CanDebuff(elementType, target, hitInfo, chance > Main.rand.NextFloat()))
 		{
-			damage.ApplyBuff(target, elementalDamageDone);
+			ElementalDamage.ApplyBuff(elementType, target, elementalDamageDone);
 
 			if (DebugMessages)
 			{
-				Main.NewText($"[DEBUG] Debuff for {damage.ElementType} applied!");
+				Main.NewText($"[DEBUG] Debuff for {elementType} applied!");
 			}
 
 			return true;

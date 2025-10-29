@@ -3,12 +3,11 @@ using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 
 namespace PathOfTerraria.Content.Passives;
 
-// -{Value}% Mana Costs
-internal class DecreasedManaCostPassive : Passive
+// +{0} Increased Maximum Mana
+internal class PercentStrongManaPotionsPassive : Passive
 {
 	public override void BuffPlayer(Player player)
 	{
-		player.manaCost *= 1 - (Value / 100.0f) * Level;
-		player.GetModPlayer<SkillCombatPlayer>().GlobalBuff.ManaCost *= 0.9f;
+		player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.PotionManaPower += Value / 100f;
 	}
-}
+} 

@@ -1,13 +1,16 @@
-﻿using PathOfTerraria.Common.Systems;
+﻿using PathOfTerraria.Common.Buffs;
+using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.Systems.ElementalDamage;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Content.Buffs;
+using PathOfTerraria.Content.Buffs.ElementalBuffs;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Passives;
 
 internal class StrongerChillPassive : Passive
 {
-	internal class GiveChilledNPCFunctionality : GlobalBuff
+	internal class BoostChilledEffectNPC : GlobalBuff
 	{
 		public override void Update(int type, NPC npc, ref int buffIndex)
 		{
@@ -17,11 +20,43 @@ internal class StrongerChillPassive : Passive
 
 				if (npc.lastInteraction != 255)
 				{
-					int chillPower = Main.player[npc.lastInteraction].GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(nameof(StrongerChillPassive));
+					float chillPower = Main.player[npc.lastInteraction].GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<StrongerChillPassive>();
 					multiplier += chillPower * 0.1f;
 				}
 
 				npc.GetGlobalNPC<SlowDownNPC>().SpeedModifier += 0.1f * multiplier;
+			}
+		}
+	}
+}
+
+internal class ChanceToChillPassive : Passive
+{
+	public class ChanceToChillPlayer : ModPlayer
+	{
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			float str = Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<ChanceToChillPassive>() / 100f;
+
+			if (Main.rand.NextFloat() < str)
+			{
+				target.AddBuff(BuffID.Chilled, 5 * 60);
+			}
+		}
+	}
+}
+
+internal class ChanceToFreezePassive : Passive
+{
+	public class ChanceToFreezePlayer : ModPlayer
+	{
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			float str = Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<ChanceToFreezePassive>() / 100f;
+
+			if (Main.rand.NextFloat() < str)
+			{
+				ElementalPlayer.TryAddElementBuff(target, ElementType.Cold, damageDone, hit);
 			}
 		}
 	}
@@ -58,6 +93,23 @@ internal class ShockChancePassive : Passive
 			if (canAfflict)
 			{
 				npc.AddBuff(ModContent.BuffType<ShockDebuff>(), 10 * 60);
+			}
+		}
+	}
+}
+
+internal class ChanceToIgnitePassive : Passive
+{
+	public class ChanceToIgnoitePlayer : ModPlayer
+	{
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			float str = Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<ChanceToIgnitePassive>() / 100f;
+
+			if (Main.rand.NextFloat() < str)
+			{
+				hit.Crit = true; // Ignite doesn't proc otherwise
+				ElementalPlayer.TryAddElementBuff(target, ElementType.Fire, damageDone, hit);
 			}
 		}
 	}

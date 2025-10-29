@@ -8,7 +8,8 @@ internal class AddedFireDamageConversionPassive : Passive
 	public override void BuffPlayer(Player player)
 	{
 		ElementalPlayer elemental = player.GetModPlayer<ElementalPlayer>();
-		elemental.Container[ElementType.Fire].DamageModifier.AddModifiers(null, Value / 100f);
+		ref ElementalDamage self = ref elemental.Container[ElementType.Fire].DamageModifier;
+		self = self.AddModifiers(null, Value / 100f);
 	}
 }
 
@@ -17,7 +18,8 @@ internal class AddedColdDamageConversionPassive : Passive
 	public override void BuffPlayer(Player player)
 	{
 		ElementalPlayer elemental = player.GetModPlayer<ElementalPlayer>();
-		elemental.Container[ElementType.Cold].DamageModifier.AddModifiers(null, Value);
+		ref ElementalDamage self = ref elemental.Container[ElementType.Cold].DamageModifier;
+		self = self.AddModifiers(null, Value / 100f);
 	}
 }
 
@@ -26,6 +28,7 @@ internal class AddedLightningDamageConversionPassive : Passive
 	public override void BuffPlayer(Player player)
 	{
 		ElementalPlayer elemental = player.GetModPlayer<ElementalPlayer>();
-		elemental.Container[ElementType.Lightning].DamageModifier.AddModifiers(null, Value / 100f);
+		ref ElementalDamage self = ref elemental.Container[ElementType.Lightning].DamageModifier;
+		self = self.AddModifiers(null, Value / 100f);
 	}
 }
