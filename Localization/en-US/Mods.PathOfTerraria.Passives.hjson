@@ -363,3 +363,8 @@ PercentStrongManaPotionsPassive: {
 	Name: Stronger Mana Potions
 	Tooltip: +{0}% stronger mana potions
 }
+
+FishingPowerPassive: {
+	Name: Increased Fishing Power
+	Tooltip: +{0} fishing power
+}

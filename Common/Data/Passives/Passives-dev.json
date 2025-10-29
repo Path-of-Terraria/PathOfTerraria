@@ -353,7 +353,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "PercentIncreasedMaximumManaPassive",
 		"referenceId": 22,
 		"maxLevel": 1,
 		"value": 5,
@@ -384,10 +384,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedManaPassive",
 		"referenceId": 24,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 23
@@ -1389,10 +1389,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedLightningResistancePassive",
 		"referenceId": 84,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 8,
 		"connections": [
 			{
 				"referenceId": 94
@@ -1425,10 +1425,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedLightningResistancePassive",
+		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 86,
 		"maxLevel": 1,
-		"value": 8,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 23
@@ -1503,10 +1503,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "PercentStrongManaPotionsPassive",
 		"referenceId": 91,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
 		"position": {
 			"x": 1364,
 			"y": -11
@@ -4316,20 +4316,20 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "FishingPowerPassive",
 		"referenceId": 278,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
 		"position": {
 			"x": 661,
 			"y": 285
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "FishingPowerPassive",
 		"referenceId": 279,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
 		"position": {
 			"x": 576,
 			"y": 436
