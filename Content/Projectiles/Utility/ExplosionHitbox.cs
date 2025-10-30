@@ -43,6 +43,7 @@ internal class ExplosionHitbox : ModProjectile
 		Projectile.Opacity = 0.5f;
 		Projectile.netImportant = true;
 		Projectile.penetrate = -1;
+		Projectile.aiStyle = -1;
 	}
 
 	public override void AI()

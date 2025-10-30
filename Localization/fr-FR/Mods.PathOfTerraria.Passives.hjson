@@ -423,3 +423,13 @@ ScorchingFlamesMastery: {
 	// Name: Scorching Flames
 	// Tooltip: +{0}% chance to inflict Scorching Flames, which reduces enemy Fire resistance by 30%
 }
+
+BurstingFuryMastery: {
+	// Name: Bursting Fury
+	// Tooltip: Killing an enemy with Fire damage causes it to explode, dealing {0}% of the original damage done
+}
+
+DeepPoolsMastery: {
+	// Name: DeepPoolsMastery
+	// Tooltip: ""
+}

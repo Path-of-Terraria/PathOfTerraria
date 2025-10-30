@@ -13,7 +13,7 @@ public sealed class ScorchingFlamesDebuff : ModBuff
 	{
 		if (npc.TryGetGlobalNPC(out ElementalNPC element))
 		{
-			element.Container[ElementType.Fire].Resistance -= 20.3f;
+			element.Container[ElementType.Fire].Resistance -= 0.3f;
 		}
 	}
 }

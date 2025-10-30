@@ -1,5 +1,4 @@
-﻿using Humanizer;
-using PathOfTerraria.Common.Systems.ElementalDamage;
+﻿using PathOfTerraria.Common.Systems.ElementalDamage;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using Terraria.Localization;
 
@@ -11,7 +10,7 @@ internal class AfterburnMastery : Passive
 	{
 		public override void ModifyHurt(ref Player.HurtModifiers modifiers)
 		{
-			float str = Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<FishingCatchBuffMastery>();
+			float str = Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<AfterburnMastery>();
 			modifiers.FinalDamage += str * 0.2f;
 		}
 	}

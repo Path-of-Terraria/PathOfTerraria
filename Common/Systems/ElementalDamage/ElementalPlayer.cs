@@ -42,10 +42,11 @@ public class ElementalPlayer : ModPlayer
 
 	public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref NPC.HitModifiers modifiers)
 	{
-		if (target.TryGetGlobalNPC(out ElementalNPC elemNPC))
+		if (target.TryGetGlobalNPC(out ElementalNPC elemNPC) && proj.TryGetGlobalProjectile(out ElementalProjectile elemProj))
 		{
 			MultipliableFloat throwaway = default;
-			ElementModifyDamage(Container, elemNPC.Container, ref throwaway, ref modifiers.FinalDamage, true);
+			Item item = elemProj.SourceItem == -1 ? null : ContentSamples.ItemsByType[elemProj.SourceItem];
+			ElementModifyDamage(elemProj.Container, elemNPC.Container, ref throwaway, ref modifiers.FinalDamage, true, item);
 		}
 	}
 
@@ -58,7 +59,7 @@ public class ElementalPlayer : ModPlayer
 		
 		foreach (ElementInstance element in container)
 		{
-			float weaponStrength = item is null ? 0 : ElementalWeaponSets.GetElementStrength(item.type, element.Type);
+			float weaponStrength = (item is null ? 0 : ElementalWeaponSets.GetElementStrength(item.type, element.Type)) * (1 - other[element.Type].Resistance);
 			float playerConversion = element.GetTotalConversion(other);
 			
 			baseElementalStrength += weaponStrength;
@@ -78,7 +79,7 @@ public class ElementalPlayer : ModPlayer
 		{
 			float conv = MathF.Min(element.GetTotalConversion(other) + (item is null ? 0 : ElementalWeaponSets.GetElementStrength(item.type, element.Type)), 1);
 			float bonus = (conv * element.Multiplier) - conv;
-			totalMultiplier += bonus;
+			totalMultiplier += bonus * Math.Abs(other[element.Type].Resistance);
 		}
 
 		if (!skipPreDefense)
@@ -147,7 +148,7 @@ public class ElementalPlayer : ModPlayer
 	{
 		if (target.TryGetGlobalNPC(out ElementalNPC elemNPC))
 		{
-			ElementOnHit(target, Container, elemNPC.Container, hit.Damage, hit, item);
+			ElementOnHit(target, Container, elemNPC.Container, hit.Damage, hit, item, Player);
 		}
 	}
 
@@ -162,11 +163,12 @@ public class ElementalPlayer : ModPlayer
 				item = new(elemProj.SourceItem);
 			}
 
-			ElementOnHit(target, Container, elemNPC.Container, hit.Damage, hit, item);
+			ElementOnHit(target, Container, elemNPC.Container, hit.Damage, hit, item, Player);
 		}
 	}
 
-	private static void ElementOnHit(Entity target, ElementalContainer container, ElementalContainer other, int finalDamage, NPC.HitInfo? optionalHitInfo, Item item = null)
+	private static void ElementOnHit(Entity target, ElementalContainer container, ElementalContainer other, int finalDamage, NPC.HitInfo? optionalHitInfo, Item item = null, 
+		Player player = null)
 	{
 		// Elemental damage done & debuffs
 		foreach (ElementInstance element in container)
@@ -191,8 +193,13 @@ public class ElementalPlayer : ModPlayer
 			}
 
 			// Debuff applications
-			if (optionalHitInfo is not null)
+			if (optionalHitInfo is { } hitInfo)
 			{
+				if (player is not null && target is NPC npc)
+				{
+					ElementalPlayerHooks.ElementalOnHitNPC(player, element, npc, container, other, finalDamage, hitInfo, item);
+				}
+
 				// If theres any conversion being done on either base elemental or added elemental damage
 				bool hasElement = totalAdditionalDamage > 0;
 

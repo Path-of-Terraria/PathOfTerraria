@@ -130,7 +130,7 @@ public class ElementInstance(ElementType type, bool isGeneric)
 
 	public override string ToString()
 	{
-		return $"{Type}: Conv: {GetTotalConversion(0)} Flat: {GetFlatDamage(0)}";
+		return $"{Type}: Conv: {GetTotalConversion(0)} Flat: {GetFlatDamage(0)} Mult: {Multiplier}";
 	}
 }
 
