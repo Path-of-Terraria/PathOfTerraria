@@ -10,7 +10,7 @@ public class ProjectileModifierProjectile : GlobalProjectile
 	/// Tags a projectile spawned directly by a player (such as where <c>source is EntitySource_Parent { Entity: Player }</c>) as modifiable even if
 	/// it's not a <see cref="EntitySource_ItemUse_WithAmmo"/>.
 	/// </summary>
-	internal const string SpeedUpProjectile = "Modifiable";
+	internal const string ModifiableProjectileTag = "Modifiable";
 
 	private static readonly HashSet<int> InvalidProjectilesToMove = [];
 
@@ -31,7 +31,7 @@ public class ProjectileModifierProjectile : GlobalProjectile
 			player = plr;
 		}
 
-		if (source is EntitySource_Parent { Entity: Player plr2 } && source.Context is { } context && context.Contains(SpeedUpProjectile))
+		if (source is EntitySource_Parent { Entity: Player plr2 } && source.Context is { } context && context.Contains(ModifiableProjectileTag))
 		{
 			valid = true;
 			player = plr2;

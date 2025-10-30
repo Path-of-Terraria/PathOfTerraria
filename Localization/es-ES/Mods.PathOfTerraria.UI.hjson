@@ -67,6 +67,7 @@ StatUI: {
 	// AmmoConsumptionChance: Ammo Reservation
 	HealthPotions: Pociones de vida
 	ManaPotions: Pociones de maná
+	// FishingPower: Fishing Power
 
 	Help: {
 		Strength: Otorga 5 puntos de vida máxima por cada 10 puntos

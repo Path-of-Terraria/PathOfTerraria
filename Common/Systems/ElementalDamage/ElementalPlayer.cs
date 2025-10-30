@@ -68,10 +68,19 @@ public class ElementalPlayer : ModPlayer
 		// Cap base elemental strength at 1.0 (can't be more than 100% elemental)
 		baseElementalStrength = MathF.Min(baseElementalStrength, 1f);
 	
-		float totalConversion = baseElementalStrength + additionalConversion;
+		float totalConversion = (baseElementalStrength + additionalConversion);
 		
 		// Apply multiplier to original damage BEFORE DEFENSE, by each element conversion percent (accounting for resistance) 
 		float totalMultiplier = MathF.Max(0f, totalConversion - baseElementalStrength);
+
+		// Add in multipliers
+		foreach (ElementInstance element in container)
+		{
+			float conv = MathF.Min(element.GetTotalConversion(other) + (item is null ? 0 : ElementalWeaponSets.GetElementStrength(item.type, element.Type)), 1);
+			float bonus = (conv * element.Multiplier) - conv;
+			totalMultiplier += bonus;
+		}
+
 		if (!skipPreDefense)
 		{
 			// Adds X% damage to the hit, depending on the total conversion multiplier, before defense - only applies to players
@@ -86,7 +95,7 @@ public class ElementalPlayer : ModPlayer
 		// Apply flat extra damage (accounting for resistance)
 		foreach (ElementInstance element in container)
 		{
-			sourceDamage.Flat += element.GetFlatDamage(other);
+			sourceDamage.Flat += element.GetFlatDamage(other) * element.Multiplier;
 		}
 	
 		if (DebugMessages && (container.Any(x => x.DamageModifier.HasValues)))

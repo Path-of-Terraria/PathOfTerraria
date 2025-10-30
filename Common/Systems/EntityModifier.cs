@@ -18,10 +18,13 @@ public partial class EntityModifier : EntityModifierSegment
 	public StatModifier DamageReduction = new();
 	public StatModifier MovementSpeed = new();
 
-	// Each of these is mirrored in ProjectileModifierPlayer
+	// Used in ProjectileModifierProjectile
 	public StatModifier ProjectileSpeed = new();
-	public StatModifier ProjectileCount = new();
 	public StatModifier ProjectileDamage = new();
+
+	// Used in ProjectileMultiplierGlobal
+	public AddableFloat FishingLineCount = new();
+	public AddableFloat ProjectileCount = new();
 
 	public StatModifier Damage = new();
 	public StatModifier AttackSpeed = new();
@@ -96,7 +99,7 @@ public partial class EntityModifier : EntityModifierSegment
 		player.GetKnockback(DamageClass.Generic) = player.GetKnockback(DamageClass.Generic).CombineWith(Knockback);
 		player.GetArmorPenetration(DamageClass.Generic) = ArmorPenetration.ApplyTo(player.GetArmorPenetration(DamageClass.Generic));
 		
-		MinorStatsModPlayer msmp = player.GetModPlayer<MinorStatsModPlayer>();
+		ItemDropModifierPlayer msmp = player.GetModPlayer<ItemDropModifierPlayer>();
 		msmp.MagicFind = MagicFind.ApplyTo(msmp.MagicFind);
 
 		PotionPlayer ps = player.GetModPlayer<PotionPlayer>();

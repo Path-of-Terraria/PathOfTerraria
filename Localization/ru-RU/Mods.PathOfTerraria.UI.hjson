@@ -67,6 +67,7 @@ StatUI: {
 	// AmmoConsumptionChance: Ammo Reservation
 	HealthPotions: Зелья здоровья
 	ManaPotions: Зелья маны
+	// FishingPower: Fishing Power
 
 	Help: {
 		Strength: Даёт 5 дополнительных очков здоровья за каждые 10 очков

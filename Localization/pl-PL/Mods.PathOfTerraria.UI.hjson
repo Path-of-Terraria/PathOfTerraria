@@ -67,6 +67,7 @@ StatUI: {
 	// AmmoConsumptionChance: Ammo Reservation
 	HealthPotions: Mikstura Zdrowia
 	ManaPotions: MIkstura Many
+	// FishingPower: Fishing Power
 
 	Help: {
 		Strength: Przyznaje 5 dodatkowego maksymalnego życia za każde 10 punktów

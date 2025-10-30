@@ -131,3 +131,8 @@ CrackedCarapaceDebuff: {
 	// DisplayName: Cracked Carapace
 	// Description: Defense is halved
 }
+
+FishingBuff: {
+	// DisplayName: Fishing Buff
+	// Description: Gain {0} total fishing power
+}

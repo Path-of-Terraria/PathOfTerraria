@@ -128,7 +128,7 @@ public sealed class ItemDatabase : ModSystem
 	/// <param name="dropRarityModifier">The total drop rarity modifier. Higher means more Rare or Unique drops.</param>
 	/// <param name="itemRarityModifier">The total item rarity modifier. Higher means more rarer items.</param>
 	/// <returns>The modified drop chance for the item record.</returns>
-	public static float ApplyDropRateModifiers(ItemRecord item, float dropRarityModifier, float itemRarityModifier)
+	public static float ApplyDropRateModifiers(ItemRecord item, float dropRarityModifier, float itemRarityModifier, float uniqueModifier)
 	{
 		itemRarityModifier = MathHelper.Clamp(itemRarityModifier, 0, 1);
 		float chance = MathHelper.Lerp(item.DropChance, 1, 1 - 1 / (itemRarityModifier + 1));
@@ -138,7 +138,14 @@ public sealed class ItemDatabase : ModSystem
 			return chance;
 		}
 
-		return chance * (1 + dropRarityModifier);
+		float mod = chance * (1 + dropRarityModifier);
+
+		if (item.Rarity == ItemRarity.Unique)
+		{
+			mod *= uniqueModifier;
+		}
+
+		return mod;
 	}
 	
 	/// <summary>

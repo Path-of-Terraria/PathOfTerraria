@@ -64,7 +64,7 @@ public class TinyAlaric : ModProjectile
 				int type = Utils.SelectRandom<int>(Main.rand, ProjectileID.Fireball, ProjectileID.RayGunnerLaser, ProjectileID.MartianTurretBolt,
 					ProjectileID.DiamondBolt, ProjectileID.PartyBullet);
 				Vector2 vel = Projectile.DirectionTo(Main.MouseWorld) * 8;
-				IEntitySource src = Owner.GetSource_FromAI(ProjectileModifierProjectile.SpeedUpProjectile);
+				IEntitySource src = Owner.GetSource_FromAI(ProjectileModifierProjectile.ModifiableProjectileTag);
 				
 				int proj = Projectile.NewProjectile(src, Projectile.Center, vel, type, Projectile.damage, 1f, Main.myPlayer);
 				Main.projectile[proj].friendly = true;

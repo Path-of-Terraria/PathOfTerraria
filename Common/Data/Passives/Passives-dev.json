@@ -1520,6 +1520,9 @@
 		"connections": [
 			{
 				"referenceId": 91
+			},
+			{
+				"referenceId": 1011
 			}
 		],
 		"position": {
@@ -1543,13 +1546,16 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedFireDamageConversionPassive",
+		"internalIdentifier": "AddedFireDamageMultiplierPassive",
 		"referenceId": 94,
 		"maxLevel": 1,
 		"value": 5,
 		"connections": [
 			{
 				"referenceId": 93
+			},
+			{
+				"referenceId": 1011
 			}
 		],
 		"position": {
@@ -1576,10 +1582,15 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedFireDamageConversionPassive",
+		"internalIdentifier": "AddedFireDamageMultiplierPassive",
 		"referenceId": 96,
 		"maxLevel": 1,
 		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1011
+			}
+		],
 		"position": {
 			"x": 1357,
 			"y": -345
@@ -1602,6 +1613,62 @@
 			"x": 1375,
 			"y": -236
 		}
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1011,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1012
+			},
+			{
+				"referenceId": 1013
+			},
+			{
+				"referenceId": 1014
+			}
+		],
+		"position": {
+			"x": 1270,
+			"y": -270
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 3
+	},
+	{
+		"internalIdentifier": "AfterburnMastery",
+		"referenceId": 1012,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": 1240,
+			"y": -320
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "MoreUniquesMastery",
+		"referenceId": 1013,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": 1236,
+			"y": -226
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "MoreUniquesMastery",
+		"referenceId": 1014,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": 1326,
+			"y": -250
+		},
+		"isHidden": true
 	},
 	{
 		"internalIdentifier": "AddedIntelligencePassive",
@@ -1797,7 +1864,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedColdDamageConversionPassive",
+		"internalIdentifier": "AddedColdDamageMultiplierPassive",
 		"referenceId": 110,
 		"maxLevel": 1,
 		"value": 5,
@@ -1850,7 +1917,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedLightningDamageConversionPassive",
+		"internalIdentifier": "AddedLightningDamageMultiplierPassive",
 		"referenceId": 114,
 		"maxLevel": 1,
 		"value": 10,
@@ -1999,7 +2066,7 @@
 		"internalIdentifier": "IncreasedDefenseWhileChanneling",
 		"referenceId": 124,
 		"maxLevel": 1,
-		"value":  5,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 123
@@ -4291,23 +4358,31 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "MagicFindBoost",
 		"referenceId": 276,
 		"maxLevel": 1,
 		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1008
+			}
+		],
 		"position": {
 			"x": 554,
 			"y": -463
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "ItemDropRatePassive",
 		"referenceId": 277,
 		"maxLevel": 1,
 		"value": 5,
 		"connections": [
 			{
 				"referenceId": 22
+			},
+			{
+				"referenceId": 1008
 			}
 		],
 		"position": {
@@ -4316,10 +4391,57 @@
 		}
 	},
 	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1008,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1009
+			},
+			{
+				"referenceId": 1010
+			}
+		],
+		"position": {
+			"x": 570,
+			"y": -355
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "BossDownIncreaseItemRarityMastery",
+		"referenceId": 1009,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": 460,
+			"y": -355
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "MoreUniquesMastery",
+		"referenceId": 1010,
+		"maxLevel": 1,
+		"value": 15,
+		"position": {
+			"x": 540,
+			"y": -255
+		},
+		"isHidden": true
+	},
+	{
 		"internalIdentifier": "FishingPowerPassive",
 		"referenceId": 278,
 		"maxLevel": 1,
 		"value": 10,
+		"connections": [
+			{
+				"referenceId": 1005
+			}
+		],
 		"position": {
 			"x": 661,
 			"y": 285
@@ -4330,10 +4452,57 @@
 		"referenceId": 279,
 		"maxLevel": 1,
 		"value": 10,
+		"connections": [
+			{
+				"referenceId": 1005
+			}
+		],
 		"position": {
 			"x": 576,
 			"y": 436
 		}
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1005,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1006
+			},
+			{
+				"referenceId": 1007
+			}
+		],
+		"position": {
+			"x": 590,
+			"y": 340
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "AddedFishingLineMastery",
+		"referenceId": 1006,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": 480,
+			"y": 320
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "FishingCatchBuffMastery",
+		"referenceId": 1007,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": 550,
+			"y": 240
+		},
+		"isHidden": true
 	},
 	{
 		"internalIdentifier": "AddedIntelligencePassive",

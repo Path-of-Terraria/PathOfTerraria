@@ -106,6 +106,7 @@ internal abstract class AllocatableElement : SmartUiElement, IConnectedAllocatab
 			color = Color.White;
 		}
 
+		center = center.Floor();
 		spriteBatch.Draw(tex, center, null, color, 0, node.Size * 0.5f, 1, 0, 0);
 
 		if (node.MaxLevel > 1)

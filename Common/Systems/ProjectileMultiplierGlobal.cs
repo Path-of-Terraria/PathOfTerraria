@@ -1,5 +1,4 @@
 using PathOfTerraria.Common.Systems.ModPlayers;
-using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -23,24 +22,23 @@ internal class ProjectileMultiplierGlobal : GlobalProjectile
 		}
 
 		Player player = itemSource.Player;
-		StatModifier projCountMod = player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.ProjectileCount;
+		EntityModifier mod = player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier;
+		float count = mod.ProjectileCount.Value;
 
-		// Skip if no modifier applied
-		if (projCountMod == StatModifier.Default)
+		if (projectile.bobber)
 		{
-			return;
+			count += mod.FishingLineCount.Value;
 		}
 
-		int additionalProjectiles = (int)projCountMod.ApplyTo(0f);
-
-		if (additionalProjectiles <= 0)
+		// Skip if no modifier applied
+		if (count == 0)
 		{
 			return;
 		}
 
 		EntitySource_Misc multiSource = new("ProjectileMultiplication");
 
-		for (int i = 0; i < additionalProjectiles; i++)
+		for (int i = 0; i < count; i++)
 		{
 			float randomAngle = Main.rand.NextFloat(MathHelper.ToRadians(-10), MathHelper.ToRadians(10));
 			Vector2 modifiedVelocity = projectile.velocity.RotatedBy(randomAngle);

@@ -67,6 +67,7 @@ StatUI: {
 	AmmoConsumptionChance: Ammo Reservation
 	HealthPotions: Health Potions
 	ManaPotions: Mana Potions
+	FishingPower: Fishing Power
 
 	Help: {
 		Strength: Grants 5 additional maximum health per 10 points

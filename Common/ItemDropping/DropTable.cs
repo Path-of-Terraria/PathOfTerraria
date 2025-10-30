@@ -19,7 +19,7 @@ internal class DropTable
 	/// </summary>
 	/// <param name="random">The random to 'seed' the choice with. Defaults to Main.rand.</param>
 	public static ItemDatabase.ItemRecord RollMobDrops(int itemLevel, float dropRarityModifier, float gearChance = 0.8f, float currencyChance = 0.15f, float mapChance = 0.05f, 
-		UnifiedRandom random = null, ItemRarity forceRarity = ItemRarity.Invalid)
+		UnifiedRandom random = null, ItemRarity forceRarity = ItemRarity.Invalid, float uniqueModifier = 1f)
 	{
 		random ??= Main.rand;
 		var chances = new WeightedRandom<int>(random);
@@ -43,7 +43,7 @@ internal class DropTable
 			items = items.Where(x => x.Rarity == forceRarity);
 		}
 
-		return RollList(itemLevel, dropRarityModifier, [.. items], random);
+		return RollList(itemLevel, dropRarityModifier, [.. items], x => true, 0f, null, uniqueModifier);
 	}
 
 	/// <summary>
@@ -158,30 +158,30 @@ internal class DropTable
 		return items;
 	}
 
-	private static ItemDatabase.ItemRecord RollList(int itemLevel, float dropRarityModifier, List<ItemDatabase.ItemRecord> filteredGear, UnifiedRandom random = null)
+	private static ItemDatabase.ItemRecord RollList(int itemLevel, float rarityMod, List<ItemDatabase.ItemRecord> filteredGear, UnifiedRandom random = null, float uniqueModifier = 1f)
 	{
-		return RollList(itemLevel, dropRarityModifier, filteredGear, _ => true, 0, random: random);
+		return RollList(itemLevel, rarityMod, filteredGear, _ => true, 0, random, uniqueModifier);
 	}
 
 	public static ItemDatabase.ItemRecord RollList(int itemLevel, float dropRarityModifier, List<ItemDatabase.ItemRecord> filteredGear, 
-		Func<ItemDatabase.ItemRecord, bool> additionalCondition, float itemRarityModifier, UnifiedRandom random = null)
+		Func<ItemDatabase.ItemRecord, bool> additionalCondition, float itemRarityModifier, UnifiedRandom random = null, float uniqueModifier = 1f)
 	{
-		WeightedRandom<ItemDatabase.ItemRecord> selection = GetGearPool(itemLevel, ref dropRarityModifier, filteredGear, additionalCondition, itemRarityModifier, random);
+		WeightedRandom<ItemDatabase.ItemRecord> selection = GetGearPool(itemLevel, ref dropRarityModifier, filteredGear, additionalCondition, itemRarityModifier, random, uniqueModifier);
 		return selection.elements.Count == 0 ? ItemDatabase.InvalidItem : selection.Get();
 	}
 
 	private static WeightedRandom<ItemDatabase.ItemRecord> GetGearPool(int itemLevel, ref float dropRarityModifier, List<ItemDatabase.ItemRecord> filteredGear, 
-		Func<ItemDatabase.ItemRecord, bool> additionalCondition, float itemRarityModifier, UnifiedRandom random = null)
+		Func<ItemDatabase.ItemRecord, bool> additionalCondition, float itemRarityModifier, UnifiedRandom random = null, float uniqueModifier = 1f)
 	{
 		random ??= Main.rand;
-		dropRarityModifier += itemLevel / 10f; // Higher levels have a higher likelihood of being Rare or Unique
+		dropRarityModifier += itemLevel / 10f; // Higher levels have a higher likelihood of being Magic, Rare or Unique
 		WeightedRandom<ItemDatabase.ItemRecord> selection = new(random);
 
 		foreach (ItemDatabase.ItemRecord item in filteredGear)
 		{
 			if (additionalCondition.Invoke(item))
 			{
-				selection.Add(item, ItemDatabase.ApplyDropRateModifiers(item, dropRarityModifier, itemRarityModifier));
+				selection.Add(item, ItemDatabase.ApplyDropRateModifiers(item, dropRarityModifier, itemRarityModifier, uniqueModifier));
 			}
 		}
 

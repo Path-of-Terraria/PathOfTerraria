@@ -196,7 +196,7 @@ internal class PlayerStatInnerPanel : SmartUiElement
 		
 		// Misc
 		list.Add(new PlayerStatUI(Localize("MiscHeader"), player => "", isHeader: true));
-		list.Add(new PlayerStatUI(Localize("MaxMinions"), player => $"{player.maxMinions.ToString()}"));
+		list.Add(new PlayerStatUI(Localize("MaxMinions"), player => $"{player.maxMinions}"));
 		list.Add(new PlayerStatUI(Localize("AmmoConsumptionChance"), player => $"{player.GetModPlayer<AmmoConsumptionPlayer>().AmmoSaveChance * 100:#0.##}%"));
 
 		list.Add(new PlayerStatUI(Localize("HealthPotions"), player =>
@@ -209,6 +209,8 @@ internal class PlayerStatInnerPanel : SmartUiElement
 			PotionPlayer potionPlayer = Main.LocalPlayer.GetModPlayer<PotionPlayer>();
 			return $"{potionPlayer.ManaLeft}/{potionPlayer.MaxMana}";
 		}));
+
+		list.Add(new PlayerStatUI(Localize("FishingPower"), player => player.fishingSkill.ToString()));
 
 		static LocalizedText Localize(string type)
 		{

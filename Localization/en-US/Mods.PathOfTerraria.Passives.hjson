@@ -235,8 +235,8 @@ ReducedManaCostWhileChannelingPassive: {
 }
 
 MasteryPassive: {
-	Name: MasteryPassive
-	Tooltip: ""
+	Name: Mastery
+	Tooltip: Choose a mastery
 }
 
 AddedChaosResistancePassive: {
@@ -367,4 +367,54 @@ PercentStrongManaPotionsPassive: {
 FishingPowerPassive: {
 	Name: Increased Fishing Power
 	Tooltip: +{0} fishing power
+}
+
+AddedFishingLineMastery: {
+	Name: Multifishing
+	Tooltip: Fishing rods cast an additional line
+}
+
+FishingCatchBuffMastery: {
+	Name: Bountiful Bobbers
+	Tooltip: Catching a fish adds a stackable 10 fishing strength for 10 seconds, caps at 5 stacks
+}
+
+MagicFindBoost: {
+	Name: Increased Magic Find
+	Tooltip: +{0}% higher chance to find Magic or Rare items
+}
+
+BossDownIncreaseItemRarityMastery: {
+	Name: Magical Bleed
+	Tooltip: For every boss killed at least once in a world, increase magic find by 0.5%. Current:
+}
+
+MoreUniquesMastery: {
+	Name: Eye for Uniques
+	Tooltip: +{0}% increased Unique item drop chance
+}
+
+ItemDropRatePassive: {
+	Name: Increased Item Drop Rate
+	Tooltip: +{0}% item drops from enemies
+}
+
+AfterburnMastery: {
+	Name: Afterburning
+	Tooltip: +{0}% fire damage multiplier, +{1}% damage taken multiplier
+}
+
+AddedFireDamageMultiplierPassive: {
+	Name: Increased Fire Damage Multiplier
+	Tooltip: +{0}% fire damage multiplier
+}
+
+AddedColdDamageMultiplierPassive: {
+	Name: Increased Cold Damage Multiplier
+	Tooltip: +{0} cold damage multiplier
+}
+
+AddedLightningDamageMultiplierPassive: {
+	Name: Increased Lightning Damage Multiplier
+	Tooltip: +{0} lightning damage multiplier
 }
