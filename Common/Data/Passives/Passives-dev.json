@@ -1649,10 +1649,10 @@
 		"isHidden": true
 	},
 	{
-		"internalIdentifier": "MoreUniquesMastery",
+		"internalIdentifier": "ScorchingFlamesMastery",
 		"referenceId": 1013,
 		"maxLevel": 1,
-		"value": 1,
+		"value": 20,
 		"position": {
 			"x": 1236,
 			"y": -226

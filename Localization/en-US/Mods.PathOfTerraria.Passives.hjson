@@ -418,3 +418,8 @@ AddedLightningDamageMultiplierPassive: {
 	Name: Increased Lightning Damage Multiplier
 	Tooltip: +{0} lightning damage multiplier
 }
+
+ScorchingFlamesMastery: {
+	Name: Scorching Flames
+	Tooltip: +{0}% chance to inflict Scorching Flames, which reduces enemy Fire resistance by 30%
+}

@@ -44,7 +44,7 @@ public class ElementInstance(ElementType type, bool isGeneric)
 	/// <returns>Final conversion %, accounting for resistance.</returns>
 	public float GetTotalConversion(float resistance)
 	{
-		return DamageModifier.DamageConversion * (1f - resistance);
+		return DamageModifier.DamageConversion * Math.Abs(1f - resistance);
 	}
 
 	/// <summary>
@@ -79,7 +79,7 @@ public class ElementInstance(ElementType type, bool isGeneric)
 	public float Resistance
 	{
 		get => _resistance;
-		set => _resistance = MathHelper.Clamp(value, 0f, 0.75f);
+		set => _resistance = MathHelper.Min(value, 0.75f);
 	}
 
 	private float _resistance = 0;

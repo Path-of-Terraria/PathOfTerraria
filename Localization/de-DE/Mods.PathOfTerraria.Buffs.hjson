@@ -136,3 +136,8 @@ FishingBuff: {
 	// DisplayName: Fishing Buff
 	// Description: Gain {0} total fishing power
 }
+
+ScorchingFlamesDebuff: {
+	// DisplayName: Scorching Flames Debuff
+	// Description: Mods.PathOfTerraria.Buffs.ScorchingFlamesDebuff.Description
+}
