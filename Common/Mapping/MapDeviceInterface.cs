@@ -4,6 +4,7 @@ using PathOfTerraria.Common.UI.Components;
 using PathOfTerraria.Common.UI.Elements;
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Content.Tiles.Furniture;
+using PathOfTerraria.Core.Time;
 using PathOfTerraria.Core.UI;
 using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
@@ -198,12 +199,14 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 	private bool forceUpdateAnimation;
 	private float openingAnimation;
 	private float closingAnimation;
+	private SpriteFrame buttonLockFrame = new(1, 18);
 	private (StyleDimension X, StyleDimension Y) storagePositionSrc;
 	private (StyleDimension X, StyleDimension Y) storagePositionDst;
 	private (StyleDimension X, StyleDimension Y) inventoryPositionSrc;
 	private (StyleDimension X, StyleDimension Y) inventoryPositionDst;
 
 	public WindowElement? Window { get; private set; }
+	public UIElement? ActionButton { get; private set; }
 	public UIGrid? Storage { get; private set; }
 	public UIGrid? Inventory { get; private set; }
 	public UIElement? StoragePanel { get; private set; }
@@ -216,9 +219,24 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 
 	public override void SafeUpdate(GameTime gameTime)
 	{
+		// Shared animations.
 		(float oldOpening, float oldClosing) = (openingAnimation, closingAnimation);
 		openingAnimation = Math.Clamp(openingAnimation + ((MapDeviceInterface.Active ? +1f : +0f) / 20f), 0f, 1f);
 		closingAnimation = Math.Clamp(closingAnimation + ((MapDeviceInterface.Active ? -1f : +1f) / 20f), 0f, 1f);
+
+		// Button animations.
+		const int ButtonAnimationDelay = 4;
+		const int ButtonFrameOpen = 12;
+		const int ButtonFrameClosed = 0;
+		if (TimeSystem.UpdateCount % ButtonAnimationDelay == 0 && MapDeviceInterface.Entity != null)
+		{
+			byte targetRow = (byte)(IsButtonAvailable() ? ButtonFrameOpen : ButtonFrameClosed);
+
+			if (buttonLockFrame.CurrentRow != targetRow)
+			{
+				buttonLockFrame.CurrentRow = (byte)((buttonLockFrame.CurrentRow + 1) % buttonLockFrame.RowCount);
+			}
+		}
 
 		// Animate inventory and storage elements.
 		if ((forceUpdateAnimation || oldOpening != openingAnimation || oldClosing != closingAnimation) && StoragePanel != null && InventoryPanel != null)
@@ -252,12 +270,11 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 
 	public override void Draw(SpriteBatch sb)
 	{
-		if (Window != null && Visible)
-		{
-			DrawUnder(sb);
-		}
+		if (Window != null && Visible) { DrawUnder(sb); }
 
 		base.Draw(sb);
+
+		if (Window != null && Visible) { DrawOver(sb); }
 	}
 
 	public void DrawUnder(SpriteBatch sb)
@@ -280,6 +297,21 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		float gearRotation = (float)Main.timeForVisualEffects * 0.01f;
 		var gearOffset = Vector2.Lerp(new Vector2(-0f, -96f), new Vector2(-0f, -128f), sharedAnimation);
 		sb.Draw(gearTexture.Value, windowCenter + gearOffset, null, Color.White, gearRotation, gearTexture.Size() * 0.5f, 1f, 0, 0f);
+	}
+
+	public void DrawOver(SpriteBatch sb)
+	{
+		if (Window == null || ActionButton == null) { return; }
+
+		// Acquire common data.
+		CalculatedStyle windowDimensions = Window.GetDimensions();
+		var windowCenter = windowDimensions.Center().ToPoint().ToVector2();
+
+		// Render animated button lock.
+		var lockDstRect = ActionButton.GetDimensions().ToRectangle();
+		Texture2D lockTexture = ModContent.Request<Texture2D>($"{BasePath}/MapDevice_Trigger_Locked", AssetRequestMode.ImmediateLoad).Value;
+		Rectangle lockSrcRect = buttonLockFrame.GetSourceRectangle(lockTexture);
+		sb.Draw(lockTexture, lockDstRect, lockSrcRect, Color.White, 0f, default, 0, 0f);
 	}
 
 	public override void Refresh()
@@ -313,16 +345,16 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 
 		Window = this.AddElement(new WindowElement(backgroundTexture), e =>
 		{
-			e.SetDimensions(x: (uiOrigin.X, -(int)(windowAreaSize.X * 0.5f)), y: (uiOrigin.Y, -(int)(windowAreaSize.Y * 0.5f)), width: (0.0f, +windowAreaSize.X), height: (0f, +windowAreaSize.Y));
+			e.SetDimensions(x: (uiOrigin.X, -(int)MathF.Floor(windowAreaSize.X * 0.5f)), y: (uiOrigin.Y, -(int)(windowAreaSize.Y * 0.5f)), width: (0.0f, +windowAreaSize.X), height: (0f, +windowAreaSize.Y));
 		});
 
 		// Open/Close portal button.
 		Asset<Texture2D> buttonBackground = ModContent.Request<Texture2D>($"{BasePath}/MapDevice_Trigger", AssetRequestMode.ImmediateLoad);
 		Asset<Texture2D> buttonBackgroundHover = ModContent.Request<Texture2D>($"{BasePath}/MapDevice_Trigger_Highlight", AssetRequestMode.ImmediateLoad);
-		Window.AddElement(new UIHoverImage(buttonBackground, buttonBackgroundHover), e =>
+		ActionButton = Window.AddElement(new UIHoverImage(buttonBackground, buttonBackgroundHover), e =>
 		{
 			Vector2 size = buttonBackground.Size();
-			e.SetDimensions(x: (0.5f, -(size.X * 0.5f)), y: (0.5f, +108), width: (0.0f, +size.X), height: (0f, +size.Y));
+			e.SetDimensions(x: (0.5f, -MathF.Floor(size.X * 0.5f)), y: (0.5f, +108), width: (0.0f, +size.X), height: (0f, +size.Y));
 
 			e.AddElement(new UIButton<string>(""), e =>
 			{
@@ -485,20 +517,27 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		_ = (element, oldItem, newItem);
 	}
 
+	private static bool IsButtonAvailable()
+	{
+		if (MapDeviceInterface.Entity is not { } entity) { return true; }
+
+		return entity.PortalActive ? entity.TryClosingPortal(evalMode: true) : entity.TryOpeningPortal(evalMode: true);
+	}
+
 	private static void OpenOrClosePortalClick(UIMouseEvent evt, UIElement element)
 	{
 		if (MapDeviceInterface.Entity is not { } entity) { return; }
 
 		if (!entity.PortalActive)
 		{
-			if (MapDeviceInterface.Entity?.TryOpeningPortal() == true)
+			if (entity.TryOpeningPortal() == true)
 			{
 				MapDeviceInterface.Close();
 			}
 		}
 		else
 		{
-			MapDeviceInterface.Entity?.TryClosingPortal();
+			entity.TryClosingPortal();
 		}
 	}
 }

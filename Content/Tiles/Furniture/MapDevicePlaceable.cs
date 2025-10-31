@@ -449,12 +449,15 @@ internal class MapDeviceEntity : ModTileEntity
 	/// Attempts to open a portal for the map stored within the device.
 	/// <br/> Returns whether an attempt to perform the interaction will be made, not whether it will succeed.
 	/// </summary>
-	public bool TryOpeningPortal(byte? netSender = null)
+	public bool TryOpeningPortal(bool evalMode = false, byte? netSender = null)
 	{
 		if (PortalActive || StoredMap is not { IsAir: false, ModItem: Map map })
 		{
 			return false;
 		}
+
+		// Short-circuit in evaluation mode.
+		if (evalMode) { return true; }
 
 		// Request interaction.
 		if (Main.netMode == NetmodeID.MultiplayerClient && netSender == null)
@@ -495,12 +498,15 @@ internal class MapDeviceEntity : ModTileEntity
 	/// Attempts to close the currently open portal.
 	/// <br/> Returns whether an attempt to perform the interaction will be made, not whether it will succeed.
 	/// </summary>
-	public bool TryClosingPortal(byte? netSender = null)
+	public bool TryClosingPortal(bool evalMode = false, byte? netSender = null)
 	{
 		if (!PortalActive)
 		{
 			return false;
 		}
+
+		// Short-circuit in evaluation mode.
+		if (evalMode) { return true; }
 
 		// Request interaction.
 		if (Main.netMode == NetmodeID.MultiplayerClient && netSender == null)
