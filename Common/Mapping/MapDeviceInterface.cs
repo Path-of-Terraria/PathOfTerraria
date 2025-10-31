@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Common.UI.Components;
 using PathOfTerraria.Common.UI.Elements;
@@ -8,6 +9,7 @@ using PathOfTerraria.Core.Time;
 using PathOfTerraria.Core.UI;
 using PathOfTerraria.Core.UI.SmartUI;
 using PathOfTerraria.Utilities;
+using PathOfTerraria.Utilities.Xna;
 using ReLogic.Content;
 using ReLogic.Utilities;
 using Terraria.Audio;
@@ -194,10 +196,16 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		}
 	}
 
-	public sealed class WindowElement(Asset<Texture2D> texture) : UIElement
+	public sealed class WindowElement : UIElement
 	{
 		/// <summary> The texture to use. </summary>
-		public Asset<Texture2D> Texture { get; set; } = texture;
+		public Asset<Texture2D> Texture { get; set; }
+
+		public WindowElement(Asset<Texture2D> texture)
+		{
+			Texture = texture;
+			OverrideSamplerState = SamplerState.PointClamp;
+		}
 
 		protected override void DrawSelf(SpriteBatch sb)
 		{
@@ -207,12 +215,34 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 			var center = dimensions.Center().ToPoint().ToVector2();
 
 			sb.Draw(texture, center, null, Color.White, 0f, texture.Size() * 0.5f, 1f, 0, 0f);
+
+			(Color? Injection, Color? Burst, SpriteFrame Frame) = MapDeviceInterface.State.activationEffect;
+
+			// Render injection and portal opening animations.
+			// These use a 1x1 texture, so must be rendered at 2x2 with PointClamp sampler.
+			if ((Injection ?? Burst).HasValue)
+			{
+				var effectCenter = (center + new Vector2(-1f, -24f)).ToPoint().ToVector2();
+
+				if (Injection is { } injectionColor)
+				{
+					Texture2D injectionTexture = ModContent.Request<Texture2D>($"{BasePath}/MapDeviceBase_Injection", AssetRequestMode.ImmediateLoad).Value;
+					Rectangle injectionSrcRect = Frame.GetSourceRectangle(injectionTexture);
+					sb.Draw(injectionTexture, effectCenter, injectionSrcRect, injectionColor, 0f, injectionSrcRect.Size() * 0.5f, 2f, 0, 0f);
+				}
+				if (Burst is { } burstColor)
+				{
+					Texture2D burstTexture = ModContent.Request<Texture2D>($"{BasePath}/MapDeviceBase_Burst", AssetRequestMode.ImmediateLoad).Value;
+					Rectangle burstSrcRect = Frame.GetSourceRectangle(burstTexture);
+					sb.Draw(burstTexture, effectCenter, burstSrcRect, burstColor, 0f, burstSrcRect.Size() * 0.5f, 2f, 0, 0f);
+				}
+			}
 		}
 	}
 
 	private static readonly string BasePath = $"{PoTMod.ModName}/Assets/UI/MapDevice";
 	private static readonly string SoundPath = $"{PoTMod.ModName}/Assets/Sounds/MapDevice";
-	private static SoundStyle GearSound => new($"{SoundPath}/GearLoop")
+	private static readonly SoundStyle GearSound = new($"{SoundPath}/GearLoop")
 	{
 		Volume = 0.09f,
 		Pitch = -0.25f,
@@ -225,6 +255,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 	private float closingAnimation;
 	private (float Speed, float Rotation, Vector2 Offset) gear;
 	private SpriteFrame buttonLockFrame = new(1, 18);
+	private (Color? Injection, Color? Burst, SpriteFrame Frame) activationEffect = (null, null, new(4, 3));
 	private (StyleDimension X, StyleDimension Y) storagePositionSrc;
 	private (StyleDimension X, StyleDimension Y) storagePositionDst;
 	private (StyleDimension X, StyleDimension Y) inventoryPositionSrc;
@@ -244,6 +275,11 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		return Math.Max(0, layers.FindIndex(l => l.Name == "Vanilla: Mouse Text") - 1);
 	}
 
+	public MapDeviceState()
+	{
+		OverrideSamplerState = SamplerState.PointClamp;
+	}
+
 	internal void OnClosing()
 	{
 		// Prevent interactions when the UI begins to close.
@@ -255,6 +291,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		if (Visible) { return; }
 
 		Visible = true;
+		OverrideSamplerState = SamplerState.PointClamp;
 		// Allow interactions once again.
 		IgnoresMouseInteraction = false;
 
@@ -301,6 +338,26 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		else
 		{
 			gear.Offset *= 0.7f;
+		}
+
+		// Activation animations.
+		const int ActivationAnimationRate = 6;
+		const int ActivationAnimationFrameCount = 11;
+		if ((TimeSystem.UpdateCount % ActivationAnimationRate) == 0 && (activationEffect.Injection.HasValue || activationEffect.Burst.HasValue))
+		{
+			ref SpriteFrame frame = ref activationEffect.Frame;
+			int frameIndex = (frame.CurrentRow * frame.ColumnCount) + frame.CurrentColumn;
+
+			if (frameIndex < ActivationAnimationFrameCount - 1)
+			{
+				frame.CurrentColumn = (byte)((frame.CurrentColumn + 1) % frame.ColumnCount);
+
+				if (frame.CurrentColumn == 0)
+				{
+					frame.CurrentRow++;
+					frameIndex++;
+				}
+			}
 		}
 
 		// Button animations.
@@ -363,11 +420,11 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		Recalculate();
 	}
 
-	public override void Draw(SpriteBatch sb)
+	protected override void DrawChildren(SpriteBatch sb)
 	{
 		if (Window != null && Visible) { DrawUnder(sb); }
 
-		base.Draw(sb);
+		base.DrawChildren(sb);
 
 		if (Window != null && Visible) { DrawOver(sb); }
 	}
@@ -404,6 +461,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 
 		// Render animated button lock.
 		var lockDstRect = ActionButton.GetDimensions().ToRectangle();
+		lockDstRect.Y -= 2;
 		Texture2D lockTexture = ModContent.Request<Texture2D>($"{BasePath}/MapDevice_Trigger_Locked", AssetRequestMode.ImmediateLoad).Value;
 		Rectangle lockSrcRect = buttonLockFrame.GetSourceRectangle(lockTexture);
 		sb.Draw(lockTexture, lockDstRect, lockSrcRect, Color.White, 0f, default, 0, 0f);
@@ -468,11 +526,13 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		});
 
 		// Map slot
+		Asset<Texture2D> mapSlotTexture = ModContent.Request<Texture2D>($"{BasePath}/MapDeviceBase_Map_Slot", AssetRequestMode.ImmediateLoad);
+		Asset<Texture2D> mapIconTexture = ModContent.Request<Texture2D>($"{BasePath}/MapDeviceBase_Map_Icon", AssetRequestMode.ImmediateLoad);
 		var mapSlot = new UIImageItemSlot.SlotWrapper(() => entity.StoredMap, value => entity.StoredMap = value);
-		Window.AddElement(new UIHoverImageItemSlot(itemFrame, Asset<Texture2D>.Empty, mapSlot, null, context: CustomSlotContext), e =>
+		Window.AddElement(new UIHoverImageItemSlot(mapSlotTexture, mapIconTexture, mapSlot, null, context: CustomSlotContext), e =>
 		{
 			e.Initialize();
-			e.SetDimensions(x: (0.5f, -23), y: (0.5f, -150), width: (0f, +46), height: (0f, +46));
+			e.SetDimensions(x: (0.5f, -24), y: (0.5f, -148), width: (0f, +mapSlotTexture.Width() + 1), height: (0f, +mapSlotTexture.Height()));
 
 			(e.InactiveScale, e.ActiveScale) = (1.00f, 1.00f);
 			e.Predicate = (newItem, oldItem) => newItem is { ModItem: Map };
@@ -490,9 +550,10 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 			Item[] dummyContainer = [new Item()];
 			var fragSlot = new UIImageItemSlot.SlotWrapper(() => dummyContainer[0], value => dummyContainer[0] = value);
 
-			Asset<Texture2D> fragSlotFrame = ModContent.Request<Texture2D>($"{BasePath}/MapDevice_FragSlot", AssetRequestMode.ImmediateLoad);
-			Vector2 fragSlotSize = fragSlotFrame.Size();
-			Window.AddElement(new UIHoverImageItemSlot(fragSlotFrame, Asset<Texture2D>.Empty, fragSlot, null, context: CustomSlotContext), e =>
+			Asset<Texture2D> fragSlotTexture = ModContent.Request<Texture2D>($"{BasePath}/MapDevice_Frag_Slot", AssetRequestMode.ImmediateLoad);
+			Asset<Texture2D> fragIconTexture = ModContent.Request<Texture2D>($"{BasePath}/MapDevice_Frag_Icon", AssetRequestMode.ImmediateLoad);
+			Vector2 fragSlotSize = fragSlotTexture.Size();
+			Window.AddElement(new UIHoverImageItemSlot(fragSlotTexture, fragIconTexture, fragSlot, null, context: CustomSlotContext), e =>
 			{
 				e.Initialize();
 				float xOffset = (i is 1 or 2 ? (+32) : (+90)) * (i is 0 or 1 ? (-1) : (1));
@@ -630,16 +691,29 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 	{
 		if (MapDeviceInterface.Entity is not { } entity) { return; }
 
+		if (MapDeviceInterface.State is not { } state) { return; }
+
 		if (!entity.PortalActive)
 		{
 			if (entity.TryOpeningPortal() == true)
 			{
-				MapDeviceInterface.Close();
+				//state.activationEffect.Burst = ColorUtils.FromHexRgb(0x4a433f);
+				state.activationEffect.Burst = ColorUtils.FromHexRgb(0x958982);
+				state.activationEffect.Injection = ColorUtils.FromHexRgb(0x13d6ff);
+				state.activationEffect.Frame = state.activationEffect.Frame.With(0, 0);
 			}
 		}
 		else
 		{
 			entity.TryClosingPortal();
+
+			state.activationEffect.Burst = null;
+			state.activationEffect.Burst = ColorUtils.FromHexRgb(0x958982);
+			state.activationEffect.Injection = null;
+			state.activationEffect.Frame = state.activationEffect.Frame.With(0, 0);
 		}
 	}
+
+	[UnsafeAccessor(UnsafeAccessorKind.StaticField, Name = "OverflowHiddenRasterizerState")]
+	private static extern ref readonly RasterizerState OverflowHiddenRasterizer(UIElement? _);
 }
