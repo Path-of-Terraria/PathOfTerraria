@@ -368,3 +368,18 @@ IncreasedTagCritPassive: {
 	// Name: Increased Tag Critical Chance
 	// Tooltip: +{0}% increased crit chance against tagged enemies
 }
+
+LifeRegenRatePassive: {
+	// Name: Increased Life Regeneration Rate
+	// Tooltip: +{0}% life regeneration rate
+}
+
+LifeRegenCountPassive: {
+	// Name: Increased Life Regeneration Strength
+	// Tooltip: +{0}% life regenerated per second
+}
+
+LifeOnKillPassive: {
+	// Name: Life Recovery
+	// Tooltip: +{0}% chance to recover {1}% life on kill
+}
