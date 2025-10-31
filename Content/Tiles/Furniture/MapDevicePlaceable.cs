@@ -9,6 +9,7 @@ using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Content.Items.Placeable;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Utilities;
+using PathOfTerraria.Utilities.Terraria;
 using ReLogic.Content;
 using Terraria.Audio;
 using Terraria.Chat;
@@ -266,6 +267,22 @@ internal class MapDeviceEntity : ModTileEntity
 		}
 	}
 
+	public override void Update()
+	{
+		// Close UI if player is dead, gone, or too far away.
+		if (InteractingPlayer.HasValue && Main.player[InteractingPlayer.Value] is { } player)
+		{
+			var tileData = TileObjectData.GetTileData(Main.tile[Position].TileType, 1);
+			var worldPos = Position.ToWorldCoordinates().ToPoint();
+			var tileRect = new Rectangle(worldPos.X, worldPos.Y, tileData.Width * TileUtils.TileSizeInPixels, tileData.Height * TileUtils.TileSizeInPixels);
+			Point checkPoint = tileRect.ClosestPointInRect(player.Center).ToTileCoordinates();
+			if (!player.active || player.dead || !player.IsInTileInteractionRange(checkPoint.X, checkPoint.Y, TileReachCheckSettings.Simple))
+			{
+				TryClosingInterface();
+			}
+		}
+	}
+
 	public override void SaveData(TagCompound tag)
 	{
 		if (StoredMap is { IsAir: false })
@@ -336,27 +353,37 @@ internal class MapDeviceEntity : ModTileEntity
 			return true;
 		}
 
+		// Apply client effect.
 		if (Main.netMode != NetmodeID.Server)
 		{
-			// Finish clientside interaction.
 			MapDeviceInterface.Open(this);
 		}
-		else
+		
+		// Apply world effect.
+		if (Main.netMode != NetmodeID.MultiplayerClient)
 		{
-			Debug.Assert(netSender != null);
+			byte? playerId = Main.netMode == NetmodeID.SinglePlayer ? (byte)Main.myPlayer : netSender;
+			Debug.Assert(playerId != null);
 
-			// Refuse interaction and notify of the refusal.
-			if (InteractingPlayer.HasValue && InteractingPlayer != netSender)
+			// If not open by the sender - refuse interaction and notify of the refusal.
+			if (InteractingPlayer.HasValue && InteractingPlayer != playerId)
 			{
-				var text = NetworkText.FromKey($"Mods.{nameof(PathOfTerraria)}.UI.MapDevice.AlreadyInUse");
-				ChatHelper.SendChatMessageToClient(text, Color.PaleVioletRed, netSender.Value);
+				if (Main.netMode == NetmodeID.Server)
+				{
+					var text = NetworkText.FromKey($"Mods.{nameof(PathOfTerraria)}.UI.MapDevice.AlreadyInUse");
+					ChatHelper.SendChatMessageToClient(text, Color.PaleVioletRed, playerId.Value);
+				}
 
 				return false;
 			}
 
+			InteractingPlayer = playerId.Value;
+
 			// Acknowledge interaction.
-			InteractingPlayer = netSender.Value;
-			MapDeviceInteraction.Send(ID, MapDeviceInteraction.Kind.OpenInterface, toClient: netSender.Value);
+			if (Main.netMode == NetmodeID.Server)
+			{
+				MapDeviceInteraction.Send(ID, MapDeviceInteraction.Kind.OpenInterface, toClient: playerId.Value);
+			}
 		}
 
 		return true;
@@ -375,24 +402,30 @@ internal class MapDeviceEntity : ModTileEntity
 			return true;
 		}
 
+		// Apply clientside effect.
 		if (Main.netMode != NetmodeID.Server)
 		{
-			// Finish clientside interaction.
 			MapDeviceInterface.Close(fromEntity: true);
 		}
-		else if (InteractingPlayer != null)
+		
+		// Apply world effect.
+		if (Main.netMode != NetmodeID.MultiplayerClient)
 		{
-			if (netSender != null && InteractingPlayer == netSender.Value)
+			byte? playerId = Main.netMode == NetmodeID.SinglePlayer ? (byte)Main.myPlayer : netSender;
+			Debug.Assert(playerId != null);
+
+			if (InteractingPlayer == null || InteractingPlayer != playerId.Value)
 			{
-				// Finish serverside interaction.
-				InteractingPlayer = null;
+				return false;
 			}
-			else
+
+			if (Main.netMode == NetmodeID.Server)
 			{
-				// Force close for the client currently interacting.
+				// Notify the client currently interacting.
 				MapDeviceInteraction.Send(ID, MapDeviceInteraction.Kind.CloseInterface, toClient: InteractingPlayer.Value);
-				InteractingPlayer = null;
 			}
+
+			InteractingPlayer = null;
 		}
 
 		return true;
