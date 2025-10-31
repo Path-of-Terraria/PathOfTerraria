@@ -322,15 +322,15 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 
 		if (MapDeviceInterface.Entity is not { } entity) { return; }
 
-		// BankItem is used for new slots, as it acts like a chest, but does not cause unwanted network packets to be sent.
-		const int CustomSlotContext = ItemSlot.Context.BankItem;
-
 		static float CalculateScreenScale(float dimension, float minSizeWithoutScaling)
 		{
 			const float MinScreenSize = 800f;
 			return MathHelper.Clamp((minSizeWithoutScaling - Main.screenWidth) / (minSizeWithoutScaling - MinScreenSize), 0f, 1f);
 		}
 
+		// Prepare common values.
+		const int CustomSlotContext = ItemSlot.Context.BankItem; // BankItem is used for new slots, as it acts like a chest, but does not cause unwanted network packets to be sent.
+		Asset<Texture2D> itemFrame = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/ItemSlot", AssetRequestMode.ImmediateLoad);
 		// Prepare values for the drawer elements.
 		const float drawerMiddleFactor = 0.1f;
 		const float drawerExtents = 48f;
@@ -341,11 +341,17 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 
 		Asset<Texture2D> backgroundTexture = ModContent.Request<Texture2D>($"{BasePath}/MapDeviceBase", AssetRequestMode.ImmediateLoad);
 		Vector2 windowAreaSize = backgroundTexture.Size();
-		Vector2 uiOrigin = new(0.5f, 0.7f);
+		var uiOrigin = (Main.ScreenSize.ToVector2() * new Vector2(0.5f, 0.7f)).ToPoint().ToVector2();
 
 		Window = this.AddElement(new WindowElement(backgroundTexture), e =>
 		{
-			e.SetDimensions(x: (uiOrigin.X, -(int)MathF.Floor(windowAreaSize.X * 0.5f)), y: (uiOrigin.Y, -(int)(windowAreaSize.Y * 0.5f)), width: (0.0f, +windowAreaSize.X), height: (0f, +windowAreaSize.Y));
+			e.SetDimensions
+			(
+				x: (0f, +(int)(uiOrigin.X - (windowAreaSize.X * 0.5f))),
+				y: (0f, +(int)(uiOrigin.Y - (windowAreaSize.Y * 0.5f))),
+				width: (0f, +windowAreaSize.X),
+				height: (0f, +windowAreaSize.Y)
+			);
 		});
 
 		// Open/Close portal button.
@@ -354,7 +360,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		ActionButton = Window.AddElement(new UIHoverImage(buttonBackground, buttonBackgroundHover), e =>
 		{
 			Vector2 size = buttonBackground.Size();
-			e.SetDimensions(x: (0.5f, -MathF.Floor(size.X * 0.5f)), y: (0.5f, +108), width: (0.0f, +size.X), height: (0f, +size.Y));
+			e.SetDimensions(x: (0.5f, -(int)(size.X * 0.5f)), y: (0.5f, +108), width: (0.0f, +size.X), height: (0f, +size.Y));
 
 			e.AddElement(new UIButton<string>(""), e =>
 			{
@@ -368,11 +374,10 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 
 		// Map slot
 		var mapSlot = new UIImageItemSlot.SlotWrapper(() => entity.StoredMap, value => entity.StoredMap = value);
-		Asset<Texture2D> itemFrame = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/AugmentFrame", AssetRequestMode.ImmediateLoad);
-		Window.AddElement(new UIHoverImageItemSlot(itemFrame, Asset<Texture2D>.Empty, mapSlot, null, context: CustomSlotContext, skipAutoSize: true), e =>
+		Window.AddElement(new UIHoverImageItemSlot(itemFrame, Asset<Texture2D>.Empty, mapSlot, null, context: CustomSlotContext), e =>
 		{
-			e.SetDimensions(x: (0.5f, -25), y: (0.5f, -152), width: (0f, +42), height: (0f, +42));
 			e.Initialize();
+			e.SetDimensions(x: (0.5f, -23), y: (0.5f, -150), width: (0f, +46), height: (0f, +46));
 
 			(e.InactiveScale, e.ActiveScale) = (1.00f, 1.00f);
 			e.Predicate = (newItem, oldItem) => newItem is { ModItem: Map };
@@ -394,10 +399,10 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 			Vector2 fragSlotSize = fragSlotFrame.Size();
 			Window.AddElement(new UIHoverImageItemSlot(fragSlotFrame, Asset<Texture2D>.Empty, fragSlot, null, context: CustomSlotContext), e =>
 			{
+				e.Initialize();
 				float xOffset = (i is 1 or 2 ? (+32) : (+90)) * (i is 0 or 1 ? (-1) : (1));
 				float yOffset = +156; //(i is 1 or 2 ? (-24) : (-24));
 				e.SetDimensions(x: (0.5f, xOffset - (+fragSlotSize.X * 0.5f)), y: (0.5f, yOffset), width: (0f, +fragSlotSize.X), height: (0f, +fragSlotSize.Y));
-				e.Initialize();
 
 				(e.InactiveScale, e.ActiveScale) = (1.00f, 1.00f);
 
@@ -419,7 +424,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 
 		UIElement storageScissor = this.AddElement(new UIElement(), e =>
 		{
-			e.SetDimensions(x: (uiOrigin.X, +0), y: (uiOrigin.Y - 0.5f, +0), width: (0.5f, +0), height: (1.0f, +0));
+			e.SetDimensions(x: (0f, +uiOrigin.X), y: (-0.5f, +uiOrigin.Y), width: (0.5f, +0), height: (1.0f, +0));
 			e.OverflowHidden = true;
 		});
 		StoragePanel = storageScissor.AddElement(new DrawerElement(drawerTextureR, drawerMiddleFactor, drawerExtents), e =>
@@ -429,8 +434,9 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		Storage = StoragePanel.AddElement(new UIGrid(), e =>
 		{
 			e.SetDimensions(x: (0f, +0), y: (0f, +0), width: (1.0f, +0), height: (1.0f, +0));
-			// No sorting, no padding.
+			// No sorting, no padding, with overflow.
 			e.ListPadding = 0f;
+			e.OverflowHidden = false;
 			e.ManualSortMethod = _ => { };
 		});
 
@@ -438,13 +444,13 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		{
 			int indexCopy = i;
 			var slot = new UIImageItemSlot.SlotWrapper(() => (entity.Storage, indexCopy));
-			Storage.AddElement(new UIHoverImageItemSlot(itemFrame, Asset<Texture2D>.Empty, slot, null, context: CustomSlotContext, skipAutoSize: true), e =>
+			Storage.AddElement(new UIHoverImageItemSlot(itemFrame, Asset<Texture2D>.Empty, slot, null, context: CustomSlotContext), e =>
 			{
 				e.Initialize();
 				e.Width.Set(+storageSlotSize.X, 0f);
 				e.Height.Set(+storageSlotSize.Y, 0f);
 
-				(e.InactiveScale, e.ActiveScale) = (1.00f, 1.10f);
+				(e.InactiveScale, e.ActiveScale) = (storageSlotScale, storageSlotScale * 1.10f);
 				e.OnModifyItem += (e, oldItem, newItem) => OnModifyStorageItem(e, oldItem, newItem, indexCopy);
 			});
 		}
@@ -454,15 +460,15 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		#region Inventory
 
 		Point16 inventorySlotLayout = new(10, 5);
-		float inventorySlotScale = MathHelper.Lerp(0.9f, 0.54f, CalculateScreenScale(Main.screenWidth, 1200f));
-		Vector2 inventorySlotSize = new Vector2(50, 50) * inventorySlotScale;
+		float inventorySlotScale = MathHelper.Lerp(1.00f, 0.58f, CalculateScreenScale(Main.screenWidth, 1200f));
+		Vector2 inventorySlotSize = new Vector2(46, 46) * inventorySlotScale;
 		Vector2 inventorySize = inventorySlotLayout.ToVector2() * inventorySlotSize + Vector2.One;
 		inventoryPositionSrc = (new(1.0f, +(inventorySize.X * 0.0f) + 000 + 8), new(0.5f, -(inventorySize.Y * 0.5f) + 32));
 		inventoryPositionDst = (new(1.0f, -(inventorySize.X * 1.0f) - 128 - 8), new(0.5f, -(inventorySize.Y * 0.5f) + 32));
 
 		UIElement inventoryScissor = this.AddElement(new UIElement(), e =>
 		{
-			e.SetDimensions(x: (uiOrigin.X - 0.5f, +0), y: (uiOrigin.Y - 0.5f, +0), width: (0.5f, +0), height: (1.0f, +0));
+			e.SetDimensions(x: (-0.5f, +uiOrigin.X), y: (-0.5f, +uiOrigin.Y), width: (0.5f, +0), height: (1.0f, +0));
 			e.OverflowHidden = true;
 		});
 		InventoryPanel = inventoryScissor.AddElement(new DrawerElement(drawerTextureL, drawerMiddleFactor, drawerExtents), e =>
@@ -472,8 +478,9 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		Inventory = InventoryPanel.AddElement(new UIGrid(), e =>
 		{
 			e.SetDimensions(x: (0f, +0), y: (0f, +0), width: (1.0f, +0), height: (1.0f, +0));
-			// No sorting, no padding.
+			// No sorting, no padding, with overflow.
 			e.ListPadding = 0f;
+			e.OverflowHidden = false;
 			e.ManualSortMethod = _ => { };
 		});
 
@@ -481,9 +488,9 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		{
 			int indexCopy = i;
 			var slot = new UIImageItemSlot.SlotWrapper(() => (Main.LocalPlayer.inventory, indexCopy));
-			Inventory.AddElement(new UIHoverImageItemSlot(itemFrame, Asset<Texture2D>.Empty, slot, null, ItemSlot.Context.InventoryItem, skipAutoSize: true), e =>
+			Inventory.AddElement(new UIHoverImageItemSlot(itemFrame, Asset<Texture2D>.Empty, slot, null, ItemSlot.Context.InventoryItem), e =>
 			{
-				e.OnInitialize();
+				e.Initialize();
 				e.Width.Set(+inventorySlotSize.X, 0f);
 				e.Height.Set(+inventorySlotSize.Y, 0f);
 
