@@ -50,6 +50,8 @@ public sealed class YoyoStatsPlayer : ModPlayer
 		c.Emit(OpCodes.Ldloca_S, (byte)3); //Speed
 
 		c.EmitDelegate(ModifyStats);
+
+		MonoModHooks.DumpIL(PoTMod.Instance, il);
 	}
 
 	private static void ModifyLifeTime(Projectile projectile, ref float lifeTime)

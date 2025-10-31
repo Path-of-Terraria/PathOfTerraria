@@ -1,5 +1,8 @@
+using Humanizer;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
+using PathOfTerraria.Common.Utilities;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Passives;
 
@@ -17,4 +20,6 @@ internal class YoyoDamagePassive : Passive
 			}
 		}
 	}
+
+	public override string DisplayTooltip => Language.GetTextValue($"Mods.PathOfTerraria.Passives.{Name}.Tooltip").FormatWith(MathUtils.Percent(DamageIncrease));
 }

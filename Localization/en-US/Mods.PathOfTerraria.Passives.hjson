@@ -358,3 +358,13 @@ YoyoSpeedPassive: {
 	Name: Increased Yoyo Speed
 	Tooltip: +{0}% increased yoyo speed
 }
+
+IncreasedWhipReachPassive: {
+	Name: Increased Whip Reach
+	Tooltip: +{0}% increased whip reach
+}
+
+IncreasedTagCritPassive: {
+	Name: Increased Tag Critical Chance
+	Tooltip: +{0}% increased crit chance against tagged enemies
+}

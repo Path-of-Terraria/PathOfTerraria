@@ -340,21 +340,31 @@ WhipReachMastery: {
 }
 
 YoyoDamagePassive: {
-	// Name: YoyoDamagePassive
-	// Tooltip: ""
+	// Name: Increased Yoyo Damage
+	// Tooltip: +{0}% increased yoyo damage
 }
 
 YoyoDurationPassive: {
-	// Name: YoyoDurationPassive
-	// Tooltip: ""
+	// Name: Doubled Yoyo Duration
+	// Tooltip: Doubles yoyo use duration
 }
 
 YoyoRangePassive: {
-	// Name: YoyoRangePassive
-	// Tooltip: ""
+	// Name: Increased Yoyo Range
+	// Tooltip: +{0}% increased yoyo range
 }
 
 YoyoSpeedPassive: {
-	// Name: YoyoSpeedPassive
-	// Tooltip: ""
+	// Name: Increased Yoyo Speed
+	// Tooltip: +{0}% increased yoyo speed
+}
+
+IncreasedWhipReachPassive: {
+	// Name: Increased Whip Reach
+	// Tooltip: +{0}% increased whip reach
+}
+
+IncreasedTagCritPassive: {
+	// Name: Increased Tag Critical Chance
+	// Tooltip: +{0}% increased crit chance against tagged enemies
 }
