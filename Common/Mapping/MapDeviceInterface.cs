@@ -10,6 +10,7 @@ using ReLogic.Content;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.UI;
@@ -316,13 +317,21 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		});
 
 		// Open/Close portal button.
-		Window.AddElement(new UIButton<string>(""), e =>
+		Asset<Texture2D> buttonBackground = ModContent.Request<Texture2D>($"{BasePath}/MapDevice_Trigger", AssetRequestMode.ImmediateLoad);
+		Asset<Texture2D> buttonBackgroundHover = ModContent.Request<Texture2D>($"{BasePath}/MapDevice_Trigger_Highlight", AssetRequestMode.ImmediateLoad);
+		Window.AddElement(new UIHoverImage(buttonBackground, buttonBackgroundHover), e =>
 		{
-			e.SetDimensions(x: (0.5f - (0.5f * 0.5f), +0), y: (0.5f, +108), width: (0.5f, +0), height: (0f, +32));
-			e.AddComponent(new UIDynamicText(_ => Language.GetTextValue($"Mods.{nameof(PathOfTerraria)}.UI.MapDevice.{(entity.PortalActive ? "Deactivate" : "Activate")}Portal")));
+			Vector2 size = buttonBackground.Size();
+			e.SetDimensions(x: (0.5f, -(size.X * 0.5f)), y: (0.5f, +108), width: (0.0f, +size.X), height: (0f, +size.Y));
 
-			e.DrawPanel = false;
-			e.OnLeftClick += OpenOrClosePortalClick;
+			e.AddElement(new UIButton<string>(""), e =>
+			{
+				e.SetDimensions(x: (0f, +0), y: (0f, +0), width: (1f, +0), height: (1f, +0));
+				e.AddComponent(new UIDynamicText(_ => Language.GetTextValue($"Mods.{nameof(PathOfTerraria)}.UI.MapDevice.{(entity.PortalActive ? "Deactivate" : "Activate")}Portal")));
+
+				e.DrawPanel = false;
+				e.OnLeftClick += OpenOrClosePortalClick;
+			});
 		});
 
 		// Map slot
