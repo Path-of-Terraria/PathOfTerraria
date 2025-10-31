@@ -118,7 +118,7 @@ public class Berserk : Skill
 				hadBuff = hasBuff;
 			}
 
-			SoundUtils.UpdateLoopingSound(ref soundSlot, BerserkLoopSound, BerserkVolume, Player.Center);
+			SoundUtils.UpdateLoopingSound(ref soundSlot, Player.Center, BerserkVolume, null, BerserkLoopSound);
 		}
 
 		public override void PlayerDisconnect()

@@ -22,3 +22,5 @@ This file lists sound sources used to create sounds in this directory.
 		SONNISS GDC/The Soundcatcher - Elevators/The_Soundcatcher_Elevator_Door_Impact_Metal_Rattling_Humming_Driving_01.flac
 	- GearLoop
 		https://freesound.org/people/newagesoup/sounds/336328/
+	- PortalLoop
+		SONNISS GDC/SoundMorph - Solar Sky/amb_SpaceShip_rumble_low_pulse.flac

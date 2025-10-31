@@ -5,11 +5,16 @@ using System.IO;
 using System.Linq;
 using PathOfTerraria.Common.Mapping;
 using PathOfTerraria.Common.Systems.Synchronization;
+using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Content.Items.Placeable;
+using PathOfTerraria.Core.Audio;
+using PathOfTerraria.Core.Time;
 using PathOfTerraria.Utilities;
 using PathOfTerraria.Utilities.Terraria;
+using PathOfTerraria.Utilities.Xna;
 using ReLogic.Content;
+using ReLogic.Utilities;
 using Terraria.Audio;
 using Terraria.Chat;
 using Terraria.DataStructures;
@@ -91,12 +96,22 @@ public class MapDevicePlaceable : ModTile
 	{
 		Tile tile = Main.tile[i, j];
 
+		if (!TryGetEntity(i, j, out MapDeviceEntity? entity))
+		{
+			return;
+		}
+
+		Point16 tilePoint = entity.Position;
+		Vector2 worldPos = tilePoint.ToWorldCoordinates(40f, 64f);
+
+		entity.UpdateAudio(worldPos);
+
 		if (tile.TileFrameX / 18 % 5 == 0 || tile.TileFrameY != 0)
 		{
 			return;
 		}
 
-		if (!TryGetEntity(i, j, out MapDeviceEntity? entity) || !entity.PortalActive || entity.StoredMap is not { IsAir: false })
+		if (!entity.PortalActive || entity.StoredMap is not { IsAir: false })
 		{
 			return;
 		}
@@ -105,8 +120,7 @@ public class MapDevicePlaceable : ModTile
 		var offScreen = new Vector2(Main.drawToScreen ? 0 : Main.offScreenRange);
 
 		// Take the tile, check if it actually exists
-		Point16 p = entity.Position;
-		tile = Main.tile[p];
+		tile = Main.tile[tilePoint];
 
 		if (!tile.HasTile)
 		{
@@ -123,8 +137,7 @@ public class MapDevicePlaceable : ModTile
 		int frameY = tile.TileFrameX % 90 / FullWidth; // Picks the frame on the sheet based on the placeStyle of the item
 		Rectangle frame = texture.Frame(1, 1, 0, frameY);
 		Vector2 origin = frame.Size() / 2f;
-		Vector2 worldPos = p.ToWorldCoordinates(40f, 64f);
-		var color = Color.Lerp(Lighting.GetColor(p.X, p.Y), Color.White, 0.4f);
+		var color = Color.Lerp(Lighting.GetColor(tilePoint.X, tilePoint.Y), Color.White, 0.4f);
 		bool direction =
 			tile.TileFrameY / FullHeight != 0; // This is related to the alternate tile data we registered before
 		SpriteEffects effects = direction ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
@@ -213,7 +226,16 @@ public class MapDevicePlaceable : ModTile
 
 internal class MapDeviceEntity : ModTileEntity
 {
+	private static SoundStyle PortalSound => new($"{nameof(PathOfTerraria)}/Assets/Sounds/MapDevice/PortalLoop")
+	{
+		Volume = 0.4f,
+		IsLooped = true,
+	};
+
 	public static int StorageSize { get; } = 5 * 4;
+
+	private SlotId portalSoundHandle;
+	private float portalSoundVolume;
 
 	public Item StoredMap { get; set; }
 	public Item[] Storage { get; set; }
@@ -301,7 +323,6 @@ internal class MapDeviceEntity : ModTileEntity
 
 		if (storage.Count > 0) { tag.Add("storage", storage); }
 	}
-
 	public override void LoadData(TagCompound tag)
 	{
 		if (tag.TryGet("item", out TagCompound itemTag))
@@ -328,6 +349,19 @@ internal class MapDeviceEntity : ModTileEntity
 	public override void NetReceive(BinaryReader reader)
 	{
 		MapDeviceSync.ReadInto(sender: byte.MaxValue, reader, this, out _);
+	}
+
+	public void UpdateAudio(Vector2 center)
+	{
+		float targetVolume = PortalActive ? new ExponentialRange(0f, 1024f, 2f).DistanceFactor(Main.LocalPlayer.Distance(center)) : 0f;
+		portalSoundVolume = MathUtils.StepTowards(portalSoundVolume, targetVolume, MathF.Max(0f, TimeSystem.RenderDeltaTime));
+
+		SoundUtils.UpdateLoopingSound(ref portalSoundHandle, center, portalSoundVolume, null, PortalSound);
+		TileSoundTracker.Track(Position, new()
+		{
+			Handle = portalSoundHandle,
+			EntityType = GetType(),
+		});
 	}
 
 	/// <summary>

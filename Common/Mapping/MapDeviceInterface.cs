@@ -329,7 +329,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		float gearRate = gear.Speed / GearMaxSpeed;
 		float gearVolume = Main.hasFocus ? gearRate : Math.Min(gearRate, 0.01f);
 		float gearPitch = -0.99f + gearRate;
-		SoundUtils.UpdateLoopingSound(ref gearSoundHandle, GearSound, volume: gearVolume, pitch: gearPitch, position: null);
+		SoundUtils.UpdateLoopingSound(ref gearSoundHandle, null, gearVolume, gearPitch, GearSound);
 
 		if ((int)MathF.Floor(gear.Rotation / GearOffsetRate) > (int)MathF.Floor(oldRot / GearOffsetRate))
 		{
