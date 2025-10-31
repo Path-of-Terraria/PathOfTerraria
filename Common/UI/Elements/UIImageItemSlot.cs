@@ -203,7 +203,7 @@ public class UIImageItemSlot
 		}
 
 		float baseScale = 1f * Icon.ImageScale;
-		float sizeLimit = 24; //Math.Min(dimensions.Width, dimensions.Height);
+		float sizeLimit = IconSize; //Math.Min(dimensions.Width, dimensions.Height);
 
 		ItemSlot.DrawItemIcon(Item, ItemSlot.Context.InventoryItem, sb, center, baseScale, sizeLimit, Color.White);
 

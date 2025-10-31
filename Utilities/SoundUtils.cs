@@ -5,8 +5,8 @@ namespace PathOfTerraria.Utilities;
 
 public static class SoundUtils
 {
-	/// <summary>  Maintains a looping sound instance, creating, updating, and destroying it depending on the provided value. </summary>
-	public static void UpdateLoopingSound(ref SlotId slot, in SoundStyle style, float volume, Vector2? position)
+	/// <summary> Maintains a looping sound instance, creating, updating, and destroying it depending on the provided value. </summary>
+	public static void UpdateLoopingSound(ref SlotId slot, in SoundStyle style, float volume, Vector2? position, float? pitch = null)
 	{
 		SoundEngine.TryGetActiveSound(slot, out ActiveSound sound);
 
@@ -20,6 +20,11 @@ public static class SoundUtils
 
 			sound.Position = position;
 			sound.Volume = volume;
+
+			if (pitch.HasValue)
+			{
+				sound.Pitch = pitch.Value;
+			}
 		}
 		else if (sound != null)
 		{

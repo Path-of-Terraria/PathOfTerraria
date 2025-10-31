@@ -7,7 +7,6 @@ using PathOfTerraria.Common.Mapping;
 using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Content.Items.Placeable;
-using PathOfTerraria.Core.Items;
 using PathOfTerraria.Utilities;
 using PathOfTerraria.Utilities.Terraria;
 using ReLogic.Content;

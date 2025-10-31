@@ -7,11 +7,12 @@ using PathOfTerraria.Content.Tiles.Furniture;
 using PathOfTerraria.Core.Time;
 using PathOfTerraria.Core.UI;
 using PathOfTerraria.Core.UI.SmartUI;
+using PathOfTerraria.Utilities;
 using ReLogic.Content;
+using ReLogic.Utilities;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
-using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.UI;
@@ -54,8 +55,22 @@ internal sealed class MapDeviceInterface : ModSystem
 			//UIManager.Register(MapDeviceState.Identifier, "Vanilla: Mouse Text", State, offset: -1);
 
 			UIManager.PostModifyInterfaceLayers += PostModifyInterfaceLayers;
+			On_Player.ToggleInv += ToggleInvHook;
 		}
 	}
+
+	// Hijack attempts to close the inventory while this UI is open, preventing the sound from playing.
+	private static void ToggleInvHook(On_Player.orig_ToggleInv orig, Player player)
+	{
+		if (!Active)
+		{
+			orig(player);
+			return;
+		}
+
+		Close();
+	}
+
 	public override void PostSetupContent()
 	{
 		if (!Main.dedServ)
@@ -103,12 +118,14 @@ internal sealed class MapDeviceInterface : ModSystem
 
 		Entity = mapDevice;
 		Active = true;
+		State.Show();
+		// The inventory must be "open" so that mouseItems do not auto-drop.
 		Main.playerInventory = true;
-		SoundEngine.PlaySound(SoundID.MenuOpen);
-		State.Visible = true; //UIManager.TryEnable(MapDeviceState.Identifier);
-		State.Refresh();
-		// Allow mouse interactions again after closing.
-		State.IgnoresMouseInteraction = false;
+
+		SoundEngine.PlaySound(new SoundStyle($"{nameof(PathOfTerraria)}/Assets/Sounds/MapDevice/Open")
+		{
+			PitchVariance = 0.1f,
+		});
 	}
 
 	public static void Close(bool fromEntity = false)
@@ -121,16 +138,15 @@ internal sealed class MapDeviceInterface : ModSystem
 
 		Entity = null;
 		Active = false;
-		// Prevent interactions when the UI begins to close.
-		State.IgnoresMouseInteraction = true;
+		State.OnClosing();
 
 		if (fromEntity)
 		{
 			Main.playerInventory = false;
-		}
-		else if (Main.playerInventory)
-		{
-			SoundEngine.PlaySound(SoundID.MenuClose);
+			SoundEngine.PlaySound(new SoundStyle($"{nameof(PathOfTerraria)}/Assets/Sounds/MapDevice/Close")
+			{
+				PitchVariance = 0.1f,
+			});
 		}
 	}
 }
@@ -195,10 +211,19 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 	}
 
 	private static readonly string BasePath = $"{PoTMod.ModName}/Assets/UI/MapDevice";
+	private static readonly string SoundPath = $"{PoTMod.ModName}/Assets/Sounds/MapDevice";
+	private static SoundStyle GearSound => new($"{SoundPath}/GearLoop")
+	{
+		Volume = 0.09f,
+		Pitch = -0.25f,
+		IsLooped = true,
+	};
+	private static SlotId gearSoundHandle;
 
 	private bool forceUpdateAnimation;
 	private float openingAnimation;
 	private float closingAnimation;
+	private (float Speed, float Rotation, Vector2 Offset) gear;
 	private SpriteFrame buttonLockFrame = new(1, 18);
 	private (StyleDimension X, StyleDimension Y) storagePositionSrc;
 	private (StyleDimension X, StyleDimension Y) storagePositionDst;
@@ -212,28 +237,101 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 	public UIElement? StoragePanel { get; private set; }
 	public UIElement? InventoryPanel { get; private set; }
 
+	public new bool Visible { get => base.Visible; private set => base.Visible = value; }
+
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{
 		return Math.Max(0, layers.FindIndex(l => l.Name == "Vanilla: Mouse Text") - 1);
 	}
 
+	internal void OnClosing()
+	{
+		// Prevent interactions when the UI begins to close.
+		IgnoresMouseInteraction = true;
+	}
+
+	internal void Show()
+	{
+		if (Visible) { return; }
+
+		Visible = true;
+		// Allow interactions once again.
+		IgnoresMouseInteraction = false;
+
+		Refresh();
+	}
+
+	internal void Hide()
+	{
+		if (!Visible) { return; }
+
+		Visible = false;
+		openingAnimation = 0f;
+		closingAnimation = 0f;
+		IgnoresMouseInteraction = true;
+		SoundUtils.StopAndInvalidateSoundSlot(ref gearSoundHandle);
+	}
+
 	public override void SafeUpdate(GameTime gameTime)
 	{
 		// Shared animations.
+		bool? isButtonAvailable = MapDeviceInterface.Entity != null ? IsButtonAvailable() : null;
 		(float oldOpening, float oldClosing) = (openingAnimation, closingAnimation);
 		openingAnimation = Math.Clamp(openingAnimation + ((MapDeviceInterface.Active ? +1f : +0f) / 20f), 0f, 1f);
 		closingAnimation = Math.Clamp(closingAnimation + ((MapDeviceInterface.Active ? -1f : +1f) / 20f), 0f, 1f);
+
+		// Cogwheel.
+		const float GearMaxSpeed = 60f;
+		const float GearAcceleration = 1f;
+		const float GearDeceleration = 1f;
+		const float GearOffset = 1f;
+		const float GearOffsetRate = 4f * (MathHelper.Pi / 180f);
+		float oldRot = gear.Rotation;
+		gear.Speed = Math.Clamp(gear.Speed + (isButtonAvailable == true ? +GearAcceleration : -GearDeceleration), 0f, GearMaxSpeed);
+		gear.Rotation += MathHelper.ToRadians(gear.Speed * TimeSystem.LogicDeltaTime);
+		float gearRate = gear.Speed / GearMaxSpeed;
+		float gearVolume = Main.hasFocus ? gearRate : Math.Min(gearRate, 0.01f);
+		float gearPitch = -0.99f + gearRate;
+		SoundUtils.UpdateLoopingSound(ref gearSoundHandle, GearSound, volume: gearVolume, pitch: gearPitch, position: null);
+
+		if ((int)MathF.Floor(gear.Rotation / GearOffsetRate) > (int)MathF.Floor(oldRot / GearOffsetRate))
+		{
+			gear.Offset = Main.rand.NextVector2Circular(GearOffset, GearOffset);
+		}
+		else
+		{
+			gear.Offset *= 0.7f;
+		}
 
 		// Button animations.
 		const int ButtonAnimationDelay = 4;
 		const int ButtonFrameOpen = 12;
 		const int ButtonFrameClosed = 0;
-		if (TimeSystem.UpdateCount % ButtonAnimationDelay == 0 && MapDeviceInterface.Entity != null)
+		if ((TimeSystem.UpdateCount % ButtonAnimationDelay) == 0 && MapDeviceInterface.Entity != null)
 		{
-			byte targetRow = (byte)(IsButtonAvailable() ? ButtonFrameOpen : ButtonFrameClosed);
+			byte targetRow = (byte)(isButtonAvailable != false ? ButtonFrameOpen : ButtonFrameClosed);
 
 			if (buttonLockFrame.CurrentRow != targetRow)
 			{
+				// Play audio.
+				if (buttonLockFrame.CurrentRow == ButtonFrameOpen)
+				{
+					SoundEngine.PlaySound(new SoundStyle($"{nameof(PathOfTerraria)}/Assets/Sounds/MapDevice/Lock")
+					{
+						PitchVariance = 0.1f,
+						Volume = 0.7f,
+					});
+				}
+				else if (buttonLockFrame.CurrentRow == ButtonFrameClosed)
+				{
+					SoundEngine.PlaySound(new SoundStyle($"{nameof(PathOfTerraria)}/Assets/Sounds/MapDevice/Unlock")
+					{
+						Pitch = 0.1f,
+						PitchVariance = 0.1f,
+						Volume = 0.85f,
+					});
+				}
+
 				buttonLockFrame.CurrentRow = (byte)((buttonLockFrame.CurrentRow + 1) % buttonLockFrame.RowCount);
 			}
 		}
@@ -259,10 +357,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 
 		if (closingAnimation >= 0.99f)
 		{
-			Visible = false;
-			openingAnimation = 0f;
-			closingAnimation = 0f;
-			IgnoresMouseInteraction = true;
+			Hide();
 		}
 
 		Recalculate();
@@ -294,9 +389,9 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 
 		// Render the cogwheel.
 		Asset<Texture2D> gearTexture = ModContent.Request<Texture2D>($"{BasePath}/MapDeviceBase_Gear", AssetRequestMode.ImmediateLoad);
-		float gearRotation = (float)Main.timeForVisualEffects * 0.01f;
-		var gearOffset = Vector2.Lerp(new Vector2(-0f, -96f), new Vector2(-0f, -128f), sharedAnimation);
-		sb.Draw(gearTexture.Value, windowCenter + gearOffset, null, Color.White, gearRotation, gearTexture.Size() * 0.5f, 1f, 0, 0f);
+		Vector2 gearPosition = windowCenter + gear.Offset + Vector2.Lerp(new Vector2(-0f, -96f), new Vector2(-0f, -128f), sharedAnimation);
+		float gearRotation = MathHelper.ToRadians(MathF.Floor(MathHelper.ToDegrees(gear.Rotation) / 4f) * 4f);
+		sb.Draw(gearTexture.Value, gearPosition, null, Color.White, gearRotation, gearTexture.Size() * 0.5f, 1f, 0, 0f);
 	}
 
 	public void DrawOver(SpriteBatch sb)
