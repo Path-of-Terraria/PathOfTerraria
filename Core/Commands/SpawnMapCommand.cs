@@ -3,7 +3,7 @@ using PathOfTerraria.Content.Items.Consumables.Maps;
 
 namespace PathOfTerraria.Core.Commands;
 
-#if DEBUG
+#if DEBUG || STAGING
 public sealed class SpawnMapCommand : ModCommand
 {
 	public override string Command => "spawnmap";
