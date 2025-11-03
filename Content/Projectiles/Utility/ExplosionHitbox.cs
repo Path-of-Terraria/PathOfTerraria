@@ -26,7 +26,9 @@ internal class ExplosionHitbox : ModProjectile
 	public readonly record struct VFXPackage(int GoreCount = 4, int SmokeDustCount = 20, int TorchDustCount = 10, bool Sfx = true, float Volume = 1f, Range? GoreRange = null,
 		int SmokeDustType = DustID.Smoke, int TorchDustType = DustID.Torch);
 
-	public override string Texture => "Terraria/Images/NPC_0";
+	public override string Texture => UseBaseTexture ? (GetType().Namespace + "." + Name).Replace('.', '/') : "Terraria/Images/NPC_0";
+
+	protected virtual bool UseBaseTexture => false;
 
 	private ref float Width => ref Projectile.ai[0];
 	private ref float Height => ref Projectile.ai[1];

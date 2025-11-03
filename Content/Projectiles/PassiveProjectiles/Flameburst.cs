@@ -1,7 +1,11 @@
-﻿namespace PathOfTerraria.Content.Projectiles.Utility;
+﻿using PathOfTerraria.Content.Projectiles.Utility;
+
+namespace PathOfTerraria.Content.Projectiles.PassiveProjectiles;
 
 internal class Flameburst : ExplosionHitboxFriendly
 {
+	protected override bool UseBaseTexture => true;
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
@@ -22,12 +26,10 @@ internal class Flameburst : ExplosionHitboxFriendly
 		return Projectile.timeLeft > 22;
 	}
 
-	public override string Texture => (GetType().Namespace + "." + Name).Replace('.', '/');
-
 	public override void AI()
 	{
 		base.AI();
 
-		Projectile.frame = 6 - (Projectile.timeLeft / 5);
+		Projectile.frame = 6 - Projectile.timeLeft / 5;
 	}
 }

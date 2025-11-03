@@ -1,6 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems.ElementalDamage;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
-using PathOfTerraria.Content.Projectiles.Utility;
+using PathOfTerraria.Content.Projectiles.PassiveProjectiles;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Passives.Utility.Masteries;

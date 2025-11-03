@@ -435,6 +435,6 @@ DeepPoolsMastery: {
 }
 
 ManaBombMastery: {
-	// Name: Mana Bomb
-	// Tooltip: Every 100 mana spent sends out a mana bomb, dealing {0} magic damage, with additional damage scaling on max mana
+	// Name: Starbombs
+	// Tooltip: Every 100 mana spent sends out some chasing mana bombs, dealing {0} magic damage, with additional damage scaling on max mana
 }

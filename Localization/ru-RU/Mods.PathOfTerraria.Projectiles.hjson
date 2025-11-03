@@ -179,3 +179,5 @@ FlameSentryFireball.DisplayName: "{$ProjectileName.CultistBossFireBall}"
 // IceShards.DisplayName: Ice Shards
 // DelayedStrike.DisplayName: Delayed Strike
 // Flameburst.DisplayName: Flameburst
+// ManaBomb.DisplayName: Mana Bomb
+// ManaBombExplosion.DisplayName: Mana Bomb Explosion
