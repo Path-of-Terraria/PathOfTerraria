@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using PathOfTerraria.Common.Quests;
 using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
+using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
@@ -10,6 +12,7 @@ using PathOfTerraria.Content.Items.Gear.Weapons.Wand;
 using PathOfTerraria.Content.Items.Pickups.GrimoirePickups;
 using PathOfTerraria.Content.Items.Quest;
 using PathOfTerraria.Content.NPCs.Town;
+using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
@@ -68,7 +71,10 @@ internal class WoFQuest : Quest
 						NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
 					}
 				}),
-			new ConditionCheck("Kill", _ => Main.hardMode, 1, this.GetLocalization("KillWall")),
+			new ConditionCheck("Kill", _ => BossTracker.DownedInDomain<WallOfFleshDomain>(NPCID.WallofFlesh), 1, this.GetLocalization("KillWall"))
+			{
+				SkipCheck = QuestUtils.BossSkipCheck(NPCID.WallofFlesh)
+			},
 			new InteractWithNPC("Finish", NPCQuestGiver, this.GetLocalization("WizardFinish"), 
 				onSuccess: _ => Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<QueenSlimeQuest>()),
 		];

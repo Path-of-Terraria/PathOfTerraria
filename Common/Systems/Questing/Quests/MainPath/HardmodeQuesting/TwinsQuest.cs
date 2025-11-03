@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Subworlds;
+﻿using PathOfTerraria.Common.Quests;
+using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.ModPlayers;
@@ -38,7 +39,10 @@ internal class TwinsQuest() : HardmodeQuest(2)
 				MappingDomainSystem.RequiredCompletionsPerTier
 			)),
 			new ConditionCheck("Enter", _ => SubworldSystem.Current is TwinsDomain, 1, this.GetLocalization("EnterDomain")),
-			new ConditionCheck("Finish", _ => BossTracker.DownedInDomain<TwinsDomain>(NPCID.Retinazer, NPCID.Spazmatism), 1, this.GetLocalization("Boss")),
+			new ConditionCheck("Finish", _ => BossTracker.DownedInDomain<TwinsDomain>(NPCID.Retinazer, NPCID.Spazmatism), 1, this.GetLocalization("Boss"))
+			{
+				SkipCheck = _ => BossTracker.TotalBossesDowned.Contains(NPCID.Retinazer) && BossTracker.TotalBossesDowned.Contains(NPCID.Spazmatism)
+			},
 		];
 	}
 

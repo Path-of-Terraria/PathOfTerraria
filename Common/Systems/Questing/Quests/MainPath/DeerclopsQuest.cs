@@ -1,4 +1,7 @@
-﻿using PathOfTerraria.Common.Systems.ModPlayers;
+﻿using PathOfTerraria.Common.Quests;
+using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
+using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
@@ -40,7 +43,10 @@ internal class DeerclopsQuest : Quest
 						NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
 					}
 				}),
-			new ConditionCheck("KillDeerclops", (_) => NPC.downedDeerclops, 1, this.GetLocalization("KillDeerclops")),
+			new ConditionCheck("KillDeerclops", _ => BossTracker.DownedInDomain<DeerclopsDomain>(NPCID.Deerclops), 1, this.GetLocalization("KillDeerclops"))
+			{
+				SkipCheck = QuestUtils.BossSkipCheck(NPCID.Deerclops)
+			},
 			new InteractWithNPC("Finish", ModContent.NPCType<RhineNPC>(), LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.RhineNPC.Dialogue.Success"))
 			{
 				CountsAsCompletedOnMarker = true

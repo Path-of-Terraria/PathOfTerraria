@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Subworlds;
+﻿using PathOfTerraria.Common.Quests;
+using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.ModPlayers;
@@ -38,7 +39,10 @@ internal class QueenSlimeQuest() : HardmodeQuest(1)
 				MappingDomainSystem.RequiredCompletionsPerTier
 			)),
 			new ConditionCheck("Enter", _ => SubworldSystem.Current is QueenSlimeDomain, 1, this.GetLocalization("EnterDomain")),
-			new ConditionCheck("Finish", _ => BossTracker.DownedInDomain<QueenSlimeDomain>(NPCID.QueenSlimeBoss), 1, this.GetLocalization("Boss")),
+			new ConditionCheck("Finish", _ => BossTracker.DownedInDomain<QueenSlimeDomain>(NPCID.QueenSlimeBoss), 1, this.GetLocalization("Boss"))
+			{
+				SkipCheck = QuestUtils.BossSkipCheck(NPCID.QueenSlimeBoss)
+			},
 		];
 	}
 
