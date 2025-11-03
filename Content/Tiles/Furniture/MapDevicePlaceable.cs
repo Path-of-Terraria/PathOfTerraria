@@ -444,10 +444,8 @@ internal class MapDeviceEntity : ModTileEntity
 		// Apply world effect.
 		if (Main.netMode != NetmodeID.MultiplayerClient)
 		{
-			byte? playerId = Main.netMode == NetmodeID.SinglePlayer ? (byte)Main.myPlayer : netSender;
-			Debug.Assert(playerId != null);
-
-			if (InteractingPlayer == null || InteractingPlayer != playerId.Value)
+			// Silently refuse if no one is interacting, or if the sender exists and is not the one interacting.
+			if (InteractingPlayer == null || (netSender.HasValue && InteractingPlayer != netSender.Value))
 			{
 				return false;
 			}
@@ -628,7 +626,7 @@ internal class MapDeviceInteraction : Handler
 	public static void Send(int entityId, Kind kind, int toClient = -1, int ignoreClient = -1)
 	{
 		ModPacket packet = Networking.GetPacket(Networking.Message.MapDeviceInteraction);
-		packet.Write(entityId);
+		packet.Write((int)entityId);
 		packet.Write((byte)kind);
 		packet.Send(toClient, ignoreClient);
 	}
@@ -684,7 +682,7 @@ internal class MapDeviceSync : Handler
 		}
 
 		ModPacket packet = Networking.GetPacket(Networking.Message.MapDeviceSync);
-		packet.Write(entityId);
+		packet.Write((int)entityId);
 		WriteInto(packet, device, flags, itemIndices);
 		packet.Send(toClient, ignoreClient);
 	}
@@ -694,8 +692,8 @@ internal class MapDeviceSync : Handler
 
 		if (flags.HasFlag(Flags.Status))
 		{
-			writer.Write(device.PortalActive);
-			writer.Write(device.PortalUsesLeft);
+			writer.Write((bool)device.PortalActive);
+			writer.Write((byte)device.PortalUsesLeft);
 		}
 
 		if (flags.HasFlag(Flags.Map))
@@ -706,11 +704,18 @@ internal class MapDeviceSync : Handler
 		if (flags.HasFlag(Flags.Storage))
 		{
 			// Write preceding masks.
-			Span<BitMask<byte>> masks = stackalloc BitMask<byte>[device.Storage.Length / 8];
+			Span<BitMask<byte>> masks = stackalloc BitMask<byte>[(int)MathF.Ceiling(device.Storage.Length / 8f)];
 			foreach (int storageIndex in itemIndices ?? Enumerable.Range(0, device.Storage.Length))
 			{
-				(int div, int rem) = Math.DivRem(storageIndex, 8);
-				masks[div].Set(rem);
+				if (device.Storage[storageIndex] is { IsAir: false })
+				{
+					(int div, int rem) = Math.DivRem(storageIndex, 8);
+					masks[div].Set(rem);
+				}
+			}
+			foreach (BitMask<byte> mask in masks)
+			{
+				writer.Write((byte)mask.Value);
 			}
 
 			// Write item data.
@@ -755,8 +760,8 @@ internal class MapDeviceSync : Handler
 		if (flags.HasFlag(Flags.Map))
 		{
 			// On servers, refuse applying client's map item if the portal has already been opened.
-			bool forceDummy = Main.netMode == NetmodeID.Server && mapEntity?.PortalActive == true;
-			Item mapSlot = !forceDummy ? (mapEntity?.StoredMap ?? new()) : new();
+			bool useDummy = (Main.netMode == NetmodeID.Server && mapEntity?.PortalActive == true) || mapEntity?.StoredMap == null;
+			Item mapSlot = useDummy ? new() : mapEntity!.StoredMap;
 			ItemIO.Receive(mapSlot!, reader, readStack: true);
 
 			// Drop the received map if it went into a dummy slot.
@@ -769,7 +774,7 @@ internal class MapDeviceSync : Handler
 		if (flags.HasFlag(Flags.Storage))
 		{
 			// Read masks.
-			Span<BitMask<byte>> masks = stackalloc BitMask<byte>[MapDeviceEntity.StorageSize / 8];
+			Span<BitMask<byte>> masks = stackalloc BitMask<byte>[(int)MathF.Ceiling(MapDeviceEntity.StorageSize / 8f)];
 			for (int i = 0; i < masks.Length; i++) { masks[i] = new(reader.ReadByte()); }
 
 			// On servers, refuse applying client's storage items if they are not the one interacting with the device.
@@ -780,7 +785,8 @@ internal class MapDeviceSync : Handler
 			{
 				foreach (int bitIndex in masks[maskIndex])
 				{
-					Item item = !forceDummy ? (mapEntity?.Storage[storageIndex] ?? new()) : new();
+					bool useDummy = forceDummy || mapEntity?.Storage[storageIndex] == null;
+					Item item = useDummy ? new() : mapEntity!.Storage[storageIndex];
 					ItemIO.Receive(item, reader, readStack: true);
 				}
 			}
