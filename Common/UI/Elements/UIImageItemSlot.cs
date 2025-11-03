@@ -8,6 +8,8 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.Elements;
 
+#nullable enable
+
 /// <summary>
 ///     Provides an item slot wrapper as a <see cref="UIElement" />.
 /// </summary>
@@ -31,7 +33,7 @@ UIImageItemSlot.SlotWrapper itemHandler,
 	{
 		public readonly Func<Item> Get;
 		public readonly Action<Item> Set;
-		public readonly Func<(Item[] Inventory, int Slot)> ByInventory;
+		public readonly Func<(Item[] Inventory, int Slot)>? ByInventory;
 
 		public SlotWrapper(Func<Item> get, Action<Item> set)
 		{
@@ -62,12 +64,12 @@ UIImageItemSlot.SlotWrapper itemHandler,
 	/// <summary>
 	///     The background of the item slot.
 	/// </summary>
-	public UIImage Background { get; protected set; }
+	public UIImage? Background { get; protected set; }
 
 	/// <summary>
 	///     The icon of the item slot.
 	/// </summary>
-	public UIHoverImage Icon { get; protected set; }
+	public UIHoverImage? Icon { get; protected set; }
 
 	protected Asset<Texture2D> BackgroundTexture = backgroundTexture;
 
@@ -84,7 +86,7 @@ UIImageItemSlot.SlotWrapper itemHandler,
 	/// <summary>
 	///     The inventory that the slots wraps itself around.
 	/// </summary>
-	public Item[] Inventory;
+	public Item[]? Inventory;
 
 	/// <summary>
 	///     Can be used to determine whether an item can be inserted into the slot or not.
@@ -100,9 +102,9 @@ UIImageItemSlot.SlotWrapper itemHandler,
 	public (string Key, object Arg0)? HoverText = hoverText;
 
 	/// <summary>
-	///     Can be used to register a callback to execute logic when an item is inserted into the slot.
+	///     Can be used to register a callback to execute logic when an item is inserted into the slot. Unused at the moment.
 	/// </summary>
-	public event ItemInsertionCallback? OnInsertItem;
+	//public event ItemInsertionCallback? OnInsertItem;
 
 	public override void OnInitialize()
 	{
@@ -148,11 +150,11 @@ UIImageItemSlot.SlotWrapper itemHandler,
 
 		if (tex.Width() > BackgroundTexture.Width() && !skipAutoSize)
 		{
-			Icon.Left = StyleDimension.FromPixels(-(tex.Width() - BackgroundTexture.Width()) / 2f);
+			Icon!.Left = StyleDimension.FromPixels(-(tex.Width() - BackgroundTexture.Width()) / 2f);
 		}
 		else
 		{
-			Icon.Left = StyleDimension.FromPixels(0);
+			Icon!.Left = StyleDimension.FromPixels(0);
 		}
 
 		if (tex.Height() > BackgroundTexture.Height() && !skipAutoSize)
@@ -178,7 +180,7 @@ UIImageItemSlot.SlotWrapper itemHandler,
 	{
 		if (!Item.IsAir)
 		{
-			Icon.SetItem(Item);
+			Icon!.SetItem(Item);
 
 			//Texture2D texture = TextureAssets.Item[Item.type].Value;
 			//Rectangle frame = Main.itemAnimations[Item.type] == null ? texture.Frame() : Main.itemAnimations[Item.type].GetFrame(texture);
@@ -190,7 +192,7 @@ UIImageItemSlot.SlotWrapper itemHandler,
 		}
 		else
 		{
-			Icon.ImageScale = 1f;
+			Icon!.ImageScale = 1f;
 			Icon.SetItem(null);
 		}
 
@@ -221,6 +223,7 @@ UIImageItemSlot.SlotWrapper itemHandler,
 			Main.HoverItem = Item.Clone();
 			Main.HoverItem.tooltipContext = Context;
 		}
+
 		Main.LocalPlayer.mouseInterface = true;
 	}
 

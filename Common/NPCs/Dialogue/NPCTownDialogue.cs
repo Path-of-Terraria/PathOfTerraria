@@ -4,6 +4,8 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Common.NPCs.Dialogue;
 
+#nullable enable
+
 /// <summary>
 ///		Provides registration and handles dialogue options of town NPCs upon interaction.
 /// </summary>
@@ -64,7 +66,7 @@ public sealed class NPCTownDialogue : NPCComponent
 			}
 			else
 			{
-				throw null;
+				throw new NullReferenceException();
 			}
 		}
 	}

@@ -52,7 +52,7 @@ public class BlacksmithNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOv
 		NPC.CloneDefaults(NPCID.Guide);
 		NPC.townNPC = true;
 		NPC.friendly = true;
-		NPC.aiStyle = 7;
+		NPC.aiStyle = NPCAIStyleID.Passive;
 		NPC.damage = 30;
 		NPC.defense = 30;
 		NPC.lifeMax = 250;

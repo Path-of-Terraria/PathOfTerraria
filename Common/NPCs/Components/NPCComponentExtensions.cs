@@ -2,6 +2,8 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Common.NPCs.Components;
 
+#nullable enable
+
 // This file is placed outside of the common 'Common/Utilities/Extensions' scope for the sake
 // of convenience when using NPC components.
 public static class NPCComponentExtensions
@@ -20,7 +22,7 @@ public static class NPCComponentExtensions
 			return false;
 		}
 
-		if (!npc.TryGetGlobalNPC(out T? component))
+		if (!npc.TryGetGlobalNPC(out T component))
 		{
 			return false;
 		}

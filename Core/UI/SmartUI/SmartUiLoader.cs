@@ -13,8 +13,8 @@ internal sealed partial class SmartUiLoader : ModSystem
 	private readonly List<UserInterface> userInterfaces = [];
 	private readonly List<SmartUiState> uiStates = [];
 
-	private UIState? stateToBlockAt;
-	private SmartUiElement? elementToBlockAt;
+	private UIState stateToBlockAt;
+	private SmartUiElement elementToBlockAt;
 
 	public override void ClearWorld()
 	{
@@ -44,13 +44,13 @@ internal sealed partial class SmartUiLoader : ModSystem
 				continue;
 			}
 
-			UIElement? hoveredElement = userInterface.CurrentState.GetElementAt(Main.MouseScreen);
+			UIElement hoveredElement = userInterface.CurrentState.GetElementAt(Main.MouseScreen);
 			if (hoveredElement is null)
 			{
 				continue;
 			}
 
-			SmartUiElement? parent = DeriveSmartUiElement(hoveredElement);
+			SmartUiElement parent = DeriveSmartUiElement(hoveredElement);
 			if (stateToBlockAt != userInterface.CurrentState && hoveredElement is UIState)
 			{
 				continue;
