@@ -79,7 +79,7 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 		NPC.CloneDefaults(NPCID.ArmsDealer);
 		NPC.townNPC = true;
 		NPC.friendly = true;
-		NPC.aiStyle = 7;
+		NPC.aiStyle = NPCAIStyleID.Passive;
 		NPC.defense = 30;
 		NPC.lifeMax = 250;
 		NPC.HitSound = SoundID.NPCHit1;

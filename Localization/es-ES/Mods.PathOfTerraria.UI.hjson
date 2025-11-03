@@ -94,7 +94,7 @@ SkillUI: {
 	// Back: Back
 	// NoPassives: This skill has no passives.
 	// NoSkill: (No skill)
-	// ChooseSkill: Choose a skill from the Skill menu to use it.
+	// ChooseSkill: Click to add a skill.
 }
 
 Guide: {

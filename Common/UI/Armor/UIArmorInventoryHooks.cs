@@ -13,7 +13,7 @@ public sealed class UIArmorInventoryHooks : ILoadable
 		BindingFlags.Public | BindingFlags.Instance
 	);
 
-	private static ILHook? drawAccHook;
+	private static ILHook drawAccHook;
 
 	void ILoadable.Load(Mod mod)
 	{
