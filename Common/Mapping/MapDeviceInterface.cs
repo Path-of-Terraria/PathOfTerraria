@@ -544,7 +544,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 
 		#region Frags
 		//TODO: Frag slots are unimplemented!
-#if true
+#if false
 		for (int i = 0; i < 4; i++)
 		{
 			Item[] dummyContainer = [new Item()];
