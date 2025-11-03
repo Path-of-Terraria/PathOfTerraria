@@ -8,7 +8,7 @@ internal class IncreasedMinionDamagePassive : Passive
 	{
 		public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref NPC.HitModifiers modifiers)
 		{
-			int level = Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(Name);
+			float level = Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<IncreasedMinionDamagePassive>();
 
 			if (proj.minion)
 			{

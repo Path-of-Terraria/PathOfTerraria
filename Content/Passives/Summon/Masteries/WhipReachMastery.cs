@@ -15,7 +15,7 @@ internal class WhipReachMastery : Passive
 	{
 		public override bool Shoot(Item item, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
-			if (ProjectileID.Sets.IsAWhip[type] && Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(nameof(WhipReachMastery)) != 0)
+			if (ProjectileID.Sets.IsAWhip[type] && Player.GetModPlayer<PassiveTreePlayer>().HasNode<WhipReachMastery>())
 			{
 				Projectile.NewProjectileDirect(null, position, velocity, type, damage, knockback, Player.whoAmI).WhipSettings.RangeMultiplier *= (1 + RangeIncrease);
 				return false;
@@ -30,7 +30,7 @@ internal class WhipReachMastery : Passive
 	{
 		public override void SendExtraAI(Projectile projectile, BitWriter bitWriter, BinaryWriter binaryWriter)
 		{
-			bool usingMastery = projectile.TryGetOwner(out Player owner) && owner.GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(nameof(WhipReachMastery)) != 0;
+			bool usingMastery = projectile.TryGetOwner(out Player owner) && owner.GetModPlayer<PassiveTreePlayer>().HasNode<WhipReachMastery>();
 			bitWriter.WriteBit(usingMastery);
 
 			if (usingMastery)
@@ -53,7 +53,8 @@ internal class WhipReachMastery : Passive
 	public const float RangeIncrease = 0.5f;
 	public const float UseSpeedDecrease = 0.25f;
 
-	public override string DisplayTooltip => Language.GetTextValue($"Mods.PathOfTerraria.Passives.{Name}.Tooltip").FormatWith(MathUtils.Percent(RangeIncrease), MathUtils.Percent(UseSpeedDecrease));
+	public override string DisplayTooltip 
+		=> Language.GetTextValue($"Mods.PathOfTerraria.Passives.{Name}.Tooltip").FormatWith(MathUtils.Percent(RangeIncrease), MathUtils.Percent(UseSpeedDecrease));
 
 	public override void BuffPlayer(Player player)
 	{

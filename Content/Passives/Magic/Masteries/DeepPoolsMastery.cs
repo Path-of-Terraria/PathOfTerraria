@@ -1,22 +1,22 @@
 ﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
-using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Passives.Utility.Masteries;
 
 internal class DeepPoolsMastery : Passive
 {
-	internal class DeepPoolsPlayerh : ModPlayer
+	internal class DeepPoolsPlayer : ModPlayer
 	{
 		public override void PostUpdateEquips()
 		{
-			Player.GetDamage(DamageClass.Magic) += Player.statManaMax2 / 25f;
+			if (Player.GetModPlayer<PassiveTreePlayer>().HasNode<DeepPoolsMastery>())
+			{
+				Player.GetDamage(DamageClass.Magic) += Player.statManaMax2 / 2500f;
+			}
 		}
 	}
 
-	public override string DisplayTooltip => Language.GetText($"Mods.PathOfTerraria.Passives.{Name}.Tooltip").Format(Value * 40f, Value * 20f);
-
 	public override void BuffPlayer(Player player)
 	{
-		player.statManaMax2 *= 2;
+		player.statManaMax2 = (int)(player.statManaMax2 * (1 + Value / 100f));
 	}
 }

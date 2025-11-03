@@ -6,7 +6,6 @@ using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Content.Passives;
-using PathOfTerraria.Content.Passives.Summon.Masteries;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.ModLoader.IO;
 
@@ -131,21 +130,6 @@ internal class PassiveTreePlayer : ModPlayer
 		SetTree();
 	}
 
-	internal int GetCumulativeLevel(string internalIdentifier)
-	{
-		int level = 0;
-
-		foreach (Passive passive in ActiveNodes)
-		{
-			if (passive.Name == internalIdentifier)
-			{
-				level += passive.Level;
-			}
-		}
-
-		return level;
-	}
-	
 	internal float GetCumulativeValue<T>()
 	{
 		float value = 0f;
@@ -157,7 +141,21 @@ internal class PassiveTreePlayer : ModPlayer
 				value += passive.Value * passive.Level;
 			}
 		}
+
 		return value;
+	}
+
+	internal bool HasNode<T>()
+	{
+		foreach (Passive passive in ActiveNodes)
+		{
+			if (passive is T && passive.Level > 0)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public bool FullyLinkedWithout(Passive passive)

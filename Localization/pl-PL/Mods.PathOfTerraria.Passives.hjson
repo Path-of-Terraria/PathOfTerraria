@@ -430,6 +430,11 @@ BurstingFuryMastery: {
 }
 
 DeepPoolsMastery: {
-	// Name: DeepPoolsMastery
-	// Tooltip: ""
+	// Name: Deep Pools
+	// Tooltip: Gain {0}% max mana, gain 1% max mana per 25 max mana you have
+}
+
+ManaBombMastery: {
+	// Name: Mana Bomb
+	// Tooltip: Every 100 mana spent sends out a mana bomb, dealing {0} magic damage, with additional damage scaling on max mana
 }

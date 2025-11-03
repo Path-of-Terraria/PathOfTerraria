@@ -1784,7 +1784,7 @@
 		"internalIdentifier": "DeepPoolsMastery",
 		"referenceId": 1016,
 		"maxLevel": 1,
-		"value": 1,
+		"value": 30,
 		"position": {
 			"x": 1200,
 			"y": 280
@@ -1792,10 +1792,10 @@
 		"isHidden": true
 	},
 	{
-		"internalIdentifier": "ScorchingFlamesMastery",
+		"internalIdentifier": "ManaBombMastery",
 		"referenceId": 1017,
 		"maxLevel": 1,
-		"value": 20,
+		"value": 50,
 		"position": {
 			"x": 1296,
 			"y": 210
