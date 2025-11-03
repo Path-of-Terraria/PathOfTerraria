@@ -21,7 +21,7 @@ namespace PathOfTerraria.Common.Quests;
 [Autoload(true, Side = ModSide.Client)]
 internal sealed class QuestDebugging : ModSystem
 {
-#if DEBUG
+#if DEBUG || STAGING
 	private static ModKeybind keyToggleQuestDebugging = null!;
 
 	public override void Load()
@@ -46,7 +46,7 @@ internal sealed class QuestDebugCommand : ModCommand
 
 	public override void Action(CommandCaller caller, string input, string[] args)
 	{
-#if !DEBUG
+#if !DEBUG && !STAGING
 		// Prevent crazy cheating in MP, unless the user is at least on a debug build.
 		if (Main.netMode != NetmodeID.SinglePlayer)
 		{
