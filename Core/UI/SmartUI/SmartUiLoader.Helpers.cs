@@ -4,6 +4,8 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Core.UI.SmartUI;
 
+#nullable enable
+
 internal sealed partial class SmartUiLoader
 {
 	/// <summary>

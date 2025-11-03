@@ -132,7 +132,7 @@ public class VolatileConstruct(SkillTree tree) : SkillSpecial(tree)
 				for (int i = 0; i < 30; i++)
 				{
 					Vector2 vel = Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.2f, 1f);
-					Dust.NewDustPerfect(Projectile.Center, 6, vel, 0, default, Main.rand.NextFloat(1.5f, 3f));
+					Dust.NewDustPerfect(Projectile.Center, DustID.Torch, vel, 0, default, Main.rand.NextFloat(1.5f, 3f));
 				}
 
 				for (int j = 0; j < 5; j++)
@@ -148,7 +148,7 @@ public class VolatileConstruct(SkillTree tree) : SkillSpecial(tree)
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D circle = TextureAssets.GlowMask[239].Value;
-			Texture2D line = TextureAssets.Extra[89].Value;
+			Texture2D line = TextureAssets.Extra[ExtrasID.ThePerfectGlow].Value;
 
 			float scale = ((1f / circle.Width) * Projectile.width) * Projectile.scale * Progress;
 			float opacity = 1f - Progress;

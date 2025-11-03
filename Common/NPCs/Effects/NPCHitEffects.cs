@@ -4,6 +4,8 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Common.NPCs.Effects;
 
+#nullable enable
+
 /// <summary>
 ///     Provides registration and handles the spawning of NPC effects upon hit.
 /// </summary>

@@ -6,6 +6,8 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Core.UI;
 
+#nullable enable
+
 internal static class UIHotReloadUpdateHandler
 {
 	// This method is required for the handler to work, despite not doing anything.
@@ -18,7 +20,7 @@ internal static class UIHotReloadUpdateHandler
 		Main.QueueMainThreadAction(
 			() =>
 			{
-				foreach (Type type in updatedTypes)
+				foreach (Type type in updatedTypes!)
 				{
 					if (typeof(UIState).IsAssignableFrom(type) || typeof(UIElement).IsAssignableFrom(type))
 					{
