@@ -448,3 +448,23 @@ ThunderbootsMastery: {
 	Name: Thunderboots
 	Tooltip: Spawn a small Lightning Nova under yourself when you jump
 }
+
+ElectrostaticAttractionMastery: {
+	Name: Electrostatic Attraction
+	Tooltip: Hitting an enemy with Lightning damage will pull nearby hostiles towards the enemy
+}
+
+ChannelingBurstMastery: {
+	Name: Channeling Burst
+	Tooltip: TBD
+}
+
+EnergySurgeMastery: {
+	Name: Energy Surge
+	Tooltip: For the first two seconds of channeling, deal {0}% more damage
+}
+
+SingleFocusMastery: {
+	Name: Singular Focus
+	Tooltip: While channeling, gain 3% increased damage every 0.5 seconds, up to 10 stacks
+}

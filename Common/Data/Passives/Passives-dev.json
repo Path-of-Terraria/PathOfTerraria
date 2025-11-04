@@ -2031,7 +2031,7 @@
 		"isHidden": true
 	},
 	{
-		"internalIdentifier": "ThunderbootsMastery",
+		"internalIdentifier": "ElectrostaticAttractionMastery",
 		"referenceId": 1021,
 		"maxLevel": 1,
 		"value": 1,
@@ -2166,6 +2166,9 @@
 		"connections": [
 			{
 				"referenceId": 292
+			},
+			{
+				"referenceId": 1023
 			}
 		],
 		"position": {
@@ -2196,10 +2199,13 @@
 		"connections": [
 			{
 				"referenceId": 123
+			},
+			{
+				"referenceId": 1023
 			}
 		],
 		"position": {
-			"x": 1129,
+			"x": 1119,
 			"y": -621
 		}
 	},
@@ -2208,10 +2214,71 @@
 		"referenceId": 125,
 		"maxLevel": 1,
 		"value": 10,
+		"connections": [
+			{
+				"referenceId": 1023
+			}
+		],
 		"position": {
 			"x": 1244,
-			"y": -622
+			"y": -621
 		}
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1023,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1024
+			},
+			{
+				"referenceId": 1025
+			},
+			{
+				"referenceId": 1026
+			}
+		],
+		"position": {
+			"x": 1180,
+			"y": -691
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 3
+	},
+	{
+		"internalIdentifier": "SingleFocusMastery",
+		"referenceId": 1024,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": 1180,
+			"y": -781
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "ChannelingBurstMastery",
+		"referenceId": 1025,
+		"maxLevel": 1,
+		"value": 30,
+		"position": {
+			"x": 1110,
+			"y": -731
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "EnergySurgeMastery",
+		"referenceId": 1026,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": 1250,
+			"y": -731
+		},
+		"isHidden": true
 	},
 	{
 		"internalIdentifier": "AddedIntelligencePassive",

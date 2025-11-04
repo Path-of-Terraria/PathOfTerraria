@@ -1,7 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems.ElementalDamage;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Content.Projectiles.PassiveProjectiles;
-using Terraria.ID;
 
 namespace PathOfTerraria.Content.Passives.Utility.Masteries;
 
@@ -13,7 +12,7 @@ internal class BurstingFuryMastery : Passive
 	{
 		public void ElementalOnHitNPC(NPC target, ElementInstance ele, ElementalContainer con, ElementalContainer other, int finalDamage, NPC.HitInfo hitInfo, Item? item = null)
 		{
-			if (ele.Type == ElementType.Fire && finalDamage > 0 && target.life <= 0)
+			if (ele.Type == ElementType.Fire && finalDamage > 0 && target.life <= 0 && Player.GetModPlayer<PassiveTreePlayer>().HasNode<BurstingFuryMastery>())
 			{
 				int damage = (int)(finalDamage * Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<AfterburnMastery>() / 100f);
 				int type = ModContent.ProjectileType<Flameburst>();
