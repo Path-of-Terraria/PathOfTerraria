@@ -6,6 +6,7 @@ using PathOfTerraria.Common.Systems.ModPlayers.LivesSystem;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Core.Items;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
@@ -20,8 +21,6 @@ public abstract class Map : ModItem, GenerateNameAffixes.IItem, GenerateAffixes.
 	public abstract int MaxUses { get; }
 	public abstract bool CanDrop { get; }
 	public virtual int WorldLevel => WorldLevelBasedOnTier(Tier);
-
-	public int RemainingUses = 0;
 
 	internal int Tier = 1;
 	internal int ItemLevel = 1;
@@ -88,14 +87,20 @@ public abstract class Map : ModItem, GenerateNameAffixes.IItem, GenerateAffixes.
 	
 	public override void SaveData(TagCompound tag)
 	{
-		tag.Add("usesLeft", (byte)RemainingUses);
 		tag.Add("tier", (short)Tier);
 	}
-
 	public override void LoadData(TagCompound tag)
 	{
-		RemainingUses = tag.GetByte("usesLeft");
 		Tier = tag.GetShort("tier");
+	}
+
+	public override void NetSend(BinaryWriter writer)
+	{
+		writer.Write((short)Tier);
+	}
+	public override void NetReceive(BinaryReader reader)
+	{
+		Tier = reader.ReadInt16();
 	}
 
 	public abstract string GenerateName(string defaultName);
