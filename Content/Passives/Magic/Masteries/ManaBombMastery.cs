@@ -22,7 +22,8 @@ internal class ManaBombMastery : Passive
 
 			while (manaUsed > 100 && Main.myPlayer == Player.whoAmI)
 			{
-				int damage = (int)Player.GetDamage(DamageClass.Magic).ApplyTo(Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<ManaBombMastery>());
+				float manaAdd = Player.statManaMax2 * 0.025f;
+				int damage = (int)Player.GetDamage(DamageClass.Magic).ApplyTo(Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<ManaBombMastery>() + manaAdd);
 				var src = new EntitySource_ItemUse(Player, item);
 				int target = GetTarget(out Vector2 fallback);
 				Projectile.NewProjectile(src, Player.Top, new Vector2(0, -6), ModContent.ProjectileType<ManaBomb>(), damage, 8, Player.whoAmI, target, fallback.X, fallback.Y);

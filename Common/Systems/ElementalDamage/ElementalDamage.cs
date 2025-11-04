@@ -1,6 +1,9 @@
-﻿using PathOfTerraria.Content.Buffs;
+﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
+using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.Buffs.ElementalBuffs;
+using PathOfTerraria.Content.Passives;
 using System.IO;
+using Terraria;
 
 namespace PathOfTerraria.Common.Systems.ElementalDamage;
 
@@ -105,7 +108,7 @@ public readonly struct ElementalDamage
 		};
 	}
 
-	public static void ApplyBuff(ElementType elementType, Entity entity, int elementalDamageDealt)
+	public static void ApplyBuff(ElementType elementType, Player player, Entity entity, int elementalDamageDealt)
 	{
 		switch (elementType)
 		{
@@ -126,6 +129,11 @@ public readonly struct ElementalDamage
 
 				break;
 
+			case ElementType.Lightning when entity is NPC shockedNPC:
+				ShockDebuff.Apply(player, shockedNPC, elementalDamageDealt);
+
+				break;
+
 			default:
 				const int MaxTime = 5 * 40;
 
@@ -133,9 +141,9 @@ public readonly struct ElementalDamage
 				{
 					npc.AddBuff(GetBuffType(elementType), MaxTime);
 				}
-				else if (entity is Player player)
+				else if (entity is Player hurtPlayer)
 				{
-					player.AddBuff(GetBuffType(elementType), MaxTime);
+					hurtPlayer.AddBuff(GetBuffType(elementType), MaxTime);
 				}
 
 				break;
@@ -149,14 +157,15 @@ public readonly struct ElementalDamage
 	/// <param name="info"></param>
 	/// <param name="defaultPercent"></param>
 	/// <returns></returns>
-	internal static bool CanDebuff(ElementType type, Entity entity, NPC.HitInfo info, bool defaultPercent)
+	internal static bool CanDebuff(ElementType type, Entity entity, Player player, NPC.HitInfo info, float defaultPercent)
 	{
 		return type switch
 		{
 			ElementType.Fire => info.Crit,
 			ElementType.Cold => entity is NPC { boss: false } && info.Crit,
 			ElementType.Chaos => false,
-			_ => defaultPercent,
+			ElementType.Lightning => true,//info.Crit || defaultPercent + player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<ShockChancePassive>() * 0.01f > Main.rand.NextFloat(),
+			_ => defaultPercent > Main.rand.NextFloat(),
 		};
 	}
 

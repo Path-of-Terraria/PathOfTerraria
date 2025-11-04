@@ -1,4 +1,6 @@
-﻿using Terraria.GameContent;
+﻿using PathOfTerraria.Content.Projectiles.Utility;
+using Terraria.GameContent;
+using Terraria.ID;
 
 namespace PathOfTerraria.Content.Projectiles.PassiveProjectiles;
 
@@ -30,7 +32,8 @@ internal class ManaBomb : ModProjectile
 		}
 
 		Projectile.velocity = Vector2.Zero;
-		Vector2 offsetTarget = RealTarget + Projectile.DirectionTo(RealTarget).RotatedBy(MathF.Sin(Projectile.Distance(RealTarget) / 80f) * MathHelper.PiOver2) * 120;
+		float rotationAngle = MathF.Sin(Projectile.Distance(RealTarget) / 80f) * MathHelper.PiOver2 + Projectile.whoAmI * MathHelper.Pi / 3f;
+		Vector2 offsetTarget = RealTarget + Projectile.DirectionTo(RealTarget).RotatedBy(rotationAngle) * 120;
 		Vector2 oldCenter = Projectile.Center;
 		Projectile.Center = Vector2.Lerp(Projectile.Center, offsetTarget, 0.05f);
 		Projectile.rotation = (Projectile.Center - oldCenter).ToRotation() + MathHelper.PiOver2;
@@ -38,8 +41,13 @@ internal class ManaBomb : ModProjectile
 
 	public override void OnKill(int timeLeft)
 	{
-		int type = ModContent.ProjectileType<ManaBombExplosion>();
-		Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, Projectile.velocity, type, Projectile.damage, 8f, Projectile.owner, 54, 54, Projectile.rotation);
+		if (Main.myPlayer == Projectile.owner)
+		{
+			int type = ModContent.ProjectileType<ManaBombExplosion>();
+			Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, Projectile.velocity, type, Projectile.damage, 8f, Projectile.owner, 54, 54, Projectile.rotation);
+		}
+
+		ExplosionHitbox.VFX(Projectile, new ExplosionHitbox.VFXPackage(0, 8, 8, true, 0.5f, null, DustID.Smoke, DustID.ManaRegeneration));
 	}
 
 	public override bool PreDraw(ref Color lightColor)

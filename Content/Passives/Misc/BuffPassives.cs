@@ -56,46 +56,15 @@ internal class ChanceToFreezePassive : Passive
 
 			if (Main.rand.NextFloat() < str)
 			{
-				ElementalPlayer.TryAddElementBuff(target, ElementType.Cold, damageDone, hit);
+				ElementalPlayer.TryAddElementBuff(Player, target, ElementType.Cold, damageDone, hit);
 			}
 		}
 	}
 }
 
+// Functionality is handled in ElementalDamage
 internal class ShockChancePassive : Passive
 {
-	internal class ShockNPC : GlobalNPC
-	{
-		public override void OnHitByItem(NPC npc, Player player, Item item, NPC.HitInfo hit, int damageDone)
-		{
-			ApplyChance(npc, player);
-		}
-
-		public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
-		{
-			if (projectile.TryGetOwner(out Player owner))
-			{
-				ApplyChance(npc, owner);
-			}
-		}
-
-		private static void ApplyChance(NPC npc, Player player)
-		{
-			float str = player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<ShockChancePassive>();
-
-			if (str <= 0)
-			{
-				return;
-			}
-
-			bool canAfflict = Main.rand.NextFloat() < str * 0.05f;
-
-			if (canAfflict)
-			{
-				npc.AddBuff(ModContent.BuffType<ShockDebuff>(), 10 * 60);
-			}
-		}
-	}
 }
 
 internal class ChanceToIgnitePassive : Passive
@@ -109,7 +78,7 @@ internal class ChanceToIgnitePassive : Passive
 			if (Main.rand.NextFloat() < str)
 			{
 				hit.Crit = true; // Ignite doesn't proc otherwise
-				ElementalPlayer.TryAddElementBuff(target, ElementType.Fire, damageDone, hit);
+				ElementalPlayer.TryAddElementBuff(Player, target, ElementType.Fire, damageDone, hit);
 			}
 		}
 	}

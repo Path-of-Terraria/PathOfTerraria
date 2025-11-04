@@ -193,9 +193,9 @@ public class ElementalPlayer : ModPlayer
 			}
 
 			// Debuff applications
-			if (optionalHitInfo is { } hitInfo)
+			if (optionalHitInfo is { } hitInfo && player is not null)
 			{
-				if (player is not null && target is NPC npc)
+				if (target is NPC npc)
 				{
 					ElementalPlayerHooks.ElementalOnHitNPC(player, element, npc, container, other, finalDamage, hitInfo, item);
 				}
@@ -207,7 +207,7 @@ public class ElementalPlayer : ModPlayer
 				{
 					// Calculate total elemental damage for debuff purposes (includes base weapon damage)
 					int totalElementalDamageForDebuff = (int)(finalDamage * totalConversion) + flatDamage;
-					TryAddElementBuff(target, element.DamageModifier.ElementType, totalElementalDamageForDebuff, optionalHitInfo.Value);
+					TryAddElementBuff(player, target, element.DamageModifier.ElementType, totalElementalDamageForDebuff, optionalHitInfo.Value);
 				}
 			}
 		}
@@ -217,12 +217,12 @@ public class ElementalPlayer : ModPlayer
 	/// Used to apply elemental debuffs. This can be called manually from any <see cref="ModPlayer.OnHitNPC(NPC, NPC.HitInfo, int)"/>.
 	/// </summary>
 	/// <exception cref="ArgumentException"></exception>
-	internal static bool TryAddElementBuff(Entity target, ElementType elementType, int elementalDamageDone, NPC.HitInfo hitInfo)
+	internal static bool TryAddElementBuff(Player player, Entity target, ElementType elementType, int elementalDamageDone, NPC.HitInfo hitInfo)
 	{
 		int lifeMax = target switch
 		{
 			NPC npc => npc.lifeMax,
-			Player player => player.statLifeMax2,
+			Player playerTarget => playerTarget.statLifeMax2,
 			_ => throw new ArgumentException("target should be an NPC or Player!")
 		};
 
@@ -233,9 +233,9 @@ public class ElementalPlayer : ModPlayer
 			Main.NewText($"[DEBUG] Chance to debuff for {elementType}: {chance * 100:0.##}%");
 		}
 
-		if (elementalDamageDone > 0 && ElementalDamage.CanDebuff(elementType, target, hitInfo, chance > Main.rand.NextFloat()))
+		if (elementalDamageDone > 0 && ElementalDamage.CanDebuff(elementType, target, player, hitInfo, chance))
 		{
-			ElementalDamage.ApplyBuff(elementType, target, elementalDamageDone);
+			ElementalDamage.ApplyBuff(elementType, player, target, elementalDamageDone);
 
 			if (DebugMessages)
 			{

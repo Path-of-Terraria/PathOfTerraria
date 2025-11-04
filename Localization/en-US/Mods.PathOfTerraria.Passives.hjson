@@ -431,10 +431,20 @@ BurstingFuryMastery: {
 
 DeepPoolsMastery: {
 	Name: Deep Pools
-	Tooltip: Gain {0}% max mana, gain 1% max mana per 25 max mana you have
+	Tooltip: Gain {0}% max mana, gain 1% all damage per 25 max mana you have
 }
 
 ManaBombMastery: {
 	Name: Starbombs
 	Tooltip: Every 100 mana spent sends out some chasing mana bombs, dealing {0} magic damage, with additional damage scaling on max mana
+}
+
+MagicGuardMastery: {
+	Name: Magic Guard
+	Tooltip: When above 50% mana, take {0}% less health - otherwise, deal {1}% more damage
+}
+
+ThunderbootsMastery: {
+	Name: Thunderboots
+	Tooltip: Spawn a small Lightning Nova under yourself when you jump
 }

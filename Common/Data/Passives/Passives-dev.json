@@ -1771,6 +1771,9 @@
 			},
 			{
 				"referenceId": 1017
+			},
+			{
+				"referenceId": 1018
 			}
 		],
 		"position": {
@@ -1799,6 +1802,17 @@
 		"position": {
 			"x": 1296,
 			"y": 210
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "MagicGuardMastery",
+		"referenceId": 1018,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": 1276,
+			"y": 320
 		},
 		"isHidden": true
 	},
@@ -1972,10 +1986,71 @@
 		"referenceId": 114,
 		"maxLevel": 1,
 		"value": 10,
+		"connections": [
+			{
+				"referenceId": 1019
+			}
+		],
 		"position": {
 			"x": 867,
 			"y": -390
 		}
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1019,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1020
+			},
+			{
+				"referenceId": 1021
+			},
+			{
+				"referenceId": 1022
+			}
+		],
+		"position": {
+			"x": 907,
+			"y": -470
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 1
+	},
+	{
+		"internalIdentifier": "ThunderbootsMastery",
+		"referenceId": 1020,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": 1007,
+			"y": -470
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "ThunderbootsMastery",
+		"referenceId": 1021,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": 947,
+			"y": -550
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "ThunderbootsMastery",
+		"referenceId": 1022,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": 830,
+			"y": -500
+		},
+		"isHidden": true
 	},
 	{
 		"internalIdentifier": "IncreasedMagicAndSummonDamagePassive",
