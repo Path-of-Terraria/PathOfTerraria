@@ -4,7 +4,7 @@ namespace PathOfTerraria.Common.Systems.ModPlayers;
 
 public sealed class GearSwapKeybind : ModSystem
 {
-	public static ModKeybind? SwapKeybind { get; private set; }
+	public static ModKeybind SwapKeybind { get; private set; }
 
 	public override void Load()
 	{

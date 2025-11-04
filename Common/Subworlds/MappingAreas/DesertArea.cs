@@ -629,7 +629,7 @@ internal class DesertArea : MappingWorld, IOverrideBiome
 				return false;
 			}
 
-			if (WorldGen.SolidOrSlopedTile(i, pos.Y - VerticalOffset) || Main.tile[i, pos.Y - VerticalOffset].WallType > 0)
+			if (WorldGen.SolidOrSlopedTile(i, pos.Y - VerticalOffset) || Main.tile[i, pos.Y - VerticalOffset].WallType > WallID.None)
 			{
 				return false;
 			}

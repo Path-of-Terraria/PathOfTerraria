@@ -18,6 +18,10 @@ using SubworldLibrary;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.ElementalDamage;
 using Terraria.ID;
+using Terraria.GameContent.RGB;
+using PathOfTerraria.Common.UI;
+using Terraria.GameContent;
+using System.Net.Http.Headers;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -56,6 +60,8 @@ public sealed partial class ItemTooltips : GlobalItem
 		public static Color Cloned => ColorUtils.FromHexRgb(0x_37946e);
 		public static Color ManaCost => ColorUtils.FromHexRgb(0x_5fcde4);
 	}
+
+	private static int _seperatorCount = 0;
 
 	public static string ColoredDot(Color color)
 	{
@@ -101,6 +107,30 @@ public sealed partial class ItemTooltips : GlobalItem
 		// Don't mess with tooltip lines that we aren't responsible for.
 		if (line.Mod != Mod.Name)
 		{
+			return true;
+		}
+
+		if (line.Name.StartsWith("Separator"))
+		{
+			yOffset = 12;
+
+			if (Tooltip.CachedTooltip is not { } cache || Tooltip.SuppressDrawing)
+			{
+				return Tooltip.SuppressDrawing;
+			}
+
+			Vector2 pos = new(line.X, line.Y - 2);
+			float width = cache.OuterSize.X - 28;
+			Texture2D tex = Textures["Separator"].Value;
+			float middleWidth = width - 20;
+			var middleScale = new Vector2(middleWidth / 100f, 1);
+			Color col = Color.Gray;
+
+			Main.spriteBatch.Draw(tex, pos, new Rectangle(0, 0, 10, 6), col);
+			Main.spriteBatch.Draw(tex, pos + new Vector2(10, 0), new Rectangle(10, 0, 100, 6), col, 0f, Vector2.Zero, middleScale, SpriteEffects.None, 0);
+			Main.spriteBatch.Draw(tex, pos + new Vector2(middleWidth + 6, 0), new Rectangle(110, 0, 10, 6), col);
+
+			// Return true - draws nothing (aka ""), but this is necessary to add the yOffset properly
 			return true;
 		}
 
@@ -168,6 +198,8 @@ public sealed partial class ItemTooltips : GlobalItem
 		{
 			return Language.GetTextValue($"Mods.{PoTMod.ModName}.Gear.Tooltips." + key);
 		}
+
+		_seperatorCount = 0;
 
 		var oldTooltips = tooltips.Where(x => x.Name.StartsWith("Tooltip")).ToList();
 		var oldStats = tooltips.Where(x => x.Name.StartsWith("Stat")).ToList();
@@ -270,6 +302,7 @@ public sealed partial class ItemTooltips : GlobalItem
 				OverrideColor = Colors.Levels,
 			};
 			AddNewTooltipLine(item, tooltips, itemLevelLine);
+			AddSeparator(item, tooltips);
 		}
 
 		if (!string.IsNullOrWhiteSpace(staticData.AltUseDescription.Value))
@@ -280,6 +313,7 @@ public sealed partial class ItemTooltips : GlobalItem
 		if (!string.IsNullOrWhiteSpace(staticData.Description.Value))
 		{
 			AddNewTooltipLine(item, tooltips, new(Mod, "Description", staticData.Description.Value));
+			AddSeparator(item, tooltips);
 		}
 
 		if (item.damage > 0)
@@ -408,7 +442,7 @@ public sealed partial class ItemTooltips : GlobalItem
 				$"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"[{totalCritChance:0}%]")} Critical Strike Chance"
 			);
 
-			AddNewTooltipLine(item, tooltips, critLine);;
+			AddNewTooltipLine(item, tooltips, critLine);
 		}
 
 		if (item.mana > 0)
@@ -489,6 +523,25 @@ public sealed partial class ItemTooltips : GlobalItem
 		{
 			tooltips.Add(priceLine);
 		}
+	}
+
+	/// <summary>
+	/// Adds a simple separator into the tooltips. This is done using the texture tag.
+	/// </summary>
+	internal static void AddSeparator(Item item, List<TooltipLine> lines)
+	{
+		var tooltip = new TooltipLine(PoTMod.Instance, "Separator" + _seperatorCount, "");
+
+		if (item is not null)
+		{
+			AddNewTooltipLine(item, lines, tooltip);
+		}
+		else
+		{
+			lines.Add(tooltip);
+		}
+
+		_seperatorCount++;
 	}
 
 	/// <summary>
@@ -580,6 +633,7 @@ public sealed partial class ItemTooltips : GlobalItem
 		Textures.Add("Rare", ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Slots/RareBack"));
 		Textures.Add("Unique", ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Slots/UniqueBack"));
 		Textures.Add("Favorite", ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Slots/FavoriteOverlay"));
+		Textures.Add("Separator", ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Separator"));
 	}
 
 	#region Special rendering for rarities and influences

@@ -8,6 +8,8 @@ public class DemonWeapons : ModProjectile
 	public override void SetStaticDefaults()
 	{
 		Main.projFrames[Type] = 3;
+
+		ProjectileID.Sets.MinionShot[Type] = true;
 	}
 
 	public override void SetDefaults()

@@ -329,13 +329,14 @@ internal class MoonDomainGenerationTools
 				{
 					num31--;
 					num40 += num37;
-					if (Main.tile[num40, num32].WallType != 244)
+
+					if (Main.tile[num40, num32].WallType != WallID.LivingWoodUnsafe)
 					{
 						PlaceLivingTile(num40, num32, TileID.LivingWood, WallID.LivingWoodUnsafe);
 					}
 
 					num32 += num38;
-					if (Main.tile[num40, num32].WallType != 244)
+					if (Main.tile[num40, num32].WallType != WallID.LivingWoodUnsafe)
 					{
 						PlaceLivingTile(num40, num32, TileID.LivingWood, WallID.LivingWoodUnsafe);
 					}
@@ -379,7 +380,7 @@ internal class MoonDomainGenerationTools
 			{
 				for (int num49 = num45; num49 <= num46; num49++)
 				{
-					if (Main.tile[num48, num49].TileType == 191)
+					if (Main.tile[num48, num49].TileType == TileID.LivingWood)
 					{
 						continue;
 					}
@@ -406,7 +407,7 @@ internal class MoonDomainGenerationTools
 						{
 						}
 
-						if (Main.tile[num48, num50 + 1].TileType == 192)
+						if (Main.tile[num48, num50 + 1].TileType == TileID.LeafBlock)
 						{
 							WorldGen.PlaceTile(num48, num50, TileID.LargePiles2, mute: true, forced: false, -1, WorldGen.genRand.Next(50, 52));
 						}
@@ -430,7 +431,7 @@ internal class MoonDomainGenerationTools
 				{
 				}
 
-				if (Main.tile[num48, num51 + 1].TileType == 192)
+				if (Main.tile[num48, num51 + 1].TileType == TileID.LeafBlock)
 				{
 					continue;
 				}

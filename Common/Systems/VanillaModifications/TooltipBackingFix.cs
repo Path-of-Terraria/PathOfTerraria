@@ -1,6 +1,7 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using PathOfTerraria.Common.ModCompatibility;
+using PathOfTerraria.Common.UI;
 using PathOfTerraria.Utilities;
 using System.Collections.Generic;
 using Terraria.UI.Chat;
@@ -42,7 +43,7 @@ internal class TooltipBackingFix : ILoadable
 	{
 		float maxWidth = 0;
 
-		using var _ = ValueOverride.Create(ref WikithisCompatibility.StopDrawcode, true);
+		using var _ = ValueOverride.Create(ref Tooltip.SuppressDrawing, true);
 
 		foreach (DrawableTooltipLine tooltip in tooltips)
 		{

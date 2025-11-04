@@ -14,7 +14,7 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.DropVisualization;
 
-#if DEBUG
+#if DEBUG || STAGING
 internal class DropTablePlayer : ModPlayer
 {
 	public static ModKeybind ToggleDropTableUIKey = null;

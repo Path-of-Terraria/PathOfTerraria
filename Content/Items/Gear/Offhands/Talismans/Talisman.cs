@@ -6,9 +6,9 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.Offhands.Talismans;
 
-internal abstract class Talisman : Offhand
+internal abstract class Talisman<T> : Offhand where T : ItemAffix
 {
-	protected abstract float SummonDamage { get; }
+	protected abstract float AffixStrength { get; }
 	protected override string GearLocalizationCategory => "Talisman";
 
 	public override void SetStaticDefaults()
@@ -36,7 +36,7 @@ internal abstract class Talisman : Offhand
 	{
 		return
 		[
-			(ItemAffix)Affix.CreateAffix<IncreasedSummonDamageAffix>(SummonDamage),
+			(ItemAffix)Affix.CreateAffix<T>(AffixStrength),
 		];
 	}
 }

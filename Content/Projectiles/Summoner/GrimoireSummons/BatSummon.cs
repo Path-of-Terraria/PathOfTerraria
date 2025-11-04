@@ -12,7 +12,7 @@ internal class BatSummon : GrimoireSummon
 		Main.projFrames[Type] = 4;
 	}
 
-	public override void SetDefaults()
+	public override void Defaults()
 	{
 		Projectile.width = 26;
 		Projectile.height = 34;

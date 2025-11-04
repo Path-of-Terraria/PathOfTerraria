@@ -57,7 +57,7 @@ public readonly struct SkillFailure(SkillFailReason reason, string context = nul
 	}
 }
 
-public abstract partial class Skill
+public abstract partial class Skill : ILoadable
 {
 	public Vector2 Size
 	{
@@ -108,6 +108,19 @@ public abstract partial class Skill
 	public byte Level = 1;
 
 	private Vector2 _size;
+
+	public void Load(Mod mod)
+	{
+	}
+
+	public void Unload()
+	{
+	}
+
+	public Skill Clone()
+	{
+		return (Skill)MemberwiseClone();
+	}
 
 	/// <summary>
 	/// The tags this skill applies to.

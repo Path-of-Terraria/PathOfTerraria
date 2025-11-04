@@ -165,6 +165,12 @@ internal class TreeState : TabsUiState
 		AvailablePassivePointsText.DrawAvailablePassivePoint(spriteBatch, points, GetRectangle().TopLeft() + pointsDrawPoin);
 	}
 
+	internal void SetSkillTree(Skill skill)
+	{
+		_skillSelection.SelectedSkill = skill;
+		_skillSelection.RebuildTree();
+	}
+
 	// ReSharper disable once UnusedType.Local
 	private class StopInvPlayer : ModPlayer
 	{

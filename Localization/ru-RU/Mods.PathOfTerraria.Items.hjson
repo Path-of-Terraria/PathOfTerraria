@@ -1368,6 +1368,21 @@ InfernalConflux: {
 	// Tooltip: ""
 }
 
+GreenCore: {
+	// DisplayName: Natural Core
+	// Tooltip: ""
+}
+
+RichMahoganyTalisman: {
+	// DisplayName: Rich Mahogany Talisman
+	// Tooltip: ""
+}
+
+YellowCore: {
+	// DisplayName: Caged Core
+	// Tooltip: ""
+}
+
 Faeflame: {
 	// DisplayName: Faeflame
 	// Tooltip: ""
@@ -1385,5 +1400,24 @@ CoralCrown: {
 
 StoneStar: {
 	// DisplayName: Stone Star
+	// Tooltip: ""
+}
+
+SeveranceShard: {
+	// DisplayName: Severance Shard
+	/* Tooltip:
+		'''
+		Removes a random affix from an item
+		'It shatters and regrows constantly'
+		''' */
+}
+
+BerylRing: {
+	// DisplayName: Beryl Ring
+	// Tooltip: ""
+}
+
+FireDiamondRing: {
+	// DisplayName: Fire Diamond Ring
 	// Tooltip: ""
 }

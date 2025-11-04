@@ -186,6 +186,7 @@ public sealed class AffixTooltips
 	public void AddTooltipLines(List<TooltipLine> tooltips, ref int tipNum, bool displayExtraInfo)
 	{
 		var sb = new StringBuilder();
+		bool lastImplicit = false;
 
 		foreach (AffixTooltipLine tip in Lines.Values.OrderByDescending(v => v.Value).OrderBy(v => v.Implicit ? 0f : 1f))
 		{
@@ -220,8 +221,15 @@ public sealed class AffixTooltips
 				_ => ItemTooltips.Colors.DefaultNumber,
 			};
 
-			tooltips.Add(new TooltipLine(PoTMod.Instance, "Affix" + tipNum, sb.ToString()) { OverrideColor = color });
+			if (lastImplicit && !tip.Implicit)
+			{
+				ItemTooltips.AddSeparator(null, tooltips);
+			}
+
+			string name = tip.Implicit ? "Implicit" : "Affix";
+			tooltips.Add(new TooltipLine(PoTMod.Instance, name + tipNum, sb.ToString()) { OverrideColor = color });
 			tipNum++;
+			lastImplicit = tip.Implicit;
 		}
 	}
 
