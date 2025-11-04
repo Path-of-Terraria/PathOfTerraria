@@ -11,6 +11,8 @@ using Terraria.UI.Chat;
 
 namespace PathOfTerraria.Common.UI.Elements;
 
+#nullable enable
+
 /// <summary>
 ///     Provides an item slot wrapper as a <see cref="UIElement" />.
 /// </summary>
@@ -263,6 +265,7 @@ public class UIImageItemSlot
 			Main.HoverItem = Item.Clone();
 			Main.HoverItem.tooltipContext = Context;
 		}
+
 		Main.LocalPlayer.mouseInterface = true;
 	}
 

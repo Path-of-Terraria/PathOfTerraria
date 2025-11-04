@@ -37,7 +37,7 @@ internal class MiniteraHook : ModNPC
 		NPC.aiStyle = -1;
 		NPC.Size = new Vector2(26, 22);
 
-		AIType = 0;
+		AIType = NPCID.None;
 	}
 
 	public override void AI()
@@ -75,7 +75,7 @@ internal class MiniteraHook : ModNPC
 			{
 				Target = Parent.Center + dir + Main.rand.NextVector2CircularEdge(200, 200) * Main.rand.NextFloat(0.8f, 1.2f);
 				tile = Main.tile[Target.ToTileCoordinates16()];
-			} while (WorldGen.SolidTile(tile) && tile.TileType == WallID.None);
+			} while (WorldGen.SolidTile(tile));
 
 			NPC.netUpdate = true;
 		}
