@@ -1,3 +1,4 @@
+using PathOfTerraria.Common.Mapping;
 using PathOfTerraria.Common.UI.GrimoireSelection;
 using PathOfTerraria.Common.UI.PlayerStats;
 using PathOfTerraria.Core.UI.SmartUI;
@@ -39,5 +40,6 @@ internal sealed class UiStateRefresher : ModSystem
 		SmartUiLoader.GetUiState<QuestPanelButton>().Refresh();
 		SmartUiLoader.GetUiState<PlayerStatButton>().Refresh();
 		SmartUiLoader.GetUiState<GrimoireInvButton>().Refresh();
+		SmartUiLoader.GetUiState<MapDeviceState>().Refresh();
 	}
 }

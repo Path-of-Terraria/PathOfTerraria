@@ -40,7 +40,8 @@ public sealed class PoTMod : Mod
 
 	public override void HandlePacket(BinaryReader reader, int whoAmI)
 	{
-		Networking.HandlePacket(reader);
+		// Both 255 and 256 are sometimes used to refer to the server.
+		Networking.HandlePacket(reader, whoAmI > 255 ? (byte)255 : checked((byte)whoAmI));
 	}
 
 	public override IContentSource CreateDefaultContentSource()

@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using Terraria.ID;
+
+#pragma warning disable CS0618 // Method is obsolete.
 
 namespace PathOfTerraria.Common.Systems.Synchronization;
 
@@ -22,17 +25,38 @@ internal abstract class Handler : ILoadable
 	/// or use inheritdoc for the <see cref="Networking.Message"/> so both have the same comment for consistency and readability.
 	/// </summary>
 	/// <param name="parameters">Parameters to use for the method.</param>
-	public abstract void Send(params object[] parameters);
+	public virtual void Send(params object[] parameters) { throw new NotImplementedException(); }
 
-	/// <summary>
-	/// Handles the server recieving the packet. This is required as the majority of packets are sent to the server.
-	/// </summary>
-	internal abstract void ServerRecieve(BinaryReader reader);
+	[Obsolete($"Use {nameof(ServerReceive)}.")]
+	internal virtual void ServerRecieve(BinaryReader reader) { }
 
-	/// <summary>
-	/// Handles a client recieving the packet. This is not required since it is not uncommon for packets to not have clients recieve them.
-	/// </summary>
+	/// <summary>  Handles the server receiving the packet. This is required as the majority of packets are sent to the server.  </summary>
+	internal virtual void ServerReceive(BinaryReader reader, byte sender)
+	{
+		ServerRecieve(reader);
+	}
+
+	[Obsolete($"Use {nameof(ClientReceive)}.")]
 	internal virtual void ClientRecieve(BinaryReader reader) { }
+
+	/// <summary> Handles a client receiving the packet. This is not required since it is not uncommon for packets to not have clients recieve them. </summary>
+	internal virtual void ClientReceive(BinaryReader reader, byte sender)
+	{
+		ClientRecieve(reader);
+	}
+
+	/// <summary> Handles receives the packet for both clients and servers. Defaults to calling ClientReceive or ServerReceive. </summary>
+	internal virtual void Receive(BinaryReader reader, byte sender)
+	{
+		if (Main.netMode == NetmodeID.Server)
+		{
+			ServerReceive(reader, sender);
+		}
+		else
+		{
+			ClientReceive(reader, sender);
+		}
+	}
 
 	public virtual void Load(Mod mod)
 	{

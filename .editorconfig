@@ -241,3 +241,6 @@ resharper_csharp_place_simple_embedded_statement_on_same_line = true
 
 # IDE0047: Remove unnecessary parentheses
 dotnet_diagnostic.IDE0047.severity = none
+
+# IDE0004: Remove Unnecessary Cast
+dotnet_diagnostic.IDE0004.severity = none
