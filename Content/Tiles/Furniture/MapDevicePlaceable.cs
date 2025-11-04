@@ -57,9 +57,6 @@ public class MapDevicePlaceable : ModTile
 		Main.tileNoAttach[Type] = true;
 		Main.tileFrameImportant[Type] = true;
 
-		// Counts as a container, but does not bring up a chest UI.
-		(Main.tileFrameImportant[Type], TileID.Sets.IsAContainer[Type]) = (true, true);
-		
 		TileID.Sets.HasOutlines[Type] = true;
 		TileID.Sets.InteractibleByNPCs[Type] = true;
 		TileID.Sets.DisableSmartCursor[Type] = true;
