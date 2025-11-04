@@ -4,11 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Microsoft.Xna.Framework.Graphics;
 using PathOfTerraria.Common.Encounters;
 using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Common.UI;
+using PathOfTerraria.Content.Dusts;
 using PathOfTerraria.Core.Time;
 using PathOfTerraria.Utilities.Xna;
 using ReLogic.Content;
@@ -64,6 +66,7 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 	/// <summary> Whether the rift is about to disappear. </summary>
 	public bool Closing => (BitFlags & Flags.Closing) != 0;
 
+	private static Asset<Effect>? shader;
 	public override void SetStaticDefaults()
 	{
 		ProjectileID.Sets.IsInteractable[Type] = true;
@@ -113,7 +116,21 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		else if (Activated)
 		{
 			OpeningAnimation = MathF.Min(1f, OpeningAnimation + (TimeSystem.LogicDeltaTime / 3f));
-		}
+
+			if (OpeningAnimation > 0.34f && false)
+			{
+					for (int i = 0; i < 3; i++)
+					{
+						Vector2 offset = Vector2.One.RotatedBy(Main.rand.NextDouble() * 6.28);
+						Vector2 dustVel = offset.RotatedBy(1.57f) * Main.rand.NextFloat() * 0.85f;
+						offset *= new Vector2(Main.rand.NextFloat(0.6f, 1) * 60, Main.rand.NextFloat(0.5f, 1f) * 70);
+						Dust dust = Dust.NewDustPerfect(Projectile.Center + offset, ModContent.DustType<ConfluxRiftSmoke>(), dustVel);
+						dust.scale = Main.rand.NextFloat(0.5f, 0.8f);
+						dust.alpha = Main.rand.Next(175, 200);
+						dust.color = Color.Lerp(Color.Purple,Color.White, Main.rand.NextFloat(0.25f, 0.75f));
+					}
+				}
+			}
 
 		// Encounter logic.
 		if (Main.netMode != NetmodeID.MultiplayerClient)
@@ -155,31 +172,49 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		behindNPCsAndTiles.Add(index);
 	}
 
-	public override bool PreDraw(ref Color lightColor)
+	public override bool PreDraw(ref Microsoft.Xna.Framework.Color lightColor)
 	{
 		Texture2D tex = TextureAssets.Projectile[Type].Value;
 		Vector2 position = Projectile.Center - Main.screenPosition;
-		(_, _, Color colorBase) = GetVisualParameters();
-		var sizeTargets = Vector2.Lerp
-		(
-			Vector2.Lerp(new(0.5f, 0.75f), new(3.50f, 3.75f), OpeningAnimation),
-			new(0.0f, 0.0f),
-			ClosingAnimation
-		);
-		(float minSize, float maxSize) = (sizeTargets.X, sizeTargets.Y);
-
-		const int numLayers = 3;
-
-		for (int i = 0; i < numLayers; ++i)
+		if (shader?.Value is not Effect effect)
 		{
-			float rotation = (Projectile.rotation * (i % 2 == 0 ? -1 : 1)) + (i * 1.5f);
-			Color color = colorBase * ((3 - i) * 0.33f) * Projectile.Opacity;
-			float size = MathHelper.Lerp(minSize, maxSize, i / (float)(numLayers - 1));
-
-			Main.EntitySpriteDraw(tex, position, null, color, rotation, tex.Size() / 2f, size, SpriteEffects.None, 0);
+			return false;
 		}
+		effect.Parameters["timeManual"].SetValue((float)Main.time * 0.027f);
+		effect.Parameters["progress"].SetValue(OpeningAnimation);
+		effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(Texture + "_PerlinNoiseMap").Value);
+		effect.Parameters["_PaletteTex"].SetValue(ModContent.Request<Texture2D>(Texture + "_Palette").Value);
+		effect.Parameters["_PNoiseTex"].SetValue(ModContent.Request<Texture2D>(Texture + "_PerlinNoiseMap").Value);
+		effect.Parameters["_DNoiseTex"].SetValue(ModContent.Request<Texture2D>(Texture + "_DisplacementNoiseMap").Value);
 
+		Main.spriteBatch.End();
+		Main.spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointClamp, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
+		Main.spriteBatch.Draw(tex, position, null, Color.White, 0, tex.Size() / 2f, Projectile.scale * 4.0f, SpriteEffects.None, 0);
+
+		Main.spriteBatch.End();
+		Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 		this.DrawHighlightAndCheckRightClickInteraction(Highlight.Value, position, lightColor);
+		/*(_, _, Color colorBase) = GetVisualParameters();
+        var sizeTargets = Vector2.Lerp
+        (
+            Vector2.Lerp(new(0.5f, 0.75f), new(3.50f, 3.75f), OpeningAnimation),
+            new(0.0f, 0.0f),
+            ClosingAnimation
+        );
+        (float minSize, float maxSize) = (sizeTargets.X, sizeTargets.Y);
+
+        const int numLayers = 3;
+
+        for (int i = 0; i < numLayers; ++i)
+        {
+            float rotation = (Projectile.rotation * (i % 2 == 0 ? -1 : 1)) + (i * 1.5f);
+            Color color = colorBase * ((3 - i) * 0.33f) * Projectile.Opacity;
+            float size = MathHelper.Lerp(minSize, maxSize, i / (float)(numLayers - 1));
+
+            Main.EntitySpriteDraw(tex, position, null, color, rotation, tex.Size() / 2f, size, SpriteEffects.None, 0);
+        }
+
+        this.DrawHighlightAndCheckRightClickInteraction(Highlight.Value, position, lightColor);*/
 
 		return false;
 	}
@@ -408,6 +443,17 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 		return false;
 	}
+
+	public override void Load()
+	{
+		base.Load();
+		shader = Mod.Assets.Request<Effect>($"Assets/Effects/ConfluxRift");
+	}
+
+	public override void Unload()
+	{
+		shader = null;
+	}
 }
 
 internal class RiftInteractionHandler : Handler
@@ -432,7 +478,7 @@ internal class RiftInteractionHandler : Handler
 		int riftIdentity = reader.ReadInt32();
 
 		if (Main.player[sender] is not { active: true } player) { return; }
-		
+
 		if (Main.projectile.FirstOrDefault(p => p.identity == riftIdentity) is not { ModProjectile: ConfluxRift rift }) { return; }
 
 		// Increased reach distance for synchronization grace.
