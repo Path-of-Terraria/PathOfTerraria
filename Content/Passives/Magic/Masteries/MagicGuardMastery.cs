@@ -1,7 +1,7 @@
 ﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using Terraria.Localization;
 
-namespace PathOfTerraria.Content.Passives.Utility.Masteries;
+namespace PathOfTerraria.Content.Passives.Magic.Masteries;
 
 internal class MagicGuardMastery : Passive
 {

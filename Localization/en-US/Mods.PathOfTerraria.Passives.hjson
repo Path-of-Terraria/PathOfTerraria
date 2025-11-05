@@ -446,17 +446,17 @@ MagicGuardMastery: {
 
 ThunderbootsMastery: {
 	Name: Thunderboots
-	Tooltip: Spawn a small Lightning Nova under yourself when you jump
+	Tooltip: Spawn a small Lightning Nova under yourself when you jump, which inflicts maximum Shocked on enemies it hits
 }
 
 ElectrostaticAttractionMastery: {
-	Name: Electrostatic Attraction
-	Tooltip: Hitting an enemy with Lightning damage will pull nearby hostiles towards the enemy
+	Name: Electrostatic Charge
+	Tooltip: Dealing Lightning damage will give a stacking, very short term multiplier to Lightning damage, capping at a 50% multiplier
 }
 
 ChannelingBurstMastery: {
 	Name: Channeling Burst
-	Tooltip: TBD
+	Tooltip: Deal more Magic damage and use more mana the further your mouse is from yourself when channeling
 }
 
 EnergySurgeMastery: {
@@ -467,4 +467,24 @@ EnergySurgeMastery: {
 SingleFocusMastery: {
 	Name: Singular Focus
 	Tooltip: While channeling, gain 3% increased damage every 0.5 seconds, up to 10 stacks
+}
+
+ChainLightningMastery: {
+	Name: Chain Lightning
+	Tooltip: Lightning damage has a {0}% chance to chain to another enemy
+}
+
+CriticalOverloadMastery: {
+	Name: Critical Load
+	Tooltip: Increase critical strike chance by {0}% per hit that isn't a crit. Resets on crits
+}
+
+AnticipatedStrikeMastery: {
+	Name: Anticipated Strike
+	Tooltip: If you haven't used a skill in 10 seconds, your next skill is used twice
+}
+
+StarcallerMastery: {
+	Name: Starcaller
+	Tooltip: Your magic hits spawn a star to do {0}% of the original hit's damage, once a second per enemy
 }

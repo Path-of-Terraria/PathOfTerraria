@@ -142,6 +142,21 @@ FishingBuff: {
 }
 
 ScorchingFlamesDebuff: {
-	// DisplayName: Scorching Flames Debuff
-	// Description: Mods.PathOfTerraria.Buffs.ScorchingFlamesDebuff.Description
+	// DisplayName: Scorching Flames
+	// Description: Ow burn
+}
+
+SingleFocusBuff: {
+	// DisplayName: Singular Focus
+	// Description: Increased channeling damage
+}
+
+ElectrostaticBuff: {
+	// DisplayName: Electrostatic
+	// Description: Increased Lightning damage multiplier
+}
+
+AnticipatedStrikeBuff: {
+	// DisplayName: Anticipated Strike
+	// Description: Next skill will be used twice
 }

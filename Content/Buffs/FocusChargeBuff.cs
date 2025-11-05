@@ -1,3 +1,4 @@
+using PathOfTerraria.Common.Buffs;
 using PathOfTerraria.Common.Systems.Charges;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -38,19 +39,13 @@ public class FocusChargeBuff : ModBuff
 	public override void PostDraw(SpriteBatch spriteBatch, int buffIndex, BuffDrawParams drawParams)
 	{
 		Player player = Main.LocalPlayer;
-		var chargePlayer = player.GetModPlayer<FocusChargePlayer>();
+		FocusChargePlayer chargePlayer = player.GetModPlayer<FocusChargePlayer>();
 		
-		if (chargePlayer.Charges <= 1) return; // Don't draw if 1 charges
-		
-		string chargeText = chargePlayer.Charges.ToString();
-		Vector2 textSize = FontAssets.MouseText.Value.MeasureString(chargeText);
-		
-		//Top middle of buff icon
-		Vector2 textPosition = new Vector2(
-			drawParams.Position.X + 22 - textSize.X - 2,
-			drawParams.Position.Y + 20 - textSize.Y - 2 
-		);
-		
-		Utils.DrawBorderString(spriteBatch, chargeText, textPosition, Color.White, 1f);
+		if (chargePlayer.Charges <= 1)
+		{
+			return; // Don't draw if 1 charges
+		}
+
+		BuffUtils.DrawNumberOverBuff(drawParams, chargePlayer.Charges.ToString());
 	}
 }

@@ -1,6 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 
-namespace PathOfTerraria.Content.Passives.Utility.Masteries;
+namespace PathOfTerraria.Content.Passives.Magic.Masteries;
 
 internal class DeepPoolsMastery : Passive
 {

@@ -1,31 +1,35 @@
 ﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
-using PathOfTerraria.Content.Passives.Utility.Masteries;
+using PathOfTerraria.Content.Buffs;
 
 namespace PathOfTerraria.Content.Passives.Magic.Masteries;
 
-internal class SingleFocusPlayer : ModPlayer
+internal class ChannelingFunctionalityPlayer : ModPlayer
 {
-	int _channelTimer = 0;
+	internal int ChannelTimer = 0;
 
 	public override void ResetEffects()
 	{
 		if (Player.channel)
 		{
-			_channelTimer++;
+			ChannelTimer++;
 
 			if (Player.GetModPlayer<PassiveTreePlayer>().HasNode<SingleFocusMastery>())
 			{
-				Player.GetDamage(DamageClass.Generic) += (int)Math.Min(_channelTimer / 100f, 0.3f);
-			}
-
-			if (Player.GetModPlayer<PassiveTreePlayer>().HasNode<EnergySurgeMastery>() && _channelTimer < 2 * 60)
-			{
-				Player.GetDamage(DamageClass.Generic) += 0.3f;
+				Player.AddBuff(ModContent.BuffType<SingleFocusBuff>(), 2, true);
+				Player.GetDamage(DamageClass.Generic) += Math.Min(ChannelTimer / 30f * 0.03f, 0.3f);
 			}
 		}
 		else
 		{
-			_channelTimer = 0;
+			ChannelTimer = 0;
+		}
+	}
+
+	public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+	{
+		if (Player.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<EnergySurgeMastery>(out float str) && ChannelTimer < 2 * 60)
+		{
+			modifiers.FinalDamage += str / 100f;
 		}
 	}
 }

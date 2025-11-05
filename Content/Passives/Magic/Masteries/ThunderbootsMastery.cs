@@ -4,7 +4,7 @@ using PathOfTerraria.Common.Systems.ElementalDamage;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Content.Skills.Magic;
 
-namespace PathOfTerraria.Content.Passives.Utility.Masteries;
+namespace PathOfTerraria.Content.Passives.Magic.Masteries;
 
 internal class ThunderbootsMastery : Passive
 {

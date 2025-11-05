@@ -2,7 +2,7 @@
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Content.Projectiles.PassiveProjectiles;
 
-namespace PathOfTerraria.Content.Passives.Utility.Masteries;
+namespace PathOfTerraria.Content.Passives.Magic.Masteries;
 
 #nullable enable
 

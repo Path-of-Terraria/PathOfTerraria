@@ -3,7 +3,7 @@ using PathOfTerraria.Content.Projectiles.PassiveProjectiles;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 
-namespace PathOfTerraria.Content.Passives.Utility.Masteries;
+namespace PathOfTerraria.Content.Passives.Magic.Masteries;
 
 internal class ManaBombMastery : Passive
 {

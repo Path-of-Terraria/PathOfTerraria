@@ -1333,6 +1333,9 @@
 		"connections": [
 			{
 				"referenceId": 79
+			},
+			{
+				"referenceId": 1027
 			}
 		],
 		"position": {
@@ -1351,6 +1354,9 @@
 			},
 			{
 				"referenceId": 80
+			},
+			{
+				"referenceId": 1027
 			}
 		],
 		"position": {
@@ -1366,6 +1372,9 @@
 		"connections": [
 			{
 				"referenceId": 83
+			},
+			{
+				"referenceId": 1027
 			}
 		],
 		"position": {
@@ -1381,12 +1390,71 @@
 		"connections": [
 			{
 				"referenceId": 79
+			},
+			{
+				"referenceId": 1027
 			}
 		],
 		"position": {
 			"x": 682,
 			"y": 37
 		}
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1027,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1028
+			},
+			{
+				"referenceId": 1029
+			},
+			{
+				"referenceId": 1030
+			}
+		],
+		"position": {
+			"x": 587,
+			"y": -16
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 4
+	},
+	{
+		"internalIdentifier": "CriticalOverloadMastery",
+		"referenceId": 1028,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": 547,
+			"y": -86
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "AnticipatedStrikeMastery",
+		"referenceId": 1029,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": 627,
+			"y": -86
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "EnergySurgeMastery",
+		"referenceId": 1030,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 587,
+			"y": 70
+		},
+		"isHidden": true
 	},
 	{
 		"internalIdentifier": "AddedLightningResistancePassive",
@@ -1857,6 +1925,11 @@
 		"referenceId": 105,
 		"maxLevel": 1,
 		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1031
+			}
+		],
 		"position": {
 			"x": 762,
 			"y": 479
@@ -1903,12 +1976,71 @@
 		"connections": [
 			{
 				"referenceId": 105
+			},
+			{
+				"referenceId": 1031
 			}
 		],
 		"position": {
 			"x": 1018,
 			"y": 479
 		}
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1031,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1032
+			},
+			{
+				"referenceId": 1033
+			},
+			{
+				"referenceId": 1034
+			}
+		],
+		"position": {
+			"x": 893,
+			"y": 518
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "StarcallerMastery",
+		"referenceId": 1032,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": 831,
+			"y": 432
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "AnticipatedStrikeMastery",
+		"referenceId": 1033,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": 955,
+			"y": 432
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "EnergySurgeMastery",
+		"referenceId": 1034,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 893,
+			"y": 618
+		},
+		"isHidden": true
 	},
 	{
 		"internalIdentifier": "ChanceToChillPassive",
@@ -1974,6 +2106,9 @@
 		"connections": [
 			{
 				"referenceId": 114
+			},
+			{
+				"referenceId": 1019
 			}
 		],
 		"position": {
@@ -1986,11 +2121,6 @@
 		"referenceId": 114,
 		"maxLevel": 1,
 		"value": 10,
-		"connections": [
-			{
-				"referenceId": 1019
-			}
-		],
 		"position": {
 			"x": 867,
 			"y": -390
@@ -2042,10 +2172,10 @@
 		"isHidden": true
 	},
 	{
-		"internalIdentifier": "ThunderbootsMastery",
+		"internalIdentifier": "ChainLightningMastery",
 		"referenceId": 1022,
 		"maxLevel": 1,
-		"value": 1,
+		"value": 10,
 		"position": {
 			"x": 830,
 			"y": -500
@@ -2273,7 +2403,7 @@
 		"internalIdentifier": "EnergySurgeMastery",
 		"referenceId": 1026,
 		"maxLevel": 1,
-		"value": 1,
+		"value": 20,
 		"position": {
 			"x": 1250,
 			"y": -731

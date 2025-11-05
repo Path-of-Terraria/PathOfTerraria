@@ -130,6 +130,9 @@ internal class PassiveTreePlayer : ModPlayer
 		SetTree();
 	}
 
+	/// <summary>
+	/// Gets the total value of every node of a given type on the passive tree. This includes multiplying a node's value by its level, though level is almost always 1.
+	/// </summary>
 	internal float GetCumulativeValue<T>()
 	{
 		float value = 0f;
@@ -143,6 +146,24 @@ internal class PassiveTreePlayer : ModPlayer
 		}
 
 		return value;
+	}
+
+	/// <summary>
+	/// Same as <see cref="GetCumulativeValue{T}"/>, but returns false if <paramref name="value"/> is 0.
+	/// </summary>
+	internal bool TryGetCumulativeValue<T>(out float value)
+	{
+		value = 0f;
+
+		foreach (Passive passive in ActiveNodes)
+		{
+			if (passive is T && passive.Level > 0)
+			{
+				value += passive.Value * passive.Level;
+			}
+		}
+
+		return value > 0;
 	}
 
 	internal bool HasNode<T>()
