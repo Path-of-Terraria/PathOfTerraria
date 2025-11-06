@@ -2013,7 +2013,7 @@
 		"internalIdentifier": "StarcallerMastery",
 		"referenceId": 1032,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 250,
 		"position": {
 			"x": 831,
 			"y": 432
@@ -2021,7 +2021,7 @@
 		"isHidden": true
 	},
 	{
-		"internalIdentifier": "AnticipatedStrikeMastery",
+		"internalIdentifier": "CenterOfTheUniverseMastery",
 		"referenceId": 1033,
 		"maxLevel": 1,
 		"value": 10,
@@ -2032,7 +2032,7 @@
 		"isHidden": true
 	},
 	{
-		"internalIdentifier": "EnergySurgeMastery",
+		"internalIdentifier": "OverloadingEnergyMastery",
 		"referenceId": 1034,
 		"maxLevel": 1,
 		"value": 20,
@@ -2226,7 +2226,7 @@
 			}
 		],
 		"position": {
-			"x": 833,
+			"x": 845,
 			"y": -729
 		}
 	},
@@ -2241,7 +2241,7 @@
 			}
 		],
 		"position": {
-			"x": 952,
+			"x": 946,
 			"y": -628
 		}
 	},
@@ -2253,11 +2253,14 @@
 		"connections": [
 			{
 				"referenceId": 118
+			},
+			{
+				"referenceId": 1035
 			}
 		],
 		"position": {
-			"x": 1063,
-			"y": -747
+			"x": 1046,
+			"y": -728
 		}
 	},
 	{
@@ -2265,10 +2268,71 @@
 		"referenceId": 120,
 		"maxLevel": 1,
 		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1035
+			}
+		],
 		"position": {
-			"x": 952,
-			"y": -843
+			"x": 945,
+			"y": -829
 		}
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1035,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1036
+			},
+			{
+				"referenceId": 1037
+			},
+			{
+				"referenceId": 1038
+			}
+		],
+		"position": {
+			"x": 1063,
+			"y": -843
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "ReverberationMastery",
+		"referenceId": 1036,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 1113,
+			"y": -893
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "SkillfulMagicMastery",
+		"referenceId": 1037,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": 1043,
+			"y": -913
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "AutomagicMissileMastery",
+		"referenceId": 1038,
+		"maxLevel": 1,
+		"value": 15,
+		"position": {
+			"x": 1133,
+			"y": -823
+		},
+		"isHidden": true
 	},
 	{
 		"internalIdentifier": "IncreasedProjectileSpeedPassive",
@@ -2284,8 +2348,8 @@
 			}
 		],
 		"position": {
-			"x": 952,
-			"y": -747
+			"x": 945,
+			"y": -728
 		}
 	},
 	{

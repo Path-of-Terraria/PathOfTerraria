@@ -486,5 +486,30 @@ AnticipatedStrikeMastery: {
 
 StarcallerMastery: {
 	Name: Starcaller
-	Tooltip: Your magic hits spawn a star to do {0}% of the original hit's damage, once a second per enemy
+	Tooltip: Your magic critical hits spawn a star to do {0}% of the original hit's damage, once a second per enemy
+}
+
+CenterOfTheUniverseMastery: {
+	Name: Center of the Universe
+	Tooltip: Your magic hits have a {0}% chance to spawn an orbiting planet (10 max), which deal 20% of the hit's damage and heal 5 mana on hit
+}
+
+OverloadingEnergyMastery: {
+	Name: Overloading Energy
+	Tooltip: Gain 5% of your max mana every {0} seconds. At max mana, deal 15% more damage
+}
+
+ReverberationMastery: {
+	Name: Reverberation
+	Tooltip: Magic projectiles have a {0}% chance to be spawned twice at 70% damage, costing 50% of the original attack's damage
+}
+
+SkillfulMagicMastery: {
+	Name: Skillful Magic
+	Tooltip: Using a skill gives {0} seconds of increased crit damage and movement speed
+}
+
+AutomagicMissileMastery: {
+	Name: Automagic Missile
+	Tooltip: Magic hits have a {0}% chance to spawn a Magic Missile which deals 50% of the original hit's damage and homes in on enemies
 }

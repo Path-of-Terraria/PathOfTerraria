@@ -157,6 +157,14 @@ internal class SkillCombatPlayer : ModPlayer
 				Main.mouseY = (int)mouse.Y;
 			}
 
+			foreach (ModPlayer player in Player.ModPlayers)
+			{
+				if (player is SkillHooks.IOnUseSkillPlayer use)
+				{
+					use.OnUseSkill(HotbarSkills[index]);
+				}
+			}
+
 			TicksSinceSkillLastUsed = 0;
 		}
 	}

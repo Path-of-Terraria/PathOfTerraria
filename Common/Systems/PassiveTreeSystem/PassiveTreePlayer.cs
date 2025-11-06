@@ -153,16 +153,7 @@ internal class PassiveTreePlayer : ModPlayer
 	/// </summary>
 	internal bool TryGetCumulativeValue<T>(out float value)
 	{
-		value = 0f;
-
-		foreach (Passive passive in ActiveNodes)
-		{
-			if (passive is T && passive.Level > 0)
-			{
-				value += passive.Value * passive.Level;
-			}
-		}
-
+		value = GetCumulativeValue<T>();
 		return value > 0;
 	}
 

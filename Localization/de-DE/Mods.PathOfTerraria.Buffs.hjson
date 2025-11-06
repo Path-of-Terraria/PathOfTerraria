@@ -156,3 +156,8 @@ AnticipatedStrikeBuff: {
 	// DisplayName: Anticipated Strike
 	// Description: Next skill will be used twice
 }
+
+SkillfulBoostBuff: {
+	// DisplayName: Skillful
+	// Description: Substantially increased crit damage and movement speed
+}
