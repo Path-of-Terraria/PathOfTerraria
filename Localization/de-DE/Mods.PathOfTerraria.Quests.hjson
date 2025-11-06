@@ -11,6 +11,8 @@ Bring: {
 	// GiveItTo: and give it to the {0}
 }
 
+// Skip: Skip?
+// Sure: You sure?
 // TalkTo: Talk to {0}
 // GiveThem: " and give them:"
 // Exploration.Ice: Explore the Ice/Snow biome ({0}%)

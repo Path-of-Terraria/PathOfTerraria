@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Subworlds;
+﻿using PathOfTerraria.Common.Quests;
+using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.ModPlayers;
@@ -39,7 +40,10 @@ internal class DestroyerQuest() : HardmodeQuest(3)
 				MappingDomainSystem.RequiredCompletionsPerTier
 			)),
 			new ConditionCheck("Enter", _ => SubworldSystem.Current is DestroyerDomain, 1, this.GetLocalization("EnterDomain")),
-			new ConditionCheck("Finish", _ => BossTracker.DownedInDomain<DestroyerDomain>(NPCID.TheDestroyer), 1, this.GetLocalization("Boss")),
+			new ConditionCheck("Finish", _ => BossTracker.DownedInDomain<DestroyerDomain>(NPCID.TheDestroyer), 1, this.GetLocalization("Boss"))
+			{
+				SkipCheck = QuestUtils.BossSkipCheck(NPCID.TheDestroyer)
+			},
 		];
 	}
 

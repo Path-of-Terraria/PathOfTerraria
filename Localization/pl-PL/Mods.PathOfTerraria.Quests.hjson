@@ -11,6 +11,8 @@ Bring: {
 	GiveItTo: i daj to {0}
 }
 
+// Skip: Skip?
+// Sure: You sure?
 TalkTo: Porozmawiaj z {0}
 GiveThem: oraz daj im:
 Exploration.Ice: Odkryj biom Lodowy/Śnieżny ({0}%)
