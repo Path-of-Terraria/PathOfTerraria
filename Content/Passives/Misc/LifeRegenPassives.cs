@@ -1,0 +1,57 @@
+﻿using Humanizer;
+using PathOfTerraria.Common.Systems.PassiveTreeSystem;
+using PathOfTerraria.Common.Utilities;
+using Terraria.Localization;
+
+namespace PathOfTerraria.Content.Passives;
+
+internal class LifeRegenRatePassive : Passive
+{
+	public const float RateBonus = 0.15f;
+
+	public sealed class LifeRegenRatePassivePlayer : ModPlayer
+	{
+		public override void NaturalLifeRegen(ref float regen)
+		{
+			int level = Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(nameof(LifeRegenRatePassive));
+			regen *= (1 + (level * RateBonus));
+		}
+	}
+
+	public override string DisplayTooltip => Language.GetTextValue($"Mods.PathOfTerraria.Passives.{Name}.Tooltip").FormatWith(MathUtils.Percent(RateBonus));
+}
+
+internal class LifeRegenCountPassive : Passive
+{
+	public const int LifePerSecond = 2;
+
+	public override string DisplayTooltip => Language.GetTextValue($"Mods.PathOfTerraria.Passives.{Name}.Tooltip").FormatWith(MathUtils.Percent(LifePerSecond));
+
+	public override void BuffPlayer(Player player)
+	{
+		player.lifeRegen += (LifePerSecond * 2) * Level;
+	}
+}
+
+internal class LifeOnKillPassive : Passive
+{
+	public const float Chance = 0.1f;
+	public const float Amount = 0.05f;
+
+	public sealed class LifeOnKillPassivePlayer : ModPlayer
+	{
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			if (target.life <= 0 && !target.SpawnedFromStatue && target.value != 0)
+			{
+				int level = Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(nameof(LifeOnKillPassive));
+				if (Main.rand.NextFloat() < (Chance * level))
+				{
+					Player.Heal(Math.Max((int)(Player.statLifeMax2 * Amount), 2));
+				}
+			}
+		}
+	}
+
+	public override string DisplayTooltip => Language.GetTextValue($"Mods.PathOfTerraria.Passives.{Name}.Tooltip").FormatWith(MathUtils.Percent(Chance), MathUtils.Percent(Amount));
+}
