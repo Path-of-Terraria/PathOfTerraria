@@ -115,6 +115,7 @@ internal sealed class MapResources : ModSystem
 		foreach (ref MapResource resource in ResourcesMut)
 		{
 			resource.Value = resource.MinValue;
+			resource.Discovered = false;
 		}
 	}
 
@@ -192,7 +193,11 @@ internal sealed class MapResources : ModSystem
 
 		foreach (ref readonly MapResource resource in Resources)
 		{
-			resourcesTag[ModContent.GetModItem(resource.AssociatedItem).FullName] = (int)resource.Value;
+			resourcesTag[ModContent.GetModItem(resource.AssociatedItem).FullName] = new TagCompound
+			{
+				{ "value", (int)resource.Value },
+				{ "discovered", resource.Discovered },
+			};
 		}
 	}
 	public override void LoadWorldData(TagCompound tag)
@@ -203,10 +208,13 @@ internal sealed class MapResources : ModSystem
 
 			foreach (KeyValuePair<string, object> pair in resourcesTag)
 			{
-				if (ModContent.TryFind(pair.Key, out ModItem item) && resourcesByItem.TryGetValue(item.Item.netID, out int index))
+				if (ModContent.TryFind(pair.Key, out ModItem item)
+				&& resourcesByItem.TryGetValue(item.Item.netID, out int index)
+				&& pair.Value is TagCompound resourceTag)
 				{
 					ref MapResource resource = ref ResourcesMut[index];
-					resource.Value = Math.Clamp((int)pair.Value, resource.MinValue, resource.MaxValue);
+					resource.Value = (int)resourceTag["value"];
+					resource.Discovered = (bool)resourceTag["discovered"];
 				}
 			}
 		}
