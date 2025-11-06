@@ -15,6 +15,7 @@ using ReLogic.Utilities;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.UI;
@@ -42,7 +43,7 @@ internal sealed class MapDeviceInterface : ModSystem
 		"Vanilla: Interface Logic 3",
 		"Vanilla: Interface Logic 4",
 		$"{nameof(PathOfTerraria)}: {typeof(Tooltip).FullName}",
-		$"{nameof(PathOfTerraria)}: {typeof(MapDeviceState).FullName}", //MapDeviceState.Identifier,
+		$"{nameof(PathOfTerraria)}: {typeof(MapDeviceState).FullName}",
 	];
 
 	public static bool Active { get; private set; }
@@ -53,9 +54,6 @@ internal sealed class MapDeviceInterface : ModSystem
 	{
 		if (!Main.dedServ)
 		{
-			//State = new MapDeviceState();
-			//UIManager.Register(MapDeviceState.Identifier, "Vanilla: Mouse Text", State, offset: -1);
-
 			UIManager.PostModifyInterfaceLayers += PostModifyInterfaceLayers;
 			On_Player.ToggleInv += ToggleInvHook;
 		}
@@ -141,15 +139,12 @@ internal sealed class MapDeviceInterface : ModSystem
 		Entity = null;
 		Active = false;
 		State.OnClosing();
+		Main.playerInventory = false;
 
-		if (fromEntity)
+		SoundEngine.PlaySound(new SoundStyle($"{nameof(PathOfTerraria)}/Assets/Sounds/MapDevice/Close")
 		{
-			Main.playerInventory = false;
-			SoundEngine.PlaySound(new SoundStyle($"{nameof(PathOfTerraria)}/Assets/Sounds/MapDevice/Close")
-			{
-				PitchVariance = 0.1f,
-			});
-		}
+			PitchVariance = 0.1f,
+		});
 	}
 }
 
@@ -311,6 +306,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 	public UIGrid? Inventory { get; private set; }
 	public UIElement? StoragePanel { get; private set; }
 	public UIElement? InventoryPanel { get; private set; }
+	public UIElement[] Canisters { get; private set; } = [];
 
 	public new bool Visible { get => base.Visible; private set => base.Visible = value; }
 
@@ -700,12 +696,43 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 
 		#endregion
 
+		AddCanisters();
+
 		// Put the main window under everything else.
 		RemoveChild(Window);
 		Append(Window);
 
 		Recalculate();
 		Main.QueueMainThreadAction(Recalculate);
+	}
+
+	private void AddCanisters()
+	{
+		List<UIElement> canisters = [];
+		Asset<Texture2D> canisterTex = ModContent.Request<Texture2D>($"{BasePath}/MapDevice_Canister", AssetRequestMode.ImmediateLoad);
+		Vector2 canisterSize = canisterTex.Size();
+
+		foreach (MapResource resource in MapResources.Resources)
+		{
+			int index = canisters.Count;
+			int resourceIndex = resource.AssociatedItem;
+
+			UIElement canister = Window.AddElement(new UIImage(canisterTex), e =>
+			{
+				float xOffset = ((index + 1) / 2) * (index % 2 == 0 ? 1 : -1) * 64;
+				e.SetDimensions(x: (0.5f, +(xOffset - (canisterSize.X * 0.5f))), y: (0f, -96), width: (0f, +canisterSize.X), height: (0f, +canisterSize.Y));
+			});
+
+			canister.AddElement(new UIText(""), e =>
+			{
+				e.AddComponent(new UIDynamicText(_ => $"{MapResources.Get(resourceIndex).Value}"));
+				e.SetDimensions(x: (0.5f, -4), y: (1.0f, +0), width: (0f, +0), height: (0f, +0));
+			});
+
+			canisters.Add(canister);
+		}
+
+		Canisters = canisters.ToArray();
 	}
 
 	private static void OnModifyMapItem(UIElement element, Item oldItem, Item newItem)
