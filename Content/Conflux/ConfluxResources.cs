@@ -97,7 +97,7 @@ internal sealed class InfernalConflux : ConfluxResource
 		return new()
 		{
 			AssociatedItem = Type,
-			Color = Color.OrangeRed,
+			AccentColor = Color.OrangeRed,
 		};
 	}
 
@@ -114,7 +114,7 @@ internal sealed class GlacialConflux : ConfluxResource
 		return new()
 		{
 			AssociatedItem = Type,
-			Color = Color.AliceBlue,
+			AccentColor = Color.AliceBlue,
 		};
 	}
 
@@ -131,7 +131,7 @@ internal sealed class CelestialConflux : ConfluxResource
 		return new()
 		{
 			AssociatedItem = Type,
-			Color = Color.MediumPurple,
+			AccentColor = Color.MediumPurple,
 		};
 	}
 

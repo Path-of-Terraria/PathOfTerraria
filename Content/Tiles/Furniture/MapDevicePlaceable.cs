@@ -413,6 +413,9 @@ internal class MapDeviceEntity : ModTileEntity
 			if (Main.netMode == NetmodeID.Server)
 			{
 				MapDeviceInteraction.Send(ID, MapDeviceInteraction.Kind.OpenInterface, toClient: playerId.Value);
+
+				// Synchronize map resources just in case the world or the client have never received them.
+				MapResources.RequestMessage.Send();
 			}
 		}
 

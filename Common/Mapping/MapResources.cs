@@ -10,44 +10,81 @@ namespace PathOfTerraria.Common.Mapping;
 
 internal record struct MapResource()
 {
+	/// <summary> The item ID that will be used to refer to this resource. </summary>
 	public required int AssociatedItem;
-	public required Color Color;
+	/// <summary> The color to use when referring to this resource in text or sprite rendering. </summary>
+	public required Color AccentColor;
+	/// <summary> The current amount of this resource. </summary>
 	public int Value;
+	/// <summary> The minimum amount of this resource that can be. </summary>
 	public int MinValue = 0;
+	/// <summary> The maximum amount of this resource that can be. </summary>
 	public int MaxValue = int.MaxValue;
+	/// <summary> Whether this resource has been discovered by the player. Will affect how and whether it will be displayed. </summary>
 	public bool Discovered;
 }
 
 /// <summary> Tracks and synchronizes <see cref="MapResource"/>s across servers and clients. </summary>
 internal sealed class MapResources : ModSystem
 {
+	/// <summary> Synchronizes all resource values. Can only be sent by servers. </summary>
 	internal sealed class SynchronizeMessage : Handler
 	{
-		public static void SendToClientsAndSubworlds()
+		public static void Send(bool sendToSubworlds)
 		{
 			ModPacket packet = Networking.GetPacket<SynchronizeMessage>();
 			ModContent.GetInstance<MapResources>().NetSend(packet);
 			packet.Send();
-			SubworldSystem.SendToAllSubservers(PoTMod.Instance, Networking.GetFinalPacketBuffer(packet));
-		}
 
-		public static void SendToSubworld(int id)
-		{
-			ModPacket packet = Networking.GetPacket<SynchronizeMessage>();
-			ModContent.GetInstance<MapResources>().NetSend(packet);
-			SubworldSystem.SendToSubserver(id, PoTMod.Instance, Networking.GetFinalPacketBuffer(packet));
+			if (sendToSubworlds) { SubworldSystem.SendToAllSubservers(PoTMod.Instance, Networking.GetFinalPacketBuffer(packet)); }
 		}
 
 		internal override void Receive(BinaryReader reader, byte sender)
 		{
 			// Only servers can send this.
-			if (sender >= byte.MaxValue)
+			if (sender < byte.MaxValue) { return; }
+
+			ModContent.GetInstance<MapResources>().NetReceive(reader);
+
+			// Resend to clients in case we are a subworld that received this from the main server.
+			if (Main.netMode == NetmodeID.Server)
 			{
-				ModContent.GetInstance<MapResources>().NetReceive(reader);
+				Send(sendToSubworlds: false);
 			}
 		}
 	}
 
+	/// <summary> Requests so that map resources are sent to this client or subserver. </summary>
+	internal sealed class RequestMessage : Handler
+	{
+		public static void Send()
+		{
+			ModPacket packet = Networking.GetPacket<RequestMessage>();
+
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				packet.Send();
+			}
+			else if (Main.netMode == NetmodeID.Server)
+			{
+				SubworldSystem.SendToMainServer(PoTMod.Instance, Networking.GetFinalPacketBuffer(packet));
+			}
+		}
+
+		internal override void ServerReceive(BinaryReader reader, byte sender)
+		{
+			if (SubworldSystem.Current == null)
+			{
+				needsSync = true;
+			}
+			else
+			{
+				Send();
+			}
+		}
+	}
+
+	/// <inheritdoc cref="AddOrRemove"/>
 	internal sealed class AddOrRemoveMessage : Handler
 	{
 		public static ModPacket Write(int itemId, int delta)
@@ -83,9 +120,9 @@ internal sealed class MapResources : ModSystem
 
 	public override void PostUpdateEverything()
 	{
-		if (Main.netMode == NetmodeID.Server && needsSync)
+		if (Main.netMode == NetmodeID.Server && needsSync && SubworldSystem.Current == null)
 		{
-			SynchronizeMessage.SendToClientsAndSubworlds();
+			SynchronizeMessage.Send(sendToSubworlds: true);
 			needsSync = false;
 		}
 	}
