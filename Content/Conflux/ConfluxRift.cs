@@ -237,7 +237,11 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		BitFlags |= Flags.Activated;
 		EndTime = Main.GameUpdateCount + (lengthInSeconds * (uint)TimeSystem.LogicFramerate);
 		Encounter = CreateEncounter(lengthInSeconds);
-		Projectile.netUpdate = true;
+
+		if (Main.netMode == NetmodeID.Server)
+		{
+			NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, Projectile.whoAmI);
+		}
 	}
 
 	public void Close()
@@ -245,7 +249,11 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		if (Closing || Main.netMode == NetmodeID.MultiplayerClient) { return; }
 
 		BitFlags |= Flags.Closing;
-		Projectile.netUpdate = true;
+
+		if (Main.netMode == NetmodeID.Server)
+		{
+			NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, Projectile.whoAmI);
+		}
 
 		UpdateProgress();
 		RemoveEncounter();
@@ -260,7 +268,11 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		if (progress != Progress)
 		{
 			Progress = progress;
-			Projectile.netUpdate = true;
+
+			if (Main.netMode == NetmodeID.Server)
+			{
+				NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, Projectile.whoAmI);
+			}
 		}
 	}
 
