@@ -34,12 +34,13 @@ public class EyeDomain : BossDomainSubworld
 		HaltTimeOnVanish = 60 * 10,
 	};
 
+	private bool spawnedEncounters;
+
 	public override List<GenPass> Tasks =>
 	[
 		new PassLegacy("Reset", ResetStep),
 		new PassLegacy("Surface", GenSurface),
 		new PassLegacy("Grass", (progress, _) => PlaceGrassAndDecor(progress, true, Mod, out Arena)),
-		new PassLegacy("Encounters", PlaceEncounters),
 	];
 
 	public static void PlaceGrassAndDecor(GenerationProgress progress, bool includeFleshStuff, Mod mod, out Rectangle arena)
@@ -217,7 +218,7 @@ public class EyeDomain : BossDomainSubworld
 		}
 	}
 
-	public static void PlaceEncounters(GenerationProgress progress, GameConfiguration configuration)
+	private static void PlaceEncounters()
 	{
 		const int worldEdgeOffset = 5;
 		const int freeSpaceInTiles = 7;
@@ -228,11 +229,11 @@ public class EyeDomain : BossDomainSubworld
 			CollisionSize = new(freeSpaceInTiles * TileUtils.TileSizeInPixels, freeSpaceInTiles * TileUtils.TileSizeInPixels),
 			OnGround = true,
 			MinDistanceFromEnemies = 0f,
-			MinDistanceFromPlayers = 0f,
+			MinDistanceFromPlayers = 2048f,
 			MaxSearchAttempts = 512,
 		};
 
-		for (int i = 0; i < 20; i++)
+		for (int i = 0; i < 12; i++)
 		{
 			if (!EnemySpawning.TryFindingSpawnPosition(in placement, out Vector2 position))
 			{
@@ -274,6 +275,12 @@ public class EyeDomain : BossDomainSubworld
 
 	public override void Update()
 	{
+		if (!spawnedEncounters && Main.ActivePlayers.GetEnumerator().MoveNext())
+		{
+			PlaceEncounters();
+			spawnedEncounters = true;
+		}
+
 		TileEntity.UpdateStart();
 
 		foreach (TileEntity te in TileEntity.ByID.Values)

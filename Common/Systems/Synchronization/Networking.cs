@@ -176,6 +176,11 @@ internal static class Networking
 		/// </summary>
 		SpawnSentryNPC,
 
+		/// Synchronizes right click interactions with rifts.<br/>Signature:<br/>
+		/// <c>byte sender, int riftIdentity</c>
+		/// </summary>
+		RiftInteraction,
+
 		/// <summary>
 		/// Spawns arbitrary, pre-defined VFX on all clients and server. 
 		/// Used for code run on only one client that should be shown on all clients, such as projectile spawning VFX, or server-side operations.<br/>Signature:<br/>

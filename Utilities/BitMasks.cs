@@ -139,12 +139,10 @@ internal struct BitMask<T>(T value) where T : unmanaged, IUnsignedNumber<T>, IBi
 		Debug.Assert(mask.TrailingOneCount() == 0);
 	}
 
-	public ref struct Iterator(BitMask<T> mask) : IEnumerator<int>
+	public ref struct Iterator(BitMask<T> mask)
 	{
 		public BitMask<T> Mask = mask;
 		public int Current { get; private set; } = -1;
-
-		readonly object IEnumerator.Current => Current;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public bool MoveNext()
@@ -159,8 +157,5 @@ internal struct BitMask<T>(T value) where T : unmanaged, IUnsignedNumber<T>, IBi
 			Mask.Unset(Current);
 			return true;
 		}
-
-		readonly void IDisposable.Dispose() { }
-		void IEnumerator.Reset() => throw new NotImplementedException();
 	}
 }
