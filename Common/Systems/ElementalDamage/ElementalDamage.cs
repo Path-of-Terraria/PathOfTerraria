@@ -118,7 +118,7 @@ public readonly struct ElementalDamage
 				break;
 
 			case ElementType.Cold when entity is NPC frozenNPC:
-				float baseEffectiveness = 3.6f * (elementalDamageDealt / (float)frozenNPC.lifeMax) * 9823;
+				float baseEffectiveness = 3.6f * (elementalDamageDealt / (float)frozenNPC.lifeMax);
 				float duration = player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.FreezeEffectiveness.ApplyTo(baseEffectiveness);
 
 				if (duration > 0.3f)
@@ -163,7 +163,7 @@ public readonly struct ElementalDamage
 		return type switch
 		{
 			ElementType.Fire => info.Crit,
-			ElementType.Cold => true || entity is NPC { boss: false } && info.Crit,
+			ElementType.Cold => entity is NPC { boss: false } && info.Crit,
 			ElementType.Chaos => false,
 			ElementType.Lightning => info.Crit || defaultPercent + player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<ShockChancePassive>() / 100f > Main.rand.NextFloat(),
 			_ => defaultPercent > Main.rand.NextFloat(),
