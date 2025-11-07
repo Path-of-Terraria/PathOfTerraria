@@ -54,7 +54,7 @@ public class Swarm : Skill
 	public override void LevelTo(byte level)
 	{
 		Level = level;
-		Cooldown = MaxCooldown = 1;// (5 - Level) * 60;
+		Cooldown = MaxCooldown = (5 - Level) * 60;
 		ManaCost = 10 - Level * 3;
 		Duration = SentryNPC.DefaultSentryDuration;
 		WeaponType = ItemType.None;
@@ -84,18 +84,18 @@ public class Swarm : Skill
 		else
 		{
 			int type = ModContent.ProjectileType<LocustSpawnCircle>();
-			int damage = 15 * Level;
+			int damage = 2 * Level;
 
 			if (Tree.Specialization is AntlionSwarm)
 			{
-				damage = 25 * Level;
+				damage = 5 * Level;
 			}
 
 			int proj = Projectile.NewProjectile(new EntitySource_UseSkill(player, this), pos, Vector2.Zero, type, damage, 0, player.whoAmI, TotalDuration);
 
 			if (Tree.Specialization is GlacialAntlions)
 			{
-				int bonusDamage = player.HasTreePassive<PestSwarmTree, FrostbiteMandibles>() ? 5 + player.GetPassiveStrength<PestSwarmTree, AggressiveChill>() * 3 : 0;
+				int bonusDamage = player.HasTreePassive<PestSwarmTree, FrostbiteMandibles>() ? 3 + player.GetPassiveStrength<PestSwarmTree, AggressiveChill>() * 3 : 0;
 				Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>().Container[ElementType.Cold].DamageModifier.AddModifiers(bonusDamage, 1);
 			}
 		}

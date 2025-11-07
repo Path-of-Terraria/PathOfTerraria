@@ -346,3 +346,9 @@ ClassPages: {
 		// Nouns: Conjurer;Summoner
 	}
 }
+
+MapDevice: {
+	// ActivatePortal: Open Portal
+	// DeactivatePortal: Close Portal
+	// AlreadyInUse: This map device is already in use!
+}

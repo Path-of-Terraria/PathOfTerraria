@@ -1,4 +1,7 @@
 ﻿using PathOfTerraria.Common.NPCs.ConditionalDropping;
+using PathOfTerraria.Common.Quests;
+using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
+using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.ModPlayers;
@@ -66,7 +69,10 @@ internal class EoCQuest : Quest
 						NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
 					}
 				}),
-			new KillCount("KillEoC", NPCID.EyeofCthulhu, 1, this.GetLocalization("Kill.EoC")),
+			new ConditionCheck("KillEoC", _ => BossTracker.DownedInDomain<EyeDomain>(NPCID.EyeofCthulhu), 1, this.GetLocalization("Kill.EoC"))
+			{
+				SkipCheck = QuestUtils.BossSkipCheck(NPCID.EyeofCthulhu)
+			},
 			new ActionStep((_, _) =>
 			{
 				RavencrestSystem.UpgradeBuilding("Observatory");

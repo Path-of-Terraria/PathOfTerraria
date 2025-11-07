@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Reflection;
 using Terraria.UI;
 
 namespace PathOfTerraria.Core.UI;
@@ -70,9 +71,23 @@ public sealed partial class UIManager : ModSystem
 	/// </summary>
 	public static List<UIStateData> Data { get; set; } = [];
 
+	/// <summary> An injected event called after all mod systems are done invoking their ModifyInterfaceLayers hook. </summary>
+	public static event Action<List<GameInterfaceLayer>> PostModifyInterfaceLayers;
+
+	public override void Load()
+	{
+		MonoModHooks.Add(typeof(SystemLoader).GetMethod(nameof(SystemLoader.ModifyInterfaceLayers)), (Action<List<GameInterfaceLayer>> orig, List<GameInterfaceLayer> layers) =>
+		{
+			orig(layers);
+			PostModifyInterfaceLayers?.Invoke(layers);
+		});
+	}
+
 	public override void Unload()
 	{
 		base.Unload();
+
+		PostModifyInterfaceLayers = null;
 
 		for (int i = 0; i < Data.Count; i++)
 		{

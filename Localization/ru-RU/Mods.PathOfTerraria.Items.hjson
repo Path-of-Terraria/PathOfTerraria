@@ -1353,6 +1353,21 @@ ObsidianAdversaryItem: {
 	// Tooltip: "'The harrowing visage seems to stare back...'"
 }
 
+CelestialConflux: {
+	// DisplayName: Celestial Conflux
+	// Tooltip: ""
+}
+
+GlacialConflux: {
+	// DisplayName: Glacial Conflux
+	// Tooltip: ""
+}
+
+InfernalConflux: {
+	// DisplayName: Infernal Conflux
+	// Tooltip: ""
+}
+
 GreenCore: {
 	// DisplayName: Natural Core
 	// Tooltip: ""

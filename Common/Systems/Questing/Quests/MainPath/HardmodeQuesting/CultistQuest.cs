@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Subworlds;
+﻿using PathOfTerraria.Common.Quests;
+using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.ModPlayers;
@@ -39,7 +40,10 @@ internal class CultistQuest() : HardmodeQuest(9)
 				MappingDomainSystem.RequiredCompletionsPerTier
 			)),
 			new ConditionCheck("Enter", _ => SubworldSystem.Current is CultistDomain, 1, this.GetLocalization("EnterDomain")),
-			new ConditionCheck("Finish", _ => BossTracker.DownedInDomain<CultistDomain>(NPCID.CultistBoss), 1, this.GetLocalization("Boss")),
+			new ConditionCheck("Finish", _ => BossTracker.DownedInDomain<CultistDomain>(NPCID.CultistBoss), 1, this.GetLocalization("Boss"))
+			{
+				SkipCheck = QuestUtils.BossSkipCheck(NPCID.CultistBoss)
+			},
 		];
 	}
 

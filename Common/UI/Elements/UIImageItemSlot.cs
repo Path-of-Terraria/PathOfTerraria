@@ -5,6 +5,9 @@ using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.UI;
+using Terraria.UI.Chat;
+
+#nullable enable
 
 namespace PathOfTerraria.Common.UI.Elements;
 
@@ -13,19 +16,22 @@ namespace PathOfTerraria.Common.UI.Elements;
 /// <summary>
 ///     Provides an item slot wrapper as a <see cref="UIElement" />.
 /// </summary>
-public class UIImageItemSlot(
+public class UIImageItemSlot
+(
 	Asset<Texture2D> backgroundTexture,
 	Asset<Texture2D> iconTexture,
-UIImageItemSlot.SlotWrapper itemHandler,
+	UIImageItemSlot.SlotWrapper itemHandler,
 	int context = ItemSlot.Context.InventoryItem,
 	(string Key, object Arg0)? hoverText = null,
 	bool skipAutoSizing = false,
 	float iconScalingSize = UIImageItemSlot.DefaultIconSize
-	) : UIElement
+) : UIElement
 {
 	public const float DefaultIconSize = 24f;
 
-	public delegate void ItemInsertionCallback(Item newItem, Item currentItem);
+	public delegate void ItemUpdateCallback(UIElement element, Item oldItem, Item newItem);
+
+	public delegate bool IsLockedPredicate(UIImageItemSlot slot);
 
 	public delegate bool ItemInsertionPredicate(Item newItem, Item currentItem);
 
@@ -64,12 +70,12 @@ UIImageItemSlot.SlotWrapper itemHandler,
 	/// <summary>
 	///     The background of the item slot.
 	/// </summary>
-	public UIImage? Background { get; protected set; }
+	public UIImage Background { get; protected set; } = null!;
 
 	/// <summary>
 	///     The icon of the item slot.
 	/// </summary>
-	public UIHoverImage? Icon { get; protected set; }
+	public UIHoverImage Icon { get; protected set; } = null!;
 
 	protected Asset<Texture2D> BackgroundTexture = backgroundTexture;
 
@@ -84,14 +90,17 @@ UIImageItemSlot.SlotWrapper itemHandler,
 	protected Asset<Texture2D> IconTexture = iconTexture;
 
 	/// <summary>
-	///     The inventory that the slots wraps itself around.
+	///     Can be used to determine whether an item can be inserted into the slot or not.
 	/// </summary>
-	public Item[]? Inventory;
+	public ItemInsertionPredicate? Predicate { get; set; }
 
 	/// <summary>
 	///     Can be used to determine whether an item can be inserted into the slot or not.
 	/// </summary>
-	public ItemInsertionPredicate? Predicate;
+	public IsLockedPredicate? IsLocked { get; set; }
+
+	/// <summary> Controls whether to render the stack value. </summary>
+	public bool DrawStack { get; set; } = true;
 
 	/// <summary>
 	///    The localization key and optional argument to use for tooltip hover.
@@ -102,9 +111,9 @@ UIImageItemSlot.SlotWrapper itemHandler,
 	public (string Key, object Arg0)? HoverText = hoverText;
 
 	/// <summary>
-	///     Can be used to register a callback to execute logic when an item is inserted into the slot. Unused at the moment.
+	///     Can be used to register a callback to execute logic when an item is inserted into the slot.
 	/// </summary>
-	//public event ItemInsertionCallback? OnInsertItem;
+	public event ItemUpdateCallback? OnModifyItem;
 
 	public override void OnInitialize()
 	{
@@ -147,14 +156,15 @@ UIImageItemSlot.SlotWrapper itemHandler,
 		// scaling and centering the item, so we have to manually offset the item
 		// left to counteract this automatic positioning.
 		Asset<Texture2D> tex = GetIconToDraw();
+		CalculatedStyle dims = GetDimensions();
 
 		if (tex.Width() > BackgroundTexture.Width() && !skipAutoSize)
 		{
-			Icon!.Left = StyleDimension.FromPixels(-(tex.Width() - BackgroundTexture.Width()) / 2f);
+			Icon.Left = StyleDimension.FromPixels(-(tex.Width() - BackgroundTexture.Width()) / 2f);
 		}
 		else
 		{
-			Icon!.Left = StyleDimension.FromPixels(0);
+			Icon.Left = StyleDimension.FromPixels(0);
 		}
 
 		if (tex.Height() > BackgroundTexture.Height() && !skipAutoSize)
@@ -169,52 +179,84 @@ UIImageItemSlot.SlotWrapper itemHandler,
 		UpdateIcon();
 	}
 
-	protected override void DrawSelf(SpriteBatch spriteBatch)
+	public override void Draw(SpriteBatch sb)
 	{
-		base.DrawSelf(spriteBatch);
-
 		UpdateInteraction();
+
+		base.Draw(sb);
+
+		if (Item is { IsAir: false })
+		{
+			DrawItem(sb);
+		}
+	}
+
+	protected virtual void DrawItem(SpriteBatch sb)
+	{
+		Main.instance.LoadItem(Item.type);
+
+		CalculatedStyle dimensions = GetDimensions();
+		Vector2 uiSize = new(dimensions.Width, dimensions.Height);
+		Vector2 center = dimensions.Center();
+
+		if (Icon.RemoveFloatingPointsFromDrawPosition)
+		{
+			center = center.Floor();
+		}
+
+		float baseScale = 1f * Icon.ImageScale;
+		float sizeLimit = IconSize; //Math.Min(dimensions.Width, dimensions.Height);
+
+		ItemSlot.DrawItemIcon(Item, ItemSlot.Context.InventoryItem, sb, center, baseScale, sizeLimit, Color.White);
+
+		if (DrawStack && Item.stack > 1)
+		{
+			float invScale = 1f;
+			Vector2 stackPos = (dimensions.Position() + new Vector2(dimensions.Width, dimensions.Height) * new Vector2(0.1f, 0.55f)) * invScale;
+			ChatManager.DrawColorCodedStringWithShadow(sb, FontAssets.ItemStack.Value, Item.stack.ToString(), stackPos, Color.White, 0f, Vector2.Zero, new Vector2(invScale), -1f, invScale);
+		}
 	}
 
 	protected virtual void UpdateIcon()
 	{
-		if (!Item.IsAir)
-		{
-			Icon!.SetItem(Item);
-
-			//Texture2D texture = TextureAssets.Item[Item.type].Value;
-			//Rectangle frame = Main.itemAnimations[Item.type] == null ? texture.Frame() : Main.itemAnimations[Item.type].GetFrame(texture);
-			//float size = Math.Min(MathF.Min(frame.Width, frame.Height), IconSize);
-
-			//ItemSlot.DrawItem_GetColorAndScale(Item, Item.scale, ref Icon.Color, size, ref frame, out _, out float finalDrawScale);
-
-			//Icon.ImageScale = finalDrawScale;
-		}
-		else
-		{
-			Icon!.ImageScale = 1f;
-			Icon.SetItem(null);
-		}
-
 		Icon.SetImage(GetIconToDraw());
 	}
 
 	protected virtual void UpdateInteraction()
 	{
-		if (!IsMouseHovering || PlayerInput.IgnoreMouseInterface || !Main.mouseItem.IsAir && Predicate?.Invoke(Main.mouseItem, Item) == false)
+		if (!IsMouseHovering || PlayerInput.IgnoreMouseInterface)
 		{
 			return;
 		}
 
+		if (IsLocked?.Invoke(this) == true)
+		{
+			return;
+		}
+
+		if (!Main.mouseItem.IsAir && Predicate?.Invoke(Main.mouseItem, Item) == false)
+		{
+			return;
+		}
+
+		Item item = Item;
+		(Item oldItem, int oldType, int oldStack, int oldPrefix) = (item, item.type, item.stack, item.prefix);
+
 		if (handler.ByInventory?.Invoke() is { } inv)
 		{
 			ItemSlot.Handle(inv.Inventory, slot: inv.Slot, context: Context);
+			item = Item;
 		}
 		else
 		{
-			Item item = Item;
 			ItemSlot.Handle(ref item, context: Context);
 			Item = item;
+		}
+
+		// Invoke event if the item is perceived as modified.
+		if (item != oldItem || item.type != oldType || item.stack != oldStack || item.prefix != oldPrefix)
+		{
+			OnModifyItem?.Invoke(this, oldItem, item);
 		}
 
 		if (HoverText is { } hoverText)
@@ -235,8 +277,6 @@ UIImageItemSlot.SlotWrapper itemHandler,
 			return IconTexture;
 		}
 		
-		Main.instance.LoadItem(Item.type);
-		
-		return TextureAssets.Item[Item.type];
+		return Asset<Texture2D>.Empty;
 	}
 }

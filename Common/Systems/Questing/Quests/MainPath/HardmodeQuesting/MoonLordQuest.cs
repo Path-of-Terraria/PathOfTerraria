@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
+﻿using PathOfTerraria.Common.Quests;
+using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
@@ -25,7 +26,10 @@ internal class MoonLordQuest() : HardmodeQuest(10)
 		return
 		[
 			new ConditionCheck("Enter", _ => SubworldSystem.Current is MoonLordDomain, 1, this.GetLocalization("EnterDomain")),
-			new ConditionCheck("Finish", _ => BossTracker.DownedInDomain<MoonLordDomain>(NPCID.MoonLordCore), 1, this.GetLocalization("Boss")),
+			new ConditionCheck("Finish", _ => BossTracker.DownedInDomain<MoonLordDomain>(NPCID.MoonLordCore), 1, this.GetLocalization("Boss"))
+			{
+				SkipCheck = QuestUtils.BossSkipCheck(NPCID.MoonLordCore)
+			},
 		];
 	}
 

@@ -528,3 +528,48 @@ BludgeoningBlowMastery: {
 	Name: Bludgeoning Blow
 	Tooltip: Killing a frozen enemy will shatter it for {0}% of the killing blow's damage
 }
+
+YoyoDamagePassive: {
+	Name: Increased Yoyo Damage
+	Tooltip: +{0}% increased yoyo damage
+}
+
+YoyoDurationPassive: {
+	Name: Doubled Yoyo Duration
+	Tooltip: Doubles yoyo use duration
+}
+
+YoyoRangePassive: {
+	Name: Increased Yoyo Range
+	Tooltip: +{0}% increased yoyo range
+}
+
+YoyoSpeedPassive: {
+	Name: Increased Yoyo Speed
+	Tooltip: +{0}% increased yoyo speed
+}
+
+IncreasedWhipReachPassive: {
+	Name: Increased Whip Reach
+	Tooltip: +{0}% increased whip reach
+}
+
+IncreasedTagCritPassive: {
+	Name: Increased Tag Critical Chance
+	Tooltip: +{0}% increased crit chance against tagged enemies
+}
+
+LifeRegenRatePassive: {
+	Name: Increased Life Regeneration Rate
+	Tooltip: +{0}% life regeneration rate
+}
+
+LifeRegenCountPassive: {
+	Name: Increased Life Regeneration Strength
+	Tooltip: +{0}% life regenerated per second
+}
+
+LifeOnKillPassive: {
+	Name: Life Recovery
+	Tooltip: +{0}% chance to recover {1}% life on kill
+}

@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using PathOfTerraria.Common.Quests;
+using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
 using PathOfTerraria.Content.Items.Pickups.GrimoirePickups;
 using PathOfTerraria.Content.NPCs.Town;
+using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
@@ -39,7 +42,10 @@ internal class QueenBeeQuest : Quest
 						}
 					}
 				}),
-			new KillCount("Kill", NPCID.QueenBee, 1, this.GetLocalization("KillQueen")),
+			new ConditionCheck("Kill", _ => BossTracker.DownedInDomain<QueenBeeDomain>(NPCID.QueenBee), 1, this.GetLocalization("KillQueen"))
+			{
+				SkipCheck = QuestUtils.BossSkipCheck(NPCID.QueenBee)
+			},
 			new InteractWithNPC("Finish", NPCQuestGiver, LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.QueenBeeKilled"))
 			{
 				CountsAsCompletedOnMarker = true

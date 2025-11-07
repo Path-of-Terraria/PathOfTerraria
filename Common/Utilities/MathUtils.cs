@@ -4,6 +4,23 @@ namespace PathOfTerraria.Common.Utilities;
 
 public static class MathUtils
 {
+	/// <summary> Approaches <paramref name="goal"/> by adding <paramref name="step"/> to move <paramref name="value"/> towards it. </summary>
+	public static float StepTowards(float value, float goal, float step)
+	{
+		if (goal > value)
+		{
+			value += step;
+			if (value > goal) { return goal; }
+		}
+		else if (goal < value)
+		{
+			value -= step;
+			if (value < goal) { return goal; }
+		}
+
+		return value;
+	}
+
 	public static StyleDimension Lerp(StyleDimension from, StyleDimension to, float t)
 	{
 		return new StyleDimension()

@@ -232,6 +232,22 @@ public sealed class QuestDebugState : SmartUiState
 					SmartUiLoader.GetUiState<QuestsUIState>().Refresh();
 				};
 
+				e.OnRightClick += (evt, self) =>
+				{
+					if (!quest.Active && !quest.Completed)
+					{
+						return;
+					}
+
+					if (!quest.Completed && quest.CurrentStep <= 1)
+					{
+						return;
+					}
+
+					quest.Advance(Main.LocalPlayer, delta: -2);
+					SmartUiLoader.GetUiState<QuestsUIState>().Refresh();
+				};
+
 				buttonX += e.Width.Pixels;
 			});
 			// State info panel. Button, but doesn't do anything.
@@ -274,6 +290,25 @@ public sealed class QuestDebugState : SmartUiState
 					else
 					{
 						quest.Advance(Main.LocalPlayer, delta: 1);
+					}
+
+					SmartUiLoader.GetUiState<QuestsUIState>().Refresh();
+				};
+
+				e.OnRightClick += (evt, self) =>
+				{
+					if (quest.Completed)
+					{
+						return;
+					}
+
+					if (!quest.Active)
+					{
+						Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest(quest.FullName);
+					}
+					else
+					{
+						quest.Advance(Main.LocalPlayer, delta: 2);
 					}
 
 					SmartUiLoader.GetUiState<QuestsUIState>().Refresh();
