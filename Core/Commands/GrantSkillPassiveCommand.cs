@@ -7,11 +7,11 @@ namespace PathOfTerraria.Core.Commands;
 #if DEBUG
 public sealed class GrantSkillPassiveCommand : ModCommand
 {
-	public override string Command => "grantskillpassive";
+	public override string Command => "skillpoint";
 
 	public override CommandType Type => CommandType.Chat;
 
-	public override string Usage => "[c/ff6a00:Usage: /grantskillpassive <skillName>]";
+	public override string Usage => "[c/ff6a00:Usage: /skillpoint <skillName>]";
 
 	public override string Description => "Grants a skill passive points to a player";
 
