@@ -2065,6 +2065,11 @@
 		"referenceId": 110,
 		"maxLevel": 1,
 		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1039
+			}
+		],
 		"position": {
 			"x": 1097,
 			"y": 595
@@ -2081,12 +2086,71 @@
 			},
 			{
 				"referenceId": 110
+			},
+			{
+				"referenceId": 1039
 			}
 		],
 		"position": {
 			"x": 1201,
 			"y": 540
 		}
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1039,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1040
+			},
+			{
+				"referenceId": 1041
+			},
+			{
+				"referenceId": 1042
+			}
+		],
+		"position": {
+			"x": 1184,
+			"y": 645
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "SharpenedSpellsMastery",
+		"referenceId": 1040,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 1179,
+			"y": 705
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "AbsoluteZeroMastery",
+		"referenceId": 1041,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 1229,
+			"y": 710
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "BludgeoningBlowMastery",
+		"referenceId": 1042,
+		"maxLevel": 1,
+		"value": 25,
+		"position": {
+			"x": 1234,
+			"y": 660
+		},
+		"isHidden": true
 	},
 	{
 		"internalIdentifier": "ChanceToFreezePassive",

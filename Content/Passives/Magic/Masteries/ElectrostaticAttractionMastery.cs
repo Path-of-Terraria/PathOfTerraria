@@ -27,8 +27,13 @@ internal class ElectrostaticAttractionMastery : Passive
 			Player.GetModPlayer<ElementalPlayer>().Container[ElementType.Lightning].Multiplier += StackCount / 20f;
 		}
 
-		public void ElementalOnHitNPC(NPC target, ElementInstance ele, ElementalContainer con, ElementalContainer other, int finalDamage, NPC.HitInfo hitInfo, Item item = null)
+		public void ElementalOnHitNPC(bool post, NPC target, ElementInstance ele, ElementalContainer con, ElementalContainer other, int finalDamage, NPC.HitInfo hitInfo, Item item = null)
 		{
+			if (post)
+			{
+				return;
+			}
+
 			if (ele.Type == ElementType.Lightning && Player.GetModPlayer<PassiveTreePlayer>().HasNode<ElectrostaticAttractionMastery>())
 			{
 				Player.AddBuff(ModContent.BuffType<ElectrostaticBuff>(), Duration);

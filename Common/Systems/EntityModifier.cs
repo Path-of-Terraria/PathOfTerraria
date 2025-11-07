@@ -35,6 +35,9 @@ public partial class EntityModifier : EntityModifierSegment
 	public StatModifier CriticalMultiplier = new();
 	public OnHitDeBuffer Buffer = [];
 
+	public StatModifier ChilledEffectiveness = new();
+	public StatModifier FreezeEffectiveness = new();
+
 	// SummonCritPlayer:
 	public AddableFloat SummonCritChance = new();
 

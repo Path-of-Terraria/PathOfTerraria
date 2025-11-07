@@ -513,3 +513,18 @@ AutomagicMissileMastery: {
 	// Name: Automagic Missile
 	// Tooltip: Magic hits have a {0}% chance to spawn a Magic Missile which deals 50% of the original hit's damage and homes in on enemies
 }
+
+SharpenedSpellsMastery: {
+	// Name: Sharpened Spells
+	// Tooltip: Enemies frozen by you will take 25% more damage from all direct sources
+}
+
+AbsoluteZeroMastery: {
+	// Name: Absolute Zero
+	// Tooltip: Chilled is {0}% stronger and freeze lasts {1}% longer
+}
+
+BludgeoningBlowMastery: {
+	// Name: BludgeoningBlowMastery
+	// Tooltip: Killing a frozen enemy will shatter it for {0}% of the killing blow's damage
+}

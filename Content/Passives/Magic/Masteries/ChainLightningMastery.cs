@@ -8,8 +8,13 @@ internal class ChainLightningMastery : Passive
 {
 	internal class ChainLightningPlayer : ModPlayer, ElementalPlayerHooks.IElementalOnHitPlayer
 	{
-		public void ElementalOnHitNPC(NPC target, ElementInstance ele, ElementalContainer con, ElementalContainer other, int finalDamage, NPC.HitInfo hitInfo, Item item = null)
+		public void ElementalOnHitNPC(bool post, NPC target, ElementInstance ele, ElementalContainer con, ElementalContainer other, int finalDamage, NPC.HitInfo hitInfo, Item item = null)
 		{
+			if (post)
+			{
+				return;
+			}
+
 			PassiveTreePlayer treePlayer = Player.GetModPlayer<PassiveTreePlayer>();
 
 			if (ele.Type == ElementType.Lightning && treePlayer.TryGetCumulativeValue<ChainLightningMastery>(out float value) && Main.rand.NextFloat() < value / 100f)

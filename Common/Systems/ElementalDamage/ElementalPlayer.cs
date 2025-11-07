@@ -192,12 +192,19 @@ public class ElementalPlayer : ModPlayer
 				Main.NewText($"  {element.Type}:        {totalAdditionalDamage}");
 			}
 
+			NPC npc = null;
+
+			if (target is NPC checkNpc)
+			{
+				npc = checkNpc;
+			}
+
 			// Debuff applications
 			if (optionalHitInfo is { } hitInfo && player is not null)
 			{
-				if (target is NPC npc)
+				if (npc is not null)
 				{
-					ElementalPlayerHooks.ElementalOnHitNPC(player, element, npc, container, other, finalDamage, hitInfo, item);
+					ElementalPlayerHooks.ElementalOnHitNPC(player, false, element, npc, container, other, finalDamage, hitInfo, item);
 				}
 
 				// If theres any conversion being done on either base elemental or added elemental damage
@@ -209,7 +216,17 @@ public class ElementalPlayer : ModPlayer
 					int totalElementalDamageForDebuff = (int)(finalDamage * totalConversion) + flatDamage;
 					TryAddElementBuff(player, target, element.DamageModifier.ElementType, totalElementalDamageForDebuff, optionalHitInfo.Value);
 				}
+
+				if (npc is not null)
+				{
+					ElementalPlayerHooks.ElementalOnHitNPC(player, true, element, npc, container, other, finalDamage, hitInfo, item);
+				}
 			}
+		}
+
+		if (player is Player plr && target is NPC postNpc && optionalHitInfo.HasValue)
+		{
+			ElementalPlayerHooks.PostElementalHit(plr, postNpc, container, other, finalDamage, optionalHitInfo.Value, item);
 		}
 	}
 

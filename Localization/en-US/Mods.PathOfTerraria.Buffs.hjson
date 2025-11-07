@@ -169,3 +169,8 @@ SkillfulBoostBuff: {
 	DisplayName: Skillful
 	Description: Substantially increased crit damage and movement speed
 }
+
+BrittleDebuff: {
+	DisplayName: Brittle Debuff
+	Description: Mods.PathOfTerraria.Buffs.BrittleDebuff.Description
+}

@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
+﻿using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.Buffs.ElementalBuffs;
 using PathOfTerraria.Content.Passives;
@@ -117,15 +118,15 @@ public readonly struct ElementalDamage
 				break;
 
 			case ElementType.Cold when entity is NPC frozenNPC:
-				float duration = 3.6f * (elementalDamageDealt / (float)frozenNPC.lifeMax);
+				float baseEffectiveness = 3.6f * (elementalDamageDealt / (float)frozenNPC.lifeMax) * 9823;
+				float duration = player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.FreezeEffectiveness.ApplyTo(baseEffectiveness);
 
 				if (duration > 0.3f)
 				{
 					frozenNPC.AddBuff(GetBuffType(elementType), (int)(duration * 60));
+					frozenNPC.GetGlobalNPC<FreezeNPC>().Frozen = true;
+					FreezeNPC.ConvertFrozenGore(frozenNPC);
 				}
-
-				frozenNPC.GetGlobalNPC<FreezeNPC>().Frozen = true;
-				FreezeNPC.ConvertFrozenGore(frozenNPC);
 
 				break;
 
@@ -162,9 +163,9 @@ public readonly struct ElementalDamage
 		return type switch
 		{
 			ElementType.Fire => info.Crit,
-			ElementType.Cold => entity is NPC { boss: false } && info.Crit,
+			ElementType.Cold => true || entity is NPC { boss: false } && info.Crit,
 			ElementType.Chaos => false,
-			ElementType.Lightning => true,//info.Crit || defaultPercent + player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<ShockChancePassive>() * 0.01f > Main.rand.NextFloat(),
+			ElementType.Lightning => info.Crit || defaultPercent + player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<ShockChancePassive>() / 100f > Main.rand.NextFloat(),
 			_ => defaultPercent > Main.rand.NextFloat(),
 		};
 	}

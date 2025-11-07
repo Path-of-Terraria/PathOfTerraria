@@ -10,8 +10,13 @@ internal class BurstingFuryMastery : Passive
 {
 	internal class BurstingFuryPlayer : ModPlayer, ElementalPlayerHooks.IElementalOnHitPlayer
 	{
-		public void ElementalOnHitNPC(NPC target, ElementInstance ele, ElementalContainer con, ElementalContainer other, int finalDamage, NPC.HitInfo hitInfo, Item? item = null)
+		public void ElementalOnHitNPC(bool post, NPC target, ElementInstance ele, ElementalContainer con, ElementalContainer other, int finalDamage, NPC.HitInfo hitInfo, Item? item = null)
 		{
+			if (post)
+			{
+				return;
+			}
+
 			if (ele.Type == ElementType.Fire && finalDamage > 0 && target.life <= 0 && Player.GetModPlayer<PassiveTreePlayer>().HasNode<BurstingFuryMastery>())
 			{
 				int damage = (int)(finalDamage * Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<AfterburnMastery>() / 100f);
