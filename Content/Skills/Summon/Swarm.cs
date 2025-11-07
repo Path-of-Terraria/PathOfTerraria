@@ -57,11 +57,16 @@ public class Swarm : Skill
 		Cooldown = MaxCooldown = (5 - Level) * 60;
 		ManaCost = 10 - Level * 3;
 		Duration = SentryNPC.DefaultSentryDuration;
-		WeaponType = ItemType.None;
+		WeaponType = ItemType.Summoner;
 	}
 
 	public override bool CanUseSkill(Player player, ref SkillFailure failReason, bool justChecking = true)
 	{
+		if (!player.HeldItem.CountsAsClass(DamageClass.Summon))
+		{
+			failReason = new SkillFailure(SkillFailReason.NeedsSummon);
+			return false;
+		}
 		if (Tree.Specialization is not LocustBrood && Collision.SolidCollision(GetTarget(player) - new Vector2(12, 12), 24, 24))
 		{
 			failReason = new SkillFailure(SkillFailReason.Other, "Blocked");
