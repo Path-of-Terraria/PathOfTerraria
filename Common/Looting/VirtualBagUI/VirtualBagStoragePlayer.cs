@@ -10,15 +10,17 @@ using Terraria.Audio;
 using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.UI;
+using PathOfTerraria.Common.Subworlds;
 
 namespace PathOfTerraria.Common.Looting.VirtualBagUI;
 
-internal class VirtualBagStoragePlayer : ModPlayer 
+internal class VirtualBagStoragePlayer : ModPlayer
 {
 	/// <summary>
 	/// If the local player is using the virtual bag config.
 	/// </summary>
-	public static bool LocalUseVirtualBag => Main.LocalPlayer.GetModPlayer<VirtualBagStoragePlayer>().UsesVirtualBag;
+	public static bool LocalUseVirtualBag => Main.LocalPlayer.GetModPlayer<VirtualBagStoragePlayer>().UsesVirtualBag &&
+	                                         IsVirtualBagActiveContext();
 
 	public static ModKeybind BagKeybind;
 
@@ -27,6 +29,11 @@ internal class VirtualBagStoragePlayer : ModPlayer
 	public List<Item> Storage = [];
 	public bool UsesVirtualBag = true;
 	public bool ConfirmedExit = false;
+
+	private static bool IsVirtualBagActiveContext()
+	{
+		return SubworldSystem.Current is MappingWorld and not RavencrestSubworld;
+	}
 
 	public override void Load()
 	{
@@ -42,9 +49,9 @@ internal class VirtualBagStoragePlayer : ModPlayer
 
 	public override void ProcessTriggers(TriggersSet triggersSet)
 	{
-		if (BagKeybind.JustPressed && VirtualBagItemFunctionality.IsInAPlaceForPickup)
+		if (BagKeybind.JustPressed && VirtualBagItemFunctionality.IsInAPlaceForPickup && LocalUseVirtualBag)
 		{
-			UIManager.TryToggleOrRegister(VirtualBagUIState.Identifier, "Vanilla: Mouse Text", new VirtualBagUIState(), 0, InterfaceScaleType.UI);
+			UIManager.TryToggleOrRegister(VirtualBagUIState.Identifier, "Vanilla: Mouse Text", new VirtualBagUIState());
 
 			if (UIManager.TryGet(VirtualBagUIState.Identifier, out UIManager.UIStateData data) && data.Enabled)
 			{
@@ -62,14 +69,15 @@ internal class VirtualBagStoragePlayer : ModPlayer
 		VirtualBagStoragePlayer storagePlayer = Main.LocalPlayer.GetModPlayer<VirtualBagStoragePlayer>();
 		ref bool confirmed = ref storagePlayer.ConfirmedExit;
 
-		if (Main.netMode == NetmodeID.Server || !storagePlayer.UsesVirtualBag || confirmed || storagePlayer.Storage.Count == 0)
+		if (Main.netMode == NetmodeID.Server || !storagePlayer.UsesVirtualBag || !IsVirtualBagActiveContext() ||
+		    confirmed || storagePlayer.Storage.Count == 0)
 		{
 			orig();
 			return;
 		}
 
 		confirmed = true;
-		UIManager.TryToggleOrRegister(VirtualBagUIState.Identifier, "Vanilla: Mouse Text", new VirtualBagUIState(), 0, InterfaceScaleType.UI);
+		UIManager.TryToggleOrRegister(VirtualBagUIState.Identifier, "Vanilla: Mouse Text", new VirtualBagUIState());
 	}
 
 	public override void OnEnterWorld()
@@ -90,11 +98,13 @@ internal class VirtualBagStoragePlayer : ModPlayer
 		Storage.Clear();
 	}
 
-	private void OverrideRightClickForVirtualBag(On_ItemSlot.orig_RightClick_ItemArray_int_int orig, Item[] inv, int context, int slot)
+	private void OverrideRightClickForVirtualBag(On_ItemSlot.orig_RightClick_ItemArray_int_int orig, Item[] inv,
+		int context, int slot)
 	{
 		bool clicked = Main.mouseRight && Main.mouseRightRelease;
 
-		if (UIManager.TryGet(VirtualBagUIState.Identifier, out UIManager.UIStateData data) && data.Enabled && VirtualBagAllowed(inv[slot], Main.LocalPlayer) && clicked)
+		if (UIManager.TryGet(VirtualBagUIState.Identifier, out UIManager.UIStateData data) && data.Enabled &&
+		    VirtualBagAllowed(inv[slot], Main.LocalPlayer) && clicked)
 		{
 			Main.LocalPlayer.GetModPlayer<VirtualBagStoragePlayer>().Storage.Add(inv[slot].Clone());
 			(data.Value as VirtualBagUIState).RefreshStorage();
@@ -109,7 +119,9 @@ internal class VirtualBagStoragePlayer : ModPlayer
 
 	public static bool VirtualBagAllowed(Item item, Player player)
 	{
-		return (!item.IsACoin && (item.ModItem is Gear || item.TryGetGlobalItem(out PoTGlobalItem _))) && player.GetModPlayer<VirtualBagStoragePlayer>().UsesVirtualBag;
+		return (!item.IsACoin && (item.ModItem is Gear || item.TryGetGlobalItem(out PoTGlobalItem _)))
+		       && player.GetModPlayer<VirtualBagStoragePlayer>().UsesVirtualBag
+		       && IsVirtualBagActiveContext();
 	}
 
 	public override void Unload()
