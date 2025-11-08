@@ -12,7 +12,7 @@ internal class AnticipatedStrikeMastery : Passive
 		{
 			bool hasNode = Player.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<AnticipatedStrikeMastery>(out float value);
 
-			if (Player.GetModPlayer<SkillCombatPlayer>().TicksSinceSkillLastUsed > value * 60)
+			if (hasNode && Player.GetModPlayer<SkillCombatPlayer>().TicksSinceSkillLastUsed > value * 60)
 			{
 				Player.AddBuff(ModContent.BuffType<AnticipatedStrikeBuff>(), 2);
 			}

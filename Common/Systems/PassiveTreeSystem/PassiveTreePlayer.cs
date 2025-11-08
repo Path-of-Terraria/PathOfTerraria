@@ -58,7 +58,7 @@ internal class PassiveTreePlayer : ModPlayer
 				}
 			}
 
-			if (passive.Name != "AnchorPassive" && passive.Level > 0)
+			if (passive.Name != "AnchorPassive" && passive.Level > 0 && passive.Name != "MasteryPassive")
 			{
 				Points -= passive.Level;
 			}
