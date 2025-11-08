@@ -13,7 +13,7 @@ internal class LifeRegenRatePassive : Passive
 	{
 		public override void NaturalLifeRegen(ref float regen)
 		{
-			int level = Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(nameof(LifeRegenRatePassive));
+			float level = Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<LifeRegenRatePassive>();
 			regen *= (1 + (level * RateBonus));
 		}
 	}
@@ -44,7 +44,7 @@ internal class LifeOnKillPassive : Passive
 		{
 			if (target.life <= 0 && !target.SpawnedFromStatue && target.value != 0)
 			{
-				int level = Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(nameof(LifeOnKillPassive));
+				float level = Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<LifeOnKillPassive>();
 				if (Main.rand.NextFloat() < (Chance * level))
 				{
 					Player.Heal(Math.Max((int)(Player.statLifeMax2 * Amount), 2));

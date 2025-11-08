@@ -42,7 +42,7 @@ public class WhipReachPlayer : ModPlayer
 
 	public override bool Shoot(Item item, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		if (ProjectileID.Sets.IsAWhip[type] && Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(nameof(WhipReachMastery)) != 0)
+		if (ProjectileID.Sets.IsAWhip[type] && Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<WhipReachMastery>() != 0)
 		{
 			Projectile.NewProjectileDirect(null, position, velocity, type, damage, knockback, Player.whoAmI).WhipSettings.RangeMultiplier *= WhipReach.ApplyTo(1);
 			return false;

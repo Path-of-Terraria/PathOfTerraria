@@ -525,7 +525,7 @@ AbsoluteZeroMastery: {
 }
 
 BludgeoningBlowMastery: {
-	// Name: BludgeoningBlowMastery
+	// Name: Bludgeoning Blow
 	// Tooltip: Killing a frozen enemy will shatter it for {0}% of the killing blow's damage
 }
 
