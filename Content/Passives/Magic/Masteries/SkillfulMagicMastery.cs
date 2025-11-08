@@ -12,7 +12,10 @@ internal class SkillfulMagicMastery : Passive
 	{
 		public void OnUseSkill(Skill skill)
 		{
-			Player.AddBuff(ModContent.BuffType<SkillfulBoostBuff>(), 3 * 60);
+			if (Player.GetModPlayer<PassiveTreePlayer>().HasNode<SkillfulMagicMastery>())
+			{
+				Player.AddBuff(ModContent.BuffType<SkillfulBoostBuff>(), 3 * 60);
+			}
 		}
 
 		public override void PostUpdateRunSpeeds()
