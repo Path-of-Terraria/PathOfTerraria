@@ -205,6 +205,9 @@ public abstract partial class Skill : ILoadable
 	{
 		player.CheckMana(TotalManaCost, true);
 		Cooldown = TotalCooldown;
+		
+		//player.MaxManaRegenDelay was way too slow for some reason compared to when using a mag weapon? Idk why. But 60 seems right
+		player.manaRegenDelay = 60;
 	}
 
 	/// <summary>
