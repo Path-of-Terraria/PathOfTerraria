@@ -8,12 +8,8 @@ namespace PathOfTerraria.Content.Passives;
 
 internal class YoyoDurationPassive : Passive
 {
-	public const float DurationIncrease = 1f;
-
-	public override string DisplayTooltip => Language.GetTextValue($"Mods.PathOfTerraria.Passives.{Name}.Tooltip").FormatWith(MathUtils.Percent(DurationIncrease));
-
 	public override void BuffPlayer(Player player)
 	{
-		player.GetModPlayer<YoyoStatsPlayer>().YoyoLifeTime *= (1 + (DurationIncrease * Level));
+		player.GetModPlayer<YoyoStatsPlayer>().YoyoLifeTime *= (1 + ((Value/100) * Level));
 	}
 }

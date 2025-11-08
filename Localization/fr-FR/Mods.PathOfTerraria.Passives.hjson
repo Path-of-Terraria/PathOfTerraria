@@ -536,7 +536,7 @@ YoyoDamagePassive: {
 
 YoyoDurationPassive: {
 	// Name: Doubled Yoyo Duration
-	// Tooltip: Doubles yoyo use duration
+	// Tooltip: +{0}% increased yoyo duration
 }
 
 YoyoRangePassive: {
