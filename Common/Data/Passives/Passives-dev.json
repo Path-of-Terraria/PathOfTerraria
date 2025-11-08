@@ -3,6 +3,7 @@
 		"internalIdentifier": "AnchorPassive",
 		"referenceId": 0,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 12
@@ -17,6 +18,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 1,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": -2
@@ -37,6 +39,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 2,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 79
@@ -54,6 +57,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 3,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": 388,
 			"y": 202
@@ -62,6 +66,7 @@
 	{
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 4,
+		"value": 5,
 		"maxLevel": 1,
 		"connections": [
 			{
@@ -76,6 +81,7 @@
 	{
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 5,
+		"value": 5,
 		"maxLevel": 1,
 		"connections": [
 			{
@@ -94,6 +100,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 6,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": -1
@@ -111,6 +118,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 7,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 8
@@ -128,6 +136,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 8,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 9
@@ -142,6 +151,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 9,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 10
@@ -159,6 +169,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 10,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 11
@@ -173,6 +184,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 11,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 0
@@ -190,6 +202,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 12,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 13
@@ -207,6 +220,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 13,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 14
@@ -221,6 +235,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 14,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 15
@@ -238,6 +253,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 15,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -221,
 			"y": -411
@@ -247,6 +263,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 16,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 15
@@ -264,6 +281,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 17,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 127
@@ -278,6 +296,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 18,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 17
@@ -292,6 +311,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 19,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 18
@@ -306,6 +326,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 20,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 19
@@ -320,6 +341,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 21,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 44
@@ -331,9 +353,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "PercentIncreasedMaximumManaPassive",
 		"referenceId": 22,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 84
@@ -354,15 +377,17 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 23,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": 804,
 			"y": -11
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedManaPassive",
 		"referenceId": 24,
 		"maxLevel": 1,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 23
@@ -383,6 +408,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 25,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": 703,
 			"y": 394
@@ -392,6 +418,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 26,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 264
@@ -415,6 +442,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 27,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 26
@@ -429,6 +457,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 28,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 27
@@ -455,6 +484,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 29,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 28
@@ -469,6 +499,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 30,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 29
@@ -489,6 +520,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 31,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 30
@@ -503,6 +535,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 32,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 31
@@ -523,6 +556,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 33,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 32
@@ -540,6 +574,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 34,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 33
@@ -557,6 +592,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 35,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 34
@@ -571,6 +607,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 36,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 35
@@ -597,6 +634,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 37,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 36
@@ -614,6 +652,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 38,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 39
@@ -631,6 +670,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 39,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 142
@@ -645,6 +685,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 40,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 39
@@ -665,6 +706,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 41,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 40
@@ -679,6 +721,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 42,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 41
@@ -699,6 +742,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 43,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 42
@@ -713,6 +757,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 44,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 265
@@ -733,6 +778,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 45,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": 1240,
 			"y": -848
@@ -742,6 +788,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 46,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 47
@@ -762,6 +809,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 47,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 96
@@ -779,6 +827,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 48,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 91
@@ -793,6 +842,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 49,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 48
@@ -807,6 +857,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 50,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 51
@@ -824,6 +875,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 51,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 112
@@ -838,6 +890,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 52,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 53
@@ -858,6 +911,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 53,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 242
@@ -872,6 +926,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 54,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 55
@@ -889,6 +944,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 55,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": 292,
 			"y": 1451
@@ -898,6 +954,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 56,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 57
@@ -915,6 +972,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 57,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 228
@@ -929,6 +987,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 58,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 59
@@ -949,6 +1008,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 59,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -833,
 			"y": 1227
@@ -958,6 +1018,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 60,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 61
@@ -975,6 +1036,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 61,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 216
@@ -989,6 +1051,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 62,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 63
@@ -1006,6 +1069,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 63,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -1470,
 			"y": 291
@@ -1015,6 +1079,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 64,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 65
@@ -1032,6 +1097,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 65,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 184
@@ -1046,6 +1112,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 66,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 65
@@ -1066,6 +1133,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 67,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -1251,
 			"y": -850
@@ -1075,6 +1143,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 68,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 67
@@ -1095,6 +1164,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 69,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 155
@@ -1109,6 +1179,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 70,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 71
@@ -1126,6 +1197,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 71,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 140
@@ -1140,6 +1212,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 72,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 71
@@ -1157,6 +1230,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 73,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 141
@@ -1171,6 +1245,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 74,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 73
@@ -1188,6 +1263,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 75,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 76
@@ -1202,6 +1278,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 76,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 45
@@ -1219,6 +1296,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 78,
 		"maxLevel": 1,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 22
@@ -1236,6 +1314,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 79,
 		"maxLevel": 1,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 24
@@ -1247,12 +1326,16 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedMagicAndSummonDamagePassive",
 		"referenceId": 80,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 79
+			},
+			{
+				"referenceId": 1027
 			}
 		],
 		"position": {
@@ -1261,15 +1344,19 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedMagicAndSummonDamagePassive",
 		"referenceId": 81,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 78
 			},
 			{
 				"referenceId": 80
+			},
+			{
+				"referenceId": 1027
 			}
 		],
 		"position": {
@@ -1278,12 +1365,16 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedManaRegenerationRatePassive",
 		"referenceId": 82,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 83
+			},
+			{
+				"referenceId": 1027
 			}
 		],
 		"position": {
@@ -1292,12 +1383,16 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedManaRegenerationRatePassive",
 		"referenceId": 83,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 79
+			},
+			{
+				"referenceId": 1027
 			}
 		],
 		"position": {
@@ -1306,9 +1401,66 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1027,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1028
+			},
+			{
+				"referenceId": 1029
+			},
+			{
+				"referenceId": 1030
+			}
+		],
+		"position": {
+			"x": 587,
+			"y": -16
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 4
+	},
+	{
+		"internalIdentifier": "CriticalOverloadMastery",
+		"referenceId": 1028,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": 547,
+			"y": -86
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "AnticipatedStrikeMastery",
+		"referenceId": 1029,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": 627,
+			"y": -86
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "EnergySurgeMastery",
+		"referenceId": 1030,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 587,
+			"y": 70
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "AddedLightningResistancePassive",
 		"referenceId": 84,
 		"maxLevel": 1,
+		"value": 8,
 		"connections": [
 			{
 				"referenceId": 94
@@ -1326,6 +1478,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 85,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 23
@@ -1343,6 +1496,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 86,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 23
@@ -1357,6 +1511,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 87,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 24
@@ -1371,6 +1526,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 88,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 90
@@ -1385,6 +1541,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 89,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 86
@@ -1402,6 +1559,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 90,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 91
@@ -1413,21 +1571,26 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "PercentStrongManaPotionsPassive",
 		"referenceId": 91,
 		"maxLevel": 1,
+		"value": 10,
 		"position": {
 			"x": 1364,
 			"y": -11
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "ChanceToIgnitePassive",
 		"referenceId": 92,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 91
+			},
+			{
+				"referenceId": 1011
 			}
 		],
 		"position": {
@@ -1436,9 +1599,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedFireDamageConversionPassive",
 		"referenceId": 93,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 92
@@ -1450,12 +1614,16 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedFireDamageMultiplierPassive",
 		"referenceId": 94,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 93
+			},
+			{
+				"referenceId": 1011
 			}
 		],
 		"position": {
@@ -1464,9 +1632,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedFireResistancePassive",
 		"referenceId": 95,
 		"maxLevel": 1,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 94
@@ -1481,18 +1650,25 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedFireDamageMultiplierPassive",
 		"referenceId": 96,
 		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1011
+			}
+		],
 		"position": {
 			"x": 1357,
 			"y": -345
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedFireResistancePassive",
 		"referenceId": 97,
 		"maxLevel": 1,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 96
@@ -1507,9 +1683,66 @@
 		}
 	},
 	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1011,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1012
+			},
+			{
+				"referenceId": 1013
+			},
+			{
+				"referenceId": 1014
+			}
+		],
+		"position": {
+			"x": 1270,
+			"y": -270
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 3
+	},
+	{
+		"internalIdentifier": "AfterburnMastery",
+		"referenceId": 1012,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": 1240,
+			"y": -320
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "ScorchingFlamesMastery",
+		"referenceId": 1013,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 1236,
+			"y": -226
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "BurstingFuryMastery",
+		"referenceId": 1014,
+		"maxLevel": 1,
+		"value": 55,
+		"position": {
+			"x": 1326,
+			"y": -250
+		},
+		"isHidden": true
+	},
+	{
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 98,
 		"maxLevel": 1,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 91
@@ -1521,12 +1754,16 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedManaRegenerationRatePassive",
 		"referenceId": 99,
 		"maxLevel": 1,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 98
+			},
+			{
+				"referenceId": 1015
 			}
 		],
 		"position": {
@@ -1535,29 +1772,16 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 100,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 99
-			},
-			{
-				"referenceId": 87
-			}
-		],
-		"position": {
-			"x": 1135,
-			"y": 258
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "PercentIncreasedMaximumManaPassive",
 		"referenceId": 101,
 		"maxLevel": 1,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 100
+			},
+			{
+				"referenceId": 1015
 			}
 		],
 		"position": {
@@ -1569,6 +1793,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 102,
 		"maxLevel": 1,
+		"value": 30,
 		"connections": [
 			{
 				"referenceId": 101
@@ -1583,15 +1808,19 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "DecreasedManaCostPassive",
 		"referenceId": 103,
 		"maxLevel": 1,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 98
 			},
 			{
 				"referenceId": 49
+			},
+			{
+				"referenceId": 1015
 			}
 		],
 		"position": {
@@ -1600,9 +1829,84 @@
 		}
 	},
 	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1015,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1016
+			},
+			{
+				"referenceId": 1017
+			},
+			{
+				"referenceId": 1018
+			}
+		],
+		"position": {
+			"x": 1256,
+			"y": 266
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 3
+	},
+	{
+		"internalIdentifier": "DeepPoolsMastery",
+		"referenceId": 1016,
+		"maxLevel": 1,
+		"value": 30,
+		"position": {
+			"x": 1200,
+			"y": 280
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "ManaBombMastery",
+		"referenceId": 1017,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": 1296,
+			"y": 210
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "MagicGuardMastery",
+		"referenceId": 1018,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": 1276,
+			"y": 320
+		},
+		"isHidden": true
+	},
+	{
 		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 100,
+		"maxLevel": 1,
+		"value": 20,
+		"connections": [
+			{
+				"referenceId": 99
+			},
+			{
+				"referenceId": 87
+			}
+		],
+		"position": {
+			"x": 1135,
+			"y": 258
+		}
+	},
+	{
+		"internalIdentifier": "AddedCriticalStrikeChance",
 		"referenceId": 104,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 87
@@ -1617,18 +1921,25 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedMagicAndSummonDamagePassive",
 		"referenceId": 105,
 		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1031
+			}
+		],
 		"position": {
 			"x": 762,
 			"y": 479
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedAttackSpeedPassive",
 		"referenceId": 106,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 108
@@ -1636,13 +1947,14 @@
 		],
 		"position": {
 			"x": 802,
-			"y": 618
+			"y": 628
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedProjectileSpeedPassive",
 		"referenceId": 107,
 		"maxLevel": 1,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 104
@@ -1653,16 +1965,20 @@
 		],
 		"position": {
 			"x": 980,
-			"y": 618
+			"y": 628
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "PercentStrongManaPotionsPassive",
 		"referenceId": 108,
 		"maxLevel": 1,
+		"value": 20,
 		"connections": [
 			{
 				"referenceId": 105
+			},
+			{
+				"referenceId": 1031
 			}
 		],
 		"position": {
@@ -1671,9 +1987,66 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1031,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1032
+			},
+			{
+				"referenceId": 1033
+			},
+			{
+				"referenceId": 1034
+			}
+		],
+		"position": {
+			"x": 893,
+			"y": 518
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "StarcallerMastery",
+		"referenceId": 1032,
+		"maxLevel": 1,
+		"value": 250,
+		"position": {
+			"x": 831,
+			"y": 432
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "CenterOfTheUniverseMastery",
+		"referenceId": 1033,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": 955,
+			"y": 432
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "OverloadingEnergyMastery",
+		"referenceId": 1034,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 893,
+			"y": 618
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "ChanceToChillPassive",
 		"referenceId": 109,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 110
@@ -1688,24 +2061,34 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedColdDamageMultiplierPassive",
 		"referenceId": 110,
 		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1039
+			}
+		],
 		"position": {
 			"x": 1097,
 			"y": 595
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedColdResistancePassive",
 		"referenceId": 111,
 		"maxLevel": 1,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 112
 			},
 			{
 				"referenceId": 110
+			},
+			{
+				"referenceId": 1039
 			}
 		],
 		"position": {
@@ -1714,21 +2097,82 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1039,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1040
+			},
+			{
+				"referenceId": 1041
+			},
+			{
+				"referenceId": 1042
+			}
+		],
+		"position": {
+			"x": 1184,
+			"y": 645
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "SharpenedSpellsMastery",
+		"referenceId": 1040,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 1179,
+			"y": 705
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "AbsoluteZeroMastery",
+		"referenceId": 1041,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 1229,
+			"y": 710
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "BludgeoningBlowMastery",
+		"referenceId": 1042,
+		"maxLevel": 1,
+		"value": 25,
+		"position": {
+			"x": 1234,
+			"y": 660
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "ChanceToFreezePassive",
 		"referenceId": 112,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": 1274,
 			"y": 615
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "ShockChancePassive",
 		"referenceId": 113,
 		"maxLevel": 1,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 114
+			},
+			{
+				"referenceId": 1019
 			}
 		],
 		"position": {
@@ -1737,18 +2181,76 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedLightningDamageMultiplierPassive",
 		"referenceId": 114,
 		"maxLevel": 1,
+		"value": 10,
 		"position": {
 			"x": 867,
 			"y": -390
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1019,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1020
+			},
+			{
+				"referenceId": 1021
+			},
+			{
+				"referenceId": 1022
+			}
+		],
+		"position": {
+			"x": 907,
+			"y": -470
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 1
+	},
+	{
+		"internalIdentifier": "ThunderbootsMastery",
+		"referenceId": 1020,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": 1007,
+			"y": -470
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "ElectrostaticAttractionMastery",
+		"referenceId": 1021,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": 947,
+			"y": -550
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "ChainLightningMastery",
+		"referenceId": 1022,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": 830,
+			"y": -500
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "IncreasedMagicAndSummonDamagePassive",
 		"referenceId": 115,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 21
@@ -1760,9 +2262,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedMagicAndSummonDamagePassive",
 		"referenceId": 116,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 115
@@ -1774,9 +2277,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedAttackSpeedPassive",
 		"referenceId": 117,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 116
@@ -1786,51 +2290,119 @@
 			}
 		],
 		"position": {
-			"x": 833,
+			"x": 845,
 			"y": -729
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "ReducedSkillCooldownPassive",
 		"referenceId": 118,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 116
 			}
 		],
 		"position": {
-			"x": 952,
+			"x": 946,
 			"y": -628
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "ReducedSkillCooldownPassive",
 		"referenceId": 119,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 118
+			},
+			{
+				"referenceId": 1035
+			}
+		],
+		"position": {
+			"x": 1046,
+			"y": -728
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedAttackSpeedPassive",
+		"referenceId": 120,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1035
+			}
+		],
+		"position": {
+			"x": 945,
+			"y": -829
+		}
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1035,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1036
+			},
+			{
+				"referenceId": 1037
+			},
+			{
+				"referenceId": 1038
 			}
 		],
 		"position": {
 			"x": 1063,
-			"y": -747
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 120,
-		"maxLevel": 1,
-		"position": {
-			"x": 952,
 			"y": -843
-		}
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "ReverberationMastery",
+		"referenceId": 1036,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 1113,
+			"y": -893
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "SkillfulMagicMastery",
+		"referenceId": 1037,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": 1043,
+			"y": -913
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "AutomagicMissileMastery",
+		"referenceId": 1038,
+		"maxLevel": 1,
+		"value": 15,
+		"position": {
+			"x": 1133,
+			"y": -823
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "IncreasedProjectileSpeedPassive",
 		"referenceId": 121,
 		"maxLevel": 1,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 119
@@ -1840,17 +2412,21 @@
 			}
 		],
 		"position": {
-			"x": 952,
-			"y": -747
+			"x": 945,
+			"y": -728
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedChannelingDamagePassive",
 		"referenceId": 122,
 		"maxLevel": 1,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 292
+			},
+			{
+				"referenceId": 1023
 			}
 		],
 		"position": {
@@ -1862,6 +2438,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 123,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 122
@@ -1873,32 +2450,99 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedDefenseWhileChanneling",
 		"referenceId": 124,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 123
+			},
+			{
+				"referenceId": 1023
 			}
 		],
 		"position": {
-			"x": 1129,
+			"x": 1119,
 			"y": -621
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "ReducedManaCostWhileChannelingPassive",
 		"referenceId": 125,
 		"maxLevel": 1,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 1023
+			}
+		],
 		"position": {
 			"x": 1244,
-			"y": -622
+			"y": -621
 		}
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1023,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1024
+			},
+			{
+				"referenceId": 1025
+			},
+			{
+				"referenceId": 1026
+			}
+		],
+		"position": {
+			"x": 1180,
+			"y": -691
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 3
+	},
+	{
+		"internalIdentifier": "SingleFocusMastery",
+		"referenceId": 1024,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": 1180,
+			"y": -781
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "ChannelingBurstMastery",
+		"referenceId": 1025,
+		"maxLevel": 1,
+		"value": 30,
+		"position": {
+			"x": 1110,
+			"y": -731
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "EnergySurgeMastery",
+		"referenceId": 1026,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 1250,
+			"y": -731
+		},
+		"isHidden": true
 	},
 	{
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 126,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 129
@@ -1919,6 +2563,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 127,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 42
@@ -1933,6 +2578,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 128,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 131
@@ -1947,6 +2593,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 129,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -73,
 			"y": -537
@@ -1956,6 +2603,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 130,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 127
@@ -1973,6 +2621,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 131,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 127
@@ -1987,6 +2636,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 132,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 134
@@ -2004,6 +2654,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 133,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 168
@@ -2021,6 +2672,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 134,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 136
@@ -2038,6 +2690,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 135,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 133
@@ -2055,6 +2708,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 136,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 138
@@ -2072,6 +2726,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 137,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 135
@@ -2086,6 +2741,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 138,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 139
@@ -2100,6 +2756,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 139,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 137
@@ -2114,6 +2771,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 140,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -272,
 			"y": -1377
@@ -2123,6 +2781,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 141,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 137
@@ -2137,6 +2796,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 142,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -525,
 			"y": -733
@@ -2146,6 +2806,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 143,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 146
@@ -2163,6 +2824,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 144,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 145
@@ -2180,6 +2842,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 145,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -471,
 			"y": -957
@@ -2189,6 +2852,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 146,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -668,
 			"y": -905
@@ -2198,6 +2862,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 147,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 145
@@ -2215,6 +2880,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 148,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -372,
 			"y": -1144
@@ -2224,6 +2890,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 149,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 148
@@ -2238,6 +2905,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 150,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 149
@@ -2255,6 +2923,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 151,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -628,
 			"y": -1255
@@ -2264,6 +2933,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 152,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 151
@@ -2281,6 +2951,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 153,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -395,
 			"y": -1330
@@ -2290,6 +2961,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 154,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 153
@@ -2307,6 +2979,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 155,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -731,
 			"y": -1181
@@ -2316,6 +2989,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 156,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 155
@@ -2333,6 +3007,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 157,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -731,
 			"y": -1037
@@ -2342,6 +3017,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 158,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 161
@@ -2356,6 +3032,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 159,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 158
@@ -2370,6 +3047,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 160,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 159
@@ -2384,6 +3062,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 161,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": 445,
 			"y": -875
@@ -2410,6 +3089,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 163,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 161
@@ -2424,6 +3104,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 164,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": 308,
 			"y": -1190
@@ -2433,6 +3114,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 165,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 164
@@ -2450,6 +3132,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 166,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 167
@@ -2464,6 +3147,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 167,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": 497,
 			"y": -1090
@@ -2473,6 +3157,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 168,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 171
@@ -2491,6 +3176,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 169,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 999,
@@ -2506,6 +3192,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 170,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 172
@@ -2527,6 +3214,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 171,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 169
@@ -2545,6 +3233,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 172,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 169
@@ -2563,6 +3252,7 @@
 		"internalIdentifier": "MasteryPassive",
 		"referenceId": 999,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 1001
@@ -2588,6 +3278,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 1001,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -84,
 			"y": -1065
@@ -2598,6 +3289,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 1002,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": 66,
 			"y": -1065
@@ -2608,6 +3300,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 1003,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -9,
 			"y": -1140
@@ -2618,6 +3311,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 1004,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -9,
 			"y": -990
@@ -2628,6 +3322,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 173,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -622,
 			"y": -180
@@ -2637,6 +3332,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 174,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 34
@@ -2651,6 +3347,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 175,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 174
@@ -2665,6 +3362,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 176,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 173
@@ -2682,6 +3380,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 177,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 173
@@ -2696,6 +3395,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 178,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 174
@@ -2713,6 +3413,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 179,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -952,
 			"y": -178
@@ -2722,6 +3423,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 180,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 34
@@ -2736,6 +3438,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 181,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 179
@@ -2753,6 +3456,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 182,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 184
@@ -2770,6 +3474,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 183,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 185
@@ -2790,6 +3495,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 184,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 186
@@ -2804,6 +3510,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 185,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 63
@@ -2821,6 +3528,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 186,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -1382,
 			"y": -9
@@ -2830,6 +3538,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 187,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -913,
 			"y": -344
@@ -2839,6 +3548,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 188,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 187
@@ -2853,6 +3563,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 189,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 188
@@ -2867,6 +3578,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 190,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 189
@@ -2881,6 +3593,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 191,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 190
@@ -2898,6 +3611,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 192,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -829,
 			"y": -436
@@ -2907,6 +3621,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 193,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 195
@@ -2927,6 +3642,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 194,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -1349,
 			"y": -346
@@ -2936,6 +3652,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 195,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -1139,
 			"y": -346
@@ -2945,6 +3662,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 196,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 194
@@ -2959,6 +3677,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 197,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 195
@@ -2976,6 +3695,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 198,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 196
@@ -2993,6 +3713,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 199,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -1272,
 			"y": -700
@@ -3002,6 +3723,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 200,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 199
@@ -3022,6 +3744,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 201,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 204
@@ -3036,6 +3759,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 202,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 201
@@ -3053,6 +3777,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 203,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -1170,
 			"y": -667
@@ -3062,6 +3787,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 204,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -1073,
 			"y": -680
@@ -3071,6 +3797,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 205,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 206
@@ -3085,6 +3812,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 206,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 207
@@ -3099,6 +3827,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 207,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -975,
 			"y": 322
@@ -3108,6 +3837,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 208,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -1232,
 			"y": 245
@@ -3117,6 +3847,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 209,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 208
@@ -3131,6 +3862,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 210,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -1139,
 			"y": 437
@@ -3140,6 +3872,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 211,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -1323,
 			"y": 437
@@ -3149,6 +3882,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 212,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 211
@@ -3163,6 +3897,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 213,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 210
@@ -3177,6 +3912,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 214,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 216
@@ -3194,6 +3930,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 215,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 217
@@ -3208,6 +3945,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 216,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -1107,
 			"y": 758
@@ -3217,6 +3955,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 217,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 216
@@ -3231,6 +3970,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 218,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 220
@@ -3245,6 +3985,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 219,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": 155,
 			"y": 612
@@ -3254,6 +3995,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 220,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 221
@@ -3268,6 +4010,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 221,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 219
@@ -3282,6 +4025,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 222,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 218
@@ -3299,6 +4043,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 223,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 219
@@ -3313,6 +4058,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 224,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 256
@@ -3333,6 +4079,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 225,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 227
@@ -3347,6 +4094,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 226,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 228
@@ -3361,6 +4109,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 227,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 263
@@ -3378,6 +4127,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 228,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 247
@@ -3392,6 +4142,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 229,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 55
@@ -3406,6 +4157,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 230,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 229
@@ -3423,6 +4175,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 231,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": 304,
 			"y": 1172
@@ -3432,6 +4185,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 232,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 231
@@ -3449,6 +4203,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 233,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": 400,
 			"y": 1032
@@ -3458,6 +4213,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 234,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 233
@@ -3475,6 +4231,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 235,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": 537,
 			"y": 1094
@@ -3484,6 +4241,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 236,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": 301,
 			"y": 840
@@ -3493,6 +4251,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 237,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 236
@@ -3510,6 +4269,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 238,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 240
@@ -3527,6 +4287,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 239,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": 449,
 			"y": 867
@@ -3536,6 +4297,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 240,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": 520,
 			"y": 712
@@ -3545,6 +4307,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 241,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 239
@@ -3559,6 +4322,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 242,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 243
@@ -3576,6 +4340,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 243,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": 625,
 			"y": 1140
@@ -3585,6 +4350,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 244,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 243
@@ -3599,6 +4365,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 245,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 244
@@ -3613,6 +4380,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 246,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 245
@@ -3627,6 +4395,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 247,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -264,
 			"y": 1192
@@ -3636,6 +4405,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 248,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 247
@@ -3653,6 +4423,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 249,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -454,
 			"y": 1095
@@ -3662,6 +4433,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 250,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 251
@@ -3676,6 +4448,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 251,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 253
@@ -3690,6 +4463,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 252,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 250
@@ -3707,6 +4481,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 253,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -668,
 			"y": 970
@@ -3716,6 +4491,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 254,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 252
@@ -3730,6 +4506,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 255,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 254
@@ -3744,6 +4521,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 256,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -265,
 			"y": 922
@@ -3753,6 +4531,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 257,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 258
@@ -3770,6 +4549,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 258,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -552,
 			"y": 774
@@ -3779,6 +4559,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 259,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 258
@@ -3796,6 +4577,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 260,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -649,
 			"y": 854
@@ -3805,6 +4587,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 261,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 256
@@ -3819,6 +4602,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 262,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 226
@@ -3836,6 +4620,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 263,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 226
@@ -3850,6 +4635,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 264,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 4
@@ -3864,6 +4650,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 265,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 19
@@ -3878,6 +4665,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 266,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -454,
 			"y": -468
@@ -3887,6 +4675,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 267,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 32
@@ -3901,6 +4690,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 268,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 44
@@ -3918,6 +4708,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 269,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": 879,
 			"y": -928
@@ -3927,6 +4718,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 270,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 26
@@ -3941,6 +4733,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 271,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 270
@@ -3955,6 +4748,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 272,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 259
@@ -3969,6 +4763,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 273,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 272
@@ -3989,6 +4784,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 274,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 38
@@ -4006,27 +4802,38 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 275,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -891,
 			"y": -914
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "MagicFindBoost",
 		"referenceId": 276,
 		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1008
+			}
+		],
 		"position": {
 			"x": 554,
 			"y": -463
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "ItemDropRatePassive",
 		"referenceId": 277,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 22
+			},
+			{
+				"referenceId": 1008
 			}
 		],
 		"position": {
@@ -4035,27 +4842,124 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1008,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1009
+			},
+			{
+				"referenceId": 1010
+			}
+		],
+		"position": {
+			"x": 570,
+			"y": -355
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "BossDownIncreaseItemRarityMastery",
+		"referenceId": 1009,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": 460,
+			"y": -355
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "MoreUniquesMastery",
+		"referenceId": 1010,
+		"maxLevel": 1,
+		"value": 15,
+		"position": {
+			"x": 540,
+			"y": -255
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "FishingPowerPassive",
 		"referenceId": 278,
 		"maxLevel": 1,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 1005
+			}
+		],
 		"position": {
 			"x": 661,
 			"y": 285
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "FishingPowerPassive",
 		"referenceId": 279,
 		"maxLevel": 1,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 1005
+			}
+		],
 		"position": {
 			"x": 576,
 			"y": 436
 		}
 	},
 	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1005,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1006
+			},
+			{
+				"referenceId": 1007
+			}
+		],
+		"position": {
+			"x": 590,
+			"y": 340
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "AddedFishingLineMastery",
+		"referenceId": 1006,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": 480,
+			"y": 320
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "FishingCatchBuffMastery",
+		"referenceId": 1007,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": 550,
+			"y": 240
+		},
+		"isHidden": true
+	},
+	{
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 280,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": 454,
 			"y": 543
@@ -4065,6 +4969,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 281,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": 260,
 			"y": 663
@@ -4074,6 +4979,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 282,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -273,
 			"y": 655
@@ -4083,6 +4989,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 283,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -468,
 			"y": 540
@@ -4092,6 +4999,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 284,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 32
@@ -4106,6 +5014,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 285,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -684,
 			"y": 278
@@ -4115,6 +5024,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 286,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": -673,
 			"y": -294
@@ -4124,6 +5034,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 287,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 38
@@ -4138,6 +5049,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 288,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 38
@@ -4152,6 +5064,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 289,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 40
@@ -4166,6 +5079,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 290,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": 247,
 			"y": -694
@@ -4175,6 +5089,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 291,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 44
@@ -4189,6 +5104,7 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 292,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 125
@@ -4203,6 +5119,7 @@
 		"internalIdentifier": "AnchorPassive",
 		"referenceId": -1,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 7
@@ -4217,6 +5134,7 @@
 		"internalIdentifier": "AnchorPassive",
 		"referenceId": -2,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 2
@@ -4231,6 +5149,7 @@
 		"internalIdentifier": "AnchorPassive",
 		"referenceId": -3,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 17

@@ -31,7 +31,7 @@ public class HasteChargePlayer : ModChargePlayer
 		// Apply percentage speed bonus per charge
 		if (HasteProjectileSpeedBonus > 0f)
 		{
-			var universalPlayer = Main.LocalPlayer.GetModPlayer<UniversalBuffingPlayer>();
+			UniversalBuffingPlayer universalPlayer = Main.LocalPlayer.GetModPlayer<UniversalBuffingPlayer>();
 			float percentBonus = HasteProjectileSpeedBonus * Charges;
 			universalPlayer.UniversalModifier.ProjectileSpeed *= (1f + percentBonus);
 		}

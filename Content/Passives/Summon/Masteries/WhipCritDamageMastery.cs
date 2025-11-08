@@ -25,7 +25,7 @@ internal class WhipCritDamageMastery : Passive
 
 		public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref NPC.HitModifiers modifiers)
 		{
-			if (ProjectileID.Sets.IsAWhip[projectile.type] && projectile.TryGetOwner(out Player owner) && owner.GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(nameof(WhipCritDamageMastery)) != 0)
+			if (ProjectileID.Sets.IsAWhip[projectile.type] && projectile.TryGetOwner(out Player owner) && owner.GetModPlayer<PassiveTreePlayer>().HasNode<WhipCritDamageMastery>())
 			{
 				HitDuration = HitDurationMax;
 			}

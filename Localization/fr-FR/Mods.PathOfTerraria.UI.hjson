@@ -67,6 +67,7 @@ StatUI: {
 	// AmmoConsumptionChance: Ammo Reservation
 	HealthPotions: Potions de Santé
 	ManaPotions: Potions de Mana
+	// FishingPower: Fishing Power
 
 	Help: {
 		Strength: Accorde 5 PV max supplémentaires tous les 10 points

@@ -135,9 +135,11 @@ internal class WhipDoubleStrikeMastery : Passive
 	{
 		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (ProjectileID.Sets.IsAWhip[proj.type] && Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(nameof(WhipDoubleStrikeMastery)) != 0)
+			if (ProjectileID.Sets.IsAWhip[proj.type] && Player.GetModPlayer<PassiveTreePlayer>().HasNode<WhipDoubleStrikeMastery>())
 			{
-				Projectile.NewProjectile(Player.GetSource_OnHit(target), target.Center, Vector2.Zero, ModContent.ProjectileType<DelayedStrike>(), (int)(damageDone * DamageMult), 0, Player.whoAmI, target.whoAmI);
+				int dmg = (int)(damageDone * DamageMult);
+				int type = ModContent.ProjectileType<DelayedStrike>();
+				Projectile.NewProjectile(Player.GetSource_OnHit(target), target.Center, Vector2.Zero, type, dmg, 0, Player.whoAmI, target.whoAmI);
 			}
 		}
 	}

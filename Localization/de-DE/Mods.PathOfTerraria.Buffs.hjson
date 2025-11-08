@@ -131,3 +131,38 @@ CrackedCarapaceDebuff: {
 	// DisplayName: Cracked Carapace
 	// Description: Defense is halved
 }
+
+FishingBuff: {
+	// DisplayName: Fishing Buff
+	// Description: Gain {0} total fishing power
+}
+
+ScorchingFlamesDebuff: {
+	// DisplayName: Scorching Flames
+	// Description: Ow burn
+}
+
+SingleFocusBuff: {
+	// DisplayName: Singular Focus
+	// Description: Increased channeling damage
+}
+
+ElectrostaticBuff: {
+	// DisplayName: Electrostatic
+	// Description: Increased Lightning damage multiplier
+}
+
+AnticipatedStrikeBuff: {
+	// DisplayName: Anticipated Strike
+	// Description: Next skill will be used twice
+}
+
+SkillfulBoostBuff: {
+	// DisplayName: Skillful
+	// Description: Substantially increased crit damage and movement speed
+}
+
+BrittleDebuff: {
+	// DisplayName: Brittle Debuff
+	// Description: Mods.PathOfTerraria.Buffs.BrittleDebuff.Description
+}

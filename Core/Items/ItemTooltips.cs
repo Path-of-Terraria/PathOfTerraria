@@ -349,7 +349,7 @@ public sealed partial class ItemTooltips : GlobalItem
 				string elementName = Language.GetTextValue("Mods.PathOfTerraria.Misc.Damage", instance.ElementDisplayName.Value.ToLower().Trim());
 				float baseWeaponConversion = item?.type > ItemID.None ? ElementalWeaponSets.GetElementStrength(item.type, instance.Type) : 0f;
 
-				float elementDamage = finalDamage * (baseWeaponConversion + instance.GetTotalConversion(0));
+				float elementDamage = finalDamage * (baseWeaponConversion + instance.GetTotalConversion(0)) * instance.Multiplier;
 
 				float eleMinDamage = (elementDamage * 0.85f) + flat;
 				float eleMaxDamage = (elementDamage * 1.15f) + flat;

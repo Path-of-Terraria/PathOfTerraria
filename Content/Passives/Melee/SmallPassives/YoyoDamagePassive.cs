@@ -14,7 +14,7 @@ internal class YoyoDamagePassive : Passive
 	{
 		public override void ModifyWeaponDamage(Item item, ref StatModifier damage)
 		{
-			if (ItemID.Sets.Yoyo[item.type] && Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(nameof(YoyoDamagePassive)) != 0)
+			if (ItemID.Sets.Yoyo[item.type] && Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<YoyoDamagePassive>() != 0)
 			{
 				damage *= (1 + DamageIncrease);
 			}

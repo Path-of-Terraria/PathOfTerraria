@@ -42,10 +42,11 @@ public class ElementalPlayer : ModPlayer
 
 	public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref NPC.HitModifiers modifiers)
 	{
-		if (target.TryGetGlobalNPC(out ElementalNPC elemNPC))
+		if (target.TryGetGlobalNPC(out ElementalNPC elemNPC) && proj.TryGetGlobalProjectile(out ElementalProjectile elemProj))
 		{
 			MultipliableFloat throwaway = default;
-			ElementModifyDamage(Container, elemNPC.Container, ref throwaway, ref modifiers.FinalDamage, true);
+			Item item = elemProj.SourceItem == -1 ? null : ContentSamples.ItemsByType[elemProj.SourceItem];
+			ElementModifyDamage(elemProj.Container, elemNPC.Container, ref throwaway, ref modifiers.FinalDamage, true, item);
 		}
 	}
 
@@ -58,7 +59,7 @@ public class ElementalPlayer : ModPlayer
 		
 		foreach (ElementInstance element in container)
 		{
-			float weaponStrength = item is null ? 0 : ElementalWeaponSets.GetElementStrength(item.type, element.Type);
+			float weaponStrength = (item is null ? 0 : ElementalWeaponSets.GetElementStrength(item.type, element.Type)) * (1 - other[element.Type].Resistance);
 			float playerConversion = element.GetTotalConversion(other);
 			
 			baseElementalStrength += weaponStrength;
@@ -68,10 +69,19 @@ public class ElementalPlayer : ModPlayer
 		// Cap base elemental strength at 1.0 (can't be more than 100% elemental)
 		baseElementalStrength = MathF.Min(baseElementalStrength, 1f);
 	
-		float totalConversion = baseElementalStrength + additionalConversion;
+		float totalConversion = (baseElementalStrength + additionalConversion);
 		
 		// Apply multiplier to original damage BEFORE DEFENSE, by each element conversion percent (accounting for resistance) 
 		float totalMultiplier = MathF.Max(0f, totalConversion - baseElementalStrength);
+
+		// Add in multipliers
+		foreach (ElementInstance element in container)
+		{
+			float conv = MathF.Min(element.GetTotalConversion(other) + (item is null ? 0 : ElementalWeaponSets.GetElementStrength(item.type, element.Type)), 1);
+			float bonus = (conv * element.Multiplier) - conv;
+			totalMultiplier += bonus * Math.Abs(other[element.Type].Resistance);
+		}
+
 		if (!skipPreDefense)
 		{
 			// Adds X% damage to the hit, depending on the total conversion multiplier, before defense - only applies to players
@@ -86,7 +96,7 @@ public class ElementalPlayer : ModPlayer
 		// Apply flat extra damage (accounting for resistance)
 		foreach (ElementInstance element in container)
 		{
-			sourceDamage.Flat += element.GetFlatDamage(other);
+			sourceDamage.Flat += element.GetFlatDamage(other) * element.Multiplier;
 		}
 	
 		if (DebugMessages && (container.Any(x => x.DamageModifier.HasValues)))
@@ -138,7 +148,7 @@ public class ElementalPlayer : ModPlayer
 	{
 		if (target.TryGetGlobalNPC(out ElementalNPC elemNPC))
 		{
-			ElementOnHit(target, Container, elemNPC.Container, hit.Damage, hit, item);
+			ElementOnHit(target, Container, elemNPC.Container, hit.Damage, hit, item, Player);
 		}
 	}
 
@@ -153,11 +163,12 @@ public class ElementalPlayer : ModPlayer
 				item = new(elemProj.SourceItem);
 			}
 
-			ElementOnHit(target, Container, elemNPC.Container, hit.Damage, hit, item);
+			ElementOnHit(target, Container, elemNPC.Container, hit.Damage, hit, item, Player);
 		}
 	}
 
-	private static void ElementOnHit(Entity target, ElementalContainer container, ElementalContainer other, int finalDamage, NPC.HitInfo? optionalHitInfo, Item item = null)
+	private static void ElementOnHit(Entity target, ElementalContainer container, ElementalContainer other, int finalDamage, NPC.HitInfo? optionalHitInfo, Item item = null, 
+		Player player = null)
 	{
 		// Elemental damage done & debuffs
 		foreach (ElementInstance element in container)
@@ -181,9 +192,21 @@ public class ElementalPlayer : ModPlayer
 				Main.NewText($"  {element.Type}:        {totalAdditionalDamage}");
 			}
 
-			// Debuff applications
-			if (optionalHitInfo is not null)
+			NPC npc = null;
+
+			if (target is NPC checkNpc)
 			{
+				npc = checkNpc;
+			}
+
+			// Debuff applications
+			if (optionalHitInfo is { } hitInfo && player is not null)
+			{
+				if (npc is not null)
+				{
+					ElementalPlayerHooks.ElementalOnHitNPC(player, false, element, npc, container, other, finalDamage, hitInfo, item);
+				}
+
 				// If theres any conversion being done on either base elemental or added elemental damage
 				bool hasElement = totalAdditionalDamage > 0;
 
@@ -191,18 +214,32 @@ public class ElementalPlayer : ModPlayer
 				{
 					// Calculate total elemental damage for debuff purposes (includes base weapon damage)
 					int totalElementalDamageForDebuff = (int)(finalDamage * totalConversion) + flatDamage;
-					TryAddElementBuff(target, element.DamageModifier, totalElementalDamageForDebuff, optionalHitInfo.Value);
+					TryAddElementBuff(player, target, element.DamageModifier.ElementType, totalElementalDamageForDebuff, optionalHitInfo.Value);
+				}
+
+				if (npc is not null)
+				{
+					ElementalPlayerHooks.ElementalOnHitNPC(player, true, element, npc, container, other, finalDamage, hitInfo, item);
 				}
 			}
 		}
+
+		if (player is Player plr && target is NPC postNpc && optionalHitInfo.HasValue)
+		{
+			ElementalPlayerHooks.PostElementalHit(plr, postNpc, container, other, finalDamage, optionalHitInfo.Value, item);
+		}
 	}
 
-	private static bool TryAddElementBuff(Entity target, ElementalDamage damage, int elementalDamageDone, NPC.HitInfo hitInfo)
+	/// <summary>
+	/// Used to apply elemental debuffs. This can be called manually from any <see cref="ModPlayer.OnHitNPC(NPC, NPC.HitInfo, int)"/>.
+	/// </summary>
+	/// <exception cref="ArgumentException"></exception>
+	internal static bool TryAddElementBuff(Player player, Entity target, ElementType elementType, int elementalDamageDone, NPC.HitInfo hitInfo)
 	{
 		int lifeMax = target switch
 		{
 			NPC npc => npc.lifeMax,
-			Player player => player.statLifeMax2,
+			Player playerTarget => playerTarget.statLifeMax2,
 			_ => throw new ArgumentException("target should be an NPC or Player!")
 		};
 
@@ -210,16 +247,16 @@ public class ElementalPlayer : ModPlayer
 
 		if (DebugMessages)
 		{
-			Main.NewText($"[DEBUG] Chance to debuff for {damage.ElementType}: {chance * 100:0.##}%");
+			Main.NewText($"[DEBUG] Chance to debuff for {elementType}: {chance * 100:0.##}%");
 		}
 
-		if (elementalDamageDone > 0 && damage.CanDebuff(target, hitInfo, chance > Main.rand.NextFloat()))
+		if (elementalDamageDone > 0 && ElementalDamage.CanDebuff(elementType, target, player, hitInfo, chance))
 		{
-			damage.ApplyBuff(target, elementalDamageDone);
+			ElementalDamage.ApplyBuff(elementType, player, target, elementalDamageDone);
 
 			if (DebugMessages)
 			{
-				Main.NewText($"[DEBUG] Debuff for {damage.ElementType} applied!");
+				Main.NewText($"[DEBUG] Debuff for {elementType} applied!");
 			}
 
 			return true;

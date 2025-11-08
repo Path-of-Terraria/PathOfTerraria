@@ -41,7 +41,7 @@ public abstract class Passive : Allocatable, ILoadable
 	/// <summary>
 	/// Tooltip to be used in ALL display situations. This is automatically populated by <see cref="Language.GetOrRegister(string, Func{string})"/>.
 	/// </summary>
-	public override string DisplayTooltip => string.Format(Language.GetTextValue($"Mods.PathOfTerraria.Passives.{Name}.Tooltip"), Value);
+	public override string DisplayTooltip => Language.GetText($"Mods.PathOfTerraria.Passives.{Name}.Tooltip").Format(Value);
 
 	public int Value;
 

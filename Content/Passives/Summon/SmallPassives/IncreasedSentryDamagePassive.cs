@@ -9,7 +9,7 @@ internal class IncreasedSentryDamagePassive : Passive
 	{
 		public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref NPC.HitModifiers modifiers)
 		{
-			int level = Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(Name);
+			float level = Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<IncreasedSentryDamagePassive>();
 
 			if (proj.sentry || ProjectileID.Sets.SentryShot[proj.type])
 			{

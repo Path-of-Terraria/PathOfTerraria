@@ -3,6 +3,7 @@ using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using System.IO;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Skills.Ranged;
@@ -35,11 +36,13 @@ public class FetidCarapace : Skill
 		int damage = GetTotalDamage(30 * (1f - (3 - Level) * 0.2f));
 		int max = 1 + Level;
 		int type = ModContent.ProjectileType<CarapaceChunk>();
+		float off = Main.rand.NextFloat(MathHelper.Pi);
 
 		for (int i = 0; i < max; ++i)
 		{
 			var proj = Projectile.NewProjectileDirect(new EntitySource_UseSkill(player, this), player.Center, Vector2.Zero, type, damage, 8f, player.whoAmI, 0, max, i);
 			proj.timeLeft = TotalDuration;
+			proj.localAI[0] = off;
 			proj.netUpdate = true;
 		}
 	}
@@ -93,6 +96,8 @@ public class FetidCarapace : Skill
 		private ref float MaxChunks => ref Projectile.ai[1];
 		private ref float ChunkIndex => ref Projectile.ai[2];
 
+		private ref float SpinOffset => ref Projectile.localAI[0];
+
 		public override void SetStaticDefaults()
 		{
 			Main.projFrames[Type] = 3;
@@ -123,7 +128,7 @@ public class FetidCarapace : Skill
 				Player owner = Main.player[Projectile.owner];
 				float rotation = ChunkIndex / MaxChunks * MathHelper.TwoPi + Projectile.timeLeft * 0.075f;
 
-				Projectile.Center = owner.Center + new Vector2(60, 0).RotatedBy(rotation);
+				Projectile.Center = owner.Center + new Vector2(60, 0).RotatedBy(rotation + SpinOffset);
 				Projectile.rotation = rotation - MathHelper.PiOver4;
 			}
 			else
@@ -167,6 +172,16 @@ public class FetidCarapace : Skill
 			{
 				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Demonite, Projectile.velocity.X, Projectile.velocity.Y);
 			}
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(SpinOffset);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			SpinOffset = reader.ReadSingle();
 		}
 	}
 }
