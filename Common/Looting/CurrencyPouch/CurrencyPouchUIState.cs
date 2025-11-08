@@ -20,7 +20,7 @@ namespace PathOfTerraria.Common.Looting.CurrencyPouch;
 
 internal class CurrencyPouchUIState : UIState, IMutuallyExclusiveUI
 {
-	public const int SlotContext = ItemSlot.Context.ChestItem;
+	public const int SlotContext = ItemSlot.Context.InventoryItem;
 	public const string Identifier = "Currency Pouch UI";
 
 	private static CurrencyPouchBackUI _backdrop = null;
@@ -163,6 +163,13 @@ internal class CurrencyPouchUIState : UIState, IMutuallyExclusiveUI
 		}
 
 		Dictionary<int, int> storage = Main.LocalPlayer.GetModPlayer<CurrencyPouchStoragePlayer>().StorageByType;
+		
+		// Check if player actually has any of this currency type
+		if (!storage.TryGetValue(item.type, out int currentAmount) || currentAmount <= 0)
+		{
+			return;
+		}
+
 		storage[item.type] = Math.Max(storage[item.type] - 1, 0);
 		shard.ApplyToItem(SlottedItem);
 
