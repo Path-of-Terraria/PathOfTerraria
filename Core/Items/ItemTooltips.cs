@@ -96,6 +96,18 @@ public sealed partial class ItemTooltips : GlobalItem
 
 	public override bool PreDrawTooltipLine(Item item, DrawableTooltipLine line, ref int yOffset)
 	{
+		// Handle vanilla lines we want before the mod check
+		switch (line.Name)
+		{
+			case "Consumable":
+			case "Material": 
+			case "Placeable":
+			case "Price":
+				yOffset = -2;
+				line.BaseScale = new Vector2(0.9f);
+				return true;
+		}
+
 		// Reduce size of tooltips to fit the "Description"s we add in
 		if (line.Name.StartsWith("Tooltip") || line.Name == "SetBonus")
 		{
@@ -204,6 +216,7 @@ public sealed partial class ItemTooltips : GlobalItem
 		var oldTooltips = tooltips.Where(x => x.Name.StartsWith("Tooltip")).ToList();
 		var oldStats = tooltips.Where(x => x.Name.StartsWith("Stat")).ToList();
 
+		TooltipLine consumableLine = tooltips.FirstOrDefault(x => x.Name == "Consumable");
 		TooltipLine setBonusLine = tooltips.FirstOrDefault(x => x.Name == "SetBonus");
 		TooltipLine nameLine = tooltips.FirstOrDefault(x => x.Name == "ItemName");
 		TooltipLine priceLine = tooltips.FirstOrDefault(x => x.FullName == "Terraria/Price");
@@ -509,20 +522,30 @@ public sealed partial class ItemTooltips : GlobalItem
 		// These don't need AddNewTooltipLine as they're vanilla tooltips
 		tooltips.AddRange(oldTooltips);
 
+		if (consumableLine is not null)
+		{
+			consumableLine.OverrideColor = Color.LightGray;
+			tooltips.Add(consumableLine);
+		}
+
 		if (materialLine is not null)
 		{
+			materialLine.OverrideColor = Color.LightGray;
 			tooltips.Add(materialLine);
 		}
 
 		if (placeableLine is not null)
 		{
+			placeableLine.OverrideColor = Color.LightGray;
 			tooltips.Add(placeableLine);
 		}
 
 		if (priceLine is not null)
 		{
+			priceLine.OverrideColor = Color.LightGray;
 			tooltips.Add(priceLine);
 		}
+
 	}
 
 	/// <summary>
