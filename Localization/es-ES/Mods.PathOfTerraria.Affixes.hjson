@@ -46,7 +46,7 @@ NoFallDamageAffix: {
 // PercentageCriticalStrikeMultiplierAffix.Description: "{1}{0}% critical strike multiplier"
 // FlatCriticalStrikeChanceAffix.Description: "{1}{0} added critical strike chance"
 // PercentageIncreasedCriticalStrikeDamageAffix.Description: "{1}{0}% increased critical strike damage"
-// ChanceToApplyShockGearAffix.Description: "{1}{0}% to apply shock"
+// ChanceToApplyShockGearAffix.Description: "{1}{0}% chance to apply shock"
 // BuffShockedEffectAffix.Description: "{1}{0}% multiplier to shock effect"
 // IncreaseBlockAffix.Description: "{1}{0}% increased block chance"
 // StrengthItemAffix.Description: "{1}{0} strength"
