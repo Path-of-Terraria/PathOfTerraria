@@ -11,6 +11,7 @@ using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.UI;
 using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.Systems.FullMenuPausing;
 
 namespace PathOfTerraria.Common.Looting.VirtualBagUI;
 
@@ -19,8 +20,8 @@ internal class VirtualBagStoragePlayer : ModPlayer
 	/// <summary>
 	/// If the local player is using the virtual bag config.
 	/// </summary>
-	public static bool LocalUseVirtualBag => Main.LocalPlayer.GetModPlayer<VirtualBagStoragePlayer>().UsesVirtualBag &&
-	                                         IsVirtualBagActiveContext();
+	public static bool LocalUseVirtualBag => Main.LocalPlayer.GetModPlayer<VirtualBagStoragePlayer>().UsesVirtualBag 
+	                                         && IsVirtualBagActiveContext();
 
 	public static ModKeybind BagKeybind;
 
@@ -56,10 +57,15 @@ internal class VirtualBagStoragePlayer : ModPlayer
 			if (UIManager.TryGet(VirtualBagUIState.Identifier, out UIManager.UIStateData data) && data.Enabled)
 			{
 				SoundEngine.PlaySound(SoundID.MenuOpen);
+				if (Main.netMode != NetmodeID.SinglePlayer)
+				{
+					MenuSafeSystem.MenuOpen = true;
+				}
 			}
 			else
 			{
 				SoundEngine.PlaySound(SoundID.MenuClose);
+				MenuSafeSystem.MenuOpen = false;
 			}
 		}
 	}
@@ -78,6 +84,10 @@ internal class VirtualBagStoragePlayer : ModPlayer
 
 		confirmed = true;
 		UIManager.TryToggleOrRegister(VirtualBagUIState.Identifier, "Vanilla: Mouse Text", new VirtualBagUIState());
+		if (Main.netMode != NetmodeID.SinglePlayer)
+		{
+			MenuSafeSystem.MenuOpen = true;
+		}
 	}
 
 	public override void OnEnterWorld()
@@ -96,6 +106,7 @@ internal class VirtualBagStoragePlayer : ModPlayer
 		}
 
 		Storage.Clear();
+		MenuSafeSystem.MenuOpen = false;
 	}
 
 	private void OverrideRightClickForVirtualBag(On_ItemSlot.orig_RightClick_ItemArray_int_int orig, Item[] inv,
