@@ -257,6 +257,7 @@ public class Swarm : Skill
 			Projectile.usesLocalNPCImmunity = true;
 			Projectile.localNPCHitCooldown = 20;
 			Projectile.Opacity = 0f;
+			Projectile.ArmorPenetration = 999;
 		}
 
 		public override bool? CanCutTiles()
@@ -446,6 +447,7 @@ public class Swarm : Skill
 			Projectile.usesLocalNPCImmunity = true;
 			Projectile.localNPCHitCooldown = 20;
 			Projectile.Opacity = 0f;
+			Projectile.ArmorPenetration = 999;
 		}
 
 		public override bool? CanCutTiles()
@@ -804,6 +806,7 @@ public class Swarm : Skill
 			Projectile.usesLocalNPCImmunity = true;
 			Projectile.localNPCHitCooldown = 20;
 			Projectile.Opacity = 0f;
+			Projectile.ArmorPenetration = 999; 
 		}
 
 		public override bool? CanCutTiles()
