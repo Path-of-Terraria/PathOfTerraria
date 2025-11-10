@@ -58,7 +58,7 @@ public class Swarm : Skill
 		ManaCost = 10 - Level * 3;
 		Duration = SentryNPC.DefaultSentryDuration;
 		WeaponType = ItemType.Summoner;
-	}
+	}									
 
 	public override bool CanUseSkill(Player player, ref SkillFailure failReason, bool justChecking = true)
 	{
@@ -91,27 +91,34 @@ public class Swarm : Skill
 			int type = ModContent.ProjectileType<LocustSpawnCircle>();
 			int damage = 10 * Level;
 
-		if (Tree.Specialization is AntlionSwarm)
-		{
-		    damage = 6 * Level;
-		    
-		    // Spawn two Antlion Swarmers
-		    Vector2 offset1 = new Vector2(-24, 0);
-		    Vector2 offset2 = new Vector2(24, 0);
-		    
-		    int proj1 = Projectile.NewProjectile(new EntitySource_UseSkill(player, this), pos + offset1, Vector2.Zero, type, damage, 0, player.whoAmI, TotalDuration);
-		    int proj2 = Projectile.NewProjectile(new EntitySource_UseSkill(player, this), pos + offset2, Vector2.Zero, type, damage, 0, player.whoAmI, TotalDuration);
-		}
-		else
-		{
-		    int proj = Projectile.NewProjectile(new EntitySource_UseSkill(player, this), pos, Vector2.Zero, type, damage, 0, player.whoAmI, TotalDuration);
-		    
-		    if (Tree.Specialization is GlacialAntlions)
-		    {
-		        int bonusDamage = player.HasTreePassive<PestSwarmTree, FrostbiteMandibles>() ? 10 + player.GetPassiveStrength<PestSwarmTree, AggressiveChill>() * 3 : 0;
-		        Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>().Container[ElementType.Cold].DamageModifier.AddModifiers(bonusDamage, 1);
-		    }
-		}
+			if (Tree.Specialization is AntlionSwarm)
+			{
+			    damage = 6 * Level;
+			    
+			    // Spawn two Antlion Swarmers
+			    Vector2 offset1 = new Vector2(-24, 0);
+			    Vector2 offset2 = new Vector2(24, 0);
+			    
+			    int proj1 = Projectile.NewProjectile(new EntitySource_UseSkill(player, this), pos + offset1, Vector2.Zero, type, damage, 0, player.whoAmI, TotalDuration);
+			    int proj2 = Projectile.NewProjectile(new EntitySource_UseSkill(player, this), pos + offset2, Vector2.Zero, type, damage, 0, player.whoAmI, TotalDuration);
+			}
+			else
+			{
+			    int proj = Projectile.NewProjectile(new EntitySource_UseSkill(player, this), pos, Vector2.Zero, type, damage, 0, player.whoAmI, TotalDuration);
+
+			    if (Tree.Specialization is GlacialAntlions)
+			    {
+				    int bonusDamage = player.HasTreePassive<PestSwarmTree, FrostbiteMandibles>() ? 10 + player.GetPassiveStrength<PestSwarmTree, AggressiveChill>() * 3 : 0;
+
+				    if (bonusDamage > 0)
+				    {
+					    Main.projectile[proj].damage += bonusDamage;
+				    }
+
+				    var elementalProj = Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>();
+				    elementalProj.Container[ElementType.Cold].DamageModifier = elementalProj.Container[ElementType.Cold].DamageModifier.AddModifiers(bonusDamage, 1);
+			    }
+			}
 		}
 	}
 
@@ -571,7 +578,7 @@ public class Swarm : Skill
 			if (IsExplosive)
 			{
 				int exp = ModContent.ProjectileType<AntlionExplosion>();
-				int proj = Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, Vector2.Zero, exp, Projectile.damage * 3, 8, Projectile.owner, 60, 60);
+				int proj = Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, Vector2.Zero, exp, Projectile.damage * 5, 8, Projectile.owner, 60, 60);
 				Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>().Container[ElementType.Fire].DamageModifier.AddModifiers(0, 1f);
 
 				ExplosionHitbox.VFX(Projectile, new ExplosionHitbox.VFXPackage(2, 8, 4, true, 0.4f, null));
