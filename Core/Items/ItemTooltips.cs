@@ -18,6 +18,10 @@ using SubworldLibrary;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.ElementalDamage;
 using Terraria.ID;
+using Terraria.GameContent.RGB;
+using PathOfTerraria.Common.UI;
+using Terraria.GameContent;
+using System.Net.Http.Headers;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -57,6 +61,8 @@ public sealed partial class ItemTooltips : GlobalItem
 		public static Color ManaCost => ColorUtils.FromHexRgb(0x_5fcde4);
 	}
 
+	private static int _seperatorCount = 0;
+
 	public static string ColoredDot(Color color)
 	{
 		return $"[c/{ColorUtils.ToHexRGB(color)}:◙]";
@@ -90,6 +96,19 @@ public sealed partial class ItemTooltips : GlobalItem
 
 	public override bool PreDrawTooltipLine(Item item, DrawableTooltipLine line, ref int yOffset)
 	{
+		// Handle vanilla lines we want before the mod check
+		switch (line.Name)
+		{
+			case "FishingPower":
+			case "Consumable":
+			case "Material": 
+			case "Placeable":
+			case "Price":
+				yOffset = -2;
+				line.BaseScale = new Vector2(0.9f);
+				return true;
+		}
+
 		// Reduce size of tooltips to fit the "Description"s we add in
 		if (line.Name.StartsWith("Tooltip") || line.Name == "SetBonus")
 		{
@@ -104,6 +123,30 @@ public sealed partial class ItemTooltips : GlobalItem
 			return true;
 		}
 
+		if (line.Name.StartsWith("Separator"))
+		{
+			yOffset = 12;
+
+			if (Tooltip.CachedTooltip is not { } cache || Tooltip.SuppressDrawing)
+			{
+				return Tooltip.SuppressDrawing;
+			}
+
+			Vector2 pos = new(line.X, line.Y - 2);
+			float width = cache.OuterSize.X - 28;
+			Texture2D tex = Textures["Separator"].Value;
+			float middleWidth = width - 20;
+			var middleScale = new Vector2(middleWidth / 100f, 1);
+			Color col = Color.Gray;
+
+			Main.spriteBatch.Draw(tex, pos, new Rectangle(0, 0, 10, 6), col);
+			Main.spriteBatch.Draw(tex, pos + new Vector2(10, 0), new Rectangle(10, 0, 100, 6), col, 0f, Vector2.Zero, middleScale, SpriteEffects.None, 0);
+			Main.spriteBatch.Draw(tex, pos + new Vector2(middleWidth + 6, 0), new Rectangle(110, 0, 10, 6), col);
+
+			// Return true - draws nothing (aka ""), but this is necessary to add the yOffset properly
+			return true;
+		}
+
 		switch (line.Name)
 		{
 			case "Name":
@@ -112,7 +155,7 @@ public sealed partial class ItemTooltips : GlobalItem
 				return true;
 
 			case "Rarity" or "Corrupted" or "Cloned":
-				yOffset = -8;
+				yOffset = -2;
 				line.BaseScale = new Vector2(0.8f);
 				return true;
 
@@ -169,9 +212,13 @@ public sealed partial class ItemTooltips : GlobalItem
 			return Language.GetTextValue($"Mods.{PoTMod.ModName}.Gear.Tooltips." + key);
 		}
 
+		_seperatorCount = 0;
+
 		var oldTooltips = tooltips.Where(x => x.Name.StartsWith("Tooltip")).ToList();
 		var oldStats = tooltips.Where(x => x.Name.StartsWith("Stat")).ToList();
 
+		TooltipLine fishingPowerLine = tooltips.FirstOrDefault(x => x.Name == "FishingPower");
+		TooltipLine consumableLine = tooltips.FirstOrDefault(x => x.Name == "Consumable");
 		TooltipLine setBonusLine = tooltips.FirstOrDefault(x => x.Name == "SetBonus");
 		TooltipLine nameLine = tooltips.FirstOrDefault(x => x.Name == "ItemName");
 		TooltipLine priceLine = tooltips.FirstOrDefault(x => x.FullName == "Terraria/Price");
@@ -270,6 +317,7 @@ public sealed partial class ItemTooltips : GlobalItem
 				OverrideColor = Colors.Levels,
 			};
 			AddNewTooltipLine(item, tooltips, itemLevelLine);
+			AddSeparator(item, tooltips);
 		}
 
 		if (!string.IsNullOrWhiteSpace(staticData.AltUseDescription.Value))
@@ -280,6 +328,7 @@ public sealed partial class ItemTooltips : GlobalItem
 		if (!string.IsNullOrWhiteSpace(staticData.Description.Value))
 		{
 			AddNewTooltipLine(item, tooltips, new(Mod, "Description", staticData.Description.Value));
+			AddSeparator(item, tooltips);
 		}
 
 		if (item.damage > 0)
@@ -315,7 +364,7 @@ public sealed partial class ItemTooltips : GlobalItem
 				string elementName = Language.GetTextValue("Mods.PathOfTerraria.Misc.Damage", instance.ElementDisplayName.Value.ToLower().Trim());
 				float baseWeaponConversion = item?.type > ItemID.None ? ElementalWeaponSets.GetElementStrength(item.type, instance.Type) : 0f;
 
-				float elementDamage = finalDamage * (baseWeaponConversion + instance.GetTotalConversion(0));
+				float elementDamage = finalDamage * (baseWeaponConversion + instance.GetTotalConversion(0)) * instance.Multiplier;
 
 				float eleMinDamage = (elementDamage * 0.85f) + flat;
 				float eleMaxDamage = (elementDamage * 1.15f) + flat;
@@ -408,7 +457,7 @@ public sealed partial class ItemTooltips : GlobalItem
 				$"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"[{totalCritChance:0}%]")} Critical Strike Chance"
 			);
 
-			AddNewTooltipLine(item, tooltips, critLine);;
+			AddNewTooltipLine(item, tooltips, critLine);
 		}
 
 		if (item.mana > 0)
@@ -475,20 +524,55 @@ public sealed partial class ItemTooltips : GlobalItem
 		// These don't need AddNewTooltipLine as they're vanilla tooltips
 		tooltips.AddRange(oldTooltips);
 
+		if (fishingPowerLine is not null)
+		{
+			fishingPowerLine.OverrideColor = Color.LightBlue;
+			tooltips.Add(fishingPowerLine);
+		}
+		
+		if (consumableLine is not null)
+		{
+			consumableLine.OverrideColor = Color.LightGray;
+			tooltips.Add(consumableLine);
+		}
+
 		if (materialLine is not null)
 		{
+			materialLine.OverrideColor = Color.LightGray;
 			tooltips.Add(materialLine);
 		}
 
 		if (placeableLine is not null)
 		{
+			placeableLine.OverrideColor = Color.LightGray;
 			tooltips.Add(placeableLine);
 		}
 
 		if (priceLine is not null)
 		{
+			priceLine.OverrideColor = Color.LightGray;
 			tooltips.Add(priceLine);
 		}
+
+	}
+
+	/// <summary>
+	/// Adds a simple separator into the tooltips. This is done using the texture tag.
+	/// </summary>
+	internal static void AddSeparator(Item item, List<TooltipLine> lines)
+	{
+		var tooltip = new TooltipLine(PoTMod.Instance, "Separator" + _seperatorCount, "");
+
+		if (item is not null)
+		{
+			AddNewTooltipLine(item, lines, tooltip);
+		}
+		else
+		{
+			lines.Add(tooltip);
+		}
+
+		_seperatorCount++;
 	}
 
 	/// <summary>
@@ -580,6 +664,7 @@ public sealed partial class ItemTooltips : GlobalItem
 		Textures.Add("Rare", ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Slots/RareBack"));
 		Textures.Add("Unique", ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Slots/UniqueBack"));
 		Textures.Add("Favorite", ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Slots/FavoriteOverlay"));
+		Textures.Add("Separator", ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Separator"));
 	}
 
 	#region Special rendering for rarities and influences

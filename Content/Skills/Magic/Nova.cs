@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Projectiles;
+using PathOfTerraria.Common.Systems.ElementalDamage;
 using PathOfTerraria.Common.UI.Hotbar;
 using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.SkillPassives.Generic;
@@ -28,7 +29,27 @@ public class Nova : Skill
 
 	public override int MaxLevel => 3;
 
-	private static NovaType GetNovaType(Nova nova)
+	public override SkillTags Tags()
+	{
+		SkillTags tags = SkillTags.Magic | SkillTags.AreaOfEffect;
+
+		if (Tree.Specialization is LightningNova)
+		{
+			tags |= SkillTags.Lightning;
+		}
+		else if (Tree.Specialization is FireNova)
+		{
+			tags |= SkillTags.Fire;
+		}
+		else if (Tree.Specialization is IceNova)
+		{
+			tags |= SkillTags.Cold;
+		}
+
+		return tags;
+    }
+
+    private static NovaType GetNovaType(Nova nova)
 	{
 		SkillSpecial special = nova.Tree.Specialization;
 
@@ -81,21 +102,37 @@ public class Nova : Skill
 				break;
 		}
 
-		if (Tree.TryGetNode(out VolatileNova vNova) && vNova.Allocated) //Passive synergy
+		int projType = ModContent.ProjectileType<NovaProjectile>();
+
+        if (Tree.TryGetNode(out VolatileNova vNova) && vNova.Allocated) //Passive synergy
 		{
 			for (int i = 0; i < 3; i++)
 			{
 				Vector2 position = player.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(NovaProjectile.AreaOfEffect);
 
-				var smallBlast = Projectile.NewProjectileDirect(source, position, Vector2.Zero, ModContent.ProjectileType<NovaProjectile>(), damage, knockback, player.whoAmI, (int)type);
+				var smallBlast = Projectile.NewProjectileDirect(source, position, Vector2.Zero, projType, damage, knockback, player.whoAmI, (int)type);
 				smallBlast.scale = Main.rand.NextFloat(0.2f, 0.3f);
 				smallBlast.netUpdate = true;
 			}
 		}
 		else
 		{
-			Projectile.NewProjectile(source, player.Center, Vector2.Zero, ModContent.ProjectileType<NovaProjectile>(), damage, knockback, player.whoAmI, (int)type);
-		}
+			int proj = Projectile.NewProjectile(source, player.Center, Vector2.Zero, projType, damage, knockback, player.whoAmI, (int)type);
+			ElementalContainer container = Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>().Container;
+
+			if (Tree.Specialization is LightningNova)
+			{
+				container[ElementType.Lightning].DamageModifier.AddModifiers(0, 1);
+			}
+			else if (Tree.Specialization is FireNova)
+            {
+                container[ElementType.Fire].DamageModifier.AddModifiers(0, 1);
+            }
+			else if (Tree.Specialization is IceNova)
+            {
+                container[ElementType.Cold].DamageModifier.AddModifiers(0, 1);
+            }
+        }
 	}
 
 	public override bool CanUseSkill(Player player, ref SkillFailure failReason, bool justChecking)
@@ -119,16 +156,20 @@ public class Nova : Skill
 		}
 	}
 
-	private class NovaProjectile : SkillProjectile<Nova>
+	internal class NovaProjectile : SkillProjectile<Nova>
 	{
 		public const int AreaOfEffect = 300;
-		public int Spread => (int)((1 - Projectile.timeLeft / 30f) * Skill.GetTotalAreaOfEffect(300f * Projectile.scale));
+		public int Spread => (int)((GrowTimer / 30f) * Skill.GetTotalAreaOfEffect(300f * Projectile.scale));
 
 		public override string Texture => "Terraria/Images/NPC_0";
 
 		private NovaType NovaType => (NovaType)Projectile.ai[0];
 		private ref float Timer => ref Projectile.ai[1];
 		private ref float DecaySpeed => ref Projectile.ai[2];
+
+		private ref float GrowTimer => ref Projectile.localAI[0];
+
+		internal bool FullShock = false;
 
 		public override void SetDefaults()
 		{
@@ -149,6 +190,7 @@ public class Nova : Skill
 
 			Timer += 0.04f;
 			DecaySpeed *= 0.94f;
+			GrowTimer++;
 
 			if (Main.myPlayer == Projectile.owner && Projectile.timeLeft % 8 == 0 && Skill.Tree.TryGetNode(out ScorchingTouch scorching) && scorching.Allocated)
 			{
@@ -291,7 +333,12 @@ public class Nova : Skill
 
 			if (Skill.Tree.TryGetNode(out ShockChance shock) && shock.Allocated && Main.rand.NextFloat() < 0.02f * shock.Level)
 			{
-				target.AddBuff(ModContent.BuffType<ShockDebuff>(), 8 * 60);
+				ShockDebuff.Apply(Main.player[Projectile.owner], target, damageDone);
+			}
+
+			if (FullShock)
+			{
+				ShockDebuff.Apply(Main.player[Projectile.owner], target, target.lifeMax);
 			}
 
 			if (Skill.Tree.TryGetNode(out ThunderClaps thunderClaps) && thunderClaps.Allocated && Main.rand.NextFloat() < 0.05f * thunderClaps.Level)
@@ -358,11 +405,13 @@ public class Nova : Skill
 		public override void SendExtraAI(BinaryWriter writer)
 		{
 			writer.Write(Projectile.scale);
+			writer.Write((byte)Projectile.timeLeft);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
 			Projectile.scale = reader.ReadSingle();
+			Projectile.timeLeft = reader.ReadByte();
 		}
 	}
 }

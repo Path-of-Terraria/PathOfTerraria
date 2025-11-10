@@ -36,6 +36,8 @@ public abstract class QuestStep(string id)
 		init => countsAsCompleteDefault = value; 
 	}
 
+	public Func<QuestStep, bool> SkipCheck { get; internal set; } = null;
+
 	/// <summary>
 	/// Called every frame on the player. This should be used to complete steps, check conditions, so on and so on.
 	/// </summary>

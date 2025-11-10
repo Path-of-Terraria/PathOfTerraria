@@ -70,48 +70,53 @@ internal class PopupTextModifications : ILoadable
 
 	private void AddIcons(ILContext il)
 	{
+		static bool MatchDrawString(Instruction i)
+		{
+			return i.MatchCall(typeof(DynamicSpriteFontExtensionMethods), nameof(DynamicSpriteFontExtensionMethods.DrawString));
+		}
+
 		ILCursor c = new(il);
 
-		MethodInfo drawStringInfo = typeof(DynamicSpriteFontExtensionMethods).GetMethod(nameof(DynamicSpriteFontExtensionMethods.DrawString), 
-			BindingFlags.Public | BindingFlags.Static,
-			[typeof(SpriteBatch), typeof(DynamicSpriteFont), typeof(string), typeof(Vector2), typeof(Color), typeof(float), typeof(Vector2), typeof(float),
-			typeof(SpriteEffects), typeof(float)]);
+		// Match a part of the 'for (int i = 0; i < 20; i++)' loop to grab 'i'.
+		int iLoc = -1;
+		c.GotoNext(MoveType.After,
+			i => i.MatchLdcI4(0),
+			i => i.MatchStloc(out iLoc),
+			i => i.MatchBr(out _)
+		);
+		// Match '((Color)(ref val6)).A = (byte)MathHelper.Lerp(60f, 127f, Utils.GetLerpValue(0f, 255f, num6, clamped: true));'.
+		int secondColorLoc = -1;
+		c.GotoNext(MoveType.After,
+			i => i.MatchLdloca(out secondColorLoc),
+			i => i.MatchLdcR4(60f),
+			i => i.MatchLdcR4(127f),
+			i => i.MatchLdcR4(0f),
+			i => i.MatchLdcR4(255f)
+		);
 
-		if (!c.TryGotoNext(MoveType.After, x => x.MatchCall(drawStringInfo)))
-		{
-			return;
-		}
+		// Navigate to the end.
+		c.Index = c.Body.Instructions.Count - 1;
+		// Go back to find the last DrawString call.
+		c.GotoPrev(MoveType.Before, MatchDrawString);
+		// Then find the closest earlier unconditional jump. This is a skip over the else case.
+		ILLabel skipAllDrawsLabel = null;
+		c.GotoPrev(MoveType.Before, i => i.MatchBr(out skipAllDrawsLabel));
 
-		ILLabel skipLabel = null;
-
-		if (!c.TryGotoNext(x => x.MatchBr(out skipLabel)))
-		{
-			return;
-		}
-
-		if (!c.TryGotoPrev(x => x.MatchCall(drawStringInfo)))
-		{
-			return;
-		}
-
-		c.Emit(OpCodes.Ldloc_S, (byte)21);
-		c.Emit(OpCodes.Ldloc_0);
-		c.EmitDelegate(HijackTextDraw_Twin);
-		c.Emit(OpCodes.Br, skipLabel);
-
-		if (!c.TryGotoNext(x => x.MatchCall(drawStringInfo)))
-		{
-			return;
-		}
-
-		if (!c.TryGotoNext(x => x.MatchCall(drawStringInfo)))
-		{
-			return;
-		}
-
-		c.Emit(OpCodes.Ldloc_0);
+		// Go back forward to the last DrawString call and hijack it.
+		c.GotoNext(MoveType.Before, MatchDrawString);
+		c.Emit(OpCodes.Ldloc_S, (byte)iLoc);
 		c.EmitDelegate(HijackTextDraw);
-		c.Emit(OpCodes.Br, skipLabel);
+		c.Emit(OpCodes.Br, skipAllDrawsLabel);
+
+		// Reset index and go to the first DrawString call. Hijack both calls located there.
+		c.Index = 0;
+		c.GotoNext(MoveType.Before, MatchDrawString);
+		c.Emit(OpCodes.Ldloc_S, (byte)secondColorLoc);
+		c.Emit(OpCodes.Ldloc_S, (byte)iLoc);
+		c.EmitDelegate(HijackTextDraw_Twin);
+		c.Emit(OpCodes.Br, skipAllDrawsLabel);
+
+		MonoModHooks.DumpIL(PoTMod.Instance, il);
 	}
 
 	// Both hijack methods take more parameters than they actually use to pop them off of the stack, DO NOT change this

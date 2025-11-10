@@ -1,12 +1,7 @@
-using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
-using PathOfTerraria.Common.Systems.TreeSystem;
-using PathOfTerraria.Core.Items;
 using Terraria.ID;
-using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Passives;
-
 
 internal class ChanceToBleedPassive : Passive
 {
@@ -24,7 +19,7 @@ internal class ChanceToBleedPassive : Passive
 
 		private static void ApplyChance(NPC npc, Player player)
 		{
-			float str = player.GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(nameof(ChanceToBleedPassive));
+			float str = player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<ChanceToBleedPassive>();
 
 			if (str <= 0)
 			{

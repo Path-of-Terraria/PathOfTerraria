@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Common.UI.Utilities;
+using PathOfTerraria.Utilities;
 using Terraria.UI;
 
 namespace PathOfTerraria.Core.UI.SmartUI;
@@ -13,8 +14,8 @@ internal sealed partial class SmartUiLoader : ModSystem
 	private readonly List<UserInterface> userInterfaces = [];
 	private readonly List<SmartUiState> uiStates = [];
 
-	private UIState? stateToBlockAt;
-	private SmartUiElement? elementToBlockAt;
+	private UIState stateToBlockAt;
+	private SmartUiElement elementToBlockAt;
 
 	public override void ClearWorld()
 	{
@@ -44,13 +45,13 @@ internal sealed partial class SmartUiLoader : ModSystem
 				continue;
 			}
 
-			UIElement? hoveredElement = userInterface.CurrentState.GetElementAt(Main.MouseScreen);
+			UIElement hoveredElement = userInterface.CurrentState.GetElementAt(Main.MouseScreen);
 			if (hoveredElement is null)
 			{
 				continue;
 			}
 
-			SmartUiElement? parent = DeriveSmartUiElement(hoveredElement);
+			SmartUiElement parent = DeriveSmartUiElement(hoveredElement);
 			if (stateToBlockAt != userInterface.CurrentState && hoveredElement is UIState)
 			{
 				continue;
@@ -96,6 +97,8 @@ internal sealed partial class SmartUiLoader : ModSystem
 					{
 						if (state.Visible)
 						{
+							// Temporarily disable the click blocking, so that it does not interfere with Smart UIs themselves.
+							using var _ = ValueOverride.Create(ref BlockClickItem.Block, false);
 							state.Draw(Main.spriteBatch);
 						}
 

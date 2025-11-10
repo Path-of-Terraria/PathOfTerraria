@@ -71,7 +71,7 @@ public class PassiveRegistry : ILoadable
 	/// <returns>The stream pointing to the passive data json.</returns>
 	private static Stream GetPassiveJsonStream()
 	{
-#if DEBUG
+#if DEBUG || STAGING
 		string sourcePath = Path.Combine(PassiveFileWatcher.SourcePath, "Passives-dev.json");
 		string tmodPath = Path.Combine(ModLoader.ModPath, PoTMod.ModName + ".tmod");
 

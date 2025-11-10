@@ -8,7 +8,7 @@ internal class ReducedManaCostWhileChannelingPassive : Passive
 	{
 		if (player.channel)
 		{
-			player.manaCost *= 1 - (Value/100.0f) * Level;
+			player.manaCost *= 1 - (Value / 100.0f) * Level;
 		}
 	}
 }

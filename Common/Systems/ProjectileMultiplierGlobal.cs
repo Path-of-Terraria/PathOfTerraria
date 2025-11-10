@@ -14,7 +14,7 @@ internal class ProjectileMultiplierGlobal : GlobalProjectile
 		{
 			return;
 		}
-		
+
 		// Skip held weapon projectiles using ProjAIStyleID constants. Reference: https://docs.tmodloader.net/docs/1.4-preview/class_terraria_1_1_i_d_1_1_proj_a_i_style_i_d.html
 		if (projectile.aiStyle == ProjAIStyleID.HeldProjectile)
 		{
@@ -22,23 +22,23 @@ internal class ProjectileMultiplierGlobal : GlobalProjectile
 		}
 
 		Player player = itemSource.Player;
-		ProjectileModifierPlayer modPlayer = player.GetModPlayer<ProjectileModifierPlayer>();
+		EntityModifier mod = player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier;
+		float count = mod.ProjectileCount.Value;
+
+		if (projectile.bobber)
+		{
+			count += mod.FishingLineCount.Value;
+		}
 
 		// Skip if no modifier applied
-		if (modPlayer.ProjectileCountModifier == StatModifier.Default)
+		if (count == 0)
 		{
 			return;
 		}
 
-		int additionalProjectiles = (int)modPlayer.ProjectileCountModifier.ApplyTo(0f);
-		{
-			if (additionalProjectiles <= 0)
-				return;
-		}
-		
 		EntitySource_Misc multiSource = new("ProjectileMultiplication");
 
-		for (int i = 0; i < additionalProjectiles; i++)
+		for (int i = 0; i < count; i++)
 		{
 			float randomAngle = Main.rand.NextFloat(MathHelper.ToRadians(-10), MathHelper.ToRadians(10));
 			Vector2 modifiedVelocity = projectile.velocity.RotatedBy(randomAngle);

@@ -55,7 +55,10 @@ internal class KingSlimeQuest : Quest
 			}),
 
 			new ConditionCheck("Enter", _ => SubworldSystem.Current is KingSlimeDomain, 1, this.GetLocalization("EnterDomain")),
-			new ConditionCheck("Kill", _ => BossTracker.DownedInDomain<KingSlimeDomain>(NPCID.KingSlime), 1, this.GetLocalization("Kill.KingSlime")),
+			new ConditionCheck("Kill", _ => BossTracker.DownedInDomain<KingSlimeDomain>(NPCID.KingSlime), 1, this.GetLocalization("Kill.KingSlime"))
+			{
+				SkipCheck = QuestUtils.BossSkipCheck(NPCID.KingSlime)
+			},
 			new InteractWithNPC("Finish", ModContent.NPCType<GarrickNPC>(), LocalizedText.Empty, this.GetLocalization("ThanksDialogue")) { CountsAsCompletedOnMarker = true }
 		];
 	}

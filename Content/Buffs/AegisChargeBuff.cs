@@ -1,3 +1,4 @@
+using PathOfTerraria.Common.Buffs;
 using PathOfTerraria.Common.Systems.Charges;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -44,15 +45,6 @@ public class AegisChargeBuff : ModBuff
 			return; // Don't draw if 1 charges
 		}
 
-		string chargeText = chargePlayer.Charges.ToString();
-		Vector2 textSize = FontAssets.MouseText.Value.MeasureString(chargeText);
-		
-		//Top middle of buff icon
-		Vector2 textPosition = new(
-			drawParams.Position.X + 22 - textSize.X - 2,
-			drawParams.Position.Y + 20 - textSize.Y - 2 
-		);
-		
-		Utils.DrawBorderString(spriteBatch, chargeText, textPosition, Color.White, 1f);
+		BuffUtils.DrawNumberOverBuff(drawParams, chargePlayer.Charges.ToString());
 	}
 }

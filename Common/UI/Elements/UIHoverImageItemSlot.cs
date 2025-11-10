@@ -2,6 +2,8 @@ using ReLogic.Content;
 using Terraria.GameContent;
 using Terraria.UI;
 
+#nullable enable
+
 namespace PathOfTerraria.Common.UI.Elements;
 
 /// <summary>
@@ -14,7 +16,7 @@ public class UIHoverImageItemSlot(
 	Asset<Texture2D> backgroundTexture,
 	Asset<Texture2D> iconTexture,
 UIImageItemSlot.SlotWrapper itemHandler,
-	(string Key, object Arg0) hoverText,
+	(string Key, object Arg0)? hoverText = null,
 	int context = ItemSlot.Context.InventoryItem,
 	bool skipAutoSize = false,
 	float iconScalingSize = UIImageItemSlot.DefaultIconSize
@@ -61,21 +63,9 @@ UIImageItemSlot.SlotWrapper itemHandler,
 
 	protected override void UpdateIcon()
 	{
-		if (!Item.IsAir)
-		{
-			Texture2D texture = TextureAssets.Item[Item.type].Value;
-			Rectangle frame = Main.itemAnimations[Item.type] == null ? texture.Frame() : Main.itemAnimations[Item.type].GetFrame(texture);
+		base.UpdateIcon();
 
-			ItemSlot.DrawItem_GetColorAndScale(Item, Item.scale, ref Icon.Color, IconSize, ref frame, out _, out float finalDrawScale);
-
-			Icon.ImageScale = MathHelper.SmoothStep(Icon.ImageScale, finalDrawScale * (IsMouseHovering ? ActiveScale : InactiveScale), Smoothness);
-		}
-		else
-		{
-			Icon.Rotation = MathHelper.SmoothStep(Icon.Rotation, IsMouseHovering ? ActiveRotation : InactiveRotation, Smoothness);
-			Icon.ImageScale = MathHelper.SmoothStep(Icon.ImageScale, IsMouseHovering ? ActiveScale : InactiveScale, Smoothness);
-		}
-		
-		Icon.SetImage(GetIconToDraw());
+		Icon.Rotation = MathHelper.SmoothStep(Icon.Rotation, IsMouseHovering ? ActiveRotation : InactiveRotation, Smoothness);
+		Icon.ImageScale = MathHelper.SmoothStep(Icon.ImageScale, IsMouseHovering ? ActiveScale : InactiveScale, Smoothness);
 	}
 }

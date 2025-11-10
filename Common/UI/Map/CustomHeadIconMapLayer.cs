@@ -41,7 +41,7 @@ internal class CustomHeadIconMapLayer : ModMapLayer, INeedRenderTargetContent
 				_drawData.Clear();
 
 				Vector2 mapPosition = GetMapPosition(ref context);
-				Vector2 position = (npc.Center.ToTileCoordinates().ToVector2() - mapPosition) * GetMapScale(ref context) + GetMapOffset(ref context);
+				Vector2 position = ((npc.Center + new Vector2(0, npc.gfxOffY)) / 16f - mapPosition) * GetMapScale(ref context) + GetMapOffset(ref context);
 				Rectangle? clippingRect = GetClippingRectangle(ref context);
 
 				if (clippingRect.HasValue)

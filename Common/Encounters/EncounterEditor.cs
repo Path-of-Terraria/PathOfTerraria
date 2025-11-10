@@ -90,6 +90,14 @@ internal sealed class EncounterEditor : ModSystem
 #if DEBUG
 		keyToggleEncounterDebugging = KeybindLoader.RegisterKeybind(Mod, "ToggleEncounterDebugging", Microsoft.Xna.Framework.Input.Keys.NumPad4);
 #endif
+
+		On_PlayerInput.UpdateInput += OnUpdateInput;
+	}
+
+	private static void OnUpdateInput(On_PlayerInput.orig_UpdateInput orig)
+	{
+		wasWritingTextInPreviousTick = PlayerInput.WritingText;
+		orig();
 	}
 
 	public override void PostSetupContent()
@@ -121,11 +129,6 @@ internal sealed class EncounterEditor : ModSystem
 			gizmosLayer ??= new LegacyGameInterfaceLayer($"{nameof(PathOfTerraria)}: Encounter Gizmos", DrawGizmos, InterfaceScaleType.Game);
 			layers.Insert(Math.Max(0, layers.FindIndex(l => l.Name.Equals("Vanilla: Mouse Text")) - 1), gizmosLayer);
 		}
-	}
-
-	public override void PostDrawInterface(SpriteBatch spriteBatch)
-	{
-		wasWritingTextInPreviousTick = PlayerInput.WritingText;
 	}
 
 	public override void ClearWorld()
@@ -280,6 +283,11 @@ internal sealed class EncounterEditor : ModSystem
 		{
 			try
 			{
+				if (string.IsNullOrEmpty(Path.GetExtension(outPath)))
+				{
+					outPath = Path.ChangeExtension(outPath, EncounterIO.Extension);
+				}
+
 				File.WriteAllText(outPath!, EncounterIO.ToJson(encounter));
 			}
 			catch (Exception e)

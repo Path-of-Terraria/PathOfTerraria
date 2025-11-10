@@ -19,7 +19,7 @@ internal class OobodopSummon : GrimoireSummon
 		Main.projFrames[Type] = 1;
 	}
 
-	public override void SetDefaults()
+	public override void Defaults()
 	{
 		Projectile.width = 28;
 		Projectile.height = 28;

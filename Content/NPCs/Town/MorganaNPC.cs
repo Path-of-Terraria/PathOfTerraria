@@ -9,7 +9,6 @@ using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 using PathOfTerraria.Common.Utilities.Extensions;
-using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
 using PathOfTerraria.Content.Items.Gear.Weapons.Grimoire;
 using Terraria.DataStructures;
 using Terraria.GameContent;

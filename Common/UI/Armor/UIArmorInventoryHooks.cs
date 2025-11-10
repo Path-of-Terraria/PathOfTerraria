@@ -13,7 +13,7 @@ public sealed class UIArmorInventoryHooks : ILoadable
 		BindingFlags.Public | BindingFlags.Instance
 	);
 
-	private static ILHook? drawAccHook;
+	private static ILHook drawAccHook;
 
 	void ILoadable.Load(Mod mod)
 	{
@@ -35,12 +35,26 @@ public sealed class UIArmorInventoryHooks : ILoadable
 
 		ILLabel label = cursor.MarkLabel();
 
-		cursor.GotoNext
+		// Match 'else if (EquipPage == 0)' for Release mode.
+		if (!cursor.TryGotoNext
 		(
 			MoveType.After,
 			i => i.MatchLdsfld<Main>(nameof(Main.EquipPage)),
 			i => i.MatchBrtrue(out label)
-		);
+		))
+		{
+			// Match it for Debug mode.
+			cursor.GotoNext
+			(
+				MoveType.After,
+				i => i.MatchLdsfld<Main>(nameof(Main.EquipPage)),
+				i => i.MatchLdcI4(0),
+				i => i.MatchCeq(),
+				i => i.MatchStloc(out _),
+				i => i.MatchLdloc(out _),
+				i => i.MatchBrfalse(out label)
+			);
+		}
 
 		cursor.EmitBr(label);
 	}

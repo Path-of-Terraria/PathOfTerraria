@@ -1,8 +1,10 @@
-using System.Diagnostics;
-using ReLogic.Content.Sources;
-using System.IO;
-using PathOfTerraria.Core.Sources;
+using PathOfTerraria.Common.NPCs.Dialogue;
 using PathOfTerraria.Common.Systems.Synchronization;
+using PathOfTerraria.Core.Sources;
+using ReLogic.Content.Sources;
+using System.Diagnostics;
+using System.IO;
+using Terraria.UI.Chat;
 
 namespace PathOfTerraria;
 
@@ -31,20 +33,15 @@ public sealed class PoTMod : Mod
 		base.Load();
 
 		NPCUtils.NPCUtils.AutoloadModBannersAndCritters(this);
-		NPCUtils.NPCUtils.TryLoadBestiaryHelper();
-		
-		Debug.Assert(Name == ModName, "Internal mod name does not match expected contsant.");
-	}
+		NPCUtils.NPCUtils.TryLoadBestiaryHelper(this);
 
-	public override void Unload()
-	{
-		NPCUtils.NPCUtils.UnloadBestiaryHelper();
-		NPCUtils.NPCUtils.UnloadMod(this);
+		Debug.Assert(Name == ModName, "Internal mod name does not match expected constant.");
 	}
 
 	public override void HandlePacket(BinaryReader reader, int whoAmI)
 	{
-		Networking.HandlePacket(reader);
+		// Both 255 and 256 are sometimes used to refer to the server.
+		Networking.HandlePacket(reader, whoAmI > 255 ? (byte)255 : checked((byte)whoAmI));
 	}
 
 	public override IContentSource CreateDefaultContentSource()

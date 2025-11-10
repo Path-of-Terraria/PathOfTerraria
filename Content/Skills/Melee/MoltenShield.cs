@@ -10,7 +10,12 @@ public class MoltenShield : Skill
 {
 	public override int MaxLevel => 3;
 
-	public override void LevelTo(byte level)
+    public override SkillTags Tags()
+    {
+        return SkillTags.Melee | SkillTags.Buff;
+    }
+
+    public override void LevelTo(byte level)
 	{
 		Level = level;
 		Cooldown = MaxCooldown = 15 * 60;

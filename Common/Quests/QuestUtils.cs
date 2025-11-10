@@ -1,4 +1,6 @@
-﻿using Terraria.DataStructures;
+﻿using PathOfTerraria.Common.Systems.BossTrackingSystems;
+using PathOfTerraria.Common.Systems.Questing;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Quests;
@@ -18,5 +20,10 @@ internal static class QuestUtils
 		}
 
 		return item;
+	}
+
+	public static Func<QuestStep, bool> BossSkipCheck(int npcId)
+	{
+		return _ => BossTracker.TotalBossesDowned.Contains(npcId);
 	}
 }

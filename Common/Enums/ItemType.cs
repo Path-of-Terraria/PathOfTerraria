@@ -33,11 +33,12 @@ public enum ItemType : long
 	Shield = 1 << 24,
 	Quiver = 1 << 25,
 	Talisman = 1 << 26,
+	Focus = 1 << 27,
 
 	Armor = Helmet | Chestplate | Leggings,
 	Accessories = Ring | Charm | Amulet,
 	Equipment = Armor | Accessories,
-	Offhand = Shield | Quiver | Talisman,
+	Offhand = Shield | Quiver | Talisman | Focus,
 
 	Melee = Sword | Spear | MeleeFlail | WarShield | Battleaxe,
 	Magic = Staff | Tome | Wand,

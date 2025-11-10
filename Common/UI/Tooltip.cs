@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using PathOfTerraria.Common.ModCompatibility;
 using PathOfTerraria.Core.Time;
 using PathOfTerraria.Core.UI.SmartUI;
+using PathOfTerraria.Utilities;
 using ReLogic.Content;
 using Terraria.UI;
 using Terraria.UI.Chat;
@@ -54,16 +56,24 @@ public struct TooltipCache
 }
 
 /// <summary>
-/// Draws any amount of popup tooltip swhen various elements of the UI are hovered over.
+/// Draws any amount of popup tooltips when various elements of the UI are hovered over.
 /// </summary>
 public class Tooltip : SmartUiState
 {
-	private struct TooltipInstance
+	internal struct TooltipInstance
 	{
 		public TooltipDescription Description;
 		public TooltipCache Cache;
 		public ulong EndTime;
 	}
+
+	internal static TooltipCache? CachedTooltip = default;
+
+	/// <summary>
+	/// Suppresses drawing in PreDrawTooltip, as we need it to get information *before* actually drawing the tooltip. 
+	/// Also blocks Wikithis's drawing functionality in <see cref="WikithisCompatibility"/>.
+	/// </summary>
+	internal static bool SuppressDrawing = false;
 
 	private static readonly List<TooltipInstance> tooltips = [];
 
@@ -72,6 +82,17 @@ public class Tooltip : SmartUiState
 	public override int DepthPriority => 2;
 
 	public override bool Visible => true;
+
+	public override void Load()
+	{
+		On_Main.Update += JustStopDrawcode;
+	}
+
+	private static void JustStopDrawcode(On_Main.orig_Update orig, Main self, GameTime gameTime)
+	{
+		using var _ = ValueOverride.Create(ref SuppressDrawing, true);
+		orig(self, gameTime);
+	}
 
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{
@@ -159,10 +180,12 @@ public class Tooltip : SmartUiState
 		{
 			cache.Lines[fillIndex++].Base = new DrawableTooltipLine(new TooltipLine(PoTMod.Instance, "SimpleTitle", args.SimpleTitle), fillIndex, 0, 0, Color.White);
 		}
+
 		if (args.SimpleSubtitle != null)
 		{
 			cache.Lines[fillIndex++].Base = new DrawableTooltipLine(new TooltipLine(PoTMod.Instance, "SimpleSubtitle", args.SimpleSubtitle), fillIndex, 0, 0, Color.White);
 		}
+
 		foreach (DrawableTooltipLine source in args.Lines)
 		{
 			cache.Lines[fillIndex++].Base = source;
@@ -172,31 +195,40 @@ public class Tooltip : SmartUiState
 		cache.OuterSize = default;
 		Array.Fill(cache.LineMeasures, default, 0, lineCount);
 
-		for (int i = 0; i < lineCount; i++)
+		// Scope for usings.
 		{
-			DrawableTooltipLine line = cache.Lines[i].Base;
+			// This stops PreDrawTooltipLine from rendering and returning false, and thus gives an accurate line count.
+			using var _ = ValueOverride.Create(ref SuppressDrawing, true);
 
-			// Make a cursed copy of the tooltip line for later.
-			cache.Lines[i].Copy = new DrawableTooltipLine(line, i, 0, 0, line.Color);
-
-			// Point of caution:
-			// To acquire information necessary for correct bounding box calculations, there is no choice but to call PreDrawTooltipLine twice.
-			// This is a TML design issue -- Mirsario.
-			int spacingOffset = 0;
-			if (args.AssociatedItem != null && !ItemLoader.PreDrawTooltipLine(args.AssociatedItem, line, ref spacingOffset))
+			for (int i = 0; i < lineCount; i++)
 			{
-				lineCount--;
-				continue;
+				DrawableTooltipLine line = cache.Lines[i].Base;
+
+				// Make a cursed copy of the tooltip line for later.
+				cache.Lines[i].Copy = new DrawableTooltipLine(line, i, 0, 0, line.Color);
+
+				// Point of caution:
+				// To acquire information necessary for correct bounding box calculations, there is no choice but to call PreDrawTooltipLine twice.
+				// This is a TML design issue -- Mirsario.
+				int spacingOffset = 0;
+				if (args.AssociatedItem != null && !ItemLoader.PreDrawTooltipLine(args.AssociatedItem, line, ref spacingOffset))
+				{
+					lineCount--;
+					continue;
+				}
+
+				// Note - GetStringSize takes in a scale parameter, but that seems to work inconsistently, unlike manually multiplying by scale
+				// This seems to be a vanilla issue of some sort?
+				Vector2 measure = ChatManager.GetStringSize(line.Font, line.Text, Vector2.One, line.MaxWidth) * line.BaseScale;
+				int newLineCount = line.Text.Count(c => c == '\n');
+				float lineSpacing = BaseLineSpacing + spacingOffset;
+        
+				cache.LineMeasures[i] = measure;
+				cache.OuterSize.X = Math.Max(cache.OuterSize.X, cache.LineMeasures[i].X);
+				cache.OuterSize.Y += cache.LineMeasures[i].Y + lineSpacing;
 			}
-
-			Vector2 measure = ChatManager.GetStringSize(line.Font, line.Text, line.BaseScale, line.MaxWidth);
-			int newLineCount = line.Text.Count(c => c == '\n');
-			float lineSpacing = BaseLineSpacing + spacingOffset;
-
-			cache.LineMeasures[i] = measure;
-			cache.OuterSize.X = Math.Max(cache.OuterSize.X, cache.LineMeasures[i].X);
-			cache.OuterSize.Y += cache.LineMeasures[i].Y + lineSpacing;
 		}
+
 		// Add padding.
 		cache.OuterSize += args.Padding * 2f;
 
@@ -216,6 +248,8 @@ public class Tooltip : SmartUiState
 		// Adjust to screen bounds.
 		cache.Position.X = Math.Max(0, Math.Min(cache.Position.X, Main.screenWidth - cache.OuterSize.X));
 		cache.Position.Y = Math.Max(0, Math.Min(cache.Position.Y, Main.screenHeight - cache.OuterSize.Y));
+
+		CachedTooltip = cache;
 	}
 
 	private static void ResolveTooltipCollisions(Span<TooltipInstance> tooltips)

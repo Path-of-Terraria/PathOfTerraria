@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using PathOfTerraria.Common.Quests;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
 using PathOfTerraria.Content.Items.Quest;
 using PathOfTerraria.Content.NPCs.Town;
 using SubworldLibrary;
+using System.Collections.Generic;
 using Terraria.ID;
 using Terraria.Localization;
 
@@ -32,7 +34,10 @@ internal class SkeletronQuest : Quest
 				[new GiveItem(2, ItemID.Candle, ItemID.PlatinumCandle), new GiveItem(1, ItemID.CrimtaneBar, ItemID.DemoniteBar),
 					new GiveItem(1, ModContent.ItemType<AncientEvilBook>())]),
 			new ConditionCheck("Enter", (_) => SubworldSystem.Current is SkeletronDomain, 1, this.GetLocalization("EnterDomain")),
-			new ConditionCheck("Kill", (_) => NPC.downedBoss3, 1, this.GetLocalization("KillSkeletron")),
+			new ConditionCheck("Kill", _ => BossTracker.DownedInDomain<SkeletronDomain>(NPCID.SkeletronHead), 1, this.GetLocalization("KillSkeletron"))
+			{
+				SkipCheck = QuestUtils.BossSkipCheck(NPCID.SkeletronHead)
+			},
 			new InteractWithNPC("Finish", NPCID.Clothier, LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.OldMan.Dialogue.Complete"))
 			{
 				CountsAsCompletedOnMarker = true

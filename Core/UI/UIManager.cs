@@ -1,7 +1,10 @@
 using System.Collections.Generic;
+using System.Reflection;
 using Terraria.UI;
 
 namespace PathOfTerraria.Core.UI;
+
+#nullable enable
 
 /// <summary>
 ///		Manages the registration, updating, and rendering of <see cref="UIState"/> instances.
@@ -26,7 +29,7 @@ public sealed partial class UIManager : ModSystem
 		/// <summary>
 		///		The <see cref="UserInterface"/> instance associated with the <see cref="UIState"/>.
 		/// </summary>
-		public UserInterface UserInterface;
+		public UserInterface? UserInterface;
 
 		/// <summary>
 		///		The identifier of the <see cref="UIState"/>.
@@ -68,9 +71,23 @@ public sealed partial class UIManager : ModSystem
 	/// </summary>
 	public static List<UIStateData> Data { get; set; } = [];
 
+	/// <summary> An injected event called after all mod systems are done invoking their ModifyInterfaceLayers hook. </summary>
+	public static event Action<List<GameInterfaceLayer>> PostModifyInterfaceLayers;
+
+	public override void Load()
+	{
+		MonoModHooks.Add(typeof(SystemLoader).GetMethod(nameof(SystemLoader.ModifyInterfaceLayers)), (Action<List<GameInterfaceLayer>> orig, List<GameInterfaceLayer> layers) =>
+		{
+			orig(layers);
+			PostModifyInterfaceLayers?.Invoke(layers);
+		});
+	}
+
 	public override void Unload()
 	{
 		base.Unload();
+
+		PostModifyInterfaceLayers = null;
 
 		for (int i = 0; i < Data.Count; i++)
 		{
@@ -91,7 +108,7 @@ public sealed partial class UIManager : ModSystem
 		{
 			UIStateData data = Data[i];
 
-			data.UserInterface.Update(gameTime);
+			data.UserInterface?.Update(gameTime);
 		}
 
 		lastGameTime = gameTime;
@@ -116,7 +133,7 @@ public sealed partial class UIManager : ModSystem
 				data.Identifier,
 				() =>
 				{
-					data.UserInterface.Draw(Main.spriteBatch, lastGameTime);
+					data.UserInterface?.Draw(Main.spriteBatch, lastGameTime);
 					return true;
 				}, data.Type);
 
@@ -135,13 +152,14 @@ public sealed partial class UIManager : ModSystem
 	/// <param name="value">The value of the <see cref="UIState"/>.</param>
 	/// <param name="offset">The index offset within the specified insertion layer. Defaults to <c>0</c>.</param>
 	/// <param name="type">The interface scale type of the <see cref="UIState"/>. Defaults to <see cref="InterfaceScaleType.UI"/>.</param>
-	public static void Register(string identifier, string layer, UIState? value, int offset = 0, InterfaceScaleType type = InterfaceScaleType.UI)
+	public static void Register(string identifier, string layer, UIState? value, int offset = 0, InterfaceScaleType type = InterfaceScaleType.UI, bool enabled = false)
 	{
 		int index = Data.FindIndex(s => s.Identifier == identifier);
 
 		var data = new UIStateData(identifier, layer, value, offset, type)
 		{
-			UserInterface = new UserInterface()
+			UserInterface = new UserInterface(),
+			Enabled = enabled
 		};
 
 		data.UserInterface.SetState(value);
@@ -172,7 +190,7 @@ public sealed partial class UIManager : ModSystem
 
 		UIStateData data = Data[index];
 
-		data.UserInterface.CurrentState.Activate();
+		data.UserInterface?.CurrentState.Activate();
 		data.Enabled = true;
 
 		return true;
@@ -217,7 +235,7 @@ public sealed partial class UIManager : ModSystem
 
 		UIStateData data = Data[index];
 
-		data.UserInterface.CurrentState.Deactivate();
+		data.UserInterface?.CurrentState.Deactivate();
 		data.Enabled = false;
 
 		return true;
@@ -296,7 +314,7 @@ public sealed partial class UIManager : ModSystem
 			return true;
 		}
 
-		data = null;
+		data = null!;
 		return false;
 	}
 }

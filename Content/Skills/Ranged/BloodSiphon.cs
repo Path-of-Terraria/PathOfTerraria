@@ -3,19 +3,24 @@ using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
-using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Content.Buffs;
 using ReLogic.Content;
 using Terraria.ID;
-using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Skills.Ranged;
 
 public class BloodSiphon : Skill
 {
+	const int DefaultAoERange = 16 * 30;
+
 	public override int MaxLevel => 3;
 
-	public override void LevelTo(byte level)
+    public override SkillTags Tags()
+    {
+        return SkillTags.Healing | SkillTags.AreaOfEffect;
+    }
+
+    public override void LevelTo(byte level)
 	{
 		Level = level;
 		Cooldown = MaxCooldown = (15 - Level * 2) * 60;
@@ -35,7 +40,7 @@ public class BloodSiphon : Skill
 
 		foreach (NPC npc in Main.ActiveNPCs)
 		{
-			if (npc.DistanceSQ(player.Center) < MathF.Pow(16 * 30, 2))
+			if (npc.DistanceSQ(player.Center) < MathF.Pow(GetTotalAreaOfEffect(DefaultAoERange), 2))
 			{
 				SiphonNPC siphonNPC = npc.GetGlobalNPC<SiphonNPC>();
 				int stacks = siphonNPC.StacksForPlayer(player.whoAmI);

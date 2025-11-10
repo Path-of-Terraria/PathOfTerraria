@@ -17,9 +17,15 @@ public partial class EntityModifier : EntityModifierSegment
 	public StatModifier Defense = new();
 	public StatModifier DamageReduction = new();
 	public StatModifier MovementSpeed = new();
+
+	// Used in ProjectileModifierProjectile
 	public StatModifier ProjectileSpeed = new();
-	public StatModifier ProjectileCount = new(); // would be neat
 	public StatModifier ProjectileDamage = new();
+
+	// Used in ProjectileMultiplierGlobal
+	public AddableFloat FishingLineCount = new();
+	public AddableFloat ProjectileCount = new();
+
 	public StatModifier Damage = new();
 	public StatModifier AttackSpeed = new();
 	public StatModifier ArmorPenetration = new();
@@ -28,6 +34,12 @@ public partial class EntityModifier : EntityModifierSegment
 	public StatModifier CriticalDamage = new();
 	public StatModifier CriticalMultiplier = new();
 	public OnHitDeBuffer Buffer = [];
+
+	public StatModifier ChilledEffectiveness = new();
+	public StatModifier FreezeEffectiveness = new();
+
+	// SummonCritPlayer:
+	public AddableFloat SummonCritChance = new();
 
 	// MinorStatsModPlayer:
 	public StatModifier MagicFind = new();
@@ -90,13 +102,7 @@ public partial class EntityModifier : EntityModifierSegment
 		player.GetKnockback(DamageClass.Generic) = player.GetKnockback(DamageClass.Generic).CombineWith(Knockback);
 		player.GetArmorPenetration(DamageClass.Generic) = ArmorPenetration.ApplyTo(player.GetArmorPenetration(DamageClass.Generic));
 		
-		// Apply projectile modifiers
-		ProjectileModifierPlayer projPlayer = player.GetModPlayer<ProjectileModifierPlayer>();
-		projPlayer.ProjectileSpeedMultiplier = ProjectileSpeed;
-		projPlayer.ProjectileCountModifier = ProjectileCount;
-		projPlayer.ProjectileDamageMultiplier = ProjectileDamage;
-		
-		MinorStatsModPlayer msmp = player.GetModPlayer<MinorStatsModPlayer>();
+		ItemDropModifierPlayer msmp = player.GetModPlayer<ItemDropModifierPlayer>();
 		msmp.MagicFind = MagicFind.ApplyTo(msmp.MagicFind);
 
 		PotionPlayer ps = player.GetModPlayer<PotionPlayer>();

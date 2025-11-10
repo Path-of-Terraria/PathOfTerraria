@@ -1,7 +1,10 @@
 ﻿using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Systems.PassiveTreeSystem;
+using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Common.UI.Guide;
 using PathOfTerraria.Common.UI.Hotbar;
+using PathOfTerraria.Content.Passives.Magic.Masteries;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.GameInput;
@@ -21,6 +24,8 @@ internal class SkillCombatPlayer : ModPlayer
 	public Skill[] UnlockedSkills = [];
 	
 	public int Points;
+	public SkillBuff GlobalBuff = new();
+	public int TicksSinceSkillLastUsed = 0;
 
 	public override void Load()
 	{
@@ -133,13 +138,42 @@ internal class SkillCombatPlayer : ModPlayer
 		{
 			Player.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.UsedASkill);
 
-			HotbarSkills[index].RecalculateStats();
+			HotbarSkills[index].RecalculateStats(Player);
 			HotbarSkills[index]?.UseSkill(Player);
+
+			if (Player.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<AnticipatedStrikeMastery>(out float value) && TicksSinceSkillLastUsed > value * 60)
+			{
+				// Offset mouse so the usage doesn't perfectly overlap every time
+				Vector2 mouse = new(Main.mouseX, Main.mouseY);
+				float radius = Main.rand.NextFloat(30, 60);
+				Vector2 offset = Main.rand.NextVector2CircularEdge(radius, radius);
+
+				Main.mouseX += (int)offset.X;
+				Main.mouseY += (int)offset.Y;
+
+				HotbarSkills[index]?.UseSkill(Player);
+
+				Main.mouseX = (int)mouse.X;
+				Main.mouseY = (int)mouse.Y;
+			}
+
+			foreach (ModPlayer player in Player.ModPlayers)
+			{
+				if (player is SkillHooks.IOnUseSkillPlayer use)
+				{
+					use.OnUseSkill(HotbarSkills[index]);
+				}
+			}
+
+			TicksSinceSkillLastUsed = 0;
 		}
 	}
 
 	public override void ResetEffects()
 	{
+		TicksSinceSkillLastUsed++;
+		GlobalBuff.Reset();
+
 		if (HotbarSkills == null || HotbarSkills.Length == 0)
 		{
 			return;
@@ -226,13 +260,16 @@ internal class SkillCombatPlayer : ModPlayer
 		return false;
 	}
 
+	/// <summary> Tries to add the given skill to the player. </summary>
 	/// <param name="suppress"> Whether to display Main.NewText feedback. </param>
-	public bool TryAddSkill(Skill skill, bool suppress = false)
+	/// <param name="slot"> The slot to add to directly. Used only by <see cref="UI.SkillSelect.SkillSelectUI"/>. </param>
+	public bool TryAddSkill(Skill skill, bool suppress = false, int slot = -1)
 	{
 		SkillFailure fail = default;
+
 		if (!skill.CanEquipSkill(Player, ref fail))
 		{
-			NewText($"Skill cannot be added. ({fail.Description.Value})");
+			NewText($"{Language.GetTextValue("Mods.PathOfTerraria.Skills.CantBeAdded")} ({fail.Description.Value})");
 			return false; // Couldn't equip skill, return false
 		}
 
@@ -240,24 +277,35 @@ internal class SkillCombatPlayer : ModPlayer
 		{
 			if (HotbarSkills[i] != null && HotbarSkills[i].Name == skill.Name)
 			{
-				NewText("Skill already added.");
-				return true; // Return true because the skill can be added, it just is equipped already
+				NewText(Language.GetTextValue("Mods.PathOfTerraria.Skills.AlreadyAdded"));
+
+				// When slot is -1, return true to allow the skill tree to be opened
+				// Otherwise, return false since it was not successfully equipped
+				return slot == -1;
 			}
 		}
 
-		for (int i = 0; i < HotbarSkills.Length; i++)
+		if (slot == -1)
 		{
-			if (HotbarSkills[i] == null)
+			for (int i = 0; i < HotbarSkills.Length; i++)
 			{
-				HotbarSkills[i] = skill;
-				HotbarSkills[i].LevelTo(HotbarSkills[i].Level);
+				if (HotbarSkills[i] == null)
+				{
+					HotbarSkills[i] = skill;
+					HotbarSkills[i].LevelTo(HotbarSkills[i].Level);
 
-				NewText("Skill added successfully.");
-				return true; // Equipped skill, return true
+					return true; // Equipped skill, return true
+				}
 			}
 		}
+		else
+		{
+			HotbarSkills[slot] = skill;
+			HotbarSkills[slot].LevelTo(HotbarSkills[slot].Level);
 
-		NewText("No available space to add the skill.");
+			return true; // Equipped skill, return true
+		}
+
 		return false; // No space, fail
 
 		void NewText(string value)
@@ -276,12 +324,10 @@ internal class SkillCombatPlayer : ModPlayer
 			if (HotbarSkills[i] != null && HotbarSkills[i].GetType() == skill.GetType())
 			{
 				HotbarSkills[i] = null;
-				Main.NewText("Skill removed successfully.");
 				return true;
 			}
 		}
 
-		Main.NewText("Skill not found in the current skill set.");
 		return false;
 	}
 }

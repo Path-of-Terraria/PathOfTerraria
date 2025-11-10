@@ -81,14 +81,15 @@ public sealed class TooltipOverrides : ModSystem
 	{
 		var il = new ILCursor(ctx);
 
-		// Match 'if (HoverItem.type > 0)'.
+		// Go to after the start of 'if (HoverItem.type > 0)'.
 		il.GotoNext(
 			MoveType.After,
 			i => i.MatchLdsfld(typeof(Main), nameof(Main.HoverItem)),
 			i => i.MatchLdfld(typeof(Item), nameof(Item.type)),
-			i => i.MatchLdcI4(0),
-			i => i.MatchBle(out _)
+			i => i.MatchLdcI4(0)
 		);
+		// Go to before the start of the 'MouseText_DrawItemTooltip' call.
+		il.GotoNext(MoveType.Before, i => i.MatchLdarg(0));
 
 		// Emit our condition.
 		{

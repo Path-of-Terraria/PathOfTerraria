@@ -1,6 +1,10 @@
-﻿using PathOfTerraria.Content.Buffs;
+﻿using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.PassiveTreeSystem;
+using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.Buffs.ElementalBuffs;
+using PathOfTerraria.Content.Passives;
 using System.IO;
+using Terraria;
 
 namespace PathOfTerraria.Common.Systems.ElementalDamage;
 
@@ -105,24 +109,29 @@ public readonly struct ElementalDamage
 		};
 	}
 
-	public void ApplyBuff(Entity entity, int elementalDamageDealt)
+	public static void ApplyBuff(ElementType elementType, Player player, Entity entity, int elementalDamageDealt)
 	{
-		switch (ElementType)
+		switch (elementType)
 		{
 			case ElementType.Fire when entity is NPC burningNPC:
 				IgnitedDebuff.ApplyTo(burningNPC, (int)(elementalDamageDealt * 0.9f));
 				break;
 
 			case ElementType.Cold when entity is NPC frozenNPC:
-				float duration = 3.6f * (elementalDamageDealt / (float)frozenNPC.lifeMax);
+				float baseEffectiveness = 3.6f * (elementalDamageDealt / (float)frozenNPC.lifeMax);
+				float duration = player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.FreezeEffectiveness.ApplyTo(baseEffectiveness);
 
 				if (duration > 0.3f)
 				{
-					frozenNPC.AddBuff(GetBuffType(ElementType), (int)(duration * 60));
+					frozenNPC.AddBuff(GetBuffType(elementType), (int)(duration * 60));
+					frozenNPC.GetGlobalNPC<FreezeNPC>().Frozen = true;
+					FreezeNPC.ConvertFrozenGore(frozenNPC);
 				}
 
-				frozenNPC.GetGlobalNPC<FreezeNPC>().Frozen = true;
-				FreezeNPC.ConvertFrozenGore(frozenNPC);
+				break;
+
+			case ElementType.Lightning when entity is NPC shockedNPC:
+				ShockDebuff.Apply(player, shockedNPC, elementalDamageDealt);
 
 				break;
 
@@ -131,11 +140,11 @@ public readonly struct ElementalDamage
 
 				if (entity is NPC npc)
 				{
-					npc.AddBuff(GetBuffType(ElementType), MaxTime);
+					npc.AddBuff(GetBuffType(elementType), MaxTime);
 				}
-				else if (entity is Player player)
+				else if (entity is Player hurtPlayer)
 				{
-					player.AddBuff(GetBuffType(ElementType), MaxTime);
+					hurtPlayer.AddBuff(GetBuffType(elementType), MaxTime);
 				}
 
 				break;
@@ -149,14 +158,15 @@ public readonly struct ElementalDamage
 	/// <param name="info"></param>
 	/// <param name="defaultPercent"></param>
 	/// <returns></returns>
-	internal bool CanDebuff(Entity entity, NPC.HitInfo info, bool defaultPercent)
+	internal static bool CanDebuff(ElementType type, Entity entity, Player player, NPC.HitInfo info, float defaultPercent)
 	{
-		return ElementType switch
+		return type switch
 		{
 			ElementType.Fire => info.Crit,
 			ElementType.Cold => entity is NPC { boss: false } && info.Crit,
 			ElementType.Chaos => false,
-			_ => defaultPercent,
+			ElementType.Lightning => info.Crit || defaultPercent + player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<ShockChancePassive>() / 100f > Main.rand.NextFloat(),
+			_ => defaultPercent > Main.rand.NextFloat(),
 		};
 	}
 

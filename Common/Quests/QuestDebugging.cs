@@ -21,7 +21,7 @@ namespace PathOfTerraria.Common.Quests;
 [Autoload(true, Side = ModSide.Client)]
 internal sealed class QuestDebugging : ModSystem
 {
-#if DEBUG
+#if DEBUG || STAGING
 	private static ModKeybind keyToggleQuestDebugging = null!;
 
 	public override void Load()
@@ -46,7 +46,7 @@ internal sealed class QuestDebugCommand : ModCommand
 
 	public override void Action(CommandCaller caller, string input, string[] args)
 	{
-#if !DEBUG
+#if !DEBUG && !STAGING
 		// Prevent crazy cheating in MP, unless the user is at least on a debug build.
 		if (Main.netMode != NetmodeID.SinglePlayer)
 		{
@@ -232,6 +232,22 @@ public sealed class QuestDebugState : SmartUiState
 					SmartUiLoader.GetUiState<QuestsUIState>().Refresh();
 				};
 
+				e.OnRightClick += (evt, self) =>
+				{
+					if (!quest.Active && !quest.Completed)
+					{
+						return;
+					}
+
+					if (!quest.Completed && quest.CurrentStep <= 1)
+					{
+						return;
+					}
+
+					quest.Advance(Main.LocalPlayer, delta: -2);
+					SmartUiLoader.GetUiState<QuestsUIState>().Refresh();
+				};
+
 				buttonX += e.Width.Pixels;
 			});
 			// State info panel. Button, but doesn't do anything.
@@ -274,6 +290,25 @@ public sealed class QuestDebugState : SmartUiState
 					else
 					{
 						quest.Advance(Main.LocalPlayer, delta: 1);
+					}
+
+					SmartUiLoader.GetUiState<QuestsUIState>().Refresh();
+				};
+
+				e.OnRightClick += (evt, self) =>
+				{
+					if (quest.Completed)
+					{
+						return;
+					}
+
+					if (!quest.Active)
+					{
+						Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest(quest.FullName);
+					}
+					else
+					{
+						quest.Advance(Main.LocalPlayer, delta: 2);
 					}
 
 					SmartUiLoader.GetUiState<QuestsUIState>().Refresh();

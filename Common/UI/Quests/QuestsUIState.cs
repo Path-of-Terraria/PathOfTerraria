@@ -1,6 +1,8 @@
 ﻿using PathOfTerraria.Common.Systems.Questing;
+using PathOfTerraria.Common.UI.Components;
 using PathOfTerraria.Common.UI.Guide;
 using PathOfTerraria.Common.UI.Utilities;
+using PathOfTerraria.Core.UI;
 using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
 using System.Collections.Generic;
@@ -10,15 +12,13 @@ using Terraria.GameContent;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.Quests;
 
 public class QuestsUIState : CloseableSmartUi, IMutuallyExclusiveUI
 {
-	//private QuestDetailsPanel _questDetails;
-	//private QuestDetailsPanel _completedQuestDetails;
-
 	public const float SelectedOpacity = 0.25f;
 	public const float HoveredOpacity = 0.1f;
 
@@ -29,6 +29,7 @@ public class QuestsUIState : CloseableSmartUi, IMutuallyExclusiveUI
 	private UIList _questDetails;
 	private UIList _questList;
 	private UIList _completedQuestList;
+	private int _skipConfirm = 0;
 
 	protected override int TopPadding => 0;
 	protected override int PanelHeight => 1000;
@@ -68,6 +69,8 @@ public class QuestsUIState : CloseableSmartUi, IMutuallyExclusiveUI
 		{
 			Toggle();
 		}
+
+		_skipConfirm--;
 	}
 
 	public override void Refresh()
@@ -168,11 +171,42 @@ public class QuestsUIState : CloseableSmartUi, IMutuallyExclusiveUI
 				continue;
 			}
 
-			_questDetails.Add(new UISelectableQuestStep(i, quest)
+			var stepUI = new UISelectableQuestStep(i, quest)
 			{
 				Width = StyleDimension.Fill,
 				Height = StyleDimension.FromPixels(step.LineCount * 22)
-			});
+			};
+			_questDetails.Add(stepUI);
+
+			if (quest.CurrentStep == i && step.SkipCheck?.Invoke(step) == true)
+			{
+				var skip = new UIText(Language.GetTextValue("Mods.PathOfTerraria.Quests.Skip"), 0.8f)
+				{
+					HAlign = 1f,
+					Width = StyleDimension.FromPixels(60),
+					Height = StyleDimension.FromPixels(30),
+					Top = StyleDimension.FromPixels(-6),
+					TextColor = QuestStep.DefaultTextColor,
+					ShadowColor = Color.Transparent,
+				};
+
+				skip.AddComponent(new UIDynamicText(_ => Language.GetTextValue("Mods.PathOfTerraria.Quests." + (_skipConfirm <= 0 ? "Skip" : "Sure"))));
+				skip.OnLeftClick += (_, _) => SkipStep(quest);
+				stepUI.Append(skip);
+			}
+		}
+	}
+
+	private void SkipStep(Quest quest)
+	{
+		if (_skipConfirm <= 0)
+		{
+			_skipConfirm = 60 * 5;
+		}
+		else
+		{
+			quest.Advance(Main.LocalPlayer, 1);
+			PopulateQuestSteps(quest);
 		}
 	}
 

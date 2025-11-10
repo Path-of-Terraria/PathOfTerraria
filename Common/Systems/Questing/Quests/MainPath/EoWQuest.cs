@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using PathOfTerraria.Common.Quests;
 using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
@@ -8,6 +10,7 @@ using PathOfTerraria.Common.Systems.VanillaModifications;
 using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 using PathOfTerraria.Content.NPCs.Town;
 using SubworldLibrary;
+using System.Collections.Generic;
 using Terraria.ID;
 using Terraria.Localization;
 
@@ -46,7 +49,10 @@ internal class EoWQuest : Quest
 				return true;
 			}),
 			new ConditionCheck("Orbs", (_) => DisableEvilOrbBossSpawning.ActualOrbsSmashed > 2, 1, this.GetLocalization("SmashOrbs")),
-			new ConditionCheck("KillEoW", (_) => NPC.downedBoss2, 1, this.GetLocalization("KillEoW")),
+			new ConditionCheck("KillEoW", _ => BossTracker.DownedInDomain<EaterDomain>(NPCID.EaterofWorldsHead), 1, this.GetLocalization("KillEoW"))
+			{
+				SkipCheck = QuestUtils.BossSkipCheck(NPCID.EaterofWorldsHead)
+			},
 			new InteractWithNPC("Finish", ModContent.NPCType<MorvenNPC>(), LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.MorvenNPC.Dialogue.AfterBeatingEoW"))
 			{
 				CountsAsCompletedOnMarker = true

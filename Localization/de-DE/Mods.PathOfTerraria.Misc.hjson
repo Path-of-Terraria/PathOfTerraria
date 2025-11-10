@@ -42,10 +42,14 @@ Element: {
 ShardInvalidations: {
 	// NotRareOrMagic: Needs a Rare or Magic rarity item
 	// MaxAffixes: Item can't accept more affixes
+	// NoAffixes: Item has no affixes
 	// Invalid: Affixes can't apply to this item
 	// CorruptOrCloned: Corrupt or cloned items can't be modified further
 	// IsUnique: Needs a non-Unique rarity item
+	// IsNormal: Needs a non-Normal rarity item
 	// NotMagic: Needs a Magic rarity item
 	// NotRare: Needs a Rare rarity item
 	// NotNormal: Needs a Normal rarity item
 }
+
+// RiftStability: Rift Stability

@@ -57,7 +57,7 @@ public readonly struct SkillFailure(SkillFailReason reason, string context = nul
 	}
 }
 
-public abstract partial class Skill
+public abstract partial class Skill : ILoadable
 {
 	public Vector2 Size
 	{
@@ -108,6 +108,24 @@ public abstract partial class Skill
 	public byte Level = 1;
 
 	private Vector2 _size;
+
+	public void Load(Mod mod)
+	{
+	}
+
+	public void Unload()
+	{
+	}
+
+	public Skill Clone()
+	{
+		return (Skill)MemberwiseClone();
+	}
+
+	/// <summary>
+	/// The tags this skill applies to.
+	/// </summary>
+	public abstract SkillTags Tags();
 
 	private string GetTextureName()
 	{
@@ -187,6 +205,9 @@ public abstract partial class Skill
 	{
 		player.CheckMana(TotalManaCost, true);
 		Cooldown = TotalCooldown;
+		
+		//player.MaxManaRegenDelay was way too slow for some reason compared to when using a mag weapon? Idk why. But 60 seems right
+		player.manaRegenDelay = 60;
 	}
 
 	/// <summary>

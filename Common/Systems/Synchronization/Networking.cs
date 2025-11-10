@@ -34,16 +34,15 @@ internal static class Networking
 		SpawnNPCOnServer,
 
 		/// <summary>
-		/// Syncs placing an item in a map device.<br/>Signature:<br/>
-		/// <c>byte fromWho, short itemId, Point16 entityKey</c>
+		/// Syncs map devices.
+		/// <br/> Does not implement <see cref="Handler.Send"/>.
 		/// </summary>
-		SyncMapDevicePlaceMap,
-
+		MapDeviceSync,
 		/// <summary>
-		/// Takes 1 "use" off of a given map device.<br/>Signature:<br/>
-		/// <c>byte fromWho, Point16 entityKey</c>
+		/// Reports various map interactions.
+		/// <br/> Does not implement <see cref="Handler.Send"/>.
 		/// </summary>
-		ConsumeMapOffOfDevice,
+		MapDeviceInteraction,
 
 		/// <summary>
 		/// Sets the index of a given Ravencrest structure.<br/>Signature:<br/>
@@ -177,6 +176,11 @@ internal static class Networking
 		/// </summary>
 		SpawnSentryNPC,
 
+		/// Synchronizes right click interactions with rifts.<br/>Signature:<br/>
+		/// <c>byte sender, int riftIdentity</c>
+		/// </summary>
+		RiftInteraction,
+
 		/// <summary>
 		/// Spawns arbitrary, pre-defined VFX on all clients and server. 
 		/// Used for code run on only one client that should be shown on all clients, such as projectile spawning VFX, or server-side operations.<br/>Signature:<br/>
@@ -191,19 +195,12 @@ internal static class Networking
 		PlayerUseSackOfHolding,
 	}
 
-	internal static void HandlePacket(BinaryReader reader)
+	internal static void HandlePacket(BinaryReader reader, byte sender)
 	{
 		var message = (Message)reader.ReadByte();
 		Handler handler = Handler.HandlerForMessage[message];
 
-		if (Main.netMode == NetmodeID.Server)
-		{
-			handler.ServerRecieve(reader);
-		}
-		else
-		{
-			handler.ClientRecieve(reader);
-		}
+		handler.Receive(reader, sender);
 
 #if DEBUG
 		PoTMod.Instance.Logger.Debug($"[PoT] Network got: {message}");

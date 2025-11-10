@@ -1,8 +1,7 @@
-using PathOfTerraria.Common.Events;
-using PathOfTerraria.Common.Subworlds;
-using SubworldLibrary;
 using System.Collections.Generic;
 using System.IO;
+using PathOfTerraria.Common.Subworlds;
+using SubworldLibrary;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
@@ -10,20 +9,18 @@ namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 /// <inheritdoc cref="Networking.Message.RequestMappingTiers"/>
 internal class RequestMappingTierHandler : Handler
 {
-	public override Networking.Message MessageType => Networking.Message.RequestMappingTiers;
-
-	public override void Load(Mod mod)
+	public sealed class RequestMappingTierHandlerPlayer : ModPlayer
 	{
-		base.Load(mod);
-
-		PathOfTerrariaPlayerEvents.OnEnterWorldEvent += player =>
+		public override void OnEnterWorld()
 		{
 			if (Main.netMode != NetmodeID.SinglePlayer && SubworldSystem.Current is MappingWorld)
 			{
-				ModContent.GetInstance<RequestMappingTierHandler>().Send((byte)player.whoAmI);
+				ModContent.GetInstance<RequestMappingTierHandler>().Send((byte)Player.whoAmI);
 			}
-		};
+		}
 	}
+
+	public override Networking.Message MessageType => Networking.Message.RequestMappingTiers;
 
 	/// <inheritdoc cref="Networking.Message.RequestMappingTiers"/>
 	public override void Send(params object[] parameters)

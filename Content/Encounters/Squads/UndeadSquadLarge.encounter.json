@@ -1,0 +1,58 @@
+{
+  "Identifier": "Undead",
+  "ActivationOrigin": [ 34152.984, 3931 ],
+  "ActivationRange": 512.0,
+  "SpawnArea": [ 2102, 229, 64, 32 ],
+  "SpawnOrigin": [ 2134, 245 ],
+  "Waves": [
+    {
+      "Spawns": [
+        {
+          "NpcType": "Terraria/Zombie",
+          "SpawnPlacement": {
+            "OnGround": true
+          }
+        },
+        {
+          "NpcType": "Terraria/MaggotZombie",
+          "SpawnPlacement": {
+            "OnGround": true
+          }
+        },
+        {
+          "NpcType": "Terraria/DialatedEye2",
+          "SpawnPlacement": {}
+        },
+        {
+          "NpcType": "Terraria/ArmedZombie",
+          "SpawnPlacement": {
+            "OnGround": true
+          }
+        },
+        {
+          "NpcType": "Terraria/PincushionZombie",
+          "SpawnPlacement": {
+            "OnGround": true
+          }
+        },
+        {
+          "NpcType": "Terraria/DemonEye",
+          "SpawnPlacement": {}
+        },
+        {
+          "NpcType": "Terraria/BloodZombie",
+          "SpawnPlacement": {
+            "OnGround": true
+          }
+        },
+        {
+          "NpcType": "Terraria/BigBaldZombie",
+          "SpawnPlacement": {
+            "OnGround": true
+          }
+        }
+      ]
+    }
+  ],
+  "Music": "Terraria/None"
+}

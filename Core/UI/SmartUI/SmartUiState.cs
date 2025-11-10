@@ -3,6 +3,8 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Core.UI.SmartUI;
 
+#nullable enable
+
 /// <summary>
 ///		An automatically-loaded <see cref="UIState"/> that lives as a singleton
 ///		and whose visibility to known to itself and controllable.

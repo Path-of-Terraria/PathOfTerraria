@@ -3,7 +3,7 @@ using PathOfTerraria.Content.Skills.Summon;
 
 namespace PathOfTerraria.Content.SkillPassives.SwarmPassives;
 
-internal class IceShards : SkillProjectile<PestSwarm>
+internal class IceShards : SkillProjectile<Swarm>
 {
 	public override void SetStaticDefaults()
 	{
