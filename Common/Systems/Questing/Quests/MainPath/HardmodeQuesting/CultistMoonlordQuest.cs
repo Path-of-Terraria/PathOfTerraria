@@ -6,6 +6,7 @@ using PathOfTerraria.Common.Systems.Questing.RewardTypes;
 using PathOfTerraria.Content.NPCs.Town;
 using SubworldLibrary;
 using System.Collections.Generic;
+using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using Terraria.ID;
 using Terraria.Localization;
 
@@ -40,7 +41,8 @@ internal class CultistMoonlordQuest() : Quest
 			], this.GetLocalization("CollectSigils")),
 		
 			new InteractWithNPC("Talk", NPCQuestGiver,Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.CultistMoonlordDialogue3"),
-				Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.CultistMoonlordDialogue3")),
+				Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.CultistMoonlordDialogue3"),
+			onSuccess: _ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<CultistMap>())),
 
 			// TODO: Place sigils into the altar slots. This will create a rift that the player is sucked into. Inside, the Cultist Invasion will begin on the "alternate"
 			// destroyed Ravencrest.
@@ -57,8 +59,8 @@ internal class CultistMoonlordQuest() : Quest
 			// (step to kill all 4 pillars)
 			
 			new InteractWithNPC("PostPillars", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.CultistMoonlordDialogue5"),
-				Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.CultistMoonlordDialogue5")),
-			
+				Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.CultistMoonlordDialogue5"),
+				onSuccess: _ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<MoonMap>())),
 			// TODO: Once again, a portal/rift will open at the altar and Azariel will follow you through into the moon lord domain.
 
 			new ConditionCheck("MoonDomain", _ => SubworldSystem.Current is MoonLordDomain, 1, this.GetLocalization("EnterDomain2")),

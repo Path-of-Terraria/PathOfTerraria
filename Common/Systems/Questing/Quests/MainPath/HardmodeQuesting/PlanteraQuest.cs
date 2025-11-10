@@ -37,7 +37,7 @@ internal class PlanteraQuest() : HardmodeQuest(5)
 						new GiveItem(5, ItemID.Vine), // TODO: Replace this with Plant Growth item from post-mech jg mob.
 						new GiveItem(10, ItemID.JungleSpores), 
 					]),
-				new KillCount("Kill", NPCID.Plantera, 10, this.GetLocalization("Plantera")) //TODO: Change this to the Plant growth item mob from above^^
+				new KillCount("Kill", NPCID.JungleBat, 10, this.GetLocalization("Plantera")) //TODO: Change this to the Plant growth item mob from above^^
 			], Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.PlanteraDialogue1")),
 
 			// TODO: Add a step here that has something to do with the plant growths. Likely something that will lead into a portal spawning for plantera. 

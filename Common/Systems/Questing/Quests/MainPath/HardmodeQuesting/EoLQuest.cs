@@ -7,6 +7,7 @@ using PathOfTerraria.Common.Systems.Questing.RewardTypes;
 using PathOfTerraria.Content.NPCs.Town;
 using SubworldLibrary;
 using System.Collections.Generic;
+using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using Terraria.ID;
 using Terraria.Localization;
 
@@ -31,11 +32,13 @@ internal class EoLQuest() : Quest
 		return
 		[
 			// TODO: Change this to be new prismatic fragment item 
-			new CollectCount("Start", ItemID.CrystalBall, 10),
+			new CollectCount("Start", ItemID.CrystalBullet, 10),
 		
 			new InteractWithNPC("Talk", NPCQuestGiver,Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.WizardEmpressDialogue2"),
-				Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.WizardEmpressDialogue2")),
-		
+				Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.WizardEmpressDialogue2"),
+				onSuccess: _ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<EoLMap>())),
+			// TODO: Remove the above map giving later
+			
 			// TODO: Make rose colored glasses item.
 			new ParallelQuestStep("Branch", [
 				new CollectCount("Glasses", ItemID.IronHelmet, 1),

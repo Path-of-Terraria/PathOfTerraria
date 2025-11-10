@@ -36,7 +36,7 @@ internal class SkelePrimeQuest() : Quest
 				[
 					new GiveItem(10, ItemID.SoulofNight),
 					new GiveItem(20, ItemID.Bone),
-					new GiveItem(5, ItemID.MechanicalWagonPiece), //TODO: Replace this with a new item dropped from a "mech" monster that Pyra spawns in Ravencrest
+					new GiveItem(5, ItemID.Wood), //TODO: Replace this with a new item dropped from a "mech" monster that Pyra spawns in Ravencrest
 				]),
 			
 			new InteractWithNPC("Talk", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerSkeletronPrimeDialogue2"), 

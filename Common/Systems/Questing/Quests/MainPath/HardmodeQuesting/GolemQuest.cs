@@ -37,7 +37,6 @@ internal class GolemQuest() : Quest
 					[
 						new GiveItem(2, ItemID.LihzahrdPowerCell),
 					]),
-				//TODO: The below seems to not always count the Lihzahrds as kills and im not sure why. Something is weird here.
 				new KillCount("Kill", npc => npc.netID == NPCID.Lihzahrd || npc.netID == NPCID.LihzahrdCrawler, 10, this.GetLocalization("Lihzards"))
 			], Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.GolemDialogue1")),
 

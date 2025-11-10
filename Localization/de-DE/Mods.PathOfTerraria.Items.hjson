@@ -1365,10 +1365,12 @@ ObsidianAdversaryItem: {
 	// DisplayName: Obsidian Adversary
 	// Tooltip: "'The harrowing visage seems to stare back...'"
 }
+
 RoyalJellyCore: {
 	// DisplayName: Royal Jelly Core
 	// Tooltip: It emanates with power... I should bring it back to Garrick.
 }
+
 LunarFragment: {
 	// DisplayName: Lunar Fragment
 	/* Tooltip:
@@ -1377,6 +1379,7 @@ LunarFragment: {
 		'Reeks of...otherworldliness'
 		''' */
 }
+
 CelestialConflux: {
 	// DisplayName: Celestial Conflux
 	// Tooltip: ""

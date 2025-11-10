@@ -48,6 +48,7 @@ BlacksmithNPC: {
 
 	Entry: Весёлый гном, Трейн любит весёлые беседы, хороший напиток и изготовление лучшего оружия, которое вы когда-либо видели. Обычно его можно найти в его кузне, изготавливающем оружие.
 	// DownedForest: After beating the Forest domain
+	// Census.SpawnCondition: Conditions unknown
 }
 
 BarkeepNPC: {
@@ -89,6 +90,7 @@ BarkeepNPC: {
 	}
 
 	Entry: Бром — простой человек. Люди хотят хорошо провести время? Они приходят в бар. Они разговаривают с Бромом Харди. Они хорошо проводят время с хорошими людьми и хорошими напитками. Чего тут не любить?
+	// Census.SpawnCondition: Conditions unknown
 }
 
 HunterNPC: {
@@ -135,6 +137,7 @@ HunterNPC: {
 
 	MapButton: Карта (20 золота)
 	Entry: Холодный как камень охотник с большими знаниями, Элара неразговорчива. Она компенсирует это тем, что является исключительно хорошим охотником и следопытом, с глазами почти везде.
+	// Census.SpawnCondition: Conditions unknown
 }
 
 Minera: {
@@ -190,6 +193,7 @@ GarrickNPC: {
 	LunarLiquidButton: Лунная Жидкость
 	AnotherMap: Карта
 	Entry: Гаррик — воин, который посвятил свою жизнь борьбе с силами зла. Он известен своей неукротимой волей и мастерством в бою, а также своей способностью выживать в самых опасных ситуациях.
+	// Census.SpawnCondition: Conditions unknown
 }
 
 TownScoutNPC: {
@@ -248,6 +252,7 @@ WizardNPC: {
 	}
 
 	Entry: Возможно, самый могущественный волшебник всех времён, Аларик всё ещё ведёт себя так, будто притворяется самым могущественным волшебником всех времён. Если ему весело, он может вызвать настоящую и мгновенную катастрофу.
+	// Census.SpawnCondition: Conditions unknown
 }
 
 EldricNPC: {
@@ -296,6 +301,7 @@ EldricNPC: {
 	CreateConcoction: Создать Смесь
 	DonateLunar: Пожертвовать Лунные Осколки/Жидкость
 	Entry: Элдрик — астроном, который посвятил свою жизнь изучению звёзд и небесных тел. Он обладает глубокими знаниями о космосе и часто делится ими с путешественниками.
+	// Census.SpawnCondition: Conditions unknown
 }
 
 MorvenNPC: {
@@ -371,6 +377,7 @@ MorvenNPC: {
 	}
 
 	Entry: Морвен — учёный, который увлечён изучением науки и технологий. Он часто экспериментирует с новыми идеями и изобретениями, что делает его ценным источником знаний для путешественников.
+	// Census.SpawnCondition: Conditions unknown
 }
 
 LloydNPC: {
@@ -462,6 +469,8 @@ LloydNPC: {
 			2: Спасибо вам всем.
 		}
 	}
+
+	// Census.SpawnCondition: Conditions unknown
 }
 
 RhineNPC: {
@@ -510,6 +519,7 @@ RhineNPC: {
 	}
 
 	Entry: Райн — трудолюбивый. В перерывах между путешествиями он навещает родных и охотится на легендарных зверей. Здесь же? Он ищет вкусную еду, выпивку и людей, с которыми можно порассказать истории.
+	// Census.SpawnCondition: Conditions unknown
 }
 
 SkullApparition.DisplayName: Призрачный Череп
@@ -574,6 +584,7 @@ MorganaNPC: {
 	}
 
 	Entry: Соберите 2 пера совы и 1 пару крыльев летучей мыши.
+	// Census.SpawnCondition: Conditions unknown
 }
 
 Entling: {
@@ -896,6 +907,7 @@ TinkerNPC: {
 	}
 
 	// Entry: Todo:
+	// Census.SpawnCondition: Conditions unknown
 }
 
 FishermanNPC: {
@@ -933,6 +945,7 @@ FishermanNPC: {
 	}
 
 	// Entry: Todo:
+	// Census.SpawnCondition: Conditions unknown
 }
 
 AzarielNPC: {
@@ -973,4 +986,5 @@ AzarielNPC: {
 	}
 
 	// Entry: Todo:
+	// Census.SpawnCondition: Conditions unknown
 }

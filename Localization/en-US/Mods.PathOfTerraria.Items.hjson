@@ -1379,6 +1379,7 @@ LunarFragment: {
 		'Reeks of...otherworldliness'
 		'''
 }
+
 CelestialConflux: {
 	DisplayName: Celestial Conflux
 	Tooltip: ""
