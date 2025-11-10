@@ -171,6 +171,11 @@ SkillfulBoostBuff: {
 }
 
 BrittleDebuff: {
-	// DisplayName: Brittle Debuff
-	// Description: Mods.PathOfTerraria.Buffs.BrittleDebuff.Description
+	// DisplayName: Brittle
+	// Description: Take increased damage when frozen
+}
+
+ArcaneSurgeBuff: {
+	// DisplayName: Arcane Surge
+	// Description: Increased magic damage and mana regeneration
 }
