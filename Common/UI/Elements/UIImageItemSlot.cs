@@ -53,6 +53,8 @@ public class UIImageItemSlot
 		}
 	}
 
+	private static Asset<Texture2D>? FavoriteBack = null;
+
 	protected readonly float IconSize = iconScalingSize;
 
 	private readonly SlotWrapper handler = itemHandler;
@@ -206,6 +208,13 @@ public class UIImageItemSlot
 
 		float baseScale = 1f * Icon.ImageScale;
 		float sizeLimit = IconSize; //Math.Min(dimensions.Width, dimensions.Height);
+
+		if (Item.favorited)
+		{
+			FavoriteBack ??= ModContent.Request<Texture2D>("PathOfTerraria/Assets/Slots/FavoriteOverlay");
+			Texture2D tex = FavoriteBack.Value;
+			Main.spriteBatch.Draw(tex, center, null, Color.White, 0f, tex.Size() / 2f, MathHelper.Lerp(baseScale, 0.8f, 0.5f), SpriteEffects.None, 0);
+		}
 
 		ItemSlot.DrawItemIcon(Item, ItemSlot.Context.InventoryItem, sb, center, baseScale, sizeLimit, Color.White);
 
