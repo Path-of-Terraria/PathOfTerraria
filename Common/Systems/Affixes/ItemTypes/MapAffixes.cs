@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
-using static PathOfTerraria.Common.Data.Models.ItemAffixData;
 
 namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
@@ -63,7 +62,7 @@ public class MapDamageAffix : MapAffix
 {
 	public override void ModifyNewNPC(NPC npc)
 	{
-		npc.damage = (int)(npc.damage * (1 + Value / 100f));
+		npc.damage = (int)(npc.damage * (1 + (Value / 100f)));
 	}
 }
 

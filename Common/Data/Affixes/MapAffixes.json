@@ -44,16 +44,30 @@
 		"equipTypes": "Map",
 		"tiers": [
 			{
-				"minValue": 60,
-				"maxValue": 65,
+				"minValue": 18,
+				"maxValue": 25,
 				"minimumLevel": 45,
 				"weight": 1,
 				"strength": 10
 			},
 			{
-				"minValue": 75,
-				"maxValue": 85,
+				"minValue": 26,
+				"maxValue": 34,
 				"minimumLevel": 65,
+				"weight": 1,
+				"strength": 12
+			},
+			{
+				"minValue": 35,
+				"maxValue": 48,
+				"minimumLevel": 75,
+				"weight": 1,
+				"strength": 12
+			},
+			{
+				"minValue": 49,
+				"maxValue": 60,
+				"minimumLevel": 85,
 				"weight": 1,
 				"strength": 12
 			}

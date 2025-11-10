@@ -1,9 +1,4 @@
-﻿using NPCUtils;
-using PathOfTerraria.Common.NPCs.Components;
-using PathOfTerraria.Common.NPCs.Effects;
-using PathOfTerraria.Common.Systems;
-using System.Collections.Specialized;
-using Terraria.GameContent.Bestiary;
+﻿using PathOfTerraria.Common.Systems;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.NPCs.Mapping.Desert;
@@ -87,7 +82,7 @@ internal class ScarabSwarmController : ModNPC
 		}
 		else if (State == AIState.Chase)
 		{
-			const float MaxSpeed = 4;
+			const float MaxSpeed = 3.5f;
 
 			if (UnderlingCount <= 0 && Main.netMode != NetmodeID.MultiplayerClient && !SpeedUpNPC.Boosting)
 			{
