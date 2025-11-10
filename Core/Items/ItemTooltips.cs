@@ -99,6 +99,7 @@ public sealed partial class ItemTooltips : GlobalItem
 		// Handle vanilla lines we want before the mod check
 		switch (line.Name)
 		{
+			case "FishingPower":
 			case "Consumable":
 			case "Material": 
 			case "Placeable":
@@ -216,6 +217,7 @@ public sealed partial class ItemTooltips : GlobalItem
 		var oldTooltips = tooltips.Where(x => x.Name.StartsWith("Tooltip")).ToList();
 		var oldStats = tooltips.Where(x => x.Name.StartsWith("Stat")).ToList();
 
+		TooltipLine fishingPowerLine = tooltips.FirstOrDefault(x => x.Name == "FishingPower");
 		TooltipLine consumableLine = tooltips.FirstOrDefault(x => x.Name == "Consumable");
 		TooltipLine setBonusLine = tooltips.FirstOrDefault(x => x.Name == "SetBonus");
 		TooltipLine nameLine = tooltips.FirstOrDefault(x => x.Name == "ItemName");
@@ -522,6 +524,12 @@ public sealed partial class ItemTooltips : GlobalItem
 		// These don't need AddNewTooltipLine as they're vanilla tooltips
 		tooltips.AddRange(oldTooltips);
 
+		if (fishingPowerLine is not null)
+		{
+			fishingPowerLine.OverrideColor = Color.LightBlue;
+			tooltips.Add(fishingPowerLine);
+		}
+		
 		if (consumableLine is not null)
 		{
 			consumableLine.OverrideColor = Color.LightGray;
