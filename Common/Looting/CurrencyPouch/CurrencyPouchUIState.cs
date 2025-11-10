@@ -20,7 +20,7 @@ namespace PathOfTerraria.Common.Looting.CurrencyPouch;
 
 internal class CurrencyPouchUIState : UIState, IMutuallyExclusiveUI
 {
-	public const int SlotContext = ItemSlot.Context.InventoryItem;
+	public const int SlotContext = ItemSlot.Context.ChestItem;
 	public const string Identifier = "Currency Pouch UI";
 
 	private static CurrencyPouchBackUI _backdrop = null;
