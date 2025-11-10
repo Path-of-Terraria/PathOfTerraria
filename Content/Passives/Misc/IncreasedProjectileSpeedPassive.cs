@@ -7,7 +7,7 @@ internal class IncreasedProjectileSpeedPassive : Passive
 {
 	public override void BuffPlayer(Player player)
 	{
-		var universalPlayer = player.GetModPlayer<UniversalBuffingPlayer>();
+		UniversalBuffingPlayer universalPlayer = player.GetModPlayer<UniversalBuffingPlayer>();
 		float bonus = (Value / 100f) * Level;
 		universalPlayer.UniversalModifier.ProjectileSpeed += bonus;
 	}

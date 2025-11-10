@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.Systems.ModPlayers;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Buffs;
@@ -9,7 +10,14 @@ internal class ChilledFunctionality : GlobalBuff
 	{
 		if (type == BuffID.Chilled)
 		{
-			npc.GetGlobalNPC<SlowDownNPC>().SpeedModifier += 0.2f;
+			float modifier = 0.2f;
+
+			if (npc.lastInteraction != 255)
+			{
+				modifier = Main.player[npc.lastInteraction].GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.ChilledEffectiveness.ApplyTo(0.2f);
+			}
+
+			npc.GetGlobalNPC<SlowDownNPC>().SpeedModifier += modifier;
 
 			if (Main.rand.NextBool(20))
 			{

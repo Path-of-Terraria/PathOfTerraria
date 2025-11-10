@@ -9,7 +9,6 @@ internal class IncreasedProjectileCountPassive : Passive
 	{
 		var universalPlayer = player.GetModPlayer<UniversalBuffingPlayer>();
 		float bonus = Value * Level;
-		universalPlayer.UniversalModifier.ProjectileCount.Flat += bonus;
+		universalPlayer.UniversalModifier.ProjectileCount += bonus;
 	}
-
 }

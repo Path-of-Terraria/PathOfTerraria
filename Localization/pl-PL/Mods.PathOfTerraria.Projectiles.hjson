@@ -185,10 +185,17 @@ FlameSentryFireball.DisplayName: "{$ProjectileName.CultistBossFireBall}"
 // Flame.DisplayName: Flame
 // SimpleLocust.DisplayName: Simple Locust
 // LocustSpawnCircle.DisplayName: Locust Spawn Circle
-// AntlionSwarmerSummon.DisplayName: Antlion Swarmer Summon
+// AntlionSwarmerSummon.DisplayName: Antlion Swarmer
 // LocustEgg.DisplayName: Locust Egg
 // AntlionExplosion.DisplayName: Antlion Explosion
 // AntlionSummon.DisplayName: Antlion Summon
 // IceShards.DisplayName: Ice Shards
 // DelayedStrike.DisplayName: Delayed Strike
+// Flameburst.DisplayName: Flameburst
+// ManaBomb.DisplayName: Mana Bomb
+// ManaBombExplosion.DisplayName: Mana Bomb
+// ChainLightning.DisplayName: Chain Lightning
+// StarcallerStar.DisplayName: Starcaller
+// OrbitingPlanet.DisplayName: Planetoid
+// BlastIcicle.DisplayName: Blast Icicle
 // ConfluxRift.DisplayName: Conflux Rift

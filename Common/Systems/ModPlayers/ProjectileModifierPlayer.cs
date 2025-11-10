@@ -1,30 +1,64 @@
+using System.Collections.Generic;
 using Terraria.DataStructures;
+using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.ModPlayers;
 
-internal class ProjectileModifierPlayer : ModPlayer
+public class ProjectileModifierProjectile : GlobalProjectile
 {
-	public StatModifier ProjectileSpeedMultiplier { get; set; }
-	public StatModifier ProjectileCountModifier { get; set; }
-	public StatModifier ProjectileDamageMultiplier { get; set; }
-	
+	/// <summary>
+	/// Tags a projectile spawned directly by a player (such as where <c>source is EntitySource_Parent { Entity: Player }</c>) as modifiable even if
+	/// it's not a <see cref="EntitySource_ItemUse_WithAmmo"/>.
+	/// </summary>
+	internal const string ModifiableProjectileTag = "Modifiable";
 
-	public override void ResetEffects()
+	private static readonly HashSet<int> InvalidProjectilesToMove = [];
+
+	public override void SetStaticDefaults()
 	{
-		ProjectileSpeedMultiplier = StatModifier.Default;
-		ProjectileCountModifier = StatModifier.Default;
-		ProjectileDamageMultiplier = StatModifier.Default;
+		InvalidProjectilesToMove.Clear();
+		InvalidProjectilesToMove.Add(ProjectileID.FinalFractal);
 	}
 
-	public override void ModifyShootStats(Item item, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
+	public override void OnSpawn(Projectile projectile, IEntitySource source)
 	{
-		if (ProjectileSpeedMultiplier != StatModifier.Default)
+		Player player = null;
+		bool valid = false;
+
+		if (source is EntitySource_ItemUse_WithAmmo { Player: Player plr })
 		{
-			velocity *= ProjectileSpeedMultiplier.ApplyTo(1f);
+			valid = true;
+			player = plr;
 		}
-		if (ProjectileDamageMultiplier != StatModifier.Default)
+
+		if (source is EntitySource_Parent { Entity: Player plr2 } && source.Context is { } context && context.Contains(ModifiableProjectileTag))
 		{
-			damage = (int)ProjectileDamageMultiplier.ApplyTo(damage);
+			valid = true;
+			player = plr2;
+		}
+
+		if (valid)
+		{
+			EntityModifier mods = player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier;
+			StatModifier speed = mods.ProjectileSpeed;
+			StatModifier damage = mods.ProjectileDamage;
+
+			if (speed != StatModifier.Default && !InvalidProjectilesToMove.Contains(projectile.type))
+			{
+				projectile.velocity *= speed.ApplyTo(1f);
+				int extras = (int)(projectile.velocity.Length() / 16f);
+
+				if (extras > 0)
+				{
+					projectile.extraUpdates += extras;
+					projectile.velocity /= extras;
+				}
+			}
+
+			if (damage != StatModifier.Default)
+			{
+				projectile.damage = (int)damage.ApplyTo(projectile.damage);
+			}
 		}
 	}
 }

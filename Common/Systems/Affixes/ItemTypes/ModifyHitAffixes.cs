@@ -80,7 +80,8 @@ internal class ChanceToApplyShockGearAffix : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		modifier.Buffer.Add(ModContent.BuffType<ShockDebuff>(), Duration, Value * 0.01f);
+		modifier.Buffer.Add(ModContent.BuffType<ShockDebuff>(), Duration, Value * 0.01f, 
+			(Player player, NPC target, NPC.HitInfo info, int damageDone, int time) => ShockDebuff.Apply(player, target, damageDone));
 	}
 }
 

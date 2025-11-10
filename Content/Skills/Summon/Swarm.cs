@@ -54,14 +54,19 @@ public class Swarm : Skill
 	public override void LevelTo(byte level)
 	{
 		Level = level;
-		Cooldown = MaxCooldown = (5 - Level) * 60;
+		Cooldown = MaxCooldown = 2 * 60;
 		ManaCost = 10 - Level * 3;
 		Duration = SentryNPC.DefaultSentryDuration;
-		WeaponType = ItemType.None;
-	}
+		WeaponType = ItemType.Summoner;
+	}									
 
 	public override bool CanUseSkill(Player player, ref SkillFailure failReason, bool justChecking = true)
 	{
+		if (!player.HeldItem.CountsAsClass(DamageClass.Summon))
+		{
+			failReason = new SkillFailure(SkillFailReason.NeedsSummon);
+			return false;
+		}
 		if (Tree.Specialization is not LocustBrood && Collision.SolidCollision(GetTarget(player) - new Vector2(12, 12), 24, 24))
 		{
 			failReason = new SkillFailure(SkillFailReason.Other, "Blocked");
@@ -84,19 +89,35 @@ public class Swarm : Skill
 		else
 		{
 			int type = ModContent.ProjectileType<LocustSpawnCircle>();
-			int damage = 2 * Level;
+			int damage = 10 * Level;
 
 			if (Tree.Specialization is AntlionSwarm)
 			{
-				damage = 5 * Level;
+			    damage = 6 * Level;
+			    
+			    // Spawn two Antlion Swarmers
+			    Vector2 offset1 = new Vector2(-24, 0);
+			    Vector2 offset2 = new Vector2(24, 0);
+			    
+			    int proj1 = Projectile.NewProjectile(new EntitySource_UseSkill(player, this), pos + offset1, Vector2.Zero, type, damage, 0, player.whoAmI, TotalDuration);
+			    int proj2 = Projectile.NewProjectile(new EntitySource_UseSkill(player, this), pos + offset2, Vector2.Zero, type, damage, 0, player.whoAmI, TotalDuration);
 			}
-
-			int proj = Projectile.NewProjectile(new EntitySource_UseSkill(player, this), pos, Vector2.Zero, type, damage, 0, player.whoAmI, TotalDuration);
-
-			if (Tree.Specialization is GlacialAntlions)
+			else
 			{
-				int bonusDamage = player.HasTreePassive<PestSwarmTree, FrostbiteMandibles>() ? 3 + player.GetPassiveStrength<PestSwarmTree, AggressiveChill>() * 3 : 0;
-				Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>().Container[ElementType.Cold].DamageModifier.AddModifiers(bonusDamage, 1);
+			    int proj = Projectile.NewProjectile(new EntitySource_UseSkill(player, this), pos, Vector2.Zero, type, damage, 0, player.whoAmI, TotalDuration);
+
+			    if (Tree.Specialization is GlacialAntlions)
+			    {
+				    int bonusDamage = player.HasTreePassive<PestSwarmTree, FrostbiteMandibles>() ? 10 + player.GetPassiveStrength<PestSwarmTree, AggressiveChill>() * 3 : 0;
+
+				    if (bonusDamage > 0)
+				    {
+					    Main.projectile[proj].damage += bonusDamage;
+				    }
+
+				    var elementalProj = Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>();
+				    elementalProj.Container[ElementType.Cold].DamageModifier = elementalProj.Container[ElementType.Cold].DamageModifier.AddModifiers(bonusDamage, 1);
+			    }
 			}
 		}
 	}
@@ -134,7 +155,7 @@ public class Swarm : Skill
 		foreach (Point16 point in points)
 		{
 			float duration = 30 * Main.rand.NextFloat(0.9f, 2.5f) * (1 - player.GetPassiveStrength<PestSwarmTree, QuickerHatching>() * 0.2f);
-			Projectile.NewProjectile(src, point.ToWorldCoordinates(8, -22), Vector2.Zero, type, 15 * Level, 0, player.whoAmI, duration, 0, TotalDuration);
+			Projectile.NewProjectile(src, point.ToWorldCoordinates(8, -22), Vector2.Zero, type, 6 * Level, 0, player.whoAmI, duration, 0, TotalDuration);
 		}
 	}
 
@@ -243,6 +264,7 @@ public class Swarm : Skill
 			Projectile.usesLocalNPCImmunity = true;
 			Projectile.localNPCHitCooldown = 20;
 			Projectile.Opacity = 0f;
+			Projectile.ArmorPenetration = 999;
 		}
 
 		public override bool? CanCutTiles()
@@ -432,6 +454,7 @@ public class Swarm : Skill
 			Projectile.usesLocalNPCImmunity = true;
 			Projectile.localNPCHitCooldown = 20;
 			Projectile.Opacity = 0f;
+			Projectile.ArmorPenetration = 999;
 		}
 
 		public override bool? CanCutTiles()
@@ -555,7 +578,7 @@ public class Swarm : Skill
 			if (IsExplosive)
 			{
 				int exp = ModContent.ProjectileType<AntlionExplosion>();
-				int proj = Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, Vector2.Zero, exp, Projectile.damage * 3, 8, Projectile.owner, 60, 60);
+				int proj = Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, Vector2.Zero, exp, Projectile.damage * 5, 8, Projectile.owner, 60, 60);
 				Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>().Container[ElementType.Fire].DamageModifier.AddModifiers(0, 1f);
 
 				ExplosionHitbox.VFX(Projectile, new ExplosionHitbox.VFXPackage(2, 8, 4, true, 0.4f, null));
@@ -790,6 +813,7 @@ public class Swarm : Skill
 			Projectile.usesLocalNPCImmunity = true;
 			Projectile.localNPCHitCooldown = 20;
 			Projectile.Opacity = 0f;
+			Projectile.ArmorPenetration = 999; 
 		}
 
 		public override bool? CanCutTiles()

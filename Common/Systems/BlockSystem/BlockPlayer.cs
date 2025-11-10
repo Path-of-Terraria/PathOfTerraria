@@ -71,7 +71,7 @@ internal class BlockPlayer : ModPlayer
 
 		if (dodged)
 		{
-			if (Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(nameof(GlancingBlowsPassive)) > 0)
+			if (Player.GetModPlayer<PassiveTreePlayer>().HasNode<GlancingBlowsPassive>())
 			{
 				_timeSinceLastBlock = 0;
 
@@ -95,7 +95,7 @@ internal class BlockPlayer : ModPlayer
 
 	public override void ModifyHurt(ref Player.HurtModifiers modifiers)
 	{
-		if (_hasDodged && Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(nameof(GlancingBlowsPassive)) > 0)
+		if (_hasDodged && Player.GetModPlayer<PassiveTreePlayer>().HasNode<GlancingBlowsPassive>())
 		{
 			modifiers.FinalDamage *= 0.5f;
 		}

@@ -66,6 +66,11 @@ internal class ElementalNPC : GlobalNPC
 		}
 	}
 
+	public override void ResetEffects(NPC npc)
+	{
+		Container.Reset(false);
+	}
+
 	public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
 	{
 		Container.WriteTo(bitWriter, binaryWriter);

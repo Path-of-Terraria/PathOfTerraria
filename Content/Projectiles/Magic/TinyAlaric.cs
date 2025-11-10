@@ -1,6 +1,8 @@
 ﻿using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Content.Items.Gear.Weapons.Wand;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -62,8 +64,9 @@ public class TinyAlaric : ModProjectile
 				int type = Utils.SelectRandom<int>(Main.rand, ProjectileID.Fireball, ProjectileID.RayGunnerLaser, ProjectileID.MartianTurretBolt,
 					ProjectileID.DiamondBolt, ProjectileID.PartyBullet);
 				Vector2 vel = Projectile.DirectionTo(Main.MouseWorld) * 8;
-
-				int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, vel, type, Projectile.damage, 1f, Main.myPlayer);
+				IEntitySource src = Owner.GetSource_FromAI(ProjectileModifierProjectile.ModifiableProjectileTag);
+				
+				int proj = Projectile.NewProjectile(src, Projectile.Center, vel, type, Projectile.damage, 1f, Main.myPlayer);
 				Main.projectile[proj].friendly = true;
 				Main.projectile[proj].hostile = false;
 				Main.projectile[proj].extraUpdates = 2;

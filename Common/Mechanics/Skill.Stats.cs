@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Systems.Skills;
+﻿using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.Skills;
 using System.Linq;
 
 namespace PathOfTerraria.Common.Mechanics;
@@ -31,7 +32,7 @@ public abstract partial class Skill
 
 	/// <summary> Recalculates <see cref="Stats"/>. </summary>
 	/// <returns> The updated instance. </returns>
-	public SkillBuff RecalculateStats()
+	public SkillBuff RecalculateStats(Player player)
 	{
 		var stats = new SkillBuff();
 
@@ -54,6 +55,7 @@ public abstract partial class Skill
 			a?.AugmentEffects(ref stats);
 		}
 
+		stats *= player.GetModPlayer<SkillCombatPlayer>().GlobalBuff;
 		return Stats = stats;
 	}
 }

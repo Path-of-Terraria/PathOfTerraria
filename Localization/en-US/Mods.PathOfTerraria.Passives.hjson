@@ -174,54 +174,39 @@ PercentIncreasedMaximumManaPassive: {
 	Tooltip: +{0}% Increased Maximum Mana
 }
 
-IncreasedFireDamagePassive: {
-	Name: Increased Fire Damage
-	Tooltip: +{0}% Increased Fire Damage
-}
-
-IncreasedLightningDamagePassive: {
-	Name: Increased Lightning Damage
-	Tooltip: +{0}% Increased Lightning Damage
-}
-
-IncreasedColdDamagePassive: {
-	Name: Increased Cold Damage
-	Tooltip: +{0}% Increased Cold Damage
-}
-
 IncreasedMagicAndSummonDamagePassive: {
 	Name: Increased Magic and Summon Damage
-	Tooltip: +{0}% Increased Magic and Summon Damage
+	Tooltip: +{0}% increased magic and summon damage
 }
 
 AddedFireResistancePassive: {
 	Name: Added Fire Resistance
-	Tooltip: +{0}% Fire Resistance
+	Tooltip: +{0}% fire resistance
 }
 
 AddedColdResistancePassive: {
 	Name: Added Cold Resistance
-	Tooltip: +{0}% Cold Resistance
+	Tooltip: +{0}% cold resistance
 }
 
 AddedLightningResistancePassive: {
 	Name: Added Lightning Resistance
-	Tooltip: +{0}% Lightning Resistance
+	Tooltip: +{0}% lightning resistance
 }
 
 AddedAllResistancePassive: {
 	Name: Added All Resistances
-	Tooltip: +{0}% All Resistances
+	Tooltip: +{0}% to all resistances
 }
 
 IncreasedAttackSpeedPassive: {
 	Name: Increased Attack Speed
-	Tooltip: +{0}% Global Attack Speed
+	Tooltip: +{0}% attack speed
 }
 
 IncreasedManaRegenerationRatePassive: {
 	Name: Increased Mana Regeneration Rate
-	Tooltip: +{0}% Mana Regeneration Rate
+	Tooltip: +{0}% mana regeneration rate
 }
 
 IncreasedProjectileCountPassive: {
@@ -250,8 +235,8 @@ ReducedManaCostWhileChannelingPassive: {
 }
 
 MasteryPassive: {
-	Name: MasteryPassive
-	Tooltip: ""
+	Name: Mastery
+	Tooltip: Choose a mastery
 }
 
 AddedChaosResistancePassive: {
@@ -339,6 +324,211 @@ WhipReachMastery: {
 	Tooltip: "{0}% Increased Whip range, but attack {1}% slower."
 }
 
+ReducedSkillCooldownPassive: {
+	Name: Reduced Skill Cooldown
+	Tooltip: +{0}% reduced skill cooldown per level
+}
+
+AddedFireDamageConversionPassive: {
+	Name: Added Fire Damage Conversion
+	Tooltip: +{0}% fire damage conversion
+}
+
+AddedColdDamageConversionPassive: {
+	Name: Added Cold Damage Conversion
+	Tooltip: +{0}% cold damage conversion
+}
+
+AddedLightningDamageConversionPassive: {
+	Name: Added Lightning Damage Conversion
+	Tooltip: +{0}% lightning damage conversion
+}
+
+ChanceToChillPassive: {
+	Name: Chance to Chill
+	Tooltip: +{0}% chance to apply Chilled
+}
+
+ChanceToFreezePassive: {
+	Name: Chance to Freeze
+	Tooltip: +{0}% chance to roll Freeze
+}
+
+ChanceToIgnitePassive: {
+	Name: Chance to Ignite
+	Tooltip: +{0}% chance to apply Ignited
+}
+
+PercentStrongManaPotionsPassive: {
+	Name: Stronger Mana Potions
+	Tooltip: +{0}% stronger mana potions
+}
+
+FishingPowerPassive: {
+	Name: Increased Fishing Power
+	Tooltip: +{0} fishing power
+}
+
+AddedFishingLineMastery: {
+	Name: Multifishing
+	Tooltip: Fishing rods cast an additional line
+}
+
+FishingCatchBuffMastery: {
+	Name: Bountiful Bobbers
+	Tooltip: Catching a fish adds a stackable 10 fishing strength for 10 seconds, caps at 5 stacks
+}
+
+MagicFindBoost: {
+	Name: Increased Magic Find
+	Tooltip: +{0}% higher chance to find Magic or Rare items
+}
+
+BossDownIncreaseItemRarityMastery: {
+	Name: Magical Bleed
+	Tooltip: For every boss killed at least once in a world, increase magic find by 0.5%. Current:
+}
+
+MoreUniquesMastery: {
+	Name: Eye for Uniques
+	Tooltip: +{0}% increased Unique item drop chance
+}
+
+ItemDropRatePassive: {
+	Name: Increased Item Drop Rate
+	Tooltip: +{0}% item drops from enemies
+}
+
+AfterburnMastery: {
+	Name: Afterburning
+	Tooltip: +{0}% fire damage multiplier, +{1}% damage taken multiplier
+}
+
+AddedFireDamageMultiplierPassive: {
+	Name: Increased Fire Damage Multiplier
+	Tooltip: +{0}% fire damage multiplier
+}
+
+AddedColdDamageMultiplierPassive: {
+	Name: Increased Cold Damage Multiplier
+	Tooltip: +{0} cold damage multiplier
+}
+
+AddedLightningDamageMultiplierPassive: {
+	Name: Increased Lightning Damage Multiplier
+	Tooltip: +{0} lightning damage multiplier
+}
+
+ScorchingFlamesMastery: {
+	Name: Scorching Flames
+	Tooltip: +{0}% chance to inflict Scorching Flames, which reduces enemy Fire resistance by 30%
+}
+
+BurstingFuryMastery: {
+	Name: Bursting Fury
+	Tooltip: Killing an enemy with Fire damage causes it to explode, dealing {0}% of the original damage done
+}
+
+DeepPoolsMastery: {
+	Name: Deep Pools
+	Tooltip: Gain {0}% max mana, gain 1% all damage per 25 max mana you have
+}
+
+ManaBombMastery: {
+	Name: Starbombs
+	Tooltip: Every 100 mana spent sends out some chasing mana bombs, dealing {0} magic damage, with additional damage scaling on max mana
+}
+
+MagicGuardMastery: {
+	Name: Magic Guard
+	Tooltip: When above 50% mana, take {0}% less health - otherwise, deal {1}% more damage
+}
+
+ThunderbootsMastery: {
+	Name: Thunderboots
+	Tooltip: Spawn a small Lightning Nova under yourself when you jump, which inflicts maximum Shocked on enemies it hits
+}
+
+ElectrostaticAttractionMastery: {
+	Name: Electrostatic Charge
+	Tooltip: Dealing Lightning damage will give a stacking, very short term multiplier to Lightning damage, capping at a 50% multiplier
+}
+
+ChannelingBurstMastery: {
+	Name: Channeling Burst
+	Tooltip: Deal more Magic damage and use more mana the further your mouse is from yourself when channeling
+}
+
+EnergySurgeMastery: {
+	Name: Energy Surge
+	Tooltip: For the first two seconds of channeling, deal {0}% more damage
+}
+
+SingleFocusMastery: {
+	Name: Singular Focus
+	Tooltip: While channeling, gain 3% increased damage every 0.5 seconds, up to 10 stacks
+}
+
+ChainLightningMastery: {
+	Name: Chain Lightning
+	Tooltip: Lightning damage has a {0}% chance to chain to another enemy
+}
+
+CriticalOverloadMastery: {
+	Name: Critical Load
+	Tooltip: Increase critical strike chance by {0}% per hit that isn't a crit. Resets on crits
+}
+
+AnticipatedStrikeMastery: {
+	Name: Anticipated Strike
+	Tooltip: If you haven't used a skill in 10 seconds, your next skill is used twice
+}
+
+StarcallerMastery: {
+	Name: Starcaller
+	Tooltip: Your magic critical hits spawn a star to do {0}% of the original hit's damage, once a second per enemy
+}
+
+CenterOfTheUniverseMastery: {
+	Name: Center of the Universe
+	Tooltip: Your magic hits have a {0}% chance to spawn an orbiting planet (10 max), which deal 20% of the hit's damage and heal 5 mana on hit
+}
+
+OverloadingEnergyMastery: {
+	Name: Overloading Energy
+	Tooltip: Gain 5% of your max mana every {0} seconds. At max mana, deal 15% more damage
+}
+
+ReverberationMastery: {
+	Name: Reverberation
+	Tooltip: Magic projectiles have a {0}% chance to be spawned twice at 70% damage, costing 50% of the original attack's damage
+}
+
+SkillfulMagicMastery: {
+	Name: Skillful Magic
+	Tooltip: Using a skill gives {0} seconds of increased crit damage and movement speed
+}
+
+AutomagicMissileMastery: {
+	Name: Automagic Missile
+	Tooltip: Magic hits have a {0}% chance to spawn a Magic Missile which deals 50% of the original hit's damage and homes in on enemies
+}
+
+SharpenedSpellsMastery: {
+	Name: Sharpened Spells
+	Tooltip: Enemies frozen by you will take 25% more damage from all direct sources
+}
+
+AbsoluteZeroMastery: {
+	Name: Absolute Zero
+	Tooltip: Chilled is {0}% stronger and freeze lasts {1}% longer
+}
+
+BludgeoningBlowMastery: {
+	Name: Bludgeoning Blow
+	Tooltip: Killing a frozen enemy will shatter it for {0}% of the killing blow's damage
+}
+
 YoyoDamagePassive: {
 	Name: Increased Yoyo Damage
 	Tooltip: +{0}% increased yoyo damage
@@ -346,7 +536,7 @@ YoyoDamagePassive: {
 
 YoyoDurationPassive: {
 	Name: Doubled Yoyo Duration
-	Tooltip: Doubles yoyo use duration
+	Tooltip: +{0}% increased yoyo duration
 }
 
 YoyoRangePassive: {

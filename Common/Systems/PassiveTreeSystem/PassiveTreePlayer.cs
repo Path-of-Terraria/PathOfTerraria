@@ -6,7 +6,6 @@ using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Content.Passives;
-using PathOfTerraria.Content.Passives.Summon.Masteries;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.ModLoader.IO;
 
@@ -59,7 +58,7 @@ internal class PassiveTreePlayer : ModPlayer
 				}
 			}
 
-			if (passive.Name != "AnchorPassive" && passive.Level > 0)
+			if (passive.Name != "AnchorPassive" && passive.Level > 0 && passive.Name != "MasteryPassive")
 			{
 				Points -= passive.Level;
 			}
@@ -131,21 +130,9 @@ internal class PassiveTreePlayer : ModPlayer
 		SetTree();
 	}
 
-	internal int GetCumulativeLevel(string internalIdentifier)
-	{
-		int level = 0;
-
-		foreach (Passive passive in ActiveNodes)
-		{
-			if (passive.Name == internalIdentifier)
-			{
-				level += passive.Level;
-			}
-		}
-
-		return level;
-	}
-	
+	/// <summary>
+	/// Gets the total value of every node of a given type on the passive tree. This includes multiplying a node's value by its level, though level is almost always 1.
+	/// </summary>
 	internal float GetCumulativeValue<T>()
 	{
 		float value = 0f;
@@ -157,7 +144,30 @@ internal class PassiveTreePlayer : ModPlayer
 				value += passive.Value * passive.Level;
 			}
 		}
+
 		return value;
+	}
+
+	/// <summary>
+	/// Same as <see cref="GetCumulativeValue{T}"/>, but returns false if <paramref name="value"/> is 0.
+	/// </summary>
+	internal bool TryGetCumulativeValue<T>(out float value)
+	{
+		value = GetCumulativeValue<T>();
+		return value > 0;
+	}
+
+	internal bool HasNode<T>()
+	{
+		foreach (Passive passive in ActiveNodes)
+		{
+			if (passive is T && passive.Level > 0)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public bool FullyLinkedWithout(Passive passive)

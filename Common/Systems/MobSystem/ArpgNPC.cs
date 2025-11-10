@@ -123,9 +123,9 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 		}
 
 		// Determine drop count
-		int minDrop = (int)(DropQuantity * MinDropChanceScale * 100f);
-		int maxDrop = (int)(DropQuantity * 100f);
-		int rand = Main.rand.Next(minDrop, maxDrop + 1);
+		float minDrop = (DropQuantity * MinDropChanceScale * 100f);
+		float maxDrop = (int)(DropQuantity * 100f);
+		float rand = Main.rand.NextFloat(minDrop, maxDrop + 1);
 
 		int dropCount = 0;
 		while (rand > 99)
@@ -142,10 +142,16 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 		// Calculate magic find
 		float magicFind = 0;
 		int itemLevel = 0;
+		float uniqueMod = 1f;
 
 		if (_lastPlayerHit != null)
 		{
-			magicFind = 1f + _lastPlayerHit.GetModPlayer<MinorStatsModPlayer>().MagicFind;
+			magicFind = 1f + _lastPlayerHit.GetModPlayer<ItemDropModifierPlayer>().MagicFind;
+			uniqueMod = _lastPlayerHit.GetModPlayer<ItemDropModifierPlayer>().UniqueFindMultiplier;
+
+			float dropRateModifier = _lastPlayerHit.GetModPlayer<ItemDropModifierPlayer>().ItemDropRateMultiplier;
+			minDrop *= dropRateModifier;
+			maxDrop *= dropRateModifier;
 		}
 
 		if (SubworldSystem.Current is MappingWorld world)
@@ -160,7 +166,7 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 		// Roll guaranteed rare/magic items first
 		if (Rarity is ItemRarity.Magic or ItemRarity.Rare)
 		{
-			drops.Add(DropTable.RollMobDrops(itemLevel, DropRarity * magicFind, gearChance: 0.8f, currencyChance: 0.15f, mapChance: 0.05f, null, forceRarity: Rarity));
+			drops.Add(DropTable.RollMobDrops(itemLevel, DropRarity * magicFind, gearChance: 0.8f, currencyChance: 0.15f, mapChance: 0.05f, null, Rarity, uniqueMod));
 		}
 
 		// Roll the remaining items normally

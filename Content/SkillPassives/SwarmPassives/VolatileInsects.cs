@@ -5,5 +5,5 @@ namespace PathOfTerraria.Content.SkillPassives.SwarmPassives;
 
 internal class VolatileInsects(SkillTree tree) : SkillPassive(tree)
 {
-	public override object[] TooltipArguments => ["300"];
+	public override object[] TooltipArguments => ["500"];
 }

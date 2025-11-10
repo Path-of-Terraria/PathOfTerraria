@@ -1,7 +1,10 @@
 ﻿using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Systems.PassiveTreeSystem;
+using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Common.UI.Guide;
 using PathOfTerraria.Common.UI.Hotbar;
+using PathOfTerraria.Content.Passives.Magic.Masteries;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.GameInput;
@@ -21,6 +24,8 @@ internal class SkillCombatPlayer : ModPlayer
 	public Skill[] UnlockedSkills = [];
 	
 	public int Points;
+	public SkillBuff GlobalBuff = new();
+	public int TicksSinceSkillLastUsed = 0;
 
 	public override void Load()
 	{
@@ -133,13 +138,42 @@ internal class SkillCombatPlayer : ModPlayer
 		{
 			Player.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.UsedASkill);
 
-			HotbarSkills[index].RecalculateStats();
+			HotbarSkills[index].RecalculateStats(Player);
 			HotbarSkills[index]?.UseSkill(Player);
+
+			if (Player.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<AnticipatedStrikeMastery>(out float value) && TicksSinceSkillLastUsed > value * 60)
+			{
+				// Offset mouse so the usage doesn't perfectly overlap every time
+				Vector2 mouse = new(Main.mouseX, Main.mouseY);
+				float radius = Main.rand.NextFloat(30, 60);
+				Vector2 offset = Main.rand.NextVector2CircularEdge(radius, radius);
+
+				Main.mouseX += (int)offset.X;
+				Main.mouseY += (int)offset.Y;
+
+				HotbarSkills[index]?.UseSkill(Player);
+
+				Main.mouseX = (int)mouse.X;
+				Main.mouseY = (int)mouse.Y;
+			}
+
+			foreach (ModPlayer player in Player.ModPlayers)
+			{
+				if (player is SkillHooks.IOnUseSkillPlayer use)
+				{
+					use.OnUseSkill(HotbarSkills[index]);
+				}
+			}
+
+			TicksSinceSkillLastUsed = 0;
 		}
 	}
 
 	public override void ResetEffects()
 	{
+		TicksSinceSkillLastUsed++;
+		GlobalBuff.Reset();
+
 		if (HotbarSkills == null || HotbarSkills.Length == 0)
 		{
 			return;
