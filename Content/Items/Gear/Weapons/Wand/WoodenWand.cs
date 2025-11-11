@@ -25,6 +25,7 @@ internal class WoodenWand : Wand
 			Projectile.friendly = true;
 			Projectile.penetrate = 1;
 			Projectile.timeLeft = 200;
+			Projectile.DamageType = DamageClass.Magic;
 		}
 
 		public override void AI()

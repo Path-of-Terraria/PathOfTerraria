@@ -22,6 +22,7 @@ internal class SunsoulHead : StaffProjectile
 		Projectile.localNPCHitCooldown = 20;
 		Projectile.usesLocalNPCImmunity = true;
 		Projectile.tileCollide = false;
+		Projectile.DamageType = DamageClass.Magic;
 	}
 
 	public override void AI()

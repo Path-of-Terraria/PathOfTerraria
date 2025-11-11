@@ -46,6 +46,7 @@ internal abstract class StaffProjectile : ModProjectile
 		Projectile.hide = true;
 		Projectile.timeLeft = 3000;
 		Projectile.tileCollide = false;
+		Projectile.DamageType = DamageClass.Magic;
 	}
 
 	public override bool? CanDamage()
