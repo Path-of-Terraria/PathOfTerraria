@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.UI;
+using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI;
 using PathOfTerraria.Core.UI.SmartUI;
@@ -14,7 +15,7 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Common.Looting.VirtualBagUI;
 
-internal class VirtualBagUIState : UIState, IMutuallyExclusiveUI
+internal class VirtualBagUIState : UIState, IMutuallyExclusiveUI, IAutopauseUI
 {
 	public const string Identifier = "Virtual Bag UI";
 	private UIGrid _storageGrid;
