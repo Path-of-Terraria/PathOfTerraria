@@ -949,6 +949,12 @@ public class Swarm : Skill
 			return false;
 		}
 
+		public override bool TileCollideStyle(ref int width, ref int height, ref bool fallThrough, ref Vector2 hitboxCenterFrac)
+		{
+			fallThrough = false;
+			return true;
+		}
+
 		public override Color? GetAlpha(Color lightColor)
 		{
 			if (TimeLeft < 60)

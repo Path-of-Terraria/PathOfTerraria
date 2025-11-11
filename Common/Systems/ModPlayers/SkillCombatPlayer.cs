@@ -107,7 +107,7 @@ internal class SkillCombatPlayer : ModPlayer
 		return false;
 	}
 
-	public override void PostUpdateMiscEffects()
+	public override void ProcessTriggers(TriggersSet triggersSet)
 	{
 		if (Main.myPlayer != Player.whoAmI || Player.dead || !NewHotbar.LocalCombatMode)
 		{
