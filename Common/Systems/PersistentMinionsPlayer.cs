@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
-using Terraria.ID;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems;
 
-internal class PersistentBuffSystem : ModPlayer
+internal class PersistentMinionsPlayer : ModPlayer
 {
 	private readonly record struct SavedProjectile(int type, int time, int damage, float knockBack);
 
@@ -24,9 +23,13 @@ internal class PersistentBuffSystem : ModPlayer
 				projectiles.Add("projDamage_" + count, projectile.timeLeft);
 				projectiles.Add("projKnockback_" + count, projectile.knockBack);
 				count++;
+
+				// Store the projectile so this works in singleplayer, as while players ARE saved between subworlds,
+				// they are NOT loaded
+				_savedProjectiles.Add(new SavedProjectile(projectile.type, projectile.timeLeft, projectile.damage, projectile.knockBack));
 			}
 		}
-
+		
 		if (count > 0)
 		{
 			projectiles.Add("count", count);
@@ -45,7 +48,7 @@ internal class PersistentBuffSystem : ModPlayer
 				int type = projectiles.GetInt("projType_" + i);
 				int time = projectiles.GetInt("projTime_" + i);
 				int damage = projectiles.GetInt("projDamage_" + i);
-				float knockBack = projectiles.GetInt("projKnockback_" + i);
+				float knockBack = projectiles.GetFloat("projKnockback_" + i);
 
 				_savedProjectiles.Add(new SavedProjectile(type, time, damage, knockBack));
 			}
