@@ -36,6 +36,7 @@ public class SunsoulSummon : ModProjectile
 		Projectile.penetrate = -1;
 		Projectile.Opacity = 0f;
 		Projectile.hide = true;
+		Projectile.DamageType = DamageClass.Magic;
 	}
 
 	public override void DrawBehind(int index, List<int> bNaT, List<int> bN, List<int> bP, List<int> overPlayers, List<int> oWUI)

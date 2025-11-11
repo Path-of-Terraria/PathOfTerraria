@@ -43,6 +43,7 @@ internal class GemWand : Wand
 			Projectile.friendly = true;
 			Projectile.penetrate = 1;
 			Projectile.timeLeft = 250;
+			Projectile.DamageType = DamageClass.Magic;
 		}
 
 		public override void AI()

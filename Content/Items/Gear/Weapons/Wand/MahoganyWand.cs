@@ -34,6 +34,7 @@ internal class MahoganyWand : Wand
 			Projectile.friendly = true;
 			Projectile.penetrate = 1;
 			Projectile.timeLeft = 220;
+			Projectile.DamageType = DamageClass.Magic;
 		}
 
 		public override void AI()
