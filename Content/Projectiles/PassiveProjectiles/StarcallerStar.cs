@@ -20,6 +20,7 @@ internal class StarcallerStar : ModProjectile
 	{
 		Projectile.Size = new Vector2(24);
 		Projectile.friendly = true;
+		Projectile.hostile = false;
 		Projectile.DamageType = DamageClass.Magic;
 		Projectile.timeLeft = 2;
 		Projectile.extraUpdates = 1;
