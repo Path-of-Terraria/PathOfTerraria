@@ -71,7 +71,7 @@ partial class PoTGlobalItem : GlobalItem
 	{
 		PoTInstanceItemData data = item.GetInstanceData();
 
-		writer.Write((byte)data.ItemType);
+		writer.Write((long)data.ItemType);
 		writer.Write((byte)data.Rarity);
 		writer.Write((byte)data.Influence);
 		writer.Write((byte)data.ImplicitCount);
@@ -93,7 +93,7 @@ partial class PoTGlobalItem : GlobalItem
 	{
 		PoTInstanceItemData data = item.GetInstanceData();
 
-		data.ItemType = (ItemType)reader.ReadByte();
+		data.ItemType = (ItemType)reader.ReadInt64();
 		data.Rarity = (ItemRarity)reader.ReadByte();
 		data.Influence = (Influence)reader.ReadByte();
 		data.ImplicitCount = reader.ReadByte();
