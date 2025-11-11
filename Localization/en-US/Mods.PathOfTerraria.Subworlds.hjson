@@ -63,7 +63,7 @@ PrimeDomain: {
 QueenSlimeDomain: {
 	DisplayName: Upswept Hollows
 	Description: Find the passage through brittle crystal into the Queen Slime's domain.
-	Mining: "{$DefaultMining}"
+	Mining: "[i:1] Torches, ropes and Brittle Crystal [i:PathOfTerraria/BrittleCrystalItem] can be mined"
 	Placing: "{$DefaultPlacing}"
 }
 
