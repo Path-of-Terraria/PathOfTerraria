@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
+using PathOfTerraria.Content.Passives.Utility.Masteries;
 using Terraria.UI;
 
 #nullable enable
@@ -31,7 +31,7 @@ internal class MultiPassiveElement : PassiveElement
 		base.SafeUpdate(gameTime);
 
 		bool showsRadials = Children.Any();
-		bool shouldHaveRadials = ActivePassive == null && Passive.CanAllocate(Main.LocalPlayer);
+		bool shouldHaveRadials = (ActivePassive == null && Passive.CanAllocate(Main.LocalPlayer)) || GetDimensions().Center().DistanceSQ(Main.MouseScreen) < GetRadius();
 		bool shouldShowRadials = shouldHaveRadials || AnimationTime > 0;
 
 		AnimationTime = shouldHaveRadials ? Math.Min(AnimationTimeMax, AnimationTime + 1) : Math.Max(0, AnimationTime - 1);
@@ -49,6 +49,20 @@ internal class MultiPassiveElement : PassiveElement
 				RemoveAllChildren();
 			}
 		}
+	}
+
+	private float GetRadius()
+	{
+		float distance = 0f;
+		Vector2 center = Node.TreePos;
+
+		foreach (Passive line in InnerPassives)
+		{
+			Vector2 target = line.TreePos;
+			distance = MathF.Max(distance, center.DistanceSQ(target));
+		}
+
+		return distance + 120 * 120;
 	}
 
 	protected override void DrawSelf(SpriteBatch spriteBatch)
