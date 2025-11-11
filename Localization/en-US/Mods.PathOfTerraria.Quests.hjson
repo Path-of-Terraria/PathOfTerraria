@@ -218,5 +218,6 @@ Quest: {
 	EpilogueQuest: {
 		Name: A New Dawn
 		Description: ""
+		Tiers: Complete {1} Exploration Maps
 	}
 }

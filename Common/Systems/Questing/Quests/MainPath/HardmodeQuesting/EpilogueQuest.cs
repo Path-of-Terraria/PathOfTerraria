@@ -37,7 +37,7 @@ internal class EpilogueQuest() : Quest
 			)),
 			
 			new InteractWithNPC("Talk", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.EpilogueDialoue2"),
-				Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.EpliogueDialogue2")),
+				Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.EpilogueDialogue2")),
 			
 			//TODO: This needs to be 100 of ANY of the elemental currencies from the Conflux league.
 			new CollectCount("Finish?", ItemID.FragmentNebula, 100)

@@ -883,7 +883,7 @@ TinkerNPC: {
 		// TinkerDestroyerDialogue3: Unbelievable... you've done it! The Destroyer lies in ruin, its endless gears finally silent. To think, a monstrosity of such size and precision could exist at all. It's almost beautiful, in a terrifying way! With it gone, the very earth feels lighter. Still... if the Great Old One's eye and worm have both been reforged, I dread what else may be lurking, waiting to awaken.
 		// TinkerSkeletronPrimeDialogue1: Adventurer, my instruments are once again spiking with a new signal, one even darker than before. It is radiating from the old dungeon, where Skeletron once kept his vigil. The signature is thick with both necrotic and mechanical energy. Whoever forged the Twins and the Destroyer has not stopped. They have rebuilt the dungeon's guardian itself into something far worse. I will need souls steeped in shadow, a good supply of bones, and any mechanical scraps from the dungeon you can find to finish my calibrations.
 		// TinkerSkeletronPrimeDialogue2: Yes, these materials are perfect! The readings are clear now. The creature waiting below is Skeletron Prime, a reconstruction of the cursed guardian, enhanced with gears, cannons, and blades. It is more machine than bone now. The teleporter is ready whenever you are, but be prepared. This will surely be your toughest battle yet.
-		// TinkerSkeletronPrimeDialogue3: Well done! I have some machinations of at least one more great mechanical monster, so be on standby! My instruments are already on low alert, which means either they're broken or I'm right! Enjoy a rest, either way.
+		// TinkerSkeletronPrimeDialogue3: Well done! TODO: The rest of the dialogue here.
 	}
 
 	BubbleDialogue: {

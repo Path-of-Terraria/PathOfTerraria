@@ -481,10 +481,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedDexterityPassive",
+		"internalIdentifier": "IncreasedProjectileCountPassive",
 		"referenceId": 29,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 1,
 		"connections": [
 			{
 				"referenceId": 28
@@ -2979,7 +2979,7 @@
 		"internalIdentifier": "FocusChargeChanceOnKillPassive",
 		"referenceId": 155,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
 		"position": {
 			"x": -731,
 			"y": -1181
@@ -3852,10 +3852,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AegisChargeChanceOnKillPassive",
 		"referenceId": 205,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 206
@@ -3867,10 +3867,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AegisChargePercentMaxHealthPassive",
 		"referenceId": 206,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 3,
 		"connections": [
 			{
 				"referenceId": 207
@@ -3882,10 +3882,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AegisChargeMaxChargesPassive",
 		"referenceId": 207,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 1,
 		"position": {
 			"x": -975,
 			"y": 322
@@ -4450,17 +4450,17 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "HasteChargeChanceOnKillPassive",
 		"referenceId": 247,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
 		"position": {
 			"x": -264,
 			"y": 1192
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "HasteChargeProjectileSpeedPassive",
 		"referenceId": 248,
 		"maxLevel": 1,
 		"value": 5,
@@ -4478,10 +4478,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "HasteChargeMaxChargesPassive",
 		"referenceId": 249,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 1,
 		"position": {
 			"x": -454,
 			"y": 1095

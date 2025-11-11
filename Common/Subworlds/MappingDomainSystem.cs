@@ -8,7 +8,7 @@ namespace PathOfTerraria.Common.Subworlds;
 /// </summary>
 public class MappingDomainSystem : ModSystem
 {
-	public const int RequiredCompletionsPerTier = 1;
+	public const int RequiredCompletionsPerTier = 10;
 
 	public class TiersDownedTracker
 	{

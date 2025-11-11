@@ -8,7 +8,7 @@ namespace PathOfTerraria.Content.Items.Consumables.Maps.ExplorableMaps;
 internal class ForestMap : ExplorableMap
 {
 	public override int MaxUses => GetBossUseCount();
-	public override bool CanDrop => Main.hardMode;
+	public override bool CanDrop => NPC.downedMoonlord;
 
 	public override void SetStaticDefaults()
 	{
