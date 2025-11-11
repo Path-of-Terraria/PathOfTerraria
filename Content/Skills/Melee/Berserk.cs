@@ -32,6 +32,7 @@ public class Berserk : Skill
 	{
 		Volume = 0.4f,
 		IsLooped = true,
+		PlayOnlyIfFocused = true,
 	};
 
 	public override int MaxLevel => 3;

@@ -60,7 +60,7 @@ internal class WoFQuest : Quest
 							}
 						}
 					}),
-			]),
+			], this.GetLocalization("WizardStart")),
 			new InteractWithNPC("Continue", NPCQuestGiver, LocalizedText.Empty, this.GetLocalization("WizardContinue"),
 				null, false, (npc) =>
 				{

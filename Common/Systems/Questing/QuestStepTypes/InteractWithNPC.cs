@@ -40,7 +40,7 @@ public readonly struct GiveItem(int stack, params int[] ids)
 /// <param name="removeItems">If true, and <paramref name="reqItems"/> is not null, all <paramref name="reqItems"/> will be taken up to the required stack.</param>
 /// <param name="onSuccessfulInteraction">An action that is run when the interaction is successful (the step is completed).</param>
 internal class InteractWithNPC(string id, int npcId, LocalizedText reminder, LocalizedText dialogue = null, GiveItem[] reqItems = null, 
-	bool removeItems = false, Action<NPC> onSuccess = null) : QuestStep(id)
+	bool removeItems = false, Action<NPC> onSuccess = null, bool allItemsAreOr = false) : QuestStep(id)
 {
 	private static LocalizedText TalkToText = null;
 
@@ -50,6 +50,7 @@ internal class InteractWithNPC(string id, int npcId, LocalizedText reminder, Loc
 	private readonly GiveItem[] RequiredItems = reqItems;
 	private readonly bool RemoveItems = removeItems;
 	private readonly Action<NPC> OnSuccess = onSuccess;
+	private readonly bool AllItemsAreOr = allItemsAreOr;
 
 	public override int LineCount => RequiredItems is not null ? 1 + RequiredItems.Length : 1;
 
@@ -66,6 +67,11 @@ internal class InteractWithNPC(string id, int npcId, LocalizedText reminder, Loc
 			{
 				GiveItem item = RequiredItems[i];
 				baseText += $"\n  {i + 1}. {item.Stack}x {item.Names}";
+
+				if (AllItemsAreOr && i != RequiredItems.Length - 1)
+				{
+					baseText += Language.GetText($"Mods.{PoTMod.ModName}.Quests.Or");
+				}
 			}
 		}
 		
@@ -84,7 +90,7 @@ internal class InteractWithNPC(string id, int npcId, LocalizedText reminder, Loc
 			Vector2 pos = topLeft + new Vector2(0, i * 20);
 			Color color = col;
 
-			if (currentStep == StepCompletion.Current && i > 0 && CheckSingleItem(Main.LocalPlayer, ref throwaway, RequiredItems[i - 1]))
+			if (currentStep == StepCompletion.Current && i > 0 && CheckSingleItem(Main.LocalPlayer, ref throwaway, RequiredItems[i - 1], AllItemsAreOr))
 			{
 				color = Color.Green;
 			}
@@ -98,7 +104,7 @@ internal class InteractWithNPC(string id, int npcId, LocalizedText reminder, Loc
 	public override bool Track(Player player)
 	{
 		bool talkingToNpc = player.TalkNPC is not null && player.TalkNPC.type == NpcId;
-		bool hasAllItems = true;
+		bool hasAllItems = !AllItemsAreOr;
 		bool goodToGo = false;
 
 		if (talkingToNpc)
@@ -107,7 +113,7 @@ internal class InteractWithNPC(string id, int npcId, LocalizedText reminder, Loc
 			{
 				foreach (GiveItem item in RequiredItems)
 				{
-					CheckSingleItem(player, ref hasAllItems, item);
+					CheckSingleItem(player, ref hasAllItems, item, AllItemsAreOr);
 				}
 
 				if (hasAllItems)
@@ -155,7 +161,7 @@ internal class InteractWithNPC(string id, int npcId, LocalizedText reminder, Loc
 		return finished;
 	}
 
-	private static bool CheckSingleItem(Player player, ref bool hasAllItems, GiveItem item)
+	private static bool CheckSingleItem(Player player, ref bool hasAllItems, GiveItem item, bool checkingOr)
 	{
 		int count = 0;
 
@@ -168,6 +174,11 @@ internal class InteractWithNPC(string id, int npcId, LocalizedText reminder, Loc
 		{
 			hasAllItems = false;
 			return false;
+		}
+
+		if (checkingOr)
+		{
+			hasAllItems = true;
 		}
 
 		return true;
@@ -186,11 +197,11 @@ internal class InteractWithNPC(string id, int npcId, LocalizedText reminder, Loc
 			return defaultValue;
 		}
 
-		bool hasAllItems = true;
+		bool hasAllItems = !AllItemsAreOr;
 
 		foreach (GiveItem item in RequiredItems)
 		{
-			CheckSingleItem(Main.LocalPlayer, ref hasAllItems, item);
+			CheckSingleItem(Main.LocalPlayer, ref hasAllItems, item, AllItemsAreOr);
 		}
 
 		return defaultValue || hasAllItems;
