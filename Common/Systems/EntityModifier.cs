@@ -94,11 +94,10 @@ public partial class EntityModifier : EntityModifierSegment
 
 		player.endurance *= DamageReduction.ApplyTo(player.endurance); // i think this is right..?
 		player.moveSpeed = MovementSpeed.ApplyTo(player.moveSpeed);
+
 		player.GetDamage(DamageClass.Generic) = player.GetDamage(DamageClass.Generic).CombineWith(Damage);
 		player.GetAttackSpeed(DamageClass.Generic) = AttackSpeed.ApplyTo(player.GetAttackSpeed(DamageClass.Generic));
-		
 		player.GetCritChance(DamageClass.Generic) = CriticalChance.ApplyTo(player.GetCritChance(DamageClass.Generic));
-
 		player.GetKnockback(DamageClass.Generic) = player.GetKnockback(DamageClass.Generic).CombineWith(Knockback);
 		player.GetArmorPenetration(DamageClass.Generic) = ArmorPenetration.ApplyTo(player.GetArmorPenetration(DamageClass.Generic));
 		

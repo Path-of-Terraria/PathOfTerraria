@@ -5,6 +5,7 @@ using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Systems.ElementalDamage;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.World.Utilities;
 using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.Buffs.ElementalBuffs;
 using PathOfTerraria.Content.Projectiles.Utility;
@@ -67,6 +68,7 @@ public class Swarm : Skill
 			failReason = new SkillFailure(SkillFailReason.NeedsSummon);
 			return false;
 		}
+
 		if (Tree.Specialization is not LocustBrood && Collision.SolidCollision(GetTarget(player) - new Vector2(12, 12), 24, 24))
 		{
 			failReason = new SkillFailure(SkillFailReason.Other, "Blocked");
@@ -89,11 +91,11 @@ public class Swarm : Skill
 		else
 		{
 			int type = ModContent.ProjectileType<LocustSpawnCircle>();
-			int damage = 10 * Level;
+			int damage = (int)player.GetDamage(DamageClass.Summon).ApplyTo(10 * Level);
 
 			if (Tree.Specialization is AntlionSwarm)
 			{
-			    damage = 6 * Level;
+			    damage = (int)player.GetDamage(DamageClass.Summon).ApplyTo(6 * Level);
 			    
 			    // Spawn two Antlion Swarmers
 			    Vector2 offset1 = new Vector2(-24, 0);
@@ -115,7 +117,7 @@ public class Swarm : Skill
 					    Main.projectile[proj].damage += bonusDamage;
 				    }
 
-				    var elementalProj = Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>();
+					ElementalProjectile elementalProj = Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>();
 				    elementalProj.Container[ElementType.Cold].DamageModifier = elementalProj.Container[ElementType.Cold].DamageModifier.AddModifiers(bonusDamage, 1);
 			    }
 			}
@@ -142,8 +144,7 @@ public class Swarm : Skill
 			Tile cur = Main.tile[point];
 			Tile above = Main.tile[point.X, point.Y - 1];
 
-			//TODO: Replace these utilities, as they needlessly include a try-catch.
-			if (WorldGen.SolidTile(cur) && !WorldGen.SolidTile(above))
+			if ((WorldUtils.SolidTile(cur) || TileID.Sets.Platforms[cur.TileType]) && !WorldUtils.SolidTile(above))
 			{
 				points.Add(point);
 			}
@@ -151,11 +152,12 @@ public class Swarm : Skill
 
 		int type = ModContent.ProjectileType<LocustEgg>();
 		var src = new EntitySource_UseSkill(player, this);
+		int damage = (int)player.GetDamage(DamageClass.Summon).ApplyTo(6 * Level);
 
 		foreach (Point16 point in points)
 		{
 			float duration = 30 * Main.rand.NextFloat(0.9f, 2.5f) * (1 - player.GetPassiveStrength<PestSwarmTree, QuickerHatching>() * 0.2f);
-			Projectile.NewProjectile(src, point.ToWorldCoordinates(8, -22), Vector2.Zero, type, 6 * Level, 0, player.whoAmI, duration, 0, TotalDuration);
+			Projectile.NewProjectile(src, point.ToWorldCoordinates(8, -22), Vector2.Zero, type, damage, 0, player.whoAmI, duration, 0, TotalDuration);
 		}
 	}
 
@@ -259,6 +261,7 @@ public class Swarm : Skill
 			Projectile.friendly = true;
 			Projectile.hostile = false;
 			Projectile.DamageType = DamageClass.Summon;
+			Projectile.minion = true;
 			Projectile.aiStyle = -1;
 			Projectile.penetrate = -1;
 			Projectile.usesLocalNPCImmunity = true;
@@ -386,6 +389,12 @@ public class Swarm : Skill
 			return false;
 		}
 
+		public override bool TileCollideStyle(ref int width, ref int height, ref bool fallThrough, ref Vector2 hitboxCenterFrac)
+		{
+			fallThrough = false;
+			return true;
+		}
+
 		public override Color? GetAlpha(Color lightColor)
 		{
 			if (TimeLeft < 60)
@@ -449,6 +458,7 @@ public class Swarm : Skill
 			Projectile.friendly = true;
 			Projectile.hostile = false;
 			Projectile.DamageType = DamageClass.Summon;
+			Projectile.minion = true;
 			Projectile.aiStyle = -1;
 			Projectile.penetrate = -1;
 			Projectile.usesLocalNPCImmunity = true;
@@ -761,6 +771,12 @@ public class Swarm : Skill
 			return false;
 		}
 
+		public override bool TileCollideStyle(ref int width, ref int height, ref bool fallThrough, ref Vector2 hitboxCenterFrac)
+		{
+			fallThrough = false;
+			return true;
+		}
+
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D tex = TextureAssets.Projectile[Type].Value;
@@ -769,8 +785,9 @@ public class Swarm : Skill
 			int frameHeight = tex.Height / Main.projFrames[Type];
 			Rectangle frame = new(frameWidth * (int)(Projectile.alpha / 90f), Projectile.frame * frameHeight, frameWidth, frameHeight);
 			var scale = new Vector2(2 - Projectile.scale, Projectile.scale);
+			Color color = Color.Lerp(lightColor, Color.White, 0.3f) * Projectile.Opacity;
 			
-			Main.spriteBatch.Draw(tex, position, frame, Color.White * Projectile.Opacity, Projectile.rotation, frame.Size() * new Vector2(0.5f, 1), scale, SpriteEffects.None, 0);
+			Main.spriteBatch.Draw(tex, position, frame, color, Projectile.rotation, frame.Size() * new Vector2(0.5f, 1), scale, SpriteEffects.None, 0);
 			return false;
 		}
 	}
@@ -808,6 +825,7 @@ public class Swarm : Skill
 			Projectile.friendly = true;
 			Projectile.hostile = false;
 			Projectile.DamageType = DamageClass.Summon;
+			Projectile.minion = true;
 			Projectile.aiStyle = -1;
 			Projectile.penetrate = -1;
 			Projectile.usesLocalNPCImmunity = true;
@@ -929,6 +947,12 @@ public class Swarm : Skill
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
 			return false;
+		}
+
+		public override bool TileCollideStyle(ref int width, ref int height, ref bool fallThrough, ref Vector2 hitboxCenterFrac)
+		{
+			fallThrough = false;
+			return true;
 		}
 
 		public override Color? GetAlpha(Color lightColor)

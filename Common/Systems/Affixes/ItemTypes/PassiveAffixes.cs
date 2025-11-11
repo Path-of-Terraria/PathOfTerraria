@@ -36,7 +36,7 @@ internal class AddedDamageAffix : ItemAffix
 	
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		modifier.Damage.Base += Value;
+		player.GetDamage(DamageClass.Generic).Flat += Value;
 	}
 }
 

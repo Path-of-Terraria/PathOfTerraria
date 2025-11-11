@@ -16,7 +16,10 @@ internal class ArcaneSurgeMastery : Passive
 
 		public void OnUseSkill(Skill skill)
 		{
-			AddTimer();
+			if (skill.Tags().HasFlag(SkillTags.Magic))
+			{
+				AddTimer();
+			}
 		}
 
 		internal void AddTimer()

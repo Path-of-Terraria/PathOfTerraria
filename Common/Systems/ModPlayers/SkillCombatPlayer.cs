@@ -109,7 +109,7 @@ internal class SkillCombatPlayer : ModPlayer
 
 	public override void ProcessTriggers(TriggersSet triggersSet)
 	{
-		if (Player.dead || !NewHotbar.LocalCombatMode)
+		if (Main.myPlayer != Player.whoAmI || Player.dead || !NewHotbar.LocalCombatMode)
 		{
 			return;
 		}

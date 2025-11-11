@@ -8,7 +8,7 @@ internal class OverloadingEnergyMastery : Passive
 	{
 		private float _timer = 0;
 
-		public override void ResetEffects()
+		public override void PostUpdateEquips()
 		{
 			if (Player.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<OverloadingEnergyMastery>(out float value))
 			{
