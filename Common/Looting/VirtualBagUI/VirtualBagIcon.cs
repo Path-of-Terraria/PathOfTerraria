@@ -1,6 +1,5 @@
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.UI;
-using PathOfTerraria.Common.UI.Quests;
 using PathOfTerraria.Core.UI;
 using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
