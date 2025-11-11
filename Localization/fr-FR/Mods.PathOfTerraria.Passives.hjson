@@ -475,8 +475,8 @@ ChainLightningMastery: {
 }
 
 CriticalOverloadMastery: {
-	// Name: Critical Load
-	// Tooltip: Increase critical strike chance by {0}% per hit that isn't a crit. Resets on crits
+	// Name: Critical Overload
+	// Tooltip: Increase critical strike chance by {0}% for every hit that isn't a crit. Resets on crits
 }
 
 AnticipatedStrikeMastery: {
