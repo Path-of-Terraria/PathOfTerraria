@@ -32,7 +32,7 @@ internal class DeerclopsQuest : Quest
 				this.GetLocalization("GetAntlersOrShards")),
 			new InteractWithNPC("TalkRhine", ModContent.NPCType<RhineNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.RhineNPC.Dialogue.Quest"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.RhineNPC.Dialogue.Antlers"),
-				[new GiveItem(1, ModContent.ItemType<Antlers>())], true),
+				[new GiveItem(1, ModContent.ItemType<Antlers>()), new GiveItem(1, ModContent.ItemType<AntlerShard>())], true, null, true),
 			new InteractWithNPC("TalkHunter", ModContent.NPCType<HunterNPC>(), LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.Deerclops"),
 				onSuccess: npc =>
 				{

@@ -1,13 +1,12 @@
+using PathOfTerraria.Common.UI.Utilities;
+using PathOfTerraria.Utilities;
 using ReLogic.Content;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
-using Terraria.ID;
 using Terraria.Localization;
 using Terraria.UI;
 using Terraria.UI.Chat;
-
-#nullable enable
 
 namespace PathOfTerraria.Common.UI.Elements;
 
@@ -250,6 +249,8 @@ public class UIImageItemSlot
 
 		Item item = Item;
 		(Item oldItem, int oldType, int oldStack, int oldPrefix) = (item, item.type, item.stack, item.prefix);
+
+		using var _ = ValueOverride.Create(ref BlockChestItemSyncing.Blocking, true);
 
 		if (handler.ByInventory?.Invoke() is { } inv)
 		{
