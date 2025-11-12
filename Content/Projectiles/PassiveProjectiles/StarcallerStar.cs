@@ -33,7 +33,7 @@ internal class StarcallerStar : ModProjectile
 
 		NPC npc = Main.npc[Target];
 
-		if (!npc.CanBeChasedBy())
+		if (!npc.CanBeChasedBy() && npc.type != NPCID.TargetDummy)
 		{
 			Projectile.Kill();
 			return;
