@@ -578,3 +578,8 @@ ArcaneSurgeMastery: {
 	// Name: Arcane Surge
 	// Tooltip: Using skills or magic attacks 5 times in 4 seconds grants Arcane Surge, boosting magic damage by 15% and mana regeneration by 2/second
 }
+
+AddedSummonCritChancePassive: {
+	// Name: AddedSummonCritChancePassive
+	// Tooltip: ""
+}

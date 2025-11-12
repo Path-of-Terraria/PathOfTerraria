@@ -94,7 +94,7 @@ Quest: {
 		Name: Bête Glaciale
 		// Description: ""
 		KillDeerclops: Tuez Deerclops
-		// GetAntlersOrShards: Get Strange Antlers or an Antler Shard
+		// GetAntlersOrShards: Strange Antlers or an Antler Shard
 	}
 
 	SkeletronQuest: {

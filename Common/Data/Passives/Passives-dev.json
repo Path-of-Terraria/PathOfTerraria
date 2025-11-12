@@ -2575,7 +2575,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "IncreasedSentryDamagePassive",
+		"internalIdentifier": "IncreasedMagicAndSummonDamagePassive",
 		"referenceId": 128,
 		"maxLevel": 1,
 		"value": 5,
@@ -2600,7 +2600,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "IncreasedMagicAndSummonDamagePassive",
+		"internalIdentifier": "AddedSummonCritChancePassive",
 		"referenceId": 130,
 		"maxLevel": 1,
 		"value": 5,
@@ -2618,7 +2618,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "IncreasedSentryDamagePassive",
+		"internalIdentifier": "AddedSummonCritChancePassive",
 		"referenceId": 131,
 		"maxLevel": 1,
 		"value": 5,
