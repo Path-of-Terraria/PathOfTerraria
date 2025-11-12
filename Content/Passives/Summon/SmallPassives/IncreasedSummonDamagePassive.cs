@@ -6,6 +6,6 @@ internal class IncreasedSummonDamagePassive : Passive
 {
 	public override void BuffPlayer(Player player)
 	{
-		player.GetDamage(DamageClass.Summon) += (Value/100.0f) * Level;
+		player.GetDamage(DamageClass.Summon) += (Value / 100.0f) * Level;
 	}
 }

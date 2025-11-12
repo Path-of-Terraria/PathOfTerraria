@@ -59,7 +59,7 @@ internal class DemonSummon : GrimoireSummon
 
 				if (npcIndex != -1)
 				{
-					Vector2 velocity = Projectile.DirectionTo(Main.npc[npcIndex].Center) * 14 + Main.npc[npcIndex].velocity * 2;
+					Vector2 velocity = Projectile.DirectionTo(Main.npc[npcIndex].Center) * 14;
 					Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, velocity, ModContent.ProjectileType<DemonWeapons>(), Projectile.damage, 1f);
 				}
 

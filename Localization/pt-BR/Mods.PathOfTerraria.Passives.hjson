@@ -580,6 +580,21 @@ ArcaneSurgeMastery: {
 }
 
 AddedSummonCritChancePassive: {
-	// Name: AddedSummonCritChancePassive
+	// Name: Increased Summon Critical Strike Chance
+	// Tooltip: Summons have a +{0}% chance to crit
+}
+
+OpportuneStrikeMastery: {
+	// Name: Opportune Strike
+	// Tooltip: Every critical hit from a minion reduces all summoner skill cooldowns by {0}% (1 second cooldown)
+}
+
+UndeadLegionMastery: {
+	// Name: Undead Legion
+	// Tooltip: +{0}% increased summon damage. This increases by 3% with each maximum minion slot you have.
+}
+
+OverrunMastery: {
+	// Name: OverrunMastery
 	// Tooltip: ""
 }

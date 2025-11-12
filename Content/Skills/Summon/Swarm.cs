@@ -55,7 +55,7 @@ public class Swarm : Skill
 	public override void LevelTo(byte level)
 	{
 		Level = level;
-		Cooldown = MaxCooldown = 2 * 60;
+		Cooldown = MaxCooldown = 200 * 60;
 		ManaCost = 10 - Level * 3;
 		Duration = SentryNPC.DefaultSentryDuration;
 		WeaponType = ItemType.Summoner;
