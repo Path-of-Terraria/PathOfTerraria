@@ -21,7 +21,7 @@ internal class CriticalOverloadMastery : Passive
 		{
 			if (Player.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<CriticalOverloadMastery>(out float value))
 			{
-				Player.GetCritChance(DamageClass.Generic) += missedCrits * value / 100f;
+				Player.GetCritChance(DamageClass.Generic) += missedCrits * value;
 			}
 		}
 
