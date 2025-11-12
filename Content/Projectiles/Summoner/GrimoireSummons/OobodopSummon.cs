@@ -26,6 +26,8 @@ internal class OobodopSummon : GrimoireSummon
 		Projectile.friendly = true;
 		Projectile.penetrate = -1;
 		Projectile.extraUpdates = 1;
+		Projectile.minion = true;
+		Projectile.DamageType = DamageClass.Summon;
 	}
 
 	public override bool? CanCutTiles()

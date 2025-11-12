@@ -1,11 +1,16 @@
 ﻿using PathOfTerraria.Common.UI;
+using PathOfTerraria.Utilities;
 using ReLogic.Graphics;
 using System.Collections.Generic;
 using Terraria.GameContent;
+using Terraria.GameInput;
 using Terraria.Localization;
+using Terraria.UI;
 using Terraria.UI.Chat;
 
 namespace PathOfTerraria.Common.NPCs.Dialogue;
+
+#nullable enable
 
 public enum Mechanic : byte
 {
@@ -28,6 +33,8 @@ public enum Mechanic : byte
 	GrimoirePickups,
 	Questing,
 	DamageOverTime,
+	Nearby,
+	Far,
 }
 
 internal class MechanicsTagHandler : ITagHandler
@@ -77,15 +84,25 @@ internal class MechanicsTagHandler : ITagHandler
 			}
 		}
 
+		internal static int CurrentSlot = 0;
+
+		private static bool ShiftHoverDisplay = false;
+
+		private bool AllowShift => shiftIndex >= 0;
+
 		private readonly Mechanic mechanic;
 		private readonly Color baseColor;
 		private readonly bool lowercase;
+		private readonly int shiftIndex;
+		private readonly int shiftMax;
 
-		public MechanicsTextSnippet(Mechanic mechanic, Color baseColor, bool lowercase)
+		public MechanicsTextSnippet(Mechanic mechanic, Color baseColor, bool lowercase, int shiftIndex, int shiftMax)
 		{
 			this.mechanic = mechanic;
 			this.baseColor = baseColor;
 			this.lowercase = lowercase;
+			this.shiftIndex = shiftIndex;
+			this.shiftMax = shiftMax;
 
 			CheckForHover = true;
 			Text = "";
@@ -109,6 +126,13 @@ internal class MechanicsTagHandler : ITagHandler
 			spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle((int)position.X - 2, (int)position.Y + (int)size.Y - 10, (int)size.X + 4, 6), Color.Black);
 			spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle((int)position.X, (int)position.Y + (int)size.Y - 8, (int)size.X, 2), GetVisibleColor());
 			ChatManager.DrawColorCodedStringWithShadow(spriteBatch, font, Tag, position, GetVisibleColor(), Color.Black, 0f, Vector2.Zero, new Vector2(scale), spread: 2f);
+
+			if (AllowShift && !ItemSlot.ShiftInUse)
+			{
+				Vector2 sc = new Vector2(scale) * 0.7f;
+				ChatManager.DrawColorCodedStringWithShadow(spriteBatch, font, "(shift)", position + new Vector2(0, 24), Color.Gray, Color.Black, 0f, Vector2.Zero, sc, spread: 2f);
+			}
+
 			return true;
 		}
 
@@ -123,12 +147,21 @@ internal class MechanicsTagHandler : ITagHandler
 			return size.X;
 		}
 
+		public override void Update()
+		{
+			if (ItemSlot.ShiftInUse && AllowShift && shiftIndex == (int)Math.Abs(CurrentSlot % shiftMax))
+			{
+				using var _ = ValueOverride.Create(ref ShiftHoverDisplay, true);
+				OnHover();
+			}
+		}
+
 		public override void OnHover()
 		{
 			string sub = Language.GetTextValue("Mods.PathOfTerraria.Mechanics." + mechanic + ".Description");
 			bool hasMechs = Loader.AssociatedMechanics.ContainsKey(mechanic);
 
-			if (hasMechs)
+			if (hasMechs && !ShiftHoverDisplay)
 			{
 				if (Main.keyState.PressingShift())
 				{
@@ -146,10 +179,20 @@ internal class MechanicsTagHandler : ITagHandler
 				}
 			}
 
+			string title = Language.GetTextValue("Mods.PathOfTerraria.Mechanics.Mechanic") + ": "
+				+ $"[c/FFFF00:{Language.GetTextValue("Mods.PathOfTerraria.Mechanics." + mechanic + ".Tag")}]";
+
+			if (shiftMax > 1)
+			{
+				title += $" [c/999999:{Language.GetTextValue("Mods.PathOfTerraria.Mechanics.Scroll", shiftIndex + 1, shiftMax)}]";
+			}
+
 			Tooltip.Create(new TooltipDescription
 			{
 				Identifier = "MechanicTag",
-				SimpleSubtitle = sub
+				SimpleSubtitle = sub,
+				SimpleTitle = ShiftHoverDisplay ? title : null,
+				Stability = 0,
 			});
 		}
 
@@ -159,15 +202,75 @@ internal class MechanicsTagHandler : ITagHandler
 		}
 	}
 
-	public TextSnippet Parse(string text, Color baseColor = default, string options = null)
+	public TextSnippet Parse(string text, Color baseColor = default, string? options = null)
 	{
 		Mechanic display = Mechanic.Error;
 
-		if (Enum.TryParse(typeof(Mechanic), text, true, out object parsed) && parsed is Mechanic mechanic)
+		if (Enum.TryParse(typeof(Mechanic), text, true, out object? parsed) && parsed is Mechanic mechanic)
 		{
 			display = mechanic;
 		}
 
-		return new MechanicsTextSnippet(display, baseColor, text == display.ToString().ToLower());
+		int shiftIndex = -1;
+		int max = -1;
+
+		if (!string.IsNullOrEmpty(options))
+		{
+			string[] split = options.Split(',');
+
+			foreach (string parameter in split)
+			{
+				if (parameter.StartsWith("shift", StringComparison.CurrentCultureIgnoreCase))
+				{
+					string[] splits = parameter.Split(['=', ';']);
+
+					if (splits.Length < 2)
+					{
+						shiftIndex = 0;
+						break;
+					}
+					
+					if (splits.Length > 1)
+					{
+						if (int.TryParse(splits[1], out int value))
+						{
+							shiftIndex = value;
+						}
+					}
+
+					if (splits.Length > 2)
+					{
+						if (int.TryParse(splits[2], out int value))
+						{
+							max = value;
+						}
+					}
+
+					break;
+				}
+			}
+		}
+
+		return new MechanicsTextSnippet(display, baseColor, text == display.ToString().ToLower(), shiftIndex, max);
+	}
+}
+
+public class ScrollerSystem : ModSystem
+{
+	public override void PreUpdateDusts()
+	{
+		if (Main.dedServ)
+		{
+			return;
+		}
+
+		if (PlayerInput.ScrollWheelDelta > 0)
+		{
+			MechanicsTagHandler.MechanicsTextSnippet.CurrentSlot++;
+		}
+		else if (PlayerInput.ScrollWheelDelta < 0)
+		{
+			MechanicsTagHandler.MechanicsTextSnippet.CurrentSlot--;
+		}
 	}
 }

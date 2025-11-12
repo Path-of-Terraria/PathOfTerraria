@@ -595,6 +595,11 @@ UndeadLegionMastery: {
 }
 
 OverrunMastery: {
-	// Name: OverrunMastery
-	// Tooltip: ""
+	// Name: Empowerment
+	// Tooltip: +{0}% increased minion movement & behaviour speed
+}
+
+MinionDamageAuraPassive: {
+	// Name: Minion Damage Aura
+	// Tooltip: Minions gain an aura that gives [mechanic/shift=0;2:Nearby] and [mechanic/shift=1;2:Far] players +{0}% damage
 }
