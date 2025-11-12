@@ -14,7 +14,8 @@ public static class SoundUtils
 		{
 			if (sound == null)
 			{
-				slot = SoundEngine.PlaySound(in style, position);
+				// Set identifier string so that it doesn't duplicate a slot position, causing issues in multiplayer
+				slot = SoundEngine.PlaySound(style with { Identifier = Main.GameUpdateCount.ToString() }, position);
 				return;
 			}
 
