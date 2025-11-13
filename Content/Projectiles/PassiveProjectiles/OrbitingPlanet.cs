@@ -26,6 +26,7 @@ internal class OrbitingPlanet : ModProjectile
 		Projectile.timeLeft = 2;
 		Projectile.tileCollide = false;
 		Projectile.frame = Main.rand.Next(5);
+		Projectile.penetrate = 2;
 	}
 
 	public override void AI()
