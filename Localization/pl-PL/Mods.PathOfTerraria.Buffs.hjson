@@ -168,3 +168,8 @@ MinionDamageAuraBuff: {
 	// DisplayName: Damage Aura
 	// Description: Increased damage
 }
+
+MinionManaRegenAuraBuff: {
+	// DisplayName: Mana Regeneration Aura
+	// Description: Increased mana regeneration
+}
