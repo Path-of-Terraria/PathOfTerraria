@@ -8,7 +8,7 @@ internal class ChilledFunctionality : GlobalBuff
 {
 	public override void Update(int type, NPC npc, ref int buffIndex)
 	{
-		if (type == BuffID.Chilled)
+		if (type == BuffID.Chilled && npc.TryGetGlobalNPC(out ChilledNPC chilled) && chilled.BossChilledCooldown <= 0)
 		{
 			float modifier = 0.2f;
 
@@ -29,7 +29,7 @@ internal class ChilledFunctionality : GlobalBuff
 				Dust.NewDust(npc.position, npc.width, npc.height, DustID.Ice, npc.velocity.X, npc.velocity.Y);
 			}
 
-			if (npc.buffTime[buffIndex] == 2 && npc.TryGetGlobalNPC(out ChilledNPC chilled) && npc.boss)
+			if (npc.buffTime[buffIndex] == 2 && npc.boss)
 			{
 				chilled.BossChilledCooldown = 10 * 60;
 			}
