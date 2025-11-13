@@ -37,7 +37,7 @@ internal class CenterOfTheUniverseMastery : Passive
 
 				if (GetNextPlanetIndex(player, out int planetIndex, out _) && value / 100f > Main.rand.NextFloat())
 				{
-					int damage = (int)(damageDone * 0.2f);
+					int damage = (int)(damageDone * 0.35f);
 
 					Projectile.NewProjectile(source, player.Center, Vector2.Zero, type, damage, 6, player.whoAmI, 0, planetIndex, planetIndex switch
 					{

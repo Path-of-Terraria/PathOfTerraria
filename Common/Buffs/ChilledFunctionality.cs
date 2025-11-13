@@ -17,17 +17,31 @@ internal class ChilledFunctionality : GlobalBuff
 				modifier = Main.player[npc.lastInteraction].GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.ChilledEffectiveness.ApplyTo(0.2f);
 			}
 
+			if (npc.boss)
+			{
+				modifier *= 0.33f;
+			}
+
 			npc.GetGlobalNPC<SlowDownNPC>().SpeedModifier += modifier;
 
 			if (Main.rand.NextBool(20))
 			{
 				Dust.NewDust(npc.position, npc.width, npc.height, DustID.Ice, npc.velocity.X, npc.velocity.Y);
 			}
+
+			if (npc.buffTime[buffIndex] == 2 && npc.TryGetGlobalNPC(out ChilledNPC chilled) && npc.boss)
+			{
+				chilled.BossChilledCooldown = 10 * 60;
+			}
 		}
 	}
 
 	private class ChilledNPC : GlobalNPC
 	{
+		public override bool InstancePerEntity => true;
+
+		internal int BossChilledCooldown = 0;
+
 		public override Color? GetAlpha(NPC npc, Color drawColor)
 		{
 			if (npc.HasBuff(BuffID.Chilled))
