@@ -23,3 +23,13 @@ UIConfig: {
 		// Tooltip: Allows use of the Sack of Holding in domains for easier inventory management.
 	}
 }
+
+GameplayConfig: {
+	// DisplayName: Gameplay Config
+	// Headers.Gameplay: Gameplay Header
+
+	NearbyAuras: {
+		// Label: Nearby Auras
+		// Tooltip: ""
+	}
+}

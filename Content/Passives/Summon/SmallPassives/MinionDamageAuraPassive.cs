@@ -1,3 +1,4 @@
+using PathOfTerraria.Common.Config;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Content.Buffs;
 using ReLogic.Content;
@@ -37,7 +38,8 @@ internal class MinionDamageAuraPassive : Passive
 
 		public override bool PreDraw(Projectile proj, ref Color lightColor)
 		{
-			if (!proj.TryGetOwner(out Player owner) || !owner.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<MinionDamageAuraPassive>(out float value) || !proj.minion)
+			if (!proj.TryGetOwner(out Player owner) || !owner.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<MinionDamageAuraPassive>(out float value) || !proj.minion
+				|| !ModContent.GetInstance<GameplayConfig>().NearbyAuras)
 			{
 				return true;
 			}
