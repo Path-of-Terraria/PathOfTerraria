@@ -578,3 +578,28 @@ ArcaneSurgeMastery: {
 	Name: Arcane Surge
 	Tooltip: Using skills or magic attacks 5 times in 4 seconds grants Arcane Surge, boosting magic damage by 15% and mana regeneration by 2/second
 }
+
+AddedSummonCritChancePassive: {
+	Name: Increased Summon Critical Strike Chance
+	Tooltip: Summons have a +{0}% chance to crit
+}
+
+OpportuneStrikeMastery: {
+	Name: Opportune Strike
+	Tooltip: Every critical hit from a minion reduces all summoner skill cooldowns by {0}% (1 second cooldown)
+}
+
+UndeadLegionMastery: {
+	Name: Undead Legion
+	Tooltip: +{0}% increased summon damage. This increases by 3% with each maximum minion slot you have.
+}
+
+OverrunMastery: {
+	Name: Empowerment
+	Tooltip: +{0}% increased minion movement & behaviour speed
+}
+
+MinionDamageAuraPassive: {
+	Name: Minion Damage Aura
+	Tooltip: Minions gain an aura that gives [mechanic/shift:Nearby] players +{0}% damage
+}

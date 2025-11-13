@@ -26,6 +26,9 @@ public partial class EntityModifier : EntityModifierSegment
 	public AddableFloat FishingLineCount = new();
 	public AddableFloat ProjectileCount = new();
 
+	// Used in SpeedUpProjectile
+	public AddableFloat ProjectileBehaviourSpeed = new();
+
 	public StatModifier Damage = new();
 	public StatModifier AttackSpeed = new();
 	public StatModifier ArmorPenetration = new();

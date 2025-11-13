@@ -1,10 +1,28 @@
 ﻿using System.Collections.Generic;
+using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems;
 
 internal class PersistentMinionsPlayer : ModPlayer
 {
+	private class PersistentMinionProjectile : GlobalProjectile
+	{
+		public override bool InstancePerEntity => true;
+
+		internal int OriginalDamage = 0;
+
+		public override bool AppliesToEntity(Projectile entity, bool lateInstantiation)
+		{
+			return entity.minion;
+		}
+
+		public override void OnSpawn(Projectile projectile, IEntitySource source)
+		{
+			OriginalDamage = projectile.damage;
+		}
+	}
+
 	private readonly record struct SavedProjectile(int type, int time, int damage, float knockBack);
 
 	private readonly List<SavedProjectile> _savedProjectiles = [];
@@ -18,15 +36,17 @@ internal class PersistentMinionsPlayer : ModPlayer
 		{
 			if (projectile.owner == Player.whoAmI && projectile.minion)
 			{
+				int damage = projectile.GetGlobalProjectile<PersistentMinionProjectile>().OriginalDamage;
+
 				projectiles.Add("projType_" + count, projectile.type);
 				projectiles.Add("projTime_" + count, projectile.timeLeft);
-				projectiles.Add("projDamage_" + count, projectile.timeLeft);
+				projectiles.Add("projDamage_" + count, damage);
 				projectiles.Add("projKnockback_" + count, projectile.knockBack);
 				count++;
 
 				// Store the projectile so this works in singleplayer, as while players ARE saved between subworlds,
 				// they are NOT loaded
-				_savedProjectiles.Add(new SavedProjectile(projectile.type, projectile.timeLeft, projectile.damage, projectile.knockBack));
+				_savedProjectiles.Add(new SavedProjectile(projectile.type, projectile.timeLeft, damage, projectile.knockBack));
 			}
 		}
 		
@@ -64,8 +84,11 @@ internal class PersistentMinionsPlayer : ModPlayer
 			int proj = Projectile.NewProjectile(Player.GetSource_FromThis(), pos, Vector2.Zero, item.type, item.damage, item.knockBack, Player.whoAmI);
 			Main.projectile[proj].timeLeft = item.time;
 			Main.projectile[proj].netUpdate = true;
+			Main.projectile[proj].damage = item.damage;
+			Main.projectile[proj].originalDamage = item.damage;
 		}
 
 		_savedProjectiles.Clear();
 	}
 }
+

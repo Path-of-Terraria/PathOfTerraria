@@ -81,7 +81,8 @@ public class ItemAffixData
 			}
 			else
 			{
-				Console.WriteLine($"Affix attempted to load nonexisting {item} ItemType enumeration.");
+				Console.WriteLine($"Affix attempted to load nonexisting {item} ItemType enumeration. Types: " + EquipTypes);
+				Console.WriteLine(Environment.StackTrace);
 			}
 		}
 

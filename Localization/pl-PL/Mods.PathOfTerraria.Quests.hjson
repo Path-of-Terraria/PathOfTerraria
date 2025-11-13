@@ -95,7 +95,7 @@ Quest: {
 		Name: Lodowata Bestia
 		// Description: ""
 		KillDeerclops: Zabij Jelenio-cyklopa
-		// GetAntlersOrShards: Get Strange Antlers or an Antler Shard
+		// GetAntlersOrShards: Strange Antlers or an Antler Shard
 	}
 
 	SkeletronQuest: {
