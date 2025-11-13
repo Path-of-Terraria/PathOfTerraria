@@ -179,3 +179,8 @@ ArcaneSurgeBuff: {
 	// DisplayName: Arcane Surge
 	// Description: Increased magic damage and mana regeneration
 }
+
+MinionDamageAuraBuff: {
+	// DisplayName: Damage Aura
+	// Description: Increased damage
+}

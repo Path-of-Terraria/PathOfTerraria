@@ -1,4 +1,6 @@
 Shift: (Hold shift to see related mechanics)
+Mechanic: Mechanic
+Scroll: ({0} of {1}, scroll mouse to view)
 
 Error: {
 	Tag: (Invalid)
@@ -105,4 +107,14 @@ Questing: {
 DamageOverTime: {
 	Tag: Damage over Time
 	Description: A debuff which inflicts damage at a consistent rate, such as Poisoned or Ignited.
+}
+
+Nearby: {
+	Tag: Nearby
+	Description: Within 150 pixels of the target. Is NOT affected by stuff such as "increased area of effect".
+}
+
+Far: {
+	Tag: Far
+	Description: Outside of 150 pixels of the target. Is NOT affected by stuff such as "increased area of effect".
 }

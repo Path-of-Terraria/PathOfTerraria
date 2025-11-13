@@ -2,7 +2,6 @@
 using System.Linq;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
-using PathOfTerraria.Content.Passives.Utility.Masteries;
 using Terraria.UI;
 
 #nullable enable

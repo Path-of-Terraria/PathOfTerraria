@@ -1,10 +1,8 @@
-using PathOfTerraria.Common.NPCs.Dialogue;
 using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Core.Sources;
 using ReLogic.Content.Sources;
 using System.Diagnostics;
 using System.IO;
-using Terraria.UI.Chat;
 
 namespace PathOfTerraria;
 
@@ -17,6 +15,16 @@ public sealed class PoTMod : Mod
 	///		The internal name of the mod.
 	/// </summary>
 	public const string ModName = "PathOfTerraria";
+
+	/// <summary>
+	/// The defined constant for "nearby" - something within this amount of pixels of another will be "near" it.
+	/// </summary>
+	public const float NearbyDistance = 150;
+
+	/// <summary>
+	/// <inheritdoc cref="NearbyDistance"/> Squared.
+	/// </summary>
+	public const float NearbyDistanceSq = NearbyDistance * NearbyDistance;
 
 	/// <summary>
 	///		A static reference to the current instance of the mod.

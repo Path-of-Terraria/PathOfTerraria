@@ -2575,13 +2575,16 @@
 		}
 	},
 	{
-		"internalIdentifier": "IncreasedSentryDamagePassive",
+		"internalIdentifier": "IncreasedMagicAndSummonDamagePassive",
 		"referenceId": 128,
 		"maxLevel": 1,
 		"value": 5,
 		"connections": [
 			{
 				"referenceId": 131
+			},
+			{
+				"referenceId": 1047
 			}
 		],
 		"position": {
@@ -2594,13 +2597,18 @@
 		"referenceId": 129,
 		"maxLevel": 1,
 		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1047
+			}
+		],
 		"position": {
 			"x": -73,
 			"y": -537
 		}
 	},
 	{
-		"internalIdentifier": "IncreasedMagicAndSummonDamagePassive",
+		"internalIdentifier": "AddedSummonCritChancePassive",
 		"referenceId": 130,
 		"maxLevel": 1,
 		"value": 5,
@@ -2610,6 +2618,9 @@
 			},
 			{
 				"referenceId": 129
+			},
+			{
+				"referenceId": 1047
 			}
 		],
 		"position": {
@@ -2618,19 +2629,79 @@
 		}
 	},
 	{
-		"internalIdentifier": "IncreasedSentryDamagePassive",
+		"internalIdentifier": "AddedSummonCritChancePassive",
 		"referenceId": 131,
 		"maxLevel": 1,
 		"value": 5,
 		"connections": [
 			{
 				"referenceId": 127
+			},
+			{
+				"referenceId": 1047
 			}
 		],
 		"position": {
 			"x": 54,
 			"y": -705
 		}
+	},
+
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1047,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1048
+			},
+			{
+				"referenceId": 1049
+			},
+			{
+				"referenceId": 1050
+			}
+		],
+		"position": {
+			"x": -10,
+			"y": -620
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "UndeadLegionMastery",
+		"referenceId": 1048,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": -90,
+			"y": -620
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "OpportuneStrikeMastery",
+		"referenceId": 1049,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": 70,
+			"y": -650
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "OverrunMastery",
+		"referenceId": 1050,
+		"maxLevel": 1,
+		"value": 25,
+		"position": {
+			"x": 70,
+			"y": -590
+		},
+		"isHidden": true
 	},
 	{
 		"internalIdentifier": "AddedIntelligencePassive",
@@ -2877,7 +2948,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "IncreasedSummonDamagePassive",
+		"internalIdentifier": "MinionDamageAuraPassive",
 		"referenceId": 148,
 		"maxLevel": 1,
 		"value": 5,
@@ -2887,7 +2958,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedSummonDamagePassive",
 		"referenceId": 149,
 		"maxLevel": 1,
 		"value": 5,
