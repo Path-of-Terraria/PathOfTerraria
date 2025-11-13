@@ -219,7 +219,7 @@ internal static class Networking
 	/// Takes a <see cref="ModPacket"/> and sends it to the main server. Behaves as if using packet.Send() otherwise.
 	/// </summary>
 	/// <param name="packet">The packet to forward.</param>
-	internal static void SendPacketToMainServer(ModPacket packet)
+	internal static void SendPacketToMainServer(ModPacket packet, string debugSendMessage = "")
 	{
 		byte[] data = (packet.BaseStream as MemoryStream).GetBuffer();
 		data = data[4..]; // Packets have a bunch of garbage data for some reason?
@@ -233,7 +233,7 @@ internal static class Networking
 		}
 
 		text = text[..^2];
-		PoTMod.Instance.Logger.Debug(text);
+		PoTMod.Instance.Logger.Debug(debugSendMessage + text);
 #endif
 
 		SubworldSystem.SendToMainServer(PoTMod.Instance, data);

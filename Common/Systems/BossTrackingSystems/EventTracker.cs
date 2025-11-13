@@ -86,7 +86,19 @@ internal class SyncEventCompletionHandler : Handler
 
 		EventTracker.CompleteEvent(flag, gameEventId, fromSync: true);
 #if DEBUG
-		PoTMod.Instance.Logger.Debug("Got EVENT: " + flag);
+		ref bool flagValue = ref EventTracker.GetExternalFlagValueRefOrNull(flag);
+		string flagDisplay;
+
+		if (Unsafe.IsNullRef(in flagValue))
+		{
+			flagDisplay = "(custom - null)";
+		}
+		else
+		{
+			flagDisplay = flagValue.ToString();
+		}
+
+		PoTMod.Instance.Logger.Debug("Got EVENT: " + flag + ". Associated flag is: " + flagDisplay);
 #endif
 	}
 
@@ -248,17 +260,19 @@ internal sealed class EventTracker : ModSystem
 		localFlags |= singleEvent;
 		globalFlags |= singleEvent;
 
-		if (SubworldSystem.Current is not null)
-		{
-			cachedEventCompletions.Add((singleEvent, gameEventId));
-		}
+		//if (SubworldSystem.Current is not null)
+		// The above line was commented out as it stopped flags from actually being set on the main server.
+		// It's being kept for posterity & to check for regressions in case I don't fully understand ramificiations. - Gabe
+		cachedEventCompletions.Add((singleEvent, gameEventId));
 
 		if (Main.netMode == NetmodeID.Server && !fromSync && SubworldSystem.Current is not null)
 		{
-			ModPacket packet = Networking.GetPacket(Networking.Message.SyncEventCompletion, capacity: 12);
+			PoTMod.Instance.Logger.Debug("Sending event completion: " + singleEvent);
+
+			ModPacket packet = Networking.GetPacket(Networking.Message.SyncEventCompletion, capacity: 13);
 			packet.Write((ulong)singleEvent);
 			packet.Write(gameEventId ?? int.MaxValue);
-			Networking.SendPacketToMainServer(packet);
+			Networking.SendPacketToMainServer(packet, "Sending event packet to main server with bytes: ");
 		}
 	}
 
@@ -277,7 +291,7 @@ internal sealed class EventTracker : ModSystem
 		}
 	}
 
-	private static ref bool GetExternalFlagValueRefOrNull(EventFlags flag)
+	internal static ref bool GetExternalFlagValueRefOrNull(EventFlags flag)
 	{
 		// Expect single values, not masks.
 		Debug.Assert(BitOperations.PopCount((ulong)flag) == 1);
@@ -332,6 +346,7 @@ internal sealed class EventTracker : ModSystem
 	{
 		orig(ref eventFlag, gameEventId);
 
+		// Only run events on subservers since the main server already controls event downed logic
 		if (SubworldSystem.Current is null)
 		{
 			return;
