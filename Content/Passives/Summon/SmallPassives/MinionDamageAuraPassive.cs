@@ -43,7 +43,7 @@ internal class MinionDamageAuraPassive : Passive
 			}
 
 			Vector2 pos = proj.Center - Main.screenPosition;
-			Main.spriteBatch.Draw(Aura.Value, pos, null, Color.White * proj.Opacity * 0.25f, Main.GameUpdateCount * 0.03f, Aura.Size() / 2f, 1f, SpriteEffects.None, 0);
+			Main.spriteBatch.Draw(Aura.Value, pos, null, Color.White * proj.Opacity * 0.05f, Main.GameUpdateCount * 0.03f, Aura.Size() / 2f, 1f, SpriteEffects.None, 0);
 			return true;
 		}
 	}
