@@ -2646,7 +2646,6 @@
 			"y": -705
 		}
 	},
-
 	{
 		"internalIdentifier": "MasteryPassive",
 		"referenceId": 1047,
@@ -2991,26 +2990,29 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "HeartySummonsPassive",
 		"referenceId": 151,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
 		"position": {
 			"x": -628,
 			"y": -1255
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "HeartySummonsPassive",
 		"referenceId": 152,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 151
 			},
 			{
 				"referenceId": 70
+			},
+			{
+				"referenceId": 1051
 			}
 		],
 		"position": {
@@ -3019,14 +3021,76 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "MinionManaRegenAuraPassive",
 		"referenceId": 153,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 1051
+			}
+		],
 		"position": {
 			"x": -395,
 			"y": -1330
 		}
+	},
+
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1051,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1052
+			},
+			{
+				"referenceId": 1053
+			},
+			{
+				"referenceId": 1054
+			}
+		],
+		"position": {
+			"x": -480,
+			"y": -1255
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "SymbioticPulseMastery",
+		"referenceId": 1052,
+		"maxLevel": 1,
+		"value": 3,
+		"position": {
+			"x": -480,
+			"y": -1155
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "SymbioticPulseMastery",
+		"referenceId": 1053,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": -540,
+			"y": -1195
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "SymbioticPulseMastery",
+		"referenceId": 1054,
+		"maxLevel": 1,
+		"value": 25,
+		"position": {
+			"x": -420,
+			"y": -1195
+		},
+		"isHidden": true
 	},
 	{
 		"internalIdentifier": "AddedIntelligencePassive",

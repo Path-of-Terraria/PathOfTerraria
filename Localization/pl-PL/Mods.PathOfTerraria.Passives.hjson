@@ -603,3 +603,18 @@ MinionDamageAuraPassive: {
 	// Name: Minion Damage Aura
 	// Tooltip: Minions gain an aura that gives [mechanic/shift:Nearby] players +{0}% damage
 }
+
+MinionManaRegenAuraPassive: {
+	// Name: Minion Mana Regeneration Aura
+	// Tooltip: Minions gain an aura that gives [mechanic/shift:Nearby] players +{0} mana regeneration per second
+}
+
+HeartySummonsPassive: {
+	// Name: Healthy Summon Damage Boost
+	// Tooltip: +{0}% summon damage when above 90% health
+}
+
+SymbioticPulseMastery: {
+	// Name: Symbiotic Pulse
+	// Tooltip: Every 30 seconds, your summons drop a healing orb that, when collected, heals {0}% of your max health
+}
