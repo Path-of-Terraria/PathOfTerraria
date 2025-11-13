@@ -10,7 +10,7 @@ internal class PersistentMinionsPlayer : ModPlayer
 	{
 		public override bool InstancePerEntity => true;
 
-		internal int originalDamage = 0;
+		internal int OriginalDamage = 0;
 
 		public override bool AppliesToEntity(Projectile entity, bool lateInstantiation)
 		{
@@ -19,7 +19,7 @@ internal class PersistentMinionsPlayer : ModPlayer
 
 		public override void OnSpawn(Projectile projectile, IEntitySource source)
 		{
-			originalDamage = projectile.damage;
+			OriginalDamage = projectile.damage;
 		}
 	}
 
@@ -36,7 +36,7 @@ internal class PersistentMinionsPlayer : ModPlayer
 		{
 			if (projectile.owner == Player.whoAmI && projectile.minion)
 			{
-				int damage = projectile.GetGlobalProjectile<PersistentMinionProjectile>().originalDamage;
+				int damage = projectile.GetGlobalProjectile<PersistentMinionProjectile>().OriginalDamage;
 
 				projectiles.Add("projType_" + count, projectile.type);
 				projectiles.Add("projTime_" + count, projectile.timeLeft);
