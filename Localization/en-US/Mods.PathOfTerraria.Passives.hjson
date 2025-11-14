@@ -581,7 +581,7 @@ ArcaneSurgeMastery: {
 
 AddedSummonCritChancePassive: {
 	Name: Increased Summon Critical Strike Chance
-	Tooltip: Summons have a +{0}% chance to crit
+	Tooltip: Summon damage has a +{0}% chance to crit
 }
 
 OpportuneStrikeMastery: {

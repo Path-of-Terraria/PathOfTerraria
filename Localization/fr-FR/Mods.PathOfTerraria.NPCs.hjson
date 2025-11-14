@@ -43,6 +43,7 @@ BlacksmithNPC: {
 
 	Entry: Thrain est un nain jovial qui aime les discussions animées, les bons verres et fabriquer les meilleures armes que vous ayez jamais vues. On le trouve généralement dans sa forge, en train de fabriquer des armes.
 	// DownedForest: After beating the Forest domain
+	// Census.SpawnCondition: Spawns by default in Ravencrest. Home is the Forge.
 }
 
 BarkeepNPC: {
@@ -84,6 +85,7 @@ BarkeepNPC: {
 	}
 
 	Entry: Brom est un homme simple. Les gens veulent passer un bon moment ? Ils viennent au bar. Ils discutent avec Brom le Robuste. Ils passent un bon moment avec des gens sympas et de bonnes boissons. Que demander de plus ?
+	// Census.SpawnCondition: Spawns by default in Ravencrest. Home is the Tavern.
 }
 
 HunterNPC: {
@@ -130,6 +132,7 @@ HunterNPC: {
 
 	MapButton: Carte (20 pièces d'or)
 	Entry: Chasseuse impitoyable et plus expérimentée que vous, Elara n'est pas très bavarde. Elle compense cela par ses talents exceptionnels de chasseuse et de pisteuse, avec des yeux presque partout.
+	// Census.SpawnCondition: Spawns by default in Ravencrest.
 }
 
 Minera: {
@@ -182,6 +185,7 @@ GarrickNPC: {
 	LunarLiquidButton: Liquide lunaire
 	AnotherMap: Carte
 	Entry: Humilié par un roi, Garrick se repose dans la ville de Ravencrest. Il semble en vouloir aux slimes et aimerait être plus fort. Bientôt, il se remettra sur pied.
+	// Census.SpawnCondition: 20% chance to spawn in the Tavern.
 }
 
 TownScoutNPC: {
@@ -237,6 +241,7 @@ WizardNPC: {
 	}
 
 	Entry: Peut-être le sorcier le plus puissant de tous les temps, Alaric continue d'agir comme quelqu'un qui prétend être le sorcier le plus puissant de tous les temps. S'il est d'humeur capricieuse, il peut provoquer une véritable catastrophe instantanée.
+	// Census.SpawnCondition: Spawns by default in Ravencrest. Home is the Library.
 }
 
 EldricNPC: {
@@ -285,6 +290,7 @@ EldricNPC: {
 	CreateConcoction: Créer une potion
 	DonateLunar: Faire un don de fragments/liquide lunaires
 	Entry: Solitaire et solennel, Eldric est un homme de silence. Observateur des étoiles, Eldric connaît la nature du cosmos ; il le contemple, et celui-ci le contemple en retour. Il apprécie le thé.
+	// Census.SpawnCondition: Spawns in the Tavern once King Slime has been defeated.
 }
 
 MorvenNPC: {
@@ -360,6 +366,7 @@ MorvenNPC: {
 	}
 
 	Entry: Une fois pris au piège dans les profondeurs souterraines de Corruption, ce savant fou est devenu encore plus fou que la plupart de ses semblables. Il vous méprise, mais n'hésitera pas à vous utiliser à tout moment pour « faire de la science ».
+	// Census.SpawnCondition: Can be found bound in the underground corruption once Eye of Cthulu has been killed. Moves to Ravencrest once his quest is completed.
 }
 
 LloydNPC: {
@@ -451,6 +458,8 @@ LloydNPC: {
 			2: Merci à tous.
 		}
 	}
+
+	// Census.SpawnCondition: Can be found in the above ground Crimson. Moves to Ravencrest when his quest is completed.
 }
 
 RhineNPC: {
@@ -499,6 +508,7 @@ RhineNPC: {
 	}
 
 	Entry: Rhine est une grande travailleuse. Entre deux voyages, elle rend visite à sa famille et chasse des bêtes légendaires.  Ici ? Elle cherche de la bonne nourriture, de bonnes boissons et des gens à qui raconter des histoires.
+	// Census.SpawnCondition: Spawns in the Tavern once Eye of Cthulu has been defeated.
 }
 
 SkullApparition.DisplayName: Apparition du crâne
@@ -571,6 +581,7 @@ MorganaNPC: {
 	}
 
 	Entry: Excentrique mais d'une puissance trompeuse, Morgana apporte beaucoup à Ravencrest. Certes, elle peut parfois être difficile à comprendre, et certains pourraient dire qu'elle est souvent rebutante, mais elle est douée dans ce qu'elle fait. Que fait-elle ?... Elle continue.
+	// Census.SpawnCondition: Spawns by default in Ravencrest. Home is the Burrow.
 }
 
 Entling: {
