@@ -29,6 +29,6 @@ public sealed class ConfluxRiftSmoke : ModDust
 
 	public override Color? GetAlpha(Dust dust, Color lightColor)
 	{
-		return dust.color * (1f - (float)(dust.alpha / 255.0f));
+		return (dust.color == default ? Color.White : dust.color) * (1f - (float)(dust.alpha / 255.0f));
 	}
 }

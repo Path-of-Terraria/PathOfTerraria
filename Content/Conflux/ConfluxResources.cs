@@ -59,33 +59,55 @@ internal abstract class ConfluxResource : ModItem
 
 		Time.Remaining--;
 
-		if (!Main.dedServ && Time.Remaining == 30)
+		if (Time.Remaining == 15)
 		{
-			SoundEngine.PlaySound(acquireSound, Item.Center);
-		}
+			Item.Size = Vector2.Zero;
 
-		if (Time.Remaining <= 0)
+			if (!Main.dedServ)
+			{
+				SoundEngine.PlaySound(acquireSound, Item.Center);
+				DespawnEffects();
+			}
+		}
+		else if (Time.Remaining < 15)
 		{
-			// Convert to resource.
-			MapResources.AddOrRemove(Item.netID, 1);
-			Item.active = false;
+			Item.velocity.Y -= 2f;
 
 			if (!Main.dedServ)
 			{
 				DespawnEffects();
 			}
 		}
+
+		if (Item.position.Y <= 0f || Time.Remaining <= -60)
+		{
+			// Convert to resource.
+			MapResources.AddOrRemove(Item.netID, 1);
+			Item.active = false;
+		}
+
+		Item.oldPosition = Item.position;
 	}
 
 	public virtual void DespawnEffects()
 	{
-		Vector2 center = Item.Center;
+		Vector2 oldCenter = Item.oldPosition + (Item.Size * 0.5f);
+		Vector2 newCenter = Item.position + (Item.Size * 0.5f);
+		MapResource resource = GetMapResource();
 
-		for (int i = 0; i < 10; i++)
+		float distance = Item.oldPosition.Distance(Item.position);
+		int numParticles = (int)(distance / 3f);
+
+		for (int i = 0; i < numParticles; i++)
 		{
-			Vector2 position = center + Main.rand.NextVector2Circular(12f, 12f);
-			Vector2 velocity = Main.rand.NextVector2Circular(5f, 5f);
-			Dust.NewDustPerfect(position, ModContent.DustType<ConfluxRiftSmoke>(), velocity);
+			float step = (i + 0.5f) / (float)numParticles;
+			Vector2 center = Vector2.Lerp(oldCenter, newCenter, step);
+			Vector2 position = center + Main.rand.NextVector2Circular(8f, 8f);
+			Vector2 velocity = (Item.velocity * Main.rand.NextFloat(0.65f, 1.0f)) + Main.rand.NextVector2Circular(1f, 1f);
+			var dust = Dust.NewDustPerfect(Type: ModContent.DustType<ConfluxRiftSmoke>(), Position: position, Velocity: velocity);
+			dust.scale *= Main.rand.NextFloat(0.4f, 0.75f);
+			dust.color = Color.Lerp(resource.AccentColor, Color.White, Main.rand.NextFloat(0.25f, 0.75f));
+			dust.alpha = Main.rand.Next(175, 200);
 		}
 	}
 }
@@ -114,7 +136,7 @@ internal sealed class GlacialConflux : ConfluxResource
 		return new()
 		{
 			AssociatedItem = Type,
-			AccentColor = Color.AliceBlue,
+			AccentColor = Color.Cyan,
 		};
 	}
 
@@ -131,7 +153,7 @@ internal sealed class CelestialConflux : ConfluxResource
 		return new()
 		{
 			AssociatedItem = Type,
-			AccentColor = Color.MediumPurple,
+			AccentColor = Color.Magenta,
 		};
 	}
 
