@@ -1,7 +1,7 @@
 {
   "ItemType": "Whip",
   "ElementProportions": {
-    "Fire": 0,
+    "Fire": 1,
     "Cold": 0,
     "Lightning": 0,
     "Chaos": 0
