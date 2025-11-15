@@ -3287,7 +3287,7 @@
 		"internalIdentifier": "SentryDuplicatedProjectilePassive",
 		"referenceId": 163,
 		"maxLevel": 1,
-		"value": 100,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 161
