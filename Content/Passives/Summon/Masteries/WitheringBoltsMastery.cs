@@ -1,5 +1,6 @@
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Content.Buffs;
+using Terraria.ID;
 
 namespace PathOfTerraria.Content.Passives.Magic.Masteries;
 
@@ -9,14 +10,16 @@ internal class WitheringBoltsMastery : Passive
 	{
 		public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (projectile.sentry && projectile.owner < Main.maxPlayers)
+			if (!ProjectileID.Sets.SentryShot[projectile.type] || projectile.sentry)
 			{
-				Player owner = Main.player[projectile.owner];
+				return;
+			}
 
-				if (owner.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<WitheringBoltsMastery>(out float value))
-				{
-					target.AddBuff(ModContent.BuffType<WitheringBoltsDebuff>(), 3 * 60);
-				}
+			Player owner = Main.player[projectile.owner];
+
+			if (owner.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<WitheringBoltsMastery>(out float value))
+			{
+				target.AddBuff(ModContent.BuffType<WitheringBoltsDebuff>(), 3 * 60);
 			}
 		}
 	}

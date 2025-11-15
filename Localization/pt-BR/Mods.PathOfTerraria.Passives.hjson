@@ -626,7 +626,7 @@ SwiftPlacementsMastery: {
 
 WitheringBoltsMastery: {
 	// Name: Withering Bolts
-	// Tooltip: Enemies hit by your sentries are slowed by 40% for 3 seconds
+	// Tooltip: Enemies hit by your sentries are slowed by 40% for 3 seconds. 15% vs Bosses.
 }
 
 MaximumSentryPassive: {

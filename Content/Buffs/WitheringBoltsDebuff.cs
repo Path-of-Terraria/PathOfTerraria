@@ -1,3 +1,5 @@
+using PathOfTerraria.Common.Systems;
+
 namespace PathOfTerraria.Content.Buffs;
 
 public sealed class WitheringBoltsDebuff : ModBuff
@@ -9,6 +11,15 @@ public sealed class WitheringBoltsDebuff : ModBuff
 
 	public override void Update(NPC npc, ref int buffIndex)
 	{
-		npc.velocity *= 0.6f;
+		float speedMult;
+		if (npc.boss)
+		{
+			speedMult = 0.1f * 1.5f;
+		}
+		else
+		{
+			speedMult = 0.1f * 4f;
+		}
+		npc.GetGlobalNPC<SlowDownNPC>().SpeedModifier += speedMult;
 	}
 }
