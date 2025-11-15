@@ -1366,6 +1366,20 @@ ObsidianAdversaryItem: {
 	// Tooltip: "'The harrowing visage seems to stare back...'"
 }
 
+RoyalJellyCore: {
+	// DisplayName: Royal Jelly Core
+	// Tooltip: It emanates with power... I should bring it back to Garrick.
+}
+
+LunarFragment: {
+	// DisplayName: Lunar Fragment
+	/* Tooltip:
+		'''
+		A small element used to summon the Twin's domain
+		'Reeks of...otherworldliness'
+		''' */
+}
+
 CelestialConflux: {
 	// DisplayName: Celestial Conflux
 	// Tooltip: ""
