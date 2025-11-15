@@ -19,7 +19,7 @@ namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 internal class EoWQuest : Quest
 {
 	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct1;
-	public override int NPCQuestGiver => ModContent.NPCType<MorvenNPC>();
+	public override int NPCQuestGiver => ModContent.NPCType<BlacksmithNPC>();
 
 	public override List<QuestReward> QuestRewards =>
 	[
@@ -62,7 +62,7 @@ internal class EoWQuest : Quest
 
 	public override bool Available()
 	{
-		return NPC.downedBoss1;
+		return NPC.downedBoss1 && !WorldGen.crimson;
 	}
 
 	public override string MarkerLocation()

@@ -7,6 +7,9 @@ using PathOfTerraria.Core.Items;
 using System.Collections.Generic;
 using System.Linq;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
+using PathOfTerraria.Common.Systems.Questing;
+using PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
+using PathOfTerraria.Content.Items.Quest;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
@@ -469,8 +472,17 @@ internal class QueenSlimeDomain : BossDomainSubworld
 		else if (state == FightState.JustCompleted)
 		{
 			IEntitySource src = Entity.GetSource_NaturalSpawn();
-			Projectile.NewProjectile(src, ArenaPos.ToWorldCoordinates(), Vector2.Zero,
-				ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
+			Projectile.NewProjectile(src, ArenaPos.ToWorldCoordinates(), Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
+			
+			// Drop RoyalJellyCore for players with active Queen Slime quest
+			foreach (Player player in Main.ActivePlayers)
+			{
+				var queenSlimeQuest = Quest.GetLocalPlayerInstance<QueenSlimeQuest>();
+				if (queenSlimeQuest.Active)
+				{
+					player.QuickSpawnItem(src, ModContent.ItemType<RoyalJellyCore>());
+				}
+			}
 		}
 	}
 }

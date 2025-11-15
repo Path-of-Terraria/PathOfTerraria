@@ -9,6 +9,7 @@ using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
+using PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
@@ -126,16 +127,34 @@ public class BlacksmithNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOv
 	{
 		return this.GetDefaultProfile();
 	}
+	
+	private static Quest DetermineNewestQuest()
+	{
+		
+		if (QuestUnlockManager.CanStartQuest<BlacksmithStartQuest>())
+		{
+			return Quest.GetLocalPlayerInstance<BlacksmithStartQuest>();
+		}
+		if (QuestUnlockManager.CanStartQuest<EoWQuest>())
+		{
+			return Quest.GetLocalPlayerInstance<EoWQuest>();
+		}
+		if (QuestUnlockManager.CanStartQuest<GolemQuest>())
+		{
+			return Quest.GetLocalPlayerInstance<GolemQuest>();
+		}
+		return Quest.GetLocalPlayerInstance<BlacksmithStartQuest>(); //Shouldn't be possible, but just in case
+	}
 
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
-		button2 = !QuestUnlockManager.CanStartQuest<BlacksmithStartQuest>() ? string.Empty : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 
-		if (!QuestUnlockManager.CanStartQuest<BlacksmithStartQuest>() && QuestUnlockManager.CanStartQuest<EoWQuest>())
-		{
-			button2 = Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
-		}
+		bool hasAvailableQuest = QuestUnlockManager.CanStartQuest<BlacksmithStartQuest>() ||
+		                         QuestUnlockManager.CanStartQuest<EoWQuest>() ||
+		                         QuestUnlockManager.CanStartQuest<GolemQuest>();
+
+		button2 = hasAvailableQuest ? Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest") : "";
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -143,23 +162,31 @@ public class BlacksmithNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOv
 		if (firstButton)
 		{
 			shopName = "Shop";
+			return;
 		}
-		else
-		{
-			if (!QuestUnlockManager.CanStartQuest<BlacksmithStartQuest>())
-			{
-				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.Quests.EoWQuest.BlacksmithInput");
-				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<EoWQuest>();
-			}
+		
+		Quest quest = DetermineNewestQuest();
 
-			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest");
-			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<BlacksmithStartQuest>();
+		switch (quest)
+		{
+			case BlacksmithStartQuest:
+				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest");
+				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<BlacksmithStartQuest>();
+				break;
+			case EoWQuest:
+				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.EoWDialogue");
+				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<EoWQuest>();
+				break;
+			case GolemQuest:
+				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.GolemDialogue1");
+				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<GolemQuest>();
+				break;
 		}
 	}
 
 	public bool HasQuestMarker(out Quest quest)
 	{
-		quest = Quest.GetLocalPlayerInstance<BlacksmithStartQuest>();
-		return !quest.Completed || QuestUnlockManager.CanStartQuest<EoWQuest>();
+		quest = DetermineNewestQuest();
+		return !quest.Completed;
 	}
 }

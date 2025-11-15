@@ -72,8 +72,9 @@ Quest: {
 		SmashOrbs: Détruire 3 Orbes de l'Ombre
 		KillEoW: Battez le Dévoreur des Mondes
 		// ReturnToOverworld: Return to the Overworld
-		// BlacksmithInput: Aha! Welcome back, warrior. Say, I've heard of a strong metal in around your area...you know anything of it? The great evil areas hold something strong, but these old bones can't head back in...could you fetch some for me? Plus, I heard some science man was wanting to check it out too.
 		// MorvenDialogue: Hm...oh. Hello, stranger. Thank you for getting me out of that bind. I'm afraid I went down here to track some Devourers I tagged...no matter. My trusty tools failed me, and somehow I'd become encased in this fetid stone. For a grueling few hours I've been here. Would you be so kind as to escort me out and bring me to the Raven Statue? I'll reward you greatly...or something.
+		// EnterEvilBiome: Find the Scientist in the Underground Corruption
+		// BlacksmithInput: Mods.PathOfTerraria.Quests.Quest.EoWQuest.BlacksmithInput
 	}
 
 	BoCQuest: {
@@ -124,11 +125,13 @@ Quest: {
 	}
 
 	QueenSlimeQuest: {
-		// Name: Regal Regime
+		// Name: Slay the Queen
 		// Description: ""
 		// Tiers: Complete {1} Tier 1 Explorable maps ({0}/{1})
 		// EnterDomain: Enter the Queen Slime's domain
 		// Boss: Defeat the Queen Slime
+		// IlluminantSlimes: Defeat ({0}/{1}) Illuminant Slimes
+		// TalkToGarrick: Return to Garrick
 	}
 
 	TwinsQuest: {
@@ -136,21 +139,31 @@ Quest: {
 		// Description: ""
 		// Tiers: Complete {1} Tier 2 Explorable maps ({0}/{1})
 		// EnterDomain: Enter the Twin's domain
-		// Boss: Defeat the Twins
+		// Boss1: Defeat Retinazor
+		// Boss2: Defeat Spazmatism
+		// Wraiths: Defeat ({0}/{1}) Wraiths
+		// PossessedArmors: Defeat ({0}/{1}) Possessed Armors
+		// WanderingEyes: Defeat ({0}/{1}) Wandering Eyes
+		// CollectFragments: Collect ({0}/{1}) Lunar Fragments
+	}
+
+	TinkerIntroQuest: {
+		// Name: Repairing the Workshop
+		// Description: ""
 	}
 
 	DestroyerQuest: {
-		// Name: Metal Eartheater
+		// Name: Heart of the Machine
 		// Description: ""
-		// Tiers: Complete {1} Tier 3 Explorable maps ({0}/{1})
 		// EnterDomain: Enter the Destroyer's domain
 		// Boss: Defeat the Destroyer
+		// WorldFeeders: Defeat ({0}/{1}) World Feeders
+		// CollectCursedFlame: Collect ({0}/{1}) Cursed Flames
 	}
 
 	SkelePrimeQuest: {
-		// Name: Metal Bones
+		// Name: The Prime Reconstruction
 		// Description: ""
-		// Tiers: Complete {1} Tier 4 Explorable maps ({0}/{1})
 		// EnterDomain: Enter Skeletron Prime's domain
 		// Boss: Defeat Skeletron Prime
 	}
@@ -158,9 +171,9 @@ Quest: {
 	PlanteraQuest: {
 		// Name: Ravenous Bloom
 		// Description: ""
-		// Tiers: Complete {1} Tier 5 Explorable maps ({0}/{1})
 		// EnterDomain: Enter Plantera's domain
 		// Boss: Defeat Plantera
+		// Plantera: Defeat ({0}/{1}) Strange Growth Monsters TODO: Change this name to the actual mob we make.
 	}
 
 	GolemQuest: {
@@ -169,6 +182,7 @@ Quest: {
 		// Tiers: Complete {1} Tier 6 Explorable maps ({0}/{1})
 		// EnterDomain: Enter Golem's domain
 		// Boss: Defeat Golem
+		// Lihzards: Defeat ({0}/{1}) Lihzards
 	}
 
 	FishronQuest: {
@@ -177,28 +191,33 @@ Quest: {
 		// Tiers: Complete {1} Tier 7 Explorable maps ({0}/{1})
 		// EnterDomain: Enter Duke Fishron's domain
 		// Boss: Defeat Duke Fishron
+		// OceanEnemies: Kill ({0}/{1}) Ocean Enemies
 	}
 
 	EoLQuest: {
 		// Name: Holy Absolution
 		// Description: ""
-		// Tiers: Complete {1} Tier 8 Explorable maps ({0}/{1})
-		// EnterDomain: Enter the Empress of Light's domain
+		// EnterDomain: Enter the Hallow Rift
 		// Boss: Defeat the Empress of Light
+		// EquipGlasses: Craft and Equip the Rose-Colored Glasses
+		// ExploreHallow: Explore the Hallow with the glasses equipped
 	}
 
-	CultistQuest: {
-		// Name: Lunar Leader
+	CultistMoonlordQuest: {
+		// Name: World's End
 		// Description: ""
-		// Tiers: Complete {1} Tier 9 Explorable maps ({0}/{1})
-		// EnterDomain: Enter the Lunatic Cultist's domain
-		// Boss: Defeat the Lunatic Cultist
+		// CollectSigils: Collect 5 Biome Sigils
+		// EnterDomain1: Enter the Lunatic Cultist's Domain
+		// EnterDomain2: Enter the Moon Lord's Domain
+		// Boss1: Defeat Lunatic Cultist
+		// Boss2: Defeat Moon Lord
+		// EnterDomain: Mods.PathOfTerraria.Quests.Quest.CultistMoonlordQuest.EnterDomain
+		// Boss: Mods.PathOfTerraria.Quests.Quest.CultistMoonlordQuest.Boss
 	}
 
-	MoonLordQuest: {
-		// Name: The Ending
+	EpilogueQuest: {
+		// Name: A New Dawn
 		// Description: ""
-		// EnterDomain: Enter the Moon Lord's domain
-		// Boss: Defeat the Moon Lord
+		// Tiers: Complete {1} Exploration Maps
 	}
 }

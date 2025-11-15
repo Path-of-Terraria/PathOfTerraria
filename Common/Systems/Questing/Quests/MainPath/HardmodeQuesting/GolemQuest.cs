@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Common.Quests;
-using PathOfTerraria.Common.Subworlds;
+﻿using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.ModPlayers;
@@ -8,13 +7,15 @@ using PathOfTerraria.Common.Systems.Questing.RewardTypes;
 using PathOfTerraria.Content.NPCs.Town;
 using SubworldLibrary;
 using System.Collections.Generic;
+using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 
-internal class GolemQuest() : HardmodeQuest(6)
+internal class GolemQuest() : Quest
 {
-	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct1;
+	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct2;
 	public override int NPCQuestGiver => ModContent.NPCType<BlacksmithNPC>();
 
 	public override List<QuestReward> QuestRewards =>
@@ -22,7 +23,6 @@ internal class GolemQuest() : HardmodeQuest(6)
 		new ActionRewards((p, v) =>
 		{
 			p.GetModPlayer<ExpModPlayer>().Exp += 30000;
-			p.GetModPlayer<QuestModPlayer>().StartQuest<FishronQuest>();
 		},
 			"30000 experience"),
 	];
@@ -31,19 +31,26 @@ internal class GolemQuest() : HardmodeQuest(6)
 	{
 		return
 		[
-			new ConditionCheck("Count", _ => 
-			{
-				MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
-				return tracker.CompletionsAtOrAboveTier(6) >= MappingDomainSystem.RequiredCompletionsPerTier;
-			}, 1, () => this.GetLocalization("Tiers").WithFormatArgs(
-				MathHelper.Clamp(ModContent.GetInstance<MappingDomainSystem>().Tracker.CompletionsAtOrAboveTier(QuestTier), 0, MappingDomainSystem.RequiredCompletionsPerTier),
-				MappingDomainSystem.RequiredCompletionsPerTier
-			)),
-			new ConditionCheck("Enter", _ => SubworldSystem.Current is GolemDomain, 1, this.GetLocalization("EnterDomain")),
-			new ConditionCheck("Finish", _ => BossTracker.DownedInDomain<GolemDomain>(NPCID.Golem), 1, this.GetLocalization("Boss"))
-			{
-				SkipCheck = QuestUtils.BossSkipCheck(NPCID.Golem)
-			},
+			new ParallelQuestStep("Start", [
+				new InteractWithNPC("GiveCells", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.GolemDialogue1"), 
+					Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.GolemDialogue1"),
+					[
+						new GiveItem(2, ItemID.LihzahrdPowerCell),
+					]),
+				new KillCount("Kill", npc => npc.netID == NPCID.Lihzahrd || npc.netID == NPCID.LihzahrdCrawler, 10, this.GetLocalization("Lihzards"))
+			], Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.GolemDialogue1")),
+
+			// TODO: REMOVE LATER for -> After step 1, Thrain will give you an item to use on the Altar in the temple. This will summon the Golem domain portal in the temple. 
+			new InteractWithNPC("Talk", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.GolemDialogue2"), 
+				Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.GolemDialogue2"),
+				onSuccess: _ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<GolemMap>())),
+			
+			new ConditionCheck("Domain", _ => SubworldSystem.Current is GolemDomain, 1, this.GetLocalization("EnterDomain")),
+			
+			new ConditionCheck("Boss", _ => BossTracker.DownedInDomain<GolemDomain>(NPCID.Golem), 1, this.GetLocalization("Boss")),
+	
+			new InteractWithNPC("Finish", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.GolemDialogue3"), 
+				Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.GolemDialogue3"))
 		];
 	}
 
@@ -54,6 +61,7 @@ internal class GolemQuest() : HardmodeQuest(6)
 
 	public override bool Available()
 	{
-		return false;
+		Quest planteraQuest = GetLocalPlayerInstance<PlanteraQuest>();
+		return planteraQuest.Completed && NPC.downedPlantBoss;
 	}
 }

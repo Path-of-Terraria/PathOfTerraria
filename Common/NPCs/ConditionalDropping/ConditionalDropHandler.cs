@@ -9,20 +9,24 @@ internal class ConditionalDropHandler : GlobalNPC
 {
 	public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
 	{
-		if (npc.type is NPCID.GoblinArcher or NPCID.GoblinPeon or NPCID.GoblinScout or
-			NPCID.GoblinSorcerer or NPCID.GoblinThief or NPCID.GoblinWarrior)
+		if (npc.type is NPCID.GoblinArcher or NPCID.GoblinPeon or NPCID.GoblinScout 
+			or NPCID.GoblinSorcerer or NPCID.GoblinThief or NPCID.GoblinWarrior)
 		{
-			AddCountCondition(npcLoot, LocalizedText.Empty, ModContent.ItemType<TomeOfTheElders>(), 8);
+			AddCountCondition(npcLoot, ModContent.ItemType<TomeOfTheElders>(), 8);
 		}
 		else if (NPCID.Sets.Zombies[npc.type] || NPCID.Sets.DemonEyes[npc.type])
 		{
-			AddCountCondition(npcLoot, LocalizedText.Empty, ModContent.ItemType<LunarShard>(), 2);
+			AddCountCondition(npcLoot, ModContent.ItemType<LunarShard>(), 2);
+		}
+		else if (npc.type is NPCID.WanderingEye or NPCID.PossessedArmor or NPCID.Wraith)
+		{
+			AddCountCondition(npcLoot, ModContent.ItemType<LunarFragment>(), 2);
 		}
 	}
 
-	private static void AddCountCondition(NPCLoot npcLoot, LocalizedText conditionName, int itemId, int denominator)
+	private static void AddCountCondition(NPCLoot npcLoot, int itemId, int denominator)
 	{
-		npcLoot.Add(ItemDropRule.ByCondition(new PlayerCountCondition(conditionName, itemId), itemId, denominator));
+		npcLoot.Add(ItemDropRule.ByCondition(new PlayerCountCondition(LocalizedText.Empty, itemId), itemId, denominator));
 	}
 
 	public class PlayerCountCondition(LocalizedText conditionName, int itemId) : IItemDropRuleCondition
