@@ -43,6 +43,7 @@ BlacksmithNPC: {
 
 	// Entry: A jovial dwarf, Thrain enjoys hearty discussion, a nice drink, and making the best weapons you've ever seen. He can usually be found in his forge, making weapons.
 	// DownedForest: After beating the Forest domain
+	// Census.SpawnCondition: Spawns by default in Ravencrest. Home is the Forge.
 }
 
 BarkeepNPC: {
@@ -84,6 +85,7 @@ BarkeepNPC: {
 	}
 
 	// Entry: Brom is a simple man. People want a good time? They come to the bar. They talk to Brom Hardy. They have a good time with good people and good drinks. What's not to love?
+	// Census.SpawnCondition: Spawns by default in Ravencrest. Home is the Tavern.
 }
 
 HunterNPC: {
@@ -130,6 +132,7 @@ HunterNPC: {
 
 	// MapButton: Map (20 gold)
 	// Entry: A stone-cold hunter with more knowledge than you have, Elara isn't talkative. She makes up for that by being an exceedingly good hunter and tracker, with eyes almost everywhere.
+	// Census.SpawnCondition: Spawns by default in Ravencrest.
 }
 
 Minera: {
@@ -182,6 +185,7 @@ GarrickNPC: {
 	// LunarLiquidButton: Lunar Liquid
 	// AnotherMap: Map
 	// Entry: A warrior humiliated by a King, Garrick is taking respite in the town of Ravencrest. He seems to hold a grudge to slime, and wishes he could be stronger. Soon, he'll get back on his feet.
+	// Census.SpawnCondition: 20% chance to spawn in the Tavern.
 }
 
 TownScoutNPC: {
@@ -237,6 +241,7 @@ WizardNPC: {
 	}
 
 	// Entry: Perhaps the most powerful wizard of all time, Alaric still acts like someone who's pretending to be the most powerful wizard of all time. If he's feeling funny, he might cause true and instant catastrophe.
+	// Census.SpawnCondition: Spawns by default in Ravencrest. Home is the Library.
 }
 
 EldricNPC: {
@@ -285,6 +290,7 @@ EldricNPC: {
 	// CreateConcoction: Create Concoction
 	// DonateLunar: Donate Lunar Shards/Liquid
 	// Entry: Forlorn and solemn, Eldric is one for silence. An observer of the stars, Eldric knows what the cosmos are; he stares, and it stares right back. Enjoys tea.
+	// Census.SpawnCondition: Spawns in the Tavern once King Slime has been defeated.
 }
 
 MorvenNPC: {
@@ -360,6 +366,7 @@ MorvenNPC: {
 	}
 
 	// Entry: Once stuck in the underground Corruption, this mad scientist gained a little more mad than most. He looks down upon you, but will use you at a moment's notice to "make science".
+	// Census.SpawnCondition: Can be found bound in the underground corruption once Eye of Cthulu has been killed. Moves to Ravencrest once his quest is completed.
 }
 
 LloydNPC: {
@@ -451,6 +458,8 @@ LloydNPC: {
 			// 2: Thank you, all.
 		}
 	}
+
+	// Census.SpawnCondition: Can be found in the above ground Crimson. Moves to Ravencrest when his quest is completed.
 }
 
 RhineNPC: {
@@ -499,6 +508,7 @@ RhineNPC: {
 	}
 
 	// Entry: Rhine is a hard worker. Between travels she visits her family and hunts beasts of legend. Here? She's looking for some good food, some good drink, and people to tell stories at.
+	// Census.SpawnCondition: Spawns in the Tavern once Eye of Cthulu has been defeated.
 }
 
 // SkullApparition.DisplayName: Skull Apparition
@@ -571,6 +581,7 @@ MorganaNPC: {
 	}
 
 	// Entry: Eccentric but decievingly powerful, Morgana offers a lot to Ravencrest. Sure, she may be nearly incomprehensible sometimes, and some might say offputting a lot of the time, but she's good at what she does. Huh? "What does she do?" Uh...
+	// Census.SpawnCondition: Spawns by default in Ravencrest. Home is the Burrow.
 }
 
 Entling: {
