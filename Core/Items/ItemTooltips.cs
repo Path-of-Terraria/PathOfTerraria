@@ -217,6 +217,15 @@ public sealed partial class ItemTooltips : GlobalItem
 		var oldTooltips = tooltips.Where(x => x.Name.StartsWith("Tooltip")).ToList();
 		var oldStats = tooltips.Where(x => x.Name.StartsWith("Stat")).ToList();
 
+		TooltipLine favoriteLine = tooltips.FirstOrDefault(x => x.Name == "Favorite");
+		TooltipLine needsBaitLine = tooltips.FirstOrDefault(x => x.Name == "NeedsBait");
+		TooltipLine baitPowerLine = tooltips.FirstOrDefault(x => x.Name == "BaitPower");
+		TooltipLine equipableLine = tooltips.FirstOrDefault(x => x.Name == "Equipable");
+		TooltipLine vanityLine = tooltips.FirstOrDefault(x => x.Name == "Vanity");
+		TooltipLine wellFedExpertLine = tooltips.FirstOrDefault(x => x.Name == "WellFedExpert");
+		TooltipLine buffTimeLine = tooltips.FirstOrDefault(x => x.Name == "BuffTime");
+		TooltipLine expertLine = tooltips.FirstOrDefault(x => x.Name == "Expert");
+		TooltipLine masterLine = tooltips.FirstOrDefault(x => x.Name == "Master");
 		TooltipLine fishingPowerLine = tooltips.FirstOrDefault(x => x.Name == "FishingPower");
 		TooltipLine consumableLine = tooltips.FirstOrDefault(x => x.Name == "Consumable");
 		TooltipLine setBonusLine = tooltips.FirstOrDefault(x => x.Name == "SetBonus");
@@ -523,6 +532,61 @@ public sealed partial class ItemTooltips : GlobalItem
 
 		// These don't need AddNewTooltipLine as they're vanilla tooltips
 		tooltips.AddRange(oldTooltips);
+		
+		
+		if (favoriteLine is not null)
+		{
+			favoriteLine.OverrideColor = Color.Gold;
+			tooltips.Add(favoriteLine);
+		}
+
+		if (needsBaitLine is not null)
+		{
+			needsBaitLine.OverrideColor = Color.LightBlue;
+			tooltips.Add(needsBaitLine);
+		}
+
+		if (baitPowerLine is not null)
+		{
+			baitPowerLine.OverrideColor = Color.LightBlue;
+			tooltips.Add(baitPowerLine);
+		}
+
+		if (equipableLine is not null)
+		{
+			equipableLine.OverrideColor = Color.LightBlue;
+			tooltips.Add(equipableLine);
+		}
+
+		if (vanityLine is not null)
+		{
+			vanityLine.OverrideColor = Color.LightGray;
+			tooltips.Add(vanityLine);
+		}
+
+		if (wellFedExpertLine is not null)
+		{
+			wellFedExpertLine.OverrideColor = Color.Orange;
+			tooltips.Add(wellFedExpertLine);
+		}
+
+		if (buffTimeLine is not null)
+		{
+			buffTimeLine.OverrideColor = Color.LightGreen;
+			tooltips.Add(buffTimeLine);
+		}
+
+		if (expertLine is not null)
+		{
+			expertLine.OverrideColor = new Color(255, 175, 0);
+			tooltips.Add(expertLine);
+		}
+
+		if (masterLine is not null)
+		{
+			masterLine.OverrideColor = new Color(255, 0, 255);
+			tooltips.Add(masterLine);
+		}
 
 		if (fishingPowerLine is not null)
 		{
