@@ -178,3 +178,8 @@ SwiftPlacementsBuff: {
 	// DisplayName: Swift Placements Buff
 	// Description: Increased movement speed and summon damage
 }
+
+WitheringBoltsDebuff: {
+	// DisplayName: Withering Bolts Debuff
+	// Description: Debilitating slow
+}

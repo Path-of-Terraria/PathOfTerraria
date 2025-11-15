@@ -621,5 +621,15 @@ SymbioticPulseMastery: {
 
 SwiftPlacementsMastery: {
 	Name: SwiftPlacementsMastery
-	Tooltip: When placing a sentry, gain 25% movement speed and 15% increased summon damage for 10 seconds.
+	Tooltip: When placing a sentry, gain 25% movement speed and 15% increased summon damage for 10 seconds
+}
+
+WitheringBoltsMastery: {
+	Name: WitheringBoltsMastery
+	Tooltip: Enemies hit by your sentries are slowed by 40% for 3 seconds
+}
+
+MaximumSentryPassive: {
+	Name: MaximumSentryPassive
+	Tooltip: Increase your maximum summoned sentries by 1
 }

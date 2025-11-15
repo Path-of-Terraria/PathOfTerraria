@@ -2,7 +2,7 @@ using PathOfTerraria.Common.Systems.ModPlayers;
 
 namespace PathOfTerraria.Content.Buffs;
 
-public class SwiftPlacementsBuff : ModBuff
+public sealed class SwiftPlacementsBuff : ModBuff
 {
 	public override void SetStaticDefaults()
 	{

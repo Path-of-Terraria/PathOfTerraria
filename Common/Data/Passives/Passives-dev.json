@@ -3164,10 +3164,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "MaximumSentryPassive",
 		"referenceId": 159,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 1,
 		"connections": [
 			{
 				"referenceId": 158
@@ -3234,10 +3234,10 @@
 		"isHidden": true
 	},
 	{
-		"internalIdentifier": "WhipCritDamageMastery",
+		"internalIdentifier": "WitheringBoltsMastery",
 		"referenceId": 1057,
 		"maxLevel": 1,
-		"value": 20,
+		"value": 0,
 		"position": {
 			"x": 740,
 			"y": -885
