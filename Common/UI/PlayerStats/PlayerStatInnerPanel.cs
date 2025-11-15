@@ -163,7 +163,7 @@ internal class PlayerStatInnerPanel : SmartUiElement
 		list.Add(new PlayerStatUI(Localize("ChaosResistance"), player => $"{player.GetModPlayer<ElementalPlayer>().Container[ElementType.Chaos].Resistance * 100:#0.##}%"));
 		// Offense  
 		list.Add(new PlayerStatUI(Localize("OffenseHeader"), player => "", isHeader: true));
-		list.Add(new PlayerStatUI(Localize("CriticalChance"), player => $"{player.GetTotalCritChance(DamageClass.Generic):#0.##}%"));
+		list.Add(new PlayerStatUI(Localize("CriticalChance"), player => $"{(player.GetTotalCritChance(DamageClass.Generic) + (player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.SummonCritChance.Value * 100f)):#0.##}%"));
 		list.Add(new PlayerStatUI(Localize("CriticalMultiplier"), player =>
 		{
 			UniversalBuffingPlayer buffingPlayer = player.GetModPlayer<UniversalBuffingPlayer>();
