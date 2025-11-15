@@ -618,3 +618,8 @@ SymbioticPulseMastery: {
 	Name: Symbiotic Pulse
 	Tooltip: Every 30 seconds, your summons drop a healing orb that, when collected, heals {0}% of your max health
 }
+
+SwiftPlacementsMastery: {
+	Name: SwiftPlacementsMastery
+	Tooltip: When placing a sentry, gain 25% movement speed and 15% increased summon damage for 10 seconds.
+}

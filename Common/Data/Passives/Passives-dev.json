@@ -3194,6 +3194,68 @@
 		}
 	},
 	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1055,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1056
+			},
+			{
+				"referenceId": 1057
+			},
+			{
+				"referenceId": 1058
+			},
+			{
+				"referenceId": 160
+			},
+			{
+				"referenceId": 161
+			}
+		],
+		"position": {
+			"x": 660,
+			"y": -885
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "SwiftPlacementsMastery",
+		"referenceId": 1056,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": 660,
+			"y": -975
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "WhipCritDamageMastery",
+		"referenceId": 1057,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 740,
+			"y": -885
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "WhipCritDamageMastery",
+		"referenceId": 1058,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 660,
+			"y": -800
+		},
+		"isHidden": true
+	},
+	{
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 161,
 		"maxLevel": 1,
