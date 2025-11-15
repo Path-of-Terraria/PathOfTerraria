@@ -4,9 +4,18 @@ internal class SummonCritPlayer : ModPlayer
 {
 	public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref NPC.HitModifiers modifiers)
 	{
-		if (proj.IsMinionOrSentryRelated && Player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.SummonCritChance.Value > Main.rand.NextFloat())
+		if (proj.IsMinionOrSentryRelated || proj.WhipSettings.Segments > 0)
 		{
-			modifiers.SetCrit();
+			float baseCritChance = Player.GetCritChance(DamageClass.Generic);
+            
+			float additionalCrit = Player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.SummonCritChance.Value * 100f;
+            
+			float totalCritChance = baseCritChance + additionalCrit;
+            
+			if (Main.rand.NextFloat(100f) < totalCritChance)
+			{
+				modifiers.SetCrit();
+			}
 		}
 	}
 }

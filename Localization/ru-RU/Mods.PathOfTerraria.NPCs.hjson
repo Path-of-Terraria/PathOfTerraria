@@ -1,6 +1,5 @@
 Shop: Магазин
 Quest: Квест
-// Next: Next
 
 BlacksmithNPC: {
 	DisplayName: Трейн Железный Кулак
@@ -14,10 +13,6 @@ BlacksmithNPC: {
 		Quest2: Потрясающе! Я быстро починю старую кузню. Вот, возьми этот меч. Это пробный образец, который я сделал прямо перед атакой. Хотел бы, чтобы ты протестировал его на зомби; эти ребята ужасно надоедливы. Если не трудно, я бы также хотел ещё немного материалов. Тогда, думаю, мы сможем вернуть Железный Наковальня в строй!
 		Quest3: Это почти вызывает слёзы. Железная Кузня почти готова к работе! Вот, это урок, который я вынес из своего боевого прошлого: Иногда надо сойти с ума. Только будь осторожен! И возвращайся, когда захочешь - ты был огромной помощью!
 		OldManDialogue: Привет, путешественник!... что ты сказал? Кто-то направил тебя ко мне? Хм... я помню человека, закутанного в красное, он был здесь... некоторое время назад. Не могу сказать, сколько прошло времени, но довольно давно. Он просил кое-что конкретное... книгу зла, две свечи и слиток зла. Он говорил что-то о том, чтобы посыпать книгу порошком зла... но... это всё, что я могу сказать. Не уверен, о чём он говорил.
-		// EoWDialogue: Aha! Welcome back, warrior. Listen, there's a scientist who's been studying the corruption in those cursed lands - brilliant fellow, but a bit reckless. He ventured into one of the corrupted biomes days ago and hasn't returned. I'm worried something's happened to him. Could you seek him out? He knows far more about those dark energies than I do, and we'll need his expertise for what's coming.
-		// GolemDialogue1: Adventurer, I’ve heard the old jungle temple has been stirring. After Plantera’s fall, the place has opened its doors once more. Aye, it was built by the Lihzahrds long ago, stone stacked upon stone, and deep inside waits their creation... the Golem. A living statue, forged to protect their halls. If you’re set on facing it, you’ll need to use the Temple Key to gain entry, and gather some power cells from within. Only then can you stand before their guardian.
-		// GolemDialogue2: Well done! With  power cells in hand, you’ve got all that’s needed to rouse the beast. The Golem is no mere statue... it’s a sentinel of stone and flame, built to crush any who trespass. When you’re ready, use the altar within to travel to its domain. Just remember, lad, stone may be silent, but when it moves, it strikes harder than steel.
-		// GolemDialogue3: By the stone, you actually felled it... the Golem lies broken! The Lihzahrds must’ve worshiped that statue as their greatest creation, and now it’s rubble. Aye, it was a marvel of craft. Stone bound with flame, moving as if alive. Strange, though... its forging feels different than the others. Not twisted like the machines, nor cursed like the dungeon’s bones. This was ancient, primordial work. Whatever power shaped it is older than the Old Ones, and far heavier on my heart. I fear something far greater is just over the horizon, adventurer.
 	}
 
 	BubbleDialogue: {
@@ -48,7 +43,7 @@ BlacksmithNPC: {
 
 	Entry: Весёлый гном, Трейн любит весёлые беседы, хороший напиток и изготовление лучшего оружия, которое вы когда-либо видели. Обычно его можно найти в его кузне, изготавливающем оружие.
 	// DownedForest: After beating the Forest domain
-	// Census.SpawnCondition: Conditions unknown
+	// Census.SpawnCondition: Spawns by default in Ravencrest. Home is the Forge.
 }
 
 BarkeepNPC: {
@@ -90,7 +85,7 @@ BarkeepNPC: {
 	}
 
 	Entry: Бром — простой человек. Люди хотят хорошо провести время? Они приходят в бар. Они разговаривают с Бромом Харди. Они хорошо проводят время с хорошими людьми и хорошими напитками. Чего тут не любить?
-	// Census.SpawnCondition: Conditions unknown
+	// Census.SpawnCondition: Spawns by default in Ravencrest. Home is the Tavern.
 }
 
 HunterNPC: {
@@ -137,7 +132,7 @@ HunterNPC: {
 
 	MapButton: Карта (20 золота)
 	Entry: Холодный как камень охотник с большими знаниями, Элара неразговорчива. Она компенсирует это тем, что является исключительно хорошим охотником и следопытом, с глазами почти везде.
-	// Census.SpawnCondition: Conditions unknown
+	// Census.SpawnCondition: Spawns by default in Ravencrest.
 }
 
 Minera: {
@@ -159,9 +154,6 @@ GarrickNPC: {
 		TradeLunarLiquid: А, я тренировался для этого. Но будь осторожен, эти не для случайного приключения.
 		CantTradeLiquid: О, потерял Жидкость? Мне понадобится несколько Лунных Осколков, чтобы переделать её, боюсь. Вернись ко мне с 5 или более.
 		GetKingMapAgain: А, не справился? Потерял карту или что-то ещё? В любом случае, вот она. Тебе повезло, что я ношу картографическое оборудование везде... на случай, если что.
-		// QueenSlime1: Do you feel it, explorer? The land itself has shifted, and something unnatural radiates from the creatures in that new glowing area. I need you to gather this energy. Bring it back to me so we can understand what power we’re truly dealing with.
-		// QueenSlime2: It’s just as I feared... You can keep the souls, I know exactly who my new target is. The King’s corruption was only the beginning. An even greater slime stirs, the Queen Slime. Venture into the glistening caverns with this map and bring me the Royal Jelly Core. Only then can we hope to stop the slime reign.
-		// QueenSlime3: This is it then... Leave the core with me. I will destroy it and finally put an end to this corrupt slime royalty. Thank you, adventurer, I can finally rest.
 	}
 
 	BubbleDialogue: {
@@ -193,7 +185,7 @@ GarrickNPC: {
 	LunarLiquidButton: Лунная Жидкость
 	AnotherMap: Карта
 	Entry: Гаррик — воин, который посвятил свою жизнь борьбе с силами зла. Он известен своей неукротимой волей и мастерством в бою, а также своей способностью выживать в самых опасных ситуациях.
-	// Census.SpawnCondition: Conditions unknown
+	// Census.SpawnCondition: 20% chance to spawn in the Tavern.
 }
 
 TownScoutNPC: {
@@ -220,9 +212,6 @@ WizardNPC: {
 		Quest: Хм. Ты видел ущерб повсюду. Увы! Мои силы не могут восстановить мир. Я намного занят... моими... проектами. Да! Увы, у меня есть что-то более срочное. Гоблин-вор украл одну из моих книг. Как бы она ни была мощной, её должен использовать сильный волшебник. Я подозреваю, что они просматривают книгу, чтобы узнать её секреты... так что с поспешностью, верни её! Я дам тебе силы за пределами воображения. Я буду здесь, индивидуально расставляя книги на полках с силой магии.
 		Quest2: Аха! Спасибо добродушно. Твоя доброта будет щедро вознаграждена! Мои силы будут толкать тебя вперёд в любое время. Вот, возьми частицу силы; Нова - лишь часть моей силы! Что касается Библиотеки... с обновлённой силой, она будет отремонтирована к тому времени, как ты вернёшься! Книги организованы, как ты никогда не видел! Смотри и плачь... скоро!
 		// GiveQSQuest: Hm? Ah, yes. You've got some adventures, haven't you? I cannot simply place you in success - you must find it for yourself! Yes! That's a good reason. Here's a small quest to find your progress. You will be lead all over the world, and perhaps reach even a modicum of my power!
-		// WizardEmpressDialogue1: Ah! You again! Surely you have seen the new Hallowed ground that appeared overnight? I must...learn, yes! There seems to be a strange power emanating from that zone...one I cannot describe. Please, bring me back some samples of this new power...for my um... experiments! Safe and standard experiments!
-		// WizardEmpressDialogue2: Oho! Yes, these fragments burn with a brilliance that mocks the sun itself! A comrade! Combine them with crystal and...aha! The Rose-Colored Glasses! Don’t laugh... they’re not for fashion, but for unique vision! With them, you’ll perceive truths hidden in normal light. Put them on, wander the Hallow, and you’ll find something that no mortal eyes were meant to see. What is that...well, that's exactly what you'll find out. Probably.
-		// WizardEmpressDialogue3: Incredible...what a coincedence! You faced the Empress of Light and lived to tell the tale. Her brilliance, her wrath...must've been exhilirating! The Hallow's light seems diminished...or is that just my eyesight? Perhaps light can be gentle, after all. Maybe it's time for someone to usurp the throne of Light? Hah! I won't try that again! Regardless, you’ve done more than I could have imagined. Your bravery surpasses my power...almost!
 	}
 
 	BubbleDialogue: {
@@ -252,7 +241,7 @@ WizardNPC: {
 	}
 
 	Entry: Возможно, самый могущественный волшебник всех времён, Аларик всё ещё ведёт себя так, будто притворяется самым могущественным волшебником всех времён. Если ему весело, он может вызвать настоящую и мгновенную катастрофу.
-	// Census.SpawnCondition: Conditions unknown
+	// Census.SpawnCondition: Spawns by default in Ravencrest. Home is the Library.
 }
 
 EldricNPC: {
@@ -301,7 +290,7 @@ EldricNPC: {
 	CreateConcoction: Создать Смесь
 	DonateLunar: Пожертвовать Лунные Осколки/Жидкость
 	Entry: Элдрик — астроном, который посвятил свою жизнь изучению звёзд и небесных тел. Он обладает глубокими знаниями о космосе и часто делится ими с путешественниками.
-	// Census.SpawnCondition: Conditions unknown
+	// Census.SpawnCondition: Spawns in the Tavern once King Slime has been defeated.
 }
 
 MorvenNPC: {
@@ -377,7 +366,7 @@ MorvenNPC: {
 	}
 
 	Entry: Морвен — учёный, который увлечён изучением науки и технологий. Он часто экспериментирует с новыми идеями и изобретениями, что делает его ценным источником знаний для путешественников.
-	// Census.SpawnCondition: Conditions unknown
+	// Census.SpawnCondition: Can be found bound in the underground corruption once Eye of Cthulu has been killed. Moves to Ravencrest once his quest is completed.
 }
 
 LloydNPC: {
@@ -470,7 +459,7 @@ LloydNPC: {
 		}
 	}
 
-	// Census.SpawnCondition: Conditions unknown
+	// Census.SpawnCondition: Can be found in the above ground Crimson. Moves to Ravencrest when his quest is completed.
 }
 
 RhineNPC: {
@@ -519,7 +508,7 @@ RhineNPC: {
 	}
 
 	Entry: Райн — трудолюбивый. В перерывах между путешествиями он навещает родных и охотится на легендарных зверей. Здесь же? Он ищет вкусную еду, выпивку и людей, с которыми можно порассказать истории.
-	// Census.SpawnCondition: Conditions unknown
+	// Census.SpawnCondition: Spawns in the Tavern once Eye of Cthulu has been defeated.
 }
 
 SkullApparition.DisplayName: Призрачный Череп
@@ -578,13 +567,10 @@ MorganaNPC: {
 		QueenBeeQuest: Ах! Ты вернулся! Мои уловки благоприятны, да? Да! У меня есть вопрос, который я хочу задать тебе! Возможно, странный, но нормальный для такой, как я! Да! Я вспомнил более... естественное время моей жизни, и хочу вернуть часть этой души. Могу ли я попросить тебя принести мне жала шершней из джунглей? Могу ли я? Могу ли я? Ты получишь хорошую награду, если сделаешь это.
 		GotStingers: Как замечательно! Да... вот. Возьми этот маленький кусочек. Это поможет тебе вызвать милого маленького злодея из твоего Гриммуара. Жестокий, но добрый! Увы, у меня есть еще одна вещь, о которой я хочу попросить. В джунглях обитает самое отвратительное существо, одна Королева Пчел. Могу ли я попросить тебя убить ее? Она стремится побеспокоить меня, и я хочу, чтобы она была мертва! Другая награда ждет тебя! Погрузи своего нового шершня в мед, если хочешь сражаться!
 		QueenBeeKilled: Почему, ты вернулся? Так скоро? Ты довольно силен, да ты! Ага, да. Да! Ты есть! Очень хорошо. Много благодарностей за поручение. У меня мало что есть, но ты должен взять это. Возьми это! Бахаха! Прощай!
-		// PlanteraDialogue1: Ahhh... do you feel it, stranger? The jungle stirs, whispers from beneath its roots! A blossom, long dormant, yet twisting with decay. A guardian of that ghastly temple. Its heart beats in rhythm with foul spores. Bring me those spores, and a sample of any new creatures the fall of those mechs has surely awoken, and I shall weave the ritual. Yes... yes, the flower must bloom once more!
-		// PlanteraDialogue2: Marvelous, marvelous! The spores cling to my fingers, and the growth pulses in my grasp as if it’s alive! Oh, how it grows, yes, how it grows! I see it now... Plantera, the jungle’s fierce protector, guardian no more. Its vines will strangle, its petals will bleed. I’ve attuned the Grimoire I own to its foul domain. Enter, adventurer, and cut the bloom before it consumes the whole jungle!
-		// PlanteraDialogue3: Ohoho! The jungle’s guardian withers at your feet, does it? Yes... yes! How delicious. The Lihzahrds brewed their own protector, one of stone and sunfire, forged not of corruption but of tradition. Their ritual lives in the cracks of that place... Hmhmhm... marvelous! Be wary though, stranger... break one root, and the rest of the jungle will writhe. And deeper still, something waits, older than even their worship. Do you feel it, stranger? The Great Old One is coming... Bahahaha!
 	}
 
 	Entry: Соберите 2 пера совы и 1 пару крыльев летучей мыши.
-	// Census.SpawnCondition: Conditions unknown
+	// Census.SpawnCondition: Spawns by default in Ravencrest. Home is the Burrow.
 }
 
 Entling: {
@@ -864,127 +850,4 @@ Prismatism: {
 // FlamethrowerSentry.DisplayName: Flamethrower Sentry
 // MoltenSentry.DisplayName: Molten Sentry
 // VolatileSentry.DisplayName: Volatile Sentry
-
-TinkerNPC: {
-	// DisplayName: Pyra Cogwright
-
-	Dialogue: {
-		// Common0: Ah, metal and magic intertwining... delightful chaos.
-		// Common1: Careful with that lever; I can't promise nothing will explode if you flip it.
-		// Common2: If it clanks, whirrs, or explodes, you know it's my handiwork.
-		// Common3: Machines never lie... people do.
-		// TinkerIntroDialogue1: Ah! You there! I'm Pyra Cogwright, arcane engineer and enthusiast of things that go clank, whirr, and occasionally explode! I've been tracking some unusual mechanical disturbances, and they've led me straight to this place. I'm setting up my workshop here in Ravencrest, but I'll need materials to stabilize my equipment. Could you fetch some for me? It'll be worth your while!
-		// TinkerIntroDialogue2: Perfect! Just what I needed, adventurer! With these supplies, I can finally get my workshop humming properly. Now I can channel all this strange energy into my instruments and see what we're really dealing with... Come back to me once I'm done constructing this hut, I won't be long!
-		// TinkerTwinsDialogue1: ...Astounding...these readings are truly fascinating! Two signatures, bound together, both mimicking the Eye of Cthulhu... but forged of gears, flame, and steel. They aren't natural, but recreation. Machines built to replace what was once torn from the Great Old One himself. Retinazer and Spazmatism... the Twins. Their energy flares brightest under the moonlight, feeding on the night. To pinpoint their exact domain, I'll need fragments of lunar essence. Bring them here, and we can lock onto their signal.
-		// TinkerTwinsDialogue2: Excellent! These lunar fragments resonate perfectly with their signal, the interference is so strong it nearly fried my instruments! I've calibrated the teleporter to their rough location. When you're ready, use it to enter their domain. But be warned, adventurer... the Twins are not mere machines. They're the Great Old One's legacy reforged, relentless and merciless. Slay them and return to me. If you fail, simply use the teleporter when you're ready once again.
-		// TinkerTwinsDialogue3: Well done! TODO: The rest of the dialogue here.
-		// TinkerDestroyerDialogue1: Just when I thought my instruments might finally cool down, they've picked up a new signal... something colossal beneath the earth. The signal pulses like a thousand interlocking engines moving in unison. A serpentine construct of impossible length. If my theory holds, this must be the replacement for the Eater of Worlds itself! To study its energy patterns, I'll need samples of cursed flame and proof you've faced its smaller kin. Think you can handle that?
-		// TinkerDestroyerDialogue2: Marvelous! These cursed flames burn with both corruption and raw machinery, it's exactly the resonance I expected. My calibrations confirm it: the Destroyer lurks below, a writhing coil of steel and mandible. I've tuned the teleporter to lock onto its massive signal. Use it when you're ready, but tread carefully, adventurer... this machine is less a beast and more a weapon, designed only to annihilate.
-		// TinkerDestroyerDialogue3: Unbelievable... you've done it! The Destroyer lies in ruin, its endless gears finally silent. To think, a monstrosity of such size and precision could exist at all. It's almost beautiful, in a terrifying way! With it gone, the very earth feels lighter. Still... if the Great Old One's eye and worm have both been reforged, I dread what else may be lurking, waiting to awaken.
-		// TinkerSkeletronPrimeDialogue1: Adventurer, my instruments are once again spiking with a new signal, one even darker than before. It is radiating from the old dungeon, where Skeletron once kept his vigil. The signature is thick with both necrotic and mechanical energy. Whoever forged the Twins and the Destroyer has not stopped. They have rebuilt the dungeon's guardian itself into something far worse. I will need souls steeped in shadow, a good supply of bones, and any mechanical scraps from the dungeon you can find to finish my calibrations.
-		// TinkerSkeletronPrimeDialogue2: Yes, these materials are perfect! The readings are clear now. The creature waiting below is Skeletron Prime, a reconstruction of the cursed guardian, enhanced with gears, cannons, and blades. It is more machine than bone now. The teleporter is ready whenever you are, but be prepared. This will surely be your toughest battle yet.
-		// TinkerSkeletronPrimeDialogue3: Well done! TODO: The rest of the dialogue here.
-	}
-
-	BubbleDialogue: {
-		Day: {
-			// 0: Nothing like a day of tinkering, hammering, and exploding things!
-			// 1: The sun helps with precision, but sparks are always unpredictable.
-			// 2: Do you think machines have dreams? I do!
-		}
-
-		Night: {
-			// 0: Not much darkness around with all of these lights and explosions!
-			// 1: Difficult to tinker safely in the moonlight...
-			// 2: Is inventing in the darkness a good idea...? Oh well. I'm going to do it anyways!
-		}
-
-		Rain: {
-			// 0: Rain hisses against my workshop, and yet the gears sing their own song. Fascinating!
-			// 1: Moisture and machinery... usually a disaster. Tonight, maybe a spectacle!
-			// 2: The storm stirs more than just water... it awakens the thrill of invention!
-		}
-	}
-
-	// Entry: Todo:
-	// Census.SpawnCondition: Conditions unknown
-}
-
-FishermanNPC: {
-	// DisplayName: Marlin
-
-	Dialogue: {
-		// Common0: Nets torn again... sea’s been restless lately.
-		// Common1: Folks say the ocean is endless. I say it just hides what it doesn’t want you to see.
-		// Common2: Bait, rod, and patience. That’s all a fisherman needs. Well... maybe a sharp knife too.
-		// Common3: You ever hear a fish scream? ...No? Good. Best keep it that way.
-		// FishermanFishronDialogue1: Ahoy stranger... The name's Marlin. I can feel that the ocean’s restless tonight. I’ve seen her moods, but this one’s different. Something’s hunting, deep below. If you want to see it with your own eyes, prove to me you can handle the sea first. Bring me the rarest fish you can hook, and a few scraps of the ocean’s bed. Let’s see if you’ve got the stomach for what’s coming.
-		// FishermanFishronDialogue2: So you saw it, didn’t you? That tear in the seabed... the Rift. Never thought I’d live to see the ocean split open like a wound. The water around it stinks of death, and every fish you dragged up feels like it was trying to escape. Whatever waits inside that dark hollow, it’s no natural beast. If my hunch is right, the Rift’s calling for one thing... the reclusive Truffle Worm. Bring me one, adventurer, and we’ll have our answer.
-		// FishermanFishronDialogue3: You’ve got the worm... by the tides... I don’t envy you for holding that thing, it writhes like it knows where it’s headed. The ocean’s Rift is hungry, and this bait is the key. Cast it into the Rift’s maw, and what stirs will come for you. Duke Fishron, the abyssal tyrant... he’ll rise to defend his throne. Steel yourself, adventurer. This is no fishing trip. It’s a reckoning.
-		// FishermanFishronDialogue4: You went in... and somehow lived to tell the tale. I can scarcely believe it. The Rift shook with fury when you fought him. I felt it from the shore. And then, silence. The Duke’s reign is broken, if only for now. Still, the Rift remains... a scar at the ocean’s floor, watching and waiting. You’ve proven stronger than this tide, adventurer, but never forget, the sea always takes back what it’s owed.
-	}
-
-	BubbleDialogue: {
-		Day: {
-			// 0: Sea breeze keeps me steady. Better than ale, most days.
-			// 1: Sunlight on water... almost makes you forget what’s beneath.
-			// 2: Rod in hand, line in the tide. Feels like home.
-		}
-
-		Night: {
-			// 0: Ocean sings at night. Sometimes it’s a lullaby... sometimes a warning.
-			// 1: Stars above, waves below. I’m caught between two beauties.
-			// 2: Careful near the docks... not all eyes watching you belong to men.
-		}
-
-		Rain: {
-			// 0: Rain or shine, the sea always takes its due.
-			// 1: Nets are heavier in the rain, but the catch is sweeter.
-			// 2: Some say storms wake things from the deep. I say they just bring them closer.
-		}
-	}
-
-	// Entry: Todo:
-	// Census.SpawnCondition: Conditions unknown
-}
-
-AzarielNPC: {
-	// DisplayName: Azariel
-
-	Dialogue: {
-		// Common0: I bear the weight of a thousand regrets... yet still I must try to make amends.
-		// Common1: Why do you place trust in one who once served darkness? I question it myself.
-		// Common2: This mask... it hides what I've become, but never what I've done.
-		// Common3: The shadows whisper of my past failures. I pray my future holds redemption.
-		// CultistMoonlordDialogue1: Hah... so, you’ve survived the recent Rifts that have opened... I can sense it. My name is Azariel, I once served a higher cause, mortal... a cause that nearly destroyed all life. As I’m sure you know by now, The Ancient One is coming. I realized that my inane devotion to the false being was bringing upon ruin, when I naively once thought it would blossom into fresh creation. I need your help adventurer, to stop this madness once and for all.
-		// CultistMoonlordDialogue2: I know of the corruption that has cursed these lands, I also know of it to be the source of much of this world's power. Collect for me the Sigils of these corruptions, so we can begin the ritual to summon the Great Old One, but with these Sigils, he will be in a weakened state. I have faith that this will be enough for us to destroy him once and for all.
-		// CultistMoonlordDialogue3: So... these are the sigils. You’ve done well, stranger. Yet I must ask... Why place your trust in me? We are little more than acquaintances, and I, a former servant of the very darkness we seek to oppose. Perhaps you see something in me that I cannot... or perhaps fate binds our paths. No matter. With these sigils, the ritual can begin. Steel yourself, Adventurer, when I begin, they will surely come for us. Only together can we stand against what approaches.
-		// CultistMoonlordDialogue4: How foolish of me to think that wielding the world’s corruption would be a good idea... Regardless, It is done, and my former master lies defeated. For that, I thank you, stranger. You’ve accomplished what I could not. And yet... the struggle is far from over. In their dying breath, he summoned the Celestial Pillars, anchors of the Ancient One's power. They now fester within your world, corrupting it with his essence. You must return, adventurer, and destroy the Pillars before their influence consumes everything.
-		// CultistMoonlordDialogue5: Do you feel that?! The world itself... it’s pulsing, writhing! The air is tearing apart, and the veil is breaking faster than I ever could have imagined.This is the end of all things, unless we stop him here! I will follow you through the portal, lead the way, stranger!
-		// EpilogueDialogue1: It’s over... or so it seems. But it is clear that the rifts were not the Moon Lord’s doing. No corpse should vanish like that. Something... or someone, is causing these rifts. Whatever truth lies beyond them, we will uncover it. But I must now give you this, stranger. It’s a map that I obtained this while serving the Cult, though I never understood it’s purpose. Now... I see them for what they are. Keys. Portals. Invitations. Use this on your map device, but be prepared.
-		// EpilogueDialogue2: So... you’ve returned. And not empty-handed. Tell me, did you see it too? The elemental Rifts within the map... they bled with power not of this world, yet shaped to resemble our own elements - Fire, frost, and lightning. These are no mere accidents of nature. I fear this was only the first step, stranger. This “Riftmaker” clearly seeks to test us.  And we must be ready. Explore more of these maps, uncover the truth behind who this mysterious entity is.
-	}
-
-	BubbleDialogue: {
-		Day: {
-			// 0: The darkness calls to me still... but I will not answer.
-			// 1: Even in daylight, the shadows of my past linger close.
-			// 2: Perhaps there is still hope for redemption... the sun seems to think so.
-		}
-
-		Night: {
-			// 0: Ocean sings at night. Sometimes it’s a lullaby... sometimes a warning.
-			// 1: Under these stars, I once performed rituals of unspeakable evil.
-			// 2: Night reminds me of what I was. Dawn reminds me of what I could become.
-		}
-
-		Rain: {
-			// 0: The rain cannot wash away my sins, but perhaps it can cool my guilt.
-			// 1: Each drop feels like judgment... yet I welcome it.
-			// 2: Even the sky weeps for what I've done. As it should.
-		}
-	}
-
-	// Entry: Todo:
-	// Census.SpawnCondition: Conditions unknown
-}
+// SimpleLocust.DisplayName: Simple Locust

@@ -16,7 +16,7 @@ internal class ArcaneSurgeMastery : Passive
 
 		public void OnUseSkill(Skill skill)
 		{
-			if (skill.Tags().HasFlag(SkillTags.Magic))
+			if (skill.Tags().HasFlag(SkillTags.Magic) && Player.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<ArcaneSurgeMastery>(out float value))
 			{
 				AddTimer();
 			}
@@ -47,7 +47,7 @@ internal class ArcaneSurgeMastery : Passive
 	{
 		public override bool? UseItem(Item item, Player player)
 		{
-			if (item.CountsAsClass(DamageClass.Magic))
+			if (player.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<ArcaneSurgeMastery>(out float value) && item.CountsAsClass(DamageClass.Magic))
 			{
 				player.GetModPlayer<ArcaneSurgePlayer>().AddTimer();
 			}
