@@ -618,3 +618,28 @@ SymbioticPulseMastery: {
 	// Name: Symbiotic Pulse
 	// Tooltip: Every 30 seconds, your summons drop a healing orb that, when collected, heals {0}% of your max health
 }
+
+SwiftPlacementsMastery: {
+	// Name: Swift Placements
+	// Tooltip: When placing a sentry, gain 25% movement speed and 15% increased summon damage for 10 seconds
+}
+
+WitheringBoltsMastery: {
+	// Name: Withering Bolts
+	// Tooltip: Enemies hit by your sentries are slowed by 40% for 3 seconds. 15% vs Bosses.
+}
+
+MaximumSentryPassive: {
+	// Name: Added Maximum Sentries
+	// Tooltip: Increase your maximum summoned sentries by {0}
+}
+
+IncreasedSentryKnockbackPassive: {
+	// Name: Increased Sentry Knockback
+	// Tooltip: Increase your sentry knockback by {0}%
+}
+
+SentryDuplicatedProjectilePassive: {
+	// Name: Additional Sentry Projectile Chance
+	// Tooltip: +{0}% chance for sentries to fire an additional projectile
+}
