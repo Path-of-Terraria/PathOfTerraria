@@ -851,3 +851,127 @@ Prismatism: {
 // MoltenSentry.DisplayName: Molten Sentry
 // VolatileSentry.DisplayName: Volatile Sentry
 // SimpleLocust.DisplayName: Simple Locust
+
+TinkerNPC: {
+	// DisplayName: Pyra Cogwright
+
+	Dialogue: {
+		// Common0: Ah, metal and magic intertwining... delightful chaos.
+		// Common1: Careful with that lever; I can't promise nothing will explode if you flip it.
+		// Common2: If it clanks, whirrs, or explodes, you know it's my handiwork.
+		// Common3: Machines never lie... people do.
+		// TinkerIntroDialogue1: Ah! You there! I'm Pyra Cogwright, arcane engineer and enthusiast of things that go clank, whirr, and occasionally explode! I've been tracking some unusual mechanical disturbances, and they've led me straight to this place. I'm setting up my workshop here in Ravencrest, but I'll need materials to stabilize my equipment. Could you fetch some for me? It'll be worth your while!
+		// TinkerIntroDialogue2: Perfect! Just what I needed, adventurer! With these supplies, I can finally get my workshop humming properly. Now I can channel all this strange energy into my instruments and see what we're really dealing with... Come back to me once I'm done constructing this hut, I won't be long!
+		// TinkerTwinsDialogue1: ...Astounding...these readings are truly fascinating! Two signatures, bound together, both mimicking the Eye of Cthulhu... but forged of gears, flame, and steel. They aren't natural, but recreation. Machines built to replace what was once torn from the Great Old One himself. Retinazer and Spazmatism... the Twins. Their energy flares brightest under the moonlight, feeding on the night. To pinpoint their exact domain, I'll need fragments of lunar essence. Bring them here, and we can lock onto their signal.
+		// TinkerTwinsDialogue2: Excellent! These lunar fragments resonate perfectly with their signal, the interference is so strong it nearly fried my instruments! I've calibrated the teleporter to their rough location. When you're ready, use it to enter their domain. But be warned, adventurer... the Twins are not mere machines. They're the Great Old One's legacy reforged, relentless and merciless. Slay them and return to me. If you fail, simply use the teleporter when you're ready once again.
+		// TinkerTwinsDialogue3: Well done! TODO: The rest of the dialogue here.
+		// TinkerDestroyerDialogue1: Just when I thought my instruments might finally cool down, they've picked up a new signal... something colossal beneath the earth. The signal pulses like a thousand interlocking engines moving in unison. A serpentine construct of impossible length. If my theory holds, this must be the replacement for the Eater of Worlds itself! To study its energy patterns, I'll need samples of cursed flame and proof you've faced its smaller kin. Think you can handle that?
+		// TinkerDestroyerDialogue2: Marvelous! These cursed flames burn with both corruption and raw machinery, it's exactly the resonance I expected. My calibrations confirm it: the Destroyer lurks below, a writhing coil of steel and mandible. I've tuned the teleporter to lock onto its massive signal. Use it when you're ready, but tread carefully, adventurer... this machine is less a beast and more a weapon, designed only to annihilate.
+		// TinkerDestroyerDialogue3: Unbelievable... you've done it! The Destroyer lies in ruin, its endless gears finally silent. To think, a monstrosity of such size and precision could exist at all. It's almost beautiful, in a terrifying way! With it gone, the very earth feels lighter. Still... if the Great Old One's eye and worm have both been reforged, I dread what else may be lurking, waiting to awaken.
+		// TinkerSkeletronPrimeDialogue1: Adventurer, my instruments are once again spiking with a new signal, one even darker than before. It is radiating from the old dungeon, where Skeletron once kept his vigil. The signature is thick with both necrotic and mechanical energy. Whoever forged the Twins and the Destroyer has not stopped. They have rebuilt the dungeon's guardian itself into something far worse. I will need souls steeped in shadow, a good supply of bones, and any mechanical scraps from the dungeon you can find to finish my calibrations.
+		// TinkerSkeletronPrimeDialogue2: Yes, these materials are perfect! The readings are clear now. The creature waiting below is Skeletron Prime, a reconstruction of the cursed guardian, enhanced with gears, cannons, and blades. It is more machine than bone now. The teleporter is ready whenever you are, but be prepared. This will surely be your toughest battle yet.
+		// TinkerSkeletronPrimeDialogue3: Well done! TODO: The rest of the dialogue here.
+	}
+
+	BubbleDialogue: {
+		Day: {
+			// 0: Nothing like a day of tinkering, hammering, and exploding things!
+			// 1: The sun helps with precision, but sparks are always unpredictable.
+			// 2: Do you think machines have dreams? I do!
+		}
+
+		Night: {
+			// 0: Not much darkness around with all of these lights and explosions!
+			// 1: Difficult to tinker safely in the moonlight...
+			// 2: Is inventing in the darkness a good idea...? Oh well. I'm going to do it anyways!
+		}
+
+		Rain: {
+			// 0: Rain hisses against my workshop, and yet the gears sing their own song. Fascinating!
+			// 1: Moisture and machinery... usually a disaster. Tonight, maybe a spectacle!
+			// 2: The storm stirs more than just water... it awakens the thrill of invention!
+		}
+	}
+
+	// Entry: Todo:
+	// Census.SpawnCondition: Conditions unknown
+}
+
+FishermanNPC: {
+	// DisplayName: Marlin
+
+	Dialogue: {
+		// Common0: Nets torn again... sea’s been restless lately.
+		// Common1: Folks say the ocean is endless. I say it just hides what it doesn’t want you to see.
+		// Common2: Bait, rod, and patience. That’s all a fisherman needs. Well... maybe a sharp knife too.
+		// Common3: You ever hear a fish scream? ...No? Good. Best keep it that way.
+		// FishermanFishronDialogue1: Ahoy stranger... The name's Marlin. I can feel that the ocean’s restless tonight. I’ve seen her moods, but this one’s different. Something’s hunting, deep below. If you want to see it with your own eyes, prove to me you can handle the sea first. Bring me the rarest fish you can hook, and a few scraps of the ocean’s bed. Let’s see if you’ve got the stomach for what’s coming.
+		// FishermanFishronDialogue2: So you saw it, didn’t you? That tear in the seabed... the Rift. Never thought I’d live to see the ocean split open like a wound. The water around it stinks of death, and every fish you dragged up feels like it was trying to escape. Whatever waits inside that dark hollow, it’s no natural beast. If my hunch is right, the Rift’s calling for one thing... the reclusive Truffle Worm. Bring me one, adventurer, and we’ll have our answer.
+		// FishermanFishronDialogue3: You’ve got the worm... by the tides... I don’t envy you for holding that thing, it writhes like it knows where it’s headed. The ocean’s Rift is hungry, and this bait is the key. Cast it into the Rift’s maw, and what stirs will come for you. Duke Fishron, the abyssal tyrant... he’ll rise to defend his throne. Steel yourself, adventurer. This is no fishing trip. It’s a reckoning.
+		// FishermanFishronDialogue4: You went in... and somehow lived to tell the tale. I can scarcely believe it. The Rift shook with fury when you fought him. I felt it from the shore. And then, silence. The Duke’s reign is broken, if only for now. Still, the Rift remains... a scar at the ocean’s floor, watching and waiting. You’ve proven stronger than this tide, adventurer, but never forget, the sea always takes back what it’s owed.
+	}
+
+	BubbleDialogue: {
+		Day: {
+			// 0: Sea breeze keeps me steady. Better than ale, most days.
+			// 1: Sunlight on water... almost makes you forget what’s beneath.
+			// 2: Rod in hand, line in the tide. Feels like home.
+		}
+
+		Night: {
+			// 0: Ocean sings at night. Sometimes it’s a lullaby... sometimes a warning.
+			// 1: Stars above, waves below. I’m caught between two beauties.
+			// 2: Careful near the docks... not all eyes watching you belong to men.
+		}
+
+		Rain: {
+			// 0: Rain or shine, the sea always takes its due.
+			// 1: Nets are heavier in the rain, but the catch is sweeter.
+			// 2: Some say storms wake things from the deep. I say they just bring them closer.
+		}
+	}
+
+	// Entry: Todo:
+	// Census.SpawnCondition: Conditions unknown
+}
+
+AzarielNPC: {
+	// DisplayName: Azariel
+
+	Dialogue: {
+		// Common0: I bear the weight of a thousand regrets... yet still I must try to make amends.
+		// Common1: Why do you place trust in one who once served darkness? I question it myself.
+		// Common2: This mask... it hides what I've become, but never what I've done.
+		// Common3: The shadows whisper of my past failures. I pray my future holds redemption.
+		// CultistMoonlordDialogue1: Hah... so, you’ve survived the recent Rifts that have opened... I can sense it. My name is Azariel, I once served a higher cause, mortal... a cause that nearly destroyed all life. As I’m sure you know by now, The Ancient One is coming. I realized that my inane devotion to the false being was bringing upon ruin, when I naively once thought it would blossom into fresh creation. I need your help adventurer, to stop this madness once and for all.
+		// CultistMoonlordDialogue2: I know of the corruption that has cursed these lands, I also know of it to be the source of much of this world's power. Collect for me the Sigils of these corruptions, so we can begin the ritual to summon the Great Old One, but with these Sigils, he will be in a weakened state. I have faith that this will be enough for us to destroy him once and for all.
+		// CultistMoonlordDialogue3: So... these are the sigils. You’ve done well, stranger. Yet I must ask... Why place your trust in me? We are little more than acquaintances, and I, a former servant of the very darkness we seek to oppose. Perhaps you see something in me that I cannot... or perhaps fate binds our paths. No matter. With these sigils, the ritual can begin. Steel yourself, Adventurer, when I begin, they will surely come for us. Only together can we stand against what approaches.
+		// CultistMoonlordDialogue4: How foolish of me to think that wielding the world’s corruption would be a good idea... Regardless, It is done, and my former master lies defeated. For that, I thank you, stranger. You’ve accomplished what I could not. And yet... the struggle is far from over. In their dying breath, he summoned the Celestial Pillars, anchors of the Ancient One's power. They now fester within your world, corrupting it with his essence. You must return, adventurer, and destroy the Pillars before their influence consumes everything.
+		// CultistMoonlordDialogue5: Do you feel that?! The world itself... it’s pulsing, writhing! The air is tearing apart, and the veil is breaking faster than I ever could have imagined.This is the end of all things, unless we stop him here! I will follow you through the portal, lead the way, stranger!
+		// EpilogueDialogue1: It’s over... or so it seems. But it is clear that the rifts were not the Moon Lord’s doing. No corpse should vanish like that. Something... or someone, is causing these rifts. Whatever truth lies beyond them, we will uncover it. But I must now give you this, stranger. It’s a map that I obtained this while serving the Cult, though I never understood it’s purpose. Now... I see them for what they are. Keys. Portals. Invitations. Use this on your map device, but be prepared.
+		// EpilogueDialogue2: So... you’ve returned. And not empty-handed. Tell me, did you see it too? The elemental Rifts within the map... they bled with power not of this world, yet shaped to resemble our own elements - Fire, frost, and lightning. These are no mere accidents of nature. I fear this was only the first step, stranger. This “Riftmaker” clearly seeks to test us.  And we must be ready. Explore more of these maps, uncover the truth behind who this mysterious entity is.
+	}
+
+	BubbleDialogue: {
+		Day: {
+			// 0: The darkness calls to me still... but I will not answer.
+			// 1: Even in daylight, the shadows of my past linger close.
+			// 2: Perhaps there is still hope for redemption... the sun seems to think so.
+		}
+
+		Night: {
+			// 0: Ocean sings at night. Sometimes it’s a lullaby... sometimes a warning.
+			// 1: Under these stars, I once performed rituals of unspeakable evil.
+			// 2: Night reminds me of what I was. Dawn reminds me of what I could become.
+		}
+
+		Rain: {
+			// 0: The rain cannot wash away my sins, but perhaps it can cool my guilt.
+			// 1: Each drop feels like judgment... yet I welcome it.
+			// 2: Even the sky weeps for what I've done. As it should.
+		}
+	}
+
+	// Entry: Todo:
+	// Census.SpawnCondition: Conditions unknown
+}

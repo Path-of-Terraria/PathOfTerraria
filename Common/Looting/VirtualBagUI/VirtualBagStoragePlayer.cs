@@ -120,6 +120,7 @@ internal class VirtualBagStoragePlayer : ModPlayer
 	public static bool VirtualBagAllowed(Item item, Player player)
 	{
 		return (!item.IsACoin && (item.ModItem is Gear || item.TryGetGlobalItem(out PoTGlobalItem _)))
+		       && item.ammo == 0 && !ItemID.Sets.IsAMaterial[item.type]
 		       && player.GetModPlayer<VirtualBagStoragePlayer>().UsesVirtualBag
 		       && IsVirtualBagActiveContext();
 	}
