@@ -13,7 +13,7 @@ internal class IncreasedSentryDamagePassive : Passive
 
 			if (proj.sentry || ProjectileID.Sets.SentryShot[proj.type])
 			{
-				modifiers.FinalDamage += level * (level / 100.0f);
+				modifiers.FinalDamage += level / 100.0f;
 			}
 		}
 	}

@@ -3164,10 +3164,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedSentryKnockbackPassive",
 		"referenceId": 159,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 158
@@ -3194,19 +3194,82 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 161,
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1055,
 		"maxLevel": 1,
 		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1056
+			},
+			{
+				"referenceId": 1057
+			},
+			{
+				"referenceId": 1058
+			},
+			{
+				"referenceId": 160
+			},
+			{
+				"referenceId": 161
+			}
+		],
+		"position": {
+			"x": 660,
+			"y": -885
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "SwiftPlacementsMastery",
+		"referenceId": 1056,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": 660,
+			"y": -975
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "WitheringBoltsMastery",
+		"referenceId": 1057,
+		"maxLevel": 1,
+		"value": 3,
+		"position": {
+			"x": 740,
+			"y": -885
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "WitheringBoltsMastery",
+		"referenceId": 1058,
+		"maxLevel": 1,
+		"value": 3,
+		"position": {
+			"x": 660,
+			"y": -800
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "MaximumSentryPassive",
+		"referenceId": 161,
+		"maxLevel": 1,
+		"value": 1,
 		"position": {
 			"x": 445,
 			"y": -875
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedSentryKnockbackPassive",
 		"referenceId": 162,
 		"maxLevel": 1,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 161
@@ -3221,10 +3284,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "SentryDuplicatedProjectilePassive",
 		"referenceId": 163,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 161
@@ -3364,6 +3427,121 @@
 			"x": 124,
 			"y": -1018
 		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1059,
+		"maxLevel": 1,
+		"value": 25,
+		"connections": [
+			{
+				"referenceId": 269
+			}
+		],
+		"position": {
+			"x": 860,
+			"y": -1020
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1060,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1059
+			}
+		],
+		"position": {
+			"x": 790,
+			"y": -955
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1061,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1059
+			}
+		],
+		"position": {
+			"x": 930,
+			"y": -1090
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1062,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1060
+			}
+		],
+		"position": {
+			"x": 625,
+			"y": -1105
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1063,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1061
+			},
+			{
+				"referenceId": 75
+			}
+		],
+		"position": {
+			"x": 765,
+			"y": -1245
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1064,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1062
+			},
+			{
+				"referenceId": 1063
+			}
+		],
+		"position": {
+			"x": 695,
+			"y": -1175
+		}
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1065,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 1064
+			},
+			{
+				"referenceId": 1059
+			}
+		],
+		"position": {
+			"x": 780,
+			"y": -1100
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 1
 	},
 	{
 		"internalIdentifier": "AddedIntelligencePassive",

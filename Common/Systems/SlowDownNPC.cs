@@ -22,4 +22,13 @@ internal class SlowDownNPC : GlobalNPC
 		SpeedModifier = Math.Clamp(SpeedModifier, 0, 1);
 		npc.position -= npc.velocity * SpeedModifier;
 	}
+	
+	/// <summary>
+	/// Slows down the NPC by the specified percentage.
+	/// </summary>
+	/// <param name="percent">Percentage to slow down (0.0 to 1.0, where 0.5 = 50% slower)</param>
+	public void AddSlowDown(float percent)
+	{
+		SpeedModifier += Math.Clamp(percent, 0f, 1f);
+	}
 }
