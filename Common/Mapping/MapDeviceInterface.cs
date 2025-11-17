@@ -157,7 +157,7 @@ internal class MapDeviceShiftClickPlayer : ModPlayer
 {
 	public override bool HoverSlot(Item[] inventory, int context, int slot)
 	{
-		if (inventory.Length != Main.InventorySlotsTotal + 1)
+		if (context != ItemSlot.Context.InventoryItem)
 		{
 			return false;
 		}
@@ -173,8 +173,7 @@ internal class MapDeviceShiftClickPlayer : ModPlayer
 
 	public override bool ShiftClickSlot(Item[] inventory, int context, int slot)
 	{
-		// Inventory length check is an awkward way to check if the inventory given is the player's actual inventory, not storage - perhaps find something better?
-		if (inventory.Length != Main.InventorySlotsTotal + 1)
+		if (context != ItemSlot.Context.InventoryItem)
 		{
 			return false;
 		}
