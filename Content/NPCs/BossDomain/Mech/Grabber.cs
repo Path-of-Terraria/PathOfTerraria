@@ -1,8 +1,10 @@
 ﻿using NPCUtils;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Content.Scenes;
 using ReLogic.Content;
+using System.IO;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
@@ -119,7 +121,7 @@ internal class Grabber : ModNPC
 			{
 				HoldingPlayer = -1;
 				ShakeTimer = -1;
-				RegrabTimer = 100;
+				RegrabTimer = 180;
 
 				captive.GetModPlayer<GrabberPlayer>().BeingGrabbed = -1;
 
@@ -162,13 +164,30 @@ internal class Grabber : ModNPC
 			HoldingPlayer = target.whoAmI;
 			ShakeTimer = 0;
 
+			NPC.netUpdate = true;
+
 			target.GetModPlayer<GrabberPlayer>().BeingGrabbed = NPC.whoAmI;
+
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				SyncPlayerGrabbed.Send((short)NPC.whoAmI);
+			}
 		}
+	}
+
+	public override void SendExtraAI(BinaryWriter writer)
+	{
+		writer.Write((int)RegrabTimer);
+	}
+
+	public override void ReceiveExtraAI(BinaryReader reader)
+	{
+		RegrabTimer = reader.ReadInt32();
 	}
 
 	public override void FindFrame(int frameHeight)
 	{
-		if (HoldingPlayer == -1)
+		if (HoldingPlayer == -1 && RegrabTimer <= 0)
 		{
 			NPC.frameCounter += 0.1f;
 			int frame = (int)(NPC.frameCounter % 4);
@@ -332,15 +351,15 @@ public class GrabberPlayer : ModPlayer
 
 			Player.Center = grabber.Center + (grabber.rotation - MathHelper.PiOver2).ToRotationVector2() * 20;
 
-			float speed = Player.velocity.Length();
+			float speed = Player.velocity.Length() * 2;
 
 			if (Player.grappling[0] > -1)
 			{
-				speed /= 4;
+				speed /= 20f;
 			}
 
 			grabber.ai[2] += speed;
-
+			grabber.netUpdate = true;
 			Player.velocity = Vector2.Zero;
 		}
 	}

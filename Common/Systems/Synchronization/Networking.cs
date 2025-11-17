@@ -193,6 +193,8 @@ internal static class Networking
 		/// <c>byte player, bool enabled</c>
 		/// </summary>
 		PlayerUseSackOfHolding,
+
+		SyncGrab,
 	}
 
 	internal static void HandlePacket(BinaryReader reader, byte sender)
