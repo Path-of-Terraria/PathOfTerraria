@@ -2,10 +2,12 @@
 using System.Linq;
 using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Common.UI.Quests;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.Audio;
 using Terraria.GameInput;
+using Terraria.ID;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.Questing;
@@ -15,10 +17,18 @@ public class QuestModPlayer : ModPlayer
 	// ReSharper disable once InconsistentNaming
 	internal static ModKeybind ToggleQuestUIKey;
 
+	/// <summary>
+	/// A non-synced list of every quest this player can have.
+	/// </summary>
 	public Dictionary<string, Quest> QuestsByName = [];
 
 	public Dictionary<string, QuestMarkerType> MarkerTypeByLocation = [];
-	
+
+	/// <summary>
+	/// A fully synced list of the quests this player currently has active.
+	/// </summary>
+	public readonly HashSet<string> EnabledQuestsByName = [];
+
 	internal bool FirstQuest = true;
 	/// <summary> The full name of this player's pinned quest. </summary>
 	public string PinnedQuest;
@@ -39,6 +49,7 @@ public class QuestModPlayer : ModPlayer
 	public void StartQuest(string name, int step = -1, bool fromLoad = false)
 	{
 		QuestsByName[name].Start(Player, step == -1 ? 0 : step);
+		EnabledQuestsByName.Add(name);
 
 		if (Main.myPlayer == Player.whoAmI && !fromLoad)
 		{
@@ -50,6 +61,27 @@ public class QuestModPlayer : ModPlayer
 				UIQuestPopupState.FlashQuestButton = 600;
 
 				FirstQuest = false;
+			}
+
+			if (Main.netMode != NetmodeID.SinglePlayer)
+			{
+				SyncPlayerQuestActive.Send(name, true);
+			}
+		}
+	}
+
+	public override void OnEnterWorld()
+	{
+		foreach (Quest quest in QuestsByName.Values)
+		{
+			if (quest.Active)
+			{
+				EnabledQuestsByName.Add(quest.FullName);
+
+				if (Main.netMode != NetmodeID.SinglePlayer)
+				{
+					SyncPlayerQuestActive.Send(quest.FullName, true);
+				}
 			}
 		}
 	}
