@@ -194,6 +194,10 @@ internal static class Networking
 		/// </summary>
 		PlayerUseSackOfHolding,
 
+		/// <summary>
+		/// Syncs a player being grabbed by the Grabber NPC.<br/>Signature:<br/>
+		/// <c>short npc</c>
+		/// </summary>
 		SyncGrab,
 	}
 
