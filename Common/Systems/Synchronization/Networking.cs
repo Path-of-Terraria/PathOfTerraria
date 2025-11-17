@@ -194,7 +194,17 @@ internal static class Networking
 		/// </summary>
 		PlayerUseSackOfHolding,
 
+    /// <summary>
+    /// Flags a quest as enabled on all clients + server.<br/>Signature<br/>
+    /// <c>string questName, bool enabled</c>
+    /// </summary>
 		PlayerQuestActive,
+    
+		/// <summary>
+		/// Syncs a player being grabbed by the Grabber NPC.<br/>Signature:<br/>
+		/// <c>short npc</c>
+		/// </summary>
+		SyncGrab,
 	}
 
 	internal static void HandlePacket(BinaryReader reader, byte sender)
