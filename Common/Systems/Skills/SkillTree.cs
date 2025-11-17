@@ -118,7 +118,7 @@ public abstract class SkillTree : ILoadable
 	{
 		string skillName = skill.Name;
 
-		IList<string> names = tag.GetList<string>("passives"); //Load passives
+		IList<string> names = tag.GetList<string>("passives");
 		IList<int> levels = tag.GetList<int>("levels");
 
 		for (int i = 0; i < names.Count; i++)
@@ -128,6 +128,8 @@ public abstract class SkillTree : ILoadable
 
 		var special = (SkillSpecial)Nodes.FirstOrDefault(x => x is SkillSpecial && x.Name == tag.GetString("special"));
 		Specialization = special;
+
+		Augments.Clear(); // Reset augments so we don't infinitely add augments every load
 
 		IList<string> augmentNames = tag.GetList<string>("augmentNames");
 		IList<bool> augmentUnlocked = tag.GetList<bool>("augmentUnlocks");
