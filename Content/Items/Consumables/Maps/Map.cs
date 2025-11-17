@@ -111,25 +111,26 @@ public abstract class Map : ModItem, GenerateNameAffixes.IItem, GenerateAffixes.
 
 	public static int WorldLevelBasedOnTier(int tier)
 	{
-		return Math.Clamp(48 + tier * 2, 50, 72);
+		return Math.Clamp(55 + tier * 2, 57, 77);
 	}
 
 	public static int TierBasedOnWorldLevel(int area)
 	{
-		if (area < 45)
+		if (area < 25) 
 		{
 			return 0;
 		}
 
-		// Return 1 if we're post-WoF due to the gap of 45-48 in the formula below.
-		if (area >= 45 && area <= 48)
+		// Return 1 if we're post-WoF but below map levels
+		if (area >= 25 && area <= 56)
 		{
 			return 1;
 		}
 
-		// area is adjusted by 48 instead of 50 to increase the level by 1 per stage;
-		// i.e. a level 50 area gives a tier 1 map, which gives a level 52 area, which gives a tier 2...
-		return Math.Clamp((area - 48) / 2, 0, 11) + 1;
+		// Calculate tier based on new progression: 57, 59, 61, 63, etc.
+		// area is adjusted by 55 to align with the new tier system
+		return Math.Clamp((area - 55) / 2, 1, 11);
+
 	}
 
 	/// <summary>

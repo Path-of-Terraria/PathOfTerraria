@@ -254,102 +254,121 @@ public static class PoTItemHelper
 
 		if (isCrafted && Main.hardMode) // This accounts for crafting level when you've progressed further than WoF
 		{
-			return 45;
+			return 25;
 		}
 
 		if (clampHardmode && Main.hardMode) // Hardmode max if it's clamped.
 		{
-			return 45;
+			return 25;
 		}
 
-		// Start with base level and add for each boss defeated
-		int level = 5;
-
-		if (NPC.downedSlimeKing)
-		{
-			level += 5; // 10
-		}
-
-		if (NPC.downedBoss1)
-		{
-			level += 5; // 15
-		}
-
-		if (EventTracker.HasFlagsAnywhere(EventFlags.DefeatedEaterOfWorlds))
-		{
-			level += 5; // 20
-		}
-
-		if (EventTracker.HasFlagsAnywhere(EventFlags.DefeatedBrainOfCthulhu))
-		{
-			level += 5; // 20/25
-		}
-
-		if (NPC.downedQueenBee)
-		{
-			level += 5; // 25/30
-		}
-
-		if (NPC.downedDeerclops)
-		{
-			level += 5; // 30/35
-		}
-
-		if (NPC.downedBoss3)
-		{
-			level += 5; // 35/40
-		}
-
-		if (Main.hardMode)
-		{
-			level = 45;
-		}
-
-		// Continue with hardmode bosses if not clamped
-		if (!clampHardmode)
-		{
-			if (NPC.downedQueenSlime)
-			{
-				level += 5; // 50
-			}
-
-			if (NPC.downedMechBoss2)
-			{
-				level += 5; // 55
-			}
-
-			if (NPC.downedMechBoss1)
-			{
-				level += 5; // 60
-			}
-
-			if (NPC.downedMechBoss3) 
-			{
-				level += 5; // 65
-			}
-
-			if (NPC.downedPlantBoss)
-			{
-				level += 5; // 70
-			}
-
-			if (NPC.downedGolemBoss)
-			{
-				level += 5; // 75
-			}
-
-			if (NPC.downedAncientCultist)
-			{
-				level += 5; // 80
-			}
-
-			if (NPC.downedMoonlord)
-			{
-				level += 5; // 85
-			}
-		}
-
-		return level;
-
+	    int level = 1; // DEFAULT
+	
+	    if (NPC.downedSlimeKing)
+	    {
+	        level = 4; 
+	    }
+	
+	    if (NPC.downedBoss1)
+	    {
+	        level = 7; // Eye of Cthulhu
+	    }
+	
+	    if (EventTracker.HasFlagsAnywhere(EventFlags.DefeatedEaterOfWorlds))
+	    {
+	        level = 10; 
+	    }
+	
+	    if (EventTracker.HasFlagsAnywhere(EventFlags.DefeatedBrainOfCthulhu))
+	    {
+	        level = 13; 
+	    }
+	
+	    if (NPC.downedQueenBee)
+	    {
+	        level = 16; 
+	    }
+	
+	    if (NPC.downedDeerclops)
+	    {
+	        level = 19; 
+	    }
+	
+	    if (NPC.downedBoss3)
+	    {
+	        level = 22; // Skeletron
+	    }
+	
+	    if (Main.hardMode)
+	    {
+	        level = 25; 
+	    }
+	
+	    if (isCrafted && Main.hardMode)
+	    {
+	        return 25; // Crafted items cap at Wall of Flesh level in hardmode
+	    }
+	
+	    if (clampHardmode && Main.hardMode)
+	    {
+	        return 25; // Hardmode max if it's clamped
+	    }
+	
+	    // Continue with hardmode bosses if not clamped
+	    if (!clampHardmode)
+	    {
+	        if (NPC.downedQueenSlime)
+	        {
+	            level = 28;
+	        }
+	
+	        if (NPC.downedMechBoss2)
+	        {
+	            level = 31; 
+	        }
+	
+	        if (NPC.downedMechBoss1)
+	        {
+	            level = 34;
+	        }
+	
+	        if (NPC.downedMechBoss3)
+	        {
+	            level = 37;
+	        }
+	
+	        if (NPC.downedPlantBoss)
+	        {
+	            level = 40; 
+	        }
+	
+	        if (NPC.downedGolemBoss)
+	        {
+	            level = 43;
+	        }
+	        
+	        if (NPC.downedFishron)
+	        {
+		        level = 46; 
+	        }
+	
+	        if (NPC.downedEmpressOfLight)
+	        {
+		        level = 49;
+	        }
+	
+	        if (NPC.downedAncientCultist)
+	        {
+	            level = 52;
+	        }
+	
+	        if (NPC.downedMoonlord)
+	        {
+	            level = 55;
+	        }
+	    }
+	
+	    return level;
 	}
+
 }

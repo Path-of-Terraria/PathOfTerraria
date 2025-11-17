@@ -95,7 +95,7 @@ internal class MappingNPC : GlobalNPC
 
 	public override void OnKill(NPC npc)
 	{
-		if (npc.boss && SubworldSystem.Current is MappingWorld world and not BossDomainSubworld && Main.hardMode && PoTItemHelper.PickItemLevel() >= 45)
+		if (npc.boss && SubworldSystem.Current is MappingWorld world and not BossDomainSubworld && Main.hardMode && PoTItemHelper.PickItemLevel() >= 57)
 		{
 			MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
 
@@ -108,55 +108,55 @@ internal class MappingNPC : GlobalNPC
 				Networking.SendPacketToMainServer(packet);
 			}
 
-			if (TierPassed(1) && !NPC.downedQueenSlime)
-			{
-				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<QueenSlimeMap>());
-			}
-
-			if (TierPassed(2) && NPC.downedQueenSlime && !NPC.downedMechBoss2)
-			{
-				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<TwinsMap>());
-			}
-
-			if (TierPassed(3) && NPC.downedMechBoss2 && !NPC.downedMechBoss1)
-			{
-				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<DestroyerMap>());
-			}
-
-			if (TierPassed(4) && NPC.downedMechBoss1 && !NPC.downedMechBoss3)
-			{
-				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<PrimeMap>());
-			}
-
-			if (TierPassed(5) && NPC.downedMechBoss3 && !NPC.downedPlantBoss)
-			{
-				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<PlanteraMap>());
-			}
-
-			if (TierPassed(6) && NPC.downedPlantBoss && !NPC.downedGolemBoss)
-			{
-				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<GolemMap>());
-			}
-
-			if (TierPassed(7) && NPC.downedGolemBoss && !NPC.downedFishron)
-			{
-				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<FishronMap>());
-			}
-
-			if (TierPassed(8) && NPC.downedFishron && !NPC.downedEmpressOfLight)
-			{
-				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<EoLMap>());
-			}
-
-			if (TierPassed(9) && NPC.downedEmpressOfLight && !NPC.downedAncientCultist)
-			{
-				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<CultistMap>());
-			}
-
-			if (TierPassed(10) && NPC.downedMoonlord)
-			{
-				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<MoonMap>());
-			}
+			//if (TierPassed(1) && !NPC.downedQueenSlime)
+			//{
+			//	Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<QueenSlimeMap>());
+			//}
+//
+			//if (TierPassed(2) && NPC.downedQueenSlime && !NPC.downedMechBoss2)
+			//{
+			//	Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<TwinsMap>());
+			//}
+//
+			//if (TierPassed(3) && NPC.downedMechBoss2 && !NPC.downedMechBoss1)
+			//{
+			//	Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<DestroyerMap>());
+			//}
+//
+			//if (TierPassed(4) && NPC.downedMechBoss1 && !NPC.downedMechBoss3)
+			//{
+			//	Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<PrimeMap>());
+			//}
+//
+			//if (TierPassed(5) && NPC.downedMechBoss3 && !NPC.downedPlantBoss)
+			//{
+			//	Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<PlanteraMap>());
+			//}
+//
+			//if (TierPassed(6) && NPC.downedPlantBoss && !NPC.downedGolemBoss)
+			//{
+			//	Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<GolemMap>());
+			//}
+//
+			//if (TierPassed(7) && NPC.downedGolemBoss && !NPC.downedFishron)
+			//{
+			//	Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<FishronMap>());
+			//}
+//
+			//if (TierPassed(8) && NPC.downedFishron && !NPC.downedEmpressOfLight)
+			//{
+			//	Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<EoLMap>());
+			//}
+//
+			//if (TierPassed(9) && NPC.downedEmpressOfLight && !NPC.downedAncientCultist)
+			//{
+			//	Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<CultistMap>());
+			//}
+//
+			//if (TierPassed(10) && NPC.downedMoonlord)
+			//{
+			//	Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<MoonMap>());
+			//}
 
 			return;
 
