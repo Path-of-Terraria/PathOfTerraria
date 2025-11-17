@@ -22,7 +22,7 @@ internal class ChilledFunctionality : GlobalBuff
 				modifier *= 0.33f;
 			}
 
-			npc.GetGlobalNPC<SlowDownNPC>().SpeedModifier += modifier;
+			npc.GetGlobalNPC<SlowDownNPC>().AddSlowDown(modifier);
 
 			if (Main.rand.NextBool(20))
 			{
