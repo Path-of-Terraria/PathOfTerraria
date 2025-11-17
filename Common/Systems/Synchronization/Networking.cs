@@ -193,6 +193,12 @@ internal static class Networking
 		/// <c>byte player, bool enabled</c>
 		/// </summary>
 		PlayerUseSackOfHolding,
+
+		/// <summary>
+		/// Syncs a player being grabbed by the Grabber NPC.<br/>Signature:<br/>
+		/// <c>short npc</c>
+		/// </summary>
+		SyncGrab,
 	}
 
 	internal static void HandlePacket(BinaryReader reader, byte sender)
