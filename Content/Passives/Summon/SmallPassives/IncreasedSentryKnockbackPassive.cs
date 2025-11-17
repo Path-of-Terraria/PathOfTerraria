@@ -9,11 +9,10 @@ internal class IncreasedSentryKnockbackPassive : Passive
 	{
 		public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref NPC.HitModifiers modifiers)
 		{
-			float level = Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<IncreasedSentryKnockbackPassive>();
+			float passiveValue = Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<IncreasedSentryKnockbackPassive>();
 
-			if (level > 0 && (proj.sentry || ProjectileID.Sets.SentryShot[proj.type]))
+			if (passiveValue > 0 && (proj.sentry || ProjectileID.Sets.SentryShot[proj.type]))
 			{
-				float passiveValue = Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<IncreasedSentryKnockbackPassive>();
 				modifiers.Knockback *= 1 + (passiveValue / 100.0f);
 			}
 		}

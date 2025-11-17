@@ -14,10 +14,10 @@ internal class SwiftPlacementsMastery : Passive
 			{
 				if (player.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<SwiftPlacementsMastery>(out float value))
 				{
-					player.AddBuff(ModContent.BuffType<SwiftPlacementsBuff>(), 10 * 60);
+					int duration = (int)player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<SwiftPlacementsMastery>();
+					player.AddBuff(ModContent.BuffType<SwiftPlacementsBuff>(), duration * 60);
 				}
 			}
 		}
 	}
 }
-

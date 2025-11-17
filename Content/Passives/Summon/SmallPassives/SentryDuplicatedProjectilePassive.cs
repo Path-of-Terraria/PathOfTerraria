@@ -8,8 +8,6 @@ internal class SentryDuplicatedProjectilePassive : Passive
 {
 	public sealed class SentryDuplicatedProjectileGlobal : GlobalProjectile
 	{
-		public override bool InstancePerEntity => true;
-		
 		public override void OnSpawn(Projectile projectile, IEntitySource source)
 		{
 			if (source is not EntitySource_Parent and not EntitySource_ItemUse and not EntitySource_ItemUse_WithAmmo) { return; }

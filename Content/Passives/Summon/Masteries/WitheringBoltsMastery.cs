@@ -19,7 +19,8 @@ internal class WitheringBoltsMastery : Passive
 
 			if (owner.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<WitheringBoltsMastery>(out float value))
 			{
-				target.AddBuff(ModContent.BuffType<WitheringBoltsDebuff>(), 3 * 60);
+				int duration = (int)owner.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<WitheringBoltsMastery>();
+				target.AddBuff(ModContent.BuffType<WitheringBoltsDebuff>(), duration * 60);
 			}
 		}
 	}

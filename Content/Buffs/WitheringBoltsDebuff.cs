@@ -1,4 +1,5 @@
 using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 
 namespace PathOfTerraria.Content.Buffs;
 
@@ -20,6 +21,6 @@ public sealed class WitheringBoltsDebuff : ModBuff
 		{
 			speedMult = 0.1f * 4f;
 		}
-		npc.GetGlobalNPC<SlowDownNPC>().SpeedModifier += speedMult;
+		npc.GetGlobalNPC<SlowDownNPC>().AddSlowDown(speedMult);
 	}
 }
