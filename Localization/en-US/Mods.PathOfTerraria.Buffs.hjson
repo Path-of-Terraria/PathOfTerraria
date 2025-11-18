@@ -199,3 +199,8 @@ WitheringBoltsDebuff: {
 	DisplayName: Withering Bolts Debuff
 	Description: Debilitating slow
 }
+
+SacrificeReviveCooldown: {
+	DisplayName: Recent Sacrifice
+	Description: Summons can't be sacrificed again
+}
