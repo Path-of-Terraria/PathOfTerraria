@@ -51,7 +51,7 @@ internal class SacrificialSummonsMastery : Passive
 				if (player.DistanceSQ(center) < PoTMod.NearbyDistanceSq && !player.dead && !player.HasBuff<SacrificeReviveCooldown>()
 					&& player.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<SacrificialSummonsMastery>(out value))
 				{
-					player.AddBuff(ModContent.BuffType<SacrificeReviveCooldown>(), 5 * 60);
+					player.AddBuff(ModContent.BuffType<SacrificeReviveCooldown>(), 5 * 60 * 60);
 					return true;
 				}
 			}

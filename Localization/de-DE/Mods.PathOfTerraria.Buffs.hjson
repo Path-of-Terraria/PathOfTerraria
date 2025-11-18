@@ -193,6 +193,6 @@ WitheringBoltsDebuff: {
 }
 
 SacrificeReviveCooldown: {
-	// DisplayName: Sacrifice Revive Cooldown
-	// Description: Mods.PathOfTerraria.Buffs.SacrificeReviveCooldown.Description
+	// DisplayName: Recent Sacrifice
+	// Description: Summons can't be sacrificed again
 }
