@@ -182,16 +182,16 @@ internal class MapDeviceShiftClickPlayer : ModPlayer
 		{
 			Item[] storage = MapDeviceInterface.Entity.Storage;
 
-			for (int i = 0; i < MapDeviceEntity.StorageSize; ++i)
+			for (int i = 0; i < MapDeviceEntity.StorageSize; i++)
 			{
 				ref Item item = ref storage[i];
+				if (!item.IsAir) { continue; }
 
-				if (item.IsAir)
-				{
-					Item invItem = inventory[slot].Clone();
-					inventory[slot].TurnToAir();
-					item = invItem;
-				}
+				Item invItem = inventory[slot].Clone();
+				inventory[slot].TurnToAir();
+				item = invItem;
+				SoundEngine.PlaySound(SoundID.MenuTick);
+				break;
 			}
 
 			return true;
