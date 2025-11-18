@@ -129,7 +129,7 @@ internal static class Networking
 		BreakableOrbs,
 
 		/// <summary>
-		/// Adds a tier to the completion tracker. Meant to be used through <see cref="SendPacketToMainServer(ModPacket)"/>.<br/>Signature:<br/>
+		/// Adds a tier to the completion tracker. Meant to be used through <see cref="SendPacketToMainServer(ModPacket, string)(ModPacket)"/>.<br/>Signature:<br/>
 		/// <c>short tier</c><br/><br/>
 		/// <b>Note:</b> This packet sends an additional short, count, to clients so that their downed count is forcefully set to the server's instead of allowing a desync.<br/>
 		/// This should not affect any normal use of this packet however.

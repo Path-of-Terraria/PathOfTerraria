@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Common.Systems.Synchronization;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using PathOfTerraria.Core.Items;
 using SubworldLibrary;
@@ -103,7 +104,7 @@ internal class MappingNPC : GlobalNPC
 
 			if (Main.netMode != NetmodeID.SinglePlayer)
 			{
-				ModPacket packet = Networking.GetPacket(Networking.Message.SendMappingTierDown, 3);
+				ModPacket packet = Networking.GetPacket<SendMappingTierHandler>(3);
 				packet.Write((short)MappingWorld.MapTier);
 				Networking.SendPacketToMainServer(packet);
 			}
