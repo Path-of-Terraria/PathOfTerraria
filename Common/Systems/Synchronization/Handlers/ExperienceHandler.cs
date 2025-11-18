@@ -5,14 +5,12 @@ namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
 internal class ExperienceHandler : Handler
 {
-	public override Networking.Message MessageType => Networking.Message.SpawnExperience;
-
 	/// <inheritdoc cref="Networking.Message.SpawnExperience"/>
 	public override void Send(params object[] parameters)
 	{
 		CastParameters(parameters, out byte target, out int xpValue, out Vector2 position, out Vector2 velocity);
 		
-		ModPacket packet = Networking.GetPacket(MessageType);
+		ModPacket packet = Networking.GetPacket(Id);
 		packet.Write(target);
 		packet.Write(xpValue);
 		packet.WriteVector2(position);
@@ -25,9 +23,9 @@ internal class ExperienceHandler : Handler
 		}
 	}
 
-	internal override void ServerRecieve(BinaryReader reader)
+	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
-		ModPacket packet = Networking.GetPacket(MessageType);
+		ModPacket packet = Networking.GetPacket(Id);
 		byte target = reader.ReadByte();
 
 		packet.Write(target);
@@ -37,7 +35,7 @@ internal class ExperienceHandler : Handler
 		packet.Send(-1, target);
 	}
 
-	internal override void ClientRecieve(BinaryReader reader)
+	internal override void ClientReceive(BinaryReader reader, byte sender)
 	{
 		int target = reader.ReadByte();
 		int xp = reader.ReadInt32();

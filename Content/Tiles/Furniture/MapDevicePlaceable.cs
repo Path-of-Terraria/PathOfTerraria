@@ -618,11 +618,9 @@ internal class MapDeviceInteraction : Handler
 		EnterPortal,
 	}
 
-	public override Networking.Message MessageType => Networking.Message.MapDeviceInteraction;
-
 	public static void Send(int entityId, Kind kind, int toClient = -1, int ignoreClient = -1)
 	{
-		ModPacket packet = Networking.GetPacket(Networking.Message.MapDeviceInteraction);
+		ModPacket packet = Networking.GetPacket<MapDeviceInteraction>();
 		packet.Write((int)entityId);
 		packet.Write((byte)kind);
 		packet.Send(toClient, ignoreClient);
@@ -658,8 +656,6 @@ internal class MapDeviceSync : Handler
 		FullSync = Status | Map | Storage,
 	}
 
-	public override Networking.Message MessageType => Networking.Message.MapDeviceSync;
-
 	public static void Send(int entityId, Flags flags, IEnumerable<int>? itemIndices, int toClient = -1, int ignoreClient = -1)
 	{
 		if (!TileEntity.ByID.TryGetValue(entityId, out TileEntity? tileEntity) || tileEntity is not MapDeviceEntity device)
@@ -678,7 +674,7 @@ internal class MapDeviceSync : Handler
 			return;
 		}
 
-		ModPacket packet = Networking.GetPacket(Networking.Message.MapDeviceSync);
+		ModPacket packet = Networking.GetPacket<MapDeviceSync>();
 		packet.Write((int)entityId);
 		WriteInto(packet, device, flags, itemIndices);
 		packet.Send(toClient, ignoreClient);

@@ -5,8 +5,6 @@ namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
 internal class PathfindStateChangeHandler : Handler
 {
-	public override Networking.Message MessageType => Networking.Message.PathfindChangeState;
-
 	/// <summary>
 	/// Changes the pathfinder state on the given NPC. This is used over <see cref="NPC.netUpdate"/> as it guarantees precision information.<br/>Signature:<br/>
 	/// <c>byte followPlayer, byte who, bool enable</c>
@@ -15,14 +13,14 @@ internal class PathfindStateChangeHandler : Handler
 	{
 		CastParameters(parameters, out byte followPlayer, out byte who, out bool enable);
 
-		ModPacket packet = Networking.GetPacket(MessageType);
+		ModPacket packet = Networking.GetPacket(Id);
 		packet.Write(followPlayer);
 		packet.Write(who);
 		packet.Write(enable);
 		packet.Send();
 	}
 
-	internal override void ServerRecieve(BinaryReader reader)
+	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
 		byte player = reader.ReadByte();
 		int who = reader.ReadByte();

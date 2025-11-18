@@ -1,14 +1,22 @@
 ﻿using PathOfTerraria.Common.Buffs;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria.ID;
+using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Buffs.ElementalBuffs;
 
 internal class IgnitedDebuff : ModBuff
 {
-	public static void ApplyTo(NPC npc, int hitDamage, int time = 4 * 60)
+	public static void ApplyTo(NPC npc, int hitDamage, int time = 4 * 60, bool fromNet = false)
 	{
+		if (Main.netMode == NetmodeID.MultiplayerClient && !fromNet)
+		{
+			AddIgnitedStackHandler.Send(npc, hitDamage, time);
+		}
+
 		// TODO: Add time duration modifier(s)
 		IgnitedNPC ignited = npc.GetGlobalNPC<IgnitedNPC>();
 		ignited.Stacks.Add(new IgnitedNPC.IgnitedStack(time + 1, hitDamage));
@@ -85,5 +93,32 @@ internal class IgnitedNPC : GlobalNPC
 		}
 
 		return true;
+	}
+
+	public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
+	{
+		binaryWriter.Write((short)Stacks.Count);
+
+		if (Stacks.Count > 0)
+		{
+			foreach (IgnitedStack stack in Stacks)
+			{
+				binaryWriter.Write((short)stack.Time);
+				binaryWriter.Write(stack.BaseDamage);
+			}
+		}
+	}
+
+	public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
+	{
+		if (binaryReader.ReadInt16() is not 0 and { } count)
+		{
+			for (int i = 0; i < count; ++i)
+			{
+				IgnitedStack stack = new(binaryReader.ReadInt16(), binaryReader.ReadInt32());
+			}
+		
+			Stacks = [.. Stacks.OrderByDescending(x => x.BaseDamage)];
+		}
 	}
 }

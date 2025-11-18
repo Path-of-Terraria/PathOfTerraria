@@ -199,25 +199,45 @@ internal static class Networking
 		/// <c>short npc</c>
 		/// </summary>
 		SyncGrab,
+
+		AddIgnitedStackHandler,
 	}
 
 	internal static void HandlePacket(BinaryReader reader, byte sender)
 	{
-		var message = (Message)reader.ReadByte();
-		Handler handler = Handler.HandlerForMessage[message];
-
+		byte messageId = reader.ReadByte();
+		Handler handler = Handler.HandlersById[messageId];
 		handler.Receive(reader, sender);
 
 #if DEBUG
-		PoTMod.Instance.Logger.Debug($"[PoT] Network got: {message}");
+		PoTMod.Instance.Logger.Debug($"[PoT] Network got: {messageId} (Handler: {handler.GetType().Name})");
 #endif
 		return;
 	}
 
+	[Obsolete]
 	internal static ModPacket GetPacket(Message type, byte capacity = 255)
 	{
 		ModPacket packet = PoTMod.Instance.GetPacket(capacity);
 		packet.Write((byte)type);
+		return packet;
+	}
+
+	/// <summary>
+	/// Sends a packet handled by <typeparamref name="T"/>. Shorthand for <see cref="GetPacket(byte, byte)"/>.
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <param name="capacity"></param>
+	/// <returns></returns>
+	internal static ModPacket GetPacket<T>(byte capacity = 255) where T : Handler
+	{
+		return GetPacket(ModContent.GetInstance<T>().Id, capacity);
+	}
+
+	internal static ModPacket GetPacket(byte messageId, byte capacity = 255)
+	{
+		ModPacket packet = PoTMod.Instance.GetPacket(capacity);
+		packet.Write(messageId);
 		return packet;
 	}
 

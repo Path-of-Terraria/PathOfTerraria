@@ -458,23 +458,19 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 internal class RiftInteractionHandler : Handler
 {
-	public override Networking.Message MessageType => Networking.Message.RiftInteraction;
-
 	/// <inheritdoc cref="Networking.Message.RiftInteraction"/>
 	public override void Send(params object[] parameters)
 	{
 		CastParameters(parameters, out byte sender, out int riftIdentity);
 
-		ModPacket packet = Networking.GetPacket(MessageType);
-		packet.Write(sender);
+		ModPacket packet = Networking.GetPacket(Id);
 		packet.Write(riftIdentity);
 		packet.Send();
 	}
 
-	internal override void ServerRecieve(BinaryReader reader)
+	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
-		ModPacket packet = Networking.GetPacket(MessageType);
-		byte sender = reader.ReadByte();
+		ModPacket packet = Networking.GetPacket(Id);
 		int riftIdentity = reader.ReadInt32();
 
 		if (Main.player[sender] is not { active: true } player) { return; }

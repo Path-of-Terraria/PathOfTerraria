@@ -6,21 +6,19 @@ namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 /// <inheritdoc cref="Networking.Message.RequestCheckSection"/>
 internal class RequestCheckSectionHandler : Handler
 {
-	public override Networking.Message MessageType => Networking.Message.RequestCheckSection;
-
 	/// <inheritdoc cref="Networking.Message.RequestCheckSection"/>
 	public override void Send(params object[] parameters)
 	{
 		CastParameters(parameters, out byte player, out Vector2 position);
 
-		ModPacket packet = Networking.GetPacket(MessageType);
+		ModPacket packet = Networking.GetPacket(Id);
 		packet.Write(player);
 		packet.Write(position.X);
 		packet.Write(position.Y);
 		packet.Send();
 	}
 
-	internal override void ServerRecieve(BinaryReader reader)
+	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
 		byte plr = reader.ReadByte();
 		Vector2 pos = reader.ReadVector2();

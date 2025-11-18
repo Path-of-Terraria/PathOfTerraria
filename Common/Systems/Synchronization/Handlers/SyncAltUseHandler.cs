@@ -4,21 +4,19 @@ namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
 internal class SyncAltUseHandler : Handler
 {
-	public override Networking.Message MessageType => Networking.Message.SyncAltUse;
-
 	/// <inheritdoc cref="Networking.Message.SyncAltUse"/>
 	public override void Send(params object[] parameters)
 	{
 		CastParameters(parameters, out byte whoAmI, out short cooldown, out short activeTime);
 
-		ModPacket packet = Networking.GetPacket(MessageType);
+		ModPacket packet = Networking.GetPacket(Id);
 		packet.Write(whoAmI);
 		packet.Write(cooldown);
 		packet.Write(activeTime);
 		packet.Send();
 	}
 
-	internal override void ServerRecieve(BinaryReader reader)
+	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
 		byte who = reader.ReadByte();
 		short cooldown = reader.ReadInt16();
@@ -27,14 +25,14 @@ internal class SyncAltUseHandler : Handler
 		Player player = Main.player[who];
 		player.GetModPlayer<AltUsePlayer>().SetAltCooldown(cooldown, activeTime);
 
-		ModPacket packet = Networking.GetPacket(MessageType);
+		ModPacket packet = Networking.GetPacket(Id);
 		packet.Write(who);
 		packet.Write(cooldown);
 		packet.Write(activeTime);
 		packet.Send();
 	}
 
-	internal override void ClientRecieve(BinaryReader reader)
+	internal override void ClientReceive(BinaryReader reader, byte sender)
 	{
 		byte index = reader.ReadByte();
 		short cooldown = reader.ReadInt16();

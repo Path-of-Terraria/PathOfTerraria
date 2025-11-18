@@ -6,8 +6,6 @@ namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
 internal class SpawnNPCOnServerHandler : Handler
 {
-	public override Networking.Message MessageType => Networking.Message.SpawnNPCOnServer;
-
 	/// <inheritdoc cref="Networking.Message.SpawnNPCOnServer"/>
 	public override void Send(params object[] parameters)
 	{
@@ -15,7 +13,7 @@ internal class SpawnNPCOnServerHandler : Handler
 
 		if (TryGetOptionalValue(parameters, 2, out Vector2 velocity))
 		{
-			ModPacket packet = Networking.GetPacket(MessageType);
+			ModPacket packet = Networking.GetPacket(Id);
 			packet.Write((byte)3);
 			packet.Write(type);
 			packet.WriteVector2(position);
@@ -24,7 +22,7 @@ internal class SpawnNPCOnServerHandler : Handler
 		}
 		else 
 		{ 
-			ModPacket packet = Networking.GetPacket(MessageType);
+			ModPacket packet = Networking.GetPacket(Id);
 			packet.Write((byte)2);
 			packet.Write(type);
 			packet.WriteVector2(position);
@@ -32,7 +30,7 @@ internal class SpawnNPCOnServerHandler : Handler
 		}
 	}
 
-	internal override void ServerRecieve(BinaryReader reader)
+	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
 		int paramCount = reader.ReadByte();
 		short type = reader.ReadInt16();

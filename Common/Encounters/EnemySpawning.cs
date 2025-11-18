@@ -88,23 +88,23 @@ internal static class EnemySpawning
 {
 	private sealed class EnemySpawnHandler : Handler
 	{
-		public override Networking.Message MessageType => Networking.Message.EnemySpawn;
-
 		/// <inheritdoc cref="Networking.Message.EnemySpawn"/>
 		public override void Send(params object[] parameters)
 		{
 			CastParameters(parameters, out NPC npc, out EnemySpawnEffect effect, out Vector2 position);
 
-			ModPacket packet = Networking.GetPacket(MessageType);
+			ModPacket packet = Networking.GetPacket(Id);
 			packet.Write((byte)npc.whoAmI);
 			packet.Write((byte)effect);
 			packet.WriteVector2(position);
 			packet.Send();
 		}
 
-		internal override void ServerRecieve(BinaryReader reader) { }
+		internal override void ServerReceive(BinaryReader reader, byte sender)
+		{
+		}
 
-		internal override void ClientRecieve(BinaryReader reader)
+		internal override void ClientReceive(BinaryReader reader, byte sender)
 		{
 			byte npcIndex = reader.ReadByte();
 			var effect = (EnemySpawnEffect)reader.ReadByte();

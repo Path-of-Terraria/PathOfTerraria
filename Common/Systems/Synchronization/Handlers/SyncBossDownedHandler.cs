@@ -5,23 +5,21 @@ namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
 internal class SyncBossDownedHandler : Handler
 {
-	public override Networking.Message MessageType => Networking.Message.SyncBossDowned;
-
 	/// <inheritdoc cref="Networking.Message.SyncBossDowned"/>
 	public override void Send(params object[] parameters)
 	{
 		CastParameters(parameters, out int type);
 
-		ModPacket packet = Networking.GetPacket(MessageType);
+		ModPacket packet = Networking.GetPacket(Id);
 		packet.Write(type);
 		packet.Send();
 	}
-
-	internal override void ServerRecieve(BinaryReader reader)
+	
+	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
 		int type = reader.ReadInt32();
 
-		ModPacket packet = Networking.GetPacket(MessageType);
+		ModPacket packet = Networking.GetPacket(Id);
 		packet.Write(type);
 		packet.Send();
 
@@ -31,7 +29,7 @@ internal class SyncBossDownedHandler : Handler
 #endif
 	}
 
-	internal override void ClientRecieve(BinaryReader reader)
+	internal override void ClientReceive(BinaryReader reader, byte sender)
 	{
 		int type = reader.ReadInt32();
 		BossTracker.AddDowned(type, true);

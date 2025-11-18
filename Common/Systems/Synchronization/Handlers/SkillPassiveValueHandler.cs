@@ -5,14 +5,12 @@ namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
 internal class SkillPassiveValueHandler : Handler
 {
-	public override Networking.Message MessageType => Networking.Message.SkillPassiveValue;
-
 	/// <inheritdoc cref="Networking.Message.SkillPassiveValue"/>
 	public override void Send(params object[] parameters)
 	{
 		CastParameters(parameters, out byte player, out string treeName, out string nodeName, out byte level);
 
-		ModPacket packet = Networking.GetPacket(MessageType);
+		ModPacket packet = Networking.GetPacket(Id);
 
 		packet.Write(player);
 		packet.Write(treeName);
@@ -37,9 +35,9 @@ internal class SkillPassiveValueHandler : Handler
 		Main.player[player].GetModPlayer<SkillTreePlayer>().ModifyPassive(SkillTree.TypeToSkillTree[tree.ParentSkill], nodeType, level, false, true);
 	}
 
-	internal override void ServerRecieve(BinaryReader reader)
+	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
-		ModPacket packet = Networking.GetPacket(MessageType);
+		ModPacket packet = Networking.GetPacket(Id);
 		byte target = reader.ReadByte();
 		string treeName = reader.ReadString();
 		string nodeName = reader.ReadString();
@@ -54,7 +52,7 @@ internal class SkillPassiveValueHandler : Handler
 		SetPlayerNodeStrength(target, treeName, nodeName, level);
 	}
 
-	internal override void ClientRecieve(BinaryReader reader)
+	internal override void ClientReceive(BinaryReader reader, byte sender)
 	{
 		byte target = reader.ReadByte();
 		string treeName = reader.ReadString();

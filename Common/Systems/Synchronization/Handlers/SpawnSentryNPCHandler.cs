@@ -6,14 +6,12 @@ namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 /// <inheritdoc cref="Networking.Message.SpawnSentryNPC"/>
 internal class SpawnSentryNPCHandler : Handler
 {
-	public override Networking.Message MessageType => Networking.Message.SpawnSentryNPC;
-
 	/// <inheritdoc cref="Networking.Message.SpawnSentryNPC"/>
 	public override void Send(params object[] parameters)
 	{
 		CastParameters(parameters, out ushort type, out byte owner, out Vector2 position, out ushort timeLeft, out ushort damage);
 
-		ModPacket packet = Networking.GetPacket(MessageType);
+		ModPacket packet = Networking.GetPacket(Id);
 		packet.Write(type);
 		packet.Write(owner);
 		packet.WriteVector2(position);
@@ -22,7 +20,7 @@ internal class SpawnSentryNPCHandler : Handler
 		packet.Send();
 	}
 
-	internal override void ServerRecieve(BinaryReader reader)
+	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
 		ushort type = reader.ReadUInt16();
 		byte who = reader.ReadByte();

@@ -61,25 +61,23 @@ public enum EventFlags : ulong
 
 internal class SyncEventCompletionHandler : Handler
 {
-	public override Networking.Message MessageType => Networking.Message.SyncEventCompletion;
-
 	/// <inheritdoc cref="Networking.Message.SyncEventCompletion"/>
 	public override void Send(params object[] parameters)
 	{
 		CastParameters(parameters, out EventFlags flags, out int? gameEventId);
 
-		ModPacket packet = Networking.GetPacket(MessageType);
+		ModPacket packet = Networking.GetPacket(Id);
 		packet.Write((ulong)flags);
 		packet.Write(gameEventId ?? int.MaxValue);
 		packet.Send();
 	}
 
-	internal override void ServerRecieve(BinaryReader reader)
+	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
 		var flag = (EventFlags)reader.ReadUInt64();
 		int? gameEventId = reader.ReadInt32() is not int.MaxValue and int idx ? idx : null;
 
-		ModPacket packet = Networking.GetPacket(MessageType);
+		ModPacket packet = Networking.GetPacket(Id);
 		packet.Write((ulong)flag);
 		packet.Write(gameEventId ?? int.MaxValue);
 		packet.Send();
@@ -102,7 +100,7 @@ internal class SyncEventCompletionHandler : Handler
 #endif
 	}
 
-	internal override void ClientRecieve(BinaryReader reader)
+	internal override void ClientReceive(BinaryReader reader, byte sender)
 	{
 		var flag = (EventFlags)reader.ReadUInt64();
 		int? gameEventId = reader.ReadInt32() is not int.MaxValue and int idx ? idx : null;
@@ -269,7 +267,7 @@ internal sealed class EventTracker : ModSystem
 		{
 			PoTMod.Instance.Logger.Debug("Sending event completion: " + singleEvent);
 
-			ModPacket packet = Networking.GetPacket(Networking.Message.SyncEventCompletion, capacity: 13);
+			ModPacket packet = Networking.GetPacket<SyncEventCompletionHandler>(capacity: 13);
 			packet.Write((ulong)singleEvent);
 			packet.Write(gameEventId ?? int.MaxValue);
 			Networking.SendPacketToMainServer(packet, "Sending event packet to main server with bytes: ");

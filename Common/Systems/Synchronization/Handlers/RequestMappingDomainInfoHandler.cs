@@ -20,23 +20,21 @@ internal class RequestMappingDomainInfoHandler : Handler
 		}
 	}
 
-	public override Networking.Message MessageType => Networking.Message.RequestMappingDomainInfo;
-
 	/// <inheritdoc cref="Networking.Message.RequestMappingDomainInfo"/>
 	public override void Send(params object[] parameters)
 	{
 		CastParameters(parameters, out byte who);
 
-		ModPacket packet = Networking.GetPacket(MessageType);
+		ModPacket packet = Networking.GetPacket(Id);
 		packet.Write(who);
 		packet.Send();
 	}
 
-	internal override void ServerRecieve(BinaryReader reader)
+	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
 		byte who = reader.ReadByte();
 
-		ModPacket packet = Networking.GetPacket(MessageType);
+		ModPacket packet = Networking.GetPacket(Id);
 		packet.Write((short)MappingWorld.AreaLevel);
 		packet.Write((short)MappingWorld.MapTier);
 		packet.Write((byte)MappingWorld.Affixes.Count);
@@ -49,7 +47,7 @@ internal class RequestMappingDomainInfoHandler : Handler
 		packet.Send(who);
 	}
 
-	internal override void ClientRecieve(BinaryReader reader)
+	internal override void ClientReceive(BinaryReader reader, byte sender)
 	{
 		SendMappingDomainInfoHandler.GetAndSetMappingDomainInfo(reader);
 	}

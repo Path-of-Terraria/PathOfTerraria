@@ -1,4 +1,6 @@
-﻿namespace PathOfTerraria.Common.Buffs;
+﻿using PathOfTerraria.Common.Systems.Synchronization.Handlers;
+
+namespace PathOfTerraria.Common.Buffs;
 
 internal class DoTFunctionality
 {
@@ -29,7 +31,14 @@ internal class DoTFunctionality
 			NPC.HitInfo info = default;
 			info.HideCombatText = true;
 			info.Damage = 1;
+			info.DamageType = DamageClass.Generic;
 			npc.StrikeNPC(info);
+
+			if (Main.dedServ)
+			{
+				// For some reason gores aren't spawned through StrikeNPC, spawn manually
+				SendSpawnVFXModule.SendNPCGores(npc);
+			}
 		}
 
 		CombatText.NewText(npc.Hitbox, Color.Lerp(lightColor.Value, darkColor.Value, Main.rand.NextFloat()), damage, false, true);

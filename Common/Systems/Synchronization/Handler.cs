@@ -13,12 +13,15 @@ namespace PathOfTerraria.Common.Systems.Synchronization;
 /// </summary>
 internal abstract class Handler : ILoadable
 {
+	[Obsolete]
 	public static Dictionary<Networking.Message, Handler> HandlerForMessage = [];
 
+	public static Dictionary<byte, Handler> HandlersById = [];
+
 	/// <summary>
-	/// The message type this handler is associated with.
+	/// The automatically assigned ID for this packet. Set in <see cref="Load(Mod)"/>.
 	/// </summary>
-	public abstract Networking.Message MessageType { get; }
+	public byte Id { get; private set; }
 
 	/// <summary>
 	/// Sends the packet with the given parameters. Ideally, write in docs to clarify the signature so it's easier to use, 
@@ -58,14 +61,19 @@ internal abstract class Handler : ILoadable
 		}
 	}
 
-	public virtual void Load(Mod mod)
+	public void Load(Mod mod)
 	{
-		HandlerForMessage.Add(MessageType, this);
+		Id = (byte)HandlersById.Count;
+		HandlersById.Add(Id, this);
+
+		OnLoad(mod);
 	}
+
+	public virtual void OnLoad(Mod mod) { } 
 
 	public virtual void Unload()
 	{
-		HandlerForMessage.Remove(MessageType);
+		HandlersById.Remove(Id);
 	}
 
 	public static bool TryGetOptionalValue<T>(object[] objects, int length, out T value)

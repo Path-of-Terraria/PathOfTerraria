@@ -5,14 +5,12 @@ namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
 internal class SyncSkillSpecializationHandler : Handler
 {
-	public override Networking.Message MessageType => Networking.Message.SyncSkillSpecialization;
-
 	/// <inheritdoc cref="Networking.Message.SyncSkillSpecialization"/>
 	public override void Send(params object[] parameters)
 	{
 		CastParameters(parameters, out byte player, out string skillName, out string specName);
 
-		ModPacket packet = Networking.GetPacket(MessageType);
+		ModPacket packet = Networking.GetPacket(Id);
 
 		packet.Write(player);
 		packet.Write(skillName);
@@ -20,9 +18,9 @@ internal class SyncSkillSpecializationHandler : Handler
 		packet.Send();
 	}
 
-	internal override void ServerRecieve(BinaryReader reader)
+	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
-		ModPacket packet = Networking.GetPacket(MessageType);
+		ModPacket packet = Networking.GetPacket(Id);
 		byte target = reader.ReadByte();
 		string skillName = reader.ReadString();
 		string specName = reader.ReadString();
@@ -35,7 +33,7 @@ internal class SyncSkillSpecializationHandler : Handler
 		SetSkillOnPlayer(target, skillName, specName);
 	}
 
-	internal override void ClientRecieve(BinaryReader reader)
+	internal override void ClientReceive(BinaryReader reader, byte sender)
 	{
 		byte target = reader.ReadByte();
 		string skillName = reader.ReadString();

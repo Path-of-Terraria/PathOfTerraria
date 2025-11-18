@@ -20,24 +20,22 @@ internal class RequestMappingTierHandler : Handler
 		}
 	}
 
-	public override Networking.Message MessageType => Networking.Message.RequestMappingTiers;
-
 	/// <inheritdoc cref="Networking.Message.RequestMappingTiers"/>
 	public override void Send(params object[] parameters)
 	{
 		CastParameters(parameters, out byte who);
 
-		ModPacket packet = Networking.GetPacket(MessageType);
+		ModPacket packet = Networking.GetPacket(Id);
 		packet.Write(who);
 		packet.Send();
 	}
 
-	internal override void ServerRecieve(BinaryReader reader)
+	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
 		byte who = reader.ReadByte();
 		MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
 
-		ModPacket packet = Networking.GetPacket(MessageType);
+		ModPacket packet = Networking.GetPacket(Id);
 		Dictionary<int, int> tierCompletions = tracker.GetCompletions();
 		packet.Write((short)tierCompletions.Count);
 
@@ -50,7 +48,7 @@ internal class RequestMappingTierHandler : Handler
 		packet.Send(who);
 	}
 
-	internal override void ClientRecieve(BinaryReader reader)
+	internal override void ClientReceive(BinaryReader reader, byte sender)
 	{
 		short count = reader.ReadInt16();
 		MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
