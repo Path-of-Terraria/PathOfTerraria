@@ -157,12 +157,10 @@ internal class MapDeviceShiftClickPlayer : ModPlayer
 {
 	public override bool HoverSlot(Item[] inventory, int context, int slot)
 	{
-		if (context != ItemSlot.Context.InventoryItem)
-		{
-			return false;
-		}
-
-		if (SmartUiLoader.TryGetUiState(out MapDeviceState? map) && map is { Visible: true } && MapDeviceInterface.Entity is not null && ItemSlot.ShiftInUse)
+		if (ItemSlot.ShiftInUse
+		&& context == ItemSlot.Context.InventoryItem
+		&& SmartUiLoader.TryGetUiState(out MapDeviceState? map) && map is { Visible: true } && MapDeviceInterface.Entity is not null
+		&& inventory[slot] is { IsAir: false })
 		{
 			Main.cursorOverride = CursorOverrideID.InventoryToChest;
 			return true;
@@ -173,12 +171,10 @@ internal class MapDeviceShiftClickPlayer : ModPlayer
 
 	public override bool ShiftClickSlot(Item[] inventory, int context, int slot)
 	{
-		if (context != ItemSlot.Context.InventoryItem)
-		{
-			return false;
-		}
-
-		if (SmartUiLoader.TryGetUiState(out MapDeviceState? map) && map is { Visible: true } && MapDeviceInterface.Entity is not null)
+		if (ItemSlot.ShiftInUse
+		&& context == ItemSlot.Context.InventoryItem
+		&& inventory[slot] is { IsAir: false }
+		&& SmartUiLoader.TryGetUiState(out MapDeviceState? map) && map is { Visible: true } && MapDeviceInterface.Entity is not null)
 		{
 			Item[] storage = MapDeviceInterface.Entity.Storage;
 
@@ -190,7 +186,7 @@ internal class MapDeviceShiftClickPlayer : ModPlayer
 				Item invItem = inventory[slot].Clone();
 				inventory[slot].TurnToAir();
 				item = invItem;
-				SoundEngine.PlaySound(SoundID.MenuTick);
+				SoundEngine.PlaySound(SoundID.Grab);
 				break;
 			}
 
