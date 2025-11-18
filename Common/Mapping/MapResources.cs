@@ -144,12 +144,12 @@ internal sealed class MapResources : ModSystem
 	/// <inheritdoc cref="Get"/>
 	public static MapResource Get<T>() where T : ModItem
 	{
-		return Get(ModContent.GetInstance<T>().Item.netID);
+		return Get(ModContent.GetInstance<T>().Item.type);
 	}
 	/// <summary> Returns the globally stored amount of the resource associated with the provided item. Safe to use in all contexts. </summary>
-	public static MapResource Get(int itemNetId)
+	public static MapResource Get(int itemType)
 	{
-		if (!resourcesByItem.TryGetValue(itemNetId, out int idx)) { throw new InvalidOperationException($"Invalid resource: {ModContent.GetModItem(itemNetId).FullName}"); }
+		if (!resourcesByItem.TryGetValue(itemType, out int idx)) { throw new InvalidOperationException($"Invalid resource: {ModContent.GetModItem(itemType).FullName}"); }
 
 		return resources[idx];
 	}
@@ -157,21 +157,21 @@ internal sealed class MapResources : ModSystem
 	/// <inheritdoc cref="AddOrRemove"/>
 	public static void AddOrRemove<T>(int delta) where T : ModItem
 	{
-		AddOrRemove(ModContent.GetInstance<T>().Item.netID, delta);
+		AddOrRemove(ModContent.GetInstance<T>().Item.type, delta);
 	}
 	/// <summary> Atomically adds the given value to the resource associated with the provided item, synchronizing across all servers and clients. </summary>
-	public static void AddOrRemove(int itemNetId, int delta, byte? netSender = null)
+	public static void AddOrRemove(int itemType, int delta, byte? netSender = null)
 	{
 		// Only servers can send this.
 		if (netSender != null && netSender < byte.MaxValue) { return; }
 
 		// Short-circuit if unrecognized.
-		if (!resourcesByItem.TryGetValue(itemNetId, out int index)) { return; }
+		if (!resourcesByItem.TryGetValue(itemType, out int index)) { return; }
 
 		// Redirect to main server.
 		if (Main.netMode == NetmodeID.Server && SubworldSystem.Current != null)
 		{
-			SubworldSystem.SendToMainServer(PoTMod.Instance, Networking.GetFinalPacketBuffer(AddOrRemoveMessage.Write(itemNetId, delta)));
+			SubworldSystem.SendToMainServer(PoTMod.Instance, Networking.GetFinalPacketBuffer(AddOrRemoveMessage.Write(itemType, delta)));
 			return;
 		}
 
@@ -209,12 +209,12 @@ internal sealed class MapResources : ModSystem
 			foreach (KeyValuePair<string, object> pair in resourcesTag)
 			{
 				if (ModContent.TryFind(pair.Key, out ModItem item)
-				&& resourcesByItem.TryGetValue(item.Item.netID, out int index)
+				&& resourcesByItem.TryGetValue(item.Item.type, out int index)
 				&& pair.Value is TagCompound resourceTag)
 				{
 					ref MapResource resource = ref ResourcesMut[index];
-					resource.Value = (int)resourceTag["value"];
-					resource.Discovered = (bool)resourceTag["discovered"];
+					resource.Value = resourceTag.GetInt("value");
+					resource.Discovered = resourceTag.GetBool("discovered");
 				}
 			}
 		}
