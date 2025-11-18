@@ -242,6 +242,11 @@ SubworldHelp: {
 Grimoire: {
 	Storage: Хранилище
 	ClickMe: Нажми на меня!
+	// HelpLine: Help
+	// AnyMaterial: Any Material
+	// AnyMaterialDesc: Allow all materials to be displayed.
+	// MinionMaterial: Minion-Specific Materials
+	// MinionMaterialDesc: When a summon is selected, show only materials used by that summon.
 
 	Help: {
 		Materials:

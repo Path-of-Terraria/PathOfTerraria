@@ -4,6 +4,7 @@ using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Content.Items.Pickups;
 using PathOfTerraria.Content.Projectiles.Summoner;
 using PathOfTerraria.Core.UI.SmartUI;
+using PathOfTerraria.Utilities;
 using ReLogic.Content;
 using ReLogic.Graphics;
 using System.Collections.Generic;
@@ -22,11 +23,15 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 {
 	public static readonly Point MainPanelSize = new(900, 550);
 
+	internal static bool DrawingSlots = false;
+
 	protected override bool IsCentered => true;
 
 	public static Asset<Texture2D> EmptySummonTexture = null;
 	public static Asset<Texture2D> MorganaHelp = null;
 	public static Asset<Texture2D> HelpBack = null;
+	public static Asset<Texture2D> AnyMaterial = null;
+	public static Asset<Texture2D> MinionMaterial = null;
 
 	public static Item EmptyItem
 	{
@@ -47,6 +52,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 	private static bool _helpHover = false;
 	private static bool _heyHelp = false;
 	private static float _helpOpacity = 0;
+	private static bool _anyMaterial = true;
 
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{
@@ -65,12 +71,43 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
+		using var _ = ValueOverride.Create(ref DrawingSlots, true);
+
 		float invSize = Main.inventoryScale;
 		Main.inventoryScale = 0.8f;
 		base.Draw(spriteBatch);
 		Main.inventoryScale = invSize;
 
 		DrawMorganaHelp(spriteBatch);
+		DrawMaterialButton(spriteBatch);
+	}
+
+	private void DrawMaterialButton(SpriteBatch spriteBatch)
+	{
+		CalculatedStyle panelSize = Panel.GetDimensions();
+		Vector2 topLeft = panelSize.Position();
+		Vector2 pos = topLeft + new Vector2(310, 10);
+		Rectangle rect = new((int)pos.X, (int)pos.Y, 50, 50);
+		bool hover = rect.Contains(Main.MouseScreen.ToPoint());
+		Rectangle src = new(0 * hover.ToInt(), 52 * hover.ToInt(), 50, 50);
+		spriteBatch.Draw((_anyMaterial ? AnyMaterial : MinionMaterial).Value, pos, src, Color.White);
+
+		if (hover)
+		{
+			if (Main.mouseLeft && Main.mouseLeftRelease)
+			{
+				Main.mouseLeftRelease = false;
+				_anyMaterial = !_anyMaterial;
+				RefreshStorage();
+			}
+
+			Tooltip.Create(new TooltipDescription
+			{
+				Identifier = GetType().Name + "Material",
+				SimpleTitle = Language.GetTextValue("Mods.PathOfTerraria.UI.Grimoire." + (_anyMaterial ? "AnyMaterial" : "MinionMaterial")),
+				SimpleSubtitle = Language.GetTextValue("Mods.PathOfTerraria.UI.Grimoire." + (_anyMaterial ? "AnyMaterial" : "MinionMaterial") + "Desc"),
+			});
+		}
 	}
 
 	private void DrawMorganaHelp(SpriteBatch spriteBatch)
@@ -106,13 +143,14 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 		{
 			if (Main.mouseLeft && Main.mouseLeftRelease)
 			{
+				Main.mouseLeftRelease = false;
 				_helpOpen = !_helpOpen;
 			}
 
 			Tooltip.Create(new TooltipDescription
 			{
 				Identifier = GetType().Name,
-				SimpleTitle = "Help",
+				SimpleTitle = Language.GetTextValue("Mods.PathOfTerraria.UI.Grimoire.HelpLine"),
 			});
 		}
 
@@ -160,6 +198,9 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 		EmptySummonTexture ??= ModContent.Request<Texture2D>("PathOfTerraria/Assets/Projectiles/Summoner/GrimoireSummons/Empty_Icon");
 		MorganaHelp ??= ModContent.Request<Texture2D>("PathOfTerraria/Assets/UI/Grimoire/MorganaHelp");
 		HelpBack ??= ModContent.Request<Texture2D>("PathOfTerraria/Assets/UI/Grimoire/HelpBack");
+		AnyMaterial ??= ModContent.Request<Texture2D>("PathOfTerraria/Assets/UI/Grimoire/AnyMaterial");
+		MinionMaterial ??= ModContent.Request<Texture2D>("PathOfTerraria/Assets/UI/Grimoire/MinionMaterial");
+
 		IsVisible = !IsVisible;
 
 		if (!IsVisible)
@@ -184,6 +225,19 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 			HAlign = 0.86f,
 			VAlign = 0.9f
 		});
+
+		CloseButton = new UIImageButton(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/CloseButton"));
+		CloseButton.Left.Set(PointsAndExitPadding, 0);
+		CloseButton.Top.Set(10, 0f);
+		CloseButton.Width.Set(38, 0);
+		CloseButton.Height.Set(38, 0);
+		CloseButton.OnLeftClick += (a, b) =>
+		{
+			Toggle();
+			SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
+		};
+		CloseButton.SetVisibility(1, 1);
+		Panel.Append(CloseButton);
 
 		CloseButton = new UIImageButton(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/CloseButton"));
 		CloseButton.Left.Set(PointsAndExitPadding, 0);
@@ -271,6 +325,11 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 		}
 		else
 		{
+			if (GrimoirePlayer.Get().CurrentSummonId != -1)
+			{
+				ToggleSummon(summon, false);
+			}
+
 			_sacrificePanel.SetHint(requirements);
 			SoundEngine.PlaySound(SoundID.Item1 with { Pitch = 0.5f });
 		}
@@ -381,7 +440,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 		int summonId = GrimoirePlayer.Get().CurrentSummonId;
 		Dictionary<int, int> parts = null;
 
-		if (summonId > ProjectileID.None)
+		if (summonId > ProjectileID.None && !_anyMaterial)
 		{
 			var summon = ContentSamples.ProjectilesByType[summonId].ModProjectile as GrimoireSummon;
 			parts = summon.GetRequiredParts();

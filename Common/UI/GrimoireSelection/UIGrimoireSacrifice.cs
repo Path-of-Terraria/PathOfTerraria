@@ -1,7 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems.ModPlayers;
-using PathOfTerraria.Content.Items.Pickups;
 using PathOfTerraria.Content.Projectiles.Summoner;
-using PathOfTerraria.Content.Projectiles.Summoner.GrimoireSummons;
 using ReLogic.Content;
 using System.Collections.Generic;
 using Terraria.GameContent.UI.Elements;
@@ -39,8 +37,6 @@ internal class UIGrimoireSacrifice : UIElement
 			HAlign = 0.5f,
 			VAlign = -0.2f
 		});
-
-		_currentSummon.OnLeftClick += ClearSummonIfAny;
 
 		Item[] parts = GrimoirePlayer.Get().StoredParts;
 		for (int i = 0; i < parts.Length; i++)
