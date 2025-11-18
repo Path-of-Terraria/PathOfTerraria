@@ -5,11 +5,27 @@ namespace PathOfTerraria.Content.Passives.Summon.Masteries;
 
 internal class OverhealMastery : Passive
 {
-	internal static void Overheal(Player self, int overheal, int totalHeal)
+	public override void OnLoad()
 	{
-		if (self.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<OverhealMastery>(out float value))
+		On_Player.Heal += HealTime;
+	}
+
+	private void HealTime(On_Player.orig_Heal orig, Player self, int amount)
+	{
+		int oldLife = self.statLife;
+
+		orig(self, amount);
+
+		if (oldLife + amount > self.statLifeMax2)
 		{
-			float damageBase = (overheal / (float)totalHeal) * value / 100f;
+			int overheal = (oldLife + amount) - self.statLifeMax2;
+
+			if (!self.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<OverhealMastery>(out float value))
+			{
+				return;
+			}
+
+			float damageBase = (overheal / (float)amount) * value / 100f;
 
 			foreach (Projectile proj in Main.ActiveProjectiles)
 			{
