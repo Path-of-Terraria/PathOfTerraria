@@ -194,10 +194,10 @@ internal static class Networking
 		/// </summary>
 		PlayerUseSackOfHolding,
 
-    /// <summary>
-    /// Flags a quest as enabled on all clients + server.<br/>Signature<br/>
-    /// <c>string questName, bool enabled</c>
-    /// </summary>
+		/// <summary>
+		/// Flags a quest as enabled on all clients + server.<br/>Signature<br/>
+		/// <c>string questName, bool enabled</c>
+		/// </summary>
 		PlayerQuestActive,
     
 		/// <summary>
