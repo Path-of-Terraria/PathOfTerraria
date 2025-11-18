@@ -615,7 +615,7 @@ HeartySummonsPassive: {
 }
 
 SymbioticPulseMastery: {
-	Name: Symbiotic Pulse
+	Name: Symbiotic Summons
 	Tooltip: Every 30 seconds, your summons drop a healing orb that, when collected, heals {0}% of your max health
 }
 
@@ -642,4 +642,14 @@ IncreasedSentryKnockbackPassive: {
 SentryDuplicatedProjectilePassive: {
 	Name: Additional Sentry Projectile Chance
 	Tooltip: +{0}% chance for sentries to fire an additional projectile
+}
+
+SacrificialSummonsMastery: {
+	Name: Sacrificial Summons
+	Tooltip: When you or anyone [mechanic/shift:Nearby] you dies, sacrifice {0} summons to cheat death and return to 100 health (5 minute cooldown)
+}
+
+OverhealMastery: {
+	Name: Overheal Pulse
+	Tooltip: When overhealing with a potion, emit a pulse of damage from every minion you have, damage scaling with how much you've overhealed (capping at {0}%)
 }

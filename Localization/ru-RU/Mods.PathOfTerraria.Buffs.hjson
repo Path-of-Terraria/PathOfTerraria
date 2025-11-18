@@ -195,3 +195,8 @@ WitheringBoltsDebuff: {
 	// DisplayName: Withering Bolts Debuff
 	// Description: Debilitating slow
 }
+
+SacrificeReviveCooldown: {
+	// DisplayName: Sacrifice Revive Cooldown
+	// Description: Mods.PathOfTerraria.Buffs.SacrificeReviveCooldown.Description
+}

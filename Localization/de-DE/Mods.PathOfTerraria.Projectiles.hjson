@@ -200,3 +200,5 @@ FlameSentryFireball.DisplayName: "{$ProjectileName.CultistBossFireBall}"
 // BlastIcicle.DisplayName: Blast Icicle
 // ConfluxRift.DisplayName: Conflux Rift
 // HealingOrb.DisplayName: Healing Orb
+// ReviveEffect.DisplayName: Revive Effect
+// OverhealPulseAura.DisplayName: Overheal Pulse Aura

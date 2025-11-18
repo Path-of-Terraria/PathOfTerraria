@@ -1,4 +1,6 @@
-﻿using PathOfTerraria.Common.Systems.Synchronization.Handlers;
+﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
+using PathOfTerraria.Content.Passives.Summon.Masteries;
 using Terraria.Audio;
 using Terraria.ID;
 
@@ -27,8 +29,15 @@ internal class PotionPlayer : ModPlayer
 	{
 		PotionPlayer mp = self.GetModPlayer<PotionPlayer>();
 
-		if (mp.HealingLeft <= 0 || self.HasBuff(BuffID.PotionSickness) || self.statLife >= self.statLifeMax2)
+		// Default checks, constant
+		if (mp.HealingLeft <= 0 || self.HasBuff(BuffID.PotionSickness))
 		{
+			return;
+		}
+
+		// Disable overheal unless using the Overheal Pulse mastery
+		if (self.statLife >= self.statLifeMax2 && !self.GetModPlayer<PassiveTreePlayer>().HasNode<OverhealMastery>())
+		{ 
 			return;
 		}
 
@@ -41,6 +50,13 @@ internal class PotionPlayer : ModPlayer
 
 		// Changed from flat healing to percentage-based (Using statLifeMax2 is MaxLife after adjusted buffs/equipment)
 		int healAmount = (int)(self.statLifeMax2 * (mp.HealPower / 100f));
+
+		if (self.statLife + healAmount > self.statLifeMax2)
+		{
+			int overheal = (self.statLife + healAmount) - self.statLifeMax2;
+			OverhealMastery.Overheal(self, overheal, healAmount);
+		}
+
 		self.Heal(healAmount);
 		self.AddBuff(BuffID.PotionSickness, mp.HealDelay);
 		mp.HealingLeft--;
