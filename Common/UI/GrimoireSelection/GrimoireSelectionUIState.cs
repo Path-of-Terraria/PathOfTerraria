@@ -267,7 +267,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 	{
 		if (GrimoirePlayer.Get().CanUseSummon(summon, out GrimoireSummonLoader.Requirement requirements))
 		{
-			ToggleSummon(summon, requirements);
+			ToggleSummon(summon);
 		}
 		else
 		{
@@ -276,18 +276,18 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 		}
 
 		RefreshStorage();
+	}
 
-		static void ToggleSummon(GrimoireSummon summon, GrimoireSummonLoader.Requirement items)
-		{
-			var summoner = GrimoirePlayer.Get();
-			bool deactivate = summoner.CurrentSummonId == summon.Type;
+	public static void ToggleSummon(GrimoireSummon summon, bool defaultToggle = true)
+	{
+		var summoner = GrimoirePlayer.Get();
+		bool deactivate = !defaultToggle || summoner.CurrentSummonId == summon.Type;
 
-			summoner.CurrentSummonId = deactivate ? -1 : summon.Type;
-			_sacrificePanel.RefreshSummonImage();
-			RefreshStorage();
+		summoner.CurrentSummonId = deactivate ? -1 : summon.Type;
+		_sacrificePanel.RefreshSummonImage();
+		RefreshStorage();
 
-			SoundEngine.PlaySound((deactivate ? SoundID.MenuClose : SoundID.MenuOpen) with { Pitch = 0.5f });
-		}
+		SoundEngine.PlaySound((deactivate ? SoundID.MenuClose : SoundID.MenuOpen) with { Pitch = 0.5f });
 	}
 
 	private static void UpdateSummonIcon(UIColoredImageButton self, GrimoireSummon item)
