@@ -1,5 +1,6 @@
 using PathOfTerraria.Content.Projectiles.Utility;
 using System.IO;
+using Terraria.Audio;
 
 namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
@@ -67,8 +68,18 @@ internal class SendSpawnVFXModule : Handler
 		}
 		else
 		{
-			short npc = reader.ReadInt16();
-			Main.npc[npc].HitEffect(0, 1, true);
+			short npcWho = reader.ReadInt16();
+			NPC npc = Main.npc[npcWho];
+
+			npc.active = true;
+			npc.HitEffect(0, 1, false);
+
+			if (npc.DeathSound is not null)
+			{
+				SoundEngine.PlaySound(npc.DeathSound, npc.Center);
+			}
+
+			npc.active = false;
 		}
 	}
 

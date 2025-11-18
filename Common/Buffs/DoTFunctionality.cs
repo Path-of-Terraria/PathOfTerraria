@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems.Synchronization.Handlers;
+using Terraria.ID;
 
 namespace PathOfTerraria.Common.Buffs;
 
@@ -25,13 +26,14 @@ internal class DoTFunctionality
 
 		// Vanilla is dumb, this is the easiest way to properly kill an NPC while showing gore & doing death effects,
 		// that is, WITHOUT calling StrikeNPC for every hit, which causes a hit sound and forces a specific combat text
-		if (npc.life <= 0)
+		if (npc.life <= 0 && Main.netMode != NetmodeID.MultiplayerClient)
 		{
 			npc.life = 1;
+
 			NPC.HitInfo info = default;
 			info.HideCombatText = true;
 			info.Damage = 1;
-			info.DamageType = DamageClass.Generic;
+			info.DamageType = DamageClass.Default;
 			npc.StrikeNPC(info);
 
 			if (Main.dedServ)
