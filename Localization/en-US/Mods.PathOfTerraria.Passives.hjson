@@ -651,5 +651,5 @@ SacrificialSummonsMastery: {
 
 OverhealMastery: {
 	Name: Overheal Pulse
-	Tooltip: When overhealing with a potion, emit a pulse of damage from every minion you have, damage scaling with how much you've overhealed (capping at {0}%)
+	Tooltip: When overhealing, emit a pulse of damage from every minion you have, damage scaling with how much you've overhealed (capping at {0}%)
 }
