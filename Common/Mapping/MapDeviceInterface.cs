@@ -153,6 +153,50 @@ internal sealed class MapDeviceInterface : ModSystem
 	}
 }
 
+internal class MapDeviceShiftClickPlayer : ModPlayer
+{
+	public override bool HoverSlot(Item[] inventory, int context, int slot)
+	{
+		if (ItemSlot.ShiftInUse
+		&& context == ItemSlot.Context.InventoryItem
+		&& SmartUiLoader.TryGetUiState(out MapDeviceState? map) && map is { Visible: true } && MapDeviceInterface.Entity is not null
+		&& inventory[slot] is { IsAir: false })
+		{
+			Main.cursorOverride = CursorOverrideID.InventoryToChest;
+			return true;
+		}
+		
+		return false;
+	}
+
+	public override bool ShiftClickSlot(Item[] inventory, int context, int slot)
+	{
+		if (ItemSlot.ShiftInUse
+		&& context == ItemSlot.Context.InventoryItem
+		&& inventory[slot] is { IsAir: false }
+		&& SmartUiLoader.TryGetUiState(out MapDeviceState? map) && map is { Visible: true } && MapDeviceInterface.Entity is not null)
+		{
+			Item[] storage = MapDeviceInterface.Entity.Storage;
+
+			for (int i = 0; i < MapDeviceEntity.StorageSize; i++)
+			{
+				ref Item item = ref storage[i];
+				if (!item.IsAir) { continue; }
+
+				Item invItem = inventory[slot].Clone();
+				inventory[slot].TurnToAir();
+				item = invItem;
+				SoundEngine.PlaySound(SoundID.Grab);
+				break;
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+}
+
 internal sealed class MapDeviceState : SmartUiState //UIState
 {
 	// Drawers have to be UI elements to render in time for scissoring areas to function.
