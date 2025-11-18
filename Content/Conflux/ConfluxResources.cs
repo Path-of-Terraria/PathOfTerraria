@@ -120,6 +120,7 @@ internal sealed class InfernalConflux : ConfluxResource
 		{
 			AssociatedItem = Type,
 			AccentColor = Color.OrangeRed,
+			CanisterLiquidTexture = $"{nameof(PathOfTerraria)}/Assets/UI/MapDevice/Liquid_{GetType().Name}",
 		};
 	}
 
@@ -137,6 +138,7 @@ internal sealed class GlacialConflux : ConfluxResource
 		{
 			AssociatedItem = Type,
 			AccentColor = Color.Cyan,
+			CanisterLiquidTexture = $"{nameof(PathOfTerraria)}/Assets/UI/MapDevice/Liquid_{GetType().Name}",
 		};
 	}
 
@@ -154,6 +156,7 @@ internal sealed class CelestialConflux : ConfluxResource
 		{
 			AssociatedItem = Type,
 			AccentColor = Color.Magenta,
+			CanisterLiquidTexture = $"{nameof(PathOfTerraria)}/Assets/UI/MapDevice/Liquid_{GetType().Name}",
 		};
 	}
 

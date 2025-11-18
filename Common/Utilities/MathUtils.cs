@@ -4,6 +4,23 @@ namespace PathOfTerraria.Common.Utilities;
 
 public static class MathUtils
 {
+	/// <summary> Returns the remainder of a division, compatible with negative numbers. </summary>
+	public static float Modulo(float value, float length)
+	{
+		return value - (float)Math.Floor(value / length) * length;
+	}
+	/// <summary> Returns the remainder of a division, compatible with negative numbers. </summary>
+	public static double Modulo(double value, double length)
+	{
+		return value - (float)Math.Floor(value / length) * length;
+	}
+	/// <summary> Returns the remainder of a division, compatible with negative numbers. </summary>
+	public static int Modulo(int value, int length)
+	{
+		int r = value % length;
+		return r < 0 ? r + length : r;
+	}
+
 	/// <summary> Approaches <paramref name="goal"/> by adding <paramref name="step"/> to move <paramref name="value"/> towards it. </summary>
 	public static float StepTowards(float value, float goal, float step)
 	{

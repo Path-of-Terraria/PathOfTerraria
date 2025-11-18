@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Common.UI.Components;
 using PathOfTerraria.Common.UI.Elements;
+using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Content.Tiles.Furniture;
 using PathOfTerraria.Core.Time;
@@ -16,11 +19,13 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
+using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.UI;
 using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
+using Terraria.UI.Chat;
 
 #nullable enable
 #pragma warning disable IDE0042 // Deconstruct variable declaration
@@ -292,6 +297,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 	private bool forceUpdateAnimation;
 	private float openingAnimation;
 	private float closingAnimation;
+	private (int NonWrappedSelection, float Center) canisters;
 	private (float Speed, float Rotation, Vector2 Offset) gear;
 	private SpriteFrame buttonLockFrame = new(1, 18);
 	private (Color? Injection, Color? Burst, SpriteFrame Frame) activationEffect = (null, null, new(4, 3));
@@ -306,7 +312,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 	public UIGrid? Inventory { get; private set; }
 	public UIElement? StoragePanel { get; private set; }
 	public UIElement? InventoryPanel { get; private set; }
-	public UIElement[] Canisters { get; private set; } = [];
+	public UIElement[] CanisterElements { get; private set; } = [];
 
 	public new bool Visible { get => base.Visible; private set => base.Visible = value; }
 
@@ -356,6 +362,8 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		(float oldOpening, float oldClosing) = (openingAnimation, closingAnimation);
 		openingAnimation = Math.Clamp(openingAnimation + ((MapDeviceInterface.Active ? +1f : +0f) / 20f), 0f, 1f);
 		closingAnimation = Math.Clamp(closingAnimation + ((MapDeviceInterface.Active ? -1f : +1f) / 20f), 0f, 1f);
+
+		UpdateCanisters();
 
 		// Cogwheel.
 		const float GearMaxSpeed = 60f;
@@ -489,6 +497,8 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		Vector2 gearPosition = windowCenter + gear.Offset + Vector2.Lerp(new Vector2(-0f, -96f), new Vector2(-0f, -128f), sharedAnimation);
 		float gearRotation = MathHelper.ToRadians(MathF.Floor(MathHelper.ToDegrees(gear.Rotation) / 4f) * 4f);
 		sb.Draw(gearTexture.Value, gearPosition, null, Color.White, gearRotation, gearTexture.Size() * 0.5f, 1f, 0, 0f);
+
+		RenderCanisters(sb, windowCenter);
 	}
 
 	public void DrawOver(SpriteBatch sb)
@@ -505,6 +515,166 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		Texture2D lockTexture = ModContent.Request<Texture2D>($"{BasePath}/MapDevice_Trigger_Locked", AssetRequestMode.ImmediateLoad).Value;
 		Rectangle lockSrcRect = buttonLockFrame.GetSourceRectangle(lockTexture);
 		sb.Draw(lockTexture, lockDstRect, lockSrcRect, Color.White, 0f, default, 0, 0f);
+	}
+
+	private void AddCanisterElements()
+	{
+		const float sideXOffset = 128f;
+		const float sideYOffset = -256f - 16f;
+
+		var windowCenter = Window!.GetDimensions().Center().ToPoint().ToVector2();
+
+		Asset<Texture2D> leftTex = ModContent.Request<Texture2D>($"{BasePath}/MapButtonSmall_Left", AssetRequestMode.ImmediateLoad);
+		Asset<Texture2D> rightTex = ModContent.Request<Texture2D>($"{BasePath}/MapButtonSmall_Right", AssetRequestMode.ImmediateLoad);
+		Asset <Texture2D> injectTex = ModContent.Request<Texture2D>($"{BasePath}/MapButton_Down", AssetRequestMode.ImmediateLoad);
+		Asset<Texture2D> leftHoverTex = ModContent.Request<Texture2D>($"{BasePath}/MapButtonSmall_Left_Highlight", AssetRequestMode.ImmediateLoad);
+		Asset<Texture2D> rightHoverTex = ModContent.Request<Texture2D>($"{BasePath}/MapButtonSmall_Right_Highlight", AssetRequestMode.ImmediateLoad);
+		Asset <Texture2D> injectHoverTex = ModContent.Request<Texture2D>($"{BasePath}/MapButton_Down_Highlight", AssetRequestMode.ImmediateLoad);
+		(Vector2 Pos, Vector2 Size) left = (windowCenter + new Vector2(-sideXOffset, +sideYOffset) - leftTex.Size() * 0.5f, leftTex.Size());
+		(Vector2 Pos, Vector2 Size) right = (windowCenter + new Vector2(+sideXOffset, +sideYOffset) - rightTex.Size() * 0.5f, rightTex.Size());
+		(Vector2 Pos, Vector2 Size) inject = (windowCenter + new Vector2(0f, -208) - injectTex.Size() * 0.5f, injectTex.Size());
+
+		// The buttons are invisible when first added, the update function below implements fading behavior.
+		UIElement leftButton = this.AddElement(new UIImageButton(leftTex), e =>
+		{
+			e.SetDimensions(x: (0f, left.Pos.X), y: (0f, left.Pos.Y), width: (0f, left.Size.X), height: (0f, left.Size.Y));
+			e.SetHoverImage(leftHoverTex);
+			e.SetVisibility(0f, 0f);
+			e.OnLeftClick += (_, _) => canisters.NonWrappedSelection--;
+		});
+		UIElement rightButton = this.AddElement(new UIImageButton(rightTex), e =>
+		{
+			e.SetDimensions(x: (0f, right.Pos.X), y: (0f, right.Pos.Y), width: (0f, right.Size.X), height: (0f, right.Size.Y));
+			e.SetHoverImage(rightHoverTex);
+			e.SetVisibility(0f, 0f);
+			e.OnLeftClick += (_, _) => canisters.NonWrappedSelection++;
+		});
+		UIElement injectButton = this.AddElement(new UIImageButton(injectTex), e =>
+		{
+			e.SetDimensions(x: (0f, inject.Pos.X), y: (0f, inject.Pos.Y), width: (0f, inject.Size.X), height: (0f, inject.Size.Y));
+			e.SetHoverImage(injectHoverTex);
+			e.SetVisibility(0f, 0f);
+		});
+
+		CanisterElements = [injectButton, leftButton, rightButton];
+	}
+	private void UpdateCanisters()
+	{
+		// Update UI element visibility.
+		float globalFade = openingAnimation - closingAnimation;
+		foreach (UIElement e in CanisterElements)
+		{
+			if (e is UIImageButton b) { b.SetVisibility(globalFade, globalFade); }
+		}
+
+		// Scroll.
+		if (PlayerInput.ScrollWheelDeltaForUI is not 0 and int weirdDelta)
+		{
+			canisters.NonWrappedSelection -= weirdDelta / 120;
+			//SoundEngine.PlaySound(SoundID.MenuTick with { MaxInstances = 3, PitchVariance = 0.2f });
+		}
+
+		// Move scroll center.
+		float oldCenter = canisters.Center;
+		canisters.Center = MathHelper.Lerp(canisters.Center, canisters.NonWrappedSelection, 0.1f);
+		canisters.Center = MathUtils.StepTowards(canisters.Center, canisters.NonWrappedSelection, 0.01f);
+
+		// Play audio between edges.
+		if ((int)MathF.Round(oldCenter) != (int)MathF.Round(canisters.Center))
+		{
+			// Quite funny.
+			float speed = MathF.Abs(canisters.Center - oldCenter);
+			float pitch = MathHelper.Lerp(-0.25f, 0.35f, MathHelper.Clamp(speed * 3f, 0f, 1f));
+			SoundEngine.PlaySound(SoundID.Shatter with { Volume = 0.07f, MaxInstances = 5, Pitch = 1f, PitchVariance = 0.05f });
+			SoundEngine.PlaySound(SoundID.Tink with { Volume = 0.9f, MaxInstances = 5, Pitch = pitch, PitchVariance = 0.05f });
+			SoundEngine.PlaySound(SoundID.DrumKick with { Volume = 0.35f, MaxInstances = 5, Pitch = pitch, PitchVariance = 0.05f });
+		}
+	}
+	private void RenderCanisters(SpriteBatch sb, Vector2 windowCenter)
+	{
+		float globalFade = openingAnimation - closingAnimation;
+		var globalFadeColor = Color.Lerp(Color.Transparent, Color.White, globalFade);
+
+		const int numRenders = 7; // Must be odd.
+		const float offsetPerCanister = 48f;
+
+		Texture2D canisterTex = ModContent.Request<Texture2D>($"{BasePath}/MapDevice_Canister", AssetRequestMode.ImmediateLoad).Value;
+		Texture2D canisterHoverTex = ModContent.Request<Texture2D>($"{BasePath}/MapDevice_Canister_Highlight", AssetRequestMode.ImmediateLoad).Value;
+		Vector2 canisterSize = canisterTex.Size();
+
+		ReadOnlySpan<MapResource> resources = MapResources.Resources;
+		float leftCanisterSteps = 0.5f + (numRenders * -0.5f) - (canisters.Center - MathF.Floor(canisters.Center));
+		int middleCanisterOrder = (int)MathF.Floor(canisters.Center);
+		int leftCanisterOrder = middleCanisterOrder - (int)MathF.Floor(numRenders * 0.5f);
+		Vector2 sharedCenter = windowCenter + new Vector2(0f, -256f - 24f);
+
+		// Render all the canisters.
+		for (int i = 0; i < numRenders; i++)
+		{
+			int order = leftCanisterOrder + i;
+			int index = MathUtils.Modulo(order, resources.Length);
+			ref readonly MapResource resource = ref resources[index];
+
+			Texture2D texture = canisterTex;
+			float offset = (leftCanisterSteps + i) * offsetPerCanister;
+			Vector2 canisterCenter = sharedCenter + new Vector2(offset, 0f);
+			Vector2 canisterOrigin = canisterTex.Size() * 0.5f;
+			float stepsFromMiddle = MathF.Abs(canisterCenter.X - sharedCenter.X) / offsetPerCanister;
+			float scale = MathHelper.Lerp(1f, 0.8f, MathF.Min(1f, stepsFromMiddle / 3f));
+
+			// Interactions
+			Vector2 canisterTopleft = canisterCenter - (canisterOrigin * scale);
+			Rectangle interactionRect = new Rectangle((int)canisterTopleft.X, (int)canisterTopleft.Y, (int)(canisterTex.Width * scale), (int)(canisterTex.Height * scale)).Inflated(2, 2);
+			if (globalFade >= 1f && interactionRect.Contains(Main.MouseScreen.ToPoint()) && stepsFromMiddle <= 2f)
+			{
+				scale *= 1.05f;
+				texture = canisterHoverTex;
+
+				Item item = ContentSamples.ItemsByType[resource.AssociatedItem];
+				List<DrawableTooltipLine> tooltipLines = ItemTooltipBuilder.BuildTooltips(item, Main.LocalPlayer);
+
+				Tooltip.Create(new()
+				{
+					Identifier = "MapDevice_Canister",
+					Lines = tooltipLines,
+				});
+
+				if (Main.mouseLeft && Main.mouseLeftRelease)
+				{
+					Main.mouseLeftRelease = false;
+					canisters.NonWrappedSelection = order;
+				}
+			}
+
+			// Shadow
+			var shadowCenter = Vector2.Lerp(canisterCenter, sharedCenter + new Vector2(0f, 96f), 0.2f);
+			var shadowColor = Color.Lerp(Color.Black.MultiplyRGBA(globalFadeColor), Color.Transparent, MathF.Min(1f, stepsFromMiddle / 3f));
+			sb.Draw(canisterTex, shadowCenter, null, shadowColor, 0f, canisterOrigin, scale, 0, 0f);
+			// Canister
+			var canisterColor = Color.Lerp(globalFadeColor, Color.Transparent, MathF.Min(1f, stepsFromMiddle / 3f));
+			sb.Draw(texture, canisterCenter, null, canisterColor, 0f, texture.Size() * 0.5f, scale, 0, 0f);
+
+			// Contents
+			if (ModContent.Request<Texture2D>(resource.CanisterLiquidTexture) is { IsLoaded: true, Value: Texture2D liquidTex })
+			{
+				sb.Draw(liquidTex, canisterCenter, null, canisterColor, 0f, liquidTex.Size() * 0.5f, scale, 0, 0f);
+			}
+
+			// Amount
+			string amountText = resource.Value.ToString();
+			Vector2 amountSize = FontAssets.MouseText.Value.MeasureString(amountText);
+			Color amountColor = Color.Lerp(resource.AccentColor.MultiplyRGBA(globalFadeColor), Color.Transparent, MathF.Min(1f, stepsFromMiddle / 2.5f));
+			ChatManager.DrawColorCodedStringWithShadow(sb, FontAssets.MouseText.Value, amountText, canisterCenter + new Vector2(0f, -48f), amountColor, 0f, amountSize * 0.5f, Vector2.One);
+		}
+
+		// Render buttons with alpha.
+		{
+			Texture2D injectButtonTex = ModContent.Request<Texture2D>($"{BasePath}/MapButton_Down_Highlight", AssetRequestMode.ImmediateLoad).Value;
+			Texture2D leftButtonTex = ModContent.Request<Texture2D>($"{BasePath}/MapButtonSmall_Left_Highlight", AssetRequestMode.ImmediateLoad).Value;
+			Texture2D rightButtonTex = ModContent.Request<Texture2D>($"{BasePath}/MapButtonSmall_Right_Highlight", AssetRequestMode.ImmediateLoad).Value;
+			
+			//sb.Draw(injectButtonTex, sharedCenter + new Vector2(0f, 64f), null, globalFadeColor, 0f, injectButtonTex.Size() * 0.5f, 1f, 0, 0f);
+		}
 	}
 
 	public override void Refresh()
@@ -696,7 +866,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 
 		#endregion
 
-		AddCanisters();
+		AddCanisterElements();
 
 		// Put the main window under everything else.
 		RemoveChild(Window);
@@ -704,35 +874,6 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 
 		Recalculate();
 		Main.QueueMainThreadAction(Recalculate);
-	}
-
-	private void AddCanisters()
-	{
-		List<UIElement> canisters = [];
-		Asset<Texture2D> canisterTex = ModContent.Request<Texture2D>($"{BasePath}/MapDevice_Canister", AssetRequestMode.ImmediateLoad);
-		Vector2 canisterSize = canisterTex.Size();
-
-		foreach (MapResource resource in MapResources.Resources)
-		{
-			int index = canisters.Count;
-			int resourceIndex = resource.AssociatedItem;
-
-			UIElement canister = Window.AddElement(new UIImage(canisterTex), e =>
-			{
-				float xOffset = ((index + 1) / 2) * (index % 2 == 0 ? 1 : -1) * 64;
-				e.SetDimensions(x: (0.5f, +(xOffset - (canisterSize.X * 0.5f))), y: (0f, -96), width: (0f, +canisterSize.X), height: (0f, +canisterSize.Y));
-			});
-
-			canister.AddElement(new UIText(""), e =>
-			{
-				e.AddComponent(new UIDynamicText(_ => $"{MapResources.Get(resourceIndex).Value}"));
-				e.SetDimensions(x: (0.5f, -4), y: (1.0f, +0), width: (0f, +0), height: (0f, +0));
-			});
-
-			canisters.Add(canister);
-		}
-
-		Canisters = canisters.ToArray();
 	}
 
 	private static void OnModifyMapItem(UIElement element, Item oldItem, Item newItem)

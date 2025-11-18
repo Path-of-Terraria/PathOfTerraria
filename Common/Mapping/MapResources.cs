@@ -14,6 +14,8 @@ internal record struct MapResource()
 	public required int AssociatedItem;
 	/// <summary> The color to use when referring to this resource in text or sprite rendering. </summary>
 	public required Color AccentColor;
+	/// <summary> Path of the texture used to display this resource inside a map device canister. </summary>
+	public required string CanisterLiquidTexture;
 	/// <summary> The current amount of this resource. </summary>
 	public int Value;
 	/// <summary> The minimum amount of this resource that can be. </summary>

@@ -1369,17 +1369,29 @@ LunarFragment: {
 
 CelestialConflux: {
 	// DisplayName: Celestial Conflux
-	// Tooltip: ""
+	/* Tooltip:
+		'''
+		Electric energy collected from a celestial rift
+		Inject 100 of this into a Map Device to open a special portal
+		''' */
 }
 
 GlacialConflux: {
 	// DisplayName: Glacial Conflux
-	// Tooltip: ""
+	/* Tooltip:
+		'''
+		Freezing energy collected from a glacial rift
+		Inject 100 of this into a Map Device to open a special portal
+		''' */
 }
 
 InfernalConflux: {
 	// DisplayName: Infernal Conflux
-	// Tooltip: ""
+	/* Tooltip:
+		'''
+		Flaming energy collected from an infernal rift
+		Inject 100 of this into a Map Device to open a special portal
+		''' */
 }
 
 GreenCore: {
