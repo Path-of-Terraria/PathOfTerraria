@@ -1,4 +1,6 @@
-﻿using PathOfTerraria.Common.Systems.Synchronization.Handlers;
+﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
+using PathOfTerraria.Content.Passives.Summon.Masteries;
 using Terraria.Audio;
 using Terraria.ID;
 
@@ -27,8 +29,15 @@ internal class PotionPlayer : ModPlayer
 	{
 		PotionPlayer mp = self.GetModPlayer<PotionPlayer>();
 
-		if (mp.HealingLeft <= 0 || self.HasBuff(BuffID.PotionSickness) || self.statLife >= self.statLifeMax2)
+		// Default checks, constant
+		if (mp.HealingLeft <= 0 || self.HasBuff(BuffID.PotionSickness))
 		{
+			return;
+		}
+
+		// Disable overheal unless using the Overheal Pulse mastery
+		if (self.statLife >= self.statLifeMax2 && !self.GetModPlayer<PassiveTreePlayer>().HasNode<OverhealMastery>())
+		{ 
 			return;
 		}
 

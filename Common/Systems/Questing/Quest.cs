@@ -1,5 +1,7 @@
 ﻿using PathOfTerraria.Common.NPCs.QuestMarkers;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using System.Collections.Generic;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
 
@@ -14,6 +16,9 @@ public abstract class Quest : ModType, ILocalizedModType
 		Completed,
 	}
 
+	/// <summary>
+	/// A non-synced dictionary filled with singletons of every quest in the mod. Should not be modified.
+	/// </summary>
 	private static readonly Dictionary<string, Quest> QuestsByName = [];
 
 	private State state;
@@ -110,7 +115,8 @@ public abstract class Quest : ModType, ILocalizedModType
 	}
 
 	/// <summary>
-	/// Gets the actual instance of the given quest on the local player. If the instance does not exist for some reason, adds it.
+	/// Gets the actual instance of the given quest on the local player. If the instance does not exist for some reason, adds it.<br/>
+	/// <b>This does not work in multiplayer.</b> It's just shorthand, use 
 	/// </summary>
 	/// <param name="name">The name of the quest to get.</param>
 	/// <returns>The in-use quest instance for the local player.</returns>
@@ -133,6 +139,20 @@ public abstract class Quest : ModType, ILocalizedModType
 	public static Quest GetLocalPlayerInstance<T>() where T : Quest
 	{
 		return GetLocalPlayerInstance(ModContent.GetInstance<T>().FullName);
+	}
+
+	/// <summary>
+	/// Used to check if the given player has a given quest in multiplayer, as <see cref="GetLocalPlayerInstance(string)"/> is not synced.
+	/// </summary>
+	public static bool PlayerHasQuest(int who, string questName)
+	{
+		return Main.player[who].GetModPlayer<QuestModPlayer>().EnabledQuestsByName.Contains(questName);
+	}
+
+	/// <inheritdoc cref="PlayerHasQuest(int, string)"/>
+	public static bool PlayerHasQuest<T>(int who) where T : Quest
+	{
+		return PlayerHasQuest(who, ModContent.GetInstance<T>().FullName);
 	}
 
 	public virtual void OnCompleted()
@@ -159,6 +179,13 @@ public abstract class Quest : ModType, ILocalizedModType
 
 		GiveRewards(player);
 		OnCompleted();
+
+		player.GetModPlayer<QuestModPlayer>().EnabledQuestsByName.Remove(Name);
+
+		if (player.whoAmI == Main.myPlayer && Main.netMode == NetmodeID.MultiplayerClient)
+		{
+			SyncPlayerQuestActive.Send(FullName, false);
+		}
 	}
 
 	public void GiveRewards(Player player)

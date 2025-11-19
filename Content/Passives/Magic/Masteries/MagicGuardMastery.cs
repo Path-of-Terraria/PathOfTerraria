@@ -11,7 +11,7 @@ internal class MagicGuardMastery : Passive
 		{
 			if (Player.GetModPlayer<PassiveTreePlayer>().HasNode<MagicGuardMastery>() && Player.statMana > Player.statManaMax2 * 0.5f)
 			{
-				modifiers.FinalDamage -= 0.92f;
+				modifiers.FinalDamage -= 0.08f;
 			}
 		}
 	}
