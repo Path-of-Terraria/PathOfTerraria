@@ -63,7 +63,7 @@ public abstract class Map : ModItem, GenerateNameAffixes.IItem, GenerateAffixes.
 		}
 		else
 		{
-			ModContent.GetInstance<SendMappingDomainInfoHandler>().Send((short)WorldLevel, (short)Tier, collection);
+			SendMappingDomainInfoHandler.Send((short)WorldLevel, (short)Tier, collection);
 		}
 
 		OpenMapInternal();

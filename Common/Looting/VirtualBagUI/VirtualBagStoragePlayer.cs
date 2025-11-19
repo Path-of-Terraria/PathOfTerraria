@@ -89,7 +89,7 @@ internal class VirtualBagStoragePlayer : ModPlayer
 
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 			{
-				ModContent.GetInstance<PlayerUseSackOfHoldingHandler>().Send((byte)Main.myPlayer, UsesVirtualBag);
+				PlayerUseSackOfHoldingHandler.Send(UsesVirtualBag);
 			}
 
 			UIManager.TryDisable(VirtualBagUIState.Identifier);

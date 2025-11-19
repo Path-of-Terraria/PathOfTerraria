@@ -8,26 +8,21 @@ namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 /// </summary>
 internal class SyncConditionalDropHandler : Handler
 {
-	/// <inheritdoc cref="Networking.Message.SyncConditionalDrop"/>
-	public override void Send(params object[] parameters)
+	public static void Send(int id, bool add, int toClient = -1, int ignoreClient = -1)
 	{
-		CastParameters(parameters, out byte who, out int id, out bool add);
-
-		ModPacket packet = Networking.GetPacket(Id);
-		packet.Write(who);
+		ModPacket packet = Networking.GetPacket<SyncConditionalDropHandler>();
 		packet.Write(id);
 		packet.Write(add);
-		packet.Send();
+		packet.Send(toClient, ignoreClient);
 	}
 
 	internal override void Receive(BinaryReader reader, byte sender)
 	{
-		SetValuesBasedOnReader(reader, Main.dedServ);
+		SetValuesBasedOnReader(reader, sender, Main.dedServ);
 	}
 
-	public static void SetValuesBasedOnReader(BinaryReader reader, bool runningOnServer)
+	public static void SetValuesBasedOnReader(BinaryReader reader, byte who, bool runningOnServer)
 	{
-		byte who = reader.ReadByte();
 		int id = reader.ReadInt32();
 		bool add = reader.ReadBoolean();
 		Player plr = Main.player[who];

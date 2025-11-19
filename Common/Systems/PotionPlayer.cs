@@ -50,7 +50,7 @@ internal class PotionPlayer : ModPlayer
 
 		if (Main.netMode != NetmodeID.SinglePlayer && hasSync)
 		{
-			ModContent.GetInstance<HotbarPotionHandler>().Send((byte)self.whoAmI, true, (byte)mp.HealingLeft, false);
+			HotbarPotionHandler.Send(true, (byte)mp.HealingLeft);
 		}
 	}
 
@@ -80,7 +80,7 @@ internal class PotionPlayer : ModPlayer
 
 		if (Main.netMode != NetmodeID.SinglePlayer && hasSync)
 		{
-			ModContent.GetInstance<HotbarPotionHandler>().Send((byte)self.whoAmI, false, (byte)mp.ManaLeft, false);
+			HotbarPotionHandler.Send(false, (byte)mp.ManaLeft);
 		}
 	}
 

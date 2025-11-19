@@ -4,30 +4,28 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
+/// <summary>
+/// Spawns an NPC on the server. Note that this spawns all NPCs with a Start value of 1, so worms spawn normally.
+/// </summary>
 internal class SpawnNPCOnServerHandler : Handler
 {
-	/// <inheritdoc cref="Networking.Message.SpawnNPCOnServer"/>
-	public override void Send(params object[] parameters)
+	public static void Send(short type, Vector2 position, Vector2 velocity)
 	{
-		CastParameters(parameters, out short type, out Vector2 position);
+		ModPacket packet = Networking.GetPacket<RavencrestBuildingIndex>();
+		packet.Write((byte)3);
+		packet.Write(type);
+		packet.WriteVector2(position);
+		packet.WriteVector2(velocity);
+		packet.Send();
+	}
 
-		if (TryGetOptionalValue(parameters, 2, out Vector2 velocity))
-		{
-			ModPacket packet = Networking.GetPacket(Id);
-			packet.Write((byte)3);
-			packet.Write(type);
-			packet.WriteVector2(position);
-			packet.WriteVector2(velocity);
-			packet.Send();
-		}
-		else 
-		{ 
-			ModPacket packet = Networking.GetPacket(Id);
-			packet.Write((byte)2);
-			packet.Write(type);
-			packet.WriteVector2(position);
-			packet.Send();
-		}
+	public static void Send(short type, Vector2 position)
+	{
+		ModPacket packet = Networking.GetPacket<RavencrestBuildingIndex>();
+		packet.Write((byte)2);
+		packet.Write(type);
+		packet.WriteVector2(position);
+		packet.Send();
 	}
 
 	internal override void ServerReceive(BinaryReader reader, byte sender)

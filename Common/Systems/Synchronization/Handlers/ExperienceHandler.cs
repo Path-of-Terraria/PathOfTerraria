@@ -3,24 +3,19 @@ using System.IO;
 
 namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
+/// <summary>
+/// Spawns experience on all clients.
+/// </summary>
 internal class ExperienceHandler : Handler
 {
-	/// <inheritdoc cref="Networking.Message.SpawnExperience"/>
-	public override void Send(params object[] parameters)
+	public static void Send(byte target, int xpValue, Vector2 position, Vector2 velocity)
 	{
-		CastParameters(parameters, out byte target, out int xpValue, out Vector2 position, out Vector2 velocity);
-		
-		ModPacket packet = Networking.GetPacket(Id);
+		ModPacket packet = Networking.GetPacket<ExperienceHandler>();
 		packet.Write(target);
 		packet.Write(xpValue);
 		packet.WriteVector2(position);
 		packet.WriteVector2(velocity);
 		packet.Send();
-
-		if (TryGetOptionalValue(parameters, 4, out bool runLocally) && runLocally)
-		{
-			ExperienceTracker.SpawnExperience(xpValue, position, velocity, target, true);
-		}
 	}
 
 	internal override void ServerReceive(BinaryReader reader, byte sender)

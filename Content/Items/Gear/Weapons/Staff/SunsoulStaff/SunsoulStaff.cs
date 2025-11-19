@@ -46,7 +46,7 @@ internal class SunsoulStaffItem : Staff
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 			{
 				NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj);
-				ModContent.GetInstance<SyncAltUseHandler>().Send((byte)player.whoAmI, 35 * 60, 15 * 60);
+				SyncAltUseHandler.Send(35 * 60, 15 * 60);
 			}
 		}
 	}

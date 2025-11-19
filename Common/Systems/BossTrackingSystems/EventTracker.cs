@@ -59,14 +59,16 @@ public enum EventFlags : ulong
 	DefeatedOldOnesArmyT3 = 1ul << 35,
 }
 
+/// <summary>
+/// Marks an event as completed. This is used for sending boss downs to the main server through <see cref="SendPacketToMainServer(ModPacket)"/>.
+/// <br/>Signature:<br/>
+/// <c>EventFlags flag, int gameEventId</c>
+/// </summary>
 internal class SyncEventCompletionHandler : Handler
 {
-	/// <inheritdoc cref="Networking.Message.SyncEventCompletion"/>
-	public override void Send(params object[] parameters)
+	public static void Send(EventFlags flags, int? gameEventId)
 	{
-		CastParameters(parameters, out EventFlags flags, out int? gameEventId);
-
-		ModPacket packet = Networking.GetPacket(Id);
+		ModPacket packet = Networking.GetPacket<SyncEventCompletionHandler>();
 		packet.Write((ulong)flags);
 		packet.Write(gameEventId ?? int.MaxValue);
 		packet.Send();

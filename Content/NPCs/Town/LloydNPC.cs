@@ -451,7 +451,7 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 					}
 					else
 					{
-						ModContent.GetInstance<PathfindStateChangeHandler>().Send((byte)Main.myPlayer, (byte)NPC.whoAmI, false);
+						PathfindStateChangeHandler.Send((byte)NPC.whoAmI, false);
 					}
 
 					Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.LloydNPC.Dialogue.StayDialogue");
@@ -465,7 +465,7 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 					}
 					else
 					{
-						ModContent.GetInstance<PathfindStateChangeHandler>().Send((byte)Main.myPlayer, (byte)NPC.whoAmI, true);
+						PathfindStateChangeHandler.Send((byte)NPC.whoAmI, true);
 					}
 
 					Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.LloydNPC.Dialogue.FollowAgain");
@@ -480,7 +480,7 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 				}
 				else
 				{
-					ModContent.GetInstance<PathfindStateChangeHandler>().Send((byte)Main.myPlayer, (byte)NPC.whoAmI, true);
+					PathfindStateChangeHandler.Send((byte)NPC.whoAmI, true);
 				}
 
 				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.LloydNPC.Dialogue.Help");

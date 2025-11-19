@@ -3,25 +3,23 @@ using System.IO;
 
 namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
+/// <summary>
+/// Syncs all of one player's skill specializations with everyone else + the server.
+/// </summary>
 internal class SyncSkillSpecializationHandler : Handler
 {
-	/// <inheritdoc cref="Networking.Message.SyncSkillSpecialization"/>
-	public override void Send(params object[] parameters)
+	public static void Send(string skillName, string specName, int toPlayer = -1, int ignorePlayer = -1)
 	{
-		CastParameters(parameters, out byte player, out string skillName, out string specName);
-
-		ModPacket packet = Networking.GetPacket(Id);
-
-		packet.Write(player);
+		ModPacket packet = Networking.GetPacket<SyncSkillSpecializationHandler>();
 		packet.Write(skillName);
 		packet.Write(specName);
-		packet.Send();
+		packet.Send(toPlayer, ignorePlayer);
 	}
 
 	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
 		ModPacket packet = Networking.GetPacket(Id);
-		byte target = reader.ReadByte();
+		byte target = sender;
 		string skillName = reader.ReadString();
 		string specName = reader.ReadString();
 

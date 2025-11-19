@@ -17,7 +17,7 @@ internal class ConditionalDropPlayer : ModPlayer
 	{
 		if (Main.netMode == NetmodeID.MultiplayerClient && !syncing)
 		{
-			ModContent.GetInstance<SyncConditionalDropHandler>().Send((byte)Player.whoAmI, id, true);
+			SyncConditionalDropHandler.Send(id, true);
 			return;
 		}
 
@@ -33,7 +33,7 @@ internal class ConditionalDropPlayer : ModPlayer
 	{
 		if (Main.netMode == NetmodeID.MultiplayerClient && !syncing)
 		{
-			ModContent.GetInstance<SyncConditionalDropHandler>().Send((byte)Player.whoAmI, id, false);
+			SyncConditionalDropHandler.Send(id, false);
 			return;
 		}
 
@@ -57,7 +57,7 @@ internal class ConditionalDropPlayer : ModPlayer
 	{
 		if (Main.netMode != NetmodeID.SinglePlayer)
 		{
-			ModContent.GetInstance<SyncNewConditionalDropPlayerHandler>().Send((byte)Player.whoAmI, (int[])[.. TrackedIds]);
+			SyncNewConditionalDropPlayerHandler.Send((int[])[.. TrackedIds]);
 		}
 	}
 

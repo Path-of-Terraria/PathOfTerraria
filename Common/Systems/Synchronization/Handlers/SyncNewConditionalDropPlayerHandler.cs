@@ -8,13 +8,9 @@ namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 /// </summary>
 internal class SyncNewConditionalDropPlayerHandler : Handler
 {
-	/// <inheritdoc cref="Networking.Message.SyncNewConditionalDropPlayer"/>
-	public override void Send(params object[] parameters)
+	public static void Send(int[] types)
 	{
-		CastParameters(parameters, out byte who, out int[] types);
-
-		ModPacket packet = Networking.GetPacket(Id);
-		packet.Write(who);
+		ModPacket packet = Networking.GetPacket<SyncNewConditionalDropPlayerHandler>();
 		packet.Write((byte)types.Length);
 
 		for (int i = 0; i < types.Length; i++)
@@ -27,9 +23,8 @@ internal class SyncNewConditionalDropPlayerHandler : Handler
 
 	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
-		byte who = reader.ReadByte();
 		byte length = reader.ReadByte();
-		Player plr = Main.player[who];
+		Player plr = Main.player[sender];
 
 		for (int i = 0; i < length; ++i)
 		{
@@ -37,10 +32,10 @@ internal class SyncNewConditionalDropPlayerHandler : Handler
 			plr.GetModPlayer<ConditionalDropPlayer>().AddId(id, true);
 
 			ModPacket packet = Networking.GetPacket(Id);
-			packet.Write(who);
+			packet.Write(sender);
 			packet.Write(id);
 			packet.Write(true);
-			packet.Send(-1, who);
+			packet.Send(-1, sender);
 		}
 	}
 }

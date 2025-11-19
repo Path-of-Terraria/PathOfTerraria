@@ -130,7 +130,7 @@ public class RavencrestSystem : ModSystem
 					}
 					else if (Main.netMode == NetmodeID.MultiplayerClient)
 					{
-						ModContent.GetInstance<SpawnMorvenStuckHandler>().Send();
+						SpawnMorvenStuckHandler.Send();
 					}
 				}
 			}
@@ -242,7 +242,6 @@ public class RavencrestSystem : ModSystem
 			}
 		}
 
-
 		GenerationUtilities.ManuallyPopulateChests();
 
 		foreach (string npcName in HasOverworldNPC)
@@ -314,7 +313,7 @@ public class RavencrestSystem : ModSystem
 	{
 		if (Main.netMode == NetmodeID.MultiplayerClient)
 		{
-			ModContent.GetInstance<RavencrestBuildingIndex>().Send(name, level);
+			RavencrestBuildingIndex.Send(name, level);
 			return;
 		}
 

@@ -3,20 +3,20 @@ using PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 
 namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
+/// <summary>
+/// Syncs the rings of the Guardian Angel's hits.<br/>Signature:<br/>
+/// <c>byte playerWhoAmI, short npcWho, bool runLocally = false</c>
+/// </summary>
 internal class SyncGuardianAngelHandler : Handler
 {
-	/// <inheritdoc cref="Networking.Message.SyncGuardianAngelHit"/>
-	public override void Send(params object[] parameters)
+	public static void Send(byte playerWhoAmI, short npcWho, int toPlayer = -1, int ignorePlayer = -1, bool runLocally = false)
 	{
-		CastParameters(parameters, out byte playerWhoAmI, out short npcWho);
-
-		ModPacket packet = Networking.GetPacket(Id);
-
+		ModPacket packet = Networking.GetPacket<SyncGuardianAngelHandler>();
 		packet.Write(playerWhoAmI);
 		packet.Write(npcWho);
-		packet.Send();
+		packet.Send(toPlayer, ignorePlayer);
 
-		if (TryGetOptionalValue(parameters, 2, out bool runLocally) && runLocally)
+		if (runLocally)
 		{
 			HitGuardianAngel(playerWhoAmI, npcWho);
 		}

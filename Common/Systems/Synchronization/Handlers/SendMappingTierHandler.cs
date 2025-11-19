@@ -3,15 +3,16 @@ using System.IO;
 
 namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
-/// <inheritdoc cref="Networking.Message.SendMappingTierDown"/>
+/// <summary>
+/// Adds a tier to the completion tracker. Meant to be used through <see cref="Networking.SendPacketToMainServer(ModPacket, string)"/>.<br/>
+/// <b>Note:</b> This packet sends an additional short, count, to clients so that their downed count is forcefully set to the server's instead of allowing a desync.<br/>
+/// This should not affect any normal use of this packet however.
+/// </summary>
 internal class SendMappingTierHandler : Handler
 {
-	/// <inheritdoc cref="Networking.Message.SendMappingTierDown"/>
-	public override void Send(params object[] parameters)
+	public static void Send(short tier)
 	{
-		CastParameters(parameters, out short tier);
-
-		ModPacket packet = Networking.GetPacket(Id, 3);
+		ModPacket packet = Networking.GetPacket<SendMappingTierHandler>(3);
 		packet.Write(tier);
 		packet.Send();
 	}

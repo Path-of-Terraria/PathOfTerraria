@@ -4,7 +4,10 @@ using Terraria.Audio;
 
 namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
-/// <inheritdoc cref="Networking.Message.SpawnVFX"/>
+/// <summary>
+/// Spawns arbitrary, pre-defined VFX on all clients and server.<br/>
+/// Used for code run on only one client that should be shown on all clients, such as projectile spawning VFX, or server-side operations.
+/// </summary>
 internal class SendSpawnVFXModule : Handler
 {
 	public enum VFXType : byte
@@ -28,12 +31,9 @@ internal class SendSpawnVFXModule : Handler
 		packet.Send();
 	}
 
-	/// <inheritdoc cref="Networking.Message.SpawnVFX"/>
-	public override void Send(params object[] parameters)
+	public static void Send(Vector2 position, VFXType type)
 	{
-		CastParameters(parameters, out Vector2 position, out VFXType type);
-
-		ModPacket packet = Networking.GetPacket(Id, 6);
+		ModPacket packet = Networking.GetPacket<SendSpawnVFXModule>(6);
 		packet.Write((byte)type);
 		packet.WriteVector2(position);
 		packet.Send();

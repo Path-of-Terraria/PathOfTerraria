@@ -49,7 +49,7 @@ internal class CorruptSacks : ModTile
 		}
 		else
 		{
-			ModContent.GetInstance<SpawnNPCOnServerHandler>().Send((short)type, new Vector2((i + 1) * 16, (j + 1) * 16), velocity);
+			SpawnNPCOnServerHandler.Send((short)type, new Vector2((i + 1) * 16, (j + 1) * 16), velocity);
 		}
 
 		for (int k = 0; k < 16; k++)

@@ -86,14 +86,14 @@ internal record struct SpawnPlacement()
 /// <summary> Functions for spawning enemies in automated and fancy ways. </summary>
 internal static class EnemySpawning
 {
+	/// <summary>
+	/// Synchronizes <see cref="EnemySpawning"/>'s enemy spawn effects. Should be called on servers only.
+	/// </summary>
 	private sealed class EnemySpawnHandler : Handler
 	{
-		/// <inheritdoc cref="Networking.Message.EnemySpawn"/>
-		public override void Send(params object[] parameters)
+		public static void Send(NPC npc, EnemySpawnEffect effect, Vector2 position)
 		{
-			CastParameters(parameters, out NPC npc, out EnemySpawnEffect effect, out Vector2 position);
-
-			ModPacket packet = Networking.GetPacket(Id);
+			ModPacket packet = Networking.GetPacket<EnemySpawnHandler>();
 			packet.Write((byte)npc.whoAmI);
 			packet.Write((byte)effect);
 			packet.WriteVector2(position);
@@ -162,7 +162,7 @@ internal static class EnemySpawning
 	{
 		if (Main.netMode == NetmodeID.Server)
 		{
-			ModContent.GetInstance<EnemySpawnHandler>().Send(npc, effect, position);
+			EnemySpawnHandler.Send(npc, effect, position);
 			return;
 		}
 

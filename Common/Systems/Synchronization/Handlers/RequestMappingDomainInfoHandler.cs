@@ -6,7 +6,9 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
-/// <inheritdoc cref="Networking.Message.RequestMappingDomainInfo"/>
+/// <summary>
+/// Requests mapping domain info (Level, Tier, Affixes) from the server. Sent only from clients.
+/// </summary>
 internal class RequestMappingDomainInfoHandler : Handler
 {
 	public sealed class RequestMappingDomainInfoHandlerPlayer : ModPlayer
@@ -15,25 +17,18 @@ internal class RequestMappingDomainInfoHandler : Handler
 		{
 			if (Main.netMode != NetmodeID.SinglePlayer && SubworldSystem.Current is MappingWorld)
 			{
-				ModContent.GetInstance<RequestMappingDomainInfoHandler>().Send((byte)Player.whoAmI);
+				Send();
 			}
 		}
 	}
 
-	/// <inheritdoc cref="Networking.Message.RequestMappingDomainInfo"/>
-	public override void Send(params object[] parameters)
+	public static void Send()
 	{
-		CastParameters(parameters, out byte who);
-
-		ModPacket packet = Networking.GetPacket(Id);
-		packet.Write(who);
-		packet.Send();
+		Networking.GetPacket<RequestMappingDomainInfoHandler>().Send();
 	}
 
 	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
-		byte who = reader.ReadByte();
-
 		ModPacket packet = Networking.GetPacket(Id);
 		packet.Write((short)MappingWorld.AreaLevel);
 		packet.Write((short)MappingWorld.MapTier);
@@ -44,7 +39,7 @@ internal class RequestMappingDomainInfoHandler : Handler
 			item.NetSend(packet);
 		}
 
-		packet.Send(who);
+		packet.Send(sender);
 	}
 
 	internal override void ClientReceive(BinaryReader reader, byte sender)

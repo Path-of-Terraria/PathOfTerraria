@@ -9,11 +9,9 @@ namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 /// </summary>
 internal class BreakableOrbsHandler : Handler
 {
-	/// <inheritdoc cref="Networking.Message.BreakableOrbs"/>
-	public override void Send(params object[] parameters)
+	public static void Send()
 	{
-		ModPacket packet = Networking.GetPacket(Id);
-		packet.Send();
+		Networking.GetPacket<BreakableOrbsHandler>().Send();
 	}
 
 	internal override void ServerReceive(BinaryReader reader, byte sender)

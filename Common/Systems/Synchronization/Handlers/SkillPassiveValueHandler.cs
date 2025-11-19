@@ -3,25 +3,18 @@ using System.IO;
 
 namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
+/// <summary>
+/// Syncs all of one player's passives with everyone else + the server.
+/// </summary>
 internal class SkillPassiveValueHandler : Handler
 {
-	/// <inheritdoc cref="Networking.Message.SkillPassiveValue"/>
-	public override void Send(params object[] parameters)
+	public static void Send(string treeName, string nodeName, byte level)
 	{
-		CastParameters(parameters, out byte player, out string treeName, out string nodeName, out byte level);
-
-		ModPacket packet = Networking.GetPacket(Id);
-
-		packet.Write(player);
+		ModPacket packet = Networking.GetPacket<SkillPassiveValueHandler>();
 		packet.Write(treeName);
 		packet.Write(nodeName);
 		packet.Write(level);
 		packet.Send();
-
-		if (TryGetOptionalValue(parameters, 4, out bool runLocally) && runLocally)
-		{
-			SetPlayerNodeStrength(player, treeName, nodeName, level);
-		}
 	}
 
 	/// <summary>
@@ -47,6 +40,7 @@ internal class SkillPassiveValueHandler : Handler
 		packet.Write(treeName);
 		packet.Write(nodeName);
 		packet.Write(level);
+		packet.Write(sender);
 		packet.Send(-1, target);
 
 		SetPlayerNodeStrength(target, treeName, nodeName, level);
@@ -54,11 +48,11 @@ internal class SkillPassiveValueHandler : Handler
 
 	internal override void ClientReceive(BinaryReader reader, byte sender)
 	{
-		byte target = reader.ReadByte();
 		string treeName = reader.ReadString();
 		string nodeName = reader.ReadString();
 		byte level = reader.ReadByte();
+		byte who = reader.ReadByte();
 
-		SetPlayerNodeStrength(target, treeName, nodeName, level);
+		SetPlayerNodeStrength(who, treeName, nodeName, level);
 	}
 }
