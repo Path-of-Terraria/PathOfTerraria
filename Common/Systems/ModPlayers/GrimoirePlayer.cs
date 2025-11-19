@@ -8,6 +8,13 @@ namespace PathOfTerraria.Common.Systems.ModPlayers;
 
 internal class GrimoirePlayer : ModPlayer
 {
+	public struct GrimoireStats()
+	{
+		public StatModifier DamageModifier = default;
+		public StatModifier SpeedModifier = default;
+		public AddableFloat CriticalStrikeChanceModifier = default;
+	}
+
 	/// <summary> The items corresponding to those in the summon ritual slots. </summary>
 	public readonly Item[] StoredParts = 
 		[
@@ -27,11 +34,17 @@ internal class GrimoirePlayer : ModPlayer
 
 	public bool FirstOpenMenagerie = true;
 	public bool HasObtainedGrimoire = false;
+	public GrimoireStats Stats = default;
 
 	public static GrimoirePlayer Get(Player p = null)
 	{
 		p ??= Main.LocalPlayer;
 		return p.GetModPlayer<GrimoirePlayer>();
+	}
+
+	public override void ResetEffects()
+	{
+		Stats = new();
 	}
 
 	public override void SaveData(TagCompound tag)
