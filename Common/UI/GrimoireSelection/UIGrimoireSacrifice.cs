@@ -42,7 +42,7 @@ internal class UIGrimoireSacrifice : UIElement
 		for (int i = 0; i < parts.Length; i++)
 		{
 			var pos = GetSlotPosition(i).ToPoint();
-			var slot = new UIItemSlot(parts, i, ItemSlot.Context.ChestItem)
+			var slot = new UIItemSlot(parts, i, ItemSlot.Context.BankItem)
 			{
 				Width = StyleDimension.FromPixels(32),
 				Height = StyleDimension.FromPixels(32),
