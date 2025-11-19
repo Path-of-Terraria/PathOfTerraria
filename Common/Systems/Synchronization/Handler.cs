@@ -63,6 +63,9 @@ internal abstract class Handler : ILoadable
 
 	public void Load(Mod mod)
 	{
+		// Switch to 7-bit-encoded Int32 if this panics:
+		System.Diagnostics.Debug.Assert(HandlersById.Count < byte.MaxValue);
+
 		Id = (byte)HandlersById.Count;
 		HandlersById.Add(Id, this);
 
