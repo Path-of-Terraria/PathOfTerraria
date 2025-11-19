@@ -51,7 +51,6 @@ internal abstract class GrimoireSummon : ModProjectile, IOnContinuouslyUpdateDam
 	{
 		Projectile.minion = true;
 		Projectile.DamageType = DamageClass.Summon;
-		Projectile.ContinuouslyUpdateDamageStats = true;
 
 		Defaults();
 	}
