@@ -1,8 +1,12 @@
 ﻿using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.UI.Components;
 using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Content.Items.Pickups;
 using PathOfTerraria.Content.Projectiles.Summoner;
+using PathOfTerraria.Core.Items;
+using PathOfTerraria.Core.UI;
 using PathOfTerraria.Core.UI.SmartUI;
 using PathOfTerraria.Utilities;
 using ReLogic.Content;
@@ -42,6 +46,8 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 			return item;
 		}
 	}
+
+	private readonly static Player _modificationsPlayer = new();
 
 	private static UIGrid _storageGrid = null;
 	private static UIGrid _summonGrid = null;
@@ -239,19 +245,6 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 		CloseButton.SetVisibility(1, 1);
 		Panel.Append(CloseButton);
 
-		CloseButton = new UIImageButton(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/CloseButton"));
-		CloseButton.Left.Set(PointsAndExitPadding, 0);
-		CloseButton.Top.Set(10, 0f);
-		CloseButton.Width.Set(38, 0);
-		CloseButton.Height.Set(38, 0);
-		CloseButton.OnLeftClick += (a, b) =>
-		{
-			Toggle();
-			SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
-		};
-		CloseButton.SetVisibility(1, 1);
-		Panel.Append(CloseButton);
-
 		Recalculate();
 	}
 
@@ -351,7 +344,8 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 
 	private static void UpdateSummonIcon(UIColoredImageButton self, GrimoireSummon item)
 	{
-		self.SetColor(GrimoirePlayer.Get().CanUseSummon(item, out _) ? Color.White : new Color(100, 100, 100));
+		var plr = GrimoirePlayer.Get();
+		self.SetColor(plr.CanUseSummon(item, out _) ? Color.White : new Color(100, 100, 100));
 
 		if (!self.GetDimensions().ToRectangle().Contains(Main.MouseScreen.ToPoint()))
 		{
@@ -359,7 +353,52 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 		}
 
 		string tooltip = Language.GetTextValue($"Mods.{item.Mod.Name}.Projectiles.{item.Name}.Description");
-		tooltip += "\n" + Language.GetText($"Mods.{item.Mod.Name}.UI.BaseDamage").Format(item.BaseDamage);
+		float damage = Main.LocalPlayer.GetDamage(DamageClass.Summon).ApplyTo(item.BaseDamage);
+		AffixTooltips handler = new();
+
+		_modificationsPlayer.ResetEffects();
+
+		foreach (Item material in plr.StoredParts)
+		{
+			if (material is null or { IsAir: true })
+			{
+				continue;
+			}
+
+			List<ItemAffix> affixes = material.GetInstanceData().Affixes;
+
+			if (affixes.Count > 0)
+			{
+				foreach (ItemAffix affix in affixes)
+				{
+					affix.ApplyTooltips(Main.LocalPlayer, material.GetInstanceData().RealLevel, handler);
+					affix.ApplyAffix(_modificationsPlayer, _modificationsPlayer.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier, material);
+				}
+			}
+		}
+
+		_modificationsPlayer.GetModPlayer<UniversalBuffingPlayer>().PostUpdateEquips();
+		damage = _modificationsPlayer.GetDamage(DamageClass.Generic).ApplyTo(damage);
+		tooltip += "\n" + Language.GetText($"Mods.{item.Mod.Name}.UI.BaseDamage").Format(damage.ToString("#0"));
+
+		if (ItemSlot.ShiftInUse)
+		{
+			tooltip += $" [c/999999:({item.BaseDamage} {Language.GetText($"Mods.{item.Mod.Name}.UI.Grimoire.Base")})]";
+		}
+
+		if (handler.Lines.Count > 0)
+		{
+			string affixText = "\n\nAffixes:\n";
+
+			foreach (AffixTooltipLine line in handler.Lines.Values)
+			{
+				affixText += $"[c/66FF66:{line.Text.Format(Math.Abs(line.Value).ToString("#0.##"), "+")}]\n";
+			}
+
+			tooltip += affixText[..^1];
+
+		}
+
 		Tooltip.Create(new TooltipDescription
 		{
 			Identifier = "SummonIcon",
@@ -407,6 +446,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 		_storageGrid.SetScrollbar(scrollBar);
 		_storageGrid.OnUpdate += SpamRecalculate;
 		_storageGrid.OnLeftClick += (a, b) => StoreItem(Main.mouseItem);
+		_storageGrid.AddComponent(new UIBlockMouse());
 
 		mainPanel.Append(scrollBar);
 

@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Systems.Affixes;
+﻿using PathOfTerraria.Common.Projectiles;
+using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Content.Items.Gear.Weapons.Grimoire;
 using PathOfTerraria.Content.Items.Pickups;
@@ -12,7 +13,7 @@ namespace PathOfTerraria.Content.Projectiles.Summoner;
 /// Defines a Grimoire Summon and its functionality.<br/><br/>
 /// By default, this class uses <see cref="Projectile.ai"/>[0], alongside <see cref="Projectile.localAI"/>[0], for if the proj is despawning and for animation respectively.
 /// </summary>
-internal abstract class GrimoireSummon : ModProjectile
+internal abstract class GrimoireSummon : ModProjectile, IOnContinuouslyUpdateDamage
 {
 	public static Dictionary<int, Asset<Texture2D>> IconsById = [];
 
@@ -50,6 +51,7 @@ internal abstract class GrimoireSummon : ModProjectile
 	{
 		Projectile.minion = true;
 		Projectile.DamageType = DamageClass.Summon;
+		Projectile.ContinuouslyUpdateDamageStats = true;
 
 		Defaults();
 	}
@@ -76,21 +78,6 @@ internal abstract class GrimoireSummon : ModProjectile
 
 		Owner.SetDummyItemTime(2);
 		AnimateSelf();
-
-		var modifier = new Common.Systems.EntityModifier();
-
-		foreach (Item part in GrimoirePlayer.Get(Owner).StoredParts)
-		{
-			if (part.ModItem is null)
-			{
-				continue;
-			}	
-
-			var pickup = part.ModItem as GrimoirePickup;
-			PoTItemHelper.ApplyAffixes(pickup.Item, modifier, Owner);
-		}
-
-		modifier.ApplyTo(Projectile);
 
 		if (Despawning)
 		{
@@ -136,6 +123,24 @@ internal abstract class GrimoireSummon : ModProjectile
 	/// </summary>
 	/// <returns>The types of the summon's parts. Max length of 5.</returns>
 	public abstract Dictionary<int, int> GetRequiredParts();
+
+	public void OnContinuouslyUpdateDamage()
+	{
+		var modifier = new Common.Systems.EntityModifier();
+
+		foreach (Item part in GrimoirePlayer.Get(Owner).StoredParts)
+		{
+			if (part.ModItem is null)
+			{
+				continue;
+			}
+
+			var pickup = part.ModItem as GrimoirePickup;
+			PoTItemHelper.ApplyAffixes(pickup.Item, modifier, Owner);
+		}
+
+		modifier.ApplyTo(Projectile);
+	}
 }
 
 public class GrimoireSummonLoader : ModSystem
