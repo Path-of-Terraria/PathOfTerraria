@@ -4,6 +4,7 @@ using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
 using Terraria.UI;
+using Terraria.Utilities;
 
 namespace PathOfTerraria.Common.UI;
 
@@ -90,13 +91,13 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 				Texture2D glow = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/GlowAlpha").Value;
 				var glowColor = new Color(255, 230, 150) { A = 0 };
 
-				var rand = new Random(edge.GetHashCode());
+				var rand = new FastRandom(edge.GetHashCode());
 
 				for (int k = 0; k < 8; k++)
 				{
 					float dist = Vector2.Distance(startPos, endPos);
 					float len = (40 + rand.Next(120)) * dist / 50;
-					float scale = 0.05f + rand.NextSingle() * 0.15f;
+					float scale = 0.05f + rand.Next(10000) / 10000f * 0.15f;
 
 					float progress = (Main.GameUpdateCount + 15 * k) % len / len;
 					Vector2 pos = center + Vector2.SmoothStep(startPos, endPos, progress);
