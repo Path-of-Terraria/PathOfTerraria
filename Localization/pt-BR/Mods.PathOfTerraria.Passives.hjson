@@ -651,5 +651,20 @@ SacrificialSummonsMastery: {
 
 OverhealMastery: {
 	// Name: Overheal Pulse
-	// Tooltip: When overhealing with a potion, emit a pulse of damage from every minion you have, damage scaling with how much you've overhealed (capping at {0}%)
+	// Tooltip: When overhealing, emit a pulse of damage from every minion you have, damage scaling with how much you've overhealed (capping at {0}%)
+}
+
+FasterGrimoirePassive: {
+	// Name: Faster Grimoire Conjurations
+	// Tooltip: Grimoire summons move and behave {0}% quicker
+}
+
+IncreasedGrimoireDamagePassive: {
+	// Name: Increased Grimoire Damage
+	// Tooltip: Grimoire summons deal {0}% more damage
+}
+
+IncreasedGrimoireCritPassive: {
+	// Name: Increased Grimoire Crit Chance
+	// Tooltip: Grimoire summons have +{0}% crit chance
 }
