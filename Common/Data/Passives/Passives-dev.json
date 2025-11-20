@@ -4338,7 +4338,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedDexterityPassive",
 		"referenceId": 218,
 		"maxLevel": 1,
 		"value": 5,
@@ -4353,7 +4353,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedDexterityPassive",
 		"referenceId": 219,
 		"maxLevel": 1,
 		"value": 5,
@@ -4363,13 +4363,16 @@
 		}
 	},
 	{
-		"internalIdentifier": "IncreasedRangedDamagePassive",
+		"internalIdentifier": "ChanceToConsumeAmmoPassive",
 		"referenceId": 220,
 		"maxLevel": 1,
 		"value": 5,
 		"connections": [
 			{
 				"referenceId": 221
+			},
+			{
+				"referenceId": 1066
 			}
 		],
 		"position": {
@@ -4378,13 +4381,16 @@
 		}
 	},
 	{
-		"internalIdentifier": "IncreasedRangedDamagePassive",
+		"internalIdentifier": "ChanceToConsumeAmmoPassive",
 		"referenceId": 221,
 		"maxLevel": 1,
 		"value": 5,
 		"connections": [
 			{
 				"referenceId": 219
+			},
+			{
+				"referenceId": 1066
 			}
 		],
 		"position": {
@@ -4393,16 +4399,19 @@
 		}
 	},
 	{
-		"internalIdentifier": "ChanceToConsumeAmmoPassive",
+		"internalIdentifier": "IncreasedRangedDamagePassive",
 		"referenceId": 222,
 		"maxLevel": 1,
-		"value": 10,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 218
 			},
 			{
 				"referenceId": 223
+			},
+			{
+				"referenceId": 1066
 			}
 		],
 		"position": {
@@ -4411,19 +4420,77 @@
 		}
 	},
 	{
-		"internalIdentifier": "ChanceToConsumeAmmoPassive",
+		"internalIdentifier": "IncreasedRangedDamagePassive",
 		"referenceId": 223,
 		"maxLevel": 1,
-		"value": 10,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 219
+			},
+			{
+				"referenceId": 1066
 			}
 		],
 		"position": {
 			"x": 53,
 			"y": 692
 		}
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1066,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 1067
+			},
+			{
+				"referenceId": 1068
+			},
+			{
+				"referenceId": 1069
+			}
+		],
+		"position": {
+			"x": -10,
+			"y": 612
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 4
+	},
+	{
+		"internalIdentifier": "SniperMastery",
+		"referenceId": 1067,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 70,
+			"y": 612
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "PinningShotMastery",
+		"referenceId": 1068,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": -80,
+			"y": 582
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "WhipReachMastery",
+		"referenceId": 1069,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": -80,
+			"y": 642
+		},
+		"isHidden": true
 	},
 	{
 		"internalIdentifier": "AddedDexterityPassive",

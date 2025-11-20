@@ -7,7 +7,7 @@ internal class ChanceToConsumeAmmoPassive : Passive
 {
 	public override void BuffPlayer(Player player)
 	{
-		var ammoPlayer = player.GetModPlayer<AmmoConsumptionPlayer>();
+		AmmoConsumptionPlayer ammoPlayer = player.GetModPlayer<AmmoConsumptionPlayer>();
 		ammoPlayer.AmmoSaveChance += (Value / 100f) * Level;
 	}
 }
