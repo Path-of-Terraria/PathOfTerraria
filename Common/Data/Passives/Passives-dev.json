@@ -3436,6 +3436,9 @@
 		"connections": [
 			{
 				"referenceId": 269
+			},
+			{
+				"referenceId": 1070
 			}
 		],
 		"position": {
@@ -3517,6 +3520,9 @@
 			},
 			{
 				"referenceId": 1063
+			},
+			{
+				"referenceId": 1070
 			}
 		],
 		"position": {
@@ -3526,14 +3532,17 @@
 	},
 	{
 		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1065,
+		"referenceId": 1070,
 		"maxLevel": 1,
 		"connections": [
 			{
-				"referenceId": 1064
+				"referenceId": 1071
 			},
 			{
-				"referenceId": 1059
+				"referenceId": 1072
+			},
+			{
+				"referenceId": 1073
 			}
 		],
 		"position": {
@@ -3542,6 +3551,39 @@
 		},
 		"isChoiceNode": true,
 		"requiredAllocatedEdges": 1
+	},
+	{
+		"internalIdentifier": "HealingGrimoireMastery",
+		"referenceId": 1071,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 700,
+			"y": -1100
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "WhipCritDamageMastery",
+		"referenceId": 1072,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 860,
+			"y": -1100
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "WhipCritDamageMastery",
+		"referenceId": 1073,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 780,
+			"y": -1180
+		},
+		"isHidden": true
 	},
 	{
 		"internalIdentifier": "StrongerDebuffsPassive",

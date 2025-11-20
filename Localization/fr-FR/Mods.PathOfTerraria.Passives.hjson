@@ -660,6 +660,26 @@ StrongerDebuffsPassive: {
 }
 
 FasterMinionsPassive: {
-	// Name: FasterMinionsPassive
+	// Name: Faster Minions
+	// Tooltip: Minions behave {0}% faster
+}
+
+FasterGrimoirePassive: {
+	// Name: Faster Grimoire Conjurations
+	// Tooltip: Grimoire summons move and behave {0}% quicker
+}
+
+IncreasedGrimoireDamagePassive: {
+	// Name: Increased Grimoire Damage
+	// Tooltip: Grimoire summons deal {0}% more damage
+}
+
+IncreasedGrimoireCritPassive: {
+	// Name: Increased Grimoire Crit Chance
+	// Tooltip: Grimoire summons have +{0}% crit chance
+}
+
+HealingGrimoireMastery: {
+	// Name: HealingGrimoireMastery
 	// Tooltip: ""
 }

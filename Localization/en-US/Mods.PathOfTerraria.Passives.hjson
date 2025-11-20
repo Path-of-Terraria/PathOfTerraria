@@ -660,7 +660,7 @@ StrongerDebuffsPassive: {
 }
 
 FasterMinionsPassive: {
-	Name: Faster Minions 
+	Name: Faster Minions
 	Tooltip: Minions behave {0}% faster
 }
 
@@ -676,5 +676,10 @@ IncreasedGrimoireDamagePassive: {
 
 IncreasedGrimoireCritPassive: {
 	Name: Increased Grimoire Crit Chance
-	Tooltip: Grimoire summons have +{0}% crit chance 
+	Tooltip: Grimoire summons have +{0}% crit chance
+}
+
+HealingGrimoireMastery: {
+	Name: Blessed Knowledge
+	Tooltip: Grimoire summons pulse an aura that heals {0} health every 5 seconds
 }

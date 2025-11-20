@@ -377,8 +377,9 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 			}
 		}
 
-		_modificationsPlayer.GetModPlayer<UniversalBuffingPlayer>().PostUpdateEquips();
-		damage = _modificationsPlayer.GetDamage(DamageClass.Generic).ApplyTo(damage);
+		_modificationsPlayer.GetModPlayer<UniversalBuffingPlayer>().PostUpdateEquips(); // Force-apply the global modifier
+		damage = _modificationsPlayer.GetDamage(DamageClass.Generic).ApplyTo(damage); // Apply the damage modifier to the damage
+		damage = Main.LocalPlayer.GetModPlayer<GrimoirePlayer>().Stats.DamageModifier.ApplyTo(damage); // Apply the custom Grimoire damage modifier to the damage
 		tooltip += "\n" + Language.GetText($"Mods.{item.Mod.Name}.UI.BaseDamage").Format(damage.ToString("#0"));
 
 		if (ItemSlot.ShiftInUse)

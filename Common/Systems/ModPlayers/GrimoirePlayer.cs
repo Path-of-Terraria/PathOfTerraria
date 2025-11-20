@@ -10,8 +10,8 @@ internal class GrimoirePlayer : ModPlayer
 {
 	public struct GrimoireStats()
 	{
-		public StatModifier DamageModifier = default;
-		public StatModifier SpeedModifier = default;
+		public StatModifier DamageModifier = new(1, 1, 0, 0);
+		public AddableFloat SpeedModifier = default;
 		public AddableFloat CriticalStrikeChanceModifier = default;
 	}
 

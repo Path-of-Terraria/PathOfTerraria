@@ -139,6 +139,10 @@ internal abstract class GrimoireSummon : ModProjectile, IOnContinuouslyUpdateDam
 		}
 
 		modifier.ApplyTo(Projectile);
+
+		GrimoirePlayer.GrimoireStats stats = Owner.GetModPlayer<GrimoirePlayer>().Stats;
+		Projectile.damage = (int)stats.DamageModifier.ApplyTo(Projectile.damage);
+		Projectile.GetGlobalProjectile<SpeedUpProjectile>().TotalSpeed += stats.SpeedModifier.Value;
 	}
 }
 
