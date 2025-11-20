@@ -6,13 +6,14 @@ namespace PathOfTerraria.Common.Projectiles;
 // Adjusted from the mod Peculiar Jewelry: https://github.com/GabeHasWon/PeculiarJewelry/blob/master/Content/JewelryMechanic/Stats/Effects/LegionStat.cs
 
 /// <summary>
-/// Allows a projectile to be sped up or slowed down arbitrarily.
+/// Allows a projectile to be sped up or slowed down arbitrarily.<br/>
+/// Use either <see cref="TotalSpeed"/> or <see cref="UniversalBuffingPlayer.UniversalModifier"/>'s <see cref="Systems.EntityModifier.ProjectileBehaviourSpeed"/> to modify the speed.
 /// </summary>
 public class SpeedUpProjectile : GlobalProjectile
 {
 	public override bool InstancePerEntity => true;
 
-	float totalSpeed;
+	internal float TotalSpeed;
 
 	public override bool AppliesToEntity(Projectile entity, bool lateInstantiation)
 	{
@@ -27,20 +28,20 @@ public class SpeedUpProjectile : GlobalProjectile
 		}
 
 		float speed = owner.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.ProjectileBehaviourSpeed.Value;
-		totalSpeed += speed;
+		TotalSpeed += speed;
 
-		if (totalSpeed < 0)
+		if (TotalSpeed < 0)
 		{
-			totalSpeed++;
+			TotalSpeed++;
 			projectile.timeLeft++;
 			return false;
 		}
 
-		while (totalSpeed > 1f)
+		while (TotalSpeed > 1f)
 		{
-			RepeatAI(projectile, (int)totalSpeed);
+			RepeatAI(projectile, (int)TotalSpeed);
 			projectile.position += projectile.velocity;
-			totalSpeed -= 1;
+			TotalSpeed -= 1;
 		}
 
 		return true;

@@ -10,13 +10,13 @@ internal class GrimoirePlayer : ModPlayer
 {
 	/// <summary> The items corresponding to those in the summon ritual slots. </summary>
 	public readonly Item[] StoredParts = 
-		[
+	[
 		GrimoireSelectionUIState.EmptyItem, 
 		GrimoireSelectionUIState.EmptyItem, 
 		GrimoireSelectionUIState.EmptyItem,
 		GrimoireSelectionUIState.EmptyItem, 
 		GrimoireSelectionUIState.EmptyItem
-		];
+	];
 
 	public readonly List<Item> Storage = [];
 
@@ -37,6 +37,11 @@ internal class GrimoirePlayer : ModPlayer
 	public override void SaveData(TagCompound tag)
 	{
 		Storage.RemoveAll(x => x.IsAir || x.type == ItemID.None || x.stack == 0);
+
+		if (CurrentSummonId != -1)
+		{
+			tag.Add("currentSummon", CurrentSummonId);
+		}
 
 		tag.Add("hasGrimoire", HasObtainedGrimoire);
 		tag.Add("count", Storage.Count);
@@ -61,6 +66,8 @@ internal class GrimoirePlayer : ModPlayer
 	public override void LoadData(TagCompound tag)
 	{
 		HasObtainedGrimoire = tag.TryGet("hasGrimoire", out bool hasGrimoire) && hasGrimoire;
+		CurrentSummonId = tag.TryGet("currentSummon", out int summon) ? summon : -1;
+
 		int count = tag.GetInt("count");
 
 		for (int i = 0; i < count; i++)
