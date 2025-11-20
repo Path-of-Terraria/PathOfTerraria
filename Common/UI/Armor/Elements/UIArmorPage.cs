@@ -84,9 +84,6 @@ public abstract class UIArmorPage : UIElement
 	{
 		base.Update(gameTime);
 
-		// Casually patch up the game in case someone broke it.
-		CheckAndFixPlayerOverrides();
-
 		// Recreate the UI every time it is opened, just so that it does not lag back in case of unpredictable changes with the accessory slots.
 		if (Main.playerInventory && !wasInventoryOpen)
 		{
@@ -195,37 +192,5 @@ public abstract class UIArmorPage : UIElement
 				numLocationsTaken++;
 			}
 		}
-	}
-
-	private static void CheckAndFixPlayerOverrides()
-	{
-		// Current player should never be overridden during UI updates! If it is, then someone is to blame.
-		if (ModAccessorySlot.Player != Main.LocalPlayer)
-		{
-			(Player? loc, Player? cur) = (Main.LocalPlayer, Main.CurrentPlayer);
-			string errorText = $"""
-				A leak of Main.CurrentPlayerOverride's effects have been detected due to actions of an unknown mod.
-				LocalPlayer is:   {loc?.GetHashCode().ToString("x") ?? "null"}, named '{loc?.name ?? "null"}';
-				CurrentPlayer is: {cur?.GetHashCode().ToString("x") ?? "null"}, named '{cur?.name ?? "null"}';
-				Correcting.
-				""";
-			PoTMod.Instance.Logger.Error(errorText);
-
-			Debugger.Break();
-
-			// We do not dispose this on purpose, to override effects of another override that hasn't been disposed.
-			// Using null means that the override will be disabled.
-			var leakToFixLeaks = new Main.CurrentPlayerOverride(player: null);
-		}
-#if DEBUG && false
-		// Issue reproduction:
-		else if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.OemCloseBrackets)
-		&& !Main.oldKeyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.OemCloseBrackets)
-		&& Main.mouseXButton2Release)
-		{
-			var badPlayerOverride = new Main.CurrentPlayerOverride(new Player());
-			Main.mouseXButton2Release = false; // Just to prevent double activations, not actually checking for mouse presses.
-		}
-#endif
 	}
 }
