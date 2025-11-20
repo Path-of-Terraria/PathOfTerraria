@@ -235,6 +235,12 @@ SubworldHelp: {
 Grimoire: {
 	Storage: Stockage
 	ClickMe: Cliquez-moi !
+	// HelpLine: Help
+	// AnyMaterial: Any Material
+	// AnyMaterialDesc: Allow all materials to be displayed.
+	// MinionMaterial: Minion-Specific Materials
+	// MinionMaterialDesc: When a summon is selected, show only materials used by that summon.
+	// Base: base
 
 	Help: {
 		Materials:

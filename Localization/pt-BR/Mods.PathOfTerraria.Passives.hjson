@@ -654,17 +654,12 @@ OverhealMastery: {
 	// Tooltip: When overhealing, emit a pulse of damage from every minion you have, damage scaling with how much you've overhealed (capping at {0}%)
 }
 
-FasterGrimoirePassive: {
-	// Name: Faster Conjurations
-	// Tooltip: Grimoire summons move and behave {0}% quicker
+StrongerDebuffsPassive: {
+	// Name: Stronger Debuffs
+	// Tooltip: "[mechanic/shift:Nearby] enemies have {0}% longer lasting debuffs"
 }
 
-IncreasedGrimoireDamagePassive: {
-	// Name: Furious Conjurations
-	// Tooltip: Grimoire summons deal {0}% more damage
-}
-
-IncreasedGrimoireCritPassive: {
-	// Name: IncreasedGrimoireCritPassive
+FasterMinionsPassive: {
+	// Name: FasterMinionsPassive
 	// Tooltip: ""
 }
