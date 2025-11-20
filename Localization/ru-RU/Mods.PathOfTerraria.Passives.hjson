@@ -668,3 +668,13 @@ IncreasedGrimoireCritPassive: {
 	// Name: Increased Grimoire Crit Chance
 	// Tooltip: Grimoire summons have +{0}% crit chance
 }
+
+SniperMastery: {
+	// Name: Sniper
+	// Tooltip: Enemies that are [mechanic/shift:Far] away take {0}% more damage
+}
+
+PinningShotMastery: {
+	// Name: Pinning Shot
+	// Tooltip: Ranged projectiles have a {0}% chance to inflict Rooted, and deal {1}% more damage to Rooted enemies
+}
