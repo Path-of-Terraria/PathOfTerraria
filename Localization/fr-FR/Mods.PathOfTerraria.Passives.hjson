@@ -680,6 +680,11 @@ IncreasedGrimoireCritPassive: {
 }
 
 HealingGrimoireMastery: {
-	// Name: HealingGrimoireMastery
+	// Name: Blessed Knowledge
+	// Tooltip: Grimoire summons pulse an aura that heals {0} health every 5 seconds
+}
+
+ManaLeechMastery: {
+	// Name: ManaLeechMastery
 	// Tooltip: ""
 }

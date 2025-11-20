@@ -3564,7 +3564,7 @@
 		"isHidden": true
 	},
 	{
-		"internalIdentifier": "WhipCritDamageMastery",
+		"internalIdentifier": "ManaLeechMastery",
 		"referenceId": 1072,
 		"maxLevel": 1,
 		"value": 20,
