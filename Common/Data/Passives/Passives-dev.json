@@ -3544,10 +3544,10 @@
 		"requiredAllocatedEdges": 1
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "StrongerDebuffsPassive",
 		"referenceId": 169,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 999,
@@ -3582,10 +3582,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "FasterMinionsPassive",
 		"referenceId": 171,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 169
@@ -3601,10 +3601,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "FasterMinionsPassive",
 		"referenceId": 172,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 169

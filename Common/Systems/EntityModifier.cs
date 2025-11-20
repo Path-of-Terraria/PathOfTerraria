@@ -82,6 +82,7 @@ public partial class EntityModifier : EntityModifierSegment
 	public void ApplyTo(Projectile proj)
 	{
 		proj.damage = (int)Damage.ApplyTo(proj.originalDamage);
+		proj.position += (int)(ProjectileSpeed.ApplyTo(1) - 1) * proj.velocity;
 	}
 
 	public void ApplyTo(Player player)

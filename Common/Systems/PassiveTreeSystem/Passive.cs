@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Mechanics;
 using Terraria.Localization;
@@ -112,12 +113,32 @@ public abstract class Passive : Allocatable, ILoadable
 	/// <returns></returns>
 	public override bool CanAllocate(Player player)
 	{
-		PassiveTreePlayer passiveTreeSystem = player.GetModPlayer<PassiveTreePlayer>();
+		PassiveTreePlayer passivePlayer = player.GetModPlayer<PassiveTreePlayer>();
 
 		return
 			Level < MaxLevel &&
 			Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().Points > 0 &&
-			passiveTreeSystem.Edges.Count(e => e.Contains(this) && e.Other(this).Level > 0) >= RequiredAllocatedEdges;
+			CountRequiredEdges(CollectionsMarshal.AsSpan(passivePlayer.Edges));
+	}
+
+	private bool CountRequiredEdges(Span<Edge<Allocatable>> edges)
+	{
+		int count = 0;
+
+		foreach (Edge<Allocatable> edge in edges)
+		{
+			if (edge.Contains(this) && edge.Other(this).Level > 0)
+			{
+				count++;
+
+				if (count >= RequiredAllocatedEdges)
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	/// <summary>
