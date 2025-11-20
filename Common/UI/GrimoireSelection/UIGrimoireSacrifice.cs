@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Common.Systems.ModPlayers;
-using PathOfTerraria.Content.Items.Pickups;
 using PathOfTerraria.Content.Projectiles.Summoner;
 using ReLogic.Content;
 using System.Collections.Generic;
@@ -38,13 +37,12 @@ internal class UIGrimoireSacrifice : UIElement
 			HAlign = 0.5f,
 			VAlign = -0.2f
 		});
-		RefreshSummonImage();
 
 		Item[] parts = GrimoirePlayer.Get().StoredParts;
 		for (int i = 0; i < parts.Length; i++)
 		{
 			var pos = GetSlotPosition(i).ToPoint();
-			var slot = new UIItemSlot(parts, i, ItemSlot.Context.ChestItem)
+			var slot = new UIItemSlot(parts, i, ItemSlot.Context.BankItem)
 			{
 				Width = StyleDimension.FromPixels(32),
 				Height = StyleDimension.FromPixels(32),
@@ -54,8 +52,8 @@ internal class UIGrimoireSacrifice : UIElement
 				Top = StyleDimension.FromPixels(pos.Y),
 			};
 
-			int current = i; //Don't use i directly
-			slot.OnLeftClick += (a, b) => ClickSlot(ref parts[current]);
+			int current = i; //Don't use i directly, delegate capturing thing
+
 			slot.OnUpdate += (self) =>
 			{
 				if (self.ContainsPoint(Main.MouseScreen))
@@ -66,37 +64,9 @@ internal class UIGrimoireSacrifice : UIElement
 
 			Append(slot);
 		}
-	}
 
-	public static void ClickSlot(ref Item slotItem)
-	{
-		var summoner = GrimoirePlayer.Get();
-
-		if (slotItem.IsAir)
-		{
-			if (Main.mouseItem.ModItem is GrimoirePickup) //Place the pickup in the slot
-			{
-				slotItem = Main.mouseItem.Clone();
-				Main.mouseItem.TurnToAir();
-			}
-
-			return;
-		}
-
-		if (ItemSlot.ShiftInUse)
-		{
-			summoner.Storage.Add(slotItem.Clone());
-			slotItem.TurnToAir();
-		}
-		else
-		{
-			Item oldMouseItem = Main.mouseItem;
-
-			Main.mouseItem = slotItem.Clone();
-			slotItem = oldMouseItem.Clone();
-		}
-
-		GrimoireSelectionUIState.RefreshStorage();
+		// This fixes the summon icon being misaligned for some reason
+		Recalculate();
 	}
 
 	public override void Update(GameTime gameTime)
@@ -127,9 +97,9 @@ internal class UIGrimoireSacrifice : UIElement
 		_showTime = 180;
 	}
 
-	public void RefreshSummonImage()
+	public void RefreshSummonImage(int? overrideId = null)
 	{
-		int id = GrimoirePlayer.Get().CurrentSummonId;
+		int id = overrideId ?? GrimoirePlayer.Get().CurrentSummonId;
 		_currentSummon.SetImage((id == -1) ? EmptySlot : GrimoireSummon.IconsById[id]);
 		_currentSummon.Recalculate();
 	}
