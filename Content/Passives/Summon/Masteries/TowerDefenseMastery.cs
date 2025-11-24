@@ -35,20 +35,20 @@ internal class TowerDefenseMastery : Passive
 			}
 		}
 
-		public override void AI(Projectile projectile)
+		public override void AI(Projectile p)
 		{
-			if (!_originalDamage.HasValue)
+			if (!_originalDamage.HasValue || !p.TryGetOwner(out Player o) || !o.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<TowerDefenseMastery>(out float value))
 			{
 				return;
 			}
 
 			_timer++;
 
-			if (_timer >= 60 * 3)
+			if (_timer >= 60 * value)
 			{
 				foreach (NPC npc in Main.ActiveNPCs)
 				{
-					if (npc.CanBeChasedBy() && npc.DistanceSQ(projectile.Center) < PoTMod.NearbyDistanceSq)
+					if (npc.CanBeChasedBy() && npc.DistanceSQ(p.Center) < PoTMod.NearbyDistanceSq)
 					{
 						npc.SimpleStrikeNPC(_originalDamage.Value, 0);
 					}
@@ -67,8 +67,17 @@ internal class TowerDefenseMastery : Passive
 			}
 
 			Vector2 pos = proj.Center - Main.screenPosition;
+			float opacity = 0.1f;
+
+			if (_timer < 60)
+			{
+				opacity = (1 - _timer / 60f) * 0.4f;
+			}
+
+			opacity = MathF.Max(opacity, 0.1f);
+
 			float rotation = Main.GameUpdateCount * 0.03f;
-			Main.spriteBatch.Draw(DamageAura.Value, pos, null, Color.White * proj.Opacity * 0.2f, rotation, DamageAura.Size() / 2f, 1f, SpriteEffects.None, 0);
+			Main.spriteBatch.Draw(DamageAura.Value, pos, null, Color.White * opacity, rotation, DamageAura.Size() / 2f, 1f, SpriteEffects.None, 0);
 			return true;
 		}
 	}
