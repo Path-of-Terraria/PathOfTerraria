@@ -76,7 +76,7 @@ internal class TowerDefenseMastery : Passive
 
 			opacity = MathF.Max(opacity, 0.1f);
 
-			float rotation = Main.GameUpdateCount * 0.03f;
+			float rotation = Main.GameUpdateCount * 0.025f;
 			Main.spriteBatch.Draw(DamageAura.Value, pos, null, Color.White * opacity, rotation, DamageAura.Size() / 2f, 1f, SpriteEffects.None, 0);
 			return true;
 		}

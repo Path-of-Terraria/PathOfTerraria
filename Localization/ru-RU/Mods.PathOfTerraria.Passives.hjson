@@ -691,5 +691,5 @@ PinningShotMastery: {
 
 TowerDefenseMastery: {
 	// Name: Tower Defense
-	// Tooltip: Sentries deal an area-of-effect aura for base weapon damage every {0} seconds
+	// Tooltip: Sentries have an area-of-effect damage aura for base weapon damage every {0} seconds
 }
