@@ -3,30 +3,25 @@ using System.IO;
 
 namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
+/// <summary>
+/// Requests all other players to sync their skill passives. Should be sent from the client only.
+/// </summary>
 internal class RequestOtherSkillPassivesHandler : Handler
 {
-	public override Networking.Message MessageType => Networking.Message.RequestOthersSkillPassives;
-
-	/// <inheritdoc cref="Networking.Message.RequestOthersSkillPassives"/>
-	public override void Send(params object[] parameters)
+	public static void Send()
 	{
-		CastParameters(parameters, out byte player);
-		
-		ModPacket packet = Networking.GetPacket(MessageType);
-		packet.Write(player);
+		ModPacket packet = Networking.GetPacket<RequestOtherSkillPassivesHandler>();
 		packet.Send();
 	}
 
-	internal override void ServerRecieve(BinaryReader reader)
+	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
-		ModPacket packet = Networking.GetPacket(MessageType);
-		byte target = reader.ReadByte();
-
-		packet.Write(target);
-		packet.Send(-1, target);
+		ModPacket packet = Networking.GetPacket(Id);
+		packet.Write(sender);
+		packet.Send(-1, sender);
 	}
 
-	internal override void ClientRecieve(BinaryReader reader)
+	internal override void ClientReceive(BinaryReader reader, byte sender)
 	{
 		byte target = reader.ReadByte();
 

@@ -17,17 +17,17 @@ public sealed class UIDefaultArmor : UIArmorPage
 		numAccessorySlots += 2;
 
 		return [
-			new(DefaultFrameTexture, WingsIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.Wings)), ($"Mods.{PoTMod.ModName}.UI.Slots.Wings", null), ItemSlot.Context.EquipAccessory),
-			new(DefaultFrameTexture, HelmetIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.Head)), ($"Mods.{PoTMod.ModName}.UI.Slots.Head", null), ItemSlot.Context.EquipArmor),
-			new(DefaultFrameTexture, NecklaceIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.Necklace)), ($"Mods.{PoTMod.ModName}.UI.Slots.Necklace", null), ItemSlot.Context.EquipAccessory),
+			new(DefaultFrameTexture, WingsIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.Wings)), ($"Mods.{PoTMod.ModName}.UI.Slots.Wings", null)!, ItemSlot.Context.EquipAccessory),
+			new(DefaultFrameTexture, HelmetIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.Head)), ($"Mods.{PoTMod.ModName}.UI.Slots.Head", null)!, ItemSlot.Context.EquipArmor),
+			new(DefaultFrameTexture, NecklaceIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.Necklace)), ($"Mods.{PoTMod.ModName}.UI.Slots.Necklace", null)!, ItemSlot.Context.EquipAccessory),
 			//
-			new(DefaultFrameTexture, WeaponIconTexture, new(() => (Player.inventory, 0)), ($"Mods.{PoTMod.ModName}.UI.Slots.Weapon", null), 0),
-			new(DefaultFrameTexture, ChestIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.Body)), ($"Mods.{PoTMod.ModName}.UI.Slots.Body", null), ItemSlot.Context.EquipArmor),
-			new(DefaultFrameTexture, OffhandIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.Offhand)), ($"Mods.{PoTMod.ModName}.UI.Slots.Offhand", null), ItemSlot.Context.EquipAccessory),
+			new(DefaultFrameTexture, WeaponIconTexture, new(() => (Player.inventory, 0)), ($"Mods.{PoTMod.ModName}.UI.Slots.Weapon", null)!, 0),
+			new(DefaultFrameTexture, ChestIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.Body)), ($"Mods.{PoTMod.ModName}.UI.Slots.Body", null)!, ItemSlot.Context.EquipArmor),
+			new(DefaultFrameTexture, OffhandIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.Offhand)), ($"Mods.{PoTMod.ModName}.UI.Slots.Offhand", null)!, ItemSlot.Context.EquipAccessory),
 			//
-			new(DefaultFrameTexture, RingIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.RingOn)), ($"Mods.{PoTMod.ModName}.UI.Slots.RingLeft", null), ItemSlot.Context.EquipAccessory),
-			new(DefaultFrameTexture, LegsIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.Legs)), ($"Mods.{PoTMod.ModName}.UI.Slots.Legs", null), ItemSlot.Context.EquipArmor),
-			new(DefaultFrameTexture, RingIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.RingOff)), ($"Mods.{PoTMod.ModName}.UI.Slots.RingRight", null), ItemSlot.Context.EquipAccessory),
+			new(DefaultFrameTexture, RingIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.RingOn)), ($"Mods.{PoTMod.ModName}.UI.Slots.RingLeft", null)!, ItemSlot.Context.EquipAccessory),
+			new(DefaultFrameTexture, LegsIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.Legs)), ($"Mods.{PoTMod.ModName}.UI.Slots.Legs", null)!, ItemSlot.Context.EquipArmor),
+			new(DefaultFrameTexture, RingIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.RingOff)), ($"Mods.{PoTMod.ModName}.UI.Slots.RingRight", null)!, ItemSlot.Context.EquipAccessory),
 			//
 			new(DefaultFrameTexture, MiscellaneousIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.Accessory1)), ($"Mods.{PoTMod.ModName}.UI.Slots.NumberedAccessory", 1), ItemSlot.Context.EquipAccessory),
 			new(DefaultFrameTexture, MiscellaneousIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.Accessory2)), ($"Mods.{PoTMod.ModName}.UI.Slots.NumberedAccessory", 2), ItemSlot.Context.EquipAccessory),

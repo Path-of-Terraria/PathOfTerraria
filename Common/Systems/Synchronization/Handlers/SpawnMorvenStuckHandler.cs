@@ -8,16 +8,12 @@ namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 /// </summary>
 internal class SpawnMorvenStuckHandler : Handler
 {
-	public override Networking.Message MessageType => Networking.Message.TellMorvenToSpawn;
-
-	/// <inheritdoc cref="Networking.Message.TellMorvenToSpawn"/>
-	public override void Send(params object[] parameters)
+	public static void Send()
 	{
-		ModPacket packet = Networking.GetPacket(MessageType);
-		packet.Send();
+		Networking.GetPacket<SpawnMorvenStuckHandler>().Send();
 	}
 
-	internal override void ServerRecieve(BinaryReader reader)
+	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
 		RavencrestSystem.SpawnMorvenStuckInOverworld();
 	}

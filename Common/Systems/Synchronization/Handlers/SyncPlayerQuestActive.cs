@@ -3,13 +3,14 @@ using System.IO;
 
 namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
+/// <summary>
+/// Syncs that a player has enabled a given quest. This is used for things like quests.
+/// </summary>
 internal class SyncPlayerQuestActive : Handler
 {
-	public override Networking.Message MessageType => Networking.Message.PlayerQuestActive;
-
 	public static void Send(string quest, bool enabled, int toClient = -1, int ignoreClient = -1)
 	{
-		ModPacket packet = Networking.GetPacket(Networking.Message.PlayerQuestActive);
+		ModPacket packet = Networking.GetPacket<SyncPlayerQuestActive>();
 		packet.Write(quest);
 		packet.Write(enabled);
 		packet.Send(toClient, ignoreClient);

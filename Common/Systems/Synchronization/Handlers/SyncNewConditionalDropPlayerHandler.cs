@@ -8,15 +8,9 @@ namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 /// </summary>
 internal class SyncNewConditionalDropPlayerHandler : Handler
 {
-	public override Networking.Message MessageType => Networking.Message.SyncNewConditionalDropPlayer;
-
-	/// <inheritdoc cref="Networking.Message.SyncNewConditionalDropPlayer"/>
-	public override void Send(params object[] parameters)
+	public static void Send(int[] types)
 	{
-		CastParameters(parameters, out byte who, out int[] types);
-
-		ModPacket packet = Networking.GetPacket(MessageType);
-		packet.Write(who);
+		ModPacket packet = Networking.GetPacket<SyncNewConditionalDropPlayerHandler>();
 		packet.Write((byte)types.Length);
 
 		for (int i = 0; i < types.Length; i++)
@@ -27,22 +21,21 @@ internal class SyncNewConditionalDropPlayerHandler : Handler
 		packet.Send();
 	}
 
-	internal override void ServerRecieve(BinaryReader reader)
+	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
-		byte who = reader.ReadByte();
 		byte length = reader.ReadByte();
-		Player plr = Main.player[who];
+		Player plr = Main.player[sender];
 
 		for (int i = 0; i < length; ++i)
 		{
 			int id = reader.ReadInt32();
 			plr.GetModPlayer<ConditionalDropPlayer>().AddId(id, true);
 
-			ModPacket packet = Networking.GetPacket(Networking.Message.SyncConditionalDrop);
-			packet.Write(who);
+			ModPacket packet = Networking.GetPacket(Id);
+			packet.Write(sender);
 			packet.Write(id);
 			packet.Write(true);
-			packet.Send(-1, who);
+			packet.Send(-1, sender);
 		}
 	}
 }

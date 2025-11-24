@@ -39,10 +39,10 @@ internal class SkillTreePlayer : ModPlayer
 			// Tell everyone what I have
 			SyncAllPassives();
 			SyncAllSpecializations();
-			 
+
 			// and ask everyone what they have
-			ModContent.GetInstance<RequestOtherSkillSpecializationHandler>().Send((byte)Player.whoAmI);
-			ModContent.GetInstance<RequestOtherSkillPassivesHandler>().Send((byte)Player.whoAmI);
+			RequestOtherSkillSpecializationHandler.Send();
+			RequestOtherSkillPassivesHandler.Send();
 		}
 	}
 
@@ -50,7 +50,7 @@ internal class SkillTreePlayer : ModPlayer
 	{
 		foreach (KeyValuePair<Type, SkillSpecial> pair in SpecializationsBySkill)
 		{
-			ModContent.GetInstance<SyncSkillSpecializationHandler>().Send((byte)Player.whoAmI, pair.Key.FullName, pair.Value.GetType().FullName);
+			SyncSkillSpecializationHandler.Send(pair.Key.FullName, pair.Value.GetType().FullName);
 		}
 	}
 
@@ -63,7 +63,7 @@ internal class SkillTreePlayer : ModPlayer
 		{
 			foreach (KeyValuePair<Type, int> pair in TotalLevelByTypeByTree[tree])
 			{
-				ModContent.GetInstance<SkillPassiveValueHandler>().Send((byte)Player.whoAmI, tree.GetType().FullName, pair.Key.FullName, (byte)pair.Value);
+				SkillPassiveValueHandler.Send(tree.GetType().FullName, pair.Key.FullName, (byte)pair.Value);
 			}
 		}
 	}
@@ -87,7 +87,7 @@ internal class SkillTreePlayer : ModPlayer
 
 		if (Main.netMode == NetmodeID.MultiplayerClient && sync)
 		{
-			ModContent.GetInstance<SyncSkillSpecializationHandler>().Send((byte)Player.whoAmI, type.FullName, spec.GetType().FullName);
+			SyncSkillSpecializationHandler.Send(type.FullName, spec.GetType().FullName);
 		}
 	}
 
@@ -97,7 +97,7 @@ internal class SkillTreePlayer : ModPlayer
 	/// <param name="tree">The tree being modified.</param>
 	/// <param name="nodeType">The node value being modified.</param>
 	/// <param name="levelAdjustment">If <paramref name="set"/> is true, the final value to use. Otherwise, the value to add to the stored value.</param>
-	/// <param name="sync">Whether this should run <see cref="SkillPassiveValueHandler.Send(byte, string, string, byte, bool)"/> or not.</param>
+	/// <param name="sync">Whether this should run <see cref="SkillPassiveValueHandler.Send(string, string, byte)"/> or not.</param>
 	/// <param name="set">Whether this overrides or adds to the stored value.</param>
 	internal void ModifyPassive(SkillTree tree, Type nodeType, int levelAdjustment, bool sync = true, bool set = false)
 	{
@@ -118,7 +118,7 @@ internal class SkillTreePlayer : ModPlayer
 
 		if (Main.netMode == NetmodeID.MultiplayerClient && sync)
 		{
-			ModContent.GetInstance<SkillPassiveValueHandler>().Send((byte)Player.whoAmI, tree.GetType().FullName, nodeType.FullName, (byte)levelByType[nodeType]);
+			SkillPassiveValueHandler.Send(tree.GetType().FullName, nodeType.FullName, (byte)levelByType[nodeType]);
 		}
 	}
 

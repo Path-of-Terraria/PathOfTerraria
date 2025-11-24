@@ -5,32 +5,23 @@ namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
 internal class SyncStaffAltHandler : Handler
 {
-	public override Networking.Message MessageType => Networking.Message.SyncUseStaffAltUse;
-
-	/// <inheritdoc cref="Networking.Message.SyncUseStaffAltUse"/>
-	public override void Send(params object[] parameters)
+	public static void Send()
 	{
-		CastParameters(parameters, out byte whoAmI);
-
-		ModPacket packet = Networking.GetPacket(MessageType);
-		packet.Write(whoAmI);
-		packet.Send();
+		Networking.GetPacket<SyncStaffAltHandler>().Send();
 	}
 
-	internal override void ServerRecieve(BinaryReader reader)
+	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
-		byte index = reader.ReadByte();
-
-		Player player = Main.player[index];
+		Player player = Main.player[sender];
 		player.GetModPlayer<StaffPlayer>().EmpoweredStaffTime = Staff.AltActiveTime;
 		player.GetModPlayer<AltUsePlayer>().SetAltCooldown(Staff.AltCooldownTime, Staff.AltActiveTime);
 
-		ModPacket packet = Networking.GetPacket(MessageType);
-		packet.Write(index);
-		packet.Send(-1, index);
+		ModPacket packet = Networking.GetPacket(Id);
+		packet.Write(sender);
+		packet.Send(-1, sender);
 	}
 
-	internal override void ClientRecieve(BinaryReader reader)
+	internal override void ClientReceive(BinaryReader reader, byte sender)
 	{
 		byte index = reader.ReadByte();
 

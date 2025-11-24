@@ -112,7 +112,7 @@ internal class BossDomainLivesPlayer : ModPlayer
 
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 			{
-				ModContent.GetInstance<RequestCheckSectionHandler>().Send((byte)Player.whoAmI, Player.Center);
+				RequestCheckSectionHandler.Send(Player.Center);
 			}
 		}
 

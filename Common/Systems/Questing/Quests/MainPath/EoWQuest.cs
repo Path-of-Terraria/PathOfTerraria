@@ -39,7 +39,7 @@ internal class EoWQuest : Quest
 			{
 				if (Main.netMode != NetmodeID.SinglePlayer)
 				{
-					ModContent.GetInstance<BreakableOrbsHandler>().Send();
+					BreakableOrbsHandler.Send();
 				}
 				else
 				{

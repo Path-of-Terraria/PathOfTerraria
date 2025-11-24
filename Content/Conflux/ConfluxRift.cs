@@ -228,7 +228,7 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 			Vector2 compareSpot = Main.LocalPlayer.Center;
 			if (!Main.LocalPlayer.IsProjectileInteractibleAndInInteractionRange(Projectile, ref compareSpot)) { return; }
 
-			ModContent.GetInstance<RiftInteractionHandler>().Send(Main.myPlayer, Projectile.identity);
+			RiftInteractionHandler.Send(Projectile.identity);
 			return;
 		}
 
@@ -456,25 +456,21 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 	}
 }
 
+/// <summary>
+/// Synchronizes right click interactions with rifts.
+/// </summary>
 internal class RiftInteractionHandler : Handler
 {
-	public override Networking.Message MessageType => Networking.Message.RiftInteraction;
-
-	/// <inheritdoc cref="Networking.Message.RiftInteraction"/>
-	public override void Send(params object[] parameters)
+	public static void Send(int riftIdentity)
 	{
-		CastParameters(parameters, out byte sender, out int riftIdentity);
-
-		ModPacket packet = Networking.GetPacket(MessageType);
-		packet.Write(sender);
+		ModPacket packet = Networking.GetPacket<RiftInteractionHandler>();
 		packet.Write(riftIdentity);
 		packet.Send();
 	}
 
-	internal override void ServerRecieve(BinaryReader reader)
+	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
-		ModPacket packet = Networking.GetPacket(MessageType);
-		byte sender = reader.ReadByte();
+		ModPacket packet = Networking.GetPacket(Id);
 		int riftIdentity = reader.ReadInt32();
 
 		if (Main.player[sender] is not { active: true } player) { return; }

@@ -3,42 +3,40 @@ using PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 
 namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
+/// <summary>
+/// Syncs the rings of the Guardian Angel's hits.<br/>Signature:<br/>
+/// <c>byte playerWhoAmI, short npcWho, bool runLocally = false</c>
+/// </summary>
 internal class SyncGuardianAngelHandler : Handler
 {
-	public override Networking.Message MessageType => Networking.Message.SyncGuardianAngelHit;
-
-	/// <inheritdoc cref="Networking.Message.SyncGuardianAngelHit"/>
-	public override void Send(params object[] parameters)
+	public static void Send(byte playerWhoAmI, short npcWho, int toPlayer = -1, int ignorePlayer = -1, bool runLocally = false)
 	{
-		CastParameters(parameters, out byte playerWhoAmI, out short npcWho);
-
-		ModPacket packet = Networking.GetPacket(Networking.Message.SyncGuardianAngelHit);
-
+		ModPacket packet = Networking.GetPacket<SyncGuardianAngelHandler>();
 		packet.Write(playerWhoAmI);
 		packet.Write(npcWho);
-		packet.Send();
+		packet.Send(toPlayer, ignorePlayer);
 
-		if (TryGetOptionalValue(parameters, 2, out bool runLocally) && runLocally)
+		if (runLocally)
 		{
 			HitGuardianAngel(playerWhoAmI, npcWho);
 		}
 	}
 
-	internal override void ServerRecieve(BinaryReader reader)
+	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
 		byte who = reader.ReadByte();
 		short npcWho = reader.ReadInt16();
 
 		HitGuardianAngel(who, npcWho);
 
-		ModPacket packet = Networking.GetPacket(Networking.Message.SyncGuardianAngelHit);
+		ModPacket packet = Networking.GetPacket(Id);
 
 		packet.Write(who);
 		packet.Write(npcWho);
 		packet.Send(-1, who);
 	}
 
-	internal override void ClientRecieve(BinaryReader reader)
+	internal override void ClientReceive(BinaryReader reader, byte sender)
 	{
 		HitGuardianAngel(reader.ReadByte(), reader.ReadInt16());
 	}

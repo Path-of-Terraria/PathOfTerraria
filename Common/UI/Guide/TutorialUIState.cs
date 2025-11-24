@@ -213,7 +213,7 @@ internal class TutorialUIState : UIState
 				}
 				else if (Main.netMode == NetmodeID.MultiplayerClient)
 				{
-					ModContent.GetInstance<SpawnNPCOnServerHandler>().Send((short)ModContent.NPCType<RavenNPC>(), plr.Center - new Vector2(0, 250));
+					SpawnNPCOnServerHandler.Send((short)ModContent.NPCType<RavenNPC>(), plr.Center - new Vector2(0, 250));
 				}
 			}
 		}

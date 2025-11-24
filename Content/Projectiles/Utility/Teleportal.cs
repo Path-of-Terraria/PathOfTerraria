@@ -75,7 +75,7 @@ internal class Teleportal : ModProjectile, IRightClickableProjectile, IMapIcon
 		if (Main.mouseRight && Main.mouseRightRelease)
 		{
 			player.Teleport(TeleportLocation);
-			ModContent.GetInstance<RequestCheckSectionHandler>().Send((byte)player.whoAmI, TeleportLocation);
+			RequestCheckSectionHandler.Send(TeleportLocation);
 			return true;
 		}
 

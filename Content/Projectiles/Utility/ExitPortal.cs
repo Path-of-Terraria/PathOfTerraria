@@ -107,7 +107,7 @@ internal class ExitPortal : ModProjectile, IRightClickableProjectile, IMapIcon
 			}
 			else if (Main.netMode == NetmodeID.Server)
 			{
-				ModContent.GetInstance<SendSpawnVFXModule>().Send(position, SendSpawnVFXModule.VFXType.ShimmerTeleport);
+				SendSpawnVFXModule.Send(position, SendSpawnVFXModule.VFXType.ShimmerTeleport);
 			}
 		}
 	}

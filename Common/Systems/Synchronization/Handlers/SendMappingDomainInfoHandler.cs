@@ -6,17 +6,14 @@ using System.IO;
 
 namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
-/// <inheritdoc cref="Networking.Message.SendMappingDomainInfo"/>
+/// <summary>
+/// Sends mapping domain info (Level, Tier, Affixes) to the server.
+/// </summary>
 internal class SendMappingDomainInfoHandler : Handler
 {
-	public override Networking.Message MessageType => Networking.Message.SendMappingDomainInfo;
-
-	/// <inheritdoc cref="Networking.Message.SendMappingDomainInfo"/>
-	public override void Send(params object[] parameters)
+	public static void Send(short level, short tier, List<MapAffix> affixes)
 	{
-		CastParameters(parameters, out short level, out short tier, out List<MapAffix> affixes);
-
-		ModPacket packet = Networking.GetPacket(MessageType);
+		ModPacket packet = Networking.GetPacket<SendMappingDomainInfoHandler>();
 		packet.Write(level);
 		packet.Write(tier);
 		packet.Write((byte)affixes.Count);
@@ -29,7 +26,7 @@ internal class SendMappingDomainInfoHandler : Handler
 		packet.Send();
 	}
 
-	internal override void ServerRecieve(BinaryReader reader)
+	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
 		GetAndSetMappingDomainInfo(reader);
 	}
