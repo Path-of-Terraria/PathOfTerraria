@@ -16,18 +16,11 @@ internal class RemovePowerCellFunctionality : ModSystem
 		ILCursor c = new(il);
 
 		// Match Golem's NPC ID
-		if (!c.TryGotoNext(x => x.MatchLdcI4(NPCID.Golem)))
-		{
-			return;
-		}
-
-		ILLabel label = null;
+		c.GotoNext(x => x.MatchLdcI4(NPCID.Golem));
 
 		// Match & get the label so we can exit early
-		if (!c.TryGotoNext(MoveType.After, x => x.MatchBrtrue(out label)) || label is null)
-		{
-			return;
-		}
+		ILLabel label = null;
+		c.GotoNext(MoveType.After, x => x.MatchBrtrue(out label));
 
 		c.Emit(OpCodes.Br, label);
 	}
