@@ -18,7 +18,7 @@ internal class HotbarPotionHandler : Handler
 
 	internal override void Receive(BinaryReader reader, byte sender)
 	{
-		byte who = reader.ReadByte();
+		byte who = sender >= byte.MaxValue ? reader.ReadByte() : sender;
 		bool isHeal = reader.ReadBoolean();
 		byte newValue = reader.ReadByte();
 
