@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using PathOfTerraria.Common.AccessorySlots;
@@ -37,6 +38,7 @@ public abstract class UIArmorPage : UIElement
 
 	private readonly List<(ModAccessorySlot Slot, UIHoverImageItemSlot UI)> customSlots = [];
 	private UIHoverImageItemSlot?[] defaultSlots = [];
+	private bool wasInventoryOpen;
 
 	protected abstract Asset<Texture2D> DefaultFrameTexture { get; }
 
@@ -82,7 +84,22 @@ public abstract class UIArmorPage : UIElement
 	{
 		base.Update(gameTime);
 
-		MaintainCustomAccessorySlots(CollectionsMarshal.AsSpan(customSlots));
+		// Recreate the UI every time it is opened, just so that it does not lag back in case of unpredictable changes with the accessory slots.
+		if (Main.playerInventory && !wasInventoryOpen)
+		{
+			Main.QueueMainThreadAction(() =>
+			{
+				RemoveAllChildren();
+				AddChildren();
+				Recalculate();
+			});
+		}
+		else
+		{
+			MaintainCustomAccessorySlots(CollectionsMarshal.AsSpan(customSlots));
+		}
+
+		wasInventoryOpen = Main.playerInventory;
 	}
 
 	public void AddChildren()
@@ -90,6 +107,7 @@ public abstract class UIArmorPage : UIElement
 		int numAccessorySlots = 0;
 
 		defaultSlots = GetDefaultSlots(ref numAccessorySlots);
+		customSlots.Clear();
 
 		AccessorySlotLoader accessoryLoader = LoaderManager.Get<AccessorySlotLoader>();
 		ModAccessorySlotPlayer accessoryPlayer = Player.GetModPlayer<ModAccessorySlotPlayer>();
@@ -134,6 +152,9 @@ public abstract class UIArmorPage : UIElement
 				uiSlot.HAlign = (numLocationsTaken % 3) * 0.5f;
 				uiSlot.VAlign = (numLocationsTaken / 3) * 0.25f;
 				numLocationsTaken++;
+
+				// Make sure the slot is properly initialized before appending
+				if (uiSlot.Icon == null) { uiSlot.OnInitialize(); }
 
 				Append(uiSlot);
 			}
