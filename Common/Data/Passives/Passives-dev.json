@@ -3567,7 +3567,7 @@
 		"internalIdentifier": "ManaLeechMastery",
 		"referenceId": 1072,
 		"maxLevel": 1,
-		"value": 20,
+		"value": 5,
 		"position": {
 			"x": 860,
 			"y": -1100
@@ -3575,10 +3575,10 @@
 		"isHidden": true
 	},
 	{
-		"internalIdentifier": "WhipCritDamageMastery",
+		"internalIdentifier": "TwinPowerMastery",
 		"referenceId": 1073,
 		"maxLevel": 1,
-		"value": 20,
+		"value": 60,
 		"position": {
 			"x": 780,
 			"y": -1180

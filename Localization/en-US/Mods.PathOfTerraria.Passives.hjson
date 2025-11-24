@@ -688,3 +688,8 @@ ManaLeechMastery: {
 	Name: Mana Leech
 	Tooltip: Grimoire summons constantly increase in damage but consume more and more mana
 }
+
+TwinPowerMastery: {
+	Name: Twin Power
+	Tooltip: Using the Grimoire spawns two summons at {0}% damage
+}

@@ -685,6 +685,11 @@ HealingGrimoireMastery: {
 }
 
 ManaLeechMastery: {
-	// Name: ManaLeechMastery
+	// Name: Mana Leech
+	// Tooltip: Grimoire summons constantly increase in damage but consume more and more mana
+}
+
+TwinPowerMastery: {
+	// Name: TwinPowerMastery
 	// Tooltip: ""
 }
