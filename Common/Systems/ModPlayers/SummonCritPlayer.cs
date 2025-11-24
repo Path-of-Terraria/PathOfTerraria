@@ -14,7 +14,7 @@ internal class SummonCritPlayer : ModPlayer
 
 			if (proj.ModProjectile is GrimoireSummon)
 			{
-				totalCritChance += Player.GetModPlayer<GrimoirePlayer>().Stats.CriticalStrikeChanceModifier.Value * 100;
+				totalCritChance += Player.GetModPlayer<GrimoirePlayer>().Stats.CriticalStrikeChanceModifier.Value;
 			}
             
 			if (Main.rand.NextFloat(100f) < totalCritChance)

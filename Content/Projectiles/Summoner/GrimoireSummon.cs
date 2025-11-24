@@ -167,6 +167,7 @@ internal abstract class GrimoireSummon : ModProjectile, IOnContinuouslyUpdateDam
 
 		GrimoirePlayer.GrimoireStats stats = Owner.GetModPlayer<GrimoirePlayer>().Stats;
 		Projectile.damage = (int)stats.DamageModifier.ApplyTo(Projectile.damage);
+		// Projectile.CritChance = (int)stats.CriticalStrikeChanceModifier.Value; - This does nothing! Here for posterity - functionality is in SummonCritPlayer.
 		Projectile.GetGlobalProjectile<SpeedUpProjectile>().TotalSpeed += stats.SpeedModifier.Value;
 	}
 }

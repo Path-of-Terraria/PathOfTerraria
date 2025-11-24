@@ -7,6 +7,6 @@ internal class IncreasedGrimoireCritPassive : Passive
 {
 	public override void BuffPlayer(Player player)
 	{
-		player.GetModPlayer<GrimoirePlayer>().Stats.CriticalStrikeChanceModifier += Value / 100f;
+		player.GetModPlayer<GrimoirePlayer>().Stats.CriticalStrikeChanceModifier += Value;
 	}
 }

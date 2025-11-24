@@ -690,6 +690,6 @@ ManaLeechMastery: {
 }
 
 TwinPowerMastery: {
-	// Name: TwinPowerMastery
-	// Tooltip: ""
+	// Name: Twin Power
+	// Tooltip: Using the Grimoire spawns two summons at {0}% damage
 }
