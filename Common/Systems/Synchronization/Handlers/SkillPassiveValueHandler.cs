@@ -31,7 +31,7 @@ internal class SkillPassiveValueHandler : Handler
 	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
 		ModPacket packet = Networking.GetPacket(Id);
-		byte target = reader.ReadByte();
+		byte target = sender;
 		string treeName = reader.ReadString();
 		string nodeName = reader.ReadString();
 		byte level = reader.ReadByte();
