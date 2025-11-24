@@ -18,7 +18,8 @@ internal class SyncConditionalDropHandler : Handler
 
 	internal override void Receive(BinaryReader reader, byte sender)
 	{
-		SetValuesBasedOnReader(reader, sender, Main.dedServ);
+		byte who = sender >= byte.MaxValue ? reader.ReadByte() : sender;
+		SetValuesBasedOnReader(reader, who, Main.dedServ);
 	}
 
 	public static void SetValuesBasedOnReader(BinaryReader reader, byte who, bool runningOnServer)
