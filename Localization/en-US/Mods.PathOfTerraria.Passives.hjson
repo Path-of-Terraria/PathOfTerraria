@@ -688,3 +688,8 @@ PinningShotMastery: {
 	Name: Pinning Shot
 	Tooltip: Ranged projectiles have a {0}% chance to inflict Rooted, and deal {1}% more damage to Rooted enemies
 }
+
+TowerDefenseMastery: {
+	Name: Tower Defense
+	Tooltip: Sentries deal an area-of-effect aura for base weapon damage every {0} seconds
+}
