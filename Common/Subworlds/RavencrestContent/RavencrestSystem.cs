@@ -97,7 +97,6 @@ public class RavencrestSystem : ModSystem
 
 	public override void PreUpdateTime()
 	{
-		Main.NewText(Main.MouseWorld.ToTileCoordinates());
 		ReturnNativeNpcs();
 
 		if (NPC.downedBoss2 && !DisableOrbBreaking.CanBreakOrb)
