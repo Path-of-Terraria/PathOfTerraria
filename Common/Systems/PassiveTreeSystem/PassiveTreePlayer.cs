@@ -6,6 +6,7 @@ using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Content.Passives;
+using PathOfTerraria.Content.Passives.Misc;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.ModLoader.IO;
 
@@ -191,7 +192,7 @@ internal class PassiveTreePlayer : ModPlayer
 			// Make sure that the other node will have enough nearby active edges to stay available.
 			if (e.Other(passive) is { RequiredAllocatedEdges: > 1 } other)
 			{
-				if (Edges.Count(e => e.End == other && e.Start.Level > 0) <= other.RequiredAllocatedEdges)
+				if (Edges.Count(e => e.End == other && e.Start.Level > 0 && e.End is not MasteryPassive) <= other.RequiredAllocatedEdges)
 				{
 					return false;
 				}

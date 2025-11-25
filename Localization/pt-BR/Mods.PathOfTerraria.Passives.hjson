@@ -681,7 +681,7 @@ IncreasedGrimoireCritPassive: {
 
 SniperMastery: {
 	// Name: Sniper
-	// Tooltip: Enemies that are [mechanic/shift:Far] away take {0}% more damage
+	// Tooltip: Enemies that are [mechanic/shift:Far] away take {0}% more Ranged damage
 }
 
 PinningShotMastery: {
