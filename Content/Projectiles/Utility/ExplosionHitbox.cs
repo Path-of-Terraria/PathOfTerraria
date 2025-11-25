@@ -11,13 +11,13 @@ namespace PathOfTerraria.Content.Projectiles.Utility;
 internal class ExplosionHitbox : ModProjectile
 {
 	/// <summary>
-	/// 
+	/// Contains information related to a standard explosion's visual and audio effects.
 	/// </summary>
 	/// <param name="GoreCount">How many smoke gores to spawn. Defaults to 4 repeat.</param>
 	/// <param name="SmokeDustCount">How many smoke dusts to spawn. Defaults to 20.</param>
 	/// <param name="TorchDustCount">
 	/// How many torch dusts to spawn. Defaults to 10. 
-	/// Note that this will loop <paramref name="TorchDustCount"/> / 2 times, since the loop has two dust spawns in it..
+	/// Note that this will loop <paramref name="TorchDustCount"/> / 2 times, since the loop has two dust spawns in it.
 	/// </param>
 	/// <param name="Sfx">Whether the sfx should play.</param>
 	/// <param name="GoreRange"></param>
@@ -74,7 +74,7 @@ internal class ExplosionHitbox : ModProjectile
 
 		if (value.Sfx && !Main.dedServ)
 		{
-			SoundEngine.PlaySound(SoundID.Item14 with { Volume = package.Value.Volume }, entity.position);
+			SoundEngine.PlaySound(SoundID.Item14 with { Volume = value.Volume }, entity.position);
 		}
 
 		for (int i = 0; i < value.SmokeDustCount; i++)
@@ -119,6 +119,12 @@ internal class ExplosionHitbox : ModProjectile
 		{
 			return Main.rand.Next(range.Start.Value, range.End.Value + 1);
 		}
+	}
+
+	public static void QuickSpawn(IEntitySource source, Entity sourceEntity, Vector2 velocity, int damage, int owner, Vector2 size, VFXPackage? package = null)
+	{
+		Projectile.NewProjectile(source, sourceEntity.Center, velocity, ModContent.ProjectileType<ExplosionHitbox>(), damage, 8f, owner, size.X, size.Y);
+		VFX(sourceEntity, package);
 	}
 }
 

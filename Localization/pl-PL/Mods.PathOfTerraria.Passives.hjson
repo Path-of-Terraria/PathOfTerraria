@@ -681,10 +681,30 @@ IncreasedGrimoireCritPassive: {
 
 SniperMastery: {
 	// Name: Sniper
-	// Tooltip: Enemies that are [mechanic/shift:Far] away take {0}% more damage
+	// Tooltip: Enemies that are [mechanic/shift:Far] away take {0}% more Ranged damage
 }
 
 PinningShotMastery: {
 	// Name: Pinning Shot
 	// Tooltip: Ranged projectiles have a {0}% chance to inflict Rooted, and deal {1}% more damage to Rooted enemies
+}
+
+LimitedEntranceMastery: {
+	// Name: Limited Opening
+	// Tooltip: For {0} seconds after spawning, summons deal 30% more damage
+}
+
+DeathrushMastery: {
+	// Name: Deathrush
+	// Tooltip: For every minion (max 10), you gain [mechanic/shift=0;2:MovementSpeed] and your minions gain {0}% [mechanic/shift=1;2:BehaviorSpeed]
+}
+
+ShatteredBondMastery: {
+	// Name: Shattered Bond
+	// Tooltip: Every time a summon despawns (except Grimoire summons), it explodes for {0}% damage
+}
+
+AddedMaxMinionsPassive: {
+	// Name: AddedMaxMinionsPassive
+	// Tooltip: ""
 }
