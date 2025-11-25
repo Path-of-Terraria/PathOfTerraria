@@ -626,7 +626,7 @@ SwiftPlacementsMastery: {
 
 WitheringBoltsMastery: {
 	Name: Withering Bolts
-	Tooltip: Enemies hit by your sentries are slowed by 40% for {0} seconds. 15% vs Bosses.
+	Tooltip: Enemies hit by your sentries are slowed by 40% (15% for bosses) for {0} seconds
 }
 
 MaximumSentryPassive: {
@@ -687,4 +687,9 @@ SniperMastery: {
 PinningShotMastery: {
 	Name: Pinning Shot
 	Tooltip: Ranged projectiles have a {0}% chance to inflict Rooted, and deal {1}% more damage to Rooted enemies
+}
+
+TowerDefenseMastery: {
+	Name: Tower Defense
+	Tooltip: Sentries have an area-of-effect damage aura for base weapon damage every {0} seconds
 }
