@@ -17,7 +17,7 @@ internal class BleedDebuff : ModBuff
 	{
 		if (Main.netMode == NetmodeID.MultiplayerClient)
 		{
-			ModContent.GetInstance<BleedStackHandler>().Send((byte)player.whoAmI, (short)npc.whoAmI, (ushort)time, (ushort)damage);
+			BleedStackHandler.Send((short)npc.whoAmI, (ushort)time, (ushort)damage);
 			return;
 		}
 

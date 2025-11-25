@@ -703,3 +703,8 @@ TwinPowerMastery: {
 	// Name: Twin Power
 	// Tooltip: Using the Grimoire spawns two summons at {0}% damage
 }
+
+TowerDefenseMastery: {
+	// Name: Tower Defense
+	// Tooltip: Sentries have an area-of-effect damage aura for base weapon damage every {0} seconds
+}

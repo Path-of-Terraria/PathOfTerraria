@@ -19,17 +19,17 @@ public sealed class UIDyeArmor : UIArmorPage
 		numAccessorySlots += 2;
 
 		UIHoverImageItemSlot?[] slots = [
-			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Wings)), ($"Mods.{PoTMod.ModName}.UI.Slots.Wings", null), ItemSlot.Context.EquipDye),
-			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Head)), ($"Mods.{PoTMod.ModName}.UI.Slots.Head", null), ItemSlot.Context.EquipDye),
-			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Necklace)), ($"Mods.{PoTMod.ModName}.UI.Slots.Necklace", null), ItemSlot.Context.EquipDye),
+			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Wings)), ($"Mods.{PoTMod.ModName}.UI.Slots.Wings", null)!, ItemSlot.Context.EquipDye),
+			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Head)), ($"Mods.{PoTMod.ModName}.UI.Slots.Head", null)!, ItemSlot.Context.EquipDye),
+			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Necklace)), ($"Mods.{PoTMod.ModName}.UI.Slots.Necklace", null)!, ItemSlot.Context.EquipDye),
 			//
 			null,
-			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Body)), ($"Mods.{PoTMod.ModName}.UI.Slots.Body", null), ItemSlot.Context.EquipDye),
-			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Offhand)), ($"Mods.{PoTMod.ModName}.UI.Slots.Offhand", null), ItemSlot.Context.EquipDye),
+			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Body)), ($"Mods.{PoTMod.ModName}.UI.Slots.Body", null)!, ItemSlot.Context.EquipDye),
+			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Offhand)), ($"Mods.{PoTMod.ModName}.UI.Slots.Offhand", null)!, ItemSlot.Context.EquipDye),
 			//
-			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.RingOn)), ($"Mods.{PoTMod.ModName}.UI.Slots.RingLeft", null), ItemSlot.Context.EquipDye),
-			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Legs)), ($"Mods.{PoTMod.ModName}.UI.Slots.Legs", null), ItemSlot.Context.EquipDye),
-			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.RingOff)), ($"Mods.{PoTMod.ModName}.UI.Slots.RingRight", null), ItemSlot.Context.EquipDye),
+			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.RingOn)), ($"Mods.{PoTMod.ModName}.UI.Slots.RingLeft", null)!, ItemSlot.Context.EquipDye),
+			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Legs)), ($"Mods.{PoTMod.ModName}.UI.Slots.Legs", null)!, ItemSlot.Context.EquipDye),
+			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.RingOff)), ($"Mods.{PoTMod.ModName}.UI.Slots.RingRight", null)!, ItemSlot.Context.EquipDye),
 			//
 			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Accessory1)), ($"Mods.{PoTMod.ModName}.UI.Slots.NumberedAccessory", 1), ItemSlot.Context.EquipDye),
 			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Accessory2)), ($"Mods.{PoTMod.ModName}.UI.Slots.NumberedAccessory", 2), ItemSlot.Context.EquipDye),

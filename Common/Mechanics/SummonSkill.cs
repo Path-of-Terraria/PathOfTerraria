@@ -49,7 +49,7 @@ public abstract class SummonSkill : Skill
 				else
 				{
 					ushort damage = (ushort)GetTotalDamage(ContentSamples.NpcsByNetId[type].damage);
-					ModContent.GetInstance<SpawnSentryNPCHandler>().Send((ushort)type, (byte)player.whoAmI, worldCoords, (ushort)TotalDuration, damage);
+					SpawnSentryNPCHandler.Send((ushort)type, worldCoords, (ushort)TotalDuration, damage);
 				}
 			}
 		}

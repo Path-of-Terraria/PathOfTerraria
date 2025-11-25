@@ -28,7 +28,7 @@ public sealed class UIConfig : ModConfig
 
 		if (Main.netMode == NetmodeID.MultiplayerClient)
 		{
-			ModContent.GetInstance<PlayerUseSackOfHoldingHandler>().Send((byte)Main.myPlayer, UseVirtualBag);
+			PlayerUseSackOfHoldingHandler.Send(UseVirtualBag);
 		}
 	}
 }

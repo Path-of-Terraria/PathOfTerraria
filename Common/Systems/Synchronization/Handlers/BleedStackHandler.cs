@@ -3,31 +3,26 @@ using System.IO;
 
 namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
-/// <inheritdoc cref="Networking.Message.BleedStack"/>
+/// <summary>
+/// Adds a stack of Bleed to an NPC. Should only be called from the client.
+/// </summary>
 internal class BleedStackHandler : Handler
 {
-	public override Networking.Message MessageType => Networking.Message.BleedStack;
-
-	/// <inheritdoc cref="Networking.Message.BleedStack"/>
-	public override void Send(params object[] parameters)
+	public static void Send(short npc, ushort time, ushort damage)
 	{
-		CastParameters(parameters, out byte player, out short npc, out ushort time, out ushort damage);
-
-		ModPacket packet = Networking.GetPacket(MessageType);
-		packet.Write(player);
+		ModPacket packet = Networking.GetPacket<BleedStackHandler>(8);
 		packet.Write(npc);
 		packet.Write(time);
 		packet.Write(damage);
 		packet.Send();
 	}
 
-	internal override void ServerRecieve(BinaryReader reader)
+	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
-		byte player = reader.ReadByte();
 		short npc = reader.ReadInt16();
 		ushort time = reader.ReadUInt16();
 		ushort damage = reader.ReadUInt16();
 
-		BleedDebuff.Apply(Main.player[player], Main.npc[npc], time, damage);
+		BleedDebuff.Apply(Main.player[sender], Main.npc[npc], time, damage);
 	}
 }

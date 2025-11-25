@@ -69,7 +69,7 @@ internal abstract class Staff : Gear
 
 		if (player.whoAmI == Main.myPlayer && Main.netMode == NetmodeID.MultiplayerClient)
 		{
-			ModContent.GetInstance<SyncStaffAltHandler>().Send((byte)player.whoAmI);
+			SyncStaffAltHandler.Send();
 		}
 
 		return false;

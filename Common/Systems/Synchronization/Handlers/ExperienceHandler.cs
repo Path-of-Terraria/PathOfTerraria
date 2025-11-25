@@ -3,31 +3,24 @@ using System.IO;
 
 namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
+/// <summary>
+/// Spawns experience on all clients.
+/// </summary>
 internal class ExperienceHandler : Handler
 {
-	public override Networking.Message MessageType => Networking.Message.SpawnExperience;
-
-	/// <inheritdoc cref="Networking.Message.SpawnExperience"/>
-	public override void Send(params object[] parameters)
+	public static void Send(byte target, int xpValue, Vector2 position, Vector2 velocity)
 	{
-		CastParameters(parameters, out byte target, out int xpValue, out Vector2 position, out Vector2 velocity);
-		
-		ModPacket packet = Networking.GetPacket(MessageType);
+		ModPacket packet = Networking.GetPacket<ExperienceHandler>();
 		packet.Write(target);
 		packet.Write(xpValue);
 		packet.WriteVector2(position);
 		packet.WriteVector2(velocity);
 		packet.Send();
-
-		if (TryGetOptionalValue(parameters, 4, out bool runLocally) && runLocally)
-		{
-			ExperienceTracker.SpawnExperience(xpValue, position, velocity, target, true);
-		}
 	}
 
-	internal override void ServerRecieve(BinaryReader reader)
+	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
-		ModPacket packet = Networking.GetPacket(MessageType);
+		ModPacket packet = Networking.GetPacket(Id);
 		byte target = reader.ReadByte();
 
 		packet.Write(target);
@@ -37,7 +30,7 @@ internal class ExperienceHandler : Handler
 		packet.Send(-1, target);
 	}
 
-	internal override void ClientRecieve(BinaryReader reader)
+	internal override void ClientReceive(BinaryReader reader, byte sender)
 	{
 		int target = reader.ReadByte();
 		int xp = reader.ReadInt32();

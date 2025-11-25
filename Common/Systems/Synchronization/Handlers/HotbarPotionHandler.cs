@@ -1,47 +1,38 @@
 ﻿using System.IO;
+using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
+/// <summary>
+/// Syncs the usage of hotbar potions.
+/// </summary>
 internal class HotbarPotionHandler : Handler
 {
-	public override Networking.Message MessageType => Networking.Message.SetHotbarPotionUse;
-
-	/// <inheritdoc cref="Networking.Message.SetHotbarPotionUse"/>
-	public override void Send(params object[] parameters)
+	public static void Send(bool isHealingPotion, byte newValue)
 	{
-		CastParameters(parameters, out byte playerWhoAmI, out bool isHealingPotion, out byte newValue);
-
-		ModPacket packet = Networking.GetPacket(MessageType);
-		packet.Write(playerWhoAmI);
+		ModPacket packet = Networking.GetPacket<HotbarPotionHandler>();
 		packet.Write(isHealingPotion);
 		packet.Write(newValue);
 		packet.Send();
-
-		if (TryGetOptionalValue(parameters, 3, out bool runLocally) && runLocally)
-		{
-			SetHotbarPotion(playerWhoAmI, isHealingPotion, newValue);
-		}
 	}
 
-	internal override void ServerRecieve(BinaryReader reader)
+	internal override void Receive(BinaryReader reader, byte sender)
 	{
-		byte who = reader.ReadByte();
+		byte who = sender >= byte.MaxValue ? reader.ReadByte() : sender;
 		bool isHeal = reader.ReadBoolean();
 		byte newValue = reader.ReadByte();
 
 		SetHotbarPotion(who, isHeal, newValue);
 
-		ModPacket packet = Networking.GetPacket(MessageType);
+		if (Main.netMode == NetmodeID.Server)
+		{
+			ModPacket packet = Networking.GetPacket(Id);
 
-		packet.Write(who);
-		packet.Write(isHeal);
-		packet.Write(newValue);
-		packet.Send(-1, who);
-	}
-	
-	internal override void ClientRecieve(BinaryReader reader)
-	{
-		SetHotbarPotion(reader.ReadByte(), reader.ReadBoolean(), reader.ReadByte());
+			packet.Write(who);
+			packet.Write(isHeal);
+			packet.Write(newValue);
+			packet.Send(-1, who);
+		}
 	}
 
 	public static void SetHotbarPotion(byte playerWhoAmI, bool isHealingPotion, int newValue)

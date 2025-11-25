@@ -4,6 +4,7 @@ using System.Reflection;
 using PathOfTerraria.Common.NPCs.GlobalNPCs;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Synchronization;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using SubworldLibrary;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
@@ -57,7 +58,7 @@ internal sealed class BossTracker : ModSystem
 
 			if (SubworldSystem.Current is not null && setBossDowned)
 			{
-				ModPacket packet = Networking.GetPacket(Networking.Message.SyncBossDowned, 5);
+				ModPacket packet = Networking.GetPacket<SyncBossDownedHandler>(5);
 				packet.Write(id);
 				Networking.SendPacketToMainServer(packet);
 			}

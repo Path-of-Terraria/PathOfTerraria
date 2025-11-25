@@ -68,7 +68,8 @@ internal class ExitPortal : ModProjectile, IRightClickableProjectile, IMapIcon
 		foreach (Item item in Main.ActiveItems)
 		{
 			// Invalid items to teleport (inactive or takes up a lot of space, might push items far away)
-			if (!item.active || item.IsACoin || item.type == ModContent.ItemType<HealingPotionPickup>() || item.type == ModContent.ItemType<ManaPotionPickup>())
+			if (!item.active || item.IsACoin || item.type == ModContent.ItemType<HealingPotionPickup>() || item.type == ModContent.ItemType<ManaPotionPickup>()
+				|| item.type == ItemID.Heart || item.type == ItemID.Star)
 			{
 				continue;
 			}
@@ -107,7 +108,7 @@ internal class ExitPortal : ModProjectile, IRightClickableProjectile, IMapIcon
 			}
 			else if (Main.netMode == NetmodeID.Server)
 			{
-				ModContent.GetInstance<SendSpawnVFXModule>().Send(position, SendSpawnVFXModule.VFXType.ShimmerTeleport);
+				SendSpawnVFXModule.Send(position, SendSpawnVFXModule.VFXType.ShimmerTeleport);
 			}
 		}
 	}

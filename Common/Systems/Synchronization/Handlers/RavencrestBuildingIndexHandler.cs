@@ -3,22 +3,20 @@ using System.IO;
 
 namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
+/// <summary>
+/// Sets the index of a given Ravencrest structure.
+/// </summary>
 internal class RavencrestBuildingIndex : Handler
 {
-	public override Networking.Message MessageType => Networking.Message.SetRavencrestBuildingIndex;
-
-	/// <inheritdoc cref="Networking.Message.SetRavencrestBuildingIndex"/>
-	public override void Send(params object[] parameters)
+	public static void Send(string name, int index)
 	{
-		CastParameters(parameters, out string name, out int index);
-
-		ModPacket packet = Networking.GetPacket(MessageType);
+		ModPacket packet = Networking.GetPacket<RavencrestBuildingIndex>();
 		packet.Write(name);
 		packet.Write((byte)index);
 		packet.Send();
 	}
 
-	internal override void ServerRecieve(BinaryReader reader)
+	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
 		string name = reader.ReadString();
 		byte index = reader.ReadByte();

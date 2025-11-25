@@ -626,7 +626,7 @@ SwiftPlacementsMastery: {
 
 WitheringBoltsMastery: {
 	Name: Withering Bolts
-	Tooltip: Enemies hit by your sentries are slowed by 40% for {0} seconds. 15% vs Bosses.
+	Tooltip: Enemies hit by your sentries are slowed by 40% (15% for bosses) for {0} seconds
 }
 
 MaximumSentryPassive: {
@@ -702,4 +702,9 @@ ManaLeechMastery: {
 TwinPowerMastery: {
 	Name: Twin Power
 	Tooltip: Using the Grimoire spawns two summons at {0}% damage
+}
+
+TowerDefenseMastery: {
+	Name: Tower Defense
+	Tooltip: Sentries have an area-of-effect damage aura for base weapon damage every {0} seconds
 }

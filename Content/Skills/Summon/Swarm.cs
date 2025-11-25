@@ -9,7 +9,6 @@ using PathOfTerraria.Common.World.Utilities;
 using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.Buffs.ElementalBuffs;
 using PathOfTerraria.Content.Projectiles.Utility;
-using PathOfTerraria.Content.SkillPassives.RainOfArrowsPassives;
 using PathOfTerraria.Content.SkillPassives.SwarmPassives;
 using PathOfTerraria.Content.SkillSpecials.PestSwarmSpecials;
 using PathOfTerraria.Content.SkillTrees;
@@ -98,11 +97,20 @@ public class Swarm : Skill
 			    damage = (int)player.GetDamage(DamageClass.Summon).ApplyTo(6 * Level);
 			    
 			    // Spawn two Antlion Swarmers
-			    Vector2 offset1 = new Vector2(-24, 0);
-			    Vector2 offset2 = new Vector2(24, 0);
-			    
-			    int proj1 = Projectile.NewProjectile(new EntitySource_UseSkill(player, this), pos + offset1, Vector2.Zero, type, damage, 0, player.whoAmI, TotalDuration);
-			    int proj2 = Projectile.NewProjectile(new EntitySource_UseSkill(player, this), pos + offset2, Vector2.Zero, type, damage, 0, player.whoAmI, TotalDuration);
+				SpawnAntlion(new Vector2(-24, 0));
+				SpawnAntlion(new Vector2(24, 0));
+
+				void SpawnAntlion(Vector2 off)
+				{
+					int proj = Projectile.NewProjectile(new EntitySource_UseSkill(player, this), pos + off, Vector2.Zero, type, damage, 0, player.whoAmI, TotalDuration);
+					
+					if (Main.projectile[proj].TryGetGlobalProjectile(out ElementalProjectile ele))
+					{
+						ref ElementalDamage mod = ref ele.Container[ElementType.Fire].DamageModifier;
+						mod = mod.ApplyOverride(0, 1f);
+						Main.projectile[proj].netUpdate = true;
+					}
+				}
 			}
 			else
 			{

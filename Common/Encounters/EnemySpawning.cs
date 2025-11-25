@@ -86,25 +86,25 @@ internal record struct SpawnPlacement()
 /// <summary> Functions for spawning enemies in automated and fancy ways. </summary>
 internal static class EnemySpawning
 {
+	/// <summary>
+	/// Synchronizes <see cref="EnemySpawning"/>'s enemy spawn effects. Should be called on servers only.
+	/// </summary>
 	private sealed class EnemySpawnHandler : Handler
 	{
-		public override Networking.Message MessageType => Networking.Message.EnemySpawn;
-
-		/// <inheritdoc cref="Networking.Message.EnemySpawn"/>
-		public override void Send(params object[] parameters)
+		public static void Send(NPC npc, EnemySpawnEffect effect, Vector2 position)
 		{
-			CastParameters(parameters, out NPC npc, out EnemySpawnEffect effect, out Vector2 position);
-
-			ModPacket packet = Networking.GetPacket(MessageType);
+			ModPacket packet = Networking.GetPacket<EnemySpawnHandler>();
 			packet.Write((byte)npc.whoAmI);
 			packet.Write((byte)effect);
 			packet.WriteVector2(position);
 			packet.Send();
 		}
 
-		internal override void ServerRecieve(BinaryReader reader) { }
+		internal override void ServerReceive(BinaryReader reader, byte sender)
+		{
+		}
 
-		internal override void ClientRecieve(BinaryReader reader)
+		internal override void ClientReceive(BinaryReader reader, byte sender)
 		{
 			byte npcIndex = reader.ReadByte();
 			var effect = (EnemySpawnEffect)reader.ReadByte();
@@ -162,7 +162,7 @@ internal static class EnemySpawning
 	{
 		if (Main.netMode == NetmodeID.Server)
 		{
-			ModContent.GetInstance<EnemySpawnHandler>().Send(npc, effect, position);
+			EnemySpawnHandler.Send(npc, effect, position);
 			return;
 		}
 

@@ -4,13 +4,14 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
+/// <summary>
+/// Syncs a player being grabbed by a <see cref="Grabber"/> NPC.
+/// </summary>
 internal class SyncPlayerGrabbed : Handler
 {
-	public override Networking.Message MessageType => Networking.Message.SyncGrab;
-
 	public static void Send(short npc, int toClient = -1, int ignoreClient = -1)
 	{
-		ModPacket packet = Networking.GetPacket(Networking.Message.SyncGrab, 3);
+		ModPacket packet = Networking.GetPacket<SyncPlayerGrabbed>(3);
 		packet.Write(npc);
 		packet.Send(toClient, ignoreClient);
 	}
