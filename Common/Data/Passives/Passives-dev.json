@@ -3550,7 +3550,7 @@
 			"y": -1100
 		},
 		"isChoiceNode": true,
-		"requiredAllocatedEdges": 1
+		"requiredAllocatedEdges": 2
 	},
 	{
 		"internalIdentifier": "HealingGrimoireMastery",

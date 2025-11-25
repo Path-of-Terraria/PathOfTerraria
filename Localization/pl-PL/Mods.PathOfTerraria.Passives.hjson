@@ -679,9 +679,19 @@ IncreasedGrimoireCritPassive: {
 	// Tooltip: Grimoire summons have +{0}% crit chance
 }
 
+SniperMastery: {
+	// Name: Sniper
+	// Tooltip: Enemies that are [mechanic/shift:Far] away take {0}% more Ranged damage
+}
+
+PinningShotMastery: {
+	// Name: Pinning Shot
+	// Tooltip: Ranged projectiles have a {0}% chance to inflict Rooted, and deal {1}% more damage to Rooted enemies
+}
+
 HealingGrimoireMastery: {
 	// Name: Blessed Knowledge
-	// Tooltip: Grimoire summons pulse an aura that heals {0} health every 5 seconds
+	// Tooltip: Grimoire summons pulse an aura that heals {0} health every {1} {^1:second;seconds}
 }
 
 ManaLeechMastery: {
@@ -692,29 +702,4 @@ ManaLeechMastery: {
 TwinPowerMastery: {
 	// Name: Twin Power
 	// Tooltip: Using the Grimoire spawns two summons at {0}% damage
-}
-
-FasterGrimoirePassive: {
-	// Name: Faster Grimoire Conjurations
-	// Tooltip: Grimoire summons move and behave {0}% quicker
-}
-
-IncreasedGrimoireDamagePassive: {
-	// Name: Increased Grimoire Damage
-	// Tooltip: Grimoire summons deal {0}% more damage
-}
-
-IncreasedGrimoireCritPassive: {
-	// Name: Increased Grimoire Crit Chance
-	// Tooltip: Grimoire summons have +{0}% crit chance
-}
-
-SniperMastery: {
-	// Name: Sniper
-	// Tooltip: Enemies that are [mechanic/shift:Far] away take {0}% more damage
-}
-
-PinningShotMastery: {
-	// Name: Pinning Shot
-	// Tooltip: Ranged projectiles have a {0}% chance to inflict Rooted, and deal {1}% more damage to Rooted enemies
 }

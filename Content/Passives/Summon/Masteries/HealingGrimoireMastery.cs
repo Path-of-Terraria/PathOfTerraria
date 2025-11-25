@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Content.Projectiles.Summoner;
 using ReLogic.Content;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Passives.Summon.Masteries;
 
@@ -9,6 +10,16 @@ internal class HealingGrimoireMastery : Passive
 {
 	internal class HealingGrimoireProjectile : GlobalProjectile
 	{
+		/// <summary>
+		/// Amount of time before the healing timer resets.
+		/// </summary>
+		private const int MaxHealTime = HealTimeInSeconds * 60;
+
+		/// <summary>
+		/// The amount of time until the projectile actually does the heal pulse.
+		/// </summary>
+		private const int ActualHealTime = MaxHealTime - 20;
+
 		public override bool InstancePerEntity => true;
 
 		private static Asset<Texture2D> Aura = null;
@@ -32,7 +43,7 @@ internal class HealingGrimoireMastery : Passive
 			{
 				_healTimer++;
 
-				if (_healTimer == 280)
+				if (_healTimer == ActualHealTime)
 				{
 					foreach (Player player in Main.ActivePlayers)
 					{
@@ -43,7 +54,7 @@ internal class HealingGrimoireMastery : Passive
 					}
 				}
 
-				if (_healTimer == 300)
+				if (_healTimer == MaxHealTime)
 				{
 					_healTimer = 0;
 				}
@@ -54,16 +65,16 @@ internal class HealingGrimoireMastery : Passive
 
 		public override bool PreDraw(Projectile projectile, ref Color lightColor)
 		{
-			if (_healTimer >= 280 && ModContent.GetInstance<GameplayConfig>().NearbyAuras)
+			if (_healTimer >= ActualHealTime && ModContent.GetInstance<GameplayConfig>().NearbyAuras)
 			{
-				int modTimer = _healTimer - 260;
+				int modTimer = _healTimer - ActualHealTime - 20;
 				Texture2D tex = Aura.Value;
 				float alpha = modTimer / 10f;
 				Vector2 pos = projectile.Center - Main.screenPosition;
 
-				if (_healTimer >= 290f)
+				if (_healTimer >= ActualHealTime + 10)
 				{
-					alpha = Utils.GetLerpValue(300f, 290f, _healTimer, true);
+					alpha = Utils.GetLerpValue(MaxHealTime, ActualHealTime + 10, _healTimer, true);
 				}
 
 				_healScale = MathHelper.Lerp(_healScale, 1.5f, 0.1f);
@@ -78,4 +89,8 @@ internal class HealingGrimoireMastery : Passive
 			return true;
 		}
 	}
+
+	public const int HealTimeInSeconds = 5;
+
+	public override string DisplayTooltip => Language.GetText($"Mods.PathOfTerraria.Passives.{Name}.Tooltip").Format(Value, HealTimeInSeconds);
 }
