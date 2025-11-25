@@ -202,6 +202,6 @@ SacrificeReviveCooldown: {
 }
 
 HastySummonBuff: {
-	// DisplayName: Hasty Summon Buff
-	// Description: Mods.PathOfTerraria.Buffs.HastySummonBuff.Description
+	// DisplayName: Hasty Summon
+	// Description: +100% movement speed
 }

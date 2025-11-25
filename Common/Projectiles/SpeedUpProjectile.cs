@@ -90,10 +90,10 @@ public class SpeedUpProjectile : GlobalProjectile
 			HandleMovement(projectile, projectile.velocity * VelocityModifier, out int _, out int _);
 			projectile.velocity *= 1 / VelocityModifier;
 		}
-	}
 
-	[UnsafeAccessor(UnsafeAccessorKind.Method)]
-	public static extern void HandleMovement(Projectile projectile, Vector2 wetVelocity, out int overrideWidth, out int overrideHeight);
+		[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "HandleMovement")]
+		static extern void HandleMovement(Projectile projectile, Vector2 wetVelocity, out int overrideWidth, out int overrideHeight);
+	}
 
 	public static void RepeatAI(Projectile projectile, int repeats)
 	{
