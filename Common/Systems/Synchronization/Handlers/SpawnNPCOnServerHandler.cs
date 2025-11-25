@@ -11,7 +11,7 @@ internal class SpawnNPCOnServerHandler : Handler
 {
 	public static void Send(short type, Vector2 position, Vector2 velocity)
 	{
-		ModPacket packet = Networking.GetPacket<RavencrestBuildingIndex>();
+		ModPacket packet = Networking.GetPacket<SpawnNPCOnServerHandler>();
 		packet.Write((byte)3);
 		packet.Write(type);
 		packet.WriteVector2(position);
@@ -21,7 +21,7 @@ internal class SpawnNPCOnServerHandler : Handler
 
 	public static void Send(short type, Vector2 position)
 	{
-		ModPacket packet = Networking.GetPacket<RavencrestBuildingIndex>();
+		ModPacket packet = Networking.GetPacket<SpawnNPCOnServerHandler>();
 		packet.Write((byte)2);
 		packet.Write(type);
 		packet.WriteVector2(position);
