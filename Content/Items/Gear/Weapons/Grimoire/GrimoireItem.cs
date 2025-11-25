@@ -1,6 +1,8 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Common.UI.GrimoireSelection;
+using PathOfTerraria.Content.Passives.Summon.Masteries;
 using PathOfTerraria.Content.Projectiles.Summoner;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI.SmartUI;
@@ -84,9 +86,25 @@ internal class GrimoireItem : Gear
 			return false;
 		}
 
+		bool hasTwins = false;
+
+		if (player.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<TwinPowerMastery>(out float value))
+		{
+			hasTwins = true;
+			damage = (int)(damage * value / 100f);
+		}
+
 		int proj = Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
 		Main.projectile[proj].damage = damage;
 		Main.projectile[proj].originalDamage = damage;
+
+		if (hasTwins)
+		{
+			proj = Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
+			Main.projectile[proj].damage = damage;
+			Main.projectile[proj].originalDamage = damage;
+			(Main.projectile[proj].ModProjectile as GrimoireSummon).SummonOffset = true;
+		}
 
 		for (int i = 0; i < 10; i++)
 		{

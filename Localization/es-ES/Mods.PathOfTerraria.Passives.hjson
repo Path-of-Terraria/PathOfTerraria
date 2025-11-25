@@ -660,8 +660,8 @@ StrongerDebuffsPassive: {
 }
 
 FasterMinionsPassive: {
-	// Name: FasterMinionsPassive
-	// Tooltip: ""
+	// Name: Faster Minions
+	// Tooltip: Minions behave {0}% faster
 }
 
 FasterGrimoirePassive: {
@@ -712,4 +712,24 @@ AddedMaxMinionsPassive: {
 MoveIncreaseOnSummonPassive: {
 	// Name: Movement Buff after Summoning
 	// Tooltip: Gain 100% movement speed for {0} after summoning
+}
+
+HealingGrimoireMastery: {
+	// Name: Blessed Knowledge
+	// Tooltip: Grimoire summons pulse an aura that heals {0} health every {1} {^1:second;seconds}
+}
+
+ManaLeechMastery: {
+	// Name: Mana Leech
+	// Tooltip: Grimoire summons constantly increase in damage but consume more and more mana
+}
+
+TwinPowerMastery: {
+	// Name: Twin Power
+	// Tooltip: Using the Grimoire spawns two summons at {0}% damage
+}
+
+TowerDefenseMastery: {
+	// Name: Tower Defense
+	// Tooltip: Sentries have an area-of-effect damage aura for base weapon damage every {0} seconds
 }

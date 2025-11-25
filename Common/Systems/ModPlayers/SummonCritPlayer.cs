@@ -1,4 +1,6 @@
-﻿namespace PathOfTerraria.Common.Systems.ModPlayers;
+﻿using PathOfTerraria.Content.Projectiles.Summoner;
+
+namespace PathOfTerraria.Common.Systems.ModPlayers;
 
 internal class SummonCritPlayer : ModPlayer
 {
@@ -7,10 +9,13 @@ internal class SummonCritPlayer : ModPlayer
 		if (proj.IsMinionOrSentryRelated || proj.WhipSettings.Segments > 0)
 		{
 			float baseCritChance = Player.GetCritChance(DamageClass.Generic);
-            
 			float additionalCrit = Player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.SummonCritChance.Value * 100f;
-            
 			float totalCritChance = baseCritChance + additionalCrit;
+
+			if (proj.ModProjectile is GrimoireSummon)
+			{
+				totalCritChance += Player.GetModPlayer<GrimoirePlayer>().Stats.CriticalStrikeChanceModifier.Value;
+			}
             
 			if (Main.rand.NextFloat(100f) < totalCritChance)
 			{
