@@ -11,11 +11,14 @@ namespace PathOfTerraria.Content.Projectiles.Summoner;
 
 /// <summary>
 /// Defines a Grimoire Summon and its functionality.<br/><br/>
-/// By default, this class uses <see cref="Projectile.ai"/>[0], alongside <see cref="Projectile.localAI"/>[0], for if the proj is despawning and for animation respectively.
+/// By default, this class uses <see cref="Projectile.ai"/>[0], alongside <see cref="Projectile.localAI"/>[0] and [1], 
+/// for if the proj is despawning, animation timer, and Twin Power offset timer.
 /// </summary>
 internal abstract class GrimoireSummon : ModProjectile, IOnContinuouslyUpdateDamage
 {
 	public static Dictionary<int, Asset<Texture2D>> IconsById = [];
+
+	private static Point OldMouseValue = new();
 
 	public abstract int BaseDamage { get; }
 
@@ -30,6 +33,9 @@ internal abstract class GrimoireSummon : ModProjectile, IOnContinuouslyUpdateDam
 	}
 
 	protected ref float AnimationTimer => ref Projectile.localAI[0];
+	protected ref float TwinPowerOffsetTimer => ref Projectile.localAI[1];
+
+	internal bool SummonOffset = false;
 
 	protected Player Owner => Main.player[Projectile.owner];
 	protected bool Channeling => Owner.channel;
@@ -89,7 +95,26 @@ internal abstract class GrimoireSummon : ModProjectile, IOnContinuouslyUpdateDam
 			AltEffect();
 		}
 
+		if (SummonOffset && Main.myPlayer == Projectile.owner)
+		{
+			TwinPowerOffsetTimer++;
+
+			OldMouseValue = new Point(Main.mouseX, Main.mouseY);
+			Vector2 off = new Vector2(20, 0).RotatedBy(TwinPowerOffsetTimer * 0.02f + Projectile.identity);
+			Main.mouseX += (int)off.X;
+			Main.mouseY += (int)off.Y;
+		}
+
 		return true;
+	}
+
+	public override void PostAI()
+	{
+		if (SummonOffset && Main.myPlayer == Projectile.owner)
+		{
+			Main.mouseX = OldMouseValue.X;
+			Main.mouseY = OldMouseValue.Y;
+		}
 	}
 
 	/// <summary>
@@ -139,6 +164,11 @@ internal abstract class GrimoireSummon : ModProjectile, IOnContinuouslyUpdateDam
 		}
 
 		modifier.ApplyTo(Projectile);
+
+		GrimoirePlayer.GrimoireStats stats = Owner.GetModPlayer<GrimoirePlayer>().Stats;
+		Projectile.damage = (int)stats.DamageModifier.ApplyTo(Projectile.damage);
+		// Projectile.CritChance = (int)stats.CriticalStrikeChanceModifier.Value; - This does nothing! Here for posterity - functionality is in SummonCritPlayer.
+		Projectile.GetGlobalProjectile<SpeedUpProjectile>().TotalSpeed += stats.SpeedModifier.Value;
 	}
 }
 

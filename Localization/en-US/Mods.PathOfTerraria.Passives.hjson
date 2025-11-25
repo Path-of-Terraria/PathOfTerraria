@@ -660,8 +660,8 @@ StrongerDebuffsPassive: {
 }
 
 FasterMinionsPassive: {
-	Name: FasterMinionsPassive
-	Tooltip: ""
+	Name: Faster Minions
+	Tooltip: Minions behave {0}% faster
 }
 
 FasterGrimoirePassive: {
@@ -687,6 +687,21 @@ SniperMastery: {
 PinningShotMastery: {
 	Name: Pinning Shot
 	Tooltip: Ranged projectiles have a {0}% chance to inflict Rooted, and deal {1}% more damage to Rooted enemies
+}
+
+HealingGrimoireMastery: {
+	Name: Blessed Knowledge
+	Tooltip: Grimoire summons pulse an aura that heals {0} health every {1} {^1:second;seconds}
+}
+
+ManaLeechMastery: {
+	Name: Mana Leech
+	Tooltip: Grimoire summons constantly increase in damage but consume more and more mana
+}
+
+TwinPowerMastery: {
+	Name: Twin Power
+	Tooltip: Using the Grimoire spawns two summons at {0}% damage
 }
 
 TowerDefenseMastery: {
