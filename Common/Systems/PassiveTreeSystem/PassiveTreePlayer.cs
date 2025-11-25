@@ -192,7 +192,7 @@ internal class PassiveTreePlayer : ModPlayer
 			// Make sure that the other node will have enough nearby active edges to stay available.
 			if (e.Other(passive) is { RequiredAllocatedEdges: > 1 } other)
 			{
-				if (Edges.Count(e => e.End == other && e.Start.Level > 0 && e.End is not MasteryPassive) <= other.RequiredAllocatedEdges)
+				if (Edges.Count(e => e.End == other && e.Start.Level > 0) <= other.RequiredAllocatedEdges)
 				{
 					return false;
 				}
