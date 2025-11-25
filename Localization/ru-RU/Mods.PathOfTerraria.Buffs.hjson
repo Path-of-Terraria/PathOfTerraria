@@ -200,3 +200,8 @@ SacrificeReviveCooldown: {
 	// DisplayName: Recent Sacrifice
 	// Description: Summons can't be sacrificed again
 }
+
+HastySummonBuff: {
+	// DisplayName: Hasty Summon Buff
+	// Description: Mods.PathOfTerraria.Buffs.HastySummonBuff.Description
+}

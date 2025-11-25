@@ -708,3 +708,8 @@ AddedMaxMinionsPassive: {
 	// Name: AddedMaxMinionsPassive
 	// Tooltip: ""
 }
+
+MoveIncreaseOnSummonPassive: {
+	// Name: MoveIncreaseOnSummonPassive
+	// Tooltip: ""
+}

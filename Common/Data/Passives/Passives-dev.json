@@ -2929,7 +2929,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "MoveIncreaseOnSummonPassive",
 		"referenceId": 147,
 		"maxLevel": 1,
 		"value": 5,

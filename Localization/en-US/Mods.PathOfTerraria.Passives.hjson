@@ -705,6 +705,11 @@ ShatteredBondMastery: {
 }
 
 AddedMaxMinionsPassive: {
-	Name: AddedMaxMinionsPassive
-	Tooltip: ""
+	Name: Increased Max Minions
+	Tooltip: Maximum minions increased by {0}
+}
+
+MoveIncreaseOnSummonPassive: {
+	Name: Movement Buff after Summoning
+	Tooltip: Gain 100% movement speed for {0} after summoning
 }
