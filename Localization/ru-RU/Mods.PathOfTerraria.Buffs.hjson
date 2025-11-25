@@ -200,3 +200,8 @@ SacrificeReviveCooldown: {
 	// DisplayName: Recent Sacrifice
 	// Description: Summons can't be sacrificed again
 }
+
+HastySummonBuff: {
+	// DisplayName: Hasty Summon
+	// Description: +100% movement speed
+}

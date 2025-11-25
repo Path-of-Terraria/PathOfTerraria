@@ -35,6 +35,9 @@ public enum Mechanic : byte
 	DamageOverTime,
 	Nearby,
 	Far,
+	BehaviorSpeed,
+	ActionSpeed,
+	MovementSpeed,
 }
 
 internal class MechanicsTagHandler : ITagHandler
@@ -60,6 +63,9 @@ internal class MechanicsTagHandler : ITagHandler
 			AssociatedMechanics.Add(Mechanic.ItemAffixes, [Mechanic.Affixes]);
 			AssociatedMechanics.Add(Mechanic.EnemyAffixes, [Mechanic.Affixes]);
 			AssociatedMechanics.Add(Mechanic.ItemRarity, [Mechanic.Affixes]);
+			AssociatedMechanics.Add(Mechanic.BehaviorSpeed, [Mechanic.ActionSpeed, Mechanic.MovementSpeed]);
+			AssociatedMechanics.Add(Mechanic.ActionSpeed, [Mechanic.BehaviorSpeed]);
+			AssociatedMechanics.Add(Mechanic.MovementSpeed, [Mechanic.ActionSpeed]);
 
 			ChatManager.Register<MechanicsTagHandler>("mechanic");
 		}

@@ -689,6 +689,31 @@ PinningShotMastery: {
 	// Tooltip: Ranged projectiles have a {0}% chance to inflict Rooted, and deal {1}% more damage to Rooted enemies
 }
 
+LimitedEntranceMastery: {
+	// Name: Limited Opening
+	// Tooltip: For {0} seconds after spawning, summons deal 30% more damage
+}
+
+DeathrushMastery: {
+	// Name: Deathrush
+	// Tooltip: For every minion (max 10), you gain [mechanic/shift=0;2:MovementSpeed] and your minions gain {0}% [mechanic/shift=1;2:BehaviorSpeed]
+}
+
+ShatteredBondMastery: {
+	// Name: Shattered Bond
+	// Tooltip: Every time a summon despawns (except Grimoire summons), it explodes for {0}% damage
+}
+
+AddedMaxMinionsPassive: {
+	// Name: Increased Max Minions
+	// Tooltip: Maximum minions increased by {0}
+}
+
+MoveIncreaseOnSummonPassive: {
+	// Name: Movement Buff after Summoning
+	// Tooltip: Gain 100% movement speed for {0} after summoning
+}
+
 HealingGrimoireMastery: {
 	// Name: Blessed Knowledge
 	// Tooltip: Grimoire summons pulse an aura that heals {0} health every {1} {^1:second;seconds}

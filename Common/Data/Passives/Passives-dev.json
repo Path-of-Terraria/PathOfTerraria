@@ -2891,10 +2891,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedMaxMinionsPassive",
 		"referenceId": 144,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 1,
 		"connections": [
 			{
 				"referenceId": 145
@@ -2929,7 +2929,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "MoveIncreaseOnSummonPassive",
 		"referenceId": 147,
 		"maxLevel": 1,
 		"value": 5,
@@ -2939,12 +2939,70 @@
 			},
 			{
 				"referenceId": 146
+			},
+			{
+				"referenceId": 1075
 			}
 		],
 		"position": {
 			"x": -607,
 			"y": -1062
 		}
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1075,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 1076
+			},
+			{
+				"referenceId": 1077
+			},
+			{
+				"referenceId": 1078
+			}
+		],
+		"position": {
+			"x": -577,
+			"y": -952
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 1
+	},
+	{
+		"internalIdentifier": "LimitedEntranceMastery",
+		"referenceId": 1076,
+		"maxLevel": 1,
+		"value": 3,
+		"position": {
+			"x": -507,
+			"y": -902
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "DeathrushMastery",
+		"referenceId": 1077,
+		"maxLevel": 1,
+		"value": 3,
+		"position": {
+			"x": -557,
+			"y": -850
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "ShatteredBondMastery",
+		"referenceId": 1078,
+		"maxLevel": 1,
+		"value": 300,
+		"position": {
+			"x": -607,
+			"y": -902
+		},
+		"isHidden": true
 	},
 	{
 		"internalIdentifier": "MinionDamageAuraPassive",

@@ -118,3 +118,18 @@ Far: {
 	// Tag: Far
 	// Description: Outside of 150 pixels of the target. Is NOT affected by stuff such as "increased area of effect".
 }
+
+BehaviorSpeed: {
+	// Tag: Behavior Speed
+	// Description: Combines [mechanic:ActionSpeed] and [mechanic:MovementSpeed] - both how fast an entity is moving and how often it can act.
+}
+
+ActionSpeed: {
+	// Tag: Action Speed
+	// Description: How often an entity can act.
+}
+
+MovementSpeed: {
+	// Tag: Movement Speed
+	// Description: How quickly an entity moves.
+}
