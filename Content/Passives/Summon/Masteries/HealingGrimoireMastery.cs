@@ -7,7 +7,7 @@ namespace PathOfTerraria.Content.Passives.Summon.Masteries;
 
 internal class HealingGrimoireMastery : Passive
 {
-	internal class HealingGrimioreProjectile : GlobalProjectile
+	internal class HealingGrimoireProjectile : GlobalProjectile
 	{
 		public override bool InstancePerEntity => true;
 
