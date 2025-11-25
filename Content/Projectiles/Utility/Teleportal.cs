@@ -75,7 +75,12 @@ internal class Teleportal : ModProjectile, IRightClickableProjectile, IMapIcon
 		if (Main.mouseRight && Main.mouseRightRelease)
 		{
 			player.Teleport(TeleportLocation);
-			RequestCheckSectionHandler.Send(TeleportLocation);
+
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				RequestCheckSectionHandler.Send(TeleportLocation);
+			}
+
 			return true;
 		}
 

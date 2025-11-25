@@ -6,10 +6,12 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.Affixes;
 
+#nullable enable
+
 public abstract class ItemAffix : Affix
 {
-	public Influence RequiredInfluence => GetData().GetInfluences();
-	public ItemType PossibleTypes => GetData().GetEquipTypes();
+	public Influence RequiredInfluence => GetData()?.GetInfluences() ?? Influence.None;
+	public ItemType PossibleTypes => GetData()?.GetEquipTypes() ?? ItemType.None;
 
 	public virtual void ApplyAffix(Player player, EntityModifier modifier, Item item) { }
 
@@ -29,7 +31,21 @@ public abstract class ItemAffix : Affix
 
 	protected virtual AffixTooltipLine CreateDefaultTooltip(Player player, int itemLevel)
 	{
-		ItemAffixData data = GetData();
+		ItemAffixData? data = GetData();
+
+		if (data is null) // Data can be null if the affix doesn't exist in the json data. This skips the checks below.
+		{
+			return new AffixTooltipLine
+			{
+				Text = this.GetLocalization("Description"),
+				Value = Value,
+				Tier = null,
+				ValueRollRange = null,
+				Corrupt = IsCorruptedAffix,
+				Implicit = IsImplicit,
+			};
+		}
+
 		ItemAffixData.TierData tierData = data.Tiers[Tier];
 		
 		(int tierMin, int tierMax) = data.GetPossibleTierRange(itemLevel);
@@ -55,7 +71,7 @@ public abstract class ItemAffix : Affix
 	/// Retrieves the affix data for the current <see cref="ItemAffix"/> instance.
 	/// </summary>
 	/// <returns></returns>
-	public ItemAffixData GetData()
+	public ItemAffixData? GetData()
 	{
 		return AffixRegistry.TryGetAffixData(GetType());
 	}
