@@ -765,6 +765,6 @@ ProlongingSkillMastery: {
 }
 
 SurplusVitalityMastery: {
-	// Name: SurplusVitalityMastery
-	// Tooltip: ""
+	// Name: Surplus Vitality
+	// Tooltip: Using a skill gives [mechanic/shift:Nearby] players {0}% of their max health as overhealth
 }
