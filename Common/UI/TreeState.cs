@@ -6,6 +6,7 @@ using PathOfTerraria.Common.UI.PassiveTree;
 using PathOfTerraria.Common.UI.SkillsTree;
 using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Content.Passives;
+using PathOfTerraria.Content.Passives.Misc;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.GameContent.UI.Elements;
 using Terraria.Localization;
@@ -170,7 +171,7 @@ internal class TreeState : TabsUiState
 		{
 			foreach (Passive node in LocalPassiveTreePlayer.ActiveNodes)
 			{
-				if (node is AnchorPassive)
+				if (node is AnchorPassive or MasteryPassive)
 				{
 					continue;
 				}
