@@ -733,3 +733,23 @@ TowerDefenseMastery: {
 	Name: Tower Defense
 	Tooltip: Sentries have an area-of-effect damage aura for base weapon damage every {0} seconds
 }
+
+StrongerPotionsPassive: {
+	Name: Stronger Potions
+	Tooltip: All potions (including food) have {0}% increased buff duration
+}
+
+MorePickupPotionsPassive: {
+	Name: More Pickup Potions
+	Tooltip: +{0} health and mana potions
+}
+
+AlchemistMastery: {
+	Name: Alchemist
+	Tooltip: Mana and health potion cooldowns reduced by {0}%
+}
+
+BurstingBottlesMastery: {
+	Name: Bursting Bottles
+	Tooltip: When using a mana or healing potion, deal minor damage and push away [mechanic/shift:Nearby] enemies for {0}% knockback
+}

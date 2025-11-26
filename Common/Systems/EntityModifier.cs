@@ -48,13 +48,13 @@ public partial class EntityModifier : EntityModifierSegment
 	public StatModifier MagicFind = new();
 
 	// PotionSystem:
-	public StatModifier MaxHealthPotions = new();
+	public AddableFloat MaxHealthPotions = new();
 	public StatModifier PotionHealPower = new();
 
 	[ReverseTooltip] 
 	public StatModifier PotionHealDelay = new();
 
-	public StatModifier MaxManaPotions = new();
+	public AddableFloat MaxManaPotions = new();
 	public StatModifier PotionManaPower = new();
 
 	[ReverseTooltip] 
@@ -109,11 +109,11 @@ public partial class EntityModifier : EntityModifierSegment
 		msmp.MagicFind = MagicFind.ApplyTo(msmp.MagicFind);
 
 		PotionPlayer ps = player.GetModPlayer<PotionPlayer>();
-		ps.MaxHealing = (int)MaxHealthPotions.ApplyTo(ps.MaxHealing);
+		ps.MaxHealing += (int)MaxHealthPotions.Value;
 		ps.HealPower = (int)PotionHealPower.ApplyTo(ps.HealPower);
 		ps.HealDelay = (int)PotionHealDelay.ApplyTo(ps.HealDelay);
 
-		ps.MaxMana = (int)MaxManaPotions.ApplyTo(ps.MaxMana);
+		ps.MaxMana += (int)MaxManaPotions.Value;
 		ps.ManaPower = (int)PotionManaPower.ApplyTo(ps.ManaPower);
 		ps.ManaDelay = (int)PotionManaDelay.ApplyTo(ps.ManaDelay);
 
