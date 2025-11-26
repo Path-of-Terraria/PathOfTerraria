@@ -1,7 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Content.Passives.Summon.Masteries;
-using rail;
 using Terraria.Audio;
 using Terraria.ID;
 
@@ -10,6 +9,9 @@ namespace PathOfTerraria.Common.Systems;
 // ReSharper disable once ClassNeverInstantiated.Global
 internal class PotionPlayer : ModPlayer
 {
+	/// <summary>
+	/// Allows ModPlayers to run code when a hotbar potion is used.
+	/// </summary>
 	public interface IOnCustomPotionPlayer
 	{
 		public void OnCustomPotion(bool healing, int amount);
@@ -101,7 +103,7 @@ internal class PotionPlayer : ModPlayer
 		{
 			if (plr is IOnCustomPotionPlayer customPot)
 			{
-				customPot.OnCustomPotion(true, mp.ManaPower);
+				customPot.OnCustomPotion(false, mp.ManaPower);
 			}
 		}
 
