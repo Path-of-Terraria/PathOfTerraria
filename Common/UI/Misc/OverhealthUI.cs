@@ -1,9 +1,6 @@
 using System.Collections.Generic;
-using Mono.Cecil.Cil;
-using MonoMod.Cil;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Core.UI.SmartUI;
-using Terraria.GameContent.UI.ResourceSets;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.Misc;

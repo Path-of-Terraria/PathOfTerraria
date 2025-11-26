@@ -5647,6 +5647,21 @@
 		}
 	},
 	{
+		"internalIdentifier": "IncreasedSkillDamagePassive",
+		"referenceId": 290,
+		"maxLevel": 1,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 1082
+			}
+		],
+		"position": {
+			"x": 257,
+			"y": -694
+		}
+	},
+	{
 		"internalIdentifier": "MasteryPassive",
 		"referenceId": 1079,
 		"maxLevel": 1,
@@ -5687,21 +5702,6 @@
 			"y": -555
 		},
 		"isHidden": true
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 290,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 1082
-			}
-		],
-		"position": {
-			"x": 257,
-			"y": -694
-		}
 	},
 	{
 		"internalIdentifier": "ReducedSkillCooldownPassive",
@@ -5745,10 +5745,10 @@
 		"requiredAllocatedEdges": 2
 	},
 	{
-		"internalIdentifier": "AlchemistMastery",
+		"internalIdentifier": "ProlongingSkillMastery",
 		"referenceId": 1083,
 		"maxLevel": 1,
-		"value": 30,
+		"value": 20,
 		"position": {
 			"x": 315,
 			"y": -485
@@ -5756,10 +5756,10 @@
 		"isHidden": true
 	},
 	{
-		"internalIdentifier": "BurstingBottlesMastery",
+		"internalIdentifier": "SurplusVitalityMastery",
 		"referenceId": 1084,
 		"maxLevel": 1,
-		"value": 1600,
+		"value": 8,
 		"position": {
 			"x": 205,
 			"y": -555

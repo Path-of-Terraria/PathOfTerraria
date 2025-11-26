@@ -753,3 +753,18 @@ BurstingBottlesMastery: {
 	Name: Bursting Bottles
 	Tooltip: When using a mana or healing potion, deal minor damage and push away [mechanic/shift:Nearby] enemies for {0}% knockback
 }
+
+IncreasedSkillDamagePassive: {
+	Name: Increased Skill Damage
+	Tooltip: Skills deal {0}% more damage
+}
+
+ProlongingSkillMastery: {
+	Name: Prolonging Skill
+	Tooltip: +{0}% skill duration
+}
+
+SurplusVitalityMastery: {
+	Name: Surplus Vitality
+	Tooltip: Using a skill gives [mechanic/shift:Nearby] players {0}% of their max health as overhealth
+}
