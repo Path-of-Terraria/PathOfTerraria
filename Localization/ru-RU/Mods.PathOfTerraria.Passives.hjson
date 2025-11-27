@@ -626,7 +626,7 @@ SwiftPlacementsMastery: {
 
 WitheringBoltsMastery: {
 	// Name: Withering Bolts
-	// Tooltip: Enemies hit by your sentries are slowed by 40% for {0} seconds. 15% vs Bosses.
+	// Tooltip: Enemies hit by your sentries are slowed by 40% (15% for bosses) for {0} seconds
 }
 
 MaximumSentryPassive: {
@@ -732,4 +732,14 @@ TwinPowerMastery: {
 TowerDefenseMastery: {
 	// Name: Tower Defense
 	// Tooltip: Sentries have an area-of-effect damage aura for base weapon damage every {0} seconds
+}
+
+SoulReaveMastery: {
+	// Name: Soul Reave
+	// Tooltip: Summon damage has a {0}% chance to apply a stack of Soul Reave, which heals {1}% max health and deals {2}% original hit damage on expiration
+}
+
+RagingSpiritsMastery: {
+	// Name: RagingSpiritsMastery
+	// Tooltip: ""
 }
