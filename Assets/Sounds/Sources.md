@@ -24,3 +24,6 @@ This file lists sound sources used to create sounds in this directory.
 		https://freesound.org/people/newagesoup/sounds/336328/
 	- PortalLoop
 		SONNISS GDC/SoundMorph - Solar Sky/amb_SpaceShip_rumble_low_pulse.flac
+	- Boiling
+		Bluezone Corporation - Synthetic Liquid Textures/Bluezone-BC0227-synthetic-liquid-long-texture-016.flac
+		(Bandpass + Looping)

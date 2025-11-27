@@ -4,6 +4,17 @@ namespace PathOfTerraria.Common.Utilities;
 
 public static class MathUtils
 {
+	/// <summary> Short-hand for Clamp(value, 0, 1). </summary>
+	public static float Clamp01(float value)
+	{
+		return value <= 0f ? 0f : value >= 1f ? 1f : value;
+	}
+	/// <summary> Short-hand for Clamp(value, 0, 1). </summary>
+	public static double Clamp01(double value)
+	{
+		return value <= 0.0 ? 0.0 : value >= 1.0 ? 1.0 : value;
+	}
+
 	/// <summary> Returns the remainder of a division, compatible with negative numbers. </summary>
 	public static float Modulo(float value, float length)
 	{

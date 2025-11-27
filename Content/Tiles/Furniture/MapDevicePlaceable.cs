@@ -108,7 +108,7 @@ public class MapDevicePlaceable : ModTile
 			return;
 		}
 
-		if (!entity.PortalActive || entity.StoredMap is not { IsAir: false })
+		if (!entity.PortalActive)
 		{
 			return;
 		}
@@ -130,13 +130,26 @@ public class MapDevicePlaceable : ModTile
 			return;
 		}
 
+		Color baseColor = Color.White;
+		Texture2D? itemTex = null;
+
+		if (entity.Injection is { } injection)
+		{
+			MapResource resource = MapResources.Get(injection);
+			baseColor = resource.AccentColor;
+		}
+		else if (entity.StoredMap is { IsAir: false, type: int itemType })
+		{
+			baseColor = ColorUtils.FromHexRgb(0x_0097ff);
+			itemTex = TextureAssets.Item[itemType].Value;
+		}
+
 		// Get the initial draw parameters
 		int frameY = tile.TileFrameX % 90 / FullWidth; // Picks the frame on the sheet based on the placeStyle of the item
 		Rectangle frame = texture.Frame(1, 1, 0, frameY);
 		Vector2 origin = frame.Size() / 2f;
-		var color = Color.Lerp(Lighting.GetColor(tilePoint.X, tilePoint.Y), Color.White, 0.4f);
-		bool direction =
-			tile.TileFrameY / FullHeight != 0; // This is related to the alternate tile data we registered before
+		Color color = Color.Lerp(Lighting.GetColor(tilePoint.X, tilePoint.Y), Color.White, 0.4f).MultiplyRGBA(baseColor);
+		bool direction = tile.TileFrameY / FullHeight != 0; // This is related to the alternate tile data we registered before
 		SpriteEffects effects = direction ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
 		// Some math magic to make it smoothly move up and down over time
@@ -151,8 +164,10 @@ public class MapDevicePlaceable : ModTile
 			spriteBatch.Draw(texture, drawPos, frame, drawColor with { A = 150 }, rotation, origin, 1.3f - k * 0.2f, effects, 0f);
 		}
 
-		Texture2D itemTex = TextureAssets.Item[entity.StoredMap.type].Value;
-		spriteBatch.Draw(itemTex, drawPos, null, new Color(140, 230, 255) * 0.95f, 0f, itemTex.Size() / 2f, 0.75f, effects, 0f);
+		if (itemTex != null)
+		{
+			spriteBatch.Draw(itemTex, drawPos, null, new Color(140, 230, 255) * 0.95f, 0f, itemTex.Size() / 2f, 0.75f, effects, 0f);
+		}
 
 		// Draw the periodic glow effect
 		float scale = (float)Math.Sin(Main.GlobalTimeWrappedHourly * MathHelper.TwoPi / 2f) * 0.3f + 0.7f;
@@ -161,8 +176,7 @@ public class MapDevicePlaceable : ModTile
 		effectColor *= 0.1f * scale;
 		for (float num5 = 0f; num5 < 1f; num5 += 355f / (678f * (float)Math.PI))
 		{
-			spriteBatch.Draw(texture, drawPos + (MathHelper.TwoPi * num5).ToRotationVector2() * (6f + offset * 2f), frame,
-				effectColor, 0f, origin, 1f, effects, 0f);
+			spriteBatch.Draw(texture, drawPos + (MathHelper.TwoPi * num5).ToRotationVector2() * (6f + offset * 2f), frame, effectColor, 0f, origin, 1f, effects, 0f);
 		}
 	}
 
@@ -239,6 +253,8 @@ internal class MapDeviceEntity : ModTileEntity
 	public bool PortalActive { get; set; }
 	public int PortalUsesLeft { get; set; }
 	public int? InteractingPlayer { get; private set; }
+	/// <summary> Which map destination resource is currently injected into the device, and what quantity of it. </summary>
+	public int? Injection { get; set; }
 
 	public MapDeviceEntity()
 	{
@@ -515,7 +531,12 @@ internal class MapDeviceEntity : ModTileEntity
 	/// </summary>
 	public bool TryOpeningPortal(bool evalMode = false, byte? netSender = null)
 	{
-		if (PortalActive || StoredMap is not { IsAir: false, ModItem: Map map })
+		if (PortalActive)
+		{
+			return false;
+		}
+
+		if (StoredMap is not { IsAir: false, ModItem: Map } && Injection is null)
 		{
 			return false;
 		}
@@ -537,7 +558,22 @@ internal class MapDeviceEntity : ModTileEntity
 		}
 
 		PortalActive = true;
-		PortalUsesLeft = map.MaxUses;
+		PortalUsesLeft = int.MaxValue;
+
+		if (StoredMap is { IsAir: false, ModItem: Map map })
+		{
+			PortalUsesLeft = map.MaxUses;
+		}
+		else if (Injection is { } injection)
+		{
+			MapResource resource = MapResources.Get(injection);
+			PortalUsesLeft = resource.PortalUses;
+
+			// Consume resource.
+#if !DEBUG || false
+			MapResources.AddOrRemove(injection, -resource.Cost);
+#endif
+		}
 
 		// Broadcast the interaction.
 		if (Main.netMode == NetmodeID.Server)
@@ -589,6 +625,7 @@ internal class MapDeviceEntity : ModTileEntity
 		StoredMap = new();
 		PortalActive = false;
 		PortalUsesLeft = 0;
+		Injection = null;
 
 		// Broadcast the interaction.
 		if (Main.netMode == NetmodeID.Server)
@@ -608,6 +645,100 @@ internal class MapDeviceEntity : ModTileEntity
 
 		return true;
 	}
+
+	/// <summary>
+	/// Attempts to "inject" a specific resource into the map device.
+	/// <br/> Returns whether an attempt to perform the interaction will be made, not whether it will succeed.
+	/// </summary>
+	public bool TryInjectingResource(int resourceId, bool evalMode = false, byte? netSender = null)
+	{
+		if (PortalActive)
+		{
+			return false;
+		}
+
+		// Refuse if there is already a map or another injection.
+		if (StoredMap is { IsAir: false } || Injection.HasValue)
+		{
+			return false;
+		}
+
+		// Refuse interaction if the resource ID is invalid or if there is not enough of it.
+		if (!MapResources.TryGet(resourceId, out MapResource mapResources) || mapResources.Value < mapResources.Cost)
+		{
+			return false;
+		}
+
+		// Short-circuit in evaluation mode.
+		if (evalMode) { return true; }
+
+		// Request interaction.
+		if (Main.netMode == NetmodeID.MultiplayerClient && netSender == null)
+		{
+			MapDeviceInteraction.Send(ID, MapDeviceInteraction.Kind.InjectResource, arg: resourceId);
+			return true;
+		}
+
+		// Refuse interaction if sent by someone other than the interacting player.
+		if (Main.netMode == NetmodeID.Server && netSender.HasValue && InteractingPlayer != netSender)
+		{
+			return false;
+		}
+
+		Injection = resourceId;
+
+		// Broadcast the interaction.
+		if (Main.netMode == NetmodeID.Server)
+		{
+			MapDeviceInteraction.Send(ID, MapDeviceInteraction.Kind.InjectResource);
+		}
+
+		return true;
+	}
+
+	/// <summary>
+	/// Attempts to eject the resource currently injected into the map device.
+	/// <br/> Returns whether an attempt to perform the interaction will be made, not whether it will succeed.
+	/// </summary>
+	public bool TryEjectingResource(bool evalMode = false, byte? netSender = null)
+	{
+		if (PortalActive)
+		{
+			return false;
+		}
+
+		// Refuse if there is no injection.
+		if (!Injection.HasValue)
+		{
+			return false;
+		}
+
+		// Short-circuit in evaluation mode.
+		if (evalMode) { return true; }
+
+		// Request interaction.
+		if (Main.netMode == NetmodeID.MultiplayerClient && netSender == null)
+		{
+			MapDeviceInteraction.Send(ID, MapDeviceInteraction.Kind.EjectResource);
+			return true;
+		}
+
+		// Refuse interaction if sent by someone other than the interacting player.
+		if (Main.netMode == NetmodeID.Server && netSender.HasValue && InteractingPlayer != netSender)
+		{
+			return false;
+		}
+
+		Injection = null;
+
+		// Broadcast the interaction.
+		if (Main.netMode == NetmodeID.Server)
+		{
+			MapDeviceInteraction.Send(ID, MapDeviceInteraction.Kind.EjectResource);
+		}
+
+		return true;
+	}
 }
 
 internal class MapDeviceInteraction : Handler
@@ -619,13 +750,16 @@ internal class MapDeviceInteraction : Handler
 		OpenPortal,
 		ClosePortal,
 		EnterPortal,
+		InjectResource,
+		EjectResource,
 	}
 
-	public static void Send(int entityId, Kind kind, int toClient = -1, int ignoreClient = -1)
+	public static void Send(int entityId, Kind kind, int arg = 0, int toClient = -1, int ignoreClient = -1)
 	{
 		ModPacket packet = Networking.GetPacket<MapDeviceInteraction>();
 		packet.Write((int)entityId);
 		packet.Write((byte)kind);
+		packet.Write7BitEncodedInt(arg);
 		packet.Send(toClient, ignoreClient);
 	}
 
@@ -633,6 +767,7 @@ internal class MapDeviceInteraction : Handler
 	{
 		int entityId = reader.ReadInt32();
 		var kind = (Kind)reader.ReadByte();
+		int arg = reader.Read7BitEncodedInt();
 
 		if (TileEntity.ByID.TryGetValue(entityId, out TileEntity? tileEntity) && tileEntity is MapDeviceEntity mapEntity)
 		{
@@ -643,6 +778,7 @@ internal class MapDeviceInteraction : Handler
 				case Kind.OpenPortal: mapEntity.TryOpeningPortal(netSender: sender); break;
 				case Kind.ClosePortal: mapEntity.TryClosingPortal(netSender: sender); break;
 				case Kind.EnterPortal: mapEntity.TryEnteringPortal(netSender: sender); break;
+				case Kind.InjectResource: mapEntity.TryInjectingResource(resourceId: arg, netSender: sender); break;
 			}
 		}
 	}
@@ -656,7 +792,8 @@ internal class MapDeviceSync : Handler
 		Status = 1 << 0,
 		Map = 1 << 1,
 		Storage = 1 << 2,
-		FullSync = Status | Map | Storage,
+		Injection = 1 << 3,
+		FullSync = Status | Map | Storage | Injection,
 	}
 
 	public static void Send(int entityId, Flags flags, IEnumerable<int>? itemIndices, int toClient = -1, int ignoreClient = -1)
@@ -689,7 +826,7 @@ internal class MapDeviceSync : Handler
 		if (flags.HasFlag(Flags.Status))
 		{
 			writer.Write((bool)device.PortalActive);
-			writer.Write((byte)device.PortalUsesLeft);
+			writer.Write7BitEncodedInt(device.PortalUsesLeft);
 		}
 
 		if (flags.HasFlag(Flags.Map))
@@ -723,6 +860,11 @@ internal class MapDeviceSync : Handler
 				}
 			}
 		}
+
+		if (flags.HasFlag(Flags.Injection))
+		{
+			writer.Write7BitEncodedInt(device.Injection ?? -1);
+		}
 	}
 
 	private static bool Receive(byte sender, BinaryReader reader, out int entityId, out Flags flags)
@@ -743,7 +885,7 @@ internal class MapDeviceSync : Handler
 		if (flags.HasFlag(Flags.Status))
 		{
 			bool isActive = reader.ReadBoolean();
-			byte remainingUses = reader.ReadByte();
+			int remainingUses = reader.Read7BitEncodedInt();
 
 			// On servers, refuse applying status data if it is received from clients.
 			if (mapEntity != null && Main.netMode != NetmodeID.Server)
@@ -785,6 +927,17 @@ internal class MapDeviceSync : Handler
 					Item item = useDummy ? new() : mapEntity!.Storage[storageIndex];
 					ItemIO.Receive(item, reader, readStack: true);
 				}
+			}
+		}
+
+		if (flags.HasFlag(Flags.Injection))
+		{
+			int resourceId = reader.Read7BitEncodedInt();
+
+			// Refuse applying data if it is received from clients.
+			if (mapEntity != null && Main.netMode != NetmodeID.Server)
+			{
+				mapEntity.Injection = MapResources.TryGet(resourceId, out _) ? resourceId : null;
 			}
 		}
 	}

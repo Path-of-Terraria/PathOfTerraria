@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.InteropServices;
 using PathOfTerraria.Common.Systems.Synchronization;
@@ -16,12 +17,16 @@ internal record struct MapResource()
 	public required Color AccentColor;
 	/// <summary> Path of the texture used to display this resource inside a map device canister. </summary>
 	public required string CanisterLiquidTexture;
+	/// <summary> How much of the resource has to be used to be injected into a map device. </summary>
+	public required int Cost;
 	/// <summary> The current amount of this resource. </summary>
 	public int Value;
 	/// <summary> The minimum amount of this resource that can be. </summary>
 	public int MinValue = 0;
 	/// <summary> The maximum amount of this resource that can be. </summary>
 	public int MaxValue = int.MaxValue;
+	/// <summary> How many uses the portal spawned from this resource should have. </summary>
+	public int PortalUses = int.MaxValue;
 	/// <summary> Whether this resource has been discovered by the player. Will affect how and whether it will be displayed. </summary>
 	public bool Discovered;
 }
@@ -143,17 +148,32 @@ internal sealed class MapResources : ModSystem
 		resourcesByItem.Add(resource.AssociatedItem, index);
 	}
 
+	/// <summary> Conditionally returns the globally stored amount of the resource associated with the provided item. </summary>
+	public static bool TryGet(int itemType, [MaybeNullWhen(false)] out MapResource result)
+	{
+		if (!resourcesByItem.TryGetValue(itemType, out int idx))
+		{
+			result = default;
+			return false;
+		}
+
+		result = resources[idx];
+		return true;
+	}
+	/// <inheritdoc cref="TryGet"/>
+	public static bool TryGet<T>([MaybeNullWhen(false)] out MapResource result) where T : ModItem
+	{
+		return TryGet(ModContent.GetInstance<T>().Item.type, out result);
+	}
+	/// <summary> Returns the globally stored amount of the resource associated with the provided item. </summary>
+	public static MapResource Get(int itemType)
+	{
+		return TryGet(itemType, out MapResource result) ? result : throw new InvalidOperationException($"Invalid resource: {ModContent.GetModItem(itemType).FullName}");
+	}
 	/// <inheritdoc cref="Get"/>
 	public static MapResource Get<T>() where T : ModItem
 	{
 		return Get(ModContent.GetInstance<T>().Item.type);
-	}
-	/// <summary> Returns the globally stored amount of the resource associated with the provided item. Safe to use in all contexts. </summary>
-	public static MapResource Get(int itemType)
-	{
-		if (!resourcesByItem.TryGetValue(itemType, out int idx)) { throw new InvalidOperationException($"Invalid resource: {ModContent.GetModItem(itemType).FullName}"); }
-
-		return resources[idx];
 	}
 
 	/// <inheritdoc cref="AddOrRemove"/>
