@@ -6,6 +6,7 @@ using PathOfTerraria.Common.UI.PassiveTree;
 using PathOfTerraria.Common.UI.SkillsTree;
 using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Content.Passives;
+using PathOfTerraria.Content.Passives.Misc;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.GameContent.UI.Elements;
 using Terraria.Localization;
@@ -26,9 +27,11 @@ internal class TreeState : TabsUiState
 
 	public override List<SmartUiElement> TabPanels => [_passiveTreeInner, _skillSelection];
 
-	protected static PassiveTreePlayer PassiveTreeSystem => Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>();
+	protected static PassiveTreePlayer LocalPassiveTreePlayer => Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>();
 
 	public override int DepthPriority => 1;
+
+	private int _confirmTimer = 0;
 
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{
@@ -37,6 +40,8 @@ internal class TreeState : TabsUiState
 
 	public override void SafeUpdate(GameTime gameTime)
 	{
+		_confirmTimer--;
+
 		if (Panel is not null)
 		{
 			Panel.Left = StyleDimension.FromPixels(ShrinkX);
@@ -89,11 +94,11 @@ internal class TreeState : TabsUiState
 	{
 		_passiveTreeInner.RemoveAllChildren();
 
-		PassiveTreeSystem.CreateTree();
+		LocalPassiveTreePlayer.CreateTree();
 
 		// Add nodes
-		var mapping = new Dictionary<int, AllocatableElement>(capacity: PassiveTreeSystem.ActiveNodes.Count);
-		foreach (Passive passive in PassiveTreeSystem.ActiveNodes)
+		var mapping = new Dictionary<int, AllocatableElement>(capacity: LocalPassiveTreePlayer.ActiveNodes.Count);
+		foreach (Passive passive in LocalPassiveTreePlayer.ActiveNodes)
 		{
 			if (passive.IsHidden)
 			{
@@ -116,8 +121,8 @@ internal class TreeState : TabsUiState
 
 		// Add edges
 		_passiveTreeInner.Connections.Clear();
-		_passiveTreeInner.Connections.EnsureCapacity(PassiveTreeSystem.Edges.Count);
-		foreach (Edge<Allocatable> edge in PassiveTreeSystem.Edges)
+		_passiveTreeInner.Connections.EnsureCapacity(LocalPassiveTreePlayer.Edges.Count);
+		foreach (Edge<Allocatable> edge in LocalPassiveTreePlayer.Edges)
 		{
 			if (edge is { Start: Passive start, End: Passive end }
 			&& mapping.TryGetValue(start.ReferenceId, out AllocatableElement uiStart)
@@ -162,7 +167,23 @@ internal class TreeState : TabsUiState
 			return;
 		}
 		
-		AvailablePassivePointsText.DrawAvailablePassivePoint(spriteBatch, points, GetRectangle().TopLeft() + pointsDrawPoin);
+		AvailablePassivePointsText.DrawResettablePoints(spriteBatch, points, GetRectangle().TopLeft() + pointsDrawPoin, ref _confirmTimer, () =>
+		{
+			foreach (Passive node in LocalPassiveTreePlayer.ActiveNodes)
+			{
+				if (node is AnchorPassive or MasteryPassive)
+				{
+					continue;
+				}
+
+				// Level will rarely be >0 but whatever, free check
+				while (node.Level > 0)
+				{
+					node.OnDeallocate(Main.LocalPlayer);
+					LocalPassiveTreePlayer.Points++;
+				}
+			}
+		});
 	}
 
 	internal void SetSkillTree(Skill skill)

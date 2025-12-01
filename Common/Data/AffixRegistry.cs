@@ -36,15 +36,13 @@ public class AffixRegistry : ILoadable
 	/// <returns><see cref="Models.ItemAffixData"/> instance of the given type.</returns>
 	public static ItemAffixData TryGetAffixData(Type type)
 	{
-		try
+		if (ItemAffixData.TryGetValue(type, out ItemAffixData value))
 		{
-			return ItemAffixData[type];
+			return value;
 		}
-		catch (KeyNotFoundException exception)
-		{
-			Console.WriteLine($"ItemAffixData with type {type.Name} not found.\n\n{exception}");
-			return null;
-		}
+
+		PoTMod.Instance.Logger.Error($"ItemAffixData with type {type.Name} not found.");
+		return null;
 	}
 
 	/// <summary>

@@ -47,6 +47,8 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 		}
 	}
 
+	internal static int OldSelectedItem = -1;
+
 	private readonly static Player _modificationsPlayer = new();
 
 	private static UIGrid _storageGrid = null;
@@ -213,6 +215,13 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 		{
 			_storageGrid.Clear();
 			_storageGrid = null;
+
+			if (OldSelectedItem != -1)
+			{
+				Main.LocalPlayer.selectedItem = OldSelectedItem;
+				OldSelectedItem = -1;
+			}
+
 			return;
 		}
 
@@ -242,6 +251,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 			Toggle();
 			SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
 		};
+
 		CloseButton.SetVisibility(1, 1);
 		Panel.Append(CloseButton);
 

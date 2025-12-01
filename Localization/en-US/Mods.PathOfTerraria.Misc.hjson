@@ -52,4 +52,14 @@ ShardInvalidations: {
 	NotNormal: Needs a Normal rarity item
 }
 
+RavencrestSigns: {
+	Anvil: the Iron Anvil
+	Lodge: the Lodge
+	Split:
+		'''
+		<-- Lodge, Forge
+		    Library, Hovel -->
+		'''
+}
+
 RiftStability: Rift Stability

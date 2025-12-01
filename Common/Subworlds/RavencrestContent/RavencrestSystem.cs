@@ -223,7 +223,7 @@ public class RavencrestSystem : ModSystem
 			
 				// Only try to read signs if the tile is actually a sign
 				Tile tile = Main.tile[i, j];
-				if (tile.HasTile && (tile.TileType == TileID.Signs || tile.TileType == TileID.AnnouncementBox))
+				if (tile.HasTile && (tile.TileType == TileID.Signs || tile.TileType == TileID.AnnouncementBox || tile.TileType == TileID.TatteredWoodSign))
 				{
 					int sign = Sign.ReadSign(i, j, true);
 
@@ -231,9 +231,9 @@ public class RavencrestSystem : ModSystem
 					{
 						string text = i switch
 						{
-							< 220 => "the Iron Anvil",
-							< 360 => "The Lodge",
-							_ => "<-- Lodge, Forge\nLibrary, Hovel -->"
+							< 220 => Language.GetTextValue("Mods.PathOfTerraria.Misc.RavencrestSigns.Anvil"),
+							< 310 => Language.GetTextValue("Mods.PathOfTerraria.Misc.RavencrestSigns.Lodge"),
+							_ => Language.GetTextValue("Mods.PathOfTerraria.Misc.RavencrestSigns.Split")
 						};
 
 						Sign.TextSign(sign, text);
