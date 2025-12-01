@@ -79,7 +79,7 @@ internal class GrimoirePlayer : ModPlayer
 	public override void LoadData(TagCompound tag)
 	{
 		HasObtainedGrimoire = tag.TryGet("hasGrimoire", out bool hasGrimoire) && hasGrimoire;
-		CurrentSummonId = tag.TryGet("currentSummon", out int summon) ? summon : -1;
+		CurrentSummonId = tag.TryGet("currentSummon", out int summon) && ContentSamples.ProjectilesByType[summon].ModProjectile is GrimoireSummon ? summon : -1;
 
 		int count = tag.GetInt("count");
 

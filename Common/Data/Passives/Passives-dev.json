@@ -5608,7 +5608,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "StrongerPotionsPassive",
 		"referenceId": 288,
 		"maxLevel": 1,
 		"value": 5,
@@ -5618,6 +5618,9 @@
 			},
 			{
 				"referenceId": 289
+			},
+			{
+				"referenceId": 1079
 			}
 		],
 		"position": {
@@ -5626,13 +5629,16 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "MorePickupPotionsPassive",
 		"referenceId": 289,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 1,
 		"connections": [
 			{
 				"referenceId": 40
+			},
+			{
+				"referenceId": 1079
 			}
 		],
 		"position": {
@@ -5641,32 +5647,124 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedSkillDamagePassive",
 		"referenceId": 290,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 1082
+			}
+		],
 		"position": {
-			"x": 247,
+			"x": 257,
 			"y": -694
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 291,
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1079,
 		"maxLevel": 1,
 		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1080
+			},
+			{
+				"referenceId": 1081
+			}
+		],
+		"position": {
+			"x": -335,
+			"y": -585
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "AlchemistMastery",
+		"referenceId": 1080,
+		"maxLevel": 1,
+		"value": 30,
+		"position": {
+			"x": -345,
+			"y": -485
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "BurstingBottlesMastery",
+		"referenceId": 1081,
+		"maxLevel": 1,
+		"value": 1600,
+		"position": {
+			"x": -235,
+			"y": -555
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "ReducedSkillCooldownPassive",
+		"referenceId": 291,
+		"maxLevel": 1,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 44
 			},
 			{
 				"referenceId": 290
+			},
+			{
+				"referenceId": 1082
 			}
 		],
 		"position": {
 			"x": 429,
 			"y": -587
 		}
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1082,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1083
+			},
+			{
+				"referenceId": 1084
+			}
+		],
+		"position": {
+			"x": 315,
+			"y": -605
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "ProlongingSkillMastery",
+		"referenceId": 1083,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 315,
+			"y": -485
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "SurplusVitalityMastery",
+		"referenceId": 1084,
+		"maxLevel": 1,
+		"value": 8,
+		"position": {
+			"x": 205,
+			"y": -555
+		},
+		"isHidden": true
 	},
 	{
 		"internalIdentifier": "AddedIntelligencePassive",

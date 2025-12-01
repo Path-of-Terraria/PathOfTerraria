@@ -76,7 +76,11 @@ TwinsDomain: {
 
 BrainDomain: {
 	DisplayName: Rising Steps Above Red
-	Description: Take the portal at the top of grand steps to challenge the Brain of Cthulhu.
+	Description: 
+		'''
+		Take the portal at the top of grand steps to challenge the Brain of Cthulhu.
+		[i:53] You have 3 additional double jumps
+		'''
 	Mining: "{$DefaultMining}"
 	Placing: "{$DefaultPlacing}"
 }

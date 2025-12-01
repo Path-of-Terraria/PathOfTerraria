@@ -20,7 +20,7 @@ internal class HealthHoverTextEdit : ILoadable
 
 		if (overheal > 0)
 		{
-			text += $" ([c/785B87:+{overheal}])";
+			text += $" ([c/FF9BF3:+{overheal}])";
 		}
 		
 		Main.instance.MouseTextHackZoom(text);
