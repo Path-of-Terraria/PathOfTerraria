@@ -41,7 +41,7 @@ public class AffixRegistry : ILoadable
 			return value;
 		}
 
-		Console.WriteLine($"ItemAffixData with type {type.Name} not found.");
+		PoTMod.Instance.Logger.Error($"ItemAffixData with type {type.Name} not found.");
 		return null;
 	}
 
