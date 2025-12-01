@@ -394,4 +394,7 @@ MapDevice: {
 	// ActivatePortal: Open Portal
 	// DeactivatePortal: Close Portal
 	// AlreadyInUse: This map device is already in use!
+	// InjectResource: Inject Resource
+	// EjectResource: Eject Resource
+	// NotEnoughResources: Not Enough Resources
 }

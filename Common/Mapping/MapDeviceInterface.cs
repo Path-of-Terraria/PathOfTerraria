@@ -624,9 +624,9 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 				HoverSound = SoundID.MenuTick,
 				ClickSound = SoundID.MenuTick,
 				HoverTexture = injectHvrTex,
-				HoverTooltip = "Inject resource.",
+				HoverTooltip = Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.MapDevice.InjectResource"),
 				LockedTexture = injectLckTex,
-				LockedTooltip = "Not enough resources.",
+				LockedTooltip = Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.MapDevice.NotEnoughResources"),
 			});
 			e.OnLeftClick += (_, _) =>
 			{
@@ -645,7 +645,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 				HoverSound = SoundID.MenuTick,
 				ClickSound = SoundID.MenuTick,
 				HoverTexture = injectHvrTex,
-				HoverTooltip = "Eject resource.",
+				HoverTooltip = Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.MapDevice.EjectResource"),
 			});
 			e.OnLeftClick += (_, _) =>
 			{
