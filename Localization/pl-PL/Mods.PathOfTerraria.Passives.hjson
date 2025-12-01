@@ -740,6 +740,11 @@ SoulReaveMastery: {
 }
 
 RagingSpiritsMastery: {
-	// Name: RagingSpiritsMastery
-	// Tooltip: ""
+	// Name: Raging Spirits
+	// Tooltip: Minions have a {0}% chance to spawn a Raging Spirit, which counts as a summon
+}
+
+ChaoticReverberationMastery: {
+	// Name: Chaotic Reverberation
+	// Tooltip: "{0}% of your damage is echoed as Chaos damage"
 }

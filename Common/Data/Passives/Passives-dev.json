@@ -3756,7 +3756,7 @@
 		"internalIdentifier": "RagingSpiritsMastery",
 		"referenceId": 1002,
 		"maxLevel": 1,
-		"value": 2,
+		"value": 5,
 		"position": {
 			"x": 86,
 			"y": -1085
@@ -3764,13 +3764,13 @@
 		"isHidden": true
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "ChaoticReverberationMastery",
 		"referenceId": 1003,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 20,
 		"position": {
 			"x": -9,
-			"y": -1150
+			"y": -1170
 		},
 		"isHidden": true
 	},
