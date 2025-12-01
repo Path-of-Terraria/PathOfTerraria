@@ -176,6 +176,17 @@ internal sealed class MapResources : ModSystem
 		return Get(ModContent.GetInstance<T>().Item.type);
 	}
 
+	/// <summary> Returns the array index of the resource associated with the given item ID. </summary>
+	public static int IndexOf(int itemType)
+	{
+		return resourcesByItem[itemType];
+	}
+	/// <inheritdoc cref="IndexOf"/>
+	public static int IndexOf<T>() where T : ModItem
+	{
+		return IndexOf(ModContent.GetInstance<T>().Item.type);
+	}
+
 	/// <inheritdoc cref="AddOrRemove"/>
 	public static void AddOrRemove<T>(int delta) where T : ModItem
 	{

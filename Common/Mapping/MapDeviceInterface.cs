@@ -343,6 +343,9 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		// Allow interactions once again.
 		IgnoresMouseInteraction = false;
 
+		ResetGeneral();
+		ResetCanisters();
+
 		Refresh();
 	}
 
@@ -351,8 +354,6 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		if (!Visible) { return; }
 
 		Visible = false;
-		openingAnimation = 0f;
-		closingAnimation = 0f;
 		IgnoresMouseInteraction = true;
 		SoundUtils.StopAndInvalidateSoundSlot(ref gear.Sound);
 		SoundUtils.StopAndInvalidateSoundSlot(ref canisters.Sound);
@@ -520,6 +521,21 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		sb.Draw(lockTexture, lockDstRect, lockSrcRect, Color.White, 0f, default, 0, 0f);
 	}
 
+	private void ResetGeneral()
+	{
+		openingAnimation = 0f;
+		closingAnimation = 0f;
+		buttonLockFrame = buttonLockFrame.With(0, 0);
+		gear.Speed = 0f;
+		activationEffect.Burst = null;
+		activationEffect.Injection = null;
+
+		if (MapDeviceInterface.Entity is { PortalActive: true } entity)
+		{
+			SetActivationEffect(entity);
+		}
+	}
+
 	private bool CanInteractWithCanisters()
 	{
 		return MapDeviceInterface.Entity is { StoredMap: not { IsAir: false }, Injection: null };
@@ -531,6 +547,21 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 	private bool CanEjectCanister()
 	{
 		return MapDeviceInterface.Entity?.TryEjectingResource(evalMode: true) == true;
+	}
+	private void ResetCanisters()
+	{
+		canisters.Visibility = 0f;
+		canisters.EjectVisibility = 0f;
+
+		if (MapDeviceInterface.Entity?.Injection is { } injection)
+		{
+			canisters.InjectionAnimation = 1f;
+			canisters.Center = canisters.NonWrappedSelection = MapResources.IndexOf(injection.Id);
+		}
+		else
+		{
+			canisters.InjectionAnimation = 0f;
+		}
 	}
 	private void AddCanisterElements()
 	{
@@ -1061,18 +1092,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		{
 			if (entity.TryOpeningPortal())
 			{
-				if (entity.Injection is { } injection)
-				{
-					MapResource resource = MapResources.Get(injection.Id);
-					state.activationEffect.Burst = resource.AccentColor;
-					state.activationEffect.Injection = resource.AccentColor;
-				}
-				else
-				{
-					state.activationEffect.Burst = ColorUtils.FromHexRgb(0x958982);
-					state.activationEffect.Injection = ColorUtils.FromHexRgb(0x13d6ff);
-				}
-
+				state.SetActivationEffect(entity);
 				state.activationEffect.Frame = state.activationEffect.Frame.With(0, 0);
 			}
 		}
@@ -1083,6 +1103,21 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 			state.activationEffect.Burst = ColorUtils.FromHexRgb(0x958982);
 			state.activationEffect.Injection = null;
 			state.activationEffect.Frame = state.activationEffect.Frame.With(0, 0);
+		}
+	}
+
+	private void SetActivationEffect(MapDeviceEntity entity)
+	{
+		if (entity.Injection is { } injection)
+		{
+			MapResource resource = MapResources.Get(injection.Id);
+			activationEffect.Burst = resource.AccentColor;
+			activationEffect.Injection = resource.AccentColor;
+		}
+		else
+		{
+			activationEffect.Burst = ColorUtils.FromHexRgb(0x958982);
+			activationEffect.Injection = ColorUtils.FromHexRgb(0x13d6ff);
 		}
 	}
 
