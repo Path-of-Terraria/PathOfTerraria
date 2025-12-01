@@ -32,12 +32,13 @@ internal abstract class ConfluxResource : ModItem
 	}
 	public override void SetDefaults()
 	{
-
+		Item.maxStack = 100;
 	}
 
-	// Never pickup, never go towards the player.
+	// Never pickup, never go towards the player, never stack in world.
 	public override bool GrabStyle(Player player) { return true; }
 	public override bool CanPickup(Player player) { return false; }
+	public override bool CanStackInWorld(Item source) { return false; }
 
 	public override void Update(ref float gravity, ref float maxFallSpeed)
 	{
@@ -82,7 +83,7 @@ internal abstract class ConfluxResource : ModItem
 		if (Item.position.Y <= 0f || Time.Remaining <= -60)
 		{
 			// Convert to resource.
-			MapResources.AddOrRemove(Item.netID, 1);
+			MapResources.AddOrRemove(Item.netID, Math.Max(1, Item.stack));
 			Item.active = false;
 		}
 
