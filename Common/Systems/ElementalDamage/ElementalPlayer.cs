@@ -1,6 +1,5 @@
 ﻿using PathOfTerraria.Utilities;
 using System.Linq;
-using Terraria;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.ElementalDamage;
@@ -12,6 +11,9 @@ public class ElementalPlayer : ModPlayer
 	// TODO: could be a ModConfig toggle
 	public static bool DebugMessages => false;
 
+	/// <summary>
+	/// True when <see cref="ApplyElementalDamage(Player, NPC, int, ElementType, int, int, bool)"/> is running. Useful for stopping recursion.
+	/// </summary>
 	internal static bool ApplyingElementalDamage = false;
 
 	public override void ResetEffects()

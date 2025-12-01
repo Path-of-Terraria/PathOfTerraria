@@ -13,7 +13,7 @@ internal class ElementalReverberationBuff : ModBuff
 	{
 		if (Main.netMode == NetmodeID.MultiplayerClient)
 		{
-			BleedStackHandler.Send((short)npc.whoAmI, (ushort)delay, (ushort)damage);
+			ElementalReverberationHandler.Send((short)npc.whoAmI, (short)delay, damage, type);
 			return;
 		}
 
@@ -65,31 +65,6 @@ internal class ElementalReverbNPC : GlobalNPC
 		}
 
 		Stacks.RemoveAll(x => x.Delay <= 0);
-
 		return true;
-	}
-
-	public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
-	{
-		binaryWriter.Write((short)Stacks.Count);
-
-		foreach (ElementalReverberationStack stack in Stacks)
-		{
-			binaryWriter.Write(stack.Player);
-			binaryWriter.Write(stack.Delay);
-			binaryWriter.Write(stack.Damage);
-			binaryWriter.Write((byte)stack.Type);
-		}
-	}
-
-	public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader reader)
-	{
-		Stacks.Clear();
-		short count = reader.ReadInt16();
-
-		for (int i = 0; i < count; ++i)
-		{
-			Stacks.Add(new ElementalReverberationStack(reader.ReadByte(), reader.ReadInt16(), reader.ReadInt32(), (ElementType)reader.ReadByte()));
-		}
 	}
 }
