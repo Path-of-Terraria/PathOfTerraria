@@ -3,6 +3,7 @@ using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Content.Passives.Summon.Masteries;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.ModLoader.Core;
 
 namespace PathOfTerraria.Common.Systems;
 
@@ -14,7 +15,17 @@ internal class PotionPlayer : ModPlayer
 	/// </summary>
 	public interface IOnCustomPotionPlayer
 	{
+		private static readonly HookList<ModPlayer> Hook = PlayerLoader.AddModHook(HookList<ModPlayer>.Create(i => ((IOnCustomPotionPlayer)i).OnCustomPotion));
+
 		public void OnCustomPotion(bool healing, int amount);
+
+		public static void Invoke(Player player, bool healing, int amount)
+		{
+			foreach (IOnCustomPotionPlayer g in Hook.Enumerate(player.ModPlayers))
+			{
+				g.OnCustomPotion(healing, amount);
+			}
+		}
 	}
 
 	public int HealingLeft = 3;
@@ -60,13 +71,7 @@ internal class PotionPlayer : ModPlayer
 		int healAmount = (int)(self.statLifeMax2 * (mp.HealPower / 100f));
 		self.Heal(healAmount);
 
-		foreach (ModPlayer plr in self.ModPlayers)
-		{
-			if (plr is IOnCustomPotionPlayer customPot)
-			{
-				customPot.OnCustomPotion(true, healAmount);
-			}
-		}
+		IOnCustomPotionPlayer.Invoke(self, true, healAmount);
 
 		self.AddBuff(BuffID.PotionSickness, mp.HealDelay);
 		mp.HealingLeft--;
@@ -99,13 +104,7 @@ internal class PotionPlayer : ModPlayer
 		self.ManaEffect(mp.ManaPower);
 		self.statMana += mp.ManaPower;
 
-		foreach (ModPlayer plr in self.ModPlayers)
-		{
-			if (plr is IOnCustomPotionPlayer customPot)
-			{
-				customPot.OnCustomPotion(false, mp.ManaPower);
-			}
-		}
+		IOnCustomPotionPlayer.Invoke(self, true, mp.ManaPower);
 
 		self.AddBuff(BuffID.ManaSickness, mp.ManaDelay);
 		mp.ManaLeft--;
