@@ -1063,7 +1063,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 			{
 				if (entity.Injection is { } injection)
 				{
-					MapResource resource = MapResources.Get(injection);
+					MapResource resource = MapResources.Get(injection.Id);
 					state.activationEffect.Burst = resource.AccentColor;
 					state.activationEffect.Injection = resource.AccentColor;
 				}

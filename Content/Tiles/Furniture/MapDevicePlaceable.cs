@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using Mono.Cecil;
 using PathOfTerraria.Common.Mapping;
 using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Common.Utilities;
@@ -135,7 +136,7 @@ public class MapDevicePlaceable : ModTile
 
 		if (entity.Injection is { } injection)
 		{
-			MapResource resource = MapResources.Get(injection);
+			MapResource resource = MapResources.Get(injection.Id);
 			baseColor = resource.AccentColor;
 		}
 		else if (entity.StoredMap is { IsAir: false, type: int itemType })
@@ -254,7 +255,7 @@ internal class MapDeviceEntity : ModTileEntity
 	public int PortalUsesLeft { get; set; }
 	public int? InteractingPlayer { get; private set; }
 	/// <summary> Which map destination resource is currently injected into the device, and what quantity of it. </summary>
-	public int? Injection { get; set; }
+	public (int Id, int Amount)? Injection { get; set; }
 
 	public MapDeviceEntity()
 	{
@@ -319,11 +320,23 @@ internal class MapDeviceEntity : ModTileEntity
 
 	public override void SaveData(TagCompound tag)
 	{
+		// Map
 		if (StoredMap is { IsAir: false })
 		{
 			tag.Add("item", ItemIO.Save(StoredMap));
 		}
 
+		// Injection
+		if (Injection is { } injection)
+		{
+			tag.Add("injection", new TagCompound
+			{
+				{ "id", (int)injection.Id },
+				{ "amount", (int)injection.Amount },
+			});
+		}
+
+		// Storage
 		var storage = new TagCompound();
 
 		for (int i = 0; i < Storage.Length; i++)
@@ -338,11 +351,22 @@ internal class MapDeviceEntity : ModTileEntity
 	}
 	public override void LoadData(TagCompound tag)
 	{
+		// Map
 		if (tag.TryGet("item", out TagCompound itemTag))
 		{
 			StoredMap = ItemIO.Load(itemTag);
 		}
 
+		// Injection
+		if (tag.TryGet("injection", out TagCompound injTag))
+		{
+			if (injTag.GetInt("id") is int id && injTag.GetInt("amount") is >= 0 and int amount && MapResources.TryGet(id, out MapResource resource))
+			{
+				Injection = (id, amount);
+			}
+		}
+
+		// Storage
 		if (tag.TryGet("storage", out TagCompound storage))
 		{
 			foreach (KeyValuePair<string, object> pair in storage)
@@ -566,13 +590,8 @@ internal class MapDeviceEntity : ModTileEntity
 		}
 		else if (Injection is { } injection)
 		{
-			MapResource resource = MapResources.Get(injection);
+			MapResource resource = MapResources.Get(injection.Id);
 			PortalUsesLeft = resource.PortalUses;
-
-			// Consume resource.
-#if !DEBUG || false
-			MapResources.AddOrRemove(injection, -resource.Cost);
-#endif
 		}
 
 		// Broadcast the interaction.
@@ -664,7 +683,7 @@ internal class MapDeviceEntity : ModTileEntity
 		}
 
 		// Refuse interaction if the resource ID is invalid or if there is not enough of it.
-		if (!MapResources.TryGet(resourceId, out MapResource mapResources) || mapResources.Value < mapResources.Cost)
+		if (!MapResources.TryGet(resourceId, out MapResource resource) || resource.Value < resource.Cost)
 		{
 			return false;
 		}
@@ -685,7 +704,8 @@ internal class MapDeviceEntity : ModTileEntity
 			return false;
 		}
 
-		Injection = resourceId;
+		Injection = (resourceId, resource.Cost);
+		MapResources.AddOrRemove(resourceId, -resource.Cost);
 
 		// Broadcast the interaction.
 		if (Main.netMode == NetmodeID.Server)
@@ -708,7 +728,7 @@ internal class MapDeviceEntity : ModTileEntity
 		}
 
 		// Refuse if there is no injection.
-		if (!Injection.HasValue)
+		if (Injection is not { } injection)
 		{
 			return false;
 		}
@@ -727,6 +747,11 @@ internal class MapDeviceEntity : ModTileEntity
 		if (Main.netMode == NetmodeID.Server && netSender.HasValue && InteractingPlayer != netSender)
 		{
 			return false;
+		}
+
+		if (MapResources.TryGet(injection.Id, out MapResource resource))
+		{
+			MapResources.AddOrRemove(injection.Id, +injection.Amount);
 		}
 
 		Injection = null;
@@ -863,7 +888,8 @@ internal class MapDeviceSync : Handler
 
 		if (flags.HasFlag(Flags.Injection))
 		{
-			writer.Write7BitEncodedInt(device.Injection ?? -1);
+			writer.Write7BitEncodedInt(device.Injection?.Id ?? -1);
+			writer.Write7BitEncodedInt(device.Injection?.Amount ?? 0);
 		}
 	}
 
@@ -933,11 +959,12 @@ internal class MapDeviceSync : Handler
 		if (flags.HasFlag(Flags.Injection))
 		{
 			int resourceId = reader.Read7BitEncodedInt();
+			int resourceAmount = reader.Read7BitEncodedInt();
 
 			// Refuse applying data if it is received from clients.
 			if (mapEntity != null && Main.netMode != NetmodeID.Server)
 			{
-				mapEntity.Injection = MapResources.TryGet(resourceId, out _) ? resourceId : null;
+				mapEntity.Injection = MapResources.TryGet(resourceId, out _) ? (resourceId, Math.Max(0, resourceAmount)) : null;
 			}
 		}
 	}
