@@ -27,6 +27,6 @@ internal class DeathrushMastery : Passive
 
 	public override void BuffPlayer(Player player)
 	{
-		player.moveSpeed += MathF.Min(player.slotsMinions, 10) * Value / 100f;
+		player.moveSpeed += MathF.Min(player.slotsMinions, 10) * Value / 10f;
 	}
 }
