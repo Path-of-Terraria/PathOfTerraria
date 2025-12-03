@@ -43,13 +43,15 @@ internal class RagingSpirit : ModProjectile
 		if (!HasTarget)
 		{
 			int target = -1;
+			float targetSqrDist = float.PositiveInfinity;
+			Vector2 center = Projectile.Center;
 
 			foreach (NPC npc in Main.ActiveNPCs)
 			{
-				if (npc.CanBeChasedBy() && (target == -1 ? npc.DistanceSQ(Projectile.Center) < 500 * 500 
-					: npc.DistanceSQ(Projectile.Center) < Main.npc[target].DistanceSQ(Projectile.Center)))
+				if (npc.CanBeChasedBy() && npc.DistanceSQ(center) is float sqrDist and < 500 * 500 && sqrDist < targetSqrDist)
 				{
 					target = npc.whoAmI;
+					targetSqrDist = sqrDist;
 				}
 			}
 
