@@ -41,6 +41,7 @@ public class GrimoireInvButton : SmartUiState
 			player.noThrow = 2;
 			player.cursorItemIconID = -1;
 			player.cursorItemIconEnabled = true;
+			player.mouseInterface = true;
 		}
 
 		if (hover != _lastHover)
@@ -65,7 +66,12 @@ public class GrimoireInvButton : SmartUiState
 		if (index != -1)
 		{
 			// Set held item to Grimoire so the UI doesn't instantly close
-			Main.LocalPlayer.selectedItem = index;
+			if (!SmartUiLoader.GetUiState<GrimoireSelectionUIState>().Visible)
+			{
+				GrimoireSelectionUIState.OldSelectedItem = Main.LocalPlayer.selectedItem;
+				Main.LocalPlayer.selectedItem = index;
+			}
+
 			SmartUiLoader.GetUiState<GrimoireSelectionUIState>().Toggle();
 			SoundEngine.PlaySound(SoundID.MenuOpen);
 		}

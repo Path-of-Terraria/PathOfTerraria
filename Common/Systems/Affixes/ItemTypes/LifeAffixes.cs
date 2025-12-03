@@ -59,7 +59,7 @@ internal class LifePotionCapAffix : ItemAffix
 	
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		modifier.MaxHealthPotions.Base += Value;
+		modifier.MaxHealthPotions += Value;
 	}
 }
 

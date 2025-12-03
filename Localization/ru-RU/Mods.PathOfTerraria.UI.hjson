@@ -313,6 +313,7 @@ Tips: {
 }
 
 PointsRemaining: очков осталось
+// ResetPoints: Reset Points
 ExpBarHover:
 	'''
 	Уровень {0}

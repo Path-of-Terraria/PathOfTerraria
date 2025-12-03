@@ -121,10 +121,13 @@ internal class ExplosionHitbox : ModProjectile
 		}
 	}
 
-	public static void QuickSpawn(IEntitySource source, Entity sourceEntity, Vector2 velocity, int damage, int owner, Vector2 size, VFXPackage? package = null)
+	public static int QuickSpawn(IEntitySource source, Entity sourceEntity, Vector2 velocity, int damage, int owner, Vector2 size, VFXPackage? package = null, bool friendly = true, 
+		float knockback = 8f)
 	{
-		Projectile.NewProjectile(source, sourceEntity.Center, velocity, ModContent.ProjectileType<ExplosionHitbox>(), damage, 8f, owner, size.X, size.Y);
+		int type = friendly ? ModContent.ProjectileType<ExplosionHitboxFriendly>() : ModContent.ProjectileType<ExplosionHitbox>();
+		int proj = Projectile.NewProjectile(source, sourceEntity.Center, velocity, type, damage, knockback, owner, size.X, size.Y);
 		VFX(sourceEntity, package);
+		return proj;
 	}
 }
 

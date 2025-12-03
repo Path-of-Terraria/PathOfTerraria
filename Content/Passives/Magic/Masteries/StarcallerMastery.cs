@@ -1,6 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Content.Projectiles.PassiveProjectiles;
-using rail;
 using ReLogic.Content;
 using Terraria.DataStructures;
 

@@ -3,12 +3,31 @@ using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Content.Passives.Summon.Masteries;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.ModLoader.Core;
 
 namespace PathOfTerraria.Common.Systems;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 internal class PotionPlayer : ModPlayer
 {
+	/// <summary>
+	/// Allows ModPlayers to run code when a hotbar potion is used.
+	/// </summary>
+	public interface IOnCustomPotionPlayer
+	{
+		private static readonly HookList<ModPlayer> Hook = PlayerLoader.AddModHook(HookList<ModPlayer>.Create(i => ((IOnCustomPotionPlayer)i).OnCustomPotion));
+
+		public void OnCustomPotion(bool healing, int amount);
+
+		public static void Invoke(Player player, bool healing, int amount)
+		{
+			foreach (IOnCustomPotionPlayer g in Hook.Enumerate(player.ModPlayers))
+			{
+				g.OnCustomPotion(healing, amount);
+			}
+		}
+	}
+
 	public int HealingLeft = 3;
 	public int MaxHealing = 3;
 	public int HealPower = 30;
@@ -51,6 +70,9 @@ internal class PotionPlayer : ModPlayer
 		// Changed from flat healing to percentage-based (Using statLifeMax2 is MaxLife after adjusted buffs/equipment)
 		int healAmount = (int)(self.statLifeMax2 * (mp.HealPower / 100f));
 		self.Heal(healAmount);
+
+		IOnCustomPotionPlayer.Invoke(self, true, healAmount);
+
 		self.AddBuff(BuffID.PotionSickness, mp.HealDelay);
 		mp.HealingLeft--;
 
@@ -81,6 +103,9 @@ internal class PotionPlayer : ModPlayer
 
 		self.ManaEffect(mp.ManaPower);
 		self.statMana += mp.ManaPower;
+
+		IOnCustomPotionPlayer.Invoke(self, true, mp.ManaPower);
+
 		self.AddBuff(BuffID.ManaSickness, mp.ManaDelay);
 		mp.ManaLeft--;
 

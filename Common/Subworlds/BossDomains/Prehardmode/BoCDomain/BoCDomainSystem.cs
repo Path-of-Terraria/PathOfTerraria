@@ -80,7 +80,7 @@ internal class BoCDomainSystem : ModSystem
 			}
 		}
 
-		if (SubworldSystem.Current is null && !SubworldSystem.IsActive<BrainDomain>())
+		if (SubworldSystem.Current is null)
 		{
 			if (HasLloyd)
 			{

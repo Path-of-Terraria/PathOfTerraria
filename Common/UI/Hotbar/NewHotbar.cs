@@ -400,6 +400,8 @@ public sealed class NewHotbar : SmartUiState
 		SkillFailure failure = default;
 		bool canUse = skill.CanUseSkill(Main.LocalPlayer, ref failure, true);
 
+		skill.RecalculateStats(Main.LocalPlayer);
+
 		if (ignoreCanUse)
 		{
 			canUse = true;
@@ -443,7 +445,7 @@ public sealed class NewHotbar : SmartUiState
 
 		if (skill.Duration != 0)
 		{
-			tooltips.Add(new("Duration", Language.GetText("Mods.PathOfTerraria.Skills.DurationLine").WithFormatArgs($"{skill.Duration / 60f:#0.##}").Value, 4));
+			tooltips.Add(new("Duration", Language.GetText("Mods.PathOfTerraria.Skills.DurationLine").WithFormatArgs($"{skill.TotalDuration / 60f:#0.##}").Value, 4));
 		}
 
 		tooltips.Add(new("Cooldown", Language.GetText("Mods.PathOfTerraria.Skills.CooldownLine").WithFormatArgs($"{skill.MaxCooldown / 60f:#0.##}").Value, 5));
