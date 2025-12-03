@@ -8,8 +8,24 @@ using Terraria.UI.Chat;
 
 namespace PathOfTerraria.Content.Buffs.ElementalBuffs;
 
+#nullable enable
+
 internal class PoisonedDebuff : ModBuff
 {
+	internal class PoisonPlayer : ModPlayer
+	{
+		public StatModifier PoisonDuration = new();
+		public StatModifier PoisonDamage = new();
+		public StatModifier PoisonTickRate = new();
+
+		public override void ResetEffects()
+		{
+			PoisonDuration = new();
+			PoisonDamage = new();
+			PoisonTickRate = new();
+		}
+	}
+
 	public override void Load()
 	{
 		On_NPC.AddBuff += ModifyPoisonAddition;
@@ -26,9 +42,21 @@ internal class PoisonedDebuff : ModBuff
 		orig(self, type, time, quiet);
 	}
 
-	public static void Apply(NPC npc, int time)
+	public static void Apply(NPC npc, int time, Player? player = null)
 	{
-		npc.GetGlobalNPC<PoisonNPC>().Stacks.Add(time);
+		float damage = 4f;
+		float tickRate = 60;
+
+		if (player is not null)
+		{
+			time = (int)player.GetModPlayer<PoisonPlayer>().PoisonDuration.ApplyTo(time);
+			damage = player.GetModPlayer<PoisonPlayer>().PoisonDamage.ApplyTo(damage);
+			tickRate = player.GetModPlayer<PoisonPlayer>().PoisonTickRate.ApplyTo(tickRate);
+		}
+
+		npc.GetGlobalNPC<PoisonNPC>().Stacks.Add(new PoisonNPC.PoisonStack(time, damage));
+		ref float tick = ref npc.GetGlobalNPC<PoisonNPC>().LastTickRate;
+		tick = MathF.Min(tickRate, tick);
 		npc.AddBuff(ModContent.BuffType<PoisonedDebuff>(), time);
 	}
 
@@ -49,12 +77,27 @@ internal class PoisonedDebuff : ModBuff
 
 internal class PoisonNPC : GlobalNPC
 {
-	public static Asset<Texture2D> PoisonIcon = null;
+	public static Asset<Texture2D> PoisonIcon = null!;
 
 	public override bool InstancePerEntity => true;
 
-	internal readonly List<int> Stacks = [];
+	internal class PoisonStack(int time, float damagePerTick = 4f)
+	{
+		public readonly int MaxTime = time;
+
+		public int Time = time;
+		public float DamagePerTick = damagePerTick;
+	}
+
+	internal readonly List<PoisonStack> Stacks = [];
 	internal float ElapsedDoT = 0;
+
+	/// <summary>
+	/// The most recent tick rate applied by a player. This is reset per NPC and when the debuff runs out.
+	/// </summary>
+	internal float LastTickRate = 60;
+	
+	private float _timer = 0;
 
 	public override void Load()
 	{
@@ -65,17 +108,21 @@ internal class PoisonNPC : GlobalNPC
 	{
 		for (int i = 0; i < Stacks.Count; i++)
 		{
-			Stacks[i]--;
-			ElapsedDoT += 4 / 60f;
+			Stacks[i].Time--;
+			ElapsedDoT += Stacks[i].DamagePerTick / 60f;
 		}
 
-		Stacks.RemoveAll(x => x <= 0);
+		Stacks.RemoveAll(x => x.Time <= 0);
 
-		if (ElapsedDoT > 30 || ElapsedDoT > npc.life)
+		_timer++;
+
+		if (_timer > LastTickRate && Stacks.Count > 0 && ElapsedDoT >= 1)
 		{
-			DoTFunctionality.ApplyDoT(npc, Math.Min(30, npc.life), ref ElapsedDoT, Color.Brown, Color.Red);
+			DoTFunctionality.ApplyDoT(npc, (int)ElapsedDoT, ref ElapsedDoT, Color.Brown, Color.Red);
+
+			_timer = 0;
 		}
-		else if (Stacks.Count == 0)
+		else if (Stacks.Count == 0 || ElapsedDoT > npc.life)
 		{
 			if (ElapsedDoT > 1)
 			{
@@ -83,6 +130,7 @@ internal class PoisonNPC : GlobalNPC
 			}
 
 			ElapsedDoT = 0;
+			LastTickRate = 60;
 		}
 
 		return true;

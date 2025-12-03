@@ -209,3 +209,13 @@ HastySummonBuff: {
 	// DisplayName: Hasty Summon
 	// Description: +100% movement speed
 }
+
+BloodroundBuff: {
+	// DisplayName: Bloodround Fervor
+	// Description: +50% chance to not consume ammo
+}
+
+IdentifiedDebuff: {
+	// DisplayName: Identified Debuff
+	// Description: Mods.PathOfTerraria.Buffs.IdentifiedDebuff.Description
+}
