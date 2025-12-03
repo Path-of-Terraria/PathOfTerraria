@@ -1,14 +1,42 @@
 ﻿using PathOfTerraria.Common.Systems.ElementalDamage;
-using PathOfTerraria.Common.Systems.Synchronization.Handlers;
+using PathOfTerraria.Common.Systems.Synchronization;
 using System.Collections.Generic;
 using System.IO;
 using Terraria.ID;
-using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Buffs;
 
+/// <summary>
+/// Allows you to apply an "echoed" elemental damage hit on a given NPC. Use <see cref="Apply(Player, NPC, int, int, ElementType)"/>.
+/// </summary>
 internal class ElementalReverberationBuff : ModBuff
 {
+	/// <summary>
+	/// Adds a stack of elemental echoing damage to an NPC. Should only be called from the client.
+	/// </summary>
+	internal class ElementalReverberationHandler : Handler
+	{
+		public static void Send(short npc, short delay, int damage, ElementType elementType)
+		{
+			ModPacket packet = Networking.GetPacket<ElementalReverberationHandler>(8);
+			packet.Write(npc);
+			packet.Write(delay);
+			packet.Write(damage);
+			packet.Write((byte)elementType);
+			packet.Send();
+		}
+
+		internal override void ServerReceive(BinaryReader reader, byte sender)
+		{
+			short npc = reader.ReadInt16();
+			short delay = reader.ReadInt16();
+			int damage = reader.ReadInt32();
+			var type = (ElementType)reader.ReadByte();
+
+			Apply(Main.player[sender], Main.npc[npc], delay, damage, type);
+		}
+	}
+
 	public static void Apply(Player player, NPC npc, int delay, int damage, ElementType type)
 	{
 		if (Main.netMode == NetmodeID.MultiplayerClient)
