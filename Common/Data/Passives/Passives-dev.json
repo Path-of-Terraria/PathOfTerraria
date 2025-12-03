@@ -3650,8 +3650,7 @@
 		"value": 10,
 		"connections": [
 			{
-				"referenceId": 999,
-				"effectsOnly": true
+				"referenceId": 999
 			}
 		],
 		"position": {
@@ -3733,9 +3732,6 @@
 			},
 			{
 				"referenceId": 1003
-			},
-			{
-				"referenceId": 1004
 			}
 		],
 		"position": {
@@ -3746,46 +3742,35 @@
 		"requiredAllocatedEdges": 5
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "SoulReaveMastery",
 		"referenceId": 1001,
 		"maxLevel": 1,
 		"value": 5,
 		"position": {
-			"x": -84,
-			"y": -1065
+			"x": -104,
+			"y": -1085
 		},
 		"isHidden": true
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "RagingSpiritsMastery",
 		"referenceId": 1002,
 		"maxLevel": 1,
 		"value": 5,
 		"position": {
-			"x": 66,
-			"y": -1065
+			"x": 86,
+			"y": -1085
 		},
 		"isHidden": true
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "ChaoticReverberationMastery",
 		"referenceId": 1003,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 20,
 		"position": {
 			"x": -9,
-			"y": -1140
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 1004,
-		"maxLevel": 1,
-		"value": 5,
-		"position": {
-			"x": -9,
-			"y": -990
+			"y": -1170
 		},
 		"isHidden": true
 	},

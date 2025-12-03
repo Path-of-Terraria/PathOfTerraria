@@ -734,6 +734,21 @@ TowerDefenseMastery: {
 	// Tooltip: Sentries have an area-of-effect damage aura for base weapon damage every {0} seconds
 }
 
+SoulReaveMastery: {
+	// Name: Soul Reave
+	// Tooltip: Summon damage has a {0}% chance to apply a stack of Soul Reave, which heals {1}% max health and deals {2}% original hit damage on expiration
+}
+
+RagingSpiritsMastery: {
+	// Name: Raging Spirits
+	// Tooltip: Minions have a {0}% chance to spawn a Raging Spirit, which counts as a summon
+}
+
+ChaoticReverberationMastery: {
+	// Name: Chaotic Reverberation
+	// Tooltip: "{0}% of your damage is echoed as Chaos damage"
+}
+
 StrongerPotionsPassive: {
 	// Name: Stronger Potions
 	// Tooltip: All potions (including food) have {0}% increased buff duration

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using PathOfTerraria.Utilities;
+using System.Linq;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.ElementalDamage;
@@ -10,9 +11,38 @@ public class ElementalPlayer : ModPlayer
 	// TODO: could be a ModConfig toggle
 	public static bool DebugMessages => false;
 
+	/// <summary>
+	/// True when <see cref="ApplyElementalDamage(Player, NPC, int, ElementType, int, int, bool)"/> is running. Useful for stopping recursion.
+	/// </summary>
+	internal static bool ApplyingElementalDamage = false;
+
 	public override void ResetEffects()
 	{
 		Container.Reset(true);
+	}
+
+	/// <summary>
+	/// Defines a quick way for this player to deal 'exclusively' elemental damage quickly.<br/>
+	/// This works by temporarily replacing the player's <see cref="Container"/> with a container which only contains the element given with 100% conversion
+	/// and <paramref name="flatDamage"/> bonus damage, then striking the NPC.<br/>
+	/// Other elements cannot proc, but the given element's multiplier is considered.
+	/// </summary>
+	public static void ApplyElementalDamage(Player player, NPC npc, int damage, ElementType type, int flatDamage = 0, int hitDirection = 0, bool damageVariation = false)
+	{
+		ElementalPlayer elePlr = player.GetModPlayer<ElementalPlayer>();
+		ref ElementalContainer actualContainer = ref elePlr.Container;
+		ElementalContainer container = actualContainer;
+
+		actualContainer = new();
+		ref ElementalDamage damageModifier = ref actualContainer[type].DamageModifier;
+		damageModifier = damageModifier.ApplyOverride(flatDamage, 1);
+		actualContainer[type].Multiplier = container[type].Multiplier;
+
+		using var _ = ValueOverride.Create(ref ApplyingElementalDamage, true);
+
+		player.ApplyDamageToNPC(npc, damage, 0, hitDirection, damageVariation: damageVariation);
+
+		actualContainer = container;
 	}
 
 	public override void ModifyHitByProjectile(Projectile proj, ref Player.HurtModifiers modifiers)
@@ -164,6 +194,14 @@ public class ElementalPlayer : ModPlayer
 			}
 
 			ElementOnHit(target, Container, elemNPC.Container, hit.Damage, hit, item, Player);
+		}
+	}
+
+	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+	{
+		if (ApplyingElementalDamage && target.TryGetGlobalNPC(out ElementalNPC elemNPC))
+		{
+			ElementOnHit(target, Container, elemNPC.Container, hit.Damage, hit, null, Player);
 		}
 	}
 
