@@ -4923,6 +4923,62 @@
 		}
 	},
 	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1101,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1102
+			},
+			{
+				"referenceId": 1103
+			},
+			{
+				"referenceId": 1104
+			}
+		],
+		"position": {
+			"x": 609,
+			"y": 740
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "BlastProtectionPassive",
+		"referenceId": 1102,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 589,
+			"y": 810
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "BlastProtectionPassive",
+		"referenceId": 1103,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 589,
+			"y": 810
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "BlastProtectionPassive",
+		"referenceId": 1104,
+		"maxLevel": 1,
+		"value": 40,
+		"position": {
+			"x": 589,
+			"y": 810
+		},
+		"isHidden": true
+	},
+	{
 		"internalIdentifier": "PoisonedRangedAttacksPassive",
 		"referenceId": 242,
 		"maxLevel": 1,
