@@ -4902,6 +4902,11 @@
 		"referenceId": 240,
 		"maxLevel": 1,
 		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1101
+			}
+		],
 		"position": {
 			"x": 520,
 			"y": 712
@@ -4915,6 +4920,9 @@
 		"connections": [
 			{
 				"referenceId": 239
+			},
+			{
+				"referenceId": 1101
 			}
 		],
 		"position": {
@@ -4946,35 +4954,35 @@
 		"requiredAllocatedEdges": 2
 	},
 	{
-		"internalIdentifier": "BlastProtectionPassive",
+		"internalIdentifier": "DemolitionsExpertMastery",
 		"referenceId": 1102,
 		"maxLevel": 1,
-		"value": 20,
+		"value": 40,
 		"position": {
-			"x": 589,
-			"y": 810
+			"x": 639,
+			"y": 800
 		},
 		"isHidden": true
 	},
 	{
-		"internalIdentifier": "BlastProtectionPassive",
+		"internalIdentifier": "ShrapnelStormMastery",
 		"referenceId": 1103,
 		"maxLevel": 1,
 		"value": 20,
 		"position": {
-			"x": 589,
-			"y": 810
+			"x": 669,
+			"y": 710
 		},
 		"isHidden": true
 	},
 	{
-		"internalIdentifier": "BlastProtectionPassive",
+		"internalIdentifier": "BlastChainMastery",
 		"referenceId": 1104,
 		"maxLevel": 1,
-		"value": 40,
+		"value": 50,
 		"position": {
-			"x": 589,
-			"y": 810
+			"x": 584,
+			"y": 675
 		},
 		"isHidden": true
 	},

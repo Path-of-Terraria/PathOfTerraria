@@ -865,6 +865,21 @@ ExplosiveKnockbackPassive: {
 }
 
 BiggerExplosivesPassive: {
-	Name: BiggerExplosivesPassive
-	Tooltip: ""
+	Name: Bigger Explosions
+	Tooltip: Explosives are {0}% larger
+}
+
+DemolitionsExpertMastery: {
+	Name: Demolitions Expert
+	Tooltip: Explosions are {0}% larger and deal {1}% more damage
+}
+
+ShrapnelStormMastery: {
+	Name: Shrapnel Storm
+	Tooltip: Explosives burst into shrapnel, which deal {0}% damage per shard
+}
+
+BlastChainMastery: {
+	Name: Blast Chain
+	Tooltip: Killing an enemy with an explosion will blow up the enemy for {0}% damage
 }

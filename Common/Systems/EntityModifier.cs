@@ -70,6 +70,9 @@ public partial class EntityModifier : EntityModifierSegment
 	// AmmoConsumptionPlayer:
 	public AddableFloat AmmoReservationChance = new();
 
+	// ExplosiveSizeProjectile:
+	public StatModifier ExplosionSize = new();
+
 	// ExtraProjectilesShotPlayer:
 	/// <summary>
 	/// Adds projectiles to the shooting of any item. This uses the item's information to automatically spawn another projectile.<br/>

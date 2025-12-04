@@ -865,6 +865,21 @@ ExplosiveKnockbackPassive: {
 }
 
 BiggerExplosivesPassive: {
-	// Name: BiggerExplosivesPassive
+	// Name: Bigger Explosions
+	// Tooltip: Explosives are {0}% larger
+}
+
+DemolitionsExpertMastery: {
+	// Name: Demolitions Expert
+	// Tooltip: Explosions are {0}% larger and deal {1}% more damage
+}
+
+ShrapnelStormMastery: {
+	// Name: ShrapnelStormMastery
+	// Tooltip: ""
+}
+
+BlastChainMastery: {
+	// Name: BlastChainMastery
 	// Tooltip: ""
 }
