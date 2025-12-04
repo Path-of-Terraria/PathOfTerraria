@@ -2,7 +2,7 @@
 
 namespace PathOfTerraria.Common.Systems.ElementalDamage;
 
-public enum ElementType
+public enum ElementType : byte
 {
 	None,
 	Fire,

@@ -211,3 +211,13 @@ IdentifiedDebuff: {
 	// DisplayName: Identified Debuff
 	// Description: Mods.PathOfTerraria.Buffs.IdentifiedDebuff.Description
 }
+
+SoulReaveDebuff: {
+	// DisplayName: Soul Reave Debuff
+	// Description: Mods.PathOfTerraria.Buffs.SoulReaveDebuff.Description
+}
+
+ElementalReverberationBuff: {
+	// DisplayName: Elemental Reverberation Buff
+	// Description: Mods.PathOfTerraria.Buffs.ElementalReverberationBuff.Description
+}
