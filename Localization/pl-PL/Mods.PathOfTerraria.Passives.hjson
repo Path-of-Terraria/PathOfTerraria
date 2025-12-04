@@ -783,3 +783,23 @@ SurplusVitalityMastery: {
 	// Name: Surplus Vitality
 	// Tooltip: Using a skill gives [mechanic/shift:Nearby] players {0}% of their max health as overhealth
 }
+
+ReturningProjectilesMastery: {
+	// Name: Returning Bullets
+	// Tooltip: Bullets return to their spawn location after 0.{0} seconds
+}
+
+MarksmanMastery: {
+	// Name: Marksman
+	// Tooltip: Close enemies can be Marked. Marked enemies deal {0}% of the damage they take to [mechanic/shift:Nearby] enemies
+}
+
+FatBulletsMastery: {
+	// Name: Fat Bullets
+	// Tooltip: Ranged projectiles are {0}% stronger and bigger, but have damage and speed falloff quickly
+}
+
+StillDamagePassive: {
+	// Name: StillDamagePassive
+	// Tooltip: ""
+}
