@@ -58,7 +58,7 @@ internal class FireballTree : SkillTree
 		var everburningPyre = new EverburningPyre(this) { TreePos = new Vector2(200, -100) };
 
 		var crawlingFlame = new CrawlingFlame(this) { TreePos = new Vector2(300, 0) };
-		var abyssalHunger = new Abyssalhunger(this) { TreePos = new Vector2(300, -100) };
+		var abyssalHunger = new AbyssalHunger(this) { TreePos = new Vector2(300, -100) };
 		
 		var pyremaniac = new Pyremaniac(this) { TreePos = new Vector2(400, 0) };
 		var additionalPyres = new AdditionalPyres(this) { TreePos = new Vector2(400, -100) };

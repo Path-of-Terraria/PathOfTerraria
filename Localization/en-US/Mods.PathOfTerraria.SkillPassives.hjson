@@ -435,3 +435,8 @@ FrostfireBlast: {
 	Name: FrostfireBlast
 	Tooltip: Mods.PathOfTerraria.SkillPassives.FrostfireBlast.Tooltip
 }
+
+AbyssalHunger: {
+	Name: AbyssalHunger
+	Tooltip: Mods.PathOfTerraria.SkillPassives.AbyssalHunger.Tooltip
+}

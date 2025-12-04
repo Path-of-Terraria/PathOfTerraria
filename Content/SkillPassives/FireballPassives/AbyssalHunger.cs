@@ -3,4 +3,4 @@ using PathOfTerraria.Common.Systems.Skills;
 
 namespace PathOfTerraria.Content.SkillPassives.FireballPassives;
 
-internal class Abyssalhunger(SkillTree tree) : SkillPassive(tree);
+internal class AbyssalHunger(SkillTree tree) : SkillPassive(tree);
