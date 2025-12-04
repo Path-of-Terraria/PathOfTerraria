@@ -800,6 +800,6 @@ FatBulletsMastery: {
 }
 
 StillDamagePassive: {
-	// Name: StillDamagePassive
-	// Tooltip: ""
+	// Name: Damage Increased when Stationary
+	// Tooltip: Standing still increases all damage by {0}%
 }
