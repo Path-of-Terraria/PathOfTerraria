@@ -855,6 +855,16 @@ StrongerExplosivesPassive: {
 }
 
 BlastProtectionPassive: {
-	Name: BlastProtectionPassive
+	Name: Blast Protection
+	Tooltip: You take no self-damage from your own explosives
+}
+
+ExplosiveKnockbackPassive: {
+	Name: Higher Explosive Knockback
+	Tooltip: Explosives deal {0}% more knockback
+}
+
+BiggerExplosivesPassive: {
+	Name: BiggerExplosivesPassive
 	Tooltip: ""
 }
