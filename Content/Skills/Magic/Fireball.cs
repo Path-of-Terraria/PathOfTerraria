@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Systems.ElementalDamage;
+using PathOfTerraria.Content.SkillSpecials.FireballSpecials;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -11,11 +12,49 @@ namespace PathOfTerraria.Content.Skills.Magic;
 public class Fireball : Skill
 {
 	public override int MaxLevel => 3;
+	
+	public enum FireballType : byte
+	{
+		Normal,
+		Inferno,
+		Shadowflame,
+		Frostfire,
+	}
 
     public override SkillTags Tags()
     {
-        return SkillTags.Magic | SkillTags.Projectile | SkillTags.Fire;
+	    SkillTags tags = SkillTags.Magic | SkillTags.Projectile | SkillTags.Fire | SkillTags.AreaOfEffect;
+        
+        // Add additional tags based on specialization
+        if (Tree.Specialization is Inferno)
+        {
+	        tags |= SkillTags.AreaOfEffect;
+        }
+        else if (Tree.Specialization is ShadowflamePyre)
+        {
+	        tags |= SkillTags.Chaos;
+        }
+        else if (Tree.Specialization is FrostfireMeteor)
+        {
+	        tags |= SkillTags.Cold;
+        }
+        
+        return tags;
     }
+    
+    private static FireballType GetFireballType(Fireball fireball)
+    {
+	    SkillSpecial special = fireball.Tree.Specialization;
+
+	    return special switch
+	    {
+		    Inferno => FireballType.Inferno,
+		    ShadowflamePyre => FireballType.Shadowflame,
+		    FrostfireMeteor => FireballType.Frostfire,
+		    _ => FireballType.Normal
+	    };
+    }
+
 
     public override void LevelTo(byte level)
 	{

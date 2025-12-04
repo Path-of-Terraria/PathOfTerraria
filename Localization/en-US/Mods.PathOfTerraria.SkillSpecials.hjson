@@ -59,3 +59,18 @@ GlacialAntlions: {
 	Name: Glacial Antlions
 	Description: Antlions deal 100% cold damage
 }
+
+Inferno: {
+	Name: Mods.PathOfTerraria.SkillSpecials.Inferno.Name
+	Description: Mods.PathOfTerraria.SkillSpecials.Inferno.Description
+}
+
+FrostfireMeteor: {
+	Name: Mods.PathOfTerraria.SkillSpecials.FrostfireMeteor.Name
+	Description: Mods.PathOfTerraria.SkillSpecials.FrostfireMeteor.Description
+}
+
+ShadowflamePyre: {
+	Name: Mods.PathOfTerraria.SkillSpecials.ShadowflamePyre.Name
+	Description: Mods.PathOfTerraria.SkillSpecials.ShadowflamePyre.Description
+}

@@ -305,3 +305,133 @@ CarapaceCracker: {
 	// Name: Carapace Cracker
 	// Tooltip: Antlions apply a damage-piercing debuff on hit
 }
+
+SmolderingFury: {
+	// Name: SmolderingFury
+	// Tooltip: Mods.PathOfTerraria.SkillPassives.SmolderingFury.Tooltip
+}
+
+FireNova: {
+	// Name: FireNova
+	// Tooltip: Mods.PathOfTerraria.SkillPassives.FireNova.Tooltip
+}
+
+ScorchedEarth: {
+	// Name: ScorchedEarth
+	// Tooltip: Mods.PathOfTerraria.SkillPassives.ScorchedEarth.Tooltip
+}
+
+LongerScorchedEarth: {
+	// Name: LongerScorchedEarth
+	// Tooltip: Mods.PathOfTerraria.SkillPassives.LongerScorchedEarth.Tooltip
+}
+
+StrongerScorchedEarth: {
+	// Name: StrongerScorchedEarth
+	// Tooltip: Mods.PathOfTerraria.SkillPassives.StrongerScorchedEarth.Tooltip
+}
+
+LongerIgnites: {
+	// Name: LongerIgnites
+	// Tooltip: Mods.PathOfTerraria.SkillPassives.LongerIgnites.Tooltip
+}
+
+StrongerSmolderingFury: {
+	// Name: StrongerSmolderingFury
+	// Tooltip: Mods.PathOfTerraria.SkillPassives.StrongerSmolderingFury.Tooltip
+}
+
+LargerSmolderingFury: {
+	// Name: LargerSmolderingFury
+	// Tooltip: Mods.PathOfTerraria.SkillPassives.LargerSmolderingFury.Tooltip
+}
+
+SlowingSmolderingFury: {
+	// Name: SlowingSmolderingFury
+	// Tooltip: Mods.PathOfTerraria.SkillPassives.SlowingSmolderingFury.Tooltip
+}
+
+Pyroclasm: {
+	// Name: Pyroclasm
+	// Tooltip: Mods.PathOfTerraria.SkillPassives.Pyroclasm.Tooltip
+}
+
+CrystallineImpact: {
+	// Name: CrystallineImpact
+	// Tooltip: Mods.PathOfTerraria.SkillPassives.CrystallineImpact.Tooltip
+}
+
+Rime: {
+	// Name: Rime
+	// Tooltip: Mods.PathOfTerraria.SkillPassives.Rime.Tooltip
+}
+
+EverburningFrost: {
+	// Name: EverburningFrost
+	// Tooltip: Mods.PathOfTerraria.SkillPassives.EverburningFrost.Tooltip
+}
+
+FrozenGround: {
+	// Name: FrozenGround
+	// Tooltip: Mods.PathOfTerraria.SkillPassives.FrozenGround.Tooltip
+}
+
+ColdFocus: {
+	// Name: ColdFocus
+	// Tooltip: Mods.PathOfTerraria.SkillPassives.ColdFocus.Tooltip
+}
+
+AbsoluteZero: {
+	// Name: AbsoluteZero
+	// Tooltip: Mods.PathOfTerraria.SkillPassives.AbsoluteZero.Tooltip
+}
+
+ThermalFeedback: {
+	// Name: ThermalFeedback
+	// Tooltip: Mods.PathOfTerraria.SkillPassives.ThermalFeedback.Tooltip
+}
+
+EverburningPyre: {
+	// Name: EverburningPyre
+	// Tooltip: Mods.PathOfTerraria.SkillPassives.EverburningPyre.Tooltip
+}
+
+PainIsPleasure: {
+	// Name: PainIsPleasure
+	// Tooltip: Mods.PathOfTerraria.SkillPassives.PainIsPleasure.Tooltip
+}
+
+Abyssalhunger: {
+	// Name: Abyssalhunger
+	// Tooltip: Mods.PathOfTerraria.SkillPassives.Abyssalhunger.Tooltip
+}
+
+CrawlingFlame: {
+	// Name: CrawlingFlame
+	// Tooltip: Mods.PathOfTerraria.SkillPassives.CrawlingFlame.Tooltip
+}
+
+Pyremaniac: {
+	// Name: Pyremaniac
+	// Tooltip: Mods.PathOfTerraria.SkillPassives.Pyremaniac.Tooltip
+}
+
+AdditionalPyres: {
+	// Name: AdditionalPyres
+	// Tooltip: Mods.PathOfTerraria.SkillPassives.AdditionalPyres.Tooltip
+}
+
+ConjoinedFlames: {
+	// Name: ConjoinedFlames
+	// Tooltip: Mods.PathOfTerraria.SkillPassives.ConjoinedFlames.Tooltip
+}
+
+ShadowflameEruption: {
+	// Name: ShadowflameEruption
+	// Tooltip: Mods.PathOfTerraria.SkillPassives.ShadowflameEruption.Tooltip
+}
+
+FrostfireBlast: {
+	// Name: FrostfireBlast
+	// Tooltip: Mods.PathOfTerraria.SkillPassives.FrostfireBlast.Tooltip
+}
