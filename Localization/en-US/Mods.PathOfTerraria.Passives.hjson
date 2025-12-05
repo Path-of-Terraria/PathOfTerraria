@@ -803,3 +803,8 @@ ExtendedTileRangePassive: {
 	Name: Extended Tile Reach
 	Tooltip: Objects can be placed up to {0} tiles further away
 }
+
+JourneymanMastery: {
+	Name: Journeyman
+	Tooltip: Mining is {0}% faster and strong tiles are easier to break when directly below you
+}

@@ -795,16 +795,16 @@ HermesBoonMastery: {
 }
 
 FasterPlacementPassive: {
-	// Name: FasterPlacementPassive
-	// Tooltip: ""
-}
-
-ExtensiveTileRangePassive: {
-	// Name: ExtensiveTileRangePassive
-	// Tooltip: ""
+	// Name: Faster Placement
+	// Tooltip: Objects are placed {0}% faster
 }
 
 ExtendedTileRangePassive: {
-	// Name: ExtendedTileRangePassive
-	// Tooltip: ""
+	// Name: Extended Tile Reach
+	// Tooltip: Objects can be placed up to {0} tiles further away
+}
+
+JourneymanMastery: {
+	// Name: Journeyman
+	// Tooltip: Mining is {0}% faster when directly below you, and strong tiles are easier to break
 }
