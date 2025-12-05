@@ -5575,10 +5575,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "ExtendedTileRangePassive",
 		"referenceId": 283,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 2,
 		"position": {
 			"x": -468,
 			"y": 540

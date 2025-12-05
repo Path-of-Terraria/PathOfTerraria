@@ -798,3 +798,13 @@ FasterPlacementPassive: {
 	// Name: FasterPlacementPassive
 	// Tooltip: ""
 }
+
+ExtensiveTileRangePassive: {
+	// Name: ExtensiveTileRangePassive
+	// Tooltip: ""
+}
+
+ExtendedTileRangePassive: {
+	// Name: ExtendedTileRangePassive
+	// Tooltip: ""
+}
