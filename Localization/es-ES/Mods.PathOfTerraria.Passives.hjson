@@ -783,3 +783,18 @@ SurplusVitalityMastery: {
 	// Name: Surplus Vitality
 	// Tooltip: Using a skill gives [mechanic/shift:Nearby] players {0}% of their max health as overhealth
 }
+
+PseudoicarianMastery: {
+	// Name: Pseudoicarian
+	// Tooltip: +{0}% jump height and permenant Featherfall
+}
+
+HermesBoonMastery: {
+	// Name: Hermes Boon
+	// Tooltip: When out of combat, gain {0}% movement speed and increase jump speed massively
+}
+
+FasterPlacementPassive: {
+	// Name: FasterPlacementPassive
+	// Tooltip: ""
+}

@@ -5485,13 +5485,16 @@
 		"isHidden": true
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedJumpHeight",
 		"referenceId": 280,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 281
+			},
+			{
+				"referenceId": 1101
 			}
 		],
 		"position": {
@@ -5500,20 +5503,67 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedMoveSpeedPassive",
 		"referenceId": 281,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 1101
+			}
+		],
 		"position": {
 			"x": 260,
 			"y": 663
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 282,
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1101,
 		"maxLevel": 1,
 		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1102
+			},
+			{
+				"referenceId": 1103
+			}
+		],
+		"position": {
+			"x": 328,
+			"y": 559
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "PseudoicarianMastery",
+		"referenceId": 1102,
+		"maxLevel": 1,
+		"value": 40,
+		"position": {
+			"x": 228,
+			"y": 518
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "HermesBoonMastery",
+		"referenceId": 1103,
+		"maxLevel": 1,
+		"value": 60,
+		"position": {
+			"x": 325,
+			"y": 452
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "FasterPlacementPassive",
+		"referenceId": 282,
+		"maxLevel": 1,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 283
