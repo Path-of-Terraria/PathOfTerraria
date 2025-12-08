@@ -28,14 +28,16 @@ internal class BouncingAmmoMastery : Passive
 			if (Bounces > 0)
 			{
 				int index = -1;
+				float targetSqrDist = float.PositiveInfinity;
+				Vector2 projectileCenter = projectile.Center;
 
 				foreach (NPC npc in Main.ActiveNPCs)
 				{
-					float dis = npc.DistanceSQ(projectile.Center);
-
-					if (npc.CanBeChasedBy() && npc.whoAmI != target.whoAmI && (index == -1 ? dis < 500 * 500 : dis < projectile.DistanceSQ(Main.npc[index].Center)))
+					if (npc.CanBeChasedBy() && npc.whoAmI != target.whoAmI
+					&& npc.DistanceSQ(projectileCenter) is float dist and < 500 * 500 && dist < targetSqrDist)
 					{
 						index = npc.whoAmI;
+						targetSqrDist = dist;
 					}
 				}
 
