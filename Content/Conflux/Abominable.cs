@@ -6,6 +6,7 @@ using PathOfTerraria.Utilities.Xna;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 
 #nullable enable
@@ -54,6 +55,8 @@ internal sealed class Abominable : ModNPC
 	};
 
 	private AttackInstance? attack;
+	private Vector2 oldVelocity;
+	private uint lastFootstepTime;
 
 	//public ref BitMask<uint> Flags => ref Unsafe.As<float, BitMask<uint>>(ref NPC.localAI[0]);
 	public ref float AttackAngle => ref NPC.localAI[0];
@@ -118,11 +121,14 @@ internal sealed class Abominable : ModNPC
 		ctx.Animations.Advance();
 		Behavior(in ctx);
 		UpdateAnimations(in ctx);
+		UpdateEffects(in ctx);
 	}
 
 	public override void PostAI()
 	{
-		
+		Context ctx = new(NPC);
+
+		_ = ctx;
 	}
 
 	private void Behavior(in Context ctx)
@@ -226,6 +232,38 @@ internal sealed class Abominable : ModNPC
 				ctx.Tracking.AimLag = default;
 			}
 		}
+	}
+
+	private void UpdateEffects(in Context ctx)
+	{
+		int frameNew = ctx.Animations.CurrentFrame;
+		int frameOld = ctx.Animations.PreviousFrame ?? -1;
+		uint tickTime = Main.GameUpdateCount;
+
+		// Footsteps.
+
+		if (!Main.dedServ)
+		{
+			bool isOnGround = NPC.velocity.Y == 0f;
+			bool wasOnGround = oldVelocity.Y == 0f;
+			bool jumped = !isOnGround && wasOnGround;
+			bool landed = isOnGround && !wasOnGround;
+
+			if ((tickTime - lastFootstepTime) >= 10 && (landed || jumped || (isOnGround && ctx.Animations.Current.Is(animWalk) && (frameNew == 3 && frameOld != 3) || (frameNew == 9 && frameOld != 9))))
+			{
+				lastFootstepTime = tickTime;
+				SoundEngine.PlaySound(position: NPC.Bottom, style: new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Footsteps/MonsterStomp", 3)
+				{
+					Volume = 0.2f,
+					PitchVariance = 0.2f,
+					MaxInstances = 3,
+				});
+
+				Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, new Vector2(0f, -1f), 1f, 3f, 15, 700f, "Abominable"));
+			}
+		}
+
+		oldVelocity = NPC.velocity;
 	}
 
 	private void UpdateAnimations(in Context ctx)

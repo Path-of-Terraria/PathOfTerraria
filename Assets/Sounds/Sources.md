@@ -21,9 +21,12 @@ This file lists sound sources used to create sounds in this directory.
 	- Unlock
 		SONNISS GDC/The Soundcatcher - Elevators/The_Soundcatcher_Elevator_Door_Impact_Metal_Rattling_Humming_Driving_01.flac
 	- GearLoop
-		https://freesound.org/people/newagesoup/sounds/336328/
+		gear-spinning-loop by newagesoup -- https://freesound.org/s/336328/ -- License: Creative Commons 0
 	- PortalLoop
 		SONNISS GDC/SoundMorph - Solar Sky/amb_SpaceShip_rumble_low_pulse.flac
 	- Boiling
 		Bluezone Corporation - Synthetic Liquid Textures/Bluezone-BC0227-synthetic-liquid-long-texture-016.flac
 		(Bandpass + Looping)
+- Abominable
+	- Walk
+		Monster Stomp Footsteps Sequence by Vilkas_Sound -- https://freesound.org/s/753178/ -- License: Attribution 4.0

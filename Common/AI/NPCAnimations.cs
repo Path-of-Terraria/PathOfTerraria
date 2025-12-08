@@ -22,24 +22,24 @@ internal record struct SpriteAnimation()
 internal sealed class NPCAnimations : NPCComponent
 {
 	private SpriteAnimation animation;
-	private int animationFrame;
-	private int? animationFramePrev;
-	private bool animationOver;
 	private float frameCounter;
 
+	public bool Completed { get; private set; }
+	public int CurrentFrame { get; private set; }
+	public int? PreviousFrame { get; private set; }
 	public SpriteFrame BaseFrame { get; set; } = new(1, 1);
 	public ref readonly SpriteAnimation Current => ref animation;
 
 	public void Advance()
 	{
 		frameCounter += animation.Speed * TimeSystem.LogicDeltaTime;
-		animationFramePrev = animationFrame;
+		PreviousFrame = CurrentFrame;
 
 		while (frameCounter >= 1f)
 		{
-			(int numFrames, int nextFrame) = (animation.Frames.Length, animationFrame + 1);
-			animationFrame = animation.Loop ? (nextFrame % numFrames) : Math.Min(nextFrame, numFrames);
-			animationOver |= !animation.Loop && nextFrame >= numFrames;
+			(int numFrames, int nextFrame) = (animation.Frames.Length, CurrentFrame + 1);
+			CurrentFrame = animation.Loop ? (nextFrame % numFrames) : Math.Min(nextFrame, numFrames);
+			Completed |= !animation.Loop && nextFrame >= numFrames;
 			frameCounter -= 1f;
 		}
 	}
@@ -53,10 +53,10 @@ internal sealed class NPCAnimations : NPCComponent
 		}
 
 		this.animation = animation;
-		animationFrame = 0;
-		animationFramePrev = null;
+		CurrentFrame = 0;
+		PreviousFrame = null;
 		frameCounter = 0;
-		animationOver = false;
+		Completed = false;
 	}
 
 	public override void FindFrame(NPC npc, int frameHeight)
@@ -66,7 +66,7 @@ internal sealed class NPCAnimations : NPCComponent
 			return;
 		}
 
-		int frameIndex = animation.Frames[animationFrame % animation.Frames.Length];
+		int frameIndex = animation.Frames[CurrentFrame % animation.Frames.Length];
 		SpriteFrame frameRect = BaseFrame.With((byte)(frameIndex % BaseFrame.ColumnCount), (byte)(frameIndex / BaseFrame.RowCount));
 		npc.frame = frameRect.GetSourceRectangle(texture);
 	}
