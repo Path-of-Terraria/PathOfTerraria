@@ -898,3 +898,23 @@ BlastChainMastery: {
 	Name: Blast Chain
 	Tooltip: Killing an enemy with an explosion will blow up the enemy for {0}% damage
 }
+
+ReturningProjectilesMastery: {
+	Name: Returning Bullets
+	Tooltip: Bullets return to their spawn location after {0} seconds
+}
+
+MarksmanMastery: {
+	Name: Marksman
+	Tooltip: Close enemies can be Marked. Marked enemies deal {0}% of the damage they take to [mechanic/shift:Nearby] enemies
+}
+
+FatBulletsMastery: {
+	Name: Fat Bullets
+	Tooltip: Ranged projectiles are {0}% stronger and bigger, but have damage and speed falloff quickly
+}
+
+StillDamagePassive: {
+	Name: Damage Increased when Stationary
+	Tooltip: Standing still increases all damage by {0}%
+}

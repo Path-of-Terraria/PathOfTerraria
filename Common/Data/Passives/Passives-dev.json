@@ -5297,20 +5297,20 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "StillDamagePassive",
 		"referenceId": 256,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
 		"position": {
 			"x": -265,
 			"y": 922
 		}
 	},
 	{
-		"internalIdentifier": "IncreasedRangedDamagePassive",
+		"internalIdentifier": "IncreasedCriticalStrikeChance",
 		"referenceId": 257,
 		"maxLevel": 1,
-		"value": 10,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 258
@@ -5335,7 +5335,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedCriticalStrikeChance",
 		"referenceId": 259,
 		"maxLevel": 1,
 		"value": 5,
@@ -5353,29 +5353,93 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "LongRangePassive",
 		"referenceId": 260,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 1097
+			}
+		],
 		"position": {
 			"x": -649,
 			"y": 854
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedProjectileSpeedPassive",
 		"referenceId": 261,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 256
+			},
+			{
+				"referenceId": 1097
 			}
 		],
 		"position": {
 			"x": -421,
 			"y": 985
 		}
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1097,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1098
+			},
+			{
+				"referenceId": 1099
+			},
+			{
+				"referenceId": 1100
+			}
+		],
+		"position": {
+			"x": -534,
+			"y": 920
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "ReturningProjectilesMastery",
+		"referenceId": 1098,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": -584,
+			"y": 840
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "MarksmanMastery",
+		"referenceId": 1099,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": -460,
+			"y": 783
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "FatBulletsMastery",
+		"referenceId": 1100,
+		"maxLevel": 1,
+		"value": 40,
+		"position": {
+			"x": -432,
+			"y": 920
+		},
+		"isHidden": true
 	},
 	{
 		"internalIdentifier": "AddedDexterityPassive",
