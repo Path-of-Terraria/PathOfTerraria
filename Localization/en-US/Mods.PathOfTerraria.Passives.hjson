@@ -786,7 +786,7 @@ SurplusVitalityMastery: {
 
 PseudoicarianMastery: {
 	Name: Pseudoicarian
-	Tooltip: +{0}% jump height and permenant Featherfall
+	Tooltip: +{0}% jump height and permanent Featherfall
 }
 
 HermesBoonMastery: {
