@@ -11,6 +11,7 @@ internal class MarksmanMastery : Passive
 	{
 		private static readonly Asset<Texture2D> Icon = ModContent.Request<Texture2D>("PathOfTerraria/Assets/Misc/VFX/MarkedIcon");
 
+		[ThreadStatic]
 		private static bool _markedDamage = false;
 
 		public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
