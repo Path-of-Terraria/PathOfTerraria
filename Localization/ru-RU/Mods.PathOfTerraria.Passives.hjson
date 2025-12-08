@@ -875,11 +875,11 @@ DemolitionsExpertMastery: {
 }
 
 ShrapnelStormMastery: {
-	// Name: ShrapnelStormMastery
-	// Tooltip: ""
+	// Name: Shrapnel Storm
+	// Tooltip: Explosives burst into shrapnel, which deal {0}% damage per shard
 }
 
 BlastChainMastery: {
-	// Name: BlastChainMastery
-	// Tooltip: ""
+	// Name: Blast Chain
+	// Tooltip: Killing an enemy with an explosion will blow up the enemy for {0}% damage
 }

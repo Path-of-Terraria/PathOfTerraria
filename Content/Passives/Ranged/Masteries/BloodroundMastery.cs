@@ -18,4 +18,6 @@ internal class BloodroundMastery : Passive
 			}
 		}
 	}
+
+	public const int AmmoConsumptionChance = 50;
 }

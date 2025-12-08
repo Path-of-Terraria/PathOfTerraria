@@ -1,7 +1,6 @@
 ﻿using PathOfTerraria.Common.Buffs;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Content.Buffs.ElementalBuffs;
-using System.Collections.Generic;
 
 namespace PathOfTerraria.Content.Passives;
 
@@ -19,18 +18,20 @@ internal class CorrosiveTouchMastery : Passive
 
 				if (_poisonedHits >= value)
 				{
-					List<PoisonNPC.PoisonStack> stacks = target.GetGlobalNPC<PoisonNPC>().Stacks;
+					ReadOnlySpan<PoisonNPC.PoisonStack> stacks = target.GetGlobalNPC<PoisonNPC>().Stacks;
 
-					if (stacks.Count <= 0)
+					if (stacks.Length <= 0)
 					{
 						return;
 					}
 
-					PoisonNPC.PoisonStack stack = Main.rand.Next(stacks);
+					int index = Main.rand.Next(stacks.Length);
+					PoisonNPC.PoisonStack stack = stacks[index];
 					float totalDamage = stack.Time * stack.DamagePerTick / 60f;
 
 					DoTFunctionality.ApplyDoT(target, (int)totalDamage, ref totalDamage, Color.Brown, Color.Red);
 					stack.Time = 0;
+					target.GetGlobalNPC<PoisonNPC>().SetStack(index, stack);
 
 					_poisonedHits = 0;
 				}

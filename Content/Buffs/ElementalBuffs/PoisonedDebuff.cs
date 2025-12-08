@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.Systems.MobSystem;
 using ReLogic.Content;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.UI.Chat;
@@ -54,7 +55,7 @@ internal class PoisonedDebuff : ModBuff
 			tickRate = player.GetModPlayer<PoisonPlayer>().PoisonTickRate.ApplyTo(tickRate);
 		}
 
-		npc.GetGlobalNPC<PoisonNPC>().Stacks.Add(new PoisonNPC.PoisonStack(time, damage));
+		npc.GetGlobalNPC<PoisonNPC>().AddStack(new PoisonNPC.PoisonStack(time, damage));
 		ref float tick = ref npc.GetGlobalNPC<PoisonNPC>().LastTickRate;
 		tick = MathF.Min(tickRate, tick);
 		npc.AddBuff(ModContent.BuffType<PoisonedDebuff>(), time);
@@ -67,7 +68,7 @@ internal class PoisonedDebuff : ModBuff
 
 	public override void Update(NPC npc, ref int buffIndex)
 	{
-		if (npc.GetGlobalNPC<PoisonNPC>().Stacks.Count == 0)
+		if (npc.GetGlobalNPC<PoisonNPC>().Stacks.Length == 0)
 		{
 			npc.DelBuff(buffIndex);
 			buffIndex--;
@@ -77,20 +78,23 @@ internal class PoisonedDebuff : ModBuff
 
 internal class PoisonNPC : GlobalNPC
 {
+	/// <summary>
+	/// Defines an individual stack of poison.
+	/// </summary>
+	internal record struct PoisonStack(int Time, float DamagePerTick = 4f)
+	{
+		public readonly int MaxTime = Time;
+	}
+
 	public static Asset<Texture2D> PoisonIcon = null!;
 
 	public override bool InstancePerEntity => true;
 
-	internal class PoisonStack(int time, float damagePerTick = 4f)
-	{
-		public readonly int MaxTime = time;
+	internal ReadOnlySpan<PoisonStack> Stacks => CollectionsMarshal.AsSpan(_stacks);
 
-		public int Time = time;
-		public float DamagePerTick = damagePerTick;
-	}
-
-	internal readonly List<PoisonStack> Stacks = [];
 	internal float ElapsedDoT = 0;
+
+	private readonly List<PoisonStack> _stacks = [];
 
 	/// <summary>
 	/// The most recent tick rate applied by a player. This is reset per NPC and when the debuff runs out.
@@ -99,6 +103,22 @@ internal class PoisonNPC : GlobalNPC
 	
 	private float _timer = 0;
 
+	/// <summary>
+	/// Adds a stack of poison to the current NPC.
+	/// </summary>
+	public void AddStack(PoisonStack stack)
+	{
+		_stacks.Add(stack);
+	}
+
+	/// <summary>
+	/// Sets a stack at the given index to the given stack.
+	/// </summary>
+	public void SetStack(int index, PoisonStack stack)
+	{
+		_stacks[index] = stack;
+	}
+
 	public override void Load()
 	{
 		PoisonIcon = ModContent.Request<Texture2D>("PathOfTerraria/Assets/Misc/VFX/PoisonIcon");
@@ -106,23 +126,24 @@ internal class PoisonNPC : GlobalNPC
 
 	public override bool PreAI(NPC npc)
 	{
-		for (int i = 0; i < Stacks.Count; i++)
+		for (int i = 0; i < _stacks.Count; i++)
 		{
-			Stacks[i].Time--;
-			ElapsedDoT += Stacks[i].DamagePerTick / 60f;
+			PoisonStack stack = _stacks[i];
+			stack.Time--;
+			_stacks[i] = stack;
+			ElapsedDoT += stack.DamagePerTick / 60f;
 		}
 
-		Stacks.RemoveAll(x => x.Time <= 0);
-
+		_stacks.RemoveAll(x => x.Time <= 0);
 		_timer++;
 
-		if (_timer > LastTickRate && Stacks.Count > 0 && ElapsedDoT >= 1)
+		if (_timer > LastTickRate && _stacks.Count > 0 && ElapsedDoT >= 1)
 		{
 			DoTFunctionality.ApplyDoT(npc, (int)ElapsedDoT, ref ElapsedDoT, Color.Brown, Color.Red);
 
 			_timer = 0;
 		}
-		else if (Stacks.Count == 0 || ElapsedDoT > npc.life)
+		else if (_stacks.Count == 0 || ElapsedDoT > npc.life)
 		{
 			if (ElapsedDoT > 1)
 			{
@@ -138,12 +159,12 @@ internal class PoisonNPC : GlobalNPC
 
 	public override Color? GetAlpha(NPC npc, Color drawColor)
 	{
-		return Stacks.Count > 0 ? Color.Lerp(drawColor, Lighting.GetColor(npc.Center.ToTileCoordinates(), Color.DarkSeaGreen), 0.75f + MathF.Sin(npc.whoAmI) * 0.25f) : null;
+		return _stacks.Count > 0 ? Color.Lerp(drawColor, Lighting.GetColor(npc.Center.ToTileCoordinates(), Color.DarkSeaGreen), 0.75f + MathF.Sin(npc.whoAmI) * 0.25f) : null;
 	}
 
 	public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
-		if (npc.GetGlobalNPC<FreezeNPC>().Frozen || Stacks.Count <= 0)
+		if (npc.GetGlobalNPC<FreezeNPC>().Frozen || _stacks.Count <= 0)
 		{
 			return;
 		}
@@ -156,7 +177,7 @@ internal class PoisonNPC : GlobalNPC
 		}
 
 		spriteBatch.Draw(PoisonIcon.Value, position, null, drawColor, 0f, PoisonIcon.Size() / 2f, 1f, SpriteEffects.None, 0);
-		string stacks = "x" + Stacks.Count;
+		string stacks = "x" + _stacks.Count;
 		ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, stacks, position + new Vector2(8, -2), drawColor, 0f, Vector2.Zero, new(0.8f));
 	}
 }

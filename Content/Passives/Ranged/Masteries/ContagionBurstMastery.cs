@@ -23,21 +23,22 @@ internal class ContagionBurstMastery : Passive
 			orig(player, npc, in hit, damageDone);
 
 			if (player.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<ContagionBurstMastery>(out float value) 
-				&& npc.GetGlobalNPC<PoisonNPC>().Stacks is { Count: >0 } stacks && npc.life <= 0)
+				&& npc.GetGlobalNPC<PoisonNPC>().Stacks is { Length: >0 } stacks && npc.life <= 0)
 			{
-				int stacksToAdd = (int)MathF.Ceiling(stacks.Count * value / 100f);
+				int stacksToAdd = (int)MathF.Ceiling(stacks.Length * value / 100f);
 
 				foreach (NPC other in Main.ActiveNPCs)
 				{
 					if (other.CanBeChasedBy() && other.whoAmI != npc.whoAmI && other.DistanceSQ(npc.Center) < PoTMod.NearbyDistanceSq)
 					{
-						List<PoisonNPC.PoisonStack> list = other.GetGlobalNPC<PoisonNPC>().Stacks;
+						PoisonNPC otherPoison = other.GetGlobalNPC<PoisonNPC>();
+						ReadOnlySpan<PoisonNPC.PoisonStack> list = otherPoison.Stacks;
 						int time = 0;
 
 						for (int i = 0; i < stacksToAdd; ++i)
 						{
 							PoisonNPC.PoisonStack stack = stacks[i];
-							list.Add(stack);
+							otherPoison.AddStack(stack);
 							time = Math.Max(time, stack.MaxTime);
 						}
 

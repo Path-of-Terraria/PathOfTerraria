@@ -216,6 +216,6 @@ BloodroundBuff: {
 }
 
 IdentifiedDebuff: {
-	// DisplayName: Identified Debuff
-	// Description: Mods.PathOfTerraria.Buffs.IdentifiedDebuff.Description
+	// DisplayName: Identified
+	// Description: You're visible!
 }

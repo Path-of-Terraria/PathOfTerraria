@@ -12,7 +12,7 @@ internal class LethalDoseMastery : Passive
 		{
 			if (player.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<LethalDoseMastery>(out float value))
 			{
-				modifiers.FinalDamage += MathF.Min(npc.GetGlobalNPC<PoisonNPC>().Stacks.Count * value / 100f, MaxDamageBoost / 100f);
+				modifiers.FinalDamage += MathF.Min(npc.GetGlobalNPC<PoisonNPC>().Stacks.Length * value / 100f, MaxDamageBoost / 100f);
 			}
 		}
 
@@ -20,7 +20,7 @@ internal class LethalDoseMastery : Passive
 		{
 			if (projectile.TryGetOwner(out Player player) && projectile.friendly && player.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<LethalDoseMastery>(out float value))
 			{
-				modifiers.FinalDamage += MathF.Min(npc.GetGlobalNPC<PoisonNPC>().Stacks.Count * value / 100f, MaxDamageBoost / 100f);
+				modifiers.FinalDamage += MathF.Min(npc.GetGlobalNPC<PoisonNPC>().Stacks.Length * value / 100f, MaxDamageBoost / 100f);
 			}
 		}
 	}
