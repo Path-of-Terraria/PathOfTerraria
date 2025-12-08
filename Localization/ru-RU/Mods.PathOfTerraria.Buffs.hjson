@@ -215,3 +215,13 @@ IdentifiedDebuff: {
 	// DisplayName: Identified
 	// Description: You're visible!
 }
+
+SoulReaveDebuff: {
+	// DisplayName: Soul Reave Debuff
+	// Description: Mods.PathOfTerraria.Buffs.SoulReaveDebuff.Description
+}
+
+ElementalReverberationBuff: {
+	// DisplayName: Elemental Reverberation Buff
+	// Description: Mods.PathOfTerraria.Buffs.ElementalReverberationBuff.Description
+}
