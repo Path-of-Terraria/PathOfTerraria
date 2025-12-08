@@ -786,7 +786,7 @@ SurplusVitalityMastery: {
 
 ReturningProjectilesMastery: {
 	Name: Returning Bullets
-	Tooltip: Bullets return to their spawn location after 0.{0} seconds
+	Tooltip: Bullets return to their spawn location after {0} seconds
 }
 
 MarksmanMastery: {

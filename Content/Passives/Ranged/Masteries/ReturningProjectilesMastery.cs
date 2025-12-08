@@ -45,5 +45,5 @@ internal class ReturningProjectilesMastery : Passive
 		}
 	}
 
-	public override string DisplayTooltip => Language.GetText($"Mods.PathOfTerraria.Passives.{Name}.Tooltip").Format((Value / 60f * 100f).ToString("#0"));
+	public override string DisplayTooltip => Language.GetText($"Mods.PathOfTerraria.Passives.{Name}.Tooltip").Format((Value / 60f).ToString("#.0#"));
 }
