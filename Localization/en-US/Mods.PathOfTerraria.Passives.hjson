@@ -808,3 +808,8 @@ JourneymanMastery: {
 	Name: Journeyman
 	Tooltip: Mining is {0}% faster and strong tiles are easier to break when directly below you
 }
+
+MasterBuilderMastery: {
+	Name: Master Builder
+	Tooltip: When stationary, gain {0} tile range and {1}% tile placement speed
+}

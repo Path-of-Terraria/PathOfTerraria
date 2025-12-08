@@ -806,5 +806,10 @@ ExtendedTileRangePassive: {
 
 JourneymanMastery: {
 	// Name: Journeyman
-	// Tooltip: Mining is {0}% faster when directly below you, and strong tiles are easier to break
+	// Tooltip: Mining is {0}% faster and strong tiles are easier to break when directly below you
+}
+
+MasterBuilderMastery: {
+	// Name: MasterBuilderMastery
+	// Tooltip: ""
 }
