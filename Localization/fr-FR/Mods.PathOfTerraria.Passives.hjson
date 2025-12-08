@@ -786,7 +786,7 @@ SurplusVitalityMastery: {
 
 PseudoicarianMastery: {
 	// Name: Pseudoicarian
-	// Tooltip: +{0}% jump height and permenant Featherfall
+	// Tooltip: +{0}% jump height and permanent Featherfall
 }
 
 HermesBoonMastery: {
@@ -810,8 +810,8 @@ JourneymanMastery: {
 }
 
 MasterBuilderMastery: {
-	// Name: MasterBuilderMastery
-	// Tooltip: ""
+	// Name: Master Builder
+	// Tooltip: When stationary, gain {0} tile range and {1}% tile placement speed
 }
 
 BloodroundMastery: {
@@ -931,7 +931,7 @@ BlastChainMastery: {
 
 ReturningProjectilesMastery: {
 	// Name: Returning Bullets
-	// Tooltip: Bullets return to their spawn location after 0.{0} seconds
+	// Tooltip: Bullets return to their spawn location after {0} seconds
 }
 
 MarksmanMastery: {
