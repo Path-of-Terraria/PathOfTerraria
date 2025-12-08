@@ -4677,10 +4677,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedRangedDamagePassive",
 		"referenceId": 230,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 229
@@ -4695,17 +4695,22 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedRangedDamagePassive",
 		"referenceId": 231,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 1089
+			}
+		],
 		"position": {
 			"x": 304,
 			"y": 1172
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedAttackSpeedPassive",
 		"referenceId": 232,
 		"maxLevel": 1,
 		"value": 5,
@@ -4723,7 +4728,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedCriticalStrikeChance",
 		"referenceId": 233,
 		"maxLevel": 1,
 		"value": 5,
@@ -4733,7 +4738,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "ChanceForAdditionalProjectilePassive",
 		"referenceId": 234,
 		"maxLevel": 1,
 		"value": 5,
@@ -4751,30 +4756,91 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedCriticalStrikeChance",
 		"referenceId": 235,
 		"maxLevel": 1,
 		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1089
+			}
+		],
 		"position": {
 			"x": 537,
 			"y": 1094
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 236,
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1089,
 		"maxLevel": 1,
 		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1090
+			},
+			{
+				"referenceId": 1091
+			},
+			{
+				"referenceId": 1092
+			}
+		],
+		"position": {
+			"x": 430,
+			"y": 1147
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "HairTriggerMastery",
+		"referenceId": 1090,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 330,
+			"y": 1106
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "ExplosiveSlugsMastery",
+		"referenceId": 1091,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": 410,
+			"y": 1087
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "AdvantageShotMastery",
+		"referenceId": 1092,
+		"maxLevel": 1,
+		"value": 3,
+		"position": {
+			"x": 490,
+			"y": 1067
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "QuickExplosionsPassive",
+		"referenceId": 236,
+		"maxLevel": 1,
+		"value": 2,
 		"position": {
 			"x": 301,
 			"y": 840
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "BiggerExplosivesPassive",
 		"referenceId": 237,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 15,
 		"connections": [
 			{
 				"referenceId": 236
@@ -4789,10 +4855,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "StrongerExplosivesPassive",
 		"referenceId": 238,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 240
@@ -4807,33 +4873,41 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "ExplosiveKnockbackPassive",
 		"referenceId": 239,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
 		"position": {
 			"x": 449,
 			"y": 867
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedCriticalStrikeChance",
 		"referenceId": 240,
 		"maxLevel": 1,
 		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1101
+			}
+		],
 		"position": {
 			"x": 520,
 			"y": 712
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "BlastProtectionPassive",
 		"referenceId": 241,
 		"maxLevel": 1,
 		"value": 5,
 		"connections": [
 			{
 				"referenceId": 239
+			},
+			{
+				"referenceId": 1101
 			}
 		],
 		"position": {
@@ -4842,10 +4916,66 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 242,
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1101,
 		"maxLevel": 1,
 		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1102
+			},
+			{
+				"referenceId": 1103
+			},
+			{
+				"referenceId": 1104
+			}
+		],
+		"position": {
+			"x": 609,
+			"y": 740
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "DemolitionsExpertMastery",
+		"referenceId": 1102,
+		"maxLevel": 1,
+		"value": 40,
+		"position": {
+			"x": 639,
+			"y": 800
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "ShrapnelStormMastery",
+		"referenceId": 1103,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 669,
+			"y": 710
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "BlastChainMastery",
+		"referenceId": 1104,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": 584,
+			"y": 675
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "PoisonedRangedAttacksPassive",
+		"referenceId": 242,
+		"maxLevel": 1,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 243
@@ -4860,7 +4990,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "StrongerPoisonPassive",
 		"referenceId": 243,
 		"maxLevel": 1,
 		"value": 5,
@@ -4870,13 +5000,72 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 244,
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1093,
 		"maxLevel": 1,
 		"value": 5,
 		"connections": [
 			{
+				"referenceId": 1094
+			},
+			{
+				"referenceId": 1095
+			},
+			{
+				"referenceId": 1096
+			}
+		],
+		"position": {
+			"x": 719,
+			"y": 930
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "ContagionBurstMastery",
+		"referenceId": 1094,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": 659,
+			"y": 990
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "CorrosiveTouchMastery",
+		"referenceId": 1095,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": 779,
+			"y": 990
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "LethalDoseMastery",
+		"referenceId": 1096,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": 719,
+			"y": 1030
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "FasterPoisonTickPassive",
+		"referenceId": 244,
+		"maxLevel": 1,
+		"value": 10,
+		"connections": [
+			{
 				"referenceId": 243
+			},
+			{
+				"referenceId": 1093
 			}
 		],
 		"position": {
@@ -4885,10 +5074,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "LongerPoisonPassive",
 		"referenceId": 245,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 244
@@ -4900,13 +5089,16 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "FasterPoisonTickPassive",
 		"referenceId": 246,
 		"maxLevel": 1,
 		"value": 5,
 		"connections": [
 			{
 				"referenceId": 245
+			},
+			{
+				"referenceId": 1093
 			}
 		],
 		"position": {
@@ -4953,7 +5145,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedProjectileDamagePassive",
 		"referenceId": 250,
 		"maxLevel": 1,
 		"value": 5,
@@ -4968,7 +5160,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedProjectileSpeedPassive",
 		"referenceId": 251,
 		"maxLevel": 1,
 		"value": 5,
@@ -4983,7 +5175,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedProjectileSpeedPassive",
 		"referenceId": 252,
 		"maxLevel": 1,
 		"value": 5,
@@ -5001,23 +5193,31 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IgnitingProjectilesPassive",
 		"referenceId": 253,
 		"maxLevel": 1,
 		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1085
+			}
+		],
 		"position": {
 			"x": -668,
 			"y": 970
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "ChanceToConsumeAmmoPassive",
 		"referenceId": 254,
 		"maxLevel": 1,
 		"value": 5,
 		"connections": [
 			{
 				"referenceId": 252
+			},
+			{
+				"referenceId": 1085
 			}
 		],
 		"position": {
@@ -5026,7 +5226,63 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1085,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1086
+			},
+			{
+				"referenceId": 1087
+			},
+			{
+				"referenceId": 1088
+			}
+		],
+		"position": {
+			"x": -756,
+			"y": 902
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "BouncingAmmoMastery",
+		"referenceId": 1086,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": -756,
+			"y": 802
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "BloodroundMastery",
+		"referenceId": 1087,
+		"maxLevel": 1,
+		"value": 2,
+		"position": {
+			"x": -806,
+			"y": 852
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "TracerShotsMastery",
+		"referenceId": 1088,
+		"maxLevel": 1,
+		"value": 33,
+		"position": {
+			"x": -856,
+			"y": 902
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "IncreasedAttackSpeedPassive",
 		"referenceId": 255,
 		"maxLevel": 1,
 		"value": 5,
@@ -5041,20 +5297,20 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "StillDamagePassive",
 		"referenceId": 256,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
 		"position": {
 			"x": -265,
 			"y": 922
 		}
 	},
 	{
-		"internalIdentifier": "IncreasedRangedDamagePassive",
+		"internalIdentifier": "IncreasedCriticalStrikeChance",
 		"referenceId": 257,
 		"maxLevel": 1,
-		"value": 10,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 258
@@ -5079,7 +5335,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedCriticalStrikeChance",
 		"referenceId": 259,
 		"maxLevel": 1,
 		"value": 5,
@@ -5097,29 +5353,93 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "LongRangePassive",
 		"referenceId": 260,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 1097
+			}
+		],
 		"position": {
 			"x": -649,
 			"y": 854
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedProjectileSpeedPassive",
 		"referenceId": 261,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 256
+			},
+			{
+				"referenceId": 1097
 			}
 		],
 		"position": {
 			"x": -421,
 			"y": 985
 		}
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1097,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1098
+			},
+			{
+				"referenceId": 1099
+			},
+			{
+				"referenceId": 1100
+			}
+		],
+		"position": {
+			"x": -534,
+			"y": 920
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "ReturningProjectilesMastery",
+		"referenceId": 1098,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": -584,
+			"y": 840
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "MarksmanMastery",
+		"referenceId": 1099,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": -460,
+			"y": 783
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "FatBulletsMastery",
+		"referenceId": 1100,
+		"maxLevel": 1,
+		"value": 40,
+		"position": {
+			"x": -432,
+			"y": 920
+		},
+		"isHidden": true
 	},
 	{
 		"internalIdentifier": "AddedDexterityPassive",
