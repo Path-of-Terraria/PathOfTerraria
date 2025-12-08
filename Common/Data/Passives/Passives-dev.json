@@ -5805,13 +5805,16 @@
 		"isHidden": true
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedJumpHeight",
 		"referenceId": 280,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 281
+			},
+			{
+				"referenceId": 1105
 			}
 		],
 		"position": {
@@ -5820,39 +5823,136 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedMoveSpeedPassive",
 		"referenceId": 281,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 1105
+			}
+		],
 		"position": {
 			"x": 260,
 			"y": 663
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 282,
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1105,
 		"maxLevel": 1,
 		"value": 5,
 		"connections": [
 			{
-				"referenceId": 283
+				"referenceId": 1106
+			},
+			{
+				"referenceId": 1107
 			}
 		],
 		"position": {
-			"x": -273,
-			"y": 655
+			"x": 328,
+			"y": 559
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "PseudoicarianMastery",
+		"referenceId": 1106,
+		"maxLevel": 1,
+		"value": 40,
+		"position": {
+			"x": 228,
+			"y": 518
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "HermesBoonMastery",
+		"referenceId": 1107,
+		"maxLevel": 1,
+		"value": 60,
+		"position": {
+			"x": 325,
+			"y": 452
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "FasterPlacementPassive",
+		"referenceId": 282,
+		"maxLevel": 1,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 283
+			},
+			{
+				"referenceId": 1108
+			}
+		],
+		"position": {
+			"x": -263,
+			"y": 665
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "ExtendedTileRangePassive",
 		"referenceId": 283,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 2,
+		"connections": [
+			{
+				"referenceId": 1108
+			}
+		],
 		"position": {
 			"x": -468,
 			"y": 540
 		}
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1108,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1109
+			},
+			{
+				"referenceId": 1110
+			}
+		],
+		"position": {
+			"x": -328,
+			"y": 559
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "JourneymanMastery",
+		"referenceId": 1109,
+		"maxLevel": 1,
+		"value": 40,
+		"position": {
+			"x": -228,
+			"y": 518
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "MasterBuilderMastery",
+		"referenceId": 1110,
+		"maxLevel": 1,
+		"value": 6,
+		"position": {
+			"x": -325,
+			"y": 452
+		},
+		"isHidden": true
 	},
 	{
 		"internalIdentifier": "AddedIntelligencePassive",

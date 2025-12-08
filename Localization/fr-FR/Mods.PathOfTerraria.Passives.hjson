@@ -784,6 +784,36 @@ SurplusVitalityMastery: {
 	// Tooltip: Using a skill gives [mechanic/shift:Nearby] players {0}% of their max health as overhealth
 }
 
+PseudoicarianMastery: {
+	// Name: Pseudoicarian
+	// Tooltip: +{0}% jump height and permanent Featherfall
+}
+
+HermesBoonMastery: {
+	// Name: Hermes Boon
+	// Tooltip: When out of combat, gain {0}% movement speed and increase jump speed massively
+}
+
+FasterPlacementPassive: {
+	// Name: Faster Placement
+	// Tooltip: Objects are placed {0}% faster
+}
+
+ExtendedTileRangePassive: {
+	// Name: Extended Tile Reach
+	// Tooltip: Objects can be placed up to {0} tiles further away
+}
+
+JourneymanMastery: {
+	// Name: Journeyman
+	// Tooltip: Mining is {0}% faster and strong tiles are easier to break when directly below you
+}
+
+MasterBuilderMastery: {
+	// Name: Master Builder
+	// Tooltip: When stationary, gain {0} tile range and {1}% tile placement speed
+}
+
 BloodroundMastery: {
 	// Name: Bloodrounds
 	// Tooltip: Killing a bleeding or burning enemy adds a 50% chance to not consume ammo
@@ -901,7 +931,7 @@ BlastChainMastery: {
 
 ReturningProjectilesMastery: {
 	// Name: Returning Bullets
-	// Tooltip: Bullets return to their spawn location after 0.{0} seconds
+	// Tooltip: Bullets return to their spawn location after {0} seconds
 }
 
 MarksmanMastery: {
