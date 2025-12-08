@@ -196,7 +196,7 @@ HastySummonBuff: {
 
 BloodroundBuff: {
 	// DisplayName: Bloodround Fervor
-	// Description: +50% chance to not consume ammo
+	// Description: +{0}% chance to not consume ammo
 }
 
 IdentifiedDebuff: {
