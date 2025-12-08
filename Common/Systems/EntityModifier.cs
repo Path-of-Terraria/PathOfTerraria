@@ -67,6 +67,20 @@ public partial class EntityModifier : EntityModifierSegment
 	// ReflectedDamagePlayer:
 	public StatModifier ReflectedDamageModifier = new();
 
+	// AmmoConsumptionPlayer:
+	public AddableFloat AmmoReservationChance = new();
+
+	// ExplosiveSizeProjectile:
+	public StatModifier ExplosionSize = new();
+
+	// ExtraProjectilesShotPlayer:
+	/// <summary>
+	/// Adds projectiles to the shooting of any item. This uses the item's information to automatically spawn another projectile.<br/>
+	/// If this is a sub-one value, such as 0.2, it'll roll a random number based on that. 0.2 would be a 20% chance to spawn another projectile. 
+	/// 1.5 would be +1 projectile, and a 50% chance to spawn another.
+	/// </summary>
+	public AddableFloat ExtraProjectilesShot = new();
+
 	public void ApplyTo(NPC npc)
 	{
 		npc.life = (int)MaximumLife.ApplyTo(npc.life);

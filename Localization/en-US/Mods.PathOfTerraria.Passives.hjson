@@ -784,6 +784,121 @@ SurplusVitalityMastery: {
 	Tooltip: Using a skill gives [mechanic/shift:Nearby] players {0}% of their max health as overhealth
 }
 
+BloodroundMastery: {
+	Name: Bloodrounds
+	Tooltip: Killing a bleeding or burning enemy adds a 50% chance to not consume ammo
+}
+
+BouncingAmmoMastery: {
+	Name: Bouncing Ammo
+	Tooltip: Ammo-based projectiles bounce off of enemies once
+}
+
+TracerShotsMastery: {
+	Name: Tracing Shots
+	Tooltip: Ammo shot speed is {0}% higher, hit enemies are identified for {1} seconds
+}
+
+HairTriggerMastery: {
+	Name: Hair Trigger
+	Tooltip: Gain {0}% ranged attack speed but reduce accuracy
+}
+
+ExplosiveSlugsMastery: {
+	Name: Explosive Slugs
+	Tooltip: Critical strikes with bullets explode, dealing {0}% of base damage
+}
+
+AdvantageShotMastery: {
+	Name: Advantage Shot
+	Tooltip: Standing still for {0} seconds grants {1}% increased ranged damage
+}
+
+IgnitingProjectilesPassive: {
+	Name: Chance for Projectiles to Ignite
+	Tooltip: +{0}% chance for projectiles to deal Ignite
+}
+
+ChanceForAdditionalProjectilePassive: {
+	Name: Chance for Additional Projectile
+	Tooltip: +{0}% chance for an additional projectile to be fired
+}
+
+PoisonedRangedAttacksPassive: {
+	Name: Chance for Ranged Poison
+	Tooltip: +{0}% chance for a Ranged projectile to inflict a stack of Poison
+}
+
+LongerPoisonPassive: {
+	Name: Longer Poison
+	Tooltip: Poison stacks last {0}% longer
+}
+
+StrongerPoisonPassive: {
+	Name: Stronger Poison
+	Tooltip: Poison deals {0}% more damage
+}
+
+FasterPoisonTickPassive: {
+	Name: Faster Acting Poison
+	Tooltip: Poison tick rate is {0}% faster
+}
+
+ContagionBurstMastery: {
+	Name: Contagion Burst
+	Tooltip: Enemies killed spread {0}% of their Poison stacks to [mechanic/shift:Nearby] enemies
+}
+
+CorrosiveTouchMastery: {
+	Name: Corrosive Touch
+	Tooltip: Every {0} hits on a poisoned enemy will 'pop' one of the stacks, instantly applying all damage it would deal
+}
+
+LethalDoseMastery: {
+	Name: Lethal Dose
+	Tooltip: Enemies hit by you take {0}% more damage per poison stack (max {1}%)
+}
+
+QuickExplosionsPassive: {
+	Name: Quicker Explosives
+	Tooltip: Explosives explode {0}% faster
+}
+
+StrongerExplosivesPassive: {
+	Name: Stronger Explosives
+	Tooltip: Explosives deal {0}% more damage
+}
+
+BlastProtectionPassive: {
+	Name: Blast Protection
+	Tooltip: You take no self-damage from your own explosives
+}
+
+ExplosiveKnockbackPassive: {
+	Name: Higher Explosive Knockback
+	Tooltip: Explosives deal {0}% more knockback
+}
+
+BiggerExplosivesPassive: {
+	Name: Bigger Explosions
+	Tooltip: Explosives are {0}% larger
+}
+
+DemolitionsExpertMastery: {
+	Name: Demolitions Expert
+	Tooltip: Explosions are {0}% larger and deal {1}% more damage
+}
+
+ShrapnelStormMastery: {
+	Name: Shrapnel Storm
+	Tooltip: Explosives burst into shrapnel, which deal {0}% damage per shard
+}
+
+BlastChainMastery: {
+	Name: Blast Chain
+	Tooltip: Killing an enemy with an explosion will blow up the enemy for {0}% damage
+}
+
 ReturningProjectilesMastery: {
 	Name: Returning Bullets
 	Tooltip: Bullets return to their spawn location after {0} seconds
