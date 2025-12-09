@@ -20,11 +20,9 @@ internal class ExplosionHitbox : ModProjectile
 	/// Note that this will loop <paramref name="TorchDustCount"/> / 2 times, since the loop has two dust spawns in it.
 	/// </param>
 	/// <param name="Sfx">Whether the sfx should play.</param>
-	/// <param name="GoreRange"></param>
-	/// <param name="SmokeDustType"></param>
-	/// <param name="TorchDustType"></param>
+	/// <param name="GoreRange">Range of Gore ids to use.</param>
 	public readonly record struct VFXPackage(int GoreCount = 4, int SmokeDustCount = 20, int TorchDustCount = 10, bool Sfx = true, float Volume = 1f, Range? GoreRange = null,
-		int SmokeDustType = DustID.Smoke, int TorchDustType = DustID.Torch);
+		int SmokeDustType = DustID.Smoke, int TorchDustType = DustID.Torch, float DustVelocityModifier = 1f);
 
 	public override string Texture => UseBaseTexture ? (GetType().Namespace + "." + Name).Replace('.', '/') : "Terraria/Images/NPC_0";
 
@@ -81,7 +79,7 @@ internal class ExplosionHitbox : ModProjectile
 		{
 			int dust = Dust.NewDust(entity.position, entity.width, entity.height, value.SmokeDustType, 0f, 0f, 100, default, 1.5f);
 			Dust newDust = Main.dust[dust];
-			newDust.velocity *= 1.4f;
+			newDust.velocity *= 1.4f * value.DustVelocityModifier;
 		}
 		
 		for (int i = 0; i < value.TorchDustCount / 2; i++)
@@ -89,11 +87,11 @@ internal class ExplosionHitbox : ModProjectile
 			int dust = Dust.NewDust(entity.position, entity.width, entity.height, value.TorchDustType, 0f, 0f, 100, default, 2.5f);
 			Dust newDust = Main.dust[dust];
 			newDust.noGravity = true;
-			newDust.velocity *= 5f;
+			newDust.velocity *= 5f * value.DustVelocityModifier;
 
 			dust = Dust.NewDust(entity.position, entity.width, entity.height, value.TorchDustType, 0f, 0f, 100, default, 1.5f);
 			newDust = Main.dust[dust];
-			newDust.velocity *= 3f;
+			newDust.velocity *= 3f * value.DustVelocityModifier;
 		}
 
 		if (Main.dedServ)

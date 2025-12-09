@@ -1,11 +1,12 @@
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
+using PathOfTerraria.Content.Buffs.ElementalBuffs;
 
 namespace PathOfTerraria.Content.Passives;
 
-internal class IncreasedMeleeDamagePassive : Passive
+internal class BleedTimePassive : Passive
 {
 	public override void BuffPlayer(Player player)
 	{
-		player.GetDamage(DamageClass.Melee) += (Value / 100.0f) * Level;
+		player.GetModPlayer<BleedPlayer>().BleedTime += Value / 100f;
 	}
 }

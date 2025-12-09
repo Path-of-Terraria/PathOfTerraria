@@ -23,6 +23,6 @@ internal class BleedStackHandler : Handler
 		ushort time = reader.ReadUInt16();
 		ushort damage = reader.ReadUInt16();
 
-		BleedDebuff.Apply(Main.player[sender], Main.npc[npc], time, damage);
+		BleedDebuff.Apply(Main.player[sender], Main.npc[npc], damage, time);
 	}
 }

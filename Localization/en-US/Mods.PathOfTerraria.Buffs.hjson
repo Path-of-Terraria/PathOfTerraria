@@ -222,10 +222,15 @@ IdentifiedDebuff: {
 
 SoulReaveDebuff: {
 	DisplayName: Soul Reave Debuff
-	Description: Mods.PathOfTerraria.Buffs.SoulReaveDebuff.Description
+	Description: This enemy will take damage shortly
 }
 
 ElementalReverberationBuff: {
 	DisplayName: Elemental Reverberation Buff
-	Description: Mods.PathOfTerraria.Buffs.ElementalReverberationBuff.Description
+	Description: This enemy will take damage shortly
+}
+
+WideSwingsBuff: {
+	DisplayName: Wider Swing
+	Description: Increased weapon size
 }

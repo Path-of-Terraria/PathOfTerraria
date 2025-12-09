@@ -3807,6 +3807,9 @@
 		"connections": [
 			{
 				"referenceId": 174
+			},
+			{
+				"referenceId": 1111
 			}
 		],
 		"position": {
@@ -3825,6 +3828,9 @@
 			},
 			{
 				"referenceId": 175
+			},
+			{
+				"referenceId": 1111
 			}
 		],
 		"position": {
@@ -3840,6 +3846,9 @@
 		"connections": [
 			{
 				"referenceId": 173
+			},
+			{
+				"referenceId": 1111
 			}
 		],
 		"position": {
@@ -3848,22 +3857,81 @@
 		}
 	},
 	{
-		"internalIdentifier": "IncreasedCriticalStrikeChance",
+		"internalIdentifier": "MeleeSizePassive",
 		"referenceId": 178,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 15,
 		"connections": [
 			{
 				"referenceId": 174
 			},
 			{
 				"referenceId": 177
+			},
+			{
+				"referenceId": 1111
 			}
 		],
 		"position": {
 			"x": -708,
 			"y": 42
 		}
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1111,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1112
+			},
+			{
+				"referenceId": 1113
+			},
+			{
+				"referenceId": 1114
+			}
+		],
+		"position": {
+			"x": -618,
+			"y": -10
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 4
+	},
+	{
+		"internalIdentifier": "TitanicImpactMastery",
+		"referenceId": 1112,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": -587,
+			"y": 70
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "FatalFocusMastery",
+		"referenceId": 1113,
+		"maxLevel": 1,
+		"value": 30,
+		"position": {
+			"x": -647,
+			"y": 70
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "WideSwingsMastery",
+		"referenceId": 1114,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": -618,
+			"y": -86
+		},
+		"isHidden": true
 	},
 	{
 		"internalIdentifier": "AddedStrengthPassive",
@@ -4166,20 +4234,20 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "RangerMeleeChanceToBleedPassive",
 		"referenceId": 199,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
 		"position": {
 			"x": -1272,
 			"y": -700
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "BleedTimePassive",
 		"referenceId": 200,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 20,
 		"connections": [
 			{
 				"referenceId": 199
@@ -4197,10 +4265,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "BleedEffectivenessPassive",
 		"referenceId": 201,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 204
@@ -4212,10 +4280,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "RangerMeleeChanceToBleedPassive",
 		"referenceId": 202,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 201
@@ -4230,24 +4298,90 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "BleedEffectivenessPassive",
 		"referenceId": 203,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 1115
+			}
+		],
 		"position": {
 			"x": -1170,
 			"y": -667
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "BleedTickPassive",
 		"referenceId": 204,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 1115
+			}
+		],
 		"position": {
 			"x": -1073,
 			"y": -680
 		}
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1115,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1116
+			},
+			{
+				"referenceId": 1117
+			},
+			{
+				"referenceId": 1118
+			}
+		],
+		"position": {
+			"x": -1120,
+			"y": -600
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "HemorrhageMastery",
+		"referenceId": 1116,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": -1120,
+			"y": -540
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "ExsanguinateMastery",
+		"referenceId": 1117,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": -1060,
+			"y": -600
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "BloodbenderMastery",
+		"referenceId": 1118,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": -1180,
+			"y": -600
+		},
+		"isHidden": true
 	},
 	{
 		"internalIdentifier": "AegisChargeChanceOnKillPassive",
@@ -4365,10 +4499,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "LifeRegenCountPassive",
 		"referenceId": 214,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 2,
 		"connections": [
 			{
 				"referenceId": 216
@@ -4383,10 +4517,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "LifeRegenRatePassive",
 		"referenceId": 215,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 15,
 		"connections": [
 			{
 				"referenceId": 217
@@ -4398,10 +4532,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "LifeRegenCountPassive",
 		"referenceId": 216,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 2,
 		"position": {
 			"x": -1107,
 			"y": 758
