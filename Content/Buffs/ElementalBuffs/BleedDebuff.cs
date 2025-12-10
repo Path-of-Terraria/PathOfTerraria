@@ -9,7 +9,6 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 using Terraria.UI.Chat;
-using static PathOfTerraria.Content.Buffs.ElementalBuffs.PoisonNPC;
 
 namespace PathOfTerraria.Content.Buffs.ElementalBuffs;
 
