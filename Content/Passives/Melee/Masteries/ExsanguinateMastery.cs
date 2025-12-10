@@ -33,7 +33,7 @@ internal class ExsanguinateMastery : Passive
 				}
 
 				ExplosionHitbox.VFXPackage package = new(4, 30, 4, true, 0.6f, null, DustID.Blood, DustID.BloodWater);
-				ExplosionHitbox.QuickSpawn(Player.GetSource_OnHit(target), target, Vector2.Zero, (int)(damage * value / 100f), Player.whoAmI, target.Size * 1.5f, package);
+				ExplosionHitbox.QuickSpawn(Player.GetSource_OnHit(target), target, (int)(damage * value / 100f), Player.whoAmI, target.Size * 1.5f, package);
 			}
 		}
 	}

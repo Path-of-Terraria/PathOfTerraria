@@ -1003,3 +1003,23 @@ BloodbenderMastery: {
 	Name: Bloodbender
 	Tooltip: Critting a bleeding enemy siphons {0}% of the damage done, scaling with bleed stacks
 }
+
+HealOnKillPassive: {
+	Name: Chance to Heal on Kill
+	Tooltip: "{1}% chance to heal for {0} health on killing any enemy"
+}
+
+BloodRushMastery: {
+	Name: Blood Rush
+	Tooltip: "{0}% chance to [mechanic/shift:Siphon] {1}% of your max health on kill"
+}
+
+HeartAndMindMastery: {
+	Name: Heart and Mind
+	Tooltip: "{0}% of life regeneration is added to mana regeneration"
+}
+
+PainTransferenceMastery: {
+	Name: Pain Transference
+	Tooltip: "{0}% of life regeneration or life healed is dealt as damage to [mechanic/shift:Nearby] enemies"
+}

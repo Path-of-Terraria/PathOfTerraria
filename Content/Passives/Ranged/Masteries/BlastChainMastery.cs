@@ -13,7 +13,7 @@ internal class BlastChainMastery : Passive
 			if (projectile.TryGetOwner(out Player plr) && plr.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<BlastChainMastery>(out float value)
 				&& ProjectileID.Sets.Explosive[projectile.type] && npc.life <= 0)
 			{
-				ExplosionHitbox.QuickSpawn(npc.GetSource_Death(), npc, Vector2.Zero, (int)(hit.Damage * value / 100f), projectile.owner, npc.Size * 1.5f);
+				ExplosionHitbox.QuickSpawn(npc.GetSource_Death(), npc, (int)(hit.Damage * value / 100f), projectile.owner, npc.Size * 1.5f);
 			}
 		}
 	}

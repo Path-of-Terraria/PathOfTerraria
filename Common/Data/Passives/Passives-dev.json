@@ -4509,6 +4509,9 @@
 			},
 			{
 				"referenceId": 215
+			},
+			{
+				"referenceId": 1119
 			}
 		],
 		"position": {
@@ -4524,12 +4527,71 @@
 		"connections": [
 			{
 				"referenceId": 217
+			},
+			{
+				"referenceId": 1119
 			}
 		],
 		"position": {
 			"x": -995,
 			"y": 554
 		}
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1119,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1120
+			},
+			{
+				"referenceId": 1121
+			},
+			{
+				"referenceId": 1122
+			}
+		],
+		"position": {
+			"x": -1058,
+			"y": 620
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "BloodRushMastery",
+		"referenceId": 1120,
+		"maxLevel": 1,
+		"value": 2,
+		"position": {
+			"x": -1015,
+			"y": 484
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "HeartAndMindMastery",
+		"referenceId": 1121,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": -1104,
+			"y": 484
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "PainTransferenceMastery",
+		"referenceId": 1122,
+		"maxLevel": 1,
+		"value": 35,
+		"position": {
+			"x": -1058,
+			"y": 420
+		},
+		"isHidden": true
 	},
 	{
 		"internalIdentifier": "LifeRegenCountPassive",
@@ -4542,10 +4604,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "HealOnKillPassive",
 		"referenceId": 217,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 20,
 		"connections": [
 			{
 				"referenceId": 216
