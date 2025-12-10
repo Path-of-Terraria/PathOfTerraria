@@ -332,8 +332,8 @@ StrongerScorchedEarth: {
 }
 
 LongerIgnites: {
-	Name: LongerIgnites
-	Tooltip: Mods.PathOfTerraria.SkillPassives.LongerIgnites.Tooltip
+	Name: Longer Ignites
+	Tooltip: Ignite lasts 50% longer
 }
 
 StrongerSmolderingFury: {

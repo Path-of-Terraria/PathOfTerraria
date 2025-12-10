@@ -239,7 +239,7 @@ public class Nova : Skill
 
 		private void SpamFireDust()
 		{
-			for (int i = 0; i < 2; ++i)
+			for (int i = 0; i < 6; ++i)
 			{
 				Vector2 offset = Main.rand.NextVector2CircularEdge(Spread, Spread);
 				Vector2 pos = Projectile.Center + offset;

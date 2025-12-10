@@ -6,6 +6,7 @@ using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Systems.ElementalDamage;
 using PathOfTerraria.Content.Buffs.ElementalBuffs;
 using PathOfTerraria.Content.Projectiles.PassiveProjectiles;
+using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.SkillPassives.FireballPassives;
 using PathOfTerraria.Content.SkillPassives.SwarmPassives;
 using PathOfTerraria.Content.SkillSpecials.FireballSpecials;
@@ -152,18 +153,23 @@ public class Fireball : Skill
 					damageDone = (int)(damageDone * 1.25f);
 				}
 
-				IgnitedDebuff.ApplyTo(target, damageDone);
-				SpawnDust(12);
-
-				if (Owner.HasTreePassive<FireballTree, FireballNova>())
+				if (Owner.HasTreePassive<FireballTree, FireballNova>() && target.HasBuff<IgnitedDebuff>())
 				{
 					int projType = ModContent.ProjectileType<Nova.NovaProjectile>();
 					IEntitySource source = Projectile.GetSource_OnHit(target);
 					int proj = Projectile.NewProjectile(source, Projectile.Center, Vector2.Zero, projType, damageDone, 6, Projectile.owner, (int)Nova.NovaType.Fire);
+					Main.projectile[proj].scale = 0.6f;
 					ElementalContainer container = Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>().Container;
 					ref ElementalDamage damageModifier = ref container[ElementType.Fire].DamageModifier;
 					damageModifier = damageModifier.AddModifiers(0, 1);
 				}
+
+				IgnitedDebuff.ApplyTo(target, damageDone, Owner.HasTreePassive<FireballTree, FireballNova>() ? 6 * 60 : 4 * 60);
+				SpawnDust(12);
+			}
+
+			if (Owner.HasTreePassive<FireballTree, SmolderingFury>() && target.life <= 0)
+			{
 			}
 		}
 
