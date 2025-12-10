@@ -38,6 +38,7 @@ public enum Mechanic : byte
 	BehaviorSpeed,
 	ActionSpeed,
 	MovementSpeed,
+	Siphon,
 }
 
 internal class MechanicsTagHandler : ITagHandler

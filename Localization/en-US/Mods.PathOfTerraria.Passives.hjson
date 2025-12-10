@@ -566,7 +566,7 @@ LifeRegenRatePassive: {
 
 LifeRegenCountPassive: {
 	Name: Increased Life Regeneration Strength
-	Tooltip: +{0}% life regenerated per second
+	Tooltip: +{0} life regenerated per second
 }
 
 LifeOnKillPassive: {
@@ -947,4 +947,79 @@ FatBulletsMastery: {
 StillDamagePassive: {
 	Name: Damage Increased when Stationary
 	Tooltip: Standing still increases all damage by {0}%
+}
+
+MeleeSizePassive: {
+	Name: Increased Melee Size
+	Tooltip: +{0}% increased melee weapon size
+}
+
+TitanicImpactMastery: {
+	Name: Titanic Impact
+	Tooltip: "{0}% chance for melee strikes to deal massive knockback and {1}% increased damage"
+}
+
+FatalFocusMastery: {
+	Name: Fatal Focus
+	Tooltip: +{0}% critical strike damage, but -{1}% critical strike chance
+}
+
+WideSwingsMastery: {
+	Name: Wide Swings
+	Tooltip: Critical hits with melee strikes increases melee weapon size by {0}% (max {1} stacks)
+}
+
+RangerMeleeChanceToBleedPassive: {
+	Name: Ranged/Melee Chance to Bleed
+	Tooltip: +{0}% chance for ranged or melee hits to inflict Bleeding
+}
+
+BleedEffectivenessPassive: {
+	Name: Increased Bleed Damage
+	Tooltip: +{0}% bleed damage
+}
+
+BleedTimePassive: {
+	Name: Increased Bleed Time
+	Tooltip: +{0}% bleed time
+}
+
+BleedTickPassive: {
+	Name: Faster Bleed Ticks
+	Tooltip: +{0}% faster bleed ticks
+}
+
+HemorrhageMastery: {
+	Name: Hemorrhage
+	Tooltip: Double your max bleed stacks
+}
+
+ExsanguinateMastery: {
+	Name: Exsanguination
+	Tooltip: Killing a bleeding enemy will deal {0}% of the enemy's remaining bleed damage in an area
+}
+
+BloodbenderMastery: {
+	Name: Bloodbender
+	Tooltip: Critting a bleeding enemy siphons {0}% of the damage done, scaling with bleed stacks
+}
+
+HealOnKillPassive: {
+	Name: Chance to Heal on Kill
+	Tooltip: "{1}% chance to heal for {0} health on killing any enemy"
+}
+
+BloodRushMastery: {
+	Name: Blood Rush
+	Tooltip: "{0}% chance to [mechanic/shift:Siphon] {1}% of your max health on kill"
+}
+
+HeartAndMindMastery: {
+	Name: Heart and Mind
+	Tooltip: "{0}% of life regeneration is added to mana regeneration"
+}
+
+PainTransferenceMastery: {
+	Name: Pain Transference
+	Tooltip: "{0}% of life regeneration or life healed is dealt as damage to [mechanic/shift:Nearby] enemies"
 }

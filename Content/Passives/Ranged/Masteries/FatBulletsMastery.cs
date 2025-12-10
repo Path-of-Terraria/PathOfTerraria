@@ -51,7 +51,10 @@ internal class FatBulletsMastery : Passive
 
 		public override void ModifyHitNPC(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers)
 		{
-			modifiers.FinalDamage *= projectile.velocity.Length() / _originalMagnitude * 0.75f + 0.25f;
+			if (_originalMagnitude != -1)
+			{
+				modifiers.FinalDamage *= projectile.velocity.Length() / _originalMagnitude * 0.75f + 0.25f;
+			}
 		}
 	}
 }

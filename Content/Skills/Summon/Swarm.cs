@@ -609,7 +609,7 @@ public class Swarm : Skill
 
 			if (plr.HasTreePassive<PestSwarmTree, ViciousBites>())
 			{
-				BleedDebuff.Apply(plr, target, 5 * 60, damageDone);
+				BleedDebuff.Apply(plr, target, damageDone);
 			}
 
 			if (plr.HasTreePassive<PestSwarmTree, OverheatingBugs>())

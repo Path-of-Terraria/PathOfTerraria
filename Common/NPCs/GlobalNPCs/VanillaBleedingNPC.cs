@@ -5,7 +5,7 @@ namespace PathOfTerraria.Common.NPCs.GlobalNPCs;
 /// <summary>
 /// Adds in <see cref="BuffID.Bleeding"/> functionality for NPCs, which usually don't have it.
 /// </summary>
-internal class BleedNPC : GlobalNPC
+internal class VanillaBleedingNPC : GlobalNPC
 {
 	public override void UpdateLifeRegen(NPC npc, ref int damage)
 	{
