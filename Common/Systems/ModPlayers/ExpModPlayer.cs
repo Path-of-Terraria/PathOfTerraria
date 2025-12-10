@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
+using PathOfTerraria.Content.Achievements;
 using Terraria.Audio;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
@@ -32,6 +33,13 @@ public class ExpModPlayer : ModPlayer
 
 			Main.NewText(Language.GetText("Mods.PathOfTerraria.Misc.Experience.LevelUp").WithFormatArgs(Level).Value, new Color(145, 255, 160));
 			Main.NewText(Language.GetText("Mods.PathOfTerraria.Misc.Experience.SkillUp"), new Color(255, 255, 160));
+			
+			// ACHIEVEMENT CHECK -- PEAK
+			if (Level == 100)
+			{
+				var achievement = ModContent.GetInstance<PeakAchievement>();
+				achievement.Level100Condition.Complete();
+			}
 		}
 
 		Player.GetModPlayer<PassiveTreePlayer>().Points++;

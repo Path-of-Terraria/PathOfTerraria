@@ -1,0 +1,24 @@
+PeakAchievement: {
+	// FriendlyName: The Peak
+	// Description: Reach level 100.
+}
+
+ArchmageAchievement: {
+	// FriendlyName: Archmage Achievement
+	// Description: Have 1000+ mana at once.
+}
+
+JuggernautAchievement: {
+	// FriendlyName: Juggernaut Achievement
+	// Description: Have 1000+ life at once.
+}
+
+MirrorMirrorAchievement: {
+	// FriendlyName: Mirror Mirror Achievement
+	// Description: Find an Echoing Shard.
+}
+
+NewBeginningsAchievement: {
+	// FriendlyName: New Beginnings Achievement
+	// Description: Visit Ravencrest.
+}
