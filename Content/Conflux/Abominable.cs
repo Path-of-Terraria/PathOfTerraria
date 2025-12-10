@@ -3,6 +3,7 @@ using PathOfTerraria.Common.AI;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Utilities.Xna;
+using ReLogic.Content;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -311,11 +312,48 @@ internal sealed class Abominable : ModNPC
 
 		sb.Draw(tex, position, NPC.frame, color, NPC.rotation, NPC.frame.Size() * 0.5f, NPC.scale, NPC.spriteDirection >= 0 ? (SpriteEffects)1 : 0, 0f);
 
+#if DEBUG && false
+		Vector2 targetCenter = NPC.GetGlobalNPC<NPCTargetTracking>().GetTargetCenter(NPC);
+		Texture2D skullTexture = TextureAssets.NpcHeadBoss[19].Value;
+		sb.Draw(skullTexture, targetCenter - Main.screenPosition, null, Color.IndianRed, 0f, skullTexture.Size() * 0.5f, 1f, 0, 0f);
+#endif
+
 		return false;
 	}
 
 	public override void PostDraw(SpriteBatch sb, Vector2 screenPos, Color color)
 	{
+		if (AttackProgress >= AttackDashTick && AttackProgress < AttackDamageEndTick)
+		{
+			byte frameIndex = (byte)Math.Min(2, Math.Floor((AttackProgress - AttackDashTick) / (float)(AttackDamageEndTick - AttackDashTick) * 3));
+			SpriteFrame slashFrame = new SpriteFrame(1, 3).With(0, AttackSign > 0 ? frameIndex : (byte)(2 - frameIndex));
+			Texture2D slashTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Misc/Slash", AssetRequestMode.ImmediateLoad).Value;
+			Color slashColor = Color.Lerp(color, Color.White, 0.33f).MultiplyRGBA(new(Vector4.One * 0.7f));
+			
+			Rectangle srcRect = slashFrame.GetSourceRectangle(slashTexture);
+			Rectangle dstRect = GetDamageArea().Aabb;
+			dstRect.X -= (int)Main.screenPosition.X;
+			dstRect.Y -= (int)Main.screenPosition.Y;
+			Vector2 origin = srcRect.Size() * 0.5f;
 
+#if DEBUG && false
+			Main.DebugDrawer.Begin(Main.GameViewMatrix.TransformationMatrix);
+			Main.DebugDrawer.DrawLine(new(dstRect.Left, dstRect.Top), new(dstRect.Right, dstRect.Top), 2f, Color.Red);
+			Main.DebugDrawer.DrawLine(new(dstRect.Right, dstRect.Top), new(dstRect.Right, dstRect.Bottom), 2f, Color.Red);
+			Main.DebugDrawer.DrawLine(new(dstRect.Right, dstRect.Bottom), new(dstRect.Left, dstRect.Bottom), 2f, Color.Red);
+			Main.DebugDrawer.DrawLine(new(dstRect.Left, dstRect.Bottom), new(dstRect.Left, dstRect.Top), 2f, Color.Red);
+			Main.DebugDrawer.End();
+#endif
+
+			dstRect.X += (int)srcRect.Width;
+			dstRect.Y += (int)srcRect.Height;
+			sb.Draw(slashTexture, dstRect, srcRect, slashColor, AttackAngle, origin, 0, 0f);
+		}
+
+#if DEBUG && false
+		Main.DebugDrawer.Begin();
+		Main.DebugDrawer.DrawLine(NPC.Center - Main.screenPosition, (NPC.Center + AttackDirection * 64f) - Main.screenPosition, 2f, Color.Red);
+		Main.DebugDrawer.End();
+#endif
 	}
 }
