@@ -122,15 +122,15 @@ public class Nova : Skill
 
 			if (Tree.Specialization is LightningNova)
 			{
-				container[ElementType.Lightning].DamageModifier.AddModifiers(0, 1);
+				container[ElementType.Lightning].DamageModifier = container[ElementType.Lightning].DamageModifier.AddModifiers(0, 1);
 			}
 			else if (Tree.Specialization is FireNova)
             {
-                container[ElementType.Fire].DamageModifier.AddModifiers(0, 1);
+				container[ElementType.Fire].DamageModifier = container[ElementType.Fire].DamageModifier.AddModifiers(0, 1);
             }
 			else if (Tree.Specialization is IceNova)
             {
-                container[ElementType.Cold].DamageModifier.AddModifiers(0, 1);
+				container[ElementType.Cold].DamageModifier = container[ElementType.Cold].DamageModifier.AddModifiers(0, 1);
             }
         }
 	}

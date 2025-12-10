@@ -61,16 +61,16 @@ GlacialAntlions: {
 }
 
 Inferno: {
-	// Name: Mods.PathOfTerraria.SkillSpecials.Inferno.Name
-	// Description: Mods.PathOfTerraria.SkillSpecials.Inferno.Description
+	// Name: Inferno
+	// Description: Fireballs have a 100% chance to ignite enemies
 }
 
 FrostfireMeteor: {
-	// Name: Mods.PathOfTerraria.SkillSpecials.FrostfireMeteor.Name
-	// Description: Mods.PathOfTerraria.SkillSpecials.FrostfireMeteor.Description
+	// Name: Frostfire Meteors
+	// Description: Fireballs are replaced with channeled meteors, which deal both [mechanic/shift=0;2:Cold] and [mechanic/shift=1;2:Fire] damage
 }
 
 ShadowflamePyre: {
-	// Name: Mods.PathOfTerraria.SkillSpecials.ShadowflamePyre.Name
-	// Description: Mods.PathOfTerraria.SkillSpecials.ShadowflamePyre.Description
+	// Name: Shadowflame Pyre
+	// Description: The fireball now flies in an arc, and leaves a pyre of shadowflame, which deals [mechanic/shift=0;2:Chaos] and [mechanic/shift=1;2:Fire] damage
 }

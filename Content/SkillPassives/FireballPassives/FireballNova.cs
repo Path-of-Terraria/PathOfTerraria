@@ -3,4 +3,4 @@ using PathOfTerraria.Common.Systems.Skills;
 
 namespace PathOfTerraria.Content.SkillPassives.FireballPassives;
 
-internal class FireNova(SkillTree tree) : SkillPassive(tree);
+internal class FireballNova(SkillTree tree) : SkillPassive(tree);

@@ -1,11 +1,22 @@
-﻿using PathOfTerraria.Common.Enums;
+﻿using Mono.Cecil;
+using PathOfTerraria.Common;
+using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Systems.ElementalDamage;
+using PathOfTerraria.Content.Buffs.ElementalBuffs;
+using PathOfTerraria.Content.Projectiles.PassiveProjectiles;
+using PathOfTerraria.Content.SkillPassives.FireballPassives;
+using PathOfTerraria.Content.SkillPassives.SwarmPassives;
 using PathOfTerraria.Content.SkillSpecials.FireballSpecials;
+using PathOfTerraria.Content.SkillSpecials.NovaSpecials;
+using PathOfTerraria.Content.SkillTrees;
+using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace PathOfTerraria.Content.Skills.Magic;
 
@@ -55,7 +66,6 @@ public class Fireball : Skill
 	    };
     }
 
-
     public override void LevelTo(byte level)
 	{
 		Level = level;
@@ -75,7 +85,7 @@ public class Fireball : Skill
 		int type = ModContent.ProjectileType<FireballProj>();
 		Vector2 velocity = player.DirectionTo(Main.MouseWorld).RotatedByRandom(0.05f) * 8 * Main.rand.NextFloat(0.9f, 1.1f);
 		
-		int proj = Projectile.NewProjectile(source, player.Center - new Vector2(0, 12), velocity, type, damage, knockback, player.whoAmI, Level);
+		int proj = Projectile.NewProjectile(source, player.Center - new Vector2(0, 12), velocity, type, damage, knockback, player.whoAmI, Level, (float)GetFireballType(this));
 		Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>().Container[ElementType.Fire].DamageModifier.AddModifiers(0, 1);
 		SoundEngine.PlaySound(SoundID.Item20 with { PitchRange = (-0.8f, 0.2f) }, player.Center);
 	}
@@ -84,7 +94,11 @@ public class Fireball : Skill
 	{
 		public override string Texture => $"{PoTMod.ModName}/Assets/Skills/" + GetType().Name;
 
+		private Player Owner => Main.player[Projectile.owner];
+
 		private ref float Level => ref Projectile.ai[0];
+
+		private FireballType FireballType => (FireballType)Projectile.ai[1];
 
 		public override void SetStaticDefaults()
 		{
@@ -129,10 +143,27 @@ public class Fireball : Skill
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (Main.rand.NextFloat() < 0.05f + Level * 0.1f)
+			float chance = FireballType == FireballType.Inferno ? 1 : 0.05f + Level * 0.1f;
+
+			if (Main.rand.NextFloat() < chance)
 			{
-				target.AddBuff(BuffID.OnFire, 3 * 60);
+				if (Owner.HasTreePassive<FireballTree, Pyroclasm>())
+				{
+					damageDone = (int)(damageDone * 1.25f);
+				}
+
+				IgnitedDebuff.ApplyTo(target, damageDone);
 				SpawnDust(12);
+
+				if (Owner.HasTreePassive<FireballTree, FireballNova>())
+				{
+					int projType = ModContent.ProjectileType<Nova.NovaProjectile>();
+					IEntitySource source = Projectile.GetSource_OnHit(target);
+					int proj = Projectile.NewProjectile(source, Projectile.Center, Vector2.Zero, projType, damageDone, 6, Projectile.owner, (int)Nova.NovaType.Fire);
+					ElementalContainer container = Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>().Container;
+					ref ElementalDamage damageModifier = ref container[ElementType.Fire].DamageModifier;
+					damageModifier = damageModifier.AddModifiers(0, 1);
+				}
 			}
 		}
 
@@ -161,6 +192,20 @@ public class Fireball : Skill
 			int area = Skill.GetTotalAreaOfEffect(160);
 			Projectile.Resize(area, area);
 			Projectile.Damage();
+
+			if (Owner.HasTreePassive<FireballTree, ScorchedEarth>())
+			{
+				int type = ModContent.ProjectileType<StickyFlame>();
+				int damage = Projectile.damage / (Owner.HasTreePassive<FireballTree, StrongerScorchedEarth>() ? 2 : 4);
+
+				for (int i = 0; i < 8; ++i)
+				{
+					Vector2 vel = Main.rand.NextVector2Circular(4, 4) + Projectile.velocity * 0.25f;
+					float timeExtension = Owner.HasTreePassive<FireballTree, LongerScorchedEarth>() ? StickyFlame.MaxTimeLeft * 0.25f : 0;
+					int proj = Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, vel, type, damage, 0, Main.myPlayer, 0, timeExtension);
+					Main.projectile[proj].frameCounter = Main.rand.Next(800);
+				}
+			}
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -168,7 +213,7 @@ public class Fireball : Skill
 			Texture2D tex = TextureAssets.Projectile[Type].Value;
 			int frameHeight = tex.Height / Main.projFrames[Type];
 			var src = new Rectangle(0, frameHeight * Projectile.frame, tex.Width, frameHeight);
-			Color col = lightColor * Projectile.Opacity;
+			Color col = Color.White * Projectile.Opacity;
 			Vector2 position = Projectile.Center - Main.screenPosition;
 			Vector2 origin = src.Size() / new Vector2(1.5f, 2);
 			

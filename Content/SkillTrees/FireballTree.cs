@@ -19,7 +19,7 @@ internal class FireballTree : SkillTree
 		// ─────────────────────────────────────────────
 		var inferno = new Inferno(this) { TreePos = new Vector2(-200, 0) };
 
-		var fireNova = new FireNova(this) { TreePos = new Vector2(-300, 0) };
+		var fireNova = new FireballNova(this) { TreePos = new Vector2(-300, 0) };
 		var ignitesLastLonger = new LongerIgnites(this) { TreePos = new Vector2(-400, 0) };
 		var pyroclasm = new Pyroclasm(this) { TreePos = new Vector2(-300, -100) };
 

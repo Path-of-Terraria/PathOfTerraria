@@ -303,28 +303,28 @@ CarapaceCracker: {
 }
 
 SmolderingFury: {
-	// Name: SmolderingFury
-	// Tooltip: Mods.PathOfTerraria.SkillPassives.SmolderingFury.Tooltip
+	// Name: Smoldering Fury
+	// Tooltip: Enemies directly killed by the Fireball explode, igniting nearby enemies
 }
 
-FireNova: {
-	// Name: FireNova
-	// Tooltip: Mods.PathOfTerraria.SkillPassives.FireNova.Tooltip
+FireballNova: {
+	// Name: Fire Nova
+	// Tooltip: Igniting an already-ignited enemy triggers a small fire nova, dealing damage in an area
 }
 
 ScorchedEarth: {
-	// Name: ScorchedEarth
-	// Tooltip: Mods.PathOfTerraria.SkillPassives.ScorchedEarth.Tooltip
+	// Name: Scorched Earth
+	// Tooltip: Fireballs explode into smaller fireballs, which linger on the ground
 }
 
 LongerScorchedEarth: {
-	// Name: LongerScorchedEarth
-	// Tooltip: Mods.PathOfTerraria.SkillPassives.LongerScorchedEarth.Tooltip
+	// Name: Longer Scorched Earth
+	// Tooltip: Scorched Earth mini-fireballs last longer
 }
 
 StrongerScorchedEarth: {
-	// Name: StrongerScorchedEarth
-	// Tooltip: Mods.PathOfTerraria.SkillPassives.StrongerScorchedEarth.Tooltip
+	// Name: Stronger Scorched Earth
+	// Tooltip: Scorched Earth mini-fireballs deal more damage
 }
 
 LongerIgnites: {
@@ -349,7 +349,7 @@ SlowingSmolderingFury: {
 
 Pyroclasm: {
 	// Name: Pyroclasm
-	// Tooltip: Mods.PathOfTerraria.SkillPassives.Pyroclasm.Tooltip
+	// Tooltip: Ignite from the Fireball deals 25% more damage
 }
 
 CrystallineImpact: {

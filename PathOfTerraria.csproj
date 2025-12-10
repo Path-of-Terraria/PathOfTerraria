@@ -47,8 +47,6 @@
 		<EmbeddedResource Remove="BuildTools\**" />
 		
 		<Folder Include="Common\Data\VanillaItemData\" />
-		
-		<Folder Include="Content\SkillPassives\FireballPassives\" />
 	</ItemGroup>
 
 	<!-- Altered build target, utilizing the BuildCommand variable. -->

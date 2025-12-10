@@ -116,6 +116,7 @@ public abstract class SkillTree : ILoadable
 	/// </summary>
 	internal void LoadDelayedData(Skill skill, TagCompound tag)
 	{
+		return;
 		string skillName = skill.Name;
 
 		IList<string> names = tag.GetList<string>("passives");
