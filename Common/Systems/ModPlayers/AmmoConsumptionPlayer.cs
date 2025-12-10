@@ -11,8 +11,6 @@ internal class AmmoConsumptionPlayer : ModPlayer
 
 	public override bool CanConsumeAmmo(Item weapon, Item ammo)
 	{
-		// Return false to prevent ammo consumption based on the chance
-		return Main.rand.NextFloat() >= AmmoSaveChance;
+		return Main.rand.NextFloat() >= AmmoSaveChance + Player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.AmmoReservationChance.Value;
 	}
-
 }

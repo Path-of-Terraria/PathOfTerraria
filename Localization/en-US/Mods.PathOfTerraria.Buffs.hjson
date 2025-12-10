@@ -210,12 +210,27 @@ HastySummonBuff: {
 	Description: +100% movement speed
 }
 
+BloodroundBuff: {
+	DisplayName: Bloodround Fervor
+	Description: +{0}% chance to not consume ammo
+}
+
+IdentifiedDebuff: {
+	DisplayName: Identified
+	Description: You're visible!
+}
+
 SoulReaveDebuff: {
 	DisplayName: Soul Reave Debuff
-	Description: Mods.PathOfTerraria.Buffs.SoulReaveDebuff.Description
+	Description: This enemy will take damage shortly
 }
 
 ElementalReverberationBuff: {
 	DisplayName: Elemental Reverberation Buff
-	Description: Mods.PathOfTerraria.Buffs.ElementalReverberationBuff.Description
+	Description: This enemy will take damage shortly
+}
+
+WideSwingsBuff: {
+	DisplayName: Wider Swing
+	Description: Increased weapon size
 }

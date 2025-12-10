@@ -7,29 +7,23 @@ namespace PathOfTerraria.Content.Passives;
 
 internal class LifeRegenRatePassive : Passive
 {
-	public const float RateBonus = 0.15f;
-
 	public sealed class LifeRegenRatePassivePlayer : ModPlayer
 	{
 		public override void NaturalLifeRegen(ref float regen)
 		{
 			float level = Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<LifeRegenRatePassive>();
-			regen *= (1 + (level * RateBonus));
+			regen *= 1 + level / 100f;
 		}
 	}
-
-	public override string DisplayTooltip => Language.GetTextValue($"Mods.PathOfTerraria.Passives.{Name}.Tooltip").FormatWith(MathUtils.Percent(RateBonus));
 }
 
 internal class LifeRegenCountPassive : Passive
 {
-	public const int LifePerSecond = 2;
-
-	public override string DisplayTooltip => Language.GetTextValue($"Mods.PathOfTerraria.Passives.{Name}.Tooltip").FormatWith(MathUtils.Percent(LifePerSecond));
+	public override string DisplayTooltip => Language.GetTextValue($"Mods.PathOfTerraria.Passives.{Name}.Tooltip").FormatWith(MathUtils.Percent(Value));
 
 	public override void BuffPlayer(Player player)
 	{
-		player.lifeRegen += (LifePerSecond * 2) * Level;
+		player.lifeRegen += Value * 2 * Level;
 	}
 }
 

@@ -10,6 +10,12 @@ internal class DoTFunctionality
 		lightColor ??= Color.OrangeRed;
 		darkColor ??= Color.Orange;
 
+		// Clamp damage so we don't deal 30 damage to a 20 hp target
+		if (damage > npc.life)
+		{
+			damage = npc.life;
+		}
+
 		if (!npc.dontTakeDamage && !npc.immortal)
 		{
 			if (npc.realLife == -1)

@@ -171,7 +171,7 @@ internal class TreeState : TabsUiState
 		{
 			foreach (Passive node in LocalPassiveTreePlayer.ActiveNodes)
 			{
-				if (node is AnchorPassive or MasteryPassive)
+				if (node is AnchorPassive)
 				{
 					continue;
 				}
@@ -180,7 +180,11 @@ internal class TreeState : TabsUiState
 				while (node.Level > 0)
 				{
 					node.OnDeallocate(Main.LocalPlayer);
-					LocalPassiveTreePlayer.Points++;
+
+					if (node is not MasteryPassive)
+					{
+						LocalPassiveTreePlayer.Points++;
+					}
 				}
 			}
 		});

@@ -128,7 +128,7 @@ internal abstract class AllocatableElement : SmartUiElement, IConnectedAllocatab
 #if DEBUG
 		if (node is Systems.PassiveTreeSystem.Passive passive)
 		{
-			name += $" -- {passive.ReferenceId}";
+			name += $"\n{passive.TreePos} | ID: {passive.ReferenceId}";
 		}
 #endif
 
