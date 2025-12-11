@@ -24,15 +24,13 @@ public class BloodSiphon : Skill
 	{
 		Level = level;
 		Cooldown = MaxCooldown = (15 - Level * 2) * 60;
-		ManaCost = 20 - Level * 5;
+		ResourceCost = 20 - Level * 5;
 		Duration = 0;
 		WeaponType = ItemType.Ranged;
 	}
 
-	public override void UseSkill(Player player)
+	protected override void InternalUseSkill(Player player)
 	{
-		base.UseSkill(player);
-
 		// Level to the strength of all BloodSiphonAffix
 		LevelTo((byte)player.GetModPlayer<AffixPlayer>().StrengthOf<BloodSiphonAffix>());
 

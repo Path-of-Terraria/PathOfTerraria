@@ -332,23 +332,23 @@ StrongerScorchedEarth: {
 }
 
 LongerIgnites: {
-	// Name: LongerIgnites
-	// Tooltip: Mods.PathOfTerraria.SkillPassives.LongerIgnites.Tooltip
+	// Name: Longer Ignites
+	// Tooltip: Ignite lasts 50% longer
 }
 
 StrongerSmolderingFury: {
-	// Name: StrongerSmolderingFury
-	// Tooltip: Mods.PathOfTerraria.SkillPassives.StrongerSmolderingFury.Tooltip
+	// Name: Stronger Smoldering Fury
+	// Tooltip: Smoldering Fury explosions deal 50% more damage
 }
 
 LargerSmolderingFury: {
-	// Name: LargerSmolderingFury
-	// Tooltip: Mods.PathOfTerraria.SkillPassives.LargerSmolderingFury.Tooltip
+	// Name: Larger Smoldering Fury
+	// Tooltip: Smoldering Fury explosions are 50% larger
 }
 
 SlowingSmolderingFury: {
-	// Name: SlowingSmolderingFury
-	// Tooltip: Mods.PathOfTerraria.SkillPassives.SlowingSmolderingFury.Tooltip
+	// Name: Slowing Smoldering Fury
+	// Tooltip: Smoldering Fury explosions slow enemies down on hit
 }
 
 Pyroclasm: {
@@ -357,8 +357,8 @@ Pyroclasm: {
 }
 
 CrystallineImpact: {
-	// Name: CrystallineImpact
-	// Tooltip: Mods.PathOfTerraria.SkillPassives.CrystallineImpact.Tooltip
+	// Name: Crystalline Impact
+	// Tooltip: Frostfire Meteors burst into shards on impact
 }
 
 Rime: {

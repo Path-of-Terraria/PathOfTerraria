@@ -218,3 +218,8 @@ WideSwingsBuff: {
 	// DisplayName: Wider Swing
 	// Description: Increased weapon size
 }
+
+SlowburnDebuff: {
+	// DisplayName: Slowburn Debuff
+	// Description: Mods.PathOfTerraria.Buffs.SlowburnDebuff.Description
+}

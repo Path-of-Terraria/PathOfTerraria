@@ -24,13 +24,13 @@ internal class FireballTree : SkillTree
 		var pyroclasm = new Pyroclasm(this) { TreePos = new Vector2(-300, -100) };
 
 		var smolderingFury = new SmolderingFury(this) { TreePos = new Vector2(-200, 100) };
-		var strongerSmoldering = new StrongerSmolderingFury(this) { TreePos = new Vector2(-100, 100) };
+		var strongerSmoldering = new StrongerSmolderingFury(this) { TreePos = new Vector2(-100, 100), MaxLevel = 2 };
 		var igniteSlow = new SlowingSmolderingFury(this) { TreePos = new Vector2(-200, 200) };
-		var igniteProlifRange = new LargerSmolderingFury(this) { TreePos = new Vector2(-300, 100) };
+		var igniteProlifRange = new LargerSmolderingFury(this) { TreePos = new Vector2(-300, 100), MaxLevel = 2 };
 
 		var scorchedEarth = new ScorchedEarth(this) { TreePos = new Vector2(-200, -100) };
-		var longerScorched = new LongerScorchedEarth(this) { TreePos = new Vector2(-100, -100) };
-		var strongerScorched = new StrongerScorchedEarth(this) { TreePos = new Vector2(-200, -200) };
+		var longerScorched = new LongerScorchedEarth(this) { TreePos = new Vector2(-100, -100), MaxLevel = 2 };
+		var strongerScorched = new StrongerScorchedEarth(this) { TreePos = new Vector2(-200, -200), MaxLevel = 2 };
 		
 		// ─────────────────────────────────────────────
 		// FROSTFIRE METEOR SPEC
@@ -39,7 +39,7 @@ internal class FireballTree : SkillTree
 
 		var crystallineImpact = new CrystallineImpact(this) { TreePos = new Vector2(0, 200) };
 
-		var rime = new Rime(this) { TreePos = new Vector2(200, 200) };
+		var rime = new Rime(this) { TreePos = new Vector2(200, 200), MaxLevel = 2 };
 
 		var everburningFrost = new EverburningFrost(this) { TreePos = new Vector2(0, 300) };
 		var frostfireBlast = new FrostfireBlast(this) { TreePos = new Vector2(0, 400)  };

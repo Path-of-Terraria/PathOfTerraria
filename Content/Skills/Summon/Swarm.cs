@@ -4,7 +4,7 @@ using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Systems.ElementalDamage;
-using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.ModPlayers.SkillPlayers;
 using PathOfTerraria.Common.World.Utilities;
 using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.Buffs.ElementalBuffs;
@@ -55,7 +55,7 @@ public class Swarm : Skill
 	{
 		Level = level;
 		Cooldown = MaxCooldown = 2 * 60;
-		ManaCost = 10 - Level * 3;
+		ResourceCost = 10 - Level * 3;
 		Duration = SentryNPC.DefaultSentryDuration;
 		WeaponType = ItemType.Summoner;
 	}									
@@ -77,10 +77,8 @@ public class Swarm : Skill
 		return base.CanUseSkill(player, ref failReason, justChecking);
 	}
 
-	public override void UseSkill(Player player)
+	protected override void InternalUseSkill(Player player)
 	{
-		base.UseSkill(player);
-
 		Vector2 pos = GetTarget(player);
 
 		if (Tree.Specialization is LocustBrood)

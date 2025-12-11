@@ -66,15 +66,13 @@ public class Nova : Skill
 	{
 		Level = level;
 		Cooldown = MaxCooldown = (15 - Level) * 60;
-		ManaCost = 20 + 5 * Level;
+		ResourceCost = 20 + 5 * Level;
 		Duration = 0;
 		WeaponType = ItemType.Magic;
 	}
 
-	public override void UseSkill(Player player)
+	protected override void InternalUseSkill(Player player)
 	{
-		base.UseSkill(player);
-
 		int damage = GetTotalDamage(player.HeldItem.damage * (2 + 0.5f * Level));
 		var source = new EntitySource_UseSkill(player, this);
 		NovaType type = GetNovaType(this);

@@ -46,14 +46,13 @@ public class Berserk : Skill
 	{
 		Level = level;
 		Cooldown = MaxCooldown = (35 - 5 * Level) * 60;
-		ManaCost = 10 + 5 * level;
+		ResourceCost = 10 + 5 * level;
 		Duration = 10 * Level * 60 / 2;
 		WeaponType = ItemType.Melee;
 	}
 
-	public override void UseSkill(Player player)
+	protected override void InternalUseSkill(Player player)
 	{
-		base.UseSkill(player);
 		player.AddBuff(ModContent.BuffType<RageBuff>(), TotalDuration);
 	}
 

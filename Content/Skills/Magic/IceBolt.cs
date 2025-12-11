@@ -21,15 +21,13 @@ public class IceBolt : Skill
 	{
 		Level = level;
 		Cooldown = MaxCooldown = (int)((5.5f - 0.5f * Level) * 60);
-		ManaCost = 6 + 6 * Level;
+		ResourceCost = 6 + 6 * Level;
 		Duration = 0;
 		WeaponType = ItemType.None;
 	}
 
-	public override void UseSkill(Player player)
+	protected override void InternalUseSkill(Player player)
 	{
-		base.UseSkill(player);
-
 		int damage = GetTotalDamage(Level * 10 + 5);
 		var source = new EntitySource_UseSkill(player, this);
 		float knockback = 2f;

@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Common.Mechanics;
-using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.ModPlayers.SkillPlayers;
 using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Common.UI.Guide;
 using PathOfTerraria.Content.SkillAugments;

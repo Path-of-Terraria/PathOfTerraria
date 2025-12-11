@@ -205,3 +205,5 @@ FlameSentryFireball.DisplayName: "{$ProjectileName.CultistBossFireBall}"
 // ExplosiveShard.DisplayName: Explosive Shard
 // RagingSpirit.DisplayName: Raging Spirit
 // StickyFlame.DisplayName: Sticky Flame
+// FrostfireMeteorProjectile.DisplayName: Frostfire Meteor Projectile
+// BlastIcicleSmall.DisplayName: Blast Icicle Small

@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework.Input;
-using PathOfTerraria.Common.Mechanics;
+﻿using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Common.UI.Guide;
@@ -12,7 +11,7 @@ using Terraria.Localization;
 using Terraria.ModLoader.Core;
 using Terraria.ModLoader.IO;
 
-namespace PathOfTerraria.Common.Systems.ModPlayers;
+namespace PathOfTerraria.Common.Systems.ModPlayers.SkillPlayers;
 
 internal class SkillCombatPlayer : ModPlayer
 {

@@ -15,6 +15,7 @@ namespace PathOfTerraria.Common.Mechanics;
 public enum SkillFailReason
 {
 	NotEnoughMana,
+	NotEnoughLife,
 	NeedsMelee,
 	NeedsRanged,
 	NeedsMagic,
@@ -57,6 +58,29 @@ public readonly struct SkillFailure(SkillFailReason reason, string context = nul
 	}
 }
 
+public enum SkillCost
+{
+	None = 0,
+	ManaUse,
+	HealthUse,
+
+	/// <summary>
+	/// Requires being an Aura skill.
+	/// </summary>
+	ManaDrainPerSecond,
+
+	/// <inheritdoc cref="ManaDrainPerSecond"/>
+	LifeDrainPerSecond,
+
+	/// <inheritdoc cref="ManaDrainPerSecond"/>
+	ManaReserve,
+
+	/// <inheritdoc cref="ManaDrainPerSecond"/>
+	HealthReserve
+}
+
+public readonly record struct SkillFunctionalityInfo(bool AuraSkill, bool ToggleAlwaysOn, SkillCost Cost);
+
 public abstract partial class Skill : ILoadable
 {
 	public Vector2 Size
@@ -97,17 +121,32 @@ public abstract partial class Skill : ILoadable
 	public virtual LocalizedText DisplayName => Language.GetText("Mods.PathOfTerraria." + GetLocalKey() + ".Name");
 	public virtual LocalizedText Description => Language.GetText("Mods.PathOfTerraria." + GetLocalKey() + ".Description");
 
+	/// <summary>
+	/// Defines how the skill is used - if it's an Aura (toggleable) skill, if it's "always on" if/when toggled, and what cost it has for usage.
+	/// </summary>
+	public virtual SkillFunctionalityInfo Functionality => new(false, false, SkillCost.ManaUse);
+
+	public bool AuraToggled => Functionality.AuraSkill && _toggled;
+
 	public int Duration;
 	public int MaxCooldown;
 	public int Cooldown;
-	
-	/// <summary> The default mana cost of this skill.<br/>See <see cref="TotalManaCost"/>. </summary>
-	public int ManaCost;
+
+	/// <summary> 
+	/// The default resource cost of this skill.<br/>
+	/// See <see cref="TotalResourceCost"/>.<br/><br/>
+	/// This is flat for the following <see cref="SkillCost"/>s:<br/>
+	/// <see cref="SkillCost.ManaUse"/> - <see cref="SkillCost.HealthUse"/> - <see cref="SkillCost.ManaDrainPerSecond"/> - <see cref="SkillCost.LifeDrainPerSecond"/><br/><br/>
+	/// And is a proportion (out of 100) for the following:<br/>
+	/// <see cref="SkillCost.ManaReserve"/> - <see cref="SkillCost.HealthReserve"/>
+	/// </summary>
+	public int ResourceCost;
 	
 	public ItemType WeaponType = ItemType.None;
 	public byte Level = 1;
 
 	private Vector2 _size;
+	private bool _toggled;
 
 	public void Load(Mod mod)
 	{
@@ -197,17 +236,56 @@ public abstract partial class Skill : ILoadable
 
 	/// <summary>
 	/// What this skill actually does.<br/>
-	/// By default, consumes mana based on <see cref="TotalManaCost"/> and applies <see cref="MaxCooldown"/>.<br/>
+	/// By default, consumes the appropriate based on <see cref="TotalResourceCost"/> and <see cref="Functionality"/>.Cost and applies <see cref="MaxCooldown"/>.<br/>
+	/// For <see cref="AuraToggled"/>-able skills, this will also toggle the effect.
 	/// This only runs on the local client.
 	/// </summary>
 	/// <param name="player">The player using the skill</param>
-	public virtual void UseSkill(Player player)
+	public void UseSkill(Player player)
 	{
-		player.CheckMana(TotalManaCost, true);
-		Cooldown = TotalCooldown;
+		_toggled = !_toggled;
+
+		PreUseSkill(player);
+
+		if (Functionality.Cost is SkillCost.ManaUse or SkillCost.ManaDrainPerSecond)
+		{
+			player.CheckMana(TotalResourceCost, true);
+			Cooldown = TotalCooldown;
+		}
+		else if (Functionality.Cost is SkillCost.HealthUse or SkillCost.LifeDrainPerSecond)
+		{
+			player.statLife -= TotalResourceCost;
+			Cooldown = TotalCooldown;
+		}
 		
+		// Health/ManaReserve is handled inSkillResourcingPlaying
+
 		//player.MaxManaRegenDelay was way too slow for some reason compared to when using a mag weapon? Idk why. But 60 seems right
-		player.manaRegenDelay = 60;
+		player.manaRegenDelay = player.maxRegenDelay;
+		InternalUseSkill(player);
+	}
+
+	/// <summary>
+	/// Runs before <see cref="InternalUseSkill(Player)"/> is ran. Useful for child classes that define pre-skill use behaviour, such as <see cref="SummonSkill"/>.
+	/// </summary>
+	protected virtual void PreUseSkill(Player player)
+	{
+	}
+
+	/// <summary>
+	/// Internal code ran by <see cref="UseSkill(Player)"/>. This avoids needing to reimplement either <c>base.UseSkill</c> or its respective functionality per use.
+	/// </summary>
+	protected virtual void InternalUseSkill(Player player)
+	{
+	}
+
+	/// <summary>
+	/// Ran every frame while this Aura (toggleable) skill is active. Also provided are two timers - one modifiable and another static.
+	/// </summary>
+	/// <param name="drainTimer">Per-player-per-skill timer that controls how often the resource for this skill is checked. This is reset every 60 ticks, and can be modified.</param>
+	/// <param name="drainTimer">Arbitrary, per-player-per-skill timer for ease of use. This will increase forever, and is reset to 0 when the skill is inactive.</param>
+	public virtual void ActiveUse(Player player, ref float drainTimer, float staticTimer)
+	{
 	}
 
 	/// <summary>
@@ -224,13 +302,34 @@ public abstract partial class Skill : ILoadable
 			return false;
 		}
 
-		if (!player.CheckMana(TotalManaCost))
+		if (!CheckResourceUsage(player, ref failReason))
 		{
-			failReason = new SkillFailure(SkillFailReason.NotEnoughMana);
 			return false;
 		}
 
 		return Cooldown <= 0;
+	}
+
+	public bool CheckResourceUsage(Player player, ref SkillFailure failReason)
+	{
+		if (Functionality.Cost is SkillCost.HealthReserve or SkillCost.ManaReserve)
+		{
+			// These are separate and do not have "on-use" checks
+			return true;
+		}
+
+		if (Functionality.Cost is SkillCost.ManaUse or SkillCost.ManaDrainPerSecond && !player.CheckMana(TotalResourceCost))
+		{
+			failReason = new SkillFailure(SkillFailReason.NotEnoughMana);
+			return false;
+		}
+		else if (Functionality.Cost is SkillCost.HealthUse or SkillCost.LifeDrainPerSecond && player.statLife < TotalResourceCost)
+		{
+			failReason = new SkillFailure(SkillFailReason.NotEnoughLife);
+			return false;
+		}
+
+		return true;
 	}
 
 	/// <summary>
@@ -257,7 +356,7 @@ public abstract partial class Skill : ILoadable
 			return false;
 		}
 
-		if (player.statManaMax2 < TotalManaCost)
+		if (player.statManaMax2 < TotalResourceCost)
 		{
 			failReason = new SkillFailure(SkillFailReason.NotEnoughMana);
 			return false;
@@ -271,7 +370,7 @@ public abstract partial class Skill : ILoadable
 		Duration = tag.GetShort(nameof(Duration));
 		MaxCooldown = tag.GetShort(nameof(MaxCooldown));
 		Cooldown = tag.GetShort(nameof(Cooldown));
-		ManaCost = tag.GetShort(nameof(ManaCost));
+		ResourceCost = tag.GetShort(nameof(ResourceCost));
 		WeaponType = (ItemType)tag.GetInt(nameof(WeaponType));
 		Level = tag.GetByte(nameof(Level));
 
@@ -283,7 +382,7 @@ public abstract partial class Skill : ILoadable
 		tag.Add(nameof(Duration), (short)Duration);
 		tag.Add(nameof(MaxCooldown), (short)MaxCooldown);
 		tag.Add(nameof(Cooldown), (short)Cooldown);
-		tag.Add(nameof(ManaCost), (short)ManaCost);
+		tag.Add(nameof(ResourceCost), (short)ResourceCost);
 		tag.Add(nameof(WeaponType), (int)WeaponType);
 		tag.Add(nameof(Level), Level);
 
