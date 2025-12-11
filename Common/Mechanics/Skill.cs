@@ -283,7 +283,7 @@ public abstract partial class Skill : ILoadable
 	/// Ran every frame while this Aura (toggleable) skill is active. Also provided are two timers - one modifiable and another static.
 	/// </summary>
 	/// <param name="drainTimer">Per-player-per-skill timer that controls how often the resource for this skill is checked. This is reset every 60 ticks, and can be modified.</param>
-	/// <param name="drainTimer">Arbitrary, per-player-per-skill timer for ease of use. This will increase forever, and is reset to 0 when the skill is inactive.</param>
+	/// <param name="staticTimer">Per-player-per-skill timer for ease of use. This will increase forever, and is reset to 0 when the skill is inactive.</param>
 	public virtual void ActiveUse(Player player, ref float drainTimer, float staticTimer)
 	{
 	}

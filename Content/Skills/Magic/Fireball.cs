@@ -104,11 +104,23 @@ public class Fireball : Skill
 			int type = ModContent.ProjectileType<FrostfireMeteorProjectile>();
 			Vector2 pos = new(Main.MouseWorld.X - Main.rand.NextFloat(-200, 200), Main.screenPosition.Y - 100);
 			Vector2 vel = pos.DirectionTo(Main.MouseWorld).RotatedByRandom(0.05f) * Main.rand.NextFloat(8, 10);
+			int proj = Projectile.NewProjectile(new EntitySource_UseSkill(player, this), pos, vel, type, GetTotalDamage((Level - 1) * 20 + 30), 4, player.whoAmI);
+			ElementalProjectile ele = Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>();
 
-			Projectile.NewProjectile(new EntitySource_UseSkill(player, this), pos, vel, type, GetTotalDamage((Level - 1) * 20 + 30), 4, player.whoAmI);
+			ref ElementalDamage fire = ref ele.Container[ElementType.Fire].DamageModifier;
+			fire = fire.AddModifiers(0, 1);
+
+			ref ElementalDamage cold = ref ele.Container[ElementType.Cold].DamageModifier;
+			cold = cold.AddModifiers(0, 1);
 		}
 
-		if (Tree)
+		if (player.HasTreePassive<FireballTree, EverburningFrost>())
+		{
+			if (drainTimer > 60 - staticTimer / 30)
+			{
+				drainTimer = 60;
+			}
+		}
 	}
 
 	private class FireballProj : SkillProjectile<Fireball>
@@ -308,8 +320,12 @@ public class Fireball : Skill
 			}
 		}
 
-		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
+			if (Owner.HasTreePassive<FireballTree, AbsoluteZero>() && (target.HasBuff<FreezeDebuff>() || target.HasBuff<IgnitedDebuff>()))
+			{
+				modifiers.FinalDamage += 0.35f;
+			}
 		}
 
 		public override void OnKill(int timeLeft)

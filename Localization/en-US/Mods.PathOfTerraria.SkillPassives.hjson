@@ -363,27 +363,27 @@ CrystallineImpact: {
 
 Rime: {
 	Name: Rime
-	Tooltip: Mods.PathOfTerraria.SkillPassives.Rime.Tooltip
+	Tooltip: Shards increase in size by 33% per stack
 }
 
 EverburningFrost: {
-	Name: EverburningFrost
-	Tooltip: Mods.PathOfTerraria.SkillPassives.EverburningFrost.Tooltip
+	Name: Everburning Frost
+	Tooltip: The longer you channel, the faster the meteors are spawned
 }
 
 FrozenGround: {
-	Name: FrozenGround
-	Tooltip: Mods.PathOfTerraria.SkillPassives.FrozenGround.Tooltip
+	Name: Frozen Ground
+	Tooltip: Meteors leave a small area of slowing
 }
 
 ColdFocus: {
-	Name: ColdFocus
+	Name: Cold Focus
 	Tooltip: Mods.PathOfTerraria.SkillPassives.ColdFocus.Tooltip
 }
 
 AbsoluteZero: {
-	Name: AbsoluteZero
-	Tooltip: Mods.PathOfTerraria.SkillPassives.AbsoluteZero.Tooltip
+	Name: Absolute Zero
+	Tooltip: Meteors deal extra damage to frozen or ignited enemies
 }
 
 ThermalFeedback: {

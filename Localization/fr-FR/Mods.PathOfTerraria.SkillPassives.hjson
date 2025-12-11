@@ -363,16 +363,16 @@ CrystallineImpact: {
 
 Rime: {
 	// Name: Rime
-	// Tooltip: Mods.PathOfTerraria.SkillPassives.Rime.Tooltip
+	// Tooltip: Shards increase in size by 33% per stack
 }
 
 EverburningFrost: {
-	// Name: EverburningFrost
-	// Tooltip: Mods.PathOfTerraria.SkillPassives.EverburningFrost.Tooltip
+	// Name: Everburning Frost
+	// Tooltip: The longer you channel, the faster the meteors are spawned
 }
 
 FrozenGround: {
-	// Name: FrozenGround
+	// Name: Frozen Ground
 	// Tooltip: Mods.PathOfTerraria.SkillPassives.FrozenGround.Tooltip
 }
 
