@@ -1023,3 +1023,18 @@ PainTransferenceMastery: {
 	Name: Pain Transference
 	Tooltip: "{0}% of life regeneration or life healed is dealt as damage to [mechanic/shift:Nearby] enemies"
 }
+
+RockAndStoneMastery: {
+	Name: RockAndStoneMastery
+	Tooltip: ""
+}
+
+FasterMiningPassive: {
+	Name: FasterMiningPassive
+	Tooltip: ""
+}
+
+SpelunkyMastery: {
+	Name: SpelunkyMastery
+	Tooltip: ""
+}

@@ -6161,6 +6161,9 @@
 			},
 			{
 				"referenceId": 285
+			},
+			{
+				"referenceId": 1123
 			}
 		],
 		"position": {
@@ -6169,14 +6172,61 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "FasterMiningPassive",
 		"referenceId": 285,
 		"maxLevel": 1,
 		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1123
+			}
+		],
 		"position": {
 			"x": -684,
 			"y": 278
 		}
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1123,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1124
+			},
+			{
+				"referenceId": 1125
+			}
+		],
+		"position": {
+			"x": -575,
+			"y": 313
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "RockAndStoneMastery",
+		"referenceId": 1124,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": -540,
+			"y": 233
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "SpelunkyMastery",
+		"referenceId": 1125,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": -481,
+			"y": 329
+		},
+		"isHidden": true
 	},
 	{
 		"internalIdentifier": "AddedIntelligencePassive",
