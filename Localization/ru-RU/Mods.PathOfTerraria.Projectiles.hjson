@@ -194,3 +194,4 @@ FlameSentryFireball.DisplayName: "{$ProjectileName.CultistBossFireBall}"
 // StickyFlame.DisplayName: Sticky Flame
 // FrostfireMeteorProjectile.DisplayName: Frostfire Meteor Projectile
 // BlastIcicleSmall.DisplayName: Blast Icicle Small
+// ColdAura.DisplayName: Cold Aura

@@ -91,7 +91,7 @@ public class Fireball : Skill
 		Vector2 velocity = player.DirectionTo(Main.MouseWorld).RotatedByRandom(0.05f) * 8 * Main.rand.NextFloat(0.9f, 1.1f);
 		
 		int proj = Projectile.NewProjectile(source, player.Center - new Vector2(0, 12), velocity, type, damage, knockback, player.whoAmI, Level, (float)GetFireballType(this));
-		Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>().Container[ElementType.Fire].DamageModifier.AddModifiers(0, 1);
+		Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>().SetElementalValues((ElementType.Fire, 0, 1));
 		SoundEngine.PlaySound(SoundID.Item20 with { PitchRange = (-0.8f, 0.2f) }, player.Center);
 	}
 
@@ -105,13 +105,7 @@ public class Fireball : Skill
 			Vector2 pos = new(Main.MouseWorld.X - Main.rand.NextFloat(-200, 200), Main.screenPosition.Y - 100);
 			Vector2 vel = pos.DirectionTo(Main.MouseWorld).RotatedByRandom(0.05f) * Main.rand.NextFloat(8, 10);
 			int proj = Projectile.NewProjectile(new EntitySource_UseSkill(player, this), pos, vel, type, GetTotalDamage((Level - 1) * 20 + 30), 4, player.whoAmI);
-			ElementalProjectile ele = Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>();
-
-			ref ElementalDamage fire = ref ele.Container[ElementType.Fire].DamageModifier;
-			fire = fire.AddModifiers(0, 1);
-
-			ref ElementalDamage cold = ref ele.Container[ElementType.Cold].DamageModifier;
-			cold = cold.AddModifiers(0, 1);
+			Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>().SetElementalValues((ElementType.Fire, 0, 1), (ElementType.Cold, 0, 1));
 		}
 
 		if (player.HasTreePassive<FireballTree, EverburningFrost>())
@@ -120,6 +114,11 @@ public class Fireball : Skill
 			{
 				drainTimer = 60;
 			}
+		}
+
+		if (player.HasTreePassive<FireballTree, ColdFocus>(out float strength))
+		{
+			player.moveSpeed *= 1 + strength * 0.6f;
 		}
 	}
 
@@ -257,6 +256,7 @@ public class Fireball : Skill
 					float timeExtension = Owner.GetPassiveStrength<FireballTree, LongerScorchedEarth>() is not 0 and int value ? 60 * value : 0;
 					int proj = Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, vel, type, damage, 0, Main.myPlayer, 0, timeExtension);
 					Main.projectile[proj].frameCounter = Main.rand.Next(800);
+					Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>().SetElementalValues((ElementType.Fire, 0, 1));
 				}
 			}
 		}
@@ -328,6 +328,14 @@ public class Fireball : Skill
 			}
 		}
 
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			if (Owner.HasTreePassive<FireballTree, ThermalFeedback>())
+			{
+				Owner.statMana = Math.Min(Owner.statMana + 5, Owner.statManaMax2);
+			}
+		}
+
 		public override void OnKill(int timeLeft)
 		{
 			SpawnDust(4, 0.6f, true);
@@ -341,9 +349,19 @@ public class Fireball : Skill
 				{
 					Vector2 vel = Main.rand.NextVector2Circular(4, 4) - Projectile.velocity * 0.5f;
 					float scale = Owner.GetPassiveStrength<FireballTree, Rime>() * 0.3333f + 1;
-					int proj = Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, vel, type, damage, 0, Main.myPlayer, scale);
+					int icicle = Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, vel, type, damage, 0, Main.myPlayer, scale);
+					Main.projectile[icicle].GetGlobalProjectile<ElementalProjectile>().SetElementalValues((ElementType.Cold, 0, 1));
 				}
 			}
+
+			if (Owner.HasTreePassive<FireballTree, FrozenGround>())
+			{
+				Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<ColdAura>(), 0, 0, Projectile.owner);
+			}
+
+			int proj = ExplosionHitbox.QuickSpawn(Projectile.GetSource_Death(), Projectile, (int)(Projectile.damage * 0.75f), Projectile.owner, Projectile.Size * 2);
+			ElementalProjectile ele = Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>();
+			ele.SetElementalValues((ElementType.Fire, 0, 1), (ElementType.Cold, 0, 1));
 		}
 
 		public override bool PreDraw(ref Color lightColor)

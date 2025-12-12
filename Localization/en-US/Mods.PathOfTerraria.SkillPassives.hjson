@@ -378,7 +378,7 @@ FrozenGround: {
 
 ColdFocus: {
 	Name: Cold Focus
-	Tooltip: Mods.PathOfTerraria.SkillPassives.ColdFocus.Tooltip
+	Tooltip: Move faster when using Frostfire Meteors
 }
 
 AbsoluteZero: {
@@ -387,8 +387,8 @@ AbsoluteZero: {
 }
 
 ThermalFeedback: {
-	Name: ThermalFeedback
-	Tooltip: Mods.PathOfTerraria.SkillPassives.ThermalFeedback.Tooltip
+	Name: Thermal Feedback
+	Tooltip: Enemies hit directly by a meteor restore 5 mana
 }
 
 EverburningPyre: {

@@ -45,7 +45,7 @@ internal class FireballTree : SkillTree
 		var frostfireBlast = new FrostfireBlast(this) { TreePos = new Vector2(0, 400)  };
 		var frozenGround = new FrozenGround(this) { TreePos = new Vector2(-100, 300) };
 
-		var coldFocus = new ColdFocus(this) { TreePos = new Vector2(100, 300) };
+		var coldFocus = new ColdFocus(this) { TreePos = new Vector2(100, 300), MaxLevel = 2 };
 		var absoluteZero = new AbsoluteZero(this) { TreePos = new Vector2(200, 300) };
 		var thermalFeedback = new ThermalFeedback(this) { TreePos = new Vector2(200, 400) };
 	

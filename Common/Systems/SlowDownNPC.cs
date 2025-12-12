@@ -10,11 +10,13 @@ internal class SlowDownNPC : GlobalNPC
 {
 	public override bool InstancePerEntity => true;
 
+	public float DelayedModifier = 0;
 	public float SpeedModifier = 0;
 
 	public override void ResetEffects(NPC npc)
 	{
-		SpeedModifier = 0;
+		SpeedModifier = DelayedModifier;
+		DelayedModifier = 0;
 	}
 
 	public override void AI(NPC npc)
@@ -27,8 +29,8 @@ internal class SlowDownNPC : GlobalNPC
 	/// Slows down the NPC by the specified percentage.
 	/// </summary>
 	/// <param name="percent">Percentage to slow down (0.0 to 1.0, where 0.5 = 50% slower)</param>
-	public void AddSlowDown(float percent)
+	public void AddSlowDown(float percent, bool delayed = false)
 	{
-		SpeedModifier += Math.Clamp(percent, 0f, 1f);
+		(!delayed ? ref SpeedModifier : ref DelayedModifier) += Math.Clamp(percent, 0f, 1f);
 	}
 }

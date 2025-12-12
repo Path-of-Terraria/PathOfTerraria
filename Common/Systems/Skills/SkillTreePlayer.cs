@@ -144,9 +144,10 @@ internal class SkillTreePlayer : ModPlayer
 	/// <typeparam name="TTree">The tree to reference.</typeparam>
 	/// <typeparam name="TPassive">The passive to check for.</typeparam>
 	/// <returns>If the player has any one or more of the passive enabled.</returns>
-	internal bool HasPassive<TTree, TPassive>() where TTree : SkillTree where TPassive : SkillPassive
+	internal bool HasPassive<TTree, TPassive>(out float strength) where TTree : SkillTree where TPassive : SkillPassive
 	{
-		return GetPassiveStrength<TTree, TPassive>() > 0;
+		strength = GetPassiveStrength<TTree, TPassive>();
+		return strength > 0;
 	}
 
 	/// <summary>
