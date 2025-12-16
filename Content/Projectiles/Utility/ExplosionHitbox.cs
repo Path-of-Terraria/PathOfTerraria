@@ -22,7 +22,10 @@ internal class ExplosionHitbox : ModProjectile
 	/// <param name="Sfx">Whether the sfx should play.</param>
 	/// <param name="GoreRange">Range of Gore ids to use.</param>
 	public readonly record struct VFXPackage(int GoreCount = 4, int SmokeDustCount = 20, int TorchDustCount = 10, bool Sfx = true, float Volume = 1f, Range? GoreRange = null,
-		int SmokeDustType = DustID.Smoke, int TorchDustType = DustID.Torch, float DustVelocityModifier = 1f);
+		int SmokeDustType = DustID.Smoke, int TorchDustType = DustID.Torch, float DustVelocityModifier = 1f)
+	{
+		public static readonly VFXPackage None = new(0, 0, 0, false, 0, null, 0, 0, 0);
+	}
 
 	public override string Texture => UseBaseTexture ? (GetType().Namespace + "." + Name).Replace('.', '/') : "Terraria/Images/NPC_0";
 

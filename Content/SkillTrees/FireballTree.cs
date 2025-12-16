@@ -55,13 +55,13 @@ internal class FireballTree : SkillTree
 		var shadowflamePyre = new ShadowflamePyre(this) { TreePos = new Vector2(200, 0) };
 
 		var painIsPleasure = new PainIsPleasure(this) { TreePos = new Vector2(200, 100) };
-		var everburningPyre = new EverburningPyre(this) { TreePos = new Vector2(200, -100) };
+		var everburningPyre = new EverburningPyre(this) { TreePos = new Vector2(200, -100), MaxLevel = 2 };
 
 		var crawlingFlame = new CrawlingFlame(this) { TreePos = new Vector2(300, 0) };
 		var abyssalHunger = new AbyssalHunger(this) { TreePos = new Vector2(300, -100) };
 		
 		var pyremaniac = new Pyremaniac(this) { TreePos = new Vector2(400, 0) };
-		var additionalPyres = new AdditionalPyres(this) { TreePos = new Vector2(400, -100) };
+		var additionalPyres = new AdditionalPyres(this) { TreePos = new Vector2(400, -100), MaxLevel = 2 };
 		var conjoinedFlames = new ConjoinedFlames(this) { TreePos = new Vector2(400, 100) };
 		var shadowflameEruption = new ShadowflameEruption(this) { TreePos = new Vector2(400, 200) };
 		

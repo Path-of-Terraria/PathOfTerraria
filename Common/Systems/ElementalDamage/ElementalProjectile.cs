@@ -14,15 +14,11 @@ internal class ElementalProjectile : GlobalProjectile
 	public int SourceItem { get; private set; } = ItemID.None;
 
 	/// <summary>
-	/// Shorthand for setting <see cref="ElementalContainer"/>'s <see cref="ElementalDamage"/> values.
+	/// Shorthand for adding to <see cref="ElementalContainer"/>'s <see cref="ElementalDamage"/> values.
 	/// </summary>
-	public void SetElementalValues(params (ElementType type, int add, float conv)[] values)
+	public void AddElementalValues(params (ElementType type, int add, float conv)[] values)
 	{
-		foreach ((ElementType type, int add, float conv) in values)
-		{
-			ref ElementalDamage damageModifier = ref Container[type].DamageModifier;
-			damageModifier = damageModifier.AddModifiers(add, conv);
-		}
+		Container.AddElementalValues(values);
 	}
 
 	public override void OnSpawn(Projectile projectile, IEntitySource source)

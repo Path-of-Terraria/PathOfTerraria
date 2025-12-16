@@ -392,23 +392,23 @@ ThermalFeedback: {
 }
 
 EverburningPyre: {
-	// Name: EverburningPyre
-	// Tooltip: Mods.PathOfTerraria.SkillPassives.EverburningPyre.Tooltip
+	// Name: Everburning Pyre
+	// Tooltip: Shadowflame Pyre lasts 20% longer
 }
 
 PainIsPleasure: {
-	// Name: PainIsPleasure
-	// Tooltip: Mods.PathOfTerraria.SkillPassives.PainIsPleasure.Tooltip
+	// Name: Pain is Pleasure
+	// Tooltip: Standing in your own Pyres deals damage, but increases your [mechanic/shift=0;2:Chaos] and [mechanic/shift=1;2:Fire] substantially
 }
 
-Abyssalhunger: {
-	// Name: Abyssalhunger
-	// Tooltip: Mods.PathOfTerraria.SkillPassives.Abyssalhunger.Tooltip
+AbyssalHunger: {
+	// Name: Abyssal Hunger
+	// Tooltip: The pyre has a chance to restore 5% of damage done as health and mana
 }
 
 CrawlingFlame: {
-	// Name: CrawlingFlame
-	// Tooltip: Mods.PathOfTerraria.SkillPassives.CrawlingFlame.Tooltip
+	// Name: Crawling Flame
+	// Tooltip: The pyre grows more the longer it is active
 }
 
 Pyremaniac: {
@@ -417,13 +417,13 @@ Pyremaniac: {
 }
 
 AdditionalPyres: {
-	// Name: AdditionalPyres
-	// Tooltip: Mods.PathOfTerraria.SkillPassives.AdditionalPyres.Tooltip
+	// Name: Hasteful Magic
+	// Tooltip: Shadowflame Pyre cooldown reduced by 15%
 }
 
 ConjoinedFlames: {
-	// Name: ConjoinedFlames
-	// Tooltip: Mods.PathOfTerraria.SkillPassives.ConjoinedFlames.Tooltip
+	// Name: Conjoined Flames
+	// Tooltip: Pyres that touch combine into a much stronger, singular pyre
 }
 
 ShadowflameEruption: {
@@ -432,11 +432,6 @@ ShadowflameEruption: {
 }
 
 FrostfireBlast: {
-	// Name: FrostfireBlast
-	// Tooltip: Mods.PathOfTerraria.SkillPassives.FrostfireBlast.Tooltip
-}
-
-AbyssalHunger: {
-	// Name: AbyssalHunger
-	// Tooltip: Mods.PathOfTerraria.SkillPassives.AbyssalHunger.Tooltip
+	// Name: Frostfire Blast
+	// Tooltip: Applying Frozen/Chilled and Ignited to an enemy clears the debuffs and causes an immediate, strong explosion
 }
