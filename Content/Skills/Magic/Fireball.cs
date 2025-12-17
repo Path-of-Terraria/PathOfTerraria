@@ -25,9 +25,9 @@ public class Fireball : Skill
 {
 	public override int MaxLevel => 3;
 
-	public override SkillFunctionalityInfo Functionality => Tree.Specialization is FrostfireMeteor ? new SkillFunctionalityInfo(true, true, SkillCost.ManaDrainPerSecond) 
+	public override SkillFunctionalityInfo Functionality => Tree.Specialization is FrostfireMeteor ? new SkillFunctionalityInfo(true, true, SkillCost.ManaDrainPerSecond)
 		: base.Functionality;
-	
+
 	public enum FireballType : byte
 	{
 		Normal,
@@ -36,41 +36,41 @@ public class Fireball : Skill
 		Frostfire,
 	}
 
-    public override SkillTags Tags()
-    {
-	    SkillTags tags = SkillTags.Magic | SkillTags.Projectile | SkillTags.Fire | SkillTags.AreaOfEffect;
-        
-        // Add additional tags based on specialization
-        if (Tree.Specialization is Inferno)
-        {
-	        tags |= SkillTags.AreaOfEffect;
-        }
-        else if (Tree.Specialization is ShadowflamePyre)
-        {
-	        tags |= SkillTags.Chaos;
-        }
-        else if (Tree.Specialization is FrostfireMeteor)
-        {
-	        tags |= SkillTags.Cold;
-        }
-        
-        return tags;
-    }
-    
-    private static FireballType GetFireballType(Fireball fireball)
-    {
-	    SkillSpecial special = fireball.Tree.Specialization;
+	public override SkillTags Tags()
+	{
+		SkillTags tags = SkillTags.Magic | SkillTags.Projectile | SkillTags.Fire | SkillTags.AreaOfEffect;
 
-	    return special switch
-	    {
-		    Inferno => FireballType.Inferno,
-		    ShadowflamePyre => FireballType.Shadowflame,
-		    FrostfireMeteor => FireballType.Frostfire,
-		    _ => FireballType.Normal
-	    };
-    }
+		// Add additional tags based on specialization
+		if (Tree.Specialization is Inferno)
+		{
+			tags |= SkillTags.AreaOfEffect;
+		}
+		else if (Tree.Specialization is ShadowflamePyre)
+		{
+			tags |= SkillTags.Chaos;
+		}
+		else if (Tree.Specialization is FrostfireMeteor)
+		{
+			tags |= SkillTags.Cold;
+		}
 
-    public override void LevelTo(byte level)
+		return tags;
+	}
+
+	private static FireballType GetFireballType(Fireball fireball)
+	{
+		SkillSpecial special = fireball.Tree.Specialization;
+
+		return special switch
+		{
+			Inferno => FireballType.Inferno,
+			ShadowflamePyre => FireballType.Shadowflame,
+			FrostfireMeteor => FireballType.Frostfire,
+			_ => FireballType.Normal
+		};
+	}
+
+	public override void LevelTo(byte level)
 	{
 		Level = level;
 		Cooldown = MaxCooldown = 8 * 60;
@@ -93,7 +93,7 @@ public class Fireball : Skill
 		float knockback = 2f;
 		int type = ModContent.ProjectileType<FireballProj>();
 		Vector2 velocity = player.DirectionTo(Main.MouseWorld).RotatedByRandom(0.05f) * 8 * Main.rand.NextFloat(0.9f, 1.1f);
-		
+
 		int proj = Projectile.NewProjectile(source, player.Center - new Vector2(0, 12), velocity, type, damage, knockback, player.whoAmI, Level, (float)GetFireballType(this));
 		Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>().AddElementalValues((ElementType.Fire, 0, 1));
 		SoundEngine.PlaySound(SoundID.Item20 with { PitchRange = (-0.8f, 0.2f) }, player.Center);
@@ -201,7 +201,7 @@ public class Fireball : Skill
 			{
 				if (Owner.HasTreePassive<FireballTree, Pyroclasm>())
 				{
-					damageDone = (int)(damageDone * 1.25f);
+					damageDone = (int)(damageDone * (1f + Pyroclasm.DamageBoost));
 				}
 
 				if (Owner.HasTreePassive<FireballTree, FireballNova>() && target.HasBuff<IgnitedDebuff>())
@@ -213,7 +213,14 @@ public class Fireball : Skill
 					Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>().AddElementalValues((ElementType.Fire, 0, 1));
 				}
 
-				IgnitedDebuff.ApplyTo(target, damageDone, Owner.HasTreePassive<FireballTree, FireballNova>() ? 6 * 60 : 4 * 60);
+				int time = 4 * 60;
+
+				if (Owner.HasTreePassive<FireballTree, LongerIgnites>())
+				{
+					time = (int)(time * (1 + LongerIgnites.DamageBoost));
+				}
+
+				IgnitedDebuff.ApplyTo(target, damageDone, time);
 				SpawnDust(12);
 			}
 
@@ -222,14 +229,14 @@ public class Fireball : Skill
 				int explosionDamage = (int)(damageDone * 1.5f);
 				float sizeBuff = 5f;
 
-				if (Owner.HasTreePassive<FireballTree, StrongerSmolderingFury>())
+				if (Owner.HasTreePassive<FireballTree, StrongerSmolderingFury>(out float damageBoost))
 				{
-					explosionDamage = (int)(explosionDamage * 1.5f);
+					explosionDamage = (int)(explosionDamage * (1 + damageBoost * StrongerSmolderingFury.DamageBoost));
 				}
 
-				if (Owner.HasTreePassive<FireballTree, LargerSmolderingFury>())
+				if (Owner.HasTreePassive<FireballTree, LargerSmolderingFury>(out float value))
 				{
-					sizeBuff *= 1.5f;
+					sizeBuff *= 1f + value * LargerSmolderingFury.SizeBoost;
 				}
 
 				int buffType = Owner.HasTreePassive<FireballTree, SlowingSmolderingFury>() ? ModContent.BuffType<SlowburnDebuff>() : 0;
@@ -282,10 +289,11 @@ public class Fireball : Skill
 			if (Owner.HasSkillSpecialization<Fireball, ShadowflamePyre>())
 			{
 				int type = ModContent.ProjectileType<ShadowflamePyreProjectile>();
-				float timeExtension = Owner.GetPassiveStrength<FireballTree, EverburningPyre>() is not 0 and int value ? ShadowflamePyreProjectile.MaxTimeLeft * value * 0.2f : 0;
+				float timeExtension = Owner.GetPassiveStrength<FireballTree, EverburningPyre>() is not 0 and int value 
+					? ShadowflamePyreProjectile.MaxTimeLeft * value * EverburningPyre.DurationModifier : 0;
 				Vector2 placePos = Projectile.Center;
 				Vector2 projBaseSize = ShadowflamePyreProjectile.BaseSize;
-				
+
 				while (Collision.SolidCollision(placePos - projBaseSize / 2, (int)projBaseSize.X, (int)projBaseSize.Y))
 				{
 					placePos.Y--;
@@ -309,13 +317,13 @@ public class Fireball : Skill
 			{
 				col = Color.Purple * Projectile.Opacity;
 			}
-			
+
 			Main.EntitySpriteDraw(tex, position, src, col * Projectile.scale, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0);
 			return false;
 		}
 	}
 
-	private class FrostfireMeteorProjectile : SkillProjectile<Fireball>, HitNPCHooks.IPostHitNPCProjectile
+	private class FrostfireMeteorProjectile : SkillProjectile<Fireball>, IPostHitNPCProjectile
 	{
 		public override string Texture => $"{PoTMod.ModName}/Assets/Skills/Magic/" + GetType().Name;
 
@@ -374,7 +382,7 @@ public class Fireball : Skill
 		{
 			if (Owner.HasTreePassive<FireballTree, ThermalFeedback>())
 			{
-				Owner.statMana = Math.Min(Owner.statMana + 5, Owner.statManaMax2);
+				Owner.statMana = Math.Min(Owner.statMana + ThermalFeedback.ManaHealed, Owner.statManaMax2);
 			}
 		}
 
@@ -390,7 +398,7 @@ public class Fireball : Skill
 				for (int i = 0; i < 3; ++i)
 				{
 					Vector2 vel = Main.rand.NextVector2Circular(4, 4) - Projectile.velocity * 0.5f;
-					float scale = Owner.GetPassiveStrength<FireballTree, Rime>() * 0.3333f + 1;
+					float scale = Owner.GetPassiveStrength<FireballTree, Rime>() * Rime.SizeBoost + 1;
 					int icicle = Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, vel, type, damage, 0, Main.myPlayer, scale);
 					Main.projectile[icicle].GetGlobalProjectile<ElementalProjectile>().AddElementalValues((ElementType.Cold, 0, 1));
 				}
@@ -416,43 +424,49 @@ public class Fireball : Skill
 
 		public void PostHitNPC(NPC target, in NPC.HitInfo hit, int damageDone)
 		{
-			if (target.HasBuff<IgnitedDebuff>() && (target.HasBuff<FreezeDebuff>() || target.HasBuff(BuffID.Chilled)))
+			if (target.FindBuffIndex(ModContent.BuffType<IgnitedDebuff>()) is int ignitedIndex && ignitedIndex == -1)
 			{
-				target.DelBuff(target.FindBuffIndex(ModContent.BuffType<IgnitedDebuff>()));
+				return;
+			}
 
-				if (target.FindBuffIndex(ModContent.BuffType<FreezeDebuff>()) is not -1 and int freezeIndex)
+			if (target.FindBuffIndex(ModContent.BuffType<FreezeDebuff>()) is not -1 and int freezeIndex)
+			{
+				target.DelBuff(freezeIndex);
+			}
+			else if (target.FindBuffIndex(ModContent.BuffType<FreezeDebuff>()) is not -1 and int chilledIndex)
+			{
+				target.DelBuff(chilledIndex);
+			}
+			else
+			{
+				return;
+			}
+
+			target.DelBuff(ignitedIndex);
+
+			IEntitySource src = Projectile.GetSource_Death();
+			int proj = ExplosionHitbox.QuickSpawn(src, Projectile, (int)(Projectile.damage * 4), Projectile.owner, Projectile.Size * 15, ExplosionHitbox.VFXPackage.None);
+			ElementalProjectile ele = Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>();
+			ele.AddElementalValues((ElementType.Fire, 0, 1), (ElementType.Cold, 0, 1));
+
+			for (int i = 0; i < 28; ++i)
+			{
+				Vector2 offset = Main.rand.NextVector2Circular(50, 50);
+				int id = Main.rand.NextBool() ? DustID.IceTorch : Main.rand.NextBool() ? DustID.Smoke : DustID.Torch;
+				Vector2 vel = offset / 12f;
+
+				if (id == DustID.Smoke)
 				{
-					target.DelBuff(freezeIndex);
-				}
-				else
-				{
-					target.DelBuff(target.FindBuffIndex(BuffID.Chilled));
+					vel *= Main.rand.NextFloat(1.5f, 2f);
 				}
 
-				IEntitySource src = Projectile.GetSource_Death();
-				int proj = ExplosionHitbox.QuickSpawn(src, Projectile, (int)(Projectile.damage * 4), Projectile.owner, Projectile.Size * 15, ExplosionHitbox.VFXPackage.None);
-				ElementalProjectile ele = Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>();
-				ele.AddElementalValues((ElementType.Fire, 0, 1), (ElementType.Cold, 0, 1));
+				Dust.NewDustPerfect(target.Center + offset, id, vel, Scale: Main.rand.NextFloat(1, 2));
+			}
 
-				for (int i = 0; i < 28; ++i)
-				{
-					Vector2 offset = Main.rand.NextVector2Circular(50, 50);
-					int id = Main.rand.NextBool() ? DustID.IceTorch : Main.rand.NextBool() ? DustID.Smoke : DustID.Torch;
-					Vector2 vel = offset / 12f;
-
-					if (id == DustID.Smoke)
-					{
-						vel *= Main.rand.NextFloat(1.5f, 2f);
-					}
-
-					Dust.NewDustPerfect(target.Center + offset, id, vel, Scale: Main.rand.NextFloat(1, 2));
-				}
-
-				for (int i = 0; i < 14; ++i)
-				{
-					Vector2 offset = Main.rand.NextVector2Circular(50, 50);
-					Gore.NewGore(target.GetSource_FromAI(), target.Center + offset, offset / 12f, ModContent.GoreType<ColdAir>(), Main.rand.NextFloat(0.8f, 1.5f));
-				}
+			for (int i = 0; i < 14; ++i)
+			{
+				Vector2 offset = Main.rand.NextVector2Circular(50, 50);
+				Gore.NewGore(target.GetSource_FromAI(), target.Center + offset, offset / 12f, ModContent.GoreType<ColdAir>(), Main.rand.NextFloat(0.8f, 1.5f));
 			}
 		}
 	}
@@ -674,9 +688,9 @@ public class Fireball : Skill
 			target.AddBuff(ModContent.BuffType<EverburningShadowflameDebuff>(), 2);
 			target.GetGlobalNPC<EverburningShadowflameDebuff.EverburningShadowflameNPC>().LastPlayerApplied = Owner.whoAmI;
 
-			if (Owner.HasTreePassive<FireballTree, AbyssalHunger>() && Main.rand.NextFloat() < 0.1f)
+			if (Owner.HasTreePassive<FireballTree, AbyssalHunger>() && Main.rand.NextFloat() < AbyssalHunger.Chance)
 			{
-				int heal = Math.Max(damageDone / 20, 1);
+				int heal = (int)Math.Max(damageDone * AbyssalHunger.Recovery, 1);
 
 				Owner.Heal(heal);
 				Owner.statMana = Math.Min(Owner.statMana, Owner.statManaMax2);
@@ -688,7 +702,7 @@ public class Fireball : Skill
 		{
 			if (Erupt > 0)
 			{
-				modifiers.FinalDamage += 0.5f;
+				modifiers.FinalDamage += ShadowflameEruption.DamageBuff;
 			}
 		}
 

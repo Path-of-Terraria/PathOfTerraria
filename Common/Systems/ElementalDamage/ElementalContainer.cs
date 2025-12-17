@@ -185,7 +185,7 @@ public class ElementalContainer : IEnumerable<ElementInstance>
 	/// Shorthand for setting <see cref="ElementalDamage"/> and <see cref="ElementInstance.Multiplier"/>. 
 	/// Also see <see cref="AddElementalValues(ValueTuple{ElementType, int, float}[])"/>.
 	/// </summary>
-	public void AddElementalValues(params (ElementType type, int add, float conv, float multiplier)[] values)
+	public void AddElementalValues(params ReadOnlySpan<(ElementType type, int add, float conv, float multiplier)> values)
 	{
 		foreach ((ElementType type, int add, float conv, float multiplier) in values)
 		{
@@ -199,7 +199,7 @@ public class ElementalContainer : IEnumerable<ElementInstance>
 	/// Shorthand for setting <see cref="ElementalContainer"/>'s <see cref="ElementalDamage"/> values. 
 	/// Also see <see cref="AddElementalValues(ValueTuple{ElementType, int, float, float}[])"/>.
 	/// </summary>
-	public void AddElementalValues(params (ElementType type, int add, float conv)[] values)
+	public void AddElementalValues(params ReadOnlySpan<(ElementType type, int add, float conv)> values)
 	{
 		foreach ((ElementType type, int add, float conv) in values)
 		{

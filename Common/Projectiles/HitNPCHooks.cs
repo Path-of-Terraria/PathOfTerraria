@@ -2,46 +2,46 @@
 
 namespace PathOfTerraria.Common.Projectiles;
 
-internal class HitNPCHooks : ILoadable
+/// <summary>
+/// Allows projectiles to run code after the projectile(s) are hit.
+/// </summary>
+internal interface IPostHitNPCProjectile
 {
-	/// <summary>
-	/// Allows projectiles to run code after the projectile(s) are hit.
-	/// </summary>
-	internal interface IPostHitNPCProjectile
+	internal class HitNPCHooks : ILoadable
 	{
-		private static readonly GlobalHookList<GlobalProjectile> Hook = ProjectileLoader.AddModHook(GlobalHookList<GlobalProjectile>.Create(i => ((IPostHitNPCProjectile)i).PostHitNPC));
+		public delegate void hook_OnHitNPC(Projectile projectile, NPC target, in NPC.HitInfo hit, int damageDone);
 
-		void PostHitNPC(NPC target, in NPC.HitInfo hit, int damageDone);
-
-		public static void Invoke(Projectile projectile, NPC target, in NPC.HitInfo hit, int damageDone)
+		public void Load(Mod mod)
 		{
-			foreach (IPostHitNPCProjectile g in Hook.Enumerate(projectile))
+			MonoModHooks.Add(typeof(ProjectileLoader).GetMethod(nameof(ProjectileLoader.OnHitNPC)), DetourOnHitNPC);
+		}
+
+		public static void DetourOnHitNPC(hook_OnHitNPC orig, Projectile projectile, NPC target, in NPC.HitInfo hit, int damageDone)
+		{
+			orig(projectile, target, hit, damageDone);
+
+			if (projectile.ModProjectile is IPostHitNPCProjectile post)
 			{
-				g.PostHitNPC(target, hit, damageDone);
+				post.PostHitNPC(target, hit, damageDone);
 			}
+
+			Invoke(projectile, target, in hit, damageDone);
 		}
-	}
 
-	public delegate void hook_OnHitNPC(Projectile projectile, NPC target, in NPC.HitInfo hit, int damageDone);
-
-	public void Load(Mod mod)
-	{
-		MonoModHooks.Add(typeof(ProjectileLoader).GetMethod(nameof(ProjectileLoader.OnHitNPC)), DetourOnHitNPC);
-	}
-
-	public static void DetourOnHitNPC(hook_OnHitNPC orig, Projectile projectile, NPC target, in NPC.HitInfo hit, int damageDone)
-	{
-		orig(projectile, target, hit, damageDone);
-
-		if (projectile.ModProjectile is IPostHitNPCProjectile post)
+		public void Unload()
 		{
-			post.PostHitNPC(target, hit, damageDone);
 		}
-
-		IPostHitNPCProjectile.Invoke(projectile, target, in hit, damageDone);
 	}
 
-	public void Unload()
+	private static readonly GlobalHookList<GlobalProjectile> Hook = ProjectileLoader.AddModHook(GlobalHookList<GlobalProjectile>.Create(i => ((IPostHitNPCProjectile)i).PostHitNPC));
+
+	void PostHitNPC(NPC target, in NPC.HitInfo hit, int damageDone);
+
+	public static void Invoke(Projectile projectile, NPC target, in NPC.HitInfo hit, int damageDone)
 	{
+		foreach (IPostHitNPCProjectile g in Hook.Enumerate(projectile))
+		{
+			g.PostHitNPC(target, hit, damageDone);
+		}
 	}
 }

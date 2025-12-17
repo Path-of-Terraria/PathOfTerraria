@@ -329,17 +329,17 @@ StrongerScorchedEarth: {
 
 LongerIgnites: {
 	// Name: Longer Ignites
-	// Tooltip: Ignite lasts 50% longer
+	// Tooltip: Ignite lasts {0}% longer
 }
 
 StrongerSmolderingFury: {
 	// Name: Stronger Smoldering Fury
-	// Tooltip: Smoldering Fury explosions deal 50% more damage
+	// Tooltip: Smoldering Fury explosions deal {0}% more damage per stack
 }
 
 LargerSmolderingFury: {
 	// Name: Larger Smoldering Fury
-	// Tooltip: Smoldering Fury explosions are 50% larger
+	// Tooltip: Smoldering Fury explosions are {0}% larger per stack
 }
 
 SlowingSmolderingFury: {
@@ -349,7 +349,7 @@ SlowingSmolderingFury: {
 
 Pyroclasm: {
 	// Name: Pyroclasm
-	// Tooltip: Ignite from the Fireball deals 25% more damage
+	// Tooltip: Ignite from the Fireball deals {0}% more damage
 }
 
 CrystallineImpact: {
@@ -359,7 +359,7 @@ CrystallineImpact: {
 
 Rime: {
 	// Name: Rime
-	// Tooltip: Shards increase in size by 33% per stack
+	// Tooltip: Shards increase in size by {0}% per stack
 }
 
 EverburningFrost: {
@@ -384,7 +384,7 @@ AbsoluteZero: {
 
 ThermalFeedback: {
 	// Name: Thermal Feedback
-	// Tooltip: Enemies hit directly by a meteor restore 5 mana
+	// Tooltip: Enemies hit directly by a meteor restore {0} mana
 }
 
 EverburningPyre: {
@@ -393,13 +393,13 @@ EverburningPyre: {
 }
 
 PainIsPleasure: {
-	// Name: Pain is Pleasure
+	// Name: Scorching Penance
 	// Tooltip: Standing in your own Pyres deals damage, but increases your [mechanic/shift=0;2:Chaos] and [mechanic/shift=1;2:Fire] substantially
 }
 
 AbyssalHunger: {
 	// Name: Abyssal Hunger
-	// Tooltip: The pyre has a chance to restore 5% of damage done as health and mana
+	// Tooltip: The pyre has a {1}% chance to restore {0}% of damage done as health and mana
 }
 
 CrawlingFlame: {
@@ -414,7 +414,7 @@ Pyremaniac: {
 
 AdditionalPyres: {
 	// Name: Hasteful Magic
-	// Tooltip: Shadowflame Pyre cooldown reduced by 15%
+	// Tooltip: Shadowflame Pyre cooldown reduced by {0}%
 }
 
 ConjoinedFlames: {

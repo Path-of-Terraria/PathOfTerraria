@@ -21,7 +21,7 @@ public class EverburningShadowflameDebuff : ModBuff
 
 				if (Main.player[LastPlayerApplied].HasTreePassive<FireballTree, Pyremaniac>())
 				{
-					npc.lifeRegen -= 15;
+					npc.lifeRegen -= (int)Pyremaniac.DoTBuff;
 					damage = Math.Max(damage, 8);
 				}
 			}

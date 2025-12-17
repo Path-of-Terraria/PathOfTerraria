@@ -377,23 +377,25 @@ public abstract partial class Skill : ILoadable
 
 	public virtual void LoadData(TagCompound tag, Player loadingPlayer)
 	{
-		Duration = tag.GetShort(nameof(Duration));
-		MaxCooldown = tag.GetShort(nameof(MaxCooldown));
-		Cooldown = tag.GetShort(nameof(Cooldown));
-		ResourceCost = tag.GetShort(nameof(ResourceCost));
-		WeaponType = (ItemType)tag.GetInt(nameof(WeaponType));
+		//Duration = tag.GetShort(nameof(Duration));
+		//MaxCooldown = tag.GetShort(nameof(MaxCooldown));
+		//ResourceCost = tag.GetShort(nameof(ResourceCost));
+		//WeaponType = (ItemType)tag.GetInt(nameof(WeaponType));
 		Level = tag.GetByte(nameof(Level));
 
+		LevelTo(Level);
+
+		Cooldown = tag.GetShort(nameof(Cooldown));
 		Tree?.LoadData(this, tag, loadingPlayer);
 	}
 
 	public virtual void SaveData(TagCompound tag)
 	{
-		tag.Add(nameof(Duration), (short)Duration);
-		tag.Add(nameof(MaxCooldown), (short)MaxCooldown);
+		//tag.Add(nameof(Duration), (short)Duration);
+		//tag.Add(nameof(MaxCooldown), (short)MaxCooldown);
+		//tag.Add(nameof(ResourceCost), (short)ResourceCost);
+		//tag.Add(nameof(WeaponType), (int)WeaponType);
 		tag.Add(nameof(Cooldown), (short)Cooldown);
-		tag.Add(nameof(ResourceCost), (short)ResourceCost);
-		tag.Add(nameof(WeaponType), (int)WeaponType);
 		tag.Add(nameof(Level), Level);
 
 		Tree?.SaveData(this, tag);
