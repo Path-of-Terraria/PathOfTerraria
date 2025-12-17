@@ -1385,7 +1385,7 @@ CelestialConflux: {
 	Tooltip:
 		'''
 		Electric energy collected from a celestial rift
-		Inject 100 of this into a Map Device to open a special portal
+		Inject {0} of this into a Map Device to open a special portal
 		'''
 }
 
@@ -1394,7 +1394,7 @@ GlacialConflux: {
 	Tooltip:
 		'''
 		Freezing energy collected from a glacial rift
-		Inject 100 of this into a Map Device to open a special portal
+		Inject {0} of this into a Map Device to open a special portal
 		'''
 }
 
@@ -1403,7 +1403,7 @@ InfernalConflux: {
 	Tooltip:
 		'''
 		Flaming energy collected from an infernal rift
-		Inject 100 of this into a Map Device to open a special portal
+		Inject {0} of this into a Map Device to open a special portal
 		'''
 }
 

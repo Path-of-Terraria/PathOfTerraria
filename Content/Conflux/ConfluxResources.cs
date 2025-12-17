@@ -2,6 +2,7 @@
 using PathOfTerraria.Content.Dusts;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Conflux;
 
@@ -115,6 +116,8 @@ internal abstract class ConfluxResource : ModItem
 
 internal sealed class InfernalConflux : ConfluxResource
 {
+	public override LocalizedText Tooltip => base.Tooltip.WithFormatArgs(GetMapResource().Cost);
+
 	public override MapResource GetMapResource()
 	{
 		return new()
@@ -134,6 +137,8 @@ internal sealed class InfernalConflux : ConfluxResource
 
 internal sealed class GlacialConflux : ConfluxResource
 {
+	public override LocalizedText Tooltip => base.Tooltip.WithFormatArgs(GetMapResource().Cost);
+
 	public override MapResource GetMapResource()
 	{
 		return new()
@@ -153,6 +158,8 @@ internal sealed class GlacialConflux : ConfluxResource
 
 internal sealed class CelestialConflux : ConfluxResource
 {
+	public override LocalizedText Tooltip => base.Tooltip.WithFormatArgs(GetMapResource().Cost);
+
 	public override MapResource GetMapResource()
 	{
 		return new()
