@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
@@ -13,6 +12,14 @@ internal class ElementalProjectile : GlobalProjectile
 	public ElementalContainer Container = new();
 	
 	public int SourceItem { get; private set; } = ItemID.None;
+
+	/// <summary>
+	/// Shorthand for adding to <see cref="ElementalContainer"/>'s <see cref="ElementalDamage"/> values.
+	/// </summary>
+	public void AddElementalValues(params ReadOnlySpan<(ElementType type, int add, float conv)> values)
+	{
+		Container.AddElementalValues(values);
+	}
 
 	public override void OnSpawn(Projectile projectile, IEntitySource source)
 	{

@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using Microsoft.Xna.Framework.Graphics;
 using PathOfTerraria.Common.Encounters;
 using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Subworlds;
@@ -119,18 +116,18 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 			if (OpeningAnimation > 0.34f && false)
 			{
-					for (int i = 0; i < 3; i++)
-					{
-						Vector2 offset = Vector2.One.RotatedBy(Main.rand.NextDouble() * 6.28);
-						Vector2 dustVel = offset.RotatedBy(1.57f) * Main.rand.NextFloat() * 0.85f;
-						offset *= new Vector2(Main.rand.NextFloat(0.6f, 1) * 60, Main.rand.NextFloat(0.5f, 1f) * 70);
-						Dust dust = Dust.NewDustPerfect(Projectile.Center + offset, ModContent.DustType<ConfluxRiftSmoke>(), dustVel);
-						dust.scale = Main.rand.NextFloat(0.5f, 0.8f);
-						dust.alpha = Main.rand.Next(175, 200);
-						dust.color = Color.Lerp(Color.Purple,Color.White, Main.rand.NextFloat(0.25f, 0.75f));
-					}
+				for (int i = 0; i < 3; i++)
+				{
+					Vector2 offset = Vector2.One.RotatedBy(Main.rand.NextDouble() * 6.28);
+					Vector2 dustVel = offset.RotatedBy(1.57f) * Main.rand.NextFloat() * 0.85f;
+					offset *= new Vector2(Main.rand.NextFloat(0.6f, 1) * 60, Main.rand.NextFloat(0.5f, 1f) * 70);
+					Dust dust = Dust.NewDustPerfect(Projectile.Center + offset, ModContent.DustType<ConfluxRiftSmoke>(), dustVel);
+					dust.scale = Main.rand.NextFloat(0.5f, 0.8f);
+					dust.alpha = Main.rand.Next(175, 200);
+					dust.color = Color.Lerp(Color.Purple, Color.White, Main.rand.NextFloat(0.25f, 0.75f));
 				}
 			}
+		}
 
 		// Encounter logic.
 		if (Main.netMode != NetmodeID.MultiplayerClient)
@@ -172,14 +169,16 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		behindNPCsAndTiles.Add(index);
 	}
 
-	public override bool PreDraw(ref Microsoft.Xna.Framework.Color lightColor)
+	public override bool PreDraw(ref Color lightColor)
 	{
 		Texture2D tex = TextureAssets.Projectile[Type].Value;
 		Vector2 position = Projectile.Center - Main.screenPosition;
+
 		if (shader?.Value is not Effect effect)
 		{
 			return false;
 		}
+
 		effect.Parameters["timeManual"].SetValue((float)Main.time * 0.027f);
 		effect.Parameters["progress"].SetValue(OpeningAnimation);
 		effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(Texture + "_PerlinNoiseMap").Value);
@@ -194,7 +193,9 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		Main.spriteBatch.End();
 		Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 		this.DrawHighlightAndCheckRightClickInteraction(Highlight.Value, position, lightColor);
-		/*(_, _, Color colorBase) = GetVisualParameters();
+
+		/*
+		(_, _, Color colorBase) = GetVisualParameters();
         var sizeTargets = Vector2.Lerp
         (
             Vector2.Lerp(new(0.5f, 0.75f), new(3.50f, 3.75f), OpeningAnimation),
@@ -214,7 +215,8 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
             Main.EntitySpriteDraw(tex, position, null, color, rotation, tex.Size() / 2f, size, SpriteEffects.None, 0);
         }
 
-        this.DrawHighlightAndCheckRightClickInteraction(Highlight.Value, position, lightColor);*/
+        this.DrawHighlightAndCheckRightClickInteraction(Highlight.Value, position, lightColor);
+		*/
 
 		return false;
 	}
@@ -237,7 +239,11 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		BitFlags |= Flags.Activated;
 		EndTime = Main.GameUpdateCount + (lengthInSeconds * (uint)TimeSystem.LogicFramerate);
 		Encounter = CreateEncounter(lengthInSeconds);
-		Projectile.netUpdate = true;
+
+		if (Main.netMode == NetmodeID.Server)
+		{
+			NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, Projectile.whoAmI);
+		}
 	}
 
 	public void Close()
@@ -245,7 +251,11 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		if (Closing || Main.netMode == NetmodeID.MultiplayerClient) { return; }
 
 		BitFlags |= Flags.Closing;
-		Projectile.netUpdate = true;
+
+		if (Main.netMode == NetmodeID.Server)
+		{
+			NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, Projectile.whoAmI);
+		}
 
 		UpdateProgress();
 		RemoveEncounter();
@@ -260,7 +270,11 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		if (progress != Progress)
 		{
 			Progress = progress;
-			Projectile.netUpdate = true;
+
+			if (Main.netMode == NetmodeID.Server)
+			{
+				NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, Projectile.whoAmI);
+			}
 		}
 	}
 

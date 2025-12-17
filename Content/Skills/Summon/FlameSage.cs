@@ -29,7 +29,7 @@ public class FlameSage : SummonSkill
 	{
 		Level = level;
 		Cooldown = MaxCooldown = 120;
-		ManaCost = 20 - Level * 5;
+		ResourceCost = 20 - Level * 5;
 		Duration = SentryNPC.DefaultSentryDuration;
 		WeaponType = ItemType.None;
 	}

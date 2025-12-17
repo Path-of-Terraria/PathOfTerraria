@@ -4,6 +4,34 @@ namespace PathOfTerraria.Common.Utilities;
 
 public static class MathUtils
 {
+	/// <summary> Short-hand for Clamp(value, 0, 1). </summary>
+	public static float Clamp01(float value)
+	{
+		return value <= 0f ? 0f : value >= 1f ? 1f : value;
+	}
+	/// <summary> Short-hand for Clamp(value, 0, 1). </summary>
+	public static double Clamp01(double value)
+	{
+		return value <= 0.0 ? 0.0 : value >= 1.0 ? 1.0 : value;
+	}
+
+	/// <summary> Returns the remainder of a division, compatible with negative numbers. </summary>
+	public static float Modulo(float value, float length)
+	{
+		return value - (float)Math.Floor(value / length) * length;
+	}
+	/// <summary> Returns the remainder of a division, compatible with negative numbers. </summary>
+	public static double Modulo(double value, double length)
+	{
+		return value - (float)Math.Floor(value / length) * length;
+	}
+	/// <summary> Returns the remainder of a division, compatible with negative numbers. </summary>
+	public static int Modulo(int value, int length)
+	{
+		int r = value % length;
+		return r < 0 ? r + length : r;
+	}
+
 	/// <summary> Approaches <paramref name="goal"/> by adding <paramref name="step"/> to move <paramref name="value"/> towards it. </summary>
 	public static float StepTowards(float value, float goal, float step)
 	{

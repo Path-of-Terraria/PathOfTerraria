@@ -77,6 +77,8 @@ public abstract class SkillTree : ILoadable
 		string skillName = skill.Name;
 		Dictionary<string, int> nameToLevel = [];
 
+		tag.Add("points", Points);
+
 		foreach (SkillNode item in Nodes)
 		{
 			if (item is not Anchor && item.Level != 0)
@@ -117,6 +119,8 @@ public abstract class SkillTree : ILoadable
 	internal void LoadDelayedData(Skill skill, TagCompound tag)
 	{
 		string skillName = skill.Name;
+
+		Points = tag.GetInt("points");
 
 		IList<string> names = tag.GetList<string>("passives");
 		IList<int> levels = tag.GetList<int>("levels");

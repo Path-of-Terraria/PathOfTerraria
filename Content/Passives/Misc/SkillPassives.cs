@@ -1,5 +1,5 @@
 ﻿using Humanizer;
-using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.ModPlayers.SkillPlayers;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 
 namespace PathOfTerraria.Content.Passives.Misc;

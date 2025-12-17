@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
@@ -63,7 +64,12 @@ internal class SkillTreePlayer : ModPlayer
 		{
 			foreach (KeyValuePair<Type, int> pair in TotalLevelByTypeByTree[tree])
 			{
-				SkillPassiveValueHandler.Send(tree.GetType().FullName, pair.Key.FullName, (byte)pair.Value);
+				if (pair.Value <= 0)
+				{
+					continue;
+				}
+
+				SkillPassiveValueHandler.Send(tree.ParentSkill.FullName, pair.Key.FullName, (byte)pair.Value);
 			}
 		}
 	}
@@ -71,23 +77,23 @@ internal class SkillTreePlayer : ModPlayer
 	/// <summary>
 	/// Sets the specialization for the given skill type. Used for syncing.
 	/// </summary>
-	/// <param name="type">Skill type.</param>
+	/// <param name="skillType">Skill type.</param>
 	/// <param name="spec">Specialization to set.</param>
 	/// <param name="sync">Whether to sync this value setting or not.</param>
-	internal void SetSpecializationForSkill(Type type, SkillSpecial spec, bool sync = true)
+	internal void SetSpecializationForSkill(Type skillType, SkillSpecial spec, bool sync = true)
 	{
 		if (spec is null)
 		{
-			SpecializationsBySkill.Remove(type);
+			SpecializationsBySkill.Remove(skillType);
 		}
 		else
 		{
-			SpecializationsBySkill.TryAdd(type, spec);
+			SpecializationsBySkill.TryAdd(skillType, spec);
 		}
 
 		if (Main.netMode == NetmodeID.MultiplayerClient && sync)
 		{
-			SyncSkillSpecializationHandler.Send(type.FullName, spec.GetType().FullName);
+			SyncSkillSpecializationHandler.Send(skillType.FullName, spec.GetType().FullName);
 		}
 	}
 
@@ -99,26 +105,19 @@ internal class SkillTreePlayer : ModPlayer
 	/// <param name="levelAdjustment">If <paramref name="set"/> is true, the final value to use. Otherwise, the value to add to the stored value.</param>
 	/// <param name="sync">Whether this should run <see cref="SkillPassiveValueHandler.Send(string, string, byte)"/> or not.</param>
 	/// <param name="set">Whether this overrides or adds to the stored value.</param>
-	internal void ModifyPassive(SkillTree tree, Type nodeType, int levelAdjustment, bool sync = true, bool set = false)
+	internal void ModifyPassive(SkillTree tree, Type nodeType, int levelAdjustment, bool sync = true)
 	{
 		TotalLevelByTypeByTree.TryAdd(tree, []);
 		Dictionary<Type, int> levelByType = TotalLevelByTypeByTree[tree];
 
 		if (!levelByType.TryAdd(nodeType, levelAdjustment))
 		{
-			if (!set)
-			{
-				levelByType[nodeType] += levelAdjustment;
-			}
-			else
-			{
-				levelByType[nodeType] = levelAdjustment;
-			}
+			levelByType[nodeType] = levelAdjustment;
 		}
 
 		if (Main.netMode == NetmodeID.MultiplayerClient && sync)
 		{
-			SkillPassiveValueHandler.Send(tree.GetType().FullName, nodeType.FullName, (byte)levelByType[nodeType]);
+			SkillPassiveValueHandler.Send(tree.ParentSkill.FullName, nodeType.FullName, (byte)levelByType[nodeType]);
 		}
 	}
 
@@ -144,13 +143,14 @@ internal class SkillTreePlayer : ModPlayer
 	/// <typeparam name="TTree">The tree to reference.</typeparam>
 	/// <typeparam name="TPassive">The passive to check for.</typeparam>
 	/// <returns>If the player has any one or more of the passive enabled.</returns>
-	internal bool HasPassive<TTree, TPassive>() where TTree : SkillTree where TPassive : SkillPassive
+	internal bool HasPassive<TTree, TPassive>(out float strength) where TTree : SkillTree where TPassive : SkillPassive
 	{
-		return GetPassiveStrength<TTree, TPassive>() > 0;
+		strength = GetPassiveStrength<TTree, TPassive>();
+		return strength > 0;
 	}
 
 	/// <summary>
-	/// Checks if the given skill's specialization is <typeparamref name="TSpecialization"/>.
+	/// Checks if the given skill's specialization is <typeparamref name="TSpecialization"/>. Required for proper functionality in multiplayer.
 	/// </summary>
 	/// <typeparam name="TSkill">The skill to reference.</typeparam>
 	/// <typeparam name="TSpecialization">The specialization to match for.</typeparam>

@@ -244,3 +244,13 @@ AvariceBuff: {
 	DisplayName: Avarice Buff
 	Description: Mods.PathOfTerraria.Buffs.AvariceBuff.Description
 }
+
+SlowburnDebuff: {
+	DisplayName: Slowburn Debuff
+	Description: Mods.PathOfTerraria.Buffs.SlowburnDebuff.Description
+}
+
+EverburningShadowflameDebuff: {
+	DisplayName: Everburning Shadowflame Debuff
+	Description: Mods.PathOfTerraria.Buffs.EverburningShadowflameDebuff.Description
+}

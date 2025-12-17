@@ -182,6 +182,33 @@ public class ElementalContainer : IEnumerable<ElementInstance>
 	}
 
 	/// <summary>
+	/// Shorthand for setting <see cref="ElementalDamage"/> and <see cref="ElementInstance.Multiplier"/>. 
+	/// Also see <see cref="AddElementalValues(ValueTuple{ElementType, int, float}[])"/>.
+	/// </summary>
+	public void AddElementalValues(params ReadOnlySpan<(ElementType type, int add, float conv, float multiplier)> values)
+	{
+		foreach ((ElementType type, int add, float conv, float multiplier) in values)
+		{
+			ref ElementalDamage damageModifier = ref this[type].DamageModifier;
+			damageModifier = damageModifier.AddModifiers(add, conv);
+			this[type].Multiplier += multiplier;
+		}
+	}
+
+	/// <summary>
+	/// Shorthand for setting <see cref="ElementalContainer"/>'s <see cref="ElementalDamage"/> values. 
+	/// Also see <see cref="AddElementalValues(ValueTuple{ElementType, int, float, float}[])"/>.
+	/// </summary>
+	public void AddElementalValues(params ReadOnlySpan<(ElementType type, int add, float conv)> values)
+	{
+		foreach ((ElementType type, int add, float conv) in values)
+		{
+			ref ElementalDamage damageModifier = ref this[type].DamageModifier;
+			damageModifier = damageModifier.AddModifiers(add, conv);
+		}
+	}
+
+	/// <summary>
 	/// Resets the modifiers on this instance for use in something like <see cref="ModPlayer.ResetEffects"/>.
 	/// </summary>
 	/// <param name="resetModifiers">Whether the elemental modifiers (such as <see cref="LightningDamageModifier"/>) should be reset. NPCs shouldn't reset them.</param>

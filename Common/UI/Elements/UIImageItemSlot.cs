@@ -78,7 +78,7 @@ public class UIImageItemSlot
 	/// </summary>
 	public UIHoverImage Icon { get; protected set; } = null!;
 
-	protected Asset<Texture2D> BackgroundTexture = backgroundTexture;
+	public Asset<Texture2D> BackgroundTexture { get; set; } = backgroundTexture;
 
 	/// <summary>
 	///     The context of the item slot.
@@ -88,7 +88,7 @@ public class UIImageItemSlot
 	/// </remarks>
 	public int Context = context;
 
-	protected Asset<Texture2D> IconTexture = iconTexture;
+	public Asset<Texture2D> IconTexture { get; set; } = iconTexture;
 
 	/// <summary>
 	///     Can be used to determine whether an item can be inserted into the slot or not.
@@ -96,7 +96,7 @@ public class UIImageItemSlot
 	public ItemInsertionPredicate? Predicate { get; set; }
 
 	/// <summary>
-	///     Can be used to determine whether an item can be inserted into the slot or not.
+	/// Can be used to determine whether an item can be inserted into the slot or not.
 	/// </summary>
 	public IsLockedPredicate? IsLocked { get; set; }
 
@@ -228,6 +228,7 @@ public class UIImageItemSlot
 	protected virtual void UpdateIcon()
 	{
 		Icon.SetImage(GetIconToDraw());
+		Background.SetImage(BackgroundTexture);
 	}
 
 	protected virtual void UpdateInteraction()
@@ -286,7 +287,7 @@ public class UIImageItemSlot
 		{
 			return IconTexture;
 		}
-		
+
 		return Asset<Texture2D>.Empty;
 	}
 }

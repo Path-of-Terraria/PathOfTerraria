@@ -56,7 +56,14 @@ public static class EntityExtensions
 	/// <param name="player">The player being referenced.</param>
 	internal static bool HasTreePassive<TTree, TPassive>(this Player player) where TTree : SkillTree where TPassive : SkillPassive
 	{
-		return player.GetModPlayer<SkillTreePlayer>().HasPassive<TTree, TPassive>();
+		return player.GetModPlayer<SkillTreePlayer>().HasPassive<TTree, TPassive>(out _);
+	}
+
+	/// <inheritdoc cref="SkillTreePlayer.HasPassive{TTree, TPassive}"/>
+	/// <param name="player">The player being referenced.</param>
+	internal static bool HasTreePassive<TTree, TPassive>(this Player player, out float strength) where TTree : SkillTree where TPassive : SkillPassive
+	{
+		return player.GetModPlayer<SkillTreePlayer>().HasPassive<TTree, TPassive>(out strength);
 	}
 
 	/// <summary>

@@ -6,6 +6,13 @@ namespace PathOfTerraria.Core.UI;
 
 internal static class UIUtilities
 {
+	/// <summary> Invokes a delegate with an element and then returns it. </summary>
+	public static T With<T>(this T element, Action<T> initAction = null) where T : UIElement
+	{
+		initAction?.Invoke(element);
+		return element;
+	}
+
 	/// <summary> Adds or Appends a child element to the current one and returns it. </summary>
 	public static T AddElement<T>(this UIElement parent, T child, Action<T> initAction = null) where T : UIElement
 	{

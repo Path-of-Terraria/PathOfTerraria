@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Common.Mechanics;
-using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.ModPlayers.SkillPlayers;
 using PathOfTerraria.Common.UI.Hotbar;
 using Terraria.GameContent;
 using Terraria.Localization;

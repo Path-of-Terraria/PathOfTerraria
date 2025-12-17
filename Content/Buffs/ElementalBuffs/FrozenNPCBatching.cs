@@ -1,6 +1,5 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer.Projectiles;
 using ReLogic.Content;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +9,7 @@ using Terraria.GameContent;
 namespace PathOfTerraria.Content.Buffs.ElementalBuffs;
 
 /// <summary>
-/// Handles batching <see cref="SunspotAura"/> draw calls to save a bit of performance.
+/// Handles batching Frozen NPC draw calls to save a bit of performance.
 /// </summary>
 internal class FrozenNPCBatching : GlobalNPC
 {

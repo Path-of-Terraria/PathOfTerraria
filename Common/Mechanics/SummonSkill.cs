@@ -22,10 +22,8 @@ public abstract class SummonSkill : Skill
 		return base.CanUseSkill(player, ref failReason, justChecking);
 	}
 
-	public override void UseSkill(Player player)
+	protected override void PreUseSkill(Player player)
 	{
-		base.UseSkill(player);
-
 		bool hasDuplicate = Tree.Augments.Any(x => x.Augment is Duplicate);
 		for (int i = 0; i < (hasDuplicate ? 2 : 1); i++)
 		{

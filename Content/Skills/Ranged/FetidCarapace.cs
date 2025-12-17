@@ -21,15 +21,13 @@ public class FetidCarapace : Skill
 	{
 		Level = level;
 		Cooldown = MaxCooldown = 30 * 60;
-		ManaCost = 20;
+		ResourceCost = 20;
 		Duration = (6 + Level * 4) * 60;
 		WeaponType = ItemType.Ranged;
 	}
 
-	public override void UseSkill(Player player)
+	protected override void InternalUseSkill(Player player)
 	{
-		base.UseSkill(player);
-
 		// Level to the strength of all FetidCarapaceAffix
 		LevelTo((byte)player.GetModPlayer<AffixPlayer>().StrengthOf<FetidCarapaceAffix>());
 

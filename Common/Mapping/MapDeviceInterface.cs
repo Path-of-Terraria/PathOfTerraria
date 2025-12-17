@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Common.UI.Components;
 using PathOfTerraria.Common.UI.Elements;
+using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Content.Tiles.Furniture;
 using PathOfTerraria.Core.Time;
@@ -11,19 +13,24 @@ using PathOfTerraria.Core.UI.SmartUI;
 using PathOfTerraria.Utilities;
 using PathOfTerraria.Utilities.Xna;
 using ReLogic.Content;
+using ReLogic.Graphics;
 using ReLogic.Utilities;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.GameContent.UI.Elements;
+using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.UI;
 using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
+using Terraria.UI.Chat;
 
 #nullable enable
 #pragma warning disable IDE0042 // Deconstruct variable declaration
 #pragma warning disable IDE0053 // Use expression body for lambda expression
+#pragma warning disable CA1822 // Mark members as static
 
 namespace PathOfTerraria.Common.Mapping;
 
@@ -42,7 +49,7 @@ internal sealed class MapDeviceInterface : ModSystem
 		"Vanilla: Interface Logic 3",
 		"Vanilla: Interface Logic 4",
 		$"{nameof(PathOfTerraria)}: {typeof(Tooltip).FullName}",
-		$"{nameof(PathOfTerraria)}: {typeof(MapDeviceState).FullName}", //MapDeviceState.Identifier,
+		$"{nameof(PathOfTerraria)}: {typeof(MapDeviceState).FullName}",
 	];
 
 	public static bool Active { get; private set; }
@@ -53,9 +60,6 @@ internal sealed class MapDeviceInterface : ModSystem
 	{
 		if (!Main.dedServ)
 		{
-			//State = new MapDeviceState();
-			//UIManager.Register(MapDeviceState.Identifier, "Vanilla: Mouse Text", State, offset: -1);
-
 			UIManager.PostModifyInterfaceLayers += PostModifyInterfaceLayers;
 			On_Player.ToggleInv += ToggleInvHook;
 		}
@@ -141,15 +145,12 @@ internal sealed class MapDeviceInterface : ModSystem
 		Entity = null;
 		Active = false;
 		State.OnClosing();
+		Main.playerInventory = false;
 
-		if (fromEntity)
+		SoundEngine.PlaySound(new SoundStyle($"{nameof(PathOfTerraria)}/Assets/Sounds/MapDevice/Close")
 		{
-			Main.playerInventory = false;
-			SoundEngine.PlaySound(new SoundStyle($"{nameof(PathOfTerraria)}/Assets/Sounds/MapDevice/Close")
-			{
-				PitchVariance = 0.1f,
-			});
-		}
+			PitchVariance = 0.1f,
+		});
 	}
 }
 
@@ -292,12 +293,12 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		Pitch = -0.25f,
 		IsLooped = true,
 	};
-	private static SlotId gearSoundHandle;
 
 	private bool forceUpdateAnimation;
 	private float openingAnimation;
 	private float closingAnimation;
-	private (float Speed, float Rotation, Vector2 Offset) gear;
+	private (float Speed, float Rotation, Vector2 Offset, SlotId Sound) gear;
+	private (int NonWrappedSelection, float Center, float Visibility, float EjectVisibility, float InjectionAnimation, SlotId Sound) canisters;
 	private SpriteFrame buttonLockFrame = new(1, 18);
 	private (Color? Injection, Color? Burst, SpriteFrame Frame) activationEffect = (null, null, new(4, 3));
 	private (StyleDimension X, StyleDimension Y) storagePositionSrc;
@@ -305,12 +306,15 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 	private (StyleDimension X, StyleDimension Y) inventoryPositionSrc;
 	private (StyleDimension X, StyleDimension Y) inventoryPositionDst;
 
+	private ref readonly MapResource CurrentMapResource => ref MapResources.Resources[MathUtils.Modulo(canisters.NonWrappedSelection, MapResources.Resources.Length)];
+
 	public WindowElement? Window { get; private set; }
 	public UIElement? ActionButton { get; private set; }
 	public UIGrid? Storage { get; private set; }
 	public UIGrid? Inventory { get; private set; }
 	public UIElement? StoragePanel { get; private set; }
 	public UIElement? InventoryPanel { get; private set; }
+	public (UIElement[] Common, UIElement[] Eject) CanisterElements { get; private set; } = ([], []);
 
 	public new bool Visible { get => base.Visible; private set => base.Visible = value; }
 
@@ -339,6 +343,9 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		// Allow interactions once again.
 		IgnoresMouseInteraction = false;
 
+		ResetGeneral();
+		ResetCanisters();
+
 		Refresh();
 	}
 
@@ -347,10 +354,9 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		if (!Visible) { return; }
 
 		Visible = false;
-		openingAnimation = 0f;
-		closingAnimation = 0f;
 		IgnoresMouseInteraction = true;
-		SoundUtils.StopAndInvalidateSoundSlot(ref gearSoundHandle);
+		SoundUtils.StopAndInvalidateSoundSlot(ref gear.Sound);
+		SoundUtils.StopAndInvalidateSoundSlot(ref canisters.Sound);
 	}
 
 	public override void SafeUpdate(GameTime gameTime)
@@ -360,6 +366,8 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		(float oldOpening, float oldClosing) = (openingAnimation, closingAnimation);
 		openingAnimation = Math.Clamp(openingAnimation + ((MapDeviceInterface.Active ? +1f : +0f) / 20f), 0f, 1f);
 		closingAnimation = Math.Clamp(closingAnimation + ((MapDeviceInterface.Active ? -1f : +1f) / 20f), 0f, 1f);
+
+		UpdateCanisters();
 
 		// Cogwheel.
 		const float GearMaxSpeed = 60f;
@@ -373,7 +381,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		float gearRate = gear.Speed / GearMaxSpeed;
 		float gearVolume = Main.hasFocus ? gearRate : Math.Min(gearRate, 0.01f);
 		float gearPitch = -0.99f + gearRate;
-		SoundUtils.UpdateLoopingSound(ref gearSoundHandle, null, gearVolume, gearPitch, GearSound);
+		SoundUtils.UpdateLoopingSound(ref gear.Sound, null, gearVolume, gearPitch, GearSound);
 
 		if ((int)MathF.Floor(gear.Rotation / GearOffsetRate) > (int)MathF.Floor(oldRot / GearOffsetRate))
 		{
@@ -493,6 +501,8 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		Vector2 gearPosition = windowCenter + gear.Offset + Vector2.Lerp(new Vector2(-0f, -96f), new Vector2(-0f, -128f), sharedAnimation);
 		float gearRotation = MathHelper.ToRadians(MathF.Floor(MathHelper.ToDegrees(gear.Rotation) / 4f) * 4f);
 		sb.Draw(gearTexture.Value, gearPosition, null, Color.White, gearRotation, gearTexture.Size() * 0.5f, 1f, 0, 0f);
+
+		RenderCanisters(sb, windowCenter);
 	}
 
 	public void DrawOver(SpriteBatch sb)
@@ -509,6 +519,328 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		Texture2D lockTexture = ModContent.Request<Texture2D>($"{BasePath}/MapDevice_Trigger_Locked", AssetRequestMode.ImmediateLoad).Value;
 		Rectangle lockSrcRect = buttonLockFrame.GetSourceRectangle(lockTexture);
 		sb.Draw(lockTexture, lockDstRect, lockSrcRect, Color.White, 0f, default, 0, 0f);
+	}
+
+	private void ResetGeneral()
+	{
+		openingAnimation = 0f;
+		closingAnimation = 0f;
+		buttonLockFrame = buttonLockFrame.With(0, 0);
+		gear.Speed = 0f;
+		activationEffect.Burst = null;
+		activationEffect.Injection = null;
+
+		if (MapDeviceInterface.Entity is { PortalActive: true } entity)
+		{
+			SetActivationEffect(entity);
+		}
+	}
+
+	private bool CanInteractWithCanisters()
+	{
+		return MapDeviceInterface.Entity is { StoredMap: not { IsAir: false }, Injection: null };
+	}
+	private bool CanInjectCurrentCanister()
+	{
+		return MapDeviceInterface.Entity?.TryInjectingResource(CurrentMapResource.AssociatedItem, evalMode: true) == true;
+	}
+	private bool CanEjectCanister()
+	{
+		return MapDeviceInterface.Entity?.TryEjectingResource(evalMode: true) == true;
+	}
+	private void ResetCanisters()
+	{
+		canisters.Visibility = 0f;
+		canisters.EjectVisibility = 0f;
+
+		if (MapDeviceInterface.Entity?.Injection is { } injection)
+		{
+			canisters.InjectionAnimation = 1f;
+			canisters.Center = canisters.NonWrappedSelection = MapResources.IndexOf(injection.Id);
+		}
+		else
+		{
+			canisters.InjectionAnimation = 0f;
+		}
+	}
+	private void AddCanisterElements()
+	{
+		const float sideXOffset = 128f;
+		const float sideYOffset = -256f - 16f;
+
+		var windowCenter = Window!.GetDimensions().Center().ToPoint().ToVector2();
+
+		Asset<Texture2D> leftDefTex = ModContent.Request<Texture2D>($"{BasePath}/ArrowSmall_Left", AssetRequestMode.ImmediateLoad);
+		Asset<Texture2D> leftHvrTex = ModContent.Request<Texture2D>($"{BasePath}/ArrowSmall_Left_Highlight", AssetRequestMode.ImmediateLoad);
+		Asset<Texture2D> rightDefTex = ModContent.Request<Texture2D>($"{BasePath}/ArrowSmall_Right", AssetRequestMode.ImmediateLoad);
+		Asset<Texture2D> rightHvrTex = ModContent.Request<Texture2D>($"{BasePath}/ArrowSmall_Right_Highlight", AssetRequestMode.ImmediateLoad);
+		Asset<Texture2D> injectDefTex = ModContent.Request<Texture2D>($"{BasePath}/ArrowLarge_Down", AssetRequestMode.ImmediateLoad);
+		Asset<Texture2D> injectHvrTex = ModContent.Request<Texture2D>($"{BasePath}/ArrowLarge_Down_Highlight", AssetRequestMode.ImmediateLoad);
+		Asset<Texture2D> injectLckTex = ModContent.Request<Texture2D>($"{BasePath}/ArrowLarge_Down_Locked", AssetRequestMode.ImmediateLoad);
+		(Vector2 Pos, Vector2 Size) left = (windowCenter + new Vector2(-sideXOffset, +sideYOffset) - leftDefTex.Size() * 0.5f, leftDefTex.Size());
+		(Vector2 Pos, Vector2 Size) right = (windowCenter + new Vector2(+sideXOffset, +sideYOffset) - rightDefTex.Size() * 0.5f, rightDefTex.Size());
+		(Vector2 Pos, Vector2 Size) inject = (windowCenter + new Vector2(0f, -208) - injectDefTex.Size() * 0.5f, injectDefTex.Size());
+		(Vector2 Pos, Vector2 Size) eject = (windowCenter + new Vector2(0f, -246) - injectDefTex.Size() * 0.5f, injectDefTex.Size());
+
+		// The buttons are invisible when first added, the update function below implements fading behavior.
+		UIElement leftButton = this.AddElement(new UIImage(leftDefTex), e =>
+		{
+			e.Color = Color.Transparent;
+			e.SetDimensions(x: (0f, left.Pos.X), y: (0f, left.Pos.Y), width: (0f, left.Size.X), height: (0f, left.Size.Y));
+			e.AddComponent(new UIInteractive
+			{
+				IsActive = _ => CanInteractWithCanisters(),
+				HoverSound = SoundID.MenuTick,
+				HoverTexture = leftHvrTex,
+			});
+			e.OnLeftClick += (_, _) =>
+			{
+				if (CanInteractWithCanisters()) { canisters.NonWrappedSelection--; }
+			};
+		});
+		UIElement rightButton = this.AddElement(new UIImage(rightDefTex), e =>
+		{
+			e.Color = Color.Transparent;
+			e.SetDimensions(x: (0f, right.Pos.X), y: (0f, right.Pos.Y), width: (0f, right.Size.X), height: (0f, right.Size.Y));
+			e.AddComponent(new UIInteractive
+			{
+				IsActive = _ => CanInteractWithCanisters(),
+				HoverSound = SoundID.MenuTick,
+				HoverTexture = rightHvrTex,
+			});
+			e.OnLeftClick += (_, _) =>
+			{
+				if (CanInteractWithCanisters()) { canisters.NonWrappedSelection++; }
+			};
+		});
+		UIElement injectButton = this.AddElement(new UIImage(injectDefTex), e =>
+		{
+			e.Color = Color.Transparent;
+			e.SetDimensions(x: (0f, inject.Pos.X), y: (0f, inject.Pos.Y), width: (0f, inject.Size.X), height: (0f, inject.Size.Y));
+			e.AddComponent(new UIInteractive
+			{
+				IsActive = _ => CanInteractWithCanisters(),
+				IsUnlocked = _ => CanInjectCurrentCanister(),
+				HoverSound = SoundID.MenuTick,
+				ClickSound = SoundID.MenuTick,
+				HoverTexture = injectHvrTex,
+				HoverTooltip = Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.MapDevice.InjectResource"),
+				LockedTexture = injectLckTex,
+				LockedTooltip = Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.MapDevice.NotEnoughResources"),
+			});
+			e.OnLeftClick += (_, _) =>
+			{
+				MapDeviceInterface.Entity?.TryInjectingResource(CurrentMapResource.AssociatedItem);
+			};
+		});
+		UIElement ejectButton = this.AddElement(new UIImage(injectDefTex), e =>
+		{
+			e.Rotation = MathHelper.Pi;
+			e.Color = Color.Transparent;
+			e.NormalizedOrigin = Vector2.One * 0.5f;
+			e.SetDimensions(x: (0f, eject.Pos.X), y: (0f, eject.Pos.Y), width: (0f, eject.Size.X), height: (0f, eject.Size.Y));
+			e.AddComponent(new UIInteractive
+			{
+				IsActive = _ => CanEjectCanister(),
+				HoverSound = SoundID.MenuTick,
+				ClickSound = SoundID.MenuTick,
+				HoverTexture = injectHvrTex,
+				HoverTooltip = Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.MapDevice.EjectResource"),
+			});
+			e.OnLeftClick += (_, _) =>
+			{
+				MapDeviceInterface.Entity?.TryEjectingResource();
+			};
+		});
+
+		CanisterElements = ([injectButton, leftButton, rightButton], [ejectButton]);
+	}
+	private void UpdateCanisters()
+	{
+		// Play and update boling liquid audio.
+		float loopVolume = MathUtils.Clamp01(MathUtils.Clamp01((canisters.InjectionAnimation - 0.9f) / (1f - 0.9f)) - closingAnimation);
+		SoundUtils.UpdateLoopingSound(ref canisters.Sound, null, loopVolume, null, new($"{SoundPath}/Boiling")
+		{
+			Volume = 0.15f,
+			IsLooped = true,
+		});
+
+		if (MapDeviceInterface.Entity is not { } entity)
+		{
+			return;
+		}
+
+		bool canInteract = CanInteractWithCanisters();
+		bool canEject = CanEjectCanister();
+
+		// Progress injection animation.
+		if (entity.Injection.HasValue)
+		{
+			float previous = canisters.InjectionAnimation;
+			canisters.InjectionAnimation = MathUtils.StepTowards(canisters.InjectionAnimation, 1f, TimeSystem.LogicDeltaTime);
+
+			if (canisters.InjectionAnimation >= 1f && previous < 1f)
+			{
+				activationEffect = (null, CurrentMapResource.AccentColor, activationEffect.Frame.With(0, 0));
+
+				SoundEngine.PlaySound(new SoundStyle($"{nameof(PathOfTerraria)}/Assets/Sounds/MapDevice/InjectPlug")
+				{
+					Volume = 0.3f,
+					PitchVariance = 0.2f,
+				});
+			}
+		}
+		else
+		{
+			canisters.InjectionAnimation = 0f;
+		}
+
+		// Update UI element visibility.
+		float commonTarget = (canInteract && closingAnimation == 0f && canisters.InjectionAnimation <= 0f) ? 1f : 0f;
+		float ejectTarget = (canEject && closingAnimation == 0f && canisters.InjectionAnimation >= 1f) ? 1f : 0f;
+		canisters.Visibility = MathUtils.StepTowards(MathHelper.Lerp(canisters.Visibility, commonTarget, 0.1f), commonTarget, 0.5f * TimeSystem.LogicDeltaTime);
+		canisters.EjectVisibility = MathUtils.StepTowards(MathHelper.Lerp(canisters.EjectVisibility, ejectTarget, 0.1f), ejectTarget, 0.5f * TimeSystem.LogicDeltaTime);
+		var commonColor = new Color(Vector4.One * (canisters.Visibility * (openingAnimation - closingAnimation)));
+		var ejectColor = new Color(Vector4.One * (canisters.EjectVisibility * (openingAnimation - closingAnimation)));
+
+		Array.ForEach(CanisterElements.Common, e => ((UIImage)e).Color = commonColor);
+		Array.ForEach(CanisterElements.Eject, e => ((UIImage)e).Color = ejectColor);
+
+		// Scrolling.
+		if (canInteract && PlayerInput.ScrollWheelDeltaForUI is not 0 and int weirdDelta)
+		{
+			canisters.NonWrappedSelection -= weirdDelta / 120;
+			//SoundEngine.PlaySound(SoundID.MenuTick with { MaxInstances = 3, PitchVariance = 0.2f });
+		}
+
+		// Move scroll center.
+		float oldCenter = canisters.Center;
+		canisters.Center = MathHelper.Lerp(canisters.Center, canisters.NonWrappedSelection, 0.1f);
+		canisters.Center = MathUtils.StepTowards(canisters.Center, canisters.NonWrappedSelection, 0.01f);
+
+		// Play audio between edges.
+		if ((int)MathF.Round(oldCenter) != (int)MathF.Round(canisters.Center))
+		{
+			// Quite funny.
+			float speed = MathF.Abs(canisters.Center - oldCenter);
+			float pitch = MathHelper.Lerp(-0.25f, 0.35f, MathHelper.Clamp(speed * 3f, 0f, 1f));
+			SoundEngine.PlaySound(SoundID.Shatter with { Volume = 0.07f, MaxInstances = 5, Pitch = 1f, PitchVariance = 0.05f });
+			SoundEngine.PlaySound(SoundID.Tink with { Volume = 0.9f, MaxInstances = 5, Pitch = pitch, PitchVariance = 0.05f });
+			SoundEngine.PlaySound(SoundID.DrumKick with { Volume = 0.35f, MaxInstances = 5, Pitch = pitch, PitchVariance = 0.05f });
+		}
+	}
+	private void RenderCanisters(SpriteBatch sb, Vector2 windowCenter)
+	{
+		float globalVisibility = canisters.Visibility * (openingAnimation - closingAnimation);
+
+		const int numRenders = 7; // Must be odd.
+		const float offsetPerCanister = 48f;
+
+		Texture2D canisterTex = ModContent.Request<Texture2D>($"{BasePath}/MapDevice_Canister", AssetRequestMode.ImmediateLoad).Value;
+		Texture2D canisterHoverTex = ModContent.Request<Texture2D>($"{BasePath}/MapDevice_Canister_Highlight", AssetRequestMode.ImmediateLoad).Value;
+		Vector2 canisterSize = canisterTex.Size();
+
+		ReadOnlySpan<MapResource> resources = MapResources.Resources;
+		float leftCanisterSteps = 0.5f + (numRenders * -0.5f) - (canisters.Center - MathF.Floor(canisters.Center));
+		int middleCanisterOrder = (int)MathF.Floor(canisters.Center);
+		int leftCanisterOrder = middleCanisterOrder - (int)MathF.Floor(numRenders * 0.5f);
+		Vector2 sharedCenter = windowCenter + new Vector2(0f, -256f - 24f);
+
+		// Render all the canisters.
+		for (int i = 0; i < numRenders; i++)
+		{
+			bool isTheInserted = i == numRenders / 2 && canisters.InjectionAnimation > 0f;
+			bool isInserting = isTheInserted && canisters.InjectionAnimation < 1f;
+			int order = leftCanisterOrder + i;
+			int index = MathUtils.Modulo(order, resources.Length);
+			ref readonly MapResource resource = ref resources[index];
+
+			Texture2D texture = canisterTex;
+			float offset = (leftCanisterSteps + i) * offsetPerCanister;
+			Vector2 canisterCenter = sharedCenter + new Vector2(offset, 0f);
+			Vector2 canisterOrigin = canisterTex.Size() * 0.5f;
+			float stepsFromMiddle = MathF.Abs(canisterCenter.X - sharedCenter.X) / offsetPerCanister;
+			float scale = MathHelper.Lerp(1f, 0.8f, MathF.Min(1f, stepsFromMiddle / 3f));
+			float localVisibility = globalVisibility;
+			float shadowIntensity = 1f - MathF.Min(1f, stepsFromMiddle / 3f);
+
+			// Animation for the inserted canister.
+			if (isTheInserted)
+			{
+				// During injection animations, all but the central canister fade out.
+				localVisibility = 1f;
+				shadowIntensity = 0f;
+
+				const float insertionStart = 0.8f;
+				float anim = canisters.InjectionAnimation;
+				Vector2 riseTarget = sharedCenter - new Vector2(0f, 24f);
+				Vector2 insertionTarget = sharedCenter + new Vector2(0f, 94f); // 112f fpr complete insertion.
+				canisterCenter = Vector2.Lerp(canisterCenter, riseTarget, MathUtils.Clamp01((1f - MathF.Pow(1f - MathUtils.Clamp01(anim / insertionStart), 2f))));
+				canisterCenter = Vector2.Lerp(canisterCenter, insertionTarget, MathUtils.Clamp01((1f - MathF.Pow(1f - MathUtils.Clamp01(-insertionStart + anim), 16f))));
+			}
+
+			var fadeColor = Color.Lerp(Color.Transparent, Color.White, localVisibility);
+
+			// Interactions
+			Vector2 canisterTopleft = canisterCenter - (canisterOrigin * scale);
+			Rectangle interactionRect = new Rectangle((int)canisterTopleft.X, (int)canisterTopleft.Y, (int)(canisterTex.Width * scale), (int)(canisterTex.Height * scale)).Inflated(2, 2);
+			if (!isInserting && localVisibility >= 1f && interactionRect.Contains(Main.MouseScreen.ToPoint()) && stepsFromMiddle <= 2f)
+			{
+				scale *= 1.05f;
+				texture = canisterHoverTex;
+
+				Item item = ContentSamples.ItemsByType[resource.AssociatedItem];
+				List<DrawableTooltipLine> tooltipLines = ItemTooltipBuilder.BuildTooltips(item, Main.LocalPlayer);
+
+				Tooltip.Create(new()
+				{
+					Identifier = "MapDevice_Canister",
+					Lines = tooltipLines,
+				});
+
+				if (Main.mouseLeft && Main.mouseLeftRelease)
+				{
+					Main.mouseLeftRelease = false;
+					canisters.NonWrappedSelection = order;
+				}
+			}
+
+			// Shadow
+			var shadowCenter = Vector2.Lerp(canisterCenter, sharedCenter + new Vector2(0f, 96f), 0.2f);
+			var shadowColor = Color.Lerp(Color.Transparent, Color.Black.MultiplyRGBA(fadeColor), shadowIntensity);
+			sb.Draw(canisterTex, shadowCenter, null, shadowColor, 0f, canisterOrigin, scale, 0, 0f);
+			// Canister
+			var canisterColor = Color.Lerp(fadeColor, Color.Transparent, MathF.Min(1f, stepsFromMiddle / 3f));
+			sb.Draw(texture, canisterCenter, null, canisterColor, 0f, texture.Size() * 0.5f, scale, 0, 0f);
+
+			// Contents
+			if (ModContent.Request<Texture2D>(resource.CanisterLiquidTexture) is { IsLoaded: true, Value: Texture2D liquidTex })
+			{
+				sb.Draw(liquidTex, canisterCenter, null, canisterColor, 0f, liquidTex.Size() * 0.5f, scale, 0, 0f);
+			}
+
+			// Amount
+			if (!isTheInserted)
+			{
+				DynamicSpriteFont font = FontAssets.MouseText.Value;
+				float opacity = 1f - MathF.Min(1f, stepsFromMiddle / 2.5f);
+				var accentedColor = Color.Lerp(Color.Transparent, resource.AccentColor.MultiplyRGBA(fadeColor), opacity);
+				var neutralColor = Color.Lerp(Color.Transparent, ColorUtils.FromHexRgb(0x_cccccc).MultiplyRGBA(fadeColor), opacity);
+				var positiveColor = Color.Lerp(Color.Transparent, ColorUtils.FromHexRgb(0x_99e550).MultiplyRGBA(fadeColor), opacity);
+				var negativeColor = Color.Lerp(Color.Transparent, ColorUtils.FromHexRgb(0x_ac3232).MultiplyRGBA(fadeColor), opacity);
+				Color availabilityColor = resource.Value >= resource.Cost ? positiveColor : negativeColor;
+
+				void DrawString(Vector2 center, Color color, string text)
+				{
+					Vector2 size = font.MeasureString(text);
+					ChatManager.DrawColorCodedStringWithShadow(sb, font, text, center, color, 0f, size * 0.5f, Vector2.One);
+				}
+
+				DrawString(canisterCenter + new Vector2(0f, -56f), availabilityColor, resource.Value.ToString());
+				DrawString(canisterCenter + new Vector2(0f, -59f), neutralColor, "_");
+				DrawString(canisterCenter + new Vector2(0f, -40f), availabilityColor, resource.Cost.ToString());
+			}
+		}
 	}
 
 	public override void Refresh()
@@ -538,7 +870,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 
 		Asset<Texture2D> backgroundTexture = ModContent.Request<Texture2D>($"{BasePath}/MapDeviceBase", AssetRequestMode.ImmediateLoad);
 		Vector2 windowAreaSize = backgroundTexture.Size();
-		var uiOrigin = (Main.ScreenSize.ToVector2() * new Vector2(0.5f, 0.7f)).ToPoint().ToVector2();
+		var uiOrigin = ((Main.ScreenSize.ToVector2() / Main.UIScale) * new Vector2(0.5f, 0.7f)).ToPoint().ToVector2();
 
 		Window = this.AddElement(new WindowElement(backgroundTexture), e =>
 		{
@@ -572,16 +904,26 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		// Map slot
 		Asset<Texture2D> mapSlotTexture = ModContent.Request<Texture2D>($"{BasePath}/MapDeviceBase_Map_Slot", AssetRequestMode.ImmediateLoad);
 		Asset<Texture2D> mapIconTexture = ModContent.Request<Texture2D>($"{BasePath}/MapDeviceBase_Map_Icon", AssetRequestMode.ImmediateLoad);
+		Asset<Texture2D> mapLockTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/LockIcon", AssetRequestMode.ImmediateLoad);
 		var mapSlot = new UIImageItemSlot.SlotWrapper(() => entity.StoredMap, value => entity.StoredMap = value);
 		Window.AddElement(new UIHoverImageItemSlot(mapSlotTexture, mapIconTexture, mapSlot, null, context: CustomSlotContext), e =>
 		{
+			static bool HasInjection()
+			{
+				return MapDeviceInterface.Entity is { Injection: not null };
+			}
+
 			e.Initialize();
 			e.SetDimensions(x: (0.5f, -24), y: (0.5f, -148), width: (0f, +mapSlotTexture.Width() + 1), height: (0f, +mapSlotTexture.Height()));
 
 			(e.InactiveScale, e.ActiveScale) = (1.00f, 1.00f);
-			e.Predicate = (newItem, oldItem) => newItem is { ModItem: Map };
-			e.IsLocked = _ => MapDeviceInterface.Entity is { PortalActive: true };
+			e.Predicate = static (newItem, oldItem) => newItem is { ModItem: Map };
 			e.OnModifyItem += OnModifyMapItem;
+			e.IsLocked = static _ => MapDeviceInterface.Entity is { PortalActive: true } || HasInjection();
+			e.OnUpdate += e =>
+			{
+				((UIImageItemSlot)e).IconTexture = HasInjection() ? mapLockTexture : mapIconTexture;
+			};
 		});
 
 #endregion
@@ -700,6 +1042,8 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 
 		#endregion
 
+		AddCanisterElements();
+
 		// Put the main window under everything else.
 		RemoveChild(Window);
 		Append(Window);
@@ -708,14 +1052,14 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		Main.QueueMainThreadAction(Recalculate);
 	}
 
-	private static void OnModifyMapItem(UIElement element, Item oldItem, Item newItem)
+	private void OnModifyMapItem(UIElement element, Item oldItem, Item newItem)
 	{
 		if (Main.netMode != NetmodeID.MultiplayerClient || MapDeviceInterface.Entity is not { } device) { return; }
 
 		MapDeviceSync.Send(device.ID, MapDeviceSync.Flags.Map, null);
 	}
 
-	private static void OnModifyStorageItem(UIElement element, Item oldItem, Item newItem, int slotIndex)
+	private void OnModifyStorageItem(UIElement element, Item oldItem, Item newItem, int slotIndex)
 	{
 		if (Main.netMode != NetmodeID.MultiplayerClient || MapDeviceInterface.Entity is not { } device) { return; }
 
@@ -724,14 +1068,21 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		_ = (element, oldItem, newItem);
 	}
 
-	private static bool IsButtonAvailable()
+	private bool IsButtonAvailable()
 	{
-		if (MapDeviceInterface.Entity is not { } entity) { return true; }
+		if (MapDeviceInterface.Entity is not { } entity) { return false; }
 
-		return entity.PortalActive ? entity.TryClosingPortal(evalMode: true) : entity.TryOpeningPortal(evalMode: true);
+		if (entity.PortalActive)
+		{
+			return entity.TryClosingPortal(evalMode: true);
+		}
+		else
+		{
+			return entity.TryOpeningPortal(evalMode: true) && (!entity.Injection.HasValue || canisters.InjectionAnimation >= 1f);
+		}
 	}
 
-	private static void OpenOrClosePortalClick(UIMouseEvent evt, UIElement element)
+	private void OpenOrClosePortalClick(UIMouseEvent evt, UIElement element)
 	{
 		if (MapDeviceInterface.Entity is not { } entity) { return; }
 
@@ -739,11 +1090,9 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 
 		if (!entity.PortalActive)
 		{
-			if (entity.TryOpeningPortal() == true)
+			if (entity.TryOpeningPortal())
 			{
-				//state.activationEffect.Burst = ColorUtils.FromHexRgb(0x4a433f);
-				state.activationEffect.Burst = ColorUtils.FromHexRgb(0x958982);
-				state.activationEffect.Injection = ColorUtils.FromHexRgb(0x13d6ff);
+				state.SetActivationEffect(entity);
 				state.activationEffect.Frame = state.activationEffect.Frame.With(0, 0);
 			}
 		}
@@ -751,10 +1100,24 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		{
 			entity.TryClosingPortal();
 
-			state.activationEffect.Burst = null;
 			state.activationEffect.Burst = ColorUtils.FromHexRgb(0x958982);
 			state.activationEffect.Injection = null;
 			state.activationEffect.Frame = state.activationEffect.Frame.With(0, 0);
+		}
+	}
+
+	private void SetActivationEffect(MapDeviceEntity entity)
+	{
+		if (entity.Injection is { } injection)
+		{
+			MapResource resource = MapResources.Get(injection.Id);
+			activationEffect.Burst = resource.AccentColor;
+			activationEffect.Injection = resource.AccentColor;
+		}
+		else
+		{
+			activationEffect.Burst = ColorUtils.FromHexRgb(0x958982);
+			activationEffect.Injection = ColorUtils.FromHexRgb(0x13d6ff);
 		}
 	}
 

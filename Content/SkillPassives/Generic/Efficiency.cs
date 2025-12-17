@@ -16,6 +16,6 @@ internal class Efficiency : SkillPassive
 
 	public override void PassiveEffects(ref SkillBuff buff)
 	{
-		buff.ManaCost *= 1f - 0.02f * Level;
+		buff.CostModifier *= 1f - 0.02f * Level;
 	}
 }

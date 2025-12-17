@@ -204,3 +204,17 @@ ReviveEffect.DisplayName: Revive Effect
 OverhealPulseAura.DisplayName: Overheal Pulse Aura
 ExplosiveShard.DisplayName: Explosive Shard
 RagingSpirit.DisplayName: Raging Spirit
+StickyFlame.DisplayName: Sticky Flame
+FrostfireMeteorProjectile.DisplayName: Frostfire Meteor
+BlastIcicleSmall.DisplayName: Blast Icicle
+ColdAura.DisplayName: Cold Aura
+
+ShadowflamePyreProjectile: {
+	DisplayName: Shadowflame Pyre
+
+	DeathReason: {
+		0: "{0} burned to shadow."
+		1: "{0} was engulfed by the flames."
+		2: "{0} disappeared into embers and shade."
+	}
+}

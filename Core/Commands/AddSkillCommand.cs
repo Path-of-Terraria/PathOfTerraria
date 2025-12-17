@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
-using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.ModPlayers.SkillPlayers;
 using Terraria.ModLoader.Core;
 
 namespace PathOfTerraria.Core.Commands;
@@ -90,7 +90,7 @@ public sealed class AddSkillCommand : ModCommand
 
 		if (manaCostValid)
 		{
-			skill.ManaCost = manaCost;
+			skill.ResourceCost = manaCost;
 		}
 
 		if (SetSkillOrComplain(caller, args, skillSlot, skill, manaCostValid, 6, 5, "manaCost"))
