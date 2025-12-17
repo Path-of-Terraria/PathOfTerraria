@@ -247,15 +247,18 @@ public abstract partial class Skill : ILoadable
 
 		PreUseSkill(player);
 
+		int cooldown = TotalCooldown;
+		ModifyCooldown(player, ref cooldown);
+
 		if (Functionality.Cost is SkillCost.ManaUse or SkillCost.ManaDrainPerSecond)
 		{
 			player.CheckMana(TotalResourceCost, true);
-			Cooldown = TotalCooldown;
+			Cooldown = cooldown;
 		}
 		else if (Functionality.Cost is SkillCost.HealthUse or SkillCost.LifeDrainPerSecond)
 		{
 			player.statLife -= TotalResourceCost;
-			Cooldown = TotalCooldown;
+			Cooldown = cooldown;
 		}
 		
 		// Health/ManaReserve is handled inSkillResourcingPlaying
@@ -263,6 +266,13 @@ public abstract partial class Skill : ILoadable
 		//player.MaxManaRegenDelay was way too slow for some reason compared to when using a mag weapon? Idk why. But 60 seems right
 		player.manaRegenDelay = player.maxRegenDelay;
 		InternalUseSkill(player);
+	}
+
+	/// <summary>
+	/// Allows you to modify the cooldown the skill uses before it's set.
+	/// </summary>
+	protected virtual void ModifyCooldown(Player player, ref int cooldown)
+	{
 	}
 
 	/// <summary>

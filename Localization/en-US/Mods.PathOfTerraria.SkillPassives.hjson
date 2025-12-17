@@ -413,7 +413,7 @@ CrawlingFlame: {
 
 Pyremaniac: {
 	Name: Pyremaniac
-	Tooltip: Mods.PathOfTerraria.SkillPassives.Pyremaniac.Tooltip
+	Tooltip: Eternal Shadowflame debuff does 50% more damage
 }
 
 AdditionalPyres: {
@@ -427,8 +427,8 @@ ConjoinedFlames: {
 }
 
 ShadowflameEruption: {
-	Name: ShadowflameEruption
-	Tooltip: Mods.PathOfTerraria.SkillPassives.ShadowflameEruption.Tooltip
+	Name: Umbral Eruption
+	Tooltip: Conjoining two pyres boosts the power of the combination temporarily, dealing 50% more damage for a short time
 }
 
 FrostfireBlast: {

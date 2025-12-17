@@ -12,6 +12,7 @@ using PathOfTerraria.Content.SkillSpecials.FireballSpecials;
 using PathOfTerraria.Content.SkillTrees;
 using ReLogic.Content;
 using System.Collections.Generic;
+using System.IO;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -80,7 +81,7 @@ public class Fireball : Skill
 
 	protected override void InternalUseSkill(Player player)
 	{
-		if (Tree.Specialization is FrostfireMeteor)
+		if (player.HasSkillSpecialization<Fireball, FrostfireMeteor>())
 		{
 			return;
 		}
@@ -102,7 +103,7 @@ public class Fireball : Skill
 	{
 		ResourceCost = 50;
 
-		if (Tree.Specialization is FrostfireMeteor && drainTimer % 60 <= 20 && drainTimer % 4 == 0)
+		if (player.HasSkillSpecialization<Fireball, FrostfireMeteor>() && drainTimer % 60 <= 20 && drainTimer % 4 == 0)
 		{
 			int type = ModContent.ProjectileType<FrostfireMeteorProjectile>();
 			Vector2 pos = new(Main.MouseWorld.X - Main.rand.NextFloat(-200, 200), Main.screenPosition.Y - 100);
@@ -125,12 +126,20 @@ public class Fireball : Skill
 		}
 	}
 
+	protected override void ModifyCooldown(Player player, ref int cooldown)
+	{
+		if (player.HasSkillSpecialization<Fireball, FrostfireMeteor>())
+		{
+			cooldown /= 4;
+		}
+	}
+
 	private class FireballProj : SkillProjectile<Fireball>
 	{
 		public override string Texture => $"{PoTMod.ModName}/Assets/Skills/" + GetType().Name;
 
 		private Player Owner => Main.player[Projectile.owner];
-		private int DustType => Skill.Tree.Specialization is ShadowflamePyre ? DustID.Shadowflame : DustID.Torch;
+		private int DustType => Owner.HasSkillSpecialization<Fireball, ShadowflamePyre>() ? DustID.Shadowflame : DustID.Torch;
 
 		private ref float Level => ref Projectile.ai[0];
 
@@ -157,14 +166,16 @@ public class Fireball : Skill
 			Projectile.Opacity = (Projectile.velocity.Length() - 2) / 8f * 0.25f + 0.75f;
 			Projectile.scale = Math.Min(1, Projectile.scale + 0.025f);
 			Projectile.width = (int)(36 * Projectile.scale);
-			Projectile.height = (int)(36 * Projectile.scale); 
+			Projectile.height = (int)(36 * Projectile.scale);
+
+			bool hasShadow = Owner.HasSkillSpecialization<Fireball, ShadowflamePyre>();
 
 			if (Projectile.scale == 1)
 			{
-				Projectile.velocity.Y += Skill.Tree.Specialization is ShadowflamePyre ? 0.09f : 0.01f;
+				Projectile.velocity.Y += hasShadow ? 0.09f : 0.01f;
 			}
 
-			if (Skill.Tree.Specialization is ShadowflamePyre)
+			if (hasShadow)
 			{
 				Projectile.timeLeft++;
 			}
@@ -268,7 +279,7 @@ public class Fireball : Skill
 				}
 			}
 
-			if (Skill.Tree.Specialization is ShadowflamePyre)
+			if (Owner.HasSkillSpecialization<Fireball, ShadowflamePyre>())
 			{
 				int type = ModContent.ProjectileType<ShadowflamePyreProjectile>();
 				float timeExtension = Owner.GetPassiveStrength<FireballTree, EverburningPyre>() is not 0 and int value ? ShadowflamePyreProjectile.MaxTimeLeft * value * 0.2f : 0;
@@ -294,7 +305,7 @@ public class Fireball : Skill
 			Vector2 position = Projectile.Center - Main.screenPosition;
 			Vector2 origin = src.Size() / new Vector2(1.5f, 2);
 
-			if (Skill.Tree.Specialization is ShadowflamePyre)
+			if (Owner.HasSkillSpecialization<Fireball, ShadowflamePyre>())
 			{
 				col = Color.Purple * Projectile.Opacity;
 			}
@@ -494,7 +505,7 @@ public class Fireball : Skill
 				Velocity.X += Main.windSpeedCurrent * 0.1f;
 
 				Point16 tile = Position.ToTileCoordinates16();
-				Velocity.X += Main.instance.TilesRenderer.GetWindGridPush(tile.X, tile.Y, 2, 1f);
+				Velocity.X += Main.instance.TilesRenderer.GetWindGridPush(tile.X, tile.Y, 2, 1.5f);
 			}
 		}
 
@@ -529,6 +540,7 @@ public class Fireball : Skill
 			Projectile.aiStyle = -1;
 			Projectile.scale = 1f;
 			Projectile.tileCollide = false;
+			Projectile.netImportant = true;
 		}
 
 		public override void AI()
@@ -570,7 +582,7 @@ public class Fireball : Skill
 			Erupt--;
 			Flare = MathHelper.Lerp(Flare, MathF.Sin((Projectile.timeLeft - TimeDelay) * 0.04f) * 0.1f + 1f, 0.1f);
 
-			if (Owner.HasTreePassive<FireballTree, ConjoinedFlames>()) 
+			if (Owner.HasTreePassive<FireballTree, ConjoinedFlames>() && Main.myPlayer == Projectile.owner) 
 			{ 
 				for (int i = 0; i < Projectile.whoAmI; ++i)
 				{
@@ -599,6 +611,8 @@ public class Fireball : Skill
 							ForceSize();
 						}
 
+						Projectile.netUpdate = true;
+						projectile.netUpdate = true;
 						projectile.Kill();
 					}
 				}
@@ -624,7 +638,7 @@ public class Fireball : Skill
 				plr.Container.AddElementalValues((ElementType.Chaos, 0, 0, 0.25f), (ElementType.Fire, 0, 0, 0.25f));
 			}
 
-			if (Owner.HasTreePassive<FireballTree, CrawlingFlame>() && Projectile.scale < MaxScale)
+			if (Owner.HasTreePassive<FireballTree, CrawlingFlame>() && Projectile.scale < MaxScale && Main.myPlayer == Projectile.owner)
 			{
 				Projectile.scale += 0.001f;
 				ForceSize();
@@ -641,9 +655,24 @@ public class Fireball : Skill
 			Projectile.Bottom = Projectile.position;
 		}
 
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write((Half)Projectile.scale);
+			writer.Write((short)Projectile.timeLeft);
+			writer.WriteVector2(Projectile.Size);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			Projectile.scale = (float)reader.ReadHalf();
+			Projectile.timeLeft = reader.ReadInt16();
+			Projectile.Size = reader.ReadVector2();
+		}
+
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			target.AddBuff(ModContent.BuffType<EverburningShadowflameDebuff>(), 2);
+			target.GetGlobalNPC<EverburningShadowflameDebuff.EverburningShadowflameNPC>().LastPlayerApplied = Owner.whoAmI;
 
 			if (Owner.HasTreePassive<FireballTree, AbyssalHunger>() && Main.rand.NextFloat() < 0.1f)
 			{

@@ -22,7 +22,7 @@ internal class ActiveSkillPlayer : ModPlayer
 		{
 			Skill skill = skills[i];
 
-			if (skill.AuraToggled)
+			if (skill?.AuraToggled == true)
 			{
 				_resourceTimers[i]++;
 				_staticTimers[i]++;
@@ -61,7 +61,7 @@ internal class ActiveSkillPlayer : ModPlayer
 				_staticTimers[i] = 0;
 			}
 
-			if (skill.AuraToggled && (skill.Functionality.ToggleAlwaysOn || Main.mouseLeft))
+			if (skill?.AuraToggled == true && (skill.Functionality.ToggleAlwaysOn || Main.mouseLeft))
 			{
 				skill.ActiveUse(Player, ref _resourceTimers[i], _staticTimers[i]);
 			}

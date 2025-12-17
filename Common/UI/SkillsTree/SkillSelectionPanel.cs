@@ -115,7 +115,7 @@ internal class SkillSelectionPanel : SmartUiElement
 		{
 			Width = StyleDimension.FromPixels(80),
 			Height = StyleDimension.FromPixels(30),
-			Top = StyleDimension.FromPixels(64),
+			Top = StyleDimension.FromPixels(124),
 			Left = StyleDimension.FromPixels(10)
 		};
 

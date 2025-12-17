@@ -72,5 +72,5 @@ FrostfireMeteor: {
 
 ShadowflamePyre: {
 	// Name: Shadowflame Pyre
-	// Description: The fireball now flies in an arc, and leaves a pyre of shadowflame, which deals [mechanic/shift=0;2:Chaos] and [mechanic/shift=1;2:Fire]
+	// Description: The fireball now flies in an arc, and leaves a pyre of shadowflame, which deals [mechanic/shift=0;2:Chaos] and [mechanic/shift=1;2:Fire] and inflicts Eternal Shadowflame
 }
