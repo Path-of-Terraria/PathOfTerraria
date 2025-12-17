@@ -6,7 +6,7 @@ namespace PathOfTerraria.Content.Projectiles.Utility;
 
 /// <summary>
 /// Defines a generic "explosion" class with variable <see cref="Width"/> and <see cref="Height"/> - ai[0] and ai[1], 
-/// alongside <see cref="BuffId"/> + <see cref="BuffLength"/> (localAI[2] and [3]) for flexibility.
+/// alongside <see cref="BuffId"/> + <see cref="BuffLength"/> (localAI[0] and [1]) for flexibility.
 /// </summary>
 internal class ExplosionHitbox : ModProjectile
 {
@@ -22,7 +22,10 @@ internal class ExplosionHitbox : ModProjectile
 	/// <param name="Sfx">Whether the sfx should play.</param>
 	/// <param name="GoreRange">Range of Gore ids to use.</param>
 	public readonly record struct VFXPackage(int GoreCount = 4, int SmokeDustCount = 20, int TorchDustCount = 10, bool Sfx = true, float Volume = 1f, Range? GoreRange = null,
-		int SmokeDustType = DustID.Smoke, int TorchDustType = DustID.Torch, float DustVelocityModifier = 1f);
+		int SmokeDustType = DustID.Smoke, int TorchDustType = DustID.Torch, float DustVelocityModifier = 1f)
+	{
+		public static readonly VFXPackage None = new(0, 0, 0, false, 0, null, 0, 0, 0);
+	}
 
 	public override string Texture => UseBaseTexture ? (GetType().Namespace + "." + Name).Replace('.', '/') : "Terraria/Images/NPC_0";
 
@@ -120,10 +123,13 @@ internal class ExplosionHitbox : ModProjectile
 	}
 
 	public static int QuickSpawn(IEntitySource source, Entity sourceEntity, int damage, int owner, Vector2 size, VFXPackage? package = null, bool friendly = true, float knockback = 8f, 
-		Vector2? velocity = null)
+		Vector2? velocity = null, int buffType = 0, int buffLength = 0)
 	{
 		int type = friendly ? ModContent.ProjectileType<ExplosionHitboxFriendly>() : ModContent.ProjectileType<ExplosionHitbox>();
 		int proj = Projectile.NewProjectile(source, sourceEntity.Center, velocity ?? Vector2.Zero, type, damage, knockback, owner, size.X, size.Y);
+		Projectile projectile = Main.projectile[proj];
+		projectile.localAI[0] = buffType;
+		projectile.localAI[1] = buffLength;
 		VFX(sourceEntity, package);
 		return proj;
 	}

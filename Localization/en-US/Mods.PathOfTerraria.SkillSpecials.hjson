@@ -59,3 +59,18 @@ GlacialAntlions: {
 	Name: Glacial Antlions
 	Description: Antlions deal 100% cold damage
 }
+
+Inferno: {
+	Name: Inferno
+	Description: Fireballs have a 100% chance to ignite enemies
+}
+
+FrostfireMeteor: {
+	Name: Frostfire Meteors
+	Description: Fireballs are replaced with channeled meteors, which deal both [mechanic/shift=0;2:Cold] and [mechanic/shift=1;2:Fire]
+}
+
+ShadowflamePyre: {
+	Name: Shadowflame Pyre
+	Description: The fireball now flies in an arc, and leaves a pyre of shadowflame, which deals [mechanic/shift=0;2:Chaos] and [mechanic/shift=1;2:Fire] and inflicts Eternal Shadowflame
+}

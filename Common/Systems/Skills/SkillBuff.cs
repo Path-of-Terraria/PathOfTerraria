@@ -6,7 +6,7 @@ namespace PathOfTerraria.Common.Systems.Skills;
 public class SkillBuff
 {
 	public StatModifier Damage = StatModifier.Default;
-	public StatModifier ManaCost = StatModifier.Default;
+	public StatModifier CostModifier = StatModifier.Default;
 	public StatModifier AreaOfEffect = StatModifier.Default;
 	public StatModifier CritChance = StatModifier.Default;
 	public StatModifier Cooldown = StatModifier.Default;
@@ -15,7 +15,7 @@ public class SkillBuff
 	public void Reset()
 	{
 		Damage = StatModifier.Default;
-		ManaCost = StatModifier.Default;
+		CostModifier = StatModifier.Default;
 		AreaOfEffect = StatModifier.Default;
 		CritChance = StatModifier.Default;
 		Cooldown = StatModifier.Default;
@@ -27,7 +27,7 @@ public class SkillBuff
 		return new SkillBuff()
 		{
 			Damage = self.Damage.CombineWith(other.Damage),
-			ManaCost = self.ManaCost.CombineWith(other.ManaCost),
+			CostModifier = self.CostModifier.CombineWith(other.CostModifier),
 			AreaOfEffect = self.AreaOfEffect.CombineWith(other.AreaOfEffect),
 			CritChance = self.CritChance.CombineWith(other.CritChance),
 			Cooldown = self.Cooldown.CombineWith(other.Cooldown),

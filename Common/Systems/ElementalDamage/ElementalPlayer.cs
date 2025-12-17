@@ -102,14 +102,14 @@ public class ElementalPlayer : ModPlayer
 		float totalConversion = (baseElementalStrength + additionalConversion);
 		
 		// Apply multiplier to original damage BEFORE DEFENSE, by each element conversion percent (accounting for resistance) 
-		float totalMultiplier = MathF.Max(0f, totalConversion - baseElementalStrength);
+		float totalMultiplier = MathF.Max(0f, MathF.Max(totalConversion, baseElementalStrength));
 
 		// Add in multipliers
 		foreach (ElementInstance element in container)
 		{
 			float conv = MathF.Min(element.GetTotalConversion(other) + (item is null ? 0 : ElementalWeaponSets.GetElementStrength(item.type, element.Type)), 1);
 			float bonus = (conv * element.Multiplier) - conv;
-			totalMultiplier += bonus * Math.Abs(other[element.Type].Resistance);
+			totalMultiplier += bonus * (1 - Math.Abs(other[element.Type].Resistance));
 		}
 
 		if (!skipPreDefense)

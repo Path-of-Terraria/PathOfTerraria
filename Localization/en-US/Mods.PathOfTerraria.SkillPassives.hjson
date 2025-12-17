@@ -305,3 +305,133 @@ CarapaceCracker: {
 	Name: Carapace Cracker
 	Tooltip: Antlions apply a damage-piercing debuff on hit
 }
+
+SmolderingFury: {
+	Name: Smoldering Fury
+	Tooltip: Enemies directly killed by the Fireball explode, igniting nearby enemies
+}
+
+FireballNova: {
+	Name: Fire Nova
+	Tooltip: Igniting an already-ignited enemy triggers a small fire nova, dealing damage in an area
+}
+
+ScorchedEarth: {
+	Name: Scorched Earth
+	Tooltip: Fireballs explode into smaller fireballs, which linger on the ground
+}
+
+LongerScorchedEarth: {
+	Name: Longer Scorched Earth
+	Tooltip: Scorched Earth mini-fireballs last longer
+}
+
+StrongerScorchedEarth: {
+	Name: Stronger Scorched Earth
+	Tooltip: Scorched Earth mini-fireballs deal more damage
+}
+
+LongerIgnites: {
+	Name: Longer Ignites
+	Tooltip: Ignite lasts {0}% longer
+}
+
+StrongerSmolderingFury: {
+	Name: Stronger Smoldering Fury
+	Tooltip: Smoldering Fury explosions deal {0}% more damage per stack
+}
+
+LargerSmolderingFury: {
+	Name: Larger Smoldering Fury
+	Tooltip: Smoldering Fury explosions are {0}% larger per stack
+}
+
+SlowingSmolderingFury: {
+	Name: Slowing Smoldering Fury
+	Tooltip: Smoldering Fury explosions slow enemies down on hit
+}
+
+Pyroclasm: {
+	Name: Pyroclasm
+	Tooltip: Ignite from the Fireball deals {0}% more damage
+}
+
+CrystallineImpact: {
+	Name: Crystalline Impact
+	Tooltip: Frostfire Meteors burst into shards on impact
+}
+
+Rime: {
+	Name: Rime
+	Tooltip: Shards increase in size by {0}% per stack
+}
+
+EverburningFrost: {
+	Name: Everburning Frost
+	Tooltip: The longer you channel, the faster the meteors are spawned
+}
+
+FrozenGround: {
+	Name: Frozen Ground
+	Tooltip: Meteors leave a small area of slowing
+}
+
+ColdFocus: {
+	Name: Cold Focus
+	Tooltip: Move faster when using Frostfire Meteors
+}
+
+AbsoluteZero: {
+	Name: Absolute Zero
+	Tooltip: Meteors deal extra damage to frozen or ignited enemies
+}
+
+ThermalFeedback: {
+	Name: Thermal Feedback
+	Tooltip: Enemies hit directly by a meteor restore {0} mana
+}
+
+EverburningPyre: {
+	Name: Everburning Pyre
+	Tooltip: Shadowflame Pyre lasts 20% longer
+}
+
+PainIsPleasure: {
+	Name: Scorching Penance
+	Tooltip: Standing in your own Pyres deals damage, but increases your [mechanic/shift=0;2:Chaos] and [mechanic/shift=1;2:Fire] substantially
+}
+
+AbyssalHunger: {
+	Name: Abyssal Hunger
+	Tooltip: The pyre has a {1}% chance to restore {0}% of damage done as health and mana
+}
+
+CrawlingFlame: {
+	Name: Crawling Flame
+	Tooltip: The pyre grows more the longer it is active
+}
+
+Pyremaniac: {
+	Name: Pyremaniac
+	Tooltip: Eternal Shadowflame debuff does 50% more damage
+}
+
+AdditionalPyres: {
+	Name: Hasteful Magic
+	Tooltip: Shadowflame Pyre cooldown reduced by {0}%
+}
+
+ConjoinedFlames: {
+	Name: Conjoined Flames
+	Tooltip: Pyres that touch combine into a much stronger, singular pyre
+}
+
+ShadowflameEruption: {
+	Name: Umbral Eruption
+	Tooltip: Conjoining two pyres boosts the power of the combination temporarily, dealing 50% more damage for a short time
+}
+
+FrostfireBlast: {
+	Name: Frostfire Blast
+	Tooltip: Applying Frozen/Chilled and Ignited to an enemy clears the debuffs and causes an immediate, strong explosion
+}

@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Common.Mechanics;
-using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.ModPlayers.SkillPlayers;
 using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Common.UI.Guide;
 using PathOfTerraria.Content.SkillAugments;
@@ -115,7 +115,7 @@ internal class SkillSelectionPanel : SmartUiElement
 		{
 			Width = StyleDimension.FromPixels(80),
 			Height = StyleDimension.FromPixels(30),
-			Top = StyleDimension.FromPixels(64),
+			Top = StyleDimension.FromPixels(124),
 			Left = StyleDimension.FromPixels(10)
 		};
 

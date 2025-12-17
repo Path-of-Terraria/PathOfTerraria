@@ -19,15 +19,13 @@ public class MoltenShield : Skill
 	{
 		Level = level;
 		Cooldown = MaxCooldown = 15 * 60;
-		ManaCost = 10 - Math.Max(2, (int)Level);
+		ResourceCost = 10 - Math.Max(2, (int)Level);
 		Duration =  (5 + 2 * Level) * 60;
 		WeaponType = ItemType.Melee;
 	}
 
-	public override void UseSkill(Player player)
+	protected override void InternalUseSkill(Player player)
 	{
-		base.UseSkill(player);
-
 		// Level to the strength of all MoltenShellAffixes
 		LevelTo((byte)player.GetModPlayer<AffixPlayer>().StrengthOf<MoltenShellAffix>());
 		player.GetModPlayer<MoltenShieldBuff.MoltenShieldPlayer>().SetBuff(Level, TotalDuration);

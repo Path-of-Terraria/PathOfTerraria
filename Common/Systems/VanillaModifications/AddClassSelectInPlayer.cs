@@ -1,6 +1,6 @@
 ﻿using PathOfTerraria.Common.Classing;
 using PathOfTerraria.Common.Mechanics;
-using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.ModPlayers.SkillPlayers;
 using System.Runtime.CompilerServices;
 using Terraria.GameContent.UI.States;
 

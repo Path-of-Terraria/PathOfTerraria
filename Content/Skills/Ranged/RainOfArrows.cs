@@ -51,19 +51,17 @@ public class RainOfArrows : Skill
 	{
 		Level = level;
 		Cooldown = MaxCooldown = 8 * 60;
-		ManaCost = 20;
+		ResourceCost = 20;
 		Duration = 0;
 		WeaponType = ItemType.Ranged;
 	}
 
-	public override void UseSkill(Player player)
+	protected override void InternalUseSkill(Player player)
 	{
 		if (!player.PickAmmo(player.HeldItem, out int projToShoot, out float speed, out int damage, out float knockBack, out int ammo, true))
 		{
 			return;
 		}
-
-		base.UseSkill(player);
 
 		if (player.HeldItem.ModItem is not null)
 		{

@@ -13,7 +13,7 @@ internal class RangerMeleeChanceToBleedPassive : Passive
 			{
 				float chance = Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<RangerMeleeChanceToBleedPassive>();
 
-				//if (Main.rand.NextFloat() < chance / 100f)
+				if (Main.rand.NextFloat() < chance / 100f)
 				{
 					BleedDebuff.Apply(Player, target, damageDone);
 				}
