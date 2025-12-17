@@ -2,6 +2,7 @@
 using System.Linq;
 using PathOfTerraria.Common.Encounters;
 using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.Subworlds.MappingAreas;
 using PathOfTerraria.Content.Conflux;
 using PathOfTerraria.Core.Time;
 using PathOfTerraria.Utilities.Terraria;
@@ -93,7 +94,7 @@ internal sealed class ConfluxRifts : ModSystem
 
 	public static bool ShouldRiftsSpawnInWorld(Subworld world)
 	{
-		return world is MappingWorld and not RavencrestSubworld;
+		return world is MappingWorld and IExplorationWorld and not RavencrestSubworld;
 	}
 
 	/// <summary> Attempts to spawn conflux rifts, returns the amount created. </summary>

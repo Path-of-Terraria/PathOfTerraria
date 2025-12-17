@@ -17,7 +17,7 @@ using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds.MappingAreas;
 
-internal class ForestArea : MappingWorld, IOverrideBiome
+internal class ForestArea : MappingWorld, IOverrideBiome, IExplorationWorld
 {
 	private enum StructureKind : byte
 	{
