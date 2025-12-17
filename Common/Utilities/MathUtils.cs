@@ -32,6 +32,27 @@ public static class MathUtils
 		return r < 0 ? r + length : r;
 	}
 
+	/// <summary> Returns the input with the highest absolute value. </summary>
+	public static int MaxAbs(int a, int b)
+	{
+		return Math.Abs(a) >= Math.Abs(b) ? a : b;
+	}
+	/// <inheritdoc cref="MaxAbs"/>
+	public static float MaxAbs(float a, float b)
+	{
+		return Math.Abs(a) >= Math.Abs(b) ? a : b;
+	}
+	/// <summary> Returns the input with the lowest absolute value. </summary>
+	public static int MinAbs(int a, int b)
+	{
+		return Math.Abs(a) <= Math.Abs(b) ? a : b;
+	}
+	/// <inheritdoc cref="MinAbs"/>
+	public static float MinAbs(float a, float b)
+	{
+		return Math.Abs(a) <= Math.Abs(b) ? a : b;
+	}
+
 	// Linear Interpolation
 
 	/// <summary> Approaches <paramref name="goal"/> by adding <paramref name="step"/> to move <paramref name="value"/> towards it. </summary>

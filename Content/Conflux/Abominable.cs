@@ -1,9 +1,16 @@
-﻿using System.Runtime.CompilerServices;
+﻿//#define DEBUG_GIZMOS
+//#define NEVER_ATTACK
+
+using System.Runtime.CompilerServices;
 using PathOfTerraria.Common.AI;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
+using PathOfTerraria.Common.Utilities;
+using PathOfTerraria.Core.Debugging;
+using PathOfTerraria.Core.Time;
 using PathOfTerraria.Utilities.Xna;
 using ReLogic.Content;
+using ReLogic.Graphics;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -17,11 +24,15 @@ namespace PathOfTerraria.Content.Conflux;
 
 internal sealed class Abominable : ModNPC
 {
-	private readonly struct Context(NPC npc)
+	private struct Context(NPC npc)
 	{
 		public Vector2 Center { get; } = npc.Center;
 		public NPCAnimations Animations { get; } = npc.GetGlobalNPC<NPCAnimations>();
+		public NPCNavigation Navigation { get; } = npc.GetGlobalNPC<NPCNavigation>();
 		public NPCTargetTracking Tracking { get; } = npc.GetGlobalNPC<NPCTargetTracking>();
+
+		public Vector2 TargetCenter;
+		public Rectangle TargetRect;
 	}
 
 	private const float AttackDistanceX = 215f;
@@ -31,9 +42,14 @@ internal sealed class Abominable : ModNPC
 	private const ushort AttackDashSoundTick = AttackDashTick - 5;
 	private const ushort AttackNoGravityEndTick = AttackDashTick + (ushort)(0.25 * 60);
 	private const ushort AttackDamageEndTick = AttackDashTick + (ushort)(0.25 * 60);
-	private const ushort MinAttackCooldown = (ushort)(1.25f * 60);
-	private const ushort MaxAttackCooldown = (ushort)(1.75f * 60);
+	private const ushort MinAttackCooldown = (ushort)(1.00f * 60);
+	private const ushort MaxAttackCooldown = (ushort)(1.60f * 60);
 
+	private static readonly SpriteAnimation animIdle = new()
+	{
+		Id = "idle",
+		Frames = [9],
+	};
 	private static readonly SpriteAnimation animWalk = new()
 	{
 		Id = "walk",
@@ -85,16 +101,20 @@ internal sealed class Abominable : ModNPC
 
 	public override void SetDefaults()
 	{
-		NPC.aiStyle = NPCAIStyleID.Fighter;
+		NPC.aiStyle = -1;
 		NPC.damage = 44;
-		NPC.width = 66;
-		NPC.height = 80;
+		NPC.width = 44;
+		NPC.height = 100;
 		NPC.lifeMax = 250;
 		NPC.defense = 35;
 		NPC.HitSound = SoundID.NPCHit56 with { Pitch = -0.37f, PitchVariance = 0.11f, Identifier = "AbominableHit" };
 		NPC.DeathSound = SoundID.NPCDeath23 with { Pitch = -0.35f, PitchVariance = 0.15f, Identifier = "AbominableDeath" };
 		NPC.knockBackResist = 0.00f;
 
+		NPC.TryEnableComponent<NPCNavigation>(e =>
+		{
+			e.JumpRange = new(15, 40);
+		});
 		NPC.TryEnableComponent<NPCAnimations>(e =>
 		{
 			e.BaseFrame = new(5, 5);
@@ -120,9 +140,11 @@ internal sealed class Abominable : ModNPC
 		Context ctx = new(NPC);
 
 		ctx.Animations.Advance();
-		Behavior(in ctx);
-		UpdateAnimations(in ctx);
-		UpdateEffects(in ctx);
+		UpdateTarget(ref ctx);
+		Movement(ref ctx);
+		Attacking(ref ctx);
+		UpdateAnimations(ref ctx);
+		UpdateEffects(ref ctx);
 	}
 
 	public override void PostAI()
@@ -132,42 +154,121 @@ internal sealed class Abominable : ModNPC
 		_ = ctx;
 	}
 
-	private void Behavior(in Context ctx)
+	private void UpdateTarget(ref Context ctx, bool forceReset = false)
+	{
+		if (!NPC.HasValidTarget || forceReset)
+		{
+			Terraria.Utilities.NPCUtils.TargetClosestCommon(NPC, faceTarget: false);
+		}
+
+		ctx.TargetCenter = ctx.Tracking.GetTargetCenter(NPC);
+		ctx.TargetRect = NPC.HasValidTarget ? NPC.GetTargetData().Hitbox : default;
+	}
+
+	public override bool? CanFallThroughPlatforms()
+	{
+		if (NPC.TryGetGlobalNPC(out NPCNavigation nav))
+		{
+			return nav.FallThroughPlatforms;
+		}
+
+		return null;
+	}
+
+	private void Movement(ref Context ctx)
+	{
+		_ = ctx;
+
+		const float MaxSpeed = 4f;
+		const float Acceleration = 32f;
+		const float Friction = 8f;
+
+		// Friction.
+		if (NPC.velocity.Y == 0f)
+		{
+			NPC.velocity.X = MathUtils.StepTowards(NPC.velocity.X, 0f, Friction * TimeSystem.LogicDeltaTime);
+		}
+
+		// Slopes.
+		if (NPC.velocity.Y == 0f)
+		Collision.StepDown(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
+		Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
+
+		if (!NPC.HasValidTarget || AttackProgress != 0)
+		{
+			return;
+		}
+
+		ctx.Navigation.Process(out NPCNavigation.Result navResult, new()
+		{
+			NPC = NPC,
+			TargetPosition = ctx.TargetCenter,
+		});
+
+		// Fallback movement.
+		if (!navResult.HasPath && ctx.Navigation.StateFlags.HasFlag(NPCNavigation.StateFlag.PathNotFound))
+		{
+			navResult.MovementVector.X = MathHelper.Clamp(ctx.TargetCenter.X - ctx.Center.X, -1f, +1f);
+
+			if (NPC.velocity.Y == 0f)
+			{
+				float yDiff = ctx.TargetCenter.Y - ctx.Center.Y;
+
+				if (yDiff < -NPC.height)
+				{
+					navResult.JumpVector.Y = -10f;
+				}
+			}
+		}
+
+		// Horizontal acceleration.
+		if (navResult.MovementVector.X != 0f)
+		{
+			NPC.velocity.X = MathUtils.StepTowards(NPC.velocity.X, MaxSpeed * navResult.MovementVector.X, Acceleration * TimeSystem.LogicDeltaTime);
+			NPC.direction = navResult.MovementVector.X > 0f ? 1 : -1;
+		}
+
+		// Jumping.
+		if (navResult.JumpVector != default)
+		{
+			NPC.velocity = navResult.JumpVector;
+			NPC.direction = navResult.JumpVector.X != 0f ? (navResult.JumpVector.X > 0f ? 1 : -1) : NPC.direction;
+		}
+	}
+
+	private void Attacking(ref Context ctx)
 	{
 		// Tick down cooldowns.
 		if (AttackCooldown > 0) { AttackCooldown--; }
+
+		Vector2 targetDiff = ctx.TargetCenter - ctx.Center;
 
 		// Reset mutated variables.
 		bool initiateAttack = false;
 		NPC.damage = -1;
 		NPC.noGravity = false;
-		NPC.aiStyle = NPCAIStyleID.Fighter;
 		NPC.color = Color.White;
 
-		// Track target.
-		Vector2 targetCenter = ctx.Tracking.GetTargetCenter(NPC);
-		Vector2 targetDiff = NPC.HasValidTarget ? new Vector2(targetCenter.X - ctx.Center.X, targetCenter.Y - ctx.Center.Y) : new(float.PositiveInfinity);
-		Vector2 targetDirection = targetDiff.SafeNormalize(Vector2.UnitX * AttackSign);
-		float targetDistance = NPC.HasValidTarget ? (targetDiff != default ? targetDiff.Length() : 0f) : float.PositiveInfinity;
-
 		// Check if we can initiate an attack.
+#if !NEVER_ATTACK
 		if (AttackProgress == 0 && AttackCooldown == 0 && NPC.velocity.Y == 0f && MathF.Abs(targetDiff.X) <= AttackDistanceX && MathF.Abs(targetDiff.Y) <= AttackDistanceY)
 		{
-			initiateAttack = true;
-
-			if (!Main.dedServ)
+			if (Collision.CanHitLine(NPC.position, NPC.width, NPC.height, ctx.TargetRect.TopLeft(), ctx.TargetRect.Width, ctx.TargetRect.Height))
 			{
-				SoundEngine.PlaySound(position: NPC.Center, style: SoundID.NPCHit56 with { Pitch = +0.15f, PitchVariance = 0.1f, Identifier = "AbominableCharge" });
+				initiateAttack = true;
+
+				if (!Main.dedServ)
+				{
+					SoundEngine.PlaySound(position: NPC.Center, style: SoundID.NPCHit56 with { Pitch = +0.15f, PitchVariance = 0.1f, Identifier = "AbominableCharge" });
+				}
 			}
 		}
+#endif
 
 		// Update attacks.
 		if (AttackProgress != 0 || initiateAttack)
 		{
 			AttackProgress++;
-
-			// Use no base AI during attacks.
-			NPC.aiStyle = -1;
 
 			// Play slash/dash sound.
 			if (AttackProgress == AttackDashSoundTick)
@@ -178,7 +279,7 @@ internal sealed class Abominable : ModNPC
 			if (AttackProgress < AttackDashTick)
 			{
 				// Update Attack direction.
-				AttackDirection = targetDirection;
+				AttackDirection = targetDiff.SafeNormalize(Vector2.UnitX * AttackSign);
 
 				// Aim starts to update slower and slower.
 				const float ChargeFactorForFullAimLag = 0.99f;
@@ -194,6 +295,7 @@ internal sealed class Abominable : ModNPC
 
 				// Prepare damage.
 				int whoAmI = NPC.whoAmI;
+				int type = NPC.type;
 				attack = new AttackInstance
 				{
 					Aabb = default,
@@ -201,7 +303,7 @@ internal sealed class Abominable : ModNPC
 					Damage = NPC.defDamage,
 					Knockback = 10f,
 					Filter = AttackInstance.EntityKind.Player | AttackInstance.EntityKind.Neutral | AttackInstance.EntityKind.Friendly | AttackInstance.EntityKind.Enemy,
-					Predicate = e => e is not Terraria.NPC || e.whoAmI != whoAmI,
+					Predicate = e => e is not Terraria.NPC n || (n.whoAmI != whoAmI && n.type != type),
 					DeathReason = _ => PlayerDeathReason.ByNPC(whoAmI),
 					HitEntities = attack?.HitEntities,
 				};
@@ -235,7 +337,7 @@ internal sealed class Abominable : ModNPC
 		}
 	}
 
-	private void UpdateEffects(in Context ctx)
+	private void UpdateEffects(ref Context ctx)
 	{
 		int frameNew = ctx.Animations.CurrentFrame;
 		int frameOld = ctx.Animations.PreviousFrame ?? -1;
@@ -267,14 +369,18 @@ internal sealed class Abominable : ModNPC
 		oldVelocity = NPC.velocity;
 	}
 
-	private void UpdateAnimations(in Context ctx)
+	private void UpdateAnimations(ref Context ctx)
 	{
+		const float MinWalkSpeed = 0.5f;
+
+		Vector2 effectiveVelocity = NPC.position - NPC.oldPosition;
 		SpriteAnimation current = ctx.Animations.Current;
 		SpriteAnimation? targetAnimation = current switch
 		{
 			_ when AttackProgress != 0 => animAttack,
-			_ when MathF.Abs(NPC.velocity.Y) > 5f => animJump,
-			_ when NPC.velocity.Y == 0f => animWalk,
+			_ when MathF.Abs(effectiveVelocity.Y) > 5f => animJump,
+			_ when effectiveVelocity.Y == 0f && Math.Abs(effectiveVelocity.X) >= MinWalkSpeed => animWalk with { Speed = effectiveVelocity.X * animWalk.Speed * NPC.spriteDirection },
+			_ when effectiveVelocity.Y == 0f && Math.Abs(effectiveVelocity.X) <= MinWalkSpeed => animIdle,
 			_ => null,
 		};
 
@@ -312,7 +418,7 @@ internal sealed class Abominable : ModNPC
 
 		sb.Draw(tex, position, NPC.frame, color, NPC.rotation, NPC.frame.Size() * 0.5f, NPC.scale, NPC.spriteDirection >= 0 ? (SpriteEffects)1 : 0, 0f);
 
-#if DEBUG && false
+#if DEBUG && DEBUG_GIZMOS
 		Vector2 targetCenter = NPC.GetGlobalNPC<NPCTargetTracking>().GetTargetCenter(NPC);
 		Texture2D skullTexture = TextureAssets.NpcHeadBoss[19].Value;
 		sb.Draw(skullTexture, targetCenter - Main.screenPosition, null, Color.IndianRed, 0f, skullTexture.Size() * 0.5f, 1f, 0, 0f);
@@ -336,7 +442,7 @@ internal sealed class Abominable : ModNPC
 			dstRect.Y -= (int)Main.screenPosition.Y;
 			Vector2 origin = srcRect.Size() * 0.5f;
 
-#if DEBUG && false
+#if DEBUG && DEBUG_GIZMOS
 			Main.DebugDrawer.Begin(Main.GameViewMatrix.TransformationMatrix);
 			Main.DebugDrawer.DrawLine(new(dstRect.Left, dstRect.Top), new(dstRect.Right, dstRect.Top), 2f, Color.Red);
 			Main.DebugDrawer.DrawLine(new(dstRect.Right, dstRect.Top), new(dstRect.Right, dstRect.Bottom), 2f, Color.Red);
@@ -350,8 +456,8 @@ internal sealed class Abominable : ModNPC
 			sb.Draw(slashTexture, dstRect, srcRect, slashColor, AttackAngle, origin, 0, 0f);
 		}
 
-#if DEBUG && false
-		Main.DebugDrawer.Begin();
+#if DEBUG && DEBUG_GIZMOS
+		Main.DebugDrawer.Begin(Main.GameViewMatrix.TransformationMatrix);
 		Main.DebugDrawer.DrawLine(NPC.Center - Main.screenPosition, (NPC.Center + AttackDirection * 64f) - Main.screenPosition, 2f, Color.Red);
 		Main.DebugDrawer.End();
 #endif
