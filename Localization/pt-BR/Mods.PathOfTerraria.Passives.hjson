@@ -1041,15 +1041,20 @@ SpelunkyMastery: {
 
 CheaperShopsPassive: {
 	// Name: Cheaper Shops
-	// Tooltip: Sell prices are {0}% lower
+	// Tooltip: Buy prices are {0}% lower
 }
 
 ValuableSalesPassive: {
-	// Name: ValuableSalesPassive
-	// Tooltip: ""
+	// Name: Increased Sell Value
+	// Tooltip: Sell prices are {0}% higher
 }
 
 ExtraStockMastery: {
-	// Name: ExtraStockMastery
+	// Name: Extra Stock
+	// Tooltip: Reroll the Traveling Merchant's stock once per visit
+}
+
+MoneySpeedMastery: {
+	// Name: MoneySpeedMastery
 	// Tooltip: ""
 }
