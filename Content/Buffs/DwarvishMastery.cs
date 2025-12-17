@@ -1,9 +1,11 @@
-﻿namespace PathOfTerraria.Content.Buffs;
+﻿using PathOfTerraria.Content.Passives.Utility.Masteries;
 
-internal class DwarvishMastery : ModBuff
+namespace PathOfTerraria.Content.Buffs;
+
+internal class DwarvishBuff : ModBuff
 {
 	public override void Update(Player player, ref int buffIndex)
 	{
-		player.pickSpeed += 1f;
+		player.pickSpeed *= RockAndStoneMastery.Speed;
 	}
 }

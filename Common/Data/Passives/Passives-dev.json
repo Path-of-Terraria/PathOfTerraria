@@ -6229,13 +6229,16 @@
 		"isHidden": true
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "CheaperShopsPassive",
 		"referenceId": 286,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 287
+			},
+			{
+				"referenceId": 1126
 			}
 		],
 		"position": {
@@ -6244,19 +6247,64 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "ValuableSalesPassive",
 		"referenceId": 287,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 20,
 		"connections": [
 			{
 				"referenceId": 38
+			},
+			{
+				"referenceId": 1126
 			}
 		],
 		"position": {
 			"x": -565,
 			"y": -470
 		}
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1126,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1127
+			},
+			{
+				"referenceId": 1128
+			}
+		],
+		"position": {
+			"x": -555,
+			"y": -340
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "RockAndStoneMastery",
+		"referenceId": 1127,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": -523,
+			"y": -237
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "SpelunkyMastery",
+		"referenceId": 1128,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": -452,
+			"y": -375
+		},
+		"isHidden": true
 	},
 	{
 		"internalIdentifier": "StrongerPotionsPassive",

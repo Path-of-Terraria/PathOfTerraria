@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
-using Terraria.ID;
+using PathOfTerraria.Content.Buffs;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Passives.Utility.Masteries;
 
@@ -29,15 +30,20 @@ internal class RockAndStoneMastery : Passive
 
 		private void AddMine()
 		{
-			if (!Player.HasBuff(BuffID.Mining))
+			if (!Player.HasBuff<DwarvishBuff>())
 			{
 				tilesMined++;
 
 				if (Player.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<RockAndStoneMastery>(out float value) && tilesMined % (int)value == 0)
 				{
-					Player.AddBuff(BuffID.Mining, 60 * 10);
+					Player.AddBuff(ModContent.BuffType<DwarvishBuff>(), BuffTime * 60);
 				}
 			}
 		}
 	}
+
+	public const float Speed = 0.33f;
+	public const int BuffTime = 10;
+
+	public override string DisplayTooltip => Language.GetText($"Mods.PathOfTerraria.Passives.{Name}.Tooltip").Format(Value, ((1 - Speed) * 100).ToString("#0.#"), BuffTime);
 }

@@ -1025,16 +1025,31 @@ PainTransferenceMastery: {
 }
 
 RockAndStoneMastery: {
-	// Name: RockAndStoneMastery
-	// Tooltip: ""
+	// Name: Rock and Stone
+	// Tooltip: Every {0} blocks broken, gain a buff that increases mining speed by {1}% for {2} seconds
 }
 
 FasterMiningPassive: {
-	// Name: FasterMiningPassive
-	// Tooltip: ""
+	// Name: Faster Mining
+	// Tooltip: +{0}% increased mining speed
 }
 
 SpelunkyMastery: {
-	// Name: SpelunkyMastery
+	// Name: Spelunky
+	// Tooltip: Permanent Spelunker and Mining buffs
+}
+
+CheaperShopsPassive: {
+	// Name: Cheaper Shops
+	// Tooltip: Sell prices are {0}% lower
+}
+
+ValuableSalesPassive: {
+	// Name: ValuableSalesPassive
+	// Tooltip: ""
+}
+
+ExtraStockMastery: {
+	// Name: ExtraStockMastery
 	// Tooltip: ""
 }
