@@ -293,8 +293,8 @@ public class Fireball : Skill
 					? ShadowflamePyreProjectile.MaxTimeLeft * value * EverburningPyre.DurationModifier : 0;
 				Vector2 placePos = Projectile.Center;
 				Vector2 projBaseSize = ShadowflamePyreProjectile.BaseSize;
-
-				while (Collision.SolidCollision(placePos - projBaseSize / 2, (int)projBaseSize.X, (int)projBaseSize.Y))
+				
+				while (Collision.SolidCollision(placePos - projBaseSize / 2, (int)projBaseSize.X, (int)projBaseSize.Y) && placePos.Y > 0)
 				{
 					placePos.Y--;
 				}
