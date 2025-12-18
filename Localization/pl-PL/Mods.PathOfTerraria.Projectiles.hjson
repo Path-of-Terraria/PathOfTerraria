@@ -218,3 +218,6 @@ ShadowflamePyreProjectile: {
 		// 2: "{0} disappeared into embers and shade."
 	}
 }
+
+// PrismaticOrbProjectile.DisplayName: Prismatic Orb Projectile
+// PrismaticOrbExplosion.DisplayName: Prismatic Orb Explosion

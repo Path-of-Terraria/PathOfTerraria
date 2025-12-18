@@ -1455,3 +1455,10 @@ FireDiamondRing: {
 	// DisplayName: Fire Diamond Ring
 	// Tooltip: ""
 }
+
+PrismaticOrb: {
+	// Description: Toss forward a prismatic orb, bouncing like a skipping stone in the direction thrown. Each bounce causes a random elemental explosion.
+	// AltUseDescription: Causes your orb explosions to trigger twice for the next 5 seconds.
+	// DisplayName: Prismatic Orb
+	// Tooltip: ""
+}
