@@ -1023,3 +1023,38 @@ PainTransferenceMastery: {
 	// Name: Pain Transference
 	// Tooltip: "{0}% of life regeneration or life healed is dealt as damage to [mechanic/shift:Nearby] enemies"
 }
+
+RockAndStoneMastery: {
+	// Name: Rock and Stone
+	// Tooltip: Every {0} blocks broken, gain a buff that increases mining speed by {1}% for {2} seconds
+}
+
+FasterMiningPassive: {
+	// Name: Faster Mining
+	// Tooltip: +{0}% increased mining speed
+}
+
+SpelunkyMastery: {
+	// Name: Spelunky
+	// Tooltip: Permanent Spelunker and Mining buffs
+}
+
+CheaperShopsPassive: {
+	// Name: Cheaper Shops
+	// Tooltip: Buy prices are {0}% lower
+}
+
+ValuableSalesPassive: {
+	// Name: Increased Sell Value
+	// Tooltip: Sell prices are {0}% higher
+}
+
+ExtraStockMastery: {
+	// Name: Extra Stock
+	// Tooltip: Reroll the Traveling Merchant's stock once per visit
+}
+
+MoneySpeedMastery: {
+	// Name: MoneySpeedMastery
+	// Tooltip: ""
+}

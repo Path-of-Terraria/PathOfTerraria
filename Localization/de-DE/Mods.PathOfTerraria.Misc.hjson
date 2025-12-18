@@ -31,6 +31,8 @@ RarityNames: {
 // VoidPearlCondition: In hardmode or during the Unleashing Chaos quest
 // SubworldItemDisabler: You cannot use this item in a subworld.
 // Damage: "{0} damage"
+// RestockShop: Restock shop
+// RestockTooltip: (Can be used once per merchant)
 
 Element: {
 	// Fire.Name: Fire
