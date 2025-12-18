@@ -4132,20 +4132,81 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "YoyoDamagePassive",
 		"referenceId": 192,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 1129
+			}
+		],
 		"position": {
 			"x": -829,
 			"y": -436
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 193,
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1129,
 		"maxLevel": 1,
 		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1130
+			},
+			{
+				"referenceId": 1131
+			},
+			{
+				"referenceId": 1132
+			}
+		],
+		"position": {
+			"x": -909,
+			"y": -416
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 1
+	},
+	{
+		"internalIdentifier": "PuppeteerMastery",
+		"referenceId": 1130,
+		"maxLevel": 1,
+		"value": 75,
+		"position": {
+			"x": -939,
+			"y": -476
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "TranslucentTricksMastery",
+		"referenceId": 1131,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": -899,
+			"y": -526
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "SpoolbreakerMastery",
+		"referenceId": 1132,
+		"maxLevel": 1,
+		"value": 150,
+		"position": {
+			"x": -829,
+			"y": -536
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "IncreasedEnemyAggressionPassive",
+		"referenceId": 193,
+		"maxLevel": 1,
+		"value": 400,
 		"connections": [
 			{
 				"referenceId": 195
@@ -4190,6 +4251,9 @@
 		"connections": [
 			{
 				"referenceId": 194
+			},
+			{
+				"referenceId": 1133
 			}
 		],
 		"position": {
@@ -4198,16 +4262,19 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "FriendlyDefensePassive",
 		"referenceId": 197,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 195
 			},
 			{
 				"referenceId": 198
+			},
+			{
+				"referenceId": 1133
 			}
 		],
 		"position": {
@@ -4216,7 +4283,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "DamageReductionPassive",
 		"referenceId": 198,
 		"maxLevel": 1,
 		"value": 5,
@@ -4226,6 +4293,9 @@
 			},
 			{
 				"referenceId": 66
+			},
+			{
+				"referenceId": 1133
 			}
 		],
 		"position": {
@@ -4234,12 +4304,68 @@
 		}
 	},
 	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1133,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1134
+			},
+			{
+				"referenceId": 1135
+			},
+			{
+				"referenceId": 1136
+			}
+		],
+		"position": {
+			"x": -1247,
+			"y": -424
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 3
+	},
+	{
+		"internalIdentifier": "UndyingGraspMastery",
+		"referenceId": 1134,
+		"maxLevel": 1,
+		"value": 15,
+		"position": {
+			"x": -1187,
+			"y": -404
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "TranslucentTricksMastery",
+		"referenceId": 1135,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": -1307,
+			"y": -404
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "SpoolbreakerMastery",
+		"referenceId": 1136,
+		"maxLevel": 1,
+		"value": 150,
+		"position": {
+			"x": -1247,
+			"y": -364
+		},
+		"isHidden": true
+	},
+	{
 		"internalIdentifier": "RangerMeleeChanceToBleedPassive",
 		"referenceId": 199,
 		"maxLevel": 1,
 		"value": 10,
 		"position": {
-			"x": -1272,
+			"x": -1282,
 			"y": -700
 		}
 	},
