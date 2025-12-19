@@ -1,6 +1,7 @@
 
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.ElementalDamage;
 using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
 using PathOfTerraria.Content.Items.Gear.Weapons.Staff;
@@ -17,6 +18,8 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons;
 
 internal class PrismaticOrb : Gear
 {
+	private int buffTime = 60 * 5;
+	private int buffCooldown = 60 * 15;
     public override void SetStaticDefaults()
     {
 	    base.SetStaticDefaults();
@@ -55,6 +58,26 @@ internal class PrismaticOrb : Gear
         Item.shootSpeed = 7f;
         Item.mana = 15;
         Item.noMelee = true;
+    }
+
+    public override bool AltFunctionUse(Player player)
+    {
+	    return true;
+    }
+    
+    public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+    {
+	    if (player.altFunctionUse == 2)
+	    {
+		    var altUsePlayer = player.GetModPlayer<AltUsePlayer>();
+		    if (altUsePlayer.AltFunctionAvailable)
+		    {
+			    player.AddBuff(ModContent.BuffType<Buffs.PrismaticOrbBuff>(), buffTime);
+			    altUsePlayer.SetAltCooldown(buffCooldown); 
+		    }
+		    return false;
+	    }
+	    return true;
     }
 
     public override bool CanUseItem(Player player)
@@ -162,20 +185,32 @@ internal class PrismaticOrb : Gear
 
 	    if (Main.myPlayer == Projectile.owner)
 	    {
-		    
-		    Projectile explosion = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(),
-			   Projectile.Center,
-			   Vector2.Zero,
-			    ModContent.ProjectileType<PrismaticOrbExplosion>(),
-			    Projectile.damage,
-			    Projectile.knockBack,
-			    Projectile.owner
-		    );
+		    Player owner = Main.player[Projectile.owner];
+		    int explosionCount = owner.HasBuff(ModContent.BuffType<Buffs.PrismaticOrbBuff>()) ? 2 : 1;
+        
+		    for (int i = 0; i < explosionCount; i++)
+		    {
+			    CreateExplosionProjectile();
+		    }
 	    }
-
+    }
+    
+    private void CreateExplosionProjectile()
+    {
+	    Projectile explosion = Projectile.NewProjectileDirect(
+		    Projectile.GetSource_FromThis(),
+		    Projectile.Center,
+		    Vector2.Zero,
+		    ModContent.ProjectileType<PrismaticOrbExplosion>(),
+		    Projectile.damage,
+		    Projectile.knockBack,
+		    Projectile.owner
+	    );
+    
+	    explosion.GetGlobalProjectile<ElementalProjectile>().Container = Projectile.GetGlobalProjectile<ElementalProjectile>().Container;
+	    
 	    SoundEngine.PlaySound(SoundID.Item14, Projectile.position);
     }
-
 
     private int GetDustTypeForElement(ElementType element)
     {
@@ -204,6 +239,9 @@ internal class PrismaticOrb : Gear
 		 Projectile.hostile = false;
 		 Projectile.timeLeft = 3; 
 		 Projectile.tileCollide = false;
+		 Projectile.penetrate = -1;
+		 Projectile.usesLocalNPCImmunity = true; 
+		 Projectile.localNPCHitCooldown = -1; 
 		 Projectile.ignoreWater = true;
 		 Projectile.DamageType = DamageClass.Magic;
 		 Projectile.alpha = 255;
@@ -218,5 +256,4 @@ internal class PrismaticOrb : Gear
 	 {
 		 Projectile.velocity = Vector2.Zero;
 	 }
-
  }
