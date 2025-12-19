@@ -4,8 +4,8 @@ namespace PathOfTerraria.Content.Items.Gear.Offhands.Shields;
 
 internal class ShadowBarrier : Shield
 {
-	protected override float BlockChance => 0.23f;
-	protected override float SpeedReduction => 1.6f;
+	protected override float BlockChance => 0.15f;
+	protected override float SpeedReduction => 1.2f;
 
 	public override void SetStaticDefaults()
 	{

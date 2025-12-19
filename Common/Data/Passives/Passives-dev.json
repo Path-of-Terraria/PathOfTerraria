@@ -4338,10 +4338,10 @@
 		"isHidden": true
 	},
 	{
-		"internalIdentifier": "TranslucentTricksMastery",
+		"internalIdentifier": "WillingSacrificeMastery",
 		"referenceId": 1135,
 		"maxLevel": 1,
-		"value": 20,
+		"value": 80,
 		"position": {
 			"x": -1307,
 			"y": -404
@@ -4349,10 +4349,10 @@
 		"isHidden": true
 	},
 	{
-		"internalIdentifier": "SpoolbreakerMastery",
+		"internalIdentifier": "ReprisalMastery",
 		"referenceId": 1136,
 		"maxLevel": 1,
-		"value": 150,
+		"value": 200,
 		"position": {
 			"x": -1247,
 			"y": -364
@@ -4550,10 +4550,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddRagePassive",
 		"referenceId": 208,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 1,
 		"position": {
 			"x": -1232,
 			"y": 245
@@ -4567,6 +4567,12 @@
 		"connections": [
 			{
 				"referenceId": 208
+			},
+			{
+				"referenceId": 211
+			},
+			{
+				"referenceId": 210
 			}
 		],
 		"position": {
@@ -4595,7 +4601,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddMaxRagePassive",
 		"referenceId": 212,
 		"maxLevel": 1,
 		"value": 5,
@@ -4610,7 +4616,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddMaxRagePassive",
 		"referenceId": 213,
 		"maxLevel": 1,
 		"value": 5,

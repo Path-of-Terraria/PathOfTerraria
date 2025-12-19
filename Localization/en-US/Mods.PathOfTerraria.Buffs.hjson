@@ -244,3 +244,8 @@ EverburningShadowflameDebuff: {
 	DisplayName: Everburning Shadowflame Debuff
 	Description: Mods.PathOfTerraria.Buffs.EverburningShadowflameDebuff.Description
 }
+
+RageStacksBuff: {
+	DisplayName: Rage Stacks Buff
+	Description: Mods.PathOfTerraria.Buffs.RageStacksBuff.Description
+}

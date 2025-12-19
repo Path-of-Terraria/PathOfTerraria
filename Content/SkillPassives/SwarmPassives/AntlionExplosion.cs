@@ -16,7 +16,7 @@ internal class AntlionExplosion : ExplosionHitboxFriendly
 
 		if (owner.HasTreePassive<PestSwarmTree, OverheatingBugs>())
 		{
-			IgnitedDebuff.ApplyTo(target, damageDone);
+			IgnitedDebuff.ApplyTo(owner, target, damageDone);
 		}
 
 		if (target.life <= 0 && owner.HasTreePassive<PestSwarmTree, InfectedDetonation>() && Main.rand.NextFloat() < 0.1f + addedChance)

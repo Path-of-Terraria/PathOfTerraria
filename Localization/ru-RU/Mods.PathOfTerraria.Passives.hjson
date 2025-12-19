@@ -326,7 +326,7 @@ WhipReachMastery: {
 
 ReducedSkillCooldownPassive: {
 	// Name: Reduced Skill Cooldown
-	// Tooltip: +{0}% reduced skill cooldown per level
+	// Tooltip: +{0}% reduced skill cooldown
 }
 
 AddedFireDamageConversionPassive: {
@@ -1041,7 +1041,7 @@ SpoolbreakerMastery: {
 
 FriendlyDefensePassive: {
 	// Name: Friendly Defense Increase
-	// Tooltip: +{0} defense, +{1}% defense for nearby allied players
+	// Tooltip: +{0} defense, +{1} defense for nearby allied players
 }
 
 IncreasedEnemyAggressionPassive: {
@@ -1055,6 +1055,36 @@ UndyingGraspMastery: {
 }
 
 WillingSacrificeMastery: {
-	// Name: WillingSacrificeMastery
+	// Name: Willing Sacrifice
+	// Tooltip: Gain {1} defense and knockback immunity, take {0}% of closeby allied player's damage for them
+}
+
+ReprisalMastery: {
+	// Name: Reprisal
+	// Tooltip: ""
+}
+
+ImmolationStrideMastery: {
+	// Name: ImmolationStrideMastery
+	// Tooltip: ""
+}
+
+ShortFuseMastery: {
+	// Name: ShortFuseMastery
+	// Tooltip: ""
+}
+
+AddMaxRangePassive: {
+	// Name: AddMaxRangePassive
+	// Tooltip: ""
+}
+
+AddRagePassive: {
+	// Name: AddRagePassive
+	// Tooltip: ""
+}
+
+AddMaxRagePassive: {
+	// Name: AddMaxRagePassive
 	// Tooltip: ""
 }
