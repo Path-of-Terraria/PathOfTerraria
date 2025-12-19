@@ -31,6 +31,8 @@ ImpendingDoom: Пульс ускоряется в центре мира...
 VoidPearlCondition: В сложном режиме или во время квеста 'Раскрытие Хаоса'
 // SubworldItemDisabler: You cannot use this item in a subworld.
 // Damage: "{0} damage"
+// RestockShop: Restock shop
+// RestockTooltip: (Can be used once per merchant)
 
 Element: {
 	// Fire.Name: Fire

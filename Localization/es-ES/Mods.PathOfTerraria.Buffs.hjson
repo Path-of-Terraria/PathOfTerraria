@@ -235,6 +235,16 @@ WideSwingsBuff: {
 	// Description: Increased weapon size
 }
 
+DwarvishBuff: {
+	// DisplayName: Dwarvish Buff
+	// Description: Mods.PathOfTerraria.Buffs.DwarvishBuff.Description
+}
+
+AvariceBuff: {
+	// DisplayName: Avarice Buff
+	// Description: Mods.PathOfTerraria.Buffs.AvariceBuff.Description
+}
+
 SlowburnDebuff: {
 	// DisplayName: Slowburn Debuff
 	// Description: Mods.PathOfTerraria.Buffs.SlowburnDebuff.Description

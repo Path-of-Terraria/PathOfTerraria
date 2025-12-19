@@ -6293,6 +6293,9 @@
 			},
 			{
 				"referenceId": 285
+			},
+			{
+				"referenceId": 1123
 			}
 		],
 		"position": {
@@ -6301,23 +6304,73 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "FasterMiningPassive",
 		"referenceId": 285,
 		"maxLevel": 1,
 		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1123
+			}
+		],
 		"position": {
 			"x": -684,
 			"y": 278
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 286,
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1123,
 		"maxLevel": 1,
 		"value": 5,
 		"connections": [
 			{
+				"referenceId": 1124
+			},
+			{
+				"referenceId": 1125
+			}
+		],
+		"position": {
+			"x": -575,
+			"y": 313
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "RockAndStoneMastery",
+		"referenceId": 1124,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": -540,
+			"y": 233
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "SpelunkyMastery",
+		"referenceId": 1125,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": -481,
+			"y": 329
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "CheaperShopsPassive",
+		"referenceId": 286,
+		"maxLevel": 1,
+		"value": 10,
+		"connections": [
+			{
 				"referenceId": 287
+			},
+			{
+				"referenceId": 1126
 			}
 		],
 		"position": {
@@ -6326,19 +6379,64 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "ValuableSalesPassive",
 		"referenceId": 287,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 20,
 		"connections": [
 			{
 				"referenceId": 38
+			},
+			{
+				"referenceId": 1126
 			}
 		],
 		"position": {
 			"x": -565,
 			"y": -470
 		}
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1126,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1127
+			},
+			{
+				"referenceId": 1128
+			}
+		],
+		"position": {
+			"x": -555,
+			"y": -340
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "ExtraStockMastery",
+		"referenceId": 1127,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": -523,
+			"y": -237
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "MoneySpeedMastery",
+		"referenceId": 1128,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": -452,
+			"y": -375
+		},
+		"isHidden": true
 	},
 	{
 		"internalIdentifier": "StrongerPotionsPassive",
