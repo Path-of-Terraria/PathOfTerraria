@@ -249,3 +249,13 @@ PrismaticOrbBuff: {
 	DisplayName: Prismatic Orb Buff
 	Description: Mods.PathOfTerraria.Buffs.PrismaticOrbBuff.Description
 }
+
+FleaBellBuff: {
+	DisplayName: Flea Bell Buff
+	Description: Mods.PathOfTerraria.Buffs.FleaBellBuff.Description
+}
+
+FleaBellEnhancedBuff: {
+	DisplayName: Flea Bell Enhanced Buff
+	Description: Mods.PathOfTerraria.Buffs.FleaBellEnhancedBuff.Description
+}

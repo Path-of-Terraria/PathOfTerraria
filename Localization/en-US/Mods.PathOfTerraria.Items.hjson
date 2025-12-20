@@ -1467,3 +1467,10 @@ PrismaticOrb: {
 	DisplayName: Prismatic Orb
 	Tooltip: ""
 }
+
+FleaBell: {
+	DisplayName: Flea Bell
+	Tooltip: ""
+	Description: Spawns a flea which will throw itself into enemies to deal damage. When hitting a target, they will bounce off of it, and begin to charge again.
+	AltUseDescription: Empower the fleas, causing them to attack faster, move faster, and deal more damage for X seconds.
+}
