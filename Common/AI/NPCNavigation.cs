@@ -53,7 +53,7 @@ internal sealed class NPCNavigation : NPCComponent
 		public Vector2 MovementVector;
 		public Vector2 JumpVector;
 		public bool FallThroughPlatforms;
-		public bool HasPath;
+		public bool HadPath;
 		public bool GoalReached;
 		public bool GoalJustReached;
 	}
@@ -223,70 +223,127 @@ internal sealed class NPCNavigation : NPCComponent
 	{
 		NPC npc = ctx.NPC;
 		uint tick = Main.GameUpdateCount;
+		(float Src, float Dst)? horizontalMovement = null;
 
-		if (path is not { HasPath: true })
+		// DirMul is a Left/Up/Right/Down directional vector difference multiplier.
+		// It is used to make axes matter less in distance checks.
+		// It is also used to make overshoots in specific directions count as the target being reached.
+		bool CheckDestination(ref Result result, Vector2 src, Vector2 dst, Vector4 dirMul)
 		{
-			return;
+			float closeEnoughDistance = npc.width * 0.66f;
+			float closeEnoughSqrDistance = closeEnoughDistance * closeEnoughDistance;
+			Vector2 dstDiff = dst - src;
+			Vector2 diffMul = new(dstDiff.X >= 0f ? dirMul.Z : dirMul.X, dstDiff.Y >= 0f ? dirMul.W : dirMul.Y);
+			float sqrDist = (dstDiff * diffMul).LengthSquared();
+			bool hasAdvanced = false;
+
+			if (sqrDist <= closeEnoughSqrDistance && !path!.IsAlreadyAtGoal)
+			{
+				path.Advance(out bool atGoal);
+				result.GoalJustReached = atGoal;
+				lastPathAdvanceTick = tick;
+				hasAdvanced = true;
+			}
+
+			result.GoalReached = result.GoalJustReached || path!.IsAlreadyAtGoal;
+			return hasAdvanced;
 		}
 
-		result.HasPath = true;
+		while (true)
+		{
+			if (path is not { HasPath: true, Current: PathEdge edge })
+			{
+				break;
+			}
 
-		PathEdge edge = path.Current;
-		Vector2 srcCenter = edge.From.ToWorldCoordinates();
-		Vector2 dstCenter = edge.To.ToWorldCoordinates();
-		int signSrcToDst = dstCenter.X >= srcCenter.X ? 1 : -1;
-		(float Src, float Dst)? horizontalMovement = null;
-		(Vector2 Src, Vector2 Dst, Vector2 Axes) destination;
+			result.HadPath = true;
+
+			int signSrcToDst = edge.To.X >= edge.From.X ? 1 : -1;
+			(Vector2 Src, Vector2 Dst, Vector4 DirMul) destination;
 
 #if DEBUG && DEBUG_LOGGING
 		Main.NewText($"edge type: {edge.EdgeType switch { 0 => "walk", 1 => "fall", 2 => "jump", _ => "idk" }}");
 #endif
 
-		if (edge.Is<Walk>())
-		{
-			destination = (npc.Bottom, edge.To.ToWorldCoordinates(8, 0), new(1.0f, 0.0f));
-			horizontalMovement = (destination.Src.X, destination.Dst.X);
-		}
-		else if (edge.Is<Fall>())
-		{
-			destination = ((signSrcToDst > 0 ? npc.BottomLeft : npc.BottomRight), edge.To.ToWorldCoordinates((signSrcToDst > 0 ? 16 : 0), 0), new(0.0f, 1.0f));
-			horizontalMovement = (destination.Src.X, destination.Dst.X);
-			result.FallThroughPlatforms = true;
-		}
-		else if (edge.Is<Jump>())
-		{
-			destination = ((signSrcToDst > 0 ? npc.BottomRight : npc.BottomLeft), edge.To.ToWorldCoordinates(8, 0), new(1.0f, 1.0f));
-
-			if (npc.velocity.Y == 0f)
+			// Setup destination points.
+			if (edge.Is<Walk>())
 			{
-				float srcX = (signSrcToDst > 0 ? npc.BottomRight : npc.BottomLeft).X;
-				float dstX = edge.From.ToWorldCoordinates(8, 0).X;
-
-				if (MathF.Abs(dstX - srcX) <= 5f)
-				{
-					npc.direction = signSrcToDst;
-
-					// Pick the strongest of the two computed forces. Weird, yes.
-					Vector2 jumpA = WayfarerPresets.DefaultJumpFunction(npc.Bottom, edge.To.ToWorldCoordinates(), () => npc.gravity);
-					Vector2 jumpB = WayfarerPresets.DefaultJumpFunction(edge.From.ToWorldCoordinates(), edge.To.ToWorldCoordinates(), () => npc.gravity);
-					result.JumpVector = jumpB;
-					//result.JumpVector = new Vector2(MathUtils.MaxAbs(jumpA.X, jumpB.X), MathUtils.MaxAbs(jumpA.Y, jumpB.Y));
-				}
-				else
-				{
-					horizontalMovement = (srcX, dstX);
-				}
+				destination = (npc.Bottom, edge.To.ToWorldCoordinates(8, 0), new(1.0f, 1.0f, 1.0f, 1.0f));
+			}
+			else if (edge.Is<Fall>())
+			{
+				destination = ((signSrcToDst > 0 ? npc.BottomLeft : npc.BottomRight), edge.To.ToWorldCoordinates((signSrcToDst > 0 ? 16 : 0), 0), new(0.0f, 1.0f, 0.0f, 1.0f));
+			}
+			else if (edge.Is<Jump>())
+			{
+				destination = ((signSrcToDst > 0 ? npc.BottomRight : npc.BottomLeft), edge.To.ToWorldCoordinates(8, 0), new(1.0f, 1.0f, 1.0f, 1.0f));
 			}
 			else
 			{
-				// Force a bit of horizontal velocity to climb ledges.
-				const float XSpeed = 0.1f;
-				npc.velocity.X = signSrcToDst > 0 ? Math.Max(+XSpeed, npc.velocity.X) : Math.Min(-XSpeed, npc.velocity.X);
+				break;
 			}
-		}
-		else
-		{
-			return;
+
+			// If the next edge is continued movement into the same direction,
+			// then prevent backtracking from occurring during overshooting.
+			if (path.Next is { } next)
+			{
+				int nextSrcToDst = next.To.X >= next.From.X ? 1 : -1;
+				int destinationSign = destination.Dst.X >= destination.Src.X ? 1 : -1;
+
+				if (signSrcToDst == nextSrcToDst && destinationSign != signSrcToDst)
+				{
+					destination.DirMul *= (Vector4)(signSrcToDst == 1 ? new(0f, 1f, 1f, 1f) : new(1f, 1f, 0f, 1f));
+				}
+			}
+
+			// Advance if goal is reached.
+			if (CheckDestination(ref result, destination.Src, destination.Dst, destination.DirMul))
+			{
+				// Look at the next edge, do not apply any movement for the one we advanced from.
+				continue;
+			}
+
+			// Apply behavior.
+			if (edge.Is<Walk>())
+			{
+				horizontalMovement = (destination.Src.X, destination.Dst.X);
+			}
+			else if (edge.Is<Fall>())
+			{
+				horizontalMovement = (destination.Src.X, destination.Dst.X);
+				result.FallThroughPlatforms = true;
+			}
+			else if (edge.Is<Jump>())
+			{
+				if (npc.velocity.Y == 0f)
+				{
+					float srcX = (signSrcToDst > 0 ? npc.BottomRight : npc.BottomLeft).X;
+					float dstX = edge.From.ToWorldCoordinates(8, 0).X;
+
+					if (MathF.Abs(dstX - srcX) <= 5f)
+					{
+						npc.direction = signSrcToDst;
+
+						// Pick the strongest of the two computed forces. Weird, yes.
+						Vector2 jumpA = WayfarerPresets.DefaultJumpFunction(npc.Bottom, edge.To.ToWorldCoordinates(), () => npc.gravity);
+						Vector2 jumpB = WayfarerPresets.DefaultJumpFunction(edge.From.ToWorldCoordinates(), edge.To.ToWorldCoordinates(), () => npc.gravity);
+						result.JumpVector = jumpB;
+						//result.JumpVector = new Vector2(MathUtils.MaxAbs(jumpA.X, jumpB.X), MathUtils.MaxAbs(jumpA.Y, jumpB.Y));
+					}
+					else
+					{
+						horizontalMovement = (srcX, dstX);
+					}
+				}
+				else
+				{
+					// Force a bit of horizontal velocity to climb ledges.
+					const float XSpeed = 0.1f;
+					npc.velocity.X = signSrcToDst > 0 ? Math.Max(+XSpeed, npc.velocity.X) : Math.Min(-XSpeed, npc.velocity.X);
+				}
+			}
+
+			break;
 		}
 
 		// Horizontal movement.
@@ -303,20 +360,6 @@ internal sealed class NPCNavigation : NPCComponent
 			});
 #endif
 		}
-
-		// Advance if goal is reached.
-		float closeEnoughDistance = npc.width * 0.66f;
-		float closeEnoughSqrDistance = closeEnoughDistance * closeEnoughDistance;
-
-		float sqrDist = ((destination.Dst - destination.Src) * destination.Axes).LengthSquared();
-		if (sqrDist <= closeEnoughSqrDistance && !path.IsAlreadyAtGoal)
-		{
-			path.Advance(out bool atGoal);
-			result.GoalJustReached = atGoal;
-			lastPathAdvanceTick = tick;
-		}
-
-		result.GoalReached = result.GoalJustReached || path.IsAlreadyAtGoal;
 	}
 
 	public override void PostDraw(NPC npc, SpriteBatch sb, Vector2 screenPos, Color color)

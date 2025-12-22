@@ -104,7 +104,7 @@ internal sealed class Abominable : ModNPC
 		NPC.aiStyle = -1;
 		NPC.damage = 44;
 		NPC.width = 44;
-		NPC.height = 100;
+		NPC.height = 80;
 		NPC.lifeMax = 250;
 		NPC.defense = 35;
 		NPC.HitSound = SoundID.NPCHit56 with { Pitch = -0.37f, PitchVariance = 0.11f, Identifier = "AbominableHit" };
@@ -190,8 +190,8 @@ internal sealed class Abominable : ModNPC
 		}
 
 		// Slopes.
-		if (NPC.velocity.Y == 0f)
-		Collision.StepDown(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
+		if (NPC.velocity.Y == 0f) { Collision.StepDown(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY); }
+
 		Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
 
 		if (!NPC.HasValidTarget || AttackProgress != 0)
@@ -206,7 +206,7 @@ internal sealed class Abominable : ModNPC
 		});
 
 		// Fallback movement.
-		if (!navResult.HasPath && ctx.Navigation.StateFlags.HasFlag(NPCNavigation.StateFlag.PathNotFound))
+		if (!navResult.HadPath && ctx.Navigation.StateFlags.HasFlag(NPCNavigation.StateFlag.PathNotFound))
 		{
 			navResult.MovementVector.X = MathHelper.Clamp(ctx.TargetCenter.X - ctx.Center.X, -1f, +1f);
 
