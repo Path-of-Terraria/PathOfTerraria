@@ -1,4 +1,3 @@
-
 using System.Collections.Generic;
 using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Systems;

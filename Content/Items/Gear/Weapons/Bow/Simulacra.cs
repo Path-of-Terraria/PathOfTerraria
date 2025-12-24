@@ -1,9 +1,6 @@
-
 using System.Collections.Generic;
 using PathOfTerraria.Common.Systems;
-using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
 using PathOfTerraria.Core.Items;
-using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 

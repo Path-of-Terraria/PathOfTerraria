@@ -1,4 +1,3 @@
-
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Core.Items;
 using Terraria.Audio;

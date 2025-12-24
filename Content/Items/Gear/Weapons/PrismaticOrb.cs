@@ -1,18 +1,10 @@
-
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.ElementalDamage;
-using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
-using PathOfTerraria.Content.Items.Gear.Weapons.Staff;
-using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using PathOfTerraria.Core.Items;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons;
 
