@@ -87,7 +87,7 @@ public class Ouroboros : Gear
 	}
 }
 
-public class OuroborosProjectile : ModProjectile, IRightClickableProjectile
+public class OuroborosProjectile : ModProjectile
 {
     private const int PoisonGasInterval = 8;
     private const int DevourDuration = 4 * 60; 
@@ -98,8 +98,6 @@ public class OuroborosProjectile : ModProjectile, IRightClickableProjectile
     private int poisonGasTimer = 0;
     private bool devourActive = false;
     private int devourTimer = 0;
-
-    Projectile IRightClickableProjectile.Projectile => Projectile;
 
     public override void SetStaticDefaults()
     {
@@ -289,14 +287,6 @@ public class OuroborosProjectile : ModProjectile, IRightClickableProjectile
             return Color.Lerp(lightColor, Color.DarkGreen, 0.7f * (devourTimer / (float)DevourDuration));
         }
         return base.GetAlpha(lightColor);
-    }
-
-    public override bool PreDraw(ref Color lightColor)
-    {
-        var texture = ModContent.Request<Texture2D>(Texture).Value;
-        this.DrawHighlightAndCheckRightClickInteraction(texture, Projectile.Center - Main.screenPosition, lightColor, Projectile.scale);
-        
-        return true;
     }
 
     public bool RightClick(Player player, bool mouseDirectlyOver)

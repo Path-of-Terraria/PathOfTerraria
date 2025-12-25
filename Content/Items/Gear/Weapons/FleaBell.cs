@@ -26,6 +26,10 @@ public class FleaBell : Gear
     public override void SetStaticDefaults()
     {
         base.SetStaticDefaults();
+        
+        ItemID.Sets.GamepadWholeScreenUseRange[Item.type] = true;
+        ItemID.Sets.LockOnIgnoresCollision[Item.type] = true;
+        ItemID.Sets.StaffMinionSlotsRequired[Type] = 1f;
 
         PoTStaticItemData staticData = this.GetStaticData();
         staticData.DropChance = 1f;
@@ -60,38 +64,40 @@ public class FleaBell : Gear
         return true;
     }
 
-    public override bool? UseItem(Player player)
+    public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
     {
-	    if (player.altFunctionUse == 2)
+	    if (player.altFunctionUse != 2)
+	    {
+		    position = Main.MouseWorld;
+		    player.LimitPointToPlayerReachableArea(ref position);
+	    }
+    }
+    
+    public override void HoldItem(Player player)
+    {
+	    if (Main.myPlayer != player.whoAmI)
+	    {
+		    return;
+	    }
+    
+	    if (Main.mouseRight && Main.mouseRightRelease)
 	    {
 		    var altUsePlayer = player.GetModPlayer<AltUsePlayer>();
 		    if (altUsePlayer.AltFunctionAvailable)
 		    {
 			    player.AddBuff(ModContent.BuffType<FleaBellEnhancedBuff>(), 5 * 60);
 			    altUsePlayer.SetAltCooldown(20 * 60);
+			    Main.mouseRightRelease = false;
 		    }
-		    return true;
 	    }
-
-	    player.AddBuff(Item.buffType, 2);
-	    var projectile = Projectile.NewProjectileDirect(
-		    player.GetSource_ItemUse(Item), 
-		    player.Center, 
-		    Vector2.Zero, 
-		    Item.shoot, 
-		    Item.damage, 
-		    Item.knockBack, 
-		    player.whoAmI
-	    );
-	    projectile.originalDamage = Item.damage;
-    
-	    return true;
     }
 
     public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
     {
-	    return false; 
+	    player.AddBuff(Item.buffType, 2);
+	    return true;
     }
+
 }
 
 public class FleaBellBuff : ModBuff
@@ -129,11 +135,7 @@ public class FleaBellMinion : ModProjectile
 {
     private const float IdleOffsetY = -48f;
     private const float TeleportDistance = 700f;
-    private const float MovementSpeed = 8f;
-    private const float VelocitySmoothing = 40f;
-    private const float VelocityDamping = 0.96f;
     private const float IdleThreshold = 20f;
-    private const float HoverAmplitude = 8f;
     private const float HoverFrequency = 0.05f; 
     private const float VelocityResetFactor = 0.1f;
     private const float DetectionRange = 400f;
@@ -141,12 +143,10 @@ public class FleaBellMinion : ModProjectile
     
     //Bouncing
     private const float BounceSpeed = 16f;
-    private const float BounceDamping = 0.92f;
     private const int BounceDuration = 45;
     private const float BounceGravity = 0.3f;
     private const float InitialBounceUpVelocity = -8f; 
     private const float BounceHorizontalSpeed = 4f;
-    private Vector2 bounceDestination = Vector2.Zero;
     private bool hasBounceDestination = false;
 
 
@@ -253,156 +253,285 @@ public class FleaBellMinion : ModProjectile
 
     public override void AI()
     {
-	    HandleAnimation();
-
         Player owner = Main.player[Projectile.owner];
 
-        if (!owner.active)
+        if (!CheckActive(owner))
         {
-            Projectile.active = false;
             return;
         }
 
-        if (!owner.HasBuff(ModContent.BuffType<FleaBellBuff>()))
+        GeneralBehavior(owner, out Vector2 vectorToIdlePosition, out float distanceToIdlePosition);
+        SearchForTargets(owner, out bool foundTarget, out float distanceFromTarget, out Vector2 targetCenter);
+        Movement(foundTarget, distanceFromTarget, targetCenter, distanceToIdlePosition, vectorToIdlePosition);
+        Visuals();
+    }
+
+    private bool CheckActive(Player owner)
+    {
+        if (owner.dead || !owner.active)
         {
-            Projectile.active = false;
-            return;
+            owner.ClearBuff(ModContent.BuffType<FleaBellBuff>());
+            return false;
         }
 
-        Projectile.localNPCHitCooldown = IsEnhanced ? EnhancedHitCooldown : HitCooldown;
+        if (owner.HasBuff(ModContent.BuffType<FleaBellBuff>()))
+        {
+            Projectile.timeLeft = 2;
+        }
 
-        //For spacing multiple minions
+        return true;
+    }
+    
+    public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+    {
+	    if (IsEnhanced)
+	    {
+		    modifiers.FinalDamage *= EnhancedDamageMultiplier;
+		    Projectile.localNPCHitCooldown = EnhancedHitCooldown;
+	    }
+	    else
+	    {
+		    Projectile.localNPCHitCooldown = HitCooldown;
+	    }
+    }
+
+    private void GeneralBehavior(Player owner, out Vector2 vectorToIdlePosition, out float distanceToIdlePosition)
+    {
+        Vector2 idlePosition = owner.Center;
+        idlePosition.Y += IdleOffsetY;
+        
         CalculatePersonalOffset(owner);
+        idlePosition += personalOffset;
 
-        float speedMultiplier = IsEnhanced ? EnhancedSpeedMultiplier : 1f;
+        vectorToIdlePosition = idlePosition - Projectile.Center;
+        distanceToIdlePosition = vectorToIdlePosition.Length();
 
-        // flea brew fx
+        if (Main.myPlayer == owner.whoAmI && distanceToIdlePosition > TeleportDistance)
+        {
+            Projectile.position = idlePosition;
+            Projectile.velocity *= VelocityResetFactor;
+            Projectile.netUpdate = true;
+        }
+
+        float overlapVelocity = 0.04f;
+        foreach (var other in Main.ActiveProjectiles)
+        {
+            if (other.whoAmI != Projectile.whoAmI && other.owner == Projectile.owner && 
+                Math.Abs(Projectile.position.X - other.position.X) + Math.Abs(Projectile.position.Y - other.position.Y) < Projectile.width)
+            {
+                if (Projectile.position.X < other.position.X)
+                    Projectile.velocity.X -= overlapVelocity;
+                else
+                    Projectile.velocity.X += overlapVelocity;
+
+                if (Projectile.position.Y < other.position.Y)
+                    Projectile.velocity.Y -= overlapVelocity;
+                else
+                    Projectile.velocity.Y += overlapVelocity;
+            }
+        }
+    }
+
+   
+
+    private void SearchForTargets(Player owner, out bool foundTarget, out float distanceFromTarget, out Vector2 targetCenter)
+    {
+	    distanceFromTarget = DetectionRange;
+	    targetCenter = Projectile.position;
+	    foundTarget = false;
+
+	    if (owner.HasMinionAttackTargetNPC)
+	    {
+		    NPC npc = Main.npc[owner.MinionAttackTargetNPC];
+		    if (npc.active && npc.life > 0)
+		    {
+			    float between = Vector2.Distance(npc.Center, Projectile.Center);
+
+			    if (between < 2000f)
+			    {
+				    distanceFromTarget = between;
+				    targetCenter = npc.Center;
+				    foundTarget = true;
+			    }
+		    }
+	    }
+
+	    if (!foundTarget)
+	    {
+		    foreach (var npc in Main.ActiveNPCs)
+		    {
+			    if (npc.CanBeChasedBy())
+			    {
+				    float between = Vector2.Distance(npc.Center, Projectile.Center);
+				    bool closest = Vector2.Distance(Projectile.Center, targetCenter) > between;
+				    bool inRange = between < distanceFromTarget;
+				    bool lineOfSight = Collision.CanHitLine(Projectile.position, Projectile.width, Projectile.height, 
+					    npc.position, npc.width, npc.height);
+				    bool closeThroughWall = between < 100f;
+
+				    if (((closest && inRange) || !foundTarget) && (lineOfSight || closeThroughWall))
+				    {
+					    distanceFromTarget = between;
+					    targetCenter = npc.Center;
+					    foundTarget = true;
+				    }
+			    }
+		    }
+	    }
+    }
+
+public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+{
+    SoundEngine.PlaySound(FleaBell.BellHitSound, Projectile.Center);
+
+    State = AIState.Bouncing;
+    StateTimer = 0f;
+    hasBounceDestination = false;
+
+    Vector2 direction = (Projectile.Center - target.Center).SafeNormalize(Vector2.UnitX);
+    float bounceSpeed = IsEnhanced ? BounceSpeed * EnhancedSpeedMultiplier : BounceSpeed;
+    Projectile.velocity = direction * bounceSpeed;
+}
+
+
+
+private void Movement(bool foundTarget, float distanceFromTarget, Vector2 targetCenter, 
+    float distanceToIdlePosition, Vector2 vectorToIdlePosition)
+{
+    float speedMultiplier = IsEnhanced ? EnhancedSpeedMultiplier : 1f;
+
+    if (foundTarget && State == AIState.Following)
+    {
+        State = AIState.Charging;
+        StateTimer = 0f;
+        hoverTimer = 0f;
+    }
+
+    if (State == AIState.Charging)
+    {
+        StateTimer++;
+        
+        if (!foundTarget || distanceFromTarget > DetectionRange * 2f)
+        {
+            TargetWhoAmI = -1;
+            State = AIState.Following;
+            StateTimer = 0f;
+            Projectile.friendly = false;
+            
+            Player owner = Main.player[Projectile.owner];
+            if (owner.HasMinionAttackTargetNPC)
+            {
+                NPC targetNPC = Main.npc[owner.MinionAttackTargetNPC];
+                if (!targetNPC.active || targetNPC.life <= 0 || Vector2.Distance(targetNPC.Center, Projectile.Center) > DetectionRange * 2f)
+                {
+                    owner.MinionAttackTargetNPC = -1;
+                }
+            }
+            return;
+        }
+        
+        Vector2 direction = targetCenter - Projectile.Center;
+        direction.Normalize();
+        Projectile.velocity = direction * ChargeSpeed * speedMultiplier;
+        Projectile.rotation = direction.ToRotation() + MathHelper.PiOver2;
+        
+        Projectile.friendly = true;
+    }
+    else if (State == AIState.Following)
+    {
+        TargetWhoAmI = -1;
+        Projectile.friendly = false;
+        
+        Vector2 idlePosition = Main.player[Projectile.owner].Center;
+        idlePosition.Y += IdleOffsetY;
+        CalculatePersonalOffset(Main.player[Projectile.owner]);
+        idlePosition += personalOffset;
+        
+        float hoverOffset = (float)Math.Sin(hoverTimer) * 8f; 
+        idlePosition.Y += hoverOffset;
+        
+        Vector2 vectorToIdle = idlePosition - Projectile.Center;
+        float distanceToIdle = vectorToIdle.Length();
+
+        if (distanceToIdle > IdleThreshold)
+        {
+            float moveSpeed = 8f * speedMultiplier; 
+            if (distanceToIdle > 600f)
+            {
+                moveSpeed = 12f * speedMultiplier;
+            }
+            
+            vectorToIdle.Normalize();
+            vectorToIdle *= moveSpeed;
+            
+            Projectile.velocity = (Projectile.velocity * 39f + vectorToIdle) / 40f;
+        }
+        else
+        {
+            Vector2 randomMovement = Main.rand.NextVector2Circular(0.8f, 0.8f);
+            Projectile.velocity += randomMovement * 0.1f;
+            Projectile.velocity *= 0.96f; 
+        }
+        
+        hoverTimer += HoverFrequency;
+        
+        if (Math.Abs(Projectile.velocity.X) > 0.1f)
+        {
+            Projectile.spriteDirection = Math.Sign(Projectile.velocity.X);
+        }
+    }
+    else if (State == AIState.Bouncing)
+    {
+        TargetWhoAmI = -1;
+        Projectile.friendly = false;
+        
+        StateTimer++;
+        
+        Player owner = Main.player[Projectile.owner];
+        
+        if (!hasBounceDestination)
+        {
+            Vector2 directionToPlayer = (owner.Center - Projectile.Center).SafeNormalize(Vector2.UnitX);
+            
+            float horizontalSpeed = IsEnhanced ? BounceHorizontalSpeed * EnhancedSpeedMultiplier : BounceHorizontalSpeed;
+            Projectile.velocity.X = directionToPlayer.X * horizontalSpeed;
+            
+            float upVelocity = IsEnhanced ? InitialBounceUpVelocity * 1.3f : InitialBounceUpVelocity;
+            Projectile.velocity.Y = upVelocity;
+            
+            hasBounceDestination = true;
+        }
+        
+        Projectile.velocity.Y += BounceGravity;
+        
+        Projectile.rotation *= 0.95f;
+        
+        int bounceDuration = IsEnhanced ? (int)(BounceDuration * 0.7f) : BounceDuration;
+        
+        if (StateTimer > bounceDuration)
+        {
+            State = AIState.Following;
+            StateTimer = 0f;
+            Projectile.rotation = 0f;
+            hasBounceDestination = false;
+        }
+    }
+}
+    private void Visuals()
+    {
+        if (State != AIState.Charging)
+        {
+            Projectile.rotation = Projectile.velocity.X * 0.05f;
+        }
+
+        HandleAnimation();
+
         if (IsEnhanced && Main.rand.NextBool(3))
         {
             var dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.YellowTorch);
             dust.velocity *= 0.3f;
             dust.noGravity = true;
             dust.scale = 0.8f;
-        }
-        
-        if (State == AIState.Following)
-        {
-	        hoverTimer += HoverFrequency;
-        }
-
-        if (State == AIState.Following)
-        {
-            Vector2 idlePosition = owner.Center;
-            idlePosition.Y += IdleOffsetY;
-            idlePosition += personalOffset;
-            
-            // subtle hover to make them feel more alive
-            float hoverOffset = (float)Math.Sin(hoverTimer) * HoverAmplitude;
-            idlePosition.Y += hoverOffset;
-
-            Vector2 vectorToIdlePosition = idlePosition - Projectile.Center;
-            float distanceToIdlePosition = vectorToIdlePosition.Length();
-
-            if (distanceToIdlePosition > TeleportDistance && State == AIState.Following)
-            {
-                Projectile.position = idlePosition;
-                Projectile.velocity *= VelocityResetFactor;
-            }
-            else
-            {
-                if (distanceToIdlePosition > IdleThreshold)
-                {
-                    vectorToIdlePosition.Normalize();
-                    vectorToIdlePosition *= MovementSpeed * speedMultiplier;
-                    Projectile.velocity = (Projectile.velocity * VelocitySmoothing + vectorToIdlePosition) / (VelocitySmoothing + 1f);
-                }
-                else
-                {
-	                Vector2 randomMovement = Main.rand.NextVector2Circular(0.8f, 0.8f);
-	                Projectile.velocity += randomMovement * 0.1f;
-
-                    Projectile.velocity *= VelocityDamping;
-                }
-            }
-            
-            Vector2 directionToPlayer = owner.Center - Projectile.Center;
-            if (Math.Abs(directionToPlayer.X) > 5f) 
-            {
-                Projectile.spriteDirection = Math.Sign(directionToPlayer.X);
-            }
-
-            NPC closestNPC = FindClosestNPC(DetectionRange);
-            if (closestNPC != null)
-            {
-                State = AIState.Charging;
-                TargetWhoAmI = closestNPC.whoAmI;
-                StateTimer = 0f;
-                hoverTimer = 0f;
-            }
-        }
-        else if (State == AIState.Charging)
-        {
-            StateTimer++;
-            
-            NPC target = Main.npc[(int)TargetWhoAmI];
-            if (!target.active || target.life <= 0)
-            {
-                State = AIState.Following;
-                return;
-            }
-
-            Vector2 direction = target.Center - Projectile.Center;
-            direction.Normalize();
-            
-            Projectile.velocity = direction * ChargeSpeed * speedMultiplier;
-            
-            Projectile.rotation = direction.ToRotation() + MathHelper.PiOver2;
-        }
-        else if (State == AIState.Bouncing)
-        {
-	        StateTimer++;
-    
-	        if (!hasBounceDestination)
-	        {
-		        Vector2 directionToPlayer = (owner.Center - Projectile.Center).SafeNormalize(Vector2.UnitX);
-        
-		        float horizontalSpeed = IsEnhanced ? BounceHorizontalSpeed * EnhancedSpeedMultiplier : BounceHorizontalSpeed;
-		        Projectile.velocity.X = directionToPlayer.X * horizontalSpeed;
-        
-		        float upVelocity = IsEnhanced ? InitialBounceUpVelocity * 1.3f : InitialBounceUpVelocity;
-		        Projectile.velocity.Y = upVelocity;
-        
-		        hasBounceDestination = true;
-	        }
-    
-	        Projectile.velocity.Y += BounceGravity;
-    
-	        Projectile.rotation *= 0.95f;
-    
-	        int bounceDuration = IsEnhanced ? (int)(BounceDuration * 0.7f) : BounceDuration;
-    
-	        if (StateTimer > bounceDuration)
-	        {
-		        State = AIState.Following;
-		        StateTimer = 0f;
-		        Projectile.rotation = 0f;
-		        hasBounceDestination = false; 
-	        }
-        }
-
-
-        if (State == AIState.Charging)
-        {
-	        CheckForEnemyCollisions();
-        }
-        else
-        {
-	        Projectile.rotation *= 0.9f;
-            
-	        if (Math.Abs(Projectile.velocity.X) > 0.1f)
-	        {
-		        Projectile.spriteDirection = Math.Sign(Projectile.velocity.X);
-	        }
         }
     }
     
@@ -432,72 +561,14 @@ public class FleaBellMinion : ModProjectile
 	    Projectile.frame = animationFrame;
     }
 
-    
-    private void CheckForEnemyCollisions()
+    public override bool? CanCutTiles()
     {
-        if (Main.myPlayer != Projectile.owner) return;
-    
-        for (int i = 0; i < Main.maxNPCs; i++)
-        {
-            NPC npc = Main.npc[i];
-            if (!npc.active || npc.life <= 0 || !npc.CanBeChasedBy()) continue;
-        
-            if (Projectile.Hitbox.Intersects(npc.Hitbox))
-            {
-                int finalDamage = IsEnhanced ? (int)(Projectile.damage * EnhancedDamageMultiplier) : Projectile.damage;
-                
-                var hitInfo = new NPC.HitInfo()
-                {
-                    Damage = finalDamage,
-                    Knockback = Projectile.knockBack,
-                    HitDirection = Math.Sign(Projectile.velocity.X),
-                    DamageType = Projectile.DamageType
-                };
-            
-                npc.StrikeNPC(hitInfo);
-                HitNPC(npc, hitInfo, finalDamage);
-                break;
-            }
-        }
+	    return false;
     }
 
-    public void HitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+    public override bool MinionContactDamage()
     {
-	    //this is a meme, remove later probably
-	    SoundEngine.PlaySound(FleaBell.BellHitSound, Projectile.Center);
-
-	    State = AIState.Bouncing;
-	    StateTimer = 0f;
-	    hasBounceDestination = false;
-	    
-	    Vector2 direction = (Projectile.Center - target.Center).SafeNormalize(Vector2.UnitX);
-	    float bounceSpeed = IsEnhanced ? BounceSpeed * EnhancedSpeedMultiplier : BounceSpeed;
-	    Projectile.velocity = direction * bounceSpeed;
-        
-	    TargetWhoAmI = -1;
-    }
-
-    private NPC FindClosestNPC(float maxDetectDistance)
-    {
-        NPC closestNPC = null;
-        float sqrMaxDetectDistance = maxDetectDistance * maxDetectDistance;
-        float sqrClosestDistance = sqrMaxDetectDistance;
-
-        for (int k = 0; k < Main.maxNPCs; k++)
-        {
-            NPC target = Main.npc[k];
-            if (target.CanBeChasedBy())
-            {
-                float sqrDistanceToTarget = Vector2.DistanceSquared(target.Center, Projectile.Center);
-                if (sqrDistanceToTarget < sqrClosestDistance)
-                {
-                    sqrClosestDistance = sqrDistanceToTarget;
-                    closestNPC = target;
-                }
-            }
-        }
-
-        return closestNPC;
+	    return true;
     }
 
     public override Color? GetAlpha(Color lightColor)
