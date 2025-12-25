@@ -1,6 +1,7 @@
 ﻿//#define DEBUG_GIZMOS
 //#define NEVER_ATTACK
 
+using System.IO;
 using System.Runtime.CompilerServices;
 using PathOfTerraria.Common.AI;
 using PathOfTerraria.Common.NPCs.Components;
@@ -130,11 +131,6 @@ internal sealed class Abominable : ModNPC
 		});
 	}
 
-	public override bool PreAI()
-	{
-		return true;
-	}
-
 	public override void AI()
 	{
 		Context ctx = new(NPC);
@@ -145,13 +141,6 @@ internal sealed class Abominable : ModNPC
 		Attacking(ref ctx);
 		UpdateAnimations(ref ctx);
 		UpdateEffects(ref ctx);
-	}
-
-	public override void PostAI()
-	{
-		Context ctx = new(NPC);
-
-		_ = ctx;
 	}
 
 	private void UpdateTarget(ref Context ctx, bool forceReset = false)
@@ -175,10 +164,17 @@ internal sealed class Abominable : ModNPC
 		return null;
 	}
 
+	public override void SendExtraAI(BinaryWriter writer)
+	{
+		NPC.GetGlobalNPC<NPCNavigation>().SendPath(NPC, writer);
+	}
+	public override void ReceiveExtraAI(BinaryReader reader)
+	{
+		NPC.GetGlobalNPC<NPCNavigation>().ReceivePath(NPC, reader);
+	}
+
 	private void Movement(ref Context ctx)
 	{
-		_ = ctx;
-
 		const float MaxSpeed = 4f;
 		const float Acceleration = 32f;
 		const float Friction = 8f;
@@ -238,7 +234,7 @@ internal sealed class Abominable : ModNPC
 
 	private void Attacking(ref Context ctx)
 	{
-		// Tick down cooldowns.
+		// Cool down cooldowns.
 		if (AttackCooldown > 0) { AttackCooldown--; }
 
 		Vector2 targetDiff = ctx.TargetCenter - ctx.Center;
@@ -294,17 +290,19 @@ internal sealed class Abominable : ModNPC
 				NPC.velocity = AttackDirection * new Vector2(30f, 12f);
 
 				// Prepare damage.
-				int whoAmI = NPC.whoAmI;
-				int type = NPC.type;
 				attack = new AttackInstance
 				{
 					Aabb = default,
 					Direction = default,
 					Damage = NPC.defDamage,
 					Knockback = 10f,
-					Filter = AttackInstance.EntityKind.Player | AttackInstance.EntityKind.Neutral | AttackInstance.EntityKind.Friendly | AttackInstance.EntityKind.Enemy,
-					Predicate = e => e is not Terraria.NPC n || (n.whoAmI != whoAmI && n.type != type),
-					DeathReason = _ => PlayerDeathReason.ByNPC(whoAmI),
+					Filter = (Main.netMode != NetmodeID.MultiplayerClient
+						? AttackInstance.EntityKind.NeutralNPC | AttackInstance.EntityKind.FriendlyNPC | AttackInstance.EntityKind.EnemyNPC
+						: AttackInstance.EntityKind.LocalPlayer
+					),
+					Predicate = e => e is not NPC n || n.type != NPC.type, 
+					DeathReason = _ => PlayerDeathReason.ByNPC(NPC.whoAmI),
+					ExcludedEntity = NPC,
 					HitEntities = attack?.HitEntities,
 				};
 				attack.HitEntities?.Clear();
@@ -319,7 +317,7 @@ internal sealed class Abominable : ModNPC
 
 			// Deal damage starting with the dash.
 
-			if (Main.netMode != NetmodeID.MultiplayerClient && attack != null && AttackProgress >= AttackDashTick && AttackProgress < AttackDamageEndTick)
+			if (attack != null && AttackProgress >= AttackDashTick && AttackProgress < AttackDamageEndTick)
 			{
 				(Vector2 hitboxCenter, Rectangle hitboxAabb) = GetDamageArea();
 				attack.Aabb = hitboxAabb;
@@ -410,13 +408,12 @@ internal sealed class Abominable : ModNPC
 
 	public override bool PreDraw(SpriteBatch sb, Vector2 screenPos, Color color)
 	{
+		// Render the NPC using the proper source rectangle.
 		Texture2D tex = TextureAssets.Npc[NPC.type].Value;
 		Vector2 hitboxCorrection = new(0f, -(100 - NPC.height) * 0.5f);
 		Vector2 position = NPC.Center + new Vector2(0f, NPC.gfxOffY) + hitboxCorrection - Main.screenPosition;
-
 		color = color.MultiplyRGBA(NPC.color);
-
-		sb.Draw(tex, position, NPC.frame, color, NPC.rotation, NPC.frame.Size() * 0.5f, NPC.scale, NPC.spriteDirection >= 0 ? (SpriteEffects)1 : 0, 0f);
+		Main.EntitySpriteDraw(tex, position, NPC.frame, color, NPC.rotation, NPC.frame.Size() * 0.5f, NPC.scale, NPC.spriteDirection >= 0 ? (SpriteEffects)1 : 0, 0f);
 
 #if DEBUG && DEBUG_GIZMOS
 		Vector2 targetCenter = NPC.GetGlobalNPC<NPCTargetTracking>().GetTargetCenter(NPC);
@@ -429,6 +426,7 @@ internal sealed class Abominable : ModNPC
 
 	public override void PostDraw(SpriteBatch sb, Vector2 screenPos, Color color)
 	{
+		// Render the slash.
 		if (AttackProgress >= AttackDashTick && AttackProgress < AttackDamageEndTick)
 		{
 			byte frameIndex = (byte)Math.Min(2, Math.Floor((AttackProgress - AttackDashTick) / (float)(AttackDamageEndTick - AttackDashTick) * 3));

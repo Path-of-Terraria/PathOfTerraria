@@ -2,6 +2,8 @@
 //#define DEBUG_LOGGING
 
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.Utilities;
@@ -10,6 +12,8 @@ using PathOfTerraria.Utilities.Xna;
 using ReLogic.Graphics;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.ID;
+using Terraria.ModLoader.IO;
 using Wayfarer.API;
 using Wayfarer.Data;
 using Wayfarer.Edges;
@@ -34,10 +38,12 @@ internal sealed class NPCNavigation : NPCComponent
 	[Flags]
 	public enum StateFlag : byte
 	{
+		/// <summary> If set, a path value currently exists. </summary>
+		HasPath = 1 << 0,
 		/// <summary> If set, a path result is currently pending. </summary>
-		WaitingForPath = 1 << 0,
-		/// <summary> If set, the last path search has failed. </summary>
-		PathNotFound = 2 << 0,
+		WaitingForPath = 1 << 1,
+		/// <summary> If set, the last path search has failed. Differs from not having a path. </summary>
+		PathNotFound = 1 << 2,
 	}
 
 	public record struct Context
@@ -57,6 +63,8 @@ internal sealed class NPCNavigation : NPCComponent
 		public bool GoalReached;
 		public bool GoalJustReached;
 	}
+
+	private static bool CanPathfind => Main.netMode != NetmodeID.MultiplayerClient;
 
 	private PathResult? path;
 	private PathHandle? pathfinding;
@@ -89,9 +97,51 @@ internal sealed class NPCNavigation : NPCComponent
 		pathfinding = null;
 	}
 
+	/// <summary> Serializes navigation information. </summary>
+	public void SendPath(NPC npc, BinaryWriter writer)
+	{
+		_ = npc;
+
+		// There must not be any desync.
+		Debug.Assert((path != null) == StateFlags.HasFlag(StateFlag.HasPath));
+
+		writer.Write((byte)StateFlags);
+		if (StateFlags.HasFlag(StateFlag.HasPath))
+		{
+			WayfarerAPI.WriteResultTo(path, writer);
+			writer.Write7BitEncodedInt(path!.Index);
+		}
+	}
+	/// <summary> Deserializes navigation information. </summary>
+	public void ReceivePath(NPC npc, BinaryReader reader)
+	{
+		_ = npc;
+
+		StateFlags = (StateFlag)reader.ReadByte();
+
+		if (StateFlags.HasFlag(StateFlag.HasPath))
+		{
+			path = WayfarerAPI.ReadResultFrom(reader);
+
+			for (int idx = reader.Read7BitEncodedInt(); path.Index < idx;)
+			{
+				path.Advance(out _);
+			}
+		}
+		else
+		{
+			path = null;
+		}
+	}
+
 	private bool EnsureReady(NPC npc)
 	{
 		if (pathfinding != null)
+		{
+			return true;
+		}
+
+		if (!CanPathfind)
 		{
 			return true;
 		}
@@ -131,8 +181,7 @@ internal sealed class NPCNavigation : NPCComponent
 
 		uint tick = Main.GameUpdateCount;
 
-		if (path != null
-		&& lastPathRequestTick != 0
+		if (lastPathRequestTick != 0
 		&& ((tick - lastPathRequestTick) < GlobalRepathingDelay || (tick - lastPathAdvanceTick) < InEdgeRepathingDelay))
 		{
 			return;
@@ -143,8 +192,14 @@ internal sealed class NPCNavigation : NPCComponent
 			return;
 		}
 
-		if (!EnsureReady(npc) || pathfinding == null)
+		if (!EnsureReady(npc))
 		{
+			return;
+		}
+
+		if (!CanPathfind)
+		{
+			StateFlags |= StateFlag.WaitingForPath;
 			return;
 		}
 
@@ -181,8 +236,8 @@ internal sealed class NPCNavigation : NPCComponent
 		StateFlags |= StateFlag.WaitingForPath;
 		lastPathRequestTick = tick;
 
-		WayfarerAPI.RecalculateNavMesh(pathfinding.WfHandle, npc.Center.ToTileCoordinates());
-		WayfarerAPI.RecalculatePath(pathfinding.WfHandle, footingTiles, r => OnPathFound(npc, r));
+		WayfarerAPI.RecalculateNavMesh(pathfinding!.WfHandle, npc.Center.ToTileCoordinates());
+		WayfarerAPI.RecalculatePath(pathfinding!.WfHandle, footingTiles, r => OnPathFound(npc, r));
 	}
 
 	private Point SelectDestination(IReadOnlySet<Point> points)
@@ -216,7 +271,9 @@ internal sealed class NPCNavigation : NPCComponent
 			path = result;
 		}
 
+		StateFlags = (path != null) ? (StateFlags | StateFlag.HasPath) : (StateFlags & ~StateFlag.HasPath);
 		StateFlags &= ~StateFlag.WaitingForPath;
+		npc.netUpdate = true;
 	}
 
 	private void Movement(in Context ctx, ref Result result)
@@ -299,6 +356,9 @@ internal sealed class NPCNavigation : NPCComponent
 			// Advance if goal is reached.
 			if (CheckDestination(ref result, destination.Src, destination.Dst, destination.DirMul))
 			{
+				// Netsync this!
+				npc.netUpdate = true;
+
 				// Look at the next edge, do not apply any movement for the one we advanced from.
 				continue;
 			}
@@ -323,12 +383,8 @@ internal sealed class NPCNavigation : NPCComponent
 					if (MathF.Abs(dstX - srcX) <= 5f)
 					{
 						npc.direction = signSrcToDst;
-
-						// Pick the strongest of the two computed forces. Weird, yes.
-						Vector2 jumpA = WayfarerPresets.DefaultJumpFunction(npc.Bottom, edge.To.ToWorldCoordinates(), () => npc.gravity);
-						Vector2 jumpB = WayfarerPresets.DefaultJumpFunction(edge.From.ToWorldCoordinates(), edge.To.ToWorldCoordinates(), () => npc.gravity);
-						result.JumpVector = jumpB;
-						//result.JumpVector = new Vector2(MathUtils.MaxAbs(jumpA.X, jumpB.X), MathUtils.MaxAbs(jumpA.Y, jumpB.Y));
+						result.JumpVector = WayfarerPresets.DefaultJumpFunction(edge.From.ToWorldCoordinates(), edge.To.ToWorldCoordinates(), () => npc.gravity);
+						//result.JumpVector = WayfarerPresets.DefaultJumpFunction(npc.Bottom, edge.To.ToWorldCoordinates(), () => npc.gravity);
 					}
 					else
 					{
