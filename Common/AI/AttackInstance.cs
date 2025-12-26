@@ -6,23 +6,26 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Common.AI;
 
+[Flags]
+internal enum EntityKind
+{
+	None = 0,
+	LocalPlayer = 1 << 1,
+	RemotePlayer = 1 << 2,
+	EnemyNPC = 1 << 3,
+	NeutralNPC = 1 << 4,
+	FriendlyNPC = 1 << 5,
+	BossNPC = 1 << 6,
+	Player = LocalPlayer | RemotePlayer,
+	NPC = EnemyNPC | NeutralNPC | FriendlyNPC | BossNPC,
+	All = Player | NPC,
+}
+
 /// <summary> Used to continuously deal damage during an attack, while skipping entities that already received it. </summary>
 internal class AttackInstance()
 {
-	[Flags]
-	public enum EntityKind
-	{
-		None = 0,
-		LocalPlayer = 1 << 1,
-		RemotePlayer = 1 << 2,
-		EnemyNPC = 1 << 3,
-		NeutralNPC = 1 << 4,
-		FriendlyNPC = 1 << 5,
-		BossNPC = 1 << 6,
-		Player = LocalPlayer | RemotePlayer,
-		NPC = EnemyNPC | NeutralNPC | FriendlyNPC | BossNPC,
-		All = Player | NPC,
-	}
+	public static EntityKind EnemyAttackFilter => EntityKind.NeutralNPC | EntityKind.FriendlyNPC | EntityKind.LocalPlayer;
+	public static EntityKind EnemyAttackFilterWithInfighting => EntityKind.NeutralNPC | EntityKind.FriendlyNPC | EntityKind.EnemyNPC | EntityKind.LocalPlayer;
 
 	public required Rectangle Aabb;
 	public required Func<Player, PlayerDeathReason> DeathReason;

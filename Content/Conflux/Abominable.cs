@@ -296,10 +296,7 @@ internal sealed class Abominable : ModNPC
 					Direction = default,
 					Damage = NPC.defDamage,
 					Knockback = 10f,
-					Filter = (Main.netMode != NetmodeID.MultiplayerClient
-						? AttackInstance.EntityKind.NeutralNPC | AttackInstance.EntityKind.FriendlyNPC | AttackInstance.EntityKind.EnemyNPC
-						: AttackInstance.EntityKind.LocalPlayer
-					),
+					Filter = AttackInstance.EnemyAttackFilterWithInfighting,
 					Predicate = e => e is not NPC n || n.type != NPC.type, 
 					DeathReason = _ => PlayerDeathReason.ByNPC(NPC.whoAmI),
 					ExcludedEntity = NPC,
