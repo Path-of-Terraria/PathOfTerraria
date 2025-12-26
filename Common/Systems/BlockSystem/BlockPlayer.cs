@@ -71,7 +71,9 @@ internal class BlockPlayer : ModPlayer
 
 		if (dodged)
 		{
-			if (Player.GetModPlayer<PassiveTreePlayer>().HasNode<GlancingBlowsPassive>())
+			bool glancing = Player.GetModPlayer<PassiveTreePlayer>().HasNode<GlancingBlowsPassive>();
+
+			if (glancing)
 			{
 				_timeSinceLastBlock = 0;
 
@@ -88,6 +90,8 @@ internal class BlockPlayer : ModPlayer
 
 				_timeSinceLastBlock = 0;
 			}
+
+			IOnBlockPlayer.Invoke(Player, glancing ? info with { Damage = info.Damage / 2 } : info);
 		}
 
 		return dodged;

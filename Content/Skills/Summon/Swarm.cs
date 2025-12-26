@@ -615,7 +615,7 @@ public class Swarm : Skill
 			if (plr.HasTreePassive<PestSwarmTree, OverheatingBugs>())
 			{
 				float mod = 1 + plr.GetPassiveStrength<PestSwarmTree, SuperheatedBugs>() * 0.15f;
-				IgnitedDebuff.ApplyTo(target, (int)(damageDone / 4f * mod));
+				IgnitedDebuff.ApplyTo(plr, target, (int)(damageDone / 4f * mod));
 			}
 
 			if (plr.HasTreePassive<PestSwarmTree, CarapaceCracker>())

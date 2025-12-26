@@ -1,9 +1,7 @@
-﻿using PathOfTerraria.Common.Systems.BlockSystem;
-using PathOfTerraria.Core.Items;
+﻿using PathOfTerraria.Core.Items;
 using System.Collections.Generic;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
-using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.Offhands.Shields;
 
@@ -39,7 +37,7 @@ internal abstract class Shield : Offhand
 		return
 		[
 			(ItemAffix)Affix.CreateAffix<MovementSpeedAffix>(-SpeedReduction),
-			(ItemAffix)Affix.CreateAffix<IncreaseBlockAffix>(BlockChance),
+			(ItemAffix)Affix.CreateAffix<AddBlockAffix>(BlockChance * 100),
 		];
 	}
 }

@@ -17,15 +17,21 @@ internal class AddIgnitedStackHandler : Handler
 
 	internal override void Receive(BinaryReader reader, byte sender)
 	{
+		byte from = Main.dedServ ? sender : reader.ReadByte();
 		short who = reader.ReadInt16();
 		int hitDamage = reader.ReadInt32();
 		int time = reader.ReadInt16();
 
-		IgnitedDebuff.ApplyTo(Main.npc[who], hitDamage, time, true);
+		IgnitedDebuff.ApplyTo(Main.player[from], Main.npc[who], hitDamage, time, true);
 
 		if (Main.netMode == NetmodeID.Server)
 		{
-			Send(Main.npc[who], hitDamage, time, -1, sender);
+			ModPacket packet = Networking.GetPacket<AddIgnitedStackHandler>(9);
+			packet.Write(from);
+			packet.Write(who);
+			packet.Write(hitDamage);
+			packet.Write((short)time);
+			packet.Send();
 		}
 	}
 }

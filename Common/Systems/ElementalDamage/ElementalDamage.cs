@@ -114,7 +114,7 @@ public readonly struct ElementalDamage
 		switch (elementType)
 		{
 			case ElementType.Fire when entity is NPC burningNPC:
-				IgnitedDebuff.ApplyTo(burningNPC, (int)(elementalDamageDealt * 0.9f));
+				IgnitedDebuff.ApplyTo(player, burningNPC, (int)(elementalDamageDealt * 0.9f));
 				break;
 
 			case ElementType.Cold when entity is NPC frozenNPC:

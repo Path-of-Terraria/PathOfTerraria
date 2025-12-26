@@ -6,37 +6,37 @@
 
 IncreasedMeleeDamagePassive: {
 	// Name: Increased Melee Damage
-	// Tooltip: Increases your melee damage by {0}% per level
+	// Tooltip: Increases your melee damage by {0}%
 }
 
 IncreasedRangedDamagePassive: {
 	// Name: Increased Ranged Damage
-	// Tooltip: Increases your ranged damage by {0}% per level
+	// Tooltip: Increases your ranged damage by {0}%
 }
 
 IncreasedMagicDamagePassive: {
 	// Name: Increased Magic Damage
-	// Tooltip: Increases your magic damage by {0}% per level
+	// Tooltip: Increases your magic damage by {0}%
 }
 
 AddedLifePassive: {
 	// Name: Added Life
-	// Tooltip: Increases your maximum life by {0} per level
+	// Tooltip: Increases your maximum life by {0}
 }
 
 AddedManaPassive: {
 	// Name: Added Mana
-	// Tooltip: Increases your maximum mana by {0} per level
+	// Tooltip: Increases your maximum mana by {0}
 }
 
 LongRangePassive: {
 	// Name: Increased Damage Against Distant Enemies
-	// Tooltip: Increases your damage against distant enemies by {0}% per level
+	// Tooltip: Increases your damage against distant enemies by {0}%
 }
 
 CloseRangePassive: {
 	// Name: Increased Damage Against Nearby Enemies
-	// Tooltip: Increases your damage against nearby enemies by 10% per level
+	// Tooltip: Increases your damage against nearby enemies by 10%
 }
 
 ChanceToBleedPassive: {
@@ -46,12 +46,12 @@ ChanceToBleedPassive: {
 
 DamageReductionPassive: {
 	// Name: Added Damage Reduction
-	// Tooltip: Gain {0}% damage reduction per level.
+	// Tooltip: Gain {0}% damage reduction
 }
 
 DamageReflectionPassive: {
 	// Name: Added Damage Reflection
-	// Tooltip: Reflect {0} more damage to enemies that deal contact damage per level.
+	// Tooltip: Reflect {0} more damage to enemies that deal contact damage
 }
 
 StartPassive: {
@@ -61,12 +61,12 @@ StartPassive: {
 
 IncreasedSummonDamagePassive: {
 	// Name: Increased Summon Damage
-	// Tooltip: Increases all summon damage by {0}% per level
+	// Tooltip: Increases all summon damage by {0}%
 }
 
 IncreasedSentryDamagePassive: {
 	// Name: Increased Sentry Damage
-	// Tooltip: Increases your sentries' damage by {0}% per level
+	// Tooltip: Increases your sentries' damage by {0}%
 }
 
 JewelSocket: {
@@ -76,32 +76,32 @@ JewelSocket: {
 
 LifeRegenPassive: {
 	// Name: Added Life Regeneration
-	// Tooltip: Increase life regeneration by {0} per level
+	// Tooltip: Increase life regeneration by {0}
 }
 
 DecreasedManaCostPassive: {
 	// Name: Reduced Mana Cost
-	// Tooltip: Decreases mana cost by {0}% per level
+	// Tooltip: Decreases mana cost by {0}%
 }
 
 AddedCriticalStrikeChance: {
 	// Name: Added Critical Strike Chance
-	// Tooltip: Adds {0}% flat critical strike chance per level
+	// Tooltip: Adds {0}% flat critical strike chance
 }
 
 IncreasedCriticalStrikeChance: {
 	// Name: Increased Critical Strike Chance
-	// Tooltip: Adds {0}% increased critical strike chance per level
+	// Tooltip: Adds {0}% increased critical strike chance
 }
 
 IncreasedCriticalStrikeMultiplier: {
 	// Name: Increased Critical Strike Multiplier
-	// Tooltip: Adds {0}% critical strike multiplier per level
+	// Tooltip: Adds {0}% critical strike multiplier
 }
 
 ArmorPenetrationPassive: {
 	// Name: Increased Armor Penetration
-	// Tooltip: Adds {0}% more armor penetration per level
+	// Tooltip: Adds {0}% more armor penetration
 }
 
 AnchorPassive: {
@@ -116,52 +116,52 @@ StrongerChillPassive: {
 
 ShockChancePassive: {
 	// Name: Added Shock Chance
-	// Tooltip: Adds an additional 5% chance to afflict an enemy with Shock per level.
+	// Tooltip: Adds an additional 5% chance to afflict an enemy with Shock
 }
 
 IncreasedMinionDamagePassive: {
 	// Name: Increased Minion Damage
-	// Tooltip: Increases your minions' damage by {0}% per level
+	// Tooltip: Increases your minions' damage by {0}%
 }
 
 AddedAggressionPassive: {
 	// Name: Added Aggression
-	// Tooltip: Adds an additional point of aggro per level.
+	// Tooltip: Adds an additional point of aggro
 }
 
 GlancingBlowsPassive: {
 	// Name: Glancing Blows
-	// Tooltip: Blocking a strike deals 50% damage, but max block chance is increased to 50% and block cooldown is reduced to 1 second.
+	// Tooltip: Blocking a strike deals 50% damage, but max block chance is increased to 50% and block cooldown is reduced to 1 second
 }
 
 IncreasedBlockChancePassive: {
 	// Name: Increased Block Chance
-	// Tooltip: +10% chance to block an attack per level.
+	// Tooltip: +10% chance to block an attack
 }
 
 AddedIntelligencePassive: {
 	// Name: Added Intelligence
-	// Tooltip: Adds +{0} points to intelligence per level.
+	// Tooltip: Adds +{0} points to intelligence
 }
 
 AddedStrengthPassive: {
 	// Name: Added Strength
-	// Tooltip: Adds +{0} points to strength per level.
+	// Tooltip: Adds +{0} points to strength
 }
 
 AddedDexterityPassive: {
 	// Name: Added Dexterity
-	// Tooltip: Adds +{0} points to dexterity per level.
+	// Tooltip: Adds +{0} points to dexterity
 }
 
 IncreasedPotionRecoveryPassive: {
 	// Name: Increased Potion Recovery
-	// Tooltip: Adds +{0}% additional healing from Healing Potions per level.
+	// Tooltip: Adds +{0}% additional healing from Healing Potions
 }
 
 IncreasedMoveSpeedPassive: {
 	// Name: Increased Movement Speed
-	// Tooltip: +{0}% increased movement speed per level.
+	// Tooltip: +{0}% increased movement speed
 }
 
 IncreasedJumpHeight: {
@@ -326,7 +326,7 @@ WhipReachMastery: {
 
 ReducedSkillCooldownPassive: {
 	// Name: Reduced Skill Cooldown
-	// Tooltip: +{0}% reduced skill cooldown per level
+	// Tooltip: +{0}% reduced skill cooldown
 }
 
 AddedFireDamageConversionPassive: {
@@ -1022,6 +1022,71 @@ HeartAndMindMastery: {
 PainTransferenceMastery: {
 	// Name: Pain Transference
 	// Tooltip: "{0}% of life regeneration or life healed is dealt as damage to [mechanic/shift:Nearby] enemies"
+}
+
+PuppeteerMastery: {
+	// Name: Puppeteer
+	// Tooltip: Hitting an enemy with a yoyo will tie it to the yoyo, pulling it towards your yoyo and taking {0}% damage any time you deal damage to anything
+}
+
+TranslucentTricksMastery: {
+	// Name: Translucent Tricks
+	// Tooltip: Yoyo damage and speed is increased by {0}%, yoyos can go through tiles
+}
+
+SpoolbreakerMastery: {
+	// Name: Spoolbreaker
+	// Tooltip: Hitting an enemy with a yoyo will make the yoyo grow, until it explodes, dealing {0}% damage
+}
+
+FriendlyDefensePassive: {
+	// Name: Friendly Defense Increase
+	// Tooltip: +{0} defense, +{1} defense for nearby allied players
+}
+
+IncreasedEnemyAggressionPassive: {
+	// Name: Increased Enemy Aggression
+	// Tooltip: Aggro is increased by {0}
+}
+
+UndyingGraspMastery: {
+	// Name: Undying Grasp
+	// Tooltip: Heal {0}% of the damage done after {1} seconds
+}
+
+WillingSacrificeMastery: {
+	// Name: Willing Sacrifice
+	// Tooltip: Gain {1} defense and knockback immunity, take {0}% of closeby allied player's damage for them
+}
+
+ReprisalMastery: {
+	// Name: Reprisal
+	// Tooltip: ""
+}
+
+ImmolationStrideMastery: {
+	// Name: ImmolationStrideMastery
+	// Tooltip: ""
+}
+
+ShortFuseMastery: {
+	// Name: ShortFuseMastery
+	// Tooltip: ""
+}
+
+AddMaxRangePassive: {
+	// Name: AddMaxRangePassive
+	// Tooltip: ""
+}
+
+AddRagePassive: {
+	// Name: AddRagePassive
+	// Tooltip: ""
+}
+
+AddMaxRagePassive: {
+	// Name: AddMaxRagePassive
+  // Tooltip: ""
 }
 
 RockAndStoneMastery: {

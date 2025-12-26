@@ -12,7 +12,7 @@ internal class IgnitingProjectilesPassive : Passive
 			if (projectile.TryGetOwner(out Player plr) && plr.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<IgnitingProjectilesPassive>(out float value) 
 				&& Main.rand.NextFloat() < value)
 			{
-				IgnitedDebuff.ApplyTo(target, damageDone, 240);
+				IgnitedDebuff.ApplyTo(plr, target, damageDone, 240);
 			}
 		}
 	}
