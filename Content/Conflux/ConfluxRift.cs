@@ -179,7 +179,7 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 			return false;
 		}
 
-		effect.Parameters["timeManual"].SetValue((float)Main.time * 0.027f);
+		effect.Parameters["timeManual"].SetValue((float)Main.timeForVisualEffects * 0.027f);
 		effect.Parameters["progress"].SetValue(OpeningAnimation);
 		effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(Texture + "_PerlinNoiseMap").Value);
 		effect.Parameters["_PaletteTex"].SetValue(ModContent.Request<Texture2D>(Texture + "_Palette").Value);
