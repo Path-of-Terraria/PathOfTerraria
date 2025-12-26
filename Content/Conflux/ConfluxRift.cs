@@ -179,7 +179,7 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 			return false;
 		}
 
-		effect.Parameters["timeManual"].SetValue((float)Main.time * 0.027f);
+		effect.Parameters["timeManual"].SetValue((float)Main.timeForVisualEffects * 0.027f);
 		effect.Parameters["progress"].SetValue(OpeningAnimation);
 		effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(Texture + "_PerlinNoiseMap").Value);
 		effect.Parameters["_PaletteTex"].SetValue(ModContent.Request<Texture2D>(Texture + "_Palette").Value);
@@ -302,6 +302,7 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 			"Content/Encounters/Squads/UndeadSquadLarge",
 			"Content/Encounters/Squads/ZombieSquadLarge",
 			"Content/Encounters/Squads/ZombieSquadSmall",
+			"Content/Encounters/Squads/BruiserBrothers",
 		];
 		EncounterDescription[] baseEncounters = encounterPaths.Select(p => EncounterIO.GetEncounterFromModPath(Mod, p)).ToArray();
 

@@ -32,6 +32,29 @@ public static class MathUtils
 		return r < 0 ? r + length : r;
 	}
 
+	/// <summary> Returns the input with the highest absolute value. </summary>
+	public static int MaxAbs(int a, int b)
+	{
+		return Math.Abs(a) >= Math.Abs(b) ? a : b;
+	}
+	/// <inheritdoc cref="MaxAbs"/>
+	public static float MaxAbs(float a, float b)
+	{
+		return Math.Abs(a) >= Math.Abs(b) ? a : b;
+	}
+	/// <summary> Returns the input with the lowest absolute value. </summary>
+	public static int MinAbs(int a, int b)
+	{
+		return Math.Abs(a) <= Math.Abs(b) ? a : b;
+	}
+	/// <inheritdoc cref="MinAbs"/>
+	public static float MinAbs(float a, float b)
+	{
+		return Math.Abs(a) <= Math.Abs(b) ? a : b;
+	}
+
+	// Linear Interpolation
+
 	/// <summary> Approaches <paramref name="goal"/> by adding <paramref name="step"/> to move <paramref name="value"/> towards it. </summary>
 	public static float StepTowards(float value, float goal, float step)
 	{
@@ -66,6 +89,28 @@ public static class MathUtils
 			Precent = MathHelper.SmoothStep(from.Precent, to.Precent, t),
 		};
 	}
+
+	// Damping
+
+	/// <summary>
+	/// Framerate independent damping.<br/>
+	/// Based on https://www.rorydriscoll.com/2016/03/07/frame-rate-independent-damping-using-lerp
+	/// </summary>
+	public static float Damp(float source, float destination, float smoothing, float dt)
+	{
+		return MathHelper.Lerp(source, destination, 1f - MathF.Pow(smoothing, dt));
+	}
+	/// <inheritdoc cref="Damp"/>
+	public static Vector2 Damp(Vector2 source, Vector2 destination, float smoothing, float dt)
+	{
+		return new
+		(
+			Damp(source.X, destination.X, smoothing, dt),
+			Damp(source.Y, destination.Y, smoothing, dt)
+		);
+	}
+
+	// Etc.
 
 	/// <summary> Rounds <paramref name="value"/> to the nearest percent. </summary>
 	public static int Percent(float value)

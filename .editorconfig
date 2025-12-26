@@ -247,3 +247,6 @@ dotnet_diagnostic.IDE0004.severity = none
 
 # IDE0305: Simplify collection initialization
 dotnet_diagnostic.IDE0305.severity = none
+
+# IDE0053: Use expression body for lambda expression
+dotnet_diagnostic.IDE0053.severity = none

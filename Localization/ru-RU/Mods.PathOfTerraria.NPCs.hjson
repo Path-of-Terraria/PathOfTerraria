@@ -975,3 +975,5 @@ AzarielNPC: {
 	// Entry: Todo:
 	// Census.SpawnCondition: Conditions unknown
 }
+
+// Abominable.DisplayName: Abominable
