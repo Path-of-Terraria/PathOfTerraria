@@ -10,6 +10,7 @@ using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Core.Pathfinding;
 using PathOfTerraria.Utilities.Xna;
 using ReLogic.Graphics;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -71,6 +72,8 @@ internal sealed class NPCNavigation : NPCComponent
 	private uint lastPathRequestTick;
 	private uint lastPathAdvanceTick;
 	private Vector2 targetPosition;
+	private Vector2 lastPathSourcePos;
+	private Vector2 lastPathTargetPos;
 
 	/// <summary> Possible jump range in tiles. </summary>
 	public Vector2Int JumpRange { get; set; } = new(10, 10);
@@ -176,13 +179,22 @@ internal sealed class NPCNavigation : NPCComponent
 	{
 		NPC npc = ctx.NPC;
 
-		const uint GlobalRepathingDelay = 30;
+		const uint GlobalRepathingDelay = 15;
 		const uint InEdgeRepathingDelay = 30;
+		const float MinTargetMove = 32f;
+		const float MinSelfMove = 64f;
 
 		uint tick = Main.GameUpdateCount;
 
 		if (lastPathRequestTick != 0
 		&& ((tick - lastPathRequestTick) < GlobalRepathingDelay || (tick - lastPathAdvanceTick) < InEdgeRepathingDelay))
+		{
+			return;
+		}
+
+		// Halt if no one has moved.
+		if (Vector2.DistanceSquared(npc.Center, lastPathSourcePos) <= (MinSelfMove * MinSelfMove)
+		&& Vector2.DistanceSquared(ctx.TargetPosition, lastPathTargetPos) <= (MinTargetMove * MinTargetMove))
 		{
 			return;
 		}
@@ -211,7 +223,7 @@ internal sealed class NPCNavigation : NPCComponent
 
 		for (int i = 0, x = bottomL.X; x <= bottomR.X; x++, i++)
 		{
-			for (int y = bottomL.Y, yEnd = Math.Min(Main.maxTilesY, bottomL.Y + 3); y < yEnd; y++)
+			for (int y = bottomL.Y, yEnd = Math.Min(Main.maxTilesY, bottomL.Y + 4); y < yEnd; y++)
 			{
 				Tile tile = Main.tile[x, y];
 				bool isValid = tile.HasUnactuatedTile && (Main.tileSolid[tile.TileType] || Main.tileSolidTop[tile.TileType]);
@@ -235,6 +247,8 @@ internal sealed class NPCNavigation : NPCComponent
 
 		StateFlags |= StateFlag.WaitingForPath;
 		lastPathRequestTick = tick;
+		lastPathSourcePos = npc.Center;
+		lastPathTargetPos = targetPosition;
 
 		WayfarerAPI.RecalculateNavMesh(pathfinding!.WfHandle, npc.Center.ToTileCoordinates());
 		WayfarerAPI.RecalculatePath(pathfinding!.WfHandle, footingTiles, r => OnPathFound(npc, r));
@@ -266,7 +280,7 @@ internal sealed class NPCNavigation : NPCComponent
 			StateFlags &= ~StateFlag.PathNotFound;
 		}
 
-		if (!BehaviorFlags.HasFlag(BehaviorFlag.CheckGroundBeforeRepath) || npc.velocity.Y == 0f)
+		//if (!BehaviorFlags.HasFlag(BehaviorFlag.CheckGroundBeforeRepath) || npc.velocity.Y == 0f)
 		{
 			path = result;
 		}
@@ -287,7 +301,7 @@ internal sealed class NPCNavigation : NPCComponent
 		// It is also used to make overshoots in specific directions count as the target being reached.
 		bool CheckDestination(ref Result result, Vector2 src, Vector2 dst, Vector4 dirMul)
 		{
-			float closeEnoughDistance = npc.width * 0.66f;
+			float closeEnoughDistance = npc.width * 0.25f;
 			float closeEnoughSqrDistance = closeEnoughDistance * closeEnoughDistance;
 			Vector2 dstDiff = dst - src;
 			Vector2 diffMul = new(dstDiff.X >= 0f ? dirMul.Z : dirMul.X, dstDiff.Y >= 0f ? dirMul.W : dirMul.Y);
@@ -318,18 +332,15 @@ internal sealed class NPCNavigation : NPCComponent
 			int signSrcToDst = edge.To.X >= edge.From.X ? 1 : -1;
 			(Vector2 Src, Vector2 Dst, Vector4 DirMul) destination;
 
-#if DEBUG && DEBUG_LOGGING
-		Main.NewText($"edge type: {edge.EdgeType switch { 0 => "walk", 1 => "fall", 2 => "jump", _ => "idk" }}");
-#endif
-
 			// Setup destination points.
 			if (edge.Is<Walk>())
 			{
-				destination = (npc.Bottom, edge.To.ToWorldCoordinates(8, 0), new(1.0f, 1.0f, 1.0f, 1.0f));
+				destination = (npc.Bottom, edge.To.ToWorldCoordinates(8, 0), new(1.0f, 0.25f, 1.0f, 0.25f));
 			}
 			else if (edge.Is<Fall>())
 			{
 				destination = ((signSrcToDst > 0 ? npc.BottomLeft : npc.BottomRight), edge.To.ToWorldCoordinates((signSrcToDst > 0 ? 16 : 0), 0), new(0.0f, 1.0f, 0.0f, 1.0f));
+				//destination = ((signSrcToDst > 0 ? npc.BottomLeft : npc.BottomRight), edge.To.ToWorldCoordinates(8, 0), new(0.0f, 1.0f, 0.0f, 1.0f));
 			}
 			else if (edge.Is<Jump>())
 			{
@@ -363,6 +374,12 @@ internal sealed class NPCNavigation : NPCComponent
 				continue;
 			}
 
+#if DEBUG && DEBUG_LOGGING
+			Main.NewText($"edge type: {edge.EdgeType switch { 0 => "walk", 1 => "fall", 2 => "jump", _ => "idk" }}\nvelY: {npc.velocity.Y:0.00}");
+#endif
+
+			NPCID.Sets.TrailingMode[npc.type] = 1;
+
 			// Apply behavior.
 			if (edge.Is<Walk>())
 			{
@@ -370,31 +387,57 @@ internal sealed class NPCNavigation : NPCComponent
 			}
 			else if (edge.Is<Fall>())
 			{
-				horizontalMovement = (destination.Src.X, destination.Dst.X);
+				// Move horizontally until we fall off the initial elevation.
+				if ((npc.Bottom.Y) <= destination.Src.Y)
+				{
+					horizontalMovement = (destination.Src.X, signSrcToDst > 0 ? float.PositiveInfinity : float.NegativeInfinity);
+				}
+				else
+				{
+					horizontalMovement = (destination.Src.X, destination.Dst.X);
+				}
+
 				result.FallThroughPlatforms = true;
 			}
 			else if (edge.Is<Jump>())
 			{
-				if (npc.velocity.Y == 0f)
+				if (npc.velocity.Y == 0f || npc.oldVelocity.Y == 0f)
 				{
-					float srcX = (signSrcToDst > 0 ? npc.BottomRight : npc.BottomLeft).X;
-					float dstX = edge.From.ToWorldCoordinates(8, 0).X;
+					Vector2 src = (signSrcToDst > 0 ? npc.BottomLeft : npc.BottomRight);
+					Vector2 dst = edge.From.ToWorldCoordinates(8, 0); //(signSrcToDst > 0 ? 1 : 15)
 
-					if (MathF.Abs(dstX - srcX) <= 5f)
+					bool atJumpPoint = MathF.Abs(dst.X - src.X) <= 3f;
+					bool mayBeStuck = npc.velocity == default && npc.collideX && npc.collideY && npc.oldPos.All(p => p == npc.position);
+
+#if DEBUG_LOGGING || true
+					if (mayBeStuck && !atJumpPoint)
+					{
+						Main.NewText("Stuck! Jumping!", Color.Aqua);
+					}
+#endif
+
+					if (atJumpPoint || mayBeStuck)
 					{
 						npc.direction = signSrcToDst;
-						result.JumpVector = WayfarerPresets.DefaultJumpFunction(edge.From.ToWorldCoordinates(), edge.To.ToWorldCoordinates(), () => npc.gravity);
-						//result.JumpVector = WayfarerPresets.DefaultJumpFunction(npc.Bottom, edge.To.ToWorldCoordinates(), () => npc.gravity);
+
+						Vector2 edgeJump = WayfarerPresets.DefaultJumpFunction(edge.From.ToWorldCoordinates(), edge.To.ToWorldCoordinates(), () => npc.gravity);
+						//Vector2 bodyJump = WayfarerPresets.DefaultJumpFunction(src, edge.To.ToWorldCoordinates(), () => npc.gravity);
+						//result.JumpVector = new Vector2(
+						//	MathUtils.MaxAbs(edgeJump.X, bodyJump.X),
+						//	Math.Min(edgeJump.Y, bodyJump.Y)
+						//);
+						result.JumpVector = edgeJump;
 					}
 					else
 					{
-						horizontalMovement = (srcX, dstX);
+						horizontalMovement = (src.X, dst.X);
 					}
 				}
-				else
+				
+				if (npc.velocity.Y != 0f)
 				{
 					// Force a bit of horizontal velocity to climb ledges.
-					const float XSpeed = 0.1f;
+					const float XSpeed = 0.2f;
 					npc.velocity.X = signSrcToDst > 0 ? Math.Max(+XSpeed, npc.velocity.X) : Math.Min(-XSpeed, npc.velocity.X);
 				}
 			}
