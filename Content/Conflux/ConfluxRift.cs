@@ -302,6 +302,7 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 			"Content/Encounters/Squads/UndeadSquadLarge",
 			"Content/Encounters/Squads/ZombieSquadLarge",
 			"Content/Encounters/Squads/ZombieSquadSmall",
+			"Content/Encounters/Squads/BruiserBrothers",
 		];
 		EncounterDescription[] baseEncounters = encounterPaths.Select(p => EncounterIO.GetEncounterFromModPath(Mod, p)).ToArray();
 
