@@ -259,6 +259,7 @@ PrismaticOrbBuff: {
 	DisplayName: Prismatic Orb Buff
 	Description: Your prismatic orb explosions will trigger twice.
 }
+
 FleaBellBuff: {
 	DisplayName: Flea Bell Buff
 	Description: It's fluffy beyond belief.
@@ -268,6 +269,7 @@ FleaBellEnhancedBuff: {
 	DisplayName: Flea Bell Enhanced Buff
 	Description: Empowers your fleas with more attack speed, damage, and movement speed.
 }
+
 RageStacksBuff: {
 	DisplayName: Rage Stacks Buff
 	Description: 1% increased ranged and melee damage per stack.
