@@ -39,6 +39,7 @@
 		<Reference Include="SubworldLibrary" HintPath="lib\SubworldLibrary.dll" />
 		<Reference Include="NPCUtils" HintPath="lib\NPCUtils.dll" />
 		<Reference Include="HousingAPI" HintPath="lib\HousingAPI.dll" />
+		<Reference Include="Wayfarer" HintPath="lib\Wayfarer.dll" />
 	</ItemGroup>
 
 	<!-- Content -->

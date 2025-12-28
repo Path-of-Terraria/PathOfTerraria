@@ -220,7 +220,7 @@ public class Fireball : Skill
 					time = (int)(time * (1 + LongerIgnites.DamageBoost));
 				}
 
-				IgnitedDebuff.ApplyTo(target, damageDone, time);
+				IgnitedDebuff.ApplyTo(Owner, target, damageDone, time);
 				SpawnDust(12);
 			}
 

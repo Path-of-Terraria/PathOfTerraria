@@ -4132,20 +4132,81 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "YoyoDamagePassive",
 		"referenceId": 192,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 1129
+			}
+		],
 		"position": {
 			"x": -829,
 			"y": -436
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 193,
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1129,
 		"maxLevel": 1,
 		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1130
+			},
+			{
+				"referenceId": 1131
+			},
+			{
+				"referenceId": 1132
+			}
+		],
+		"position": {
+			"x": -909,
+			"y": -416
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 1
+	},
+	{
+		"internalIdentifier": "PuppeteerMastery",
+		"referenceId": 1130,
+		"maxLevel": 1,
+		"value": 75,
+		"position": {
+			"x": -939,
+			"y": -476
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "TranslucentTricksMastery",
+		"referenceId": 1131,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": -899,
+			"y": -526
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "SpoolbreakerMastery",
+		"referenceId": 1132,
+		"maxLevel": 1,
+		"value": 150,
+		"position": {
+			"x": -829,
+			"y": -536
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "IncreasedEnemyAggressionPassive",
+		"referenceId": 193,
+		"maxLevel": 1,
+		"value": 400,
 		"connections": [
 			{
 				"referenceId": 195
@@ -4190,6 +4251,9 @@
 		"connections": [
 			{
 				"referenceId": 194
+			},
+			{
+				"referenceId": 1133
 			}
 		],
 		"position": {
@@ -4198,16 +4262,19 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "FriendlyDefensePassive",
 		"referenceId": 197,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 195
 			},
 			{
 				"referenceId": 198
+			},
+			{
+				"referenceId": 1133
 			}
 		],
 		"position": {
@@ -4216,7 +4283,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "DamageReductionPassive",
 		"referenceId": 198,
 		"maxLevel": 1,
 		"value": 5,
@@ -4226,6 +4293,9 @@
 			},
 			{
 				"referenceId": 66
+			},
+			{
+				"referenceId": 1133
 			}
 		],
 		"position": {
@@ -4234,12 +4304,68 @@
 		}
 	},
 	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1133,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1134
+			},
+			{
+				"referenceId": 1135
+			},
+			{
+				"referenceId": 1136
+			}
+		],
+		"position": {
+			"x": -1247,
+			"y": -424
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 3
+	},
+	{
+		"internalIdentifier": "UndyingGraspMastery",
+		"referenceId": 1134,
+		"maxLevel": 1,
+		"value": 15,
+		"position": {
+			"x": -1187,
+			"y": -404
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "WillingSacrificeMastery",
+		"referenceId": 1135,
+		"maxLevel": 1,
+		"value": 80,
+		"position": {
+			"x": -1307,
+			"y": -404
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "ReprisalMastery",
+		"referenceId": 1136,
+		"maxLevel": 1,
+		"value": 200,
+		"position": {
+			"x": -1247,
+			"y": -364
+		},
+		"isHidden": true
+	},
+	{
 		"internalIdentifier": "RangerMeleeChanceToBleedPassive",
 		"referenceId": 199,
 		"maxLevel": 1,
 		"value": 10,
 		"position": {
-			"x": -1272,
+			"x": -1282,
 			"y": -700
 		}
 	},
@@ -4424,10 +4550,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddRagePassive",
 		"referenceId": 208,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 1,
 		"position": {
 			"x": -1232,
 			"y": 245
@@ -4441,6 +4567,12 @@
 		"connections": [
 			{
 				"referenceId": 208
+			},
+			{
+				"referenceId": 211
+			},
+			{
+				"referenceId": 210
 			}
 		],
 		"position": {
@@ -4469,7 +4601,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddMaxRagePassive",
 		"referenceId": 212,
 		"maxLevel": 1,
 		"value": 5,
@@ -4484,7 +4616,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddMaxRagePassive",
 		"referenceId": 213,
 		"maxLevel": 1,
 		"value": 5,
@@ -6161,6 +6293,9 @@
 			},
 			{
 				"referenceId": 285
+			},
+			{
+				"referenceId": 1123
 			}
 		],
 		"position": {
@@ -6169,23 +6304,73 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "FasterMiningPassive",
 		"referenceId": 285,
 		"maxLevel": 1,
 		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1123
+			}
+		],
 		"position": {
 			"x": -684,
 			"y": 278
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 286,
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1123,
 		"maxLevel": 1,
 		"value": 5,
 		"connections": [
 			{
+				"referenceId": 1124
+			},
+			{
+				"referenceId": 1125
+			}
+		],
+		"position": {
+			"x": -575,
+			"y": 313
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "RockAndStoneMastery",
+		"referenceId": 1124,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": -540,
+			"y": 233
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "SpelunkyMastery",
+		"referenceId": 1125,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": -481,
+			"y": 329
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "CheaperShopsPassive",
+		"referenceId": 286,
+		"maxLevel": 1,
+		"value": 10,
+		"connections": [
+			{
 				"referenceId": 287
+			},
+			{
+				"referenceId": 1126
 			}
 		],
 		"position": {
@@ -6194,19 +6379,64 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "ValuableSalesPassive",
 		"referenceId": 287,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 20,
 		"connections": [
 			{
 				"referenceId": 38
+			},
+			{
+				"referenceId": 1126
 			}
 		],
 		"position": {
 			"x": -565,
 			"y": -470
 		}
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1126,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1127
+			},
+			{
+				"referenceId": 1128
+			}
+		],
+		"position": {
+			"x": -555,
+			"y": -340
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "ExtraStockMastery",
+		"referenceId": 1127,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": -523,
+			"y": -237
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "MoneySpeedMastery",
+		"referenceId": 1128,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": -452,
+			"y": -375
+		},
+		"isHidden": true
 	},
 	{
 		"internalIdentifier": "StrongerPotionsPassive",

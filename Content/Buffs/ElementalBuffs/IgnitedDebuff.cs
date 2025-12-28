@@ -10,7 +10,9 @@ namespace PathOfTerraria.Content.Buffs.ElementalBuffs;
 
 internal class IgnitedDebuff : ModBuff
 {
-	public static void ApplyTo(NPC npc, int hitDamage, int time = 4 * 60, bool fromNet = false)
+	public const int DefaultTickRate = 60;
+
+	public static void ApplyTo(Player player, NPC npc, int hitDamage, int time = 4 * 60, bool fromNet = false)
 	{
 		if (Main.netMode == NetmodeID.MultiplayerClient && !fromNet)
 		{
@@ -21,6 +23,7 @@ internal class IgnitedDebuff : ModBuff
 		IgnitedNPC ignited = npc.GetGlobalNPC<IgnitedNPC>();
 		ignited.Stacks.Add(new IgnitedNPC.IgnitedStack(time + 1, hitDamage));
 		ignited.Stacks = [.. ignited.Stacks.OrderByDescending(x => x.BaseDamage)];
+		ignited.LastTickCount = player.GetModPlayer<IgnitedPlayer>().IgniteDuration.ApplyTo(DefaultTickRate);
 
 		if (ignited.Stacks[0].BaseDamage == hitDamage)
 		{
@@ -69,6 +72,9 @@ internal class IgnitedNPC : GlobalNPC
 
 	public List<IgnitedStack> Stacks = [];
 	public float ElapsedDoT = 0;
+	public float LastTickCount = 60;
+
+	private int _timer = 0;
 
 	public override bool PreAI(NPC npc)
 	{
@@ -78,9 +84,11 @@ internal class IgnitedNPC : GlobalNPC
 			int halfDamage = baseDamage / 2;
 			ElapsedDoT += baseDamage / 60f;
 
-			if (ElapsedDoT > halfDamage)
+			if (++_timer > LastTickCount)
 			{
-				DoTFunctionality.ApplyDoT(npc, halfDamage, ref ElapsedDoT);
+				DoTFunctionality.ApplyDoT(npc, (int)ElapsedDoT, ref ElapsedDoT);
+
+				_timer = 0;
 			}
 
 			Stacks[0].Time--;
@@ -120,5 +128,15 @@ internal class IgnitedNPC : GlobalNPC
 		
 			Stacks = [.. Stacks.OrderByDescending(x => x.BaseDamage)];
 		}
+	}
+}
+
+public class IgnitedPlayer : ModPlayer
+{
+	public StatModifier IgniteDuration = new();
+
+	public override void ResetEffects()
+	{
+		IgniteDuration = new();
 	}
 }

@@ -206,10 +206,4 @@ ShadowflamePyreProjectile: {
 	}
 }
 
-// PrismaticOrbProjectile.DisplayName: Prismatic Orb Projectile
-// PrismaticOrbExplosion.DisplayName: Prismatic Orb Explosion
-// FleaBellMinion.DisplayName: Flea Bell Minion
-// SimulacraEcho.DisplayName: Simulacra Echo
-// SimulacraMirror.DisplayName: Simulacra Mirror
-// OuroborosPoisonGas.DisplayName: Ouroboros Poison Gas
-// OuroborosProjectile.DisplayName: Ouroboros Projectile
+// SlashAoE.DisplayName: Slash Ao E

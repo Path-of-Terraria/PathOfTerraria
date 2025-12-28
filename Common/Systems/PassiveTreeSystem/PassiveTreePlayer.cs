@@ -158,7 +158,7 @@ internal class PassiveTreePlayer : ModPlayer
 		return value > 0;
 	}
 
-	internal bool HasNode<T>()
+	internal bool HasNode<T>() where T : Passive
 	{
 		foreach (Passive passive in ActiveNodes)
 		{

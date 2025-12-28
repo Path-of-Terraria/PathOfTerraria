@@ -326,7 +326,7 @@ WhipReachMastery: {
 
 ReducedSkillCooldownPassive: {
 	// Name: Reduced Skill Cooldown
-	// Tooltip: +{0}% reduced skill cooldown per level
+	// Tooltip: +{0}% reduced skill cooldown
 }
 
 AddedFireDamageConversionPassive: {
@@ -1022,4 +1022,104 @@ HeartAndMindMastery: {
 PainTransferenceMastery: {
 	// Name: Pain Transference
 	// Tooltip: "{0}% of life regeneration or life healed is dealt as damage to [mechanic/shift:Nearby] enemies"
+}
+
+PuppeteerMastery: {
+	// Name: Puppeteer
+	// Tooltip: Hitting an enemy with a yoyo will tie it to the yoyo, pulling it towards your yoyo and taking {0}% damage any time you deal damage to anything
+}
+
+TranslucentTricksMastery: {
+	// Name: Translucent Tricks
+	// Tooltip: Yoyo damage and speed is increased by {0}%, yoyos can go through tiles
+}
+
+SpoolbreakerMastery: {
+	// Name: Spoolbreaker
+	// Tooltip: Hitting an enemy with a yoyo will make the yoyo grow, until it explodes, dealing {0}% damage
+}
+
+FriendlyDefensePassive: {
+	// Name: Friendly Defense Increase
+	// Tooltip: +{0} defense, +{1} defense for nearby allied players
+}
+
+IncreasedEnemyAggressionPassive: {
+	// Name: Increased Enemy Aggression
+	// Tooltip: Aggro is increased by {0}
+}
+
+UndyingGraspMastery: {
+	// Name: Undying Grasp
+	// Tooltip: Heal {0}% of the damage done after {1} seconds
+}
+
+WillingSacrificeMastery: {
+	// Name: Willing Sacrifice
+	// Tooltip: Gain {1} defense and knockback immunity, take {0}% of closeby allied player's damage for them
+}
+
+ReprisalMastery: {
+	// Name: Reprisal
+	// Tooltip: ""
+}
+
+ImmolationStrideMastery: {
+	// Name: ImmolationStrideMastery
+	// Tooltip: ""
+}
+
+ShortFuseMastery: {
+	// Name: ShortFuseMastery
+	// Tooltip: ""
+}
+
+AddMaxRangePassive: {
+	// Name: AddMaxRangePassive
+	// Tooltip: ""
+}
+
+AddRagePassive: {
+	// Name: AddRagePassive
+	// Tooltip: ""
+}
+
+AddMaxRagePassive: {
+	// Name: AddMaxRagePassive
+  // Tooltip: ""
+}
+
+RockAndStoneMastery: {
+	// Name: Rock and Stone
+	// Tooltip: Every {0} blocks broken, gain a buff that increases mining speed by {1}% for {2} seconds
+}
+
+FasterMiningPassive: {
+	// Name: Faster Mining
+	// Tooltip: +{0}% increased mining speed
+}
+
+SpelunkyMastery: {
+	// Name: Spelunky
+	// Tooltip: Permanent Spelunker and Mining buffs
+}
+
+CheaperShopsPassive: {
+	// Name: Cheaper Shops
+	// Tooltip: Buy prices are {0}% lower
+}
+
+ValuableSalesPassive: {
+	// Name: Increased Sell Value
+	// Tooltip: Sell prices are {0}% higher
+}
+
+ExtraStockMastery: {
+	// Name: Extra Stock
+	// Tooltip: Reroll the Traveling Merchant's stock once per visit
+}
+
+MoneySpeedMastery: {
+	// Name: MoneySpeedMastery
+	// Tooltip: ""
 }

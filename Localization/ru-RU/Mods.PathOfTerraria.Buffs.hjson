@@ -231,6 +231,16 @@ WideSwingsBuff: {
 	// Description: Increased weapon size
 }
 
+DwarvishBuff: {
+	// DisplayName: Dwarvish Buff
+	// Description: Mods.PathOfTerraria.Buffs.DwarvishBuff.Description
+}
+
+AvariceBuff: {
+	// DisplayName: Avarice Buff
+	// Description: Mods.PathOfTerraria.Buffs.AvariceBuff.Description
+}
+
 SlowburnDebuff: {
 	// DisplayName: Slowburn Debuff
 	// Description: Mods.PathOfTerraria.Buffs.SlowburnDebuff.Description
@@ -241,17 +251,7 @@ EverburningShadowflameDebuff: {
 	// Description: Mods.PathOfTerraria.Buffs.EverburningShadowflameDebuff.Description
 }
 
-PrismaticOrbBuff: {
-	// DisplayName: Prismatic Orb Buff
-	// Description: Mods.PathOfTerraria.Buffs.PrismaticOrbBuff.Description
-}
-
-FleaBellBuff: {
-	// DisplayName: Flea Bell Buff
-	// Description: Mods.PathOfTerraria.Buffs.FleaBellBuff.Description
-}
-
-FleaBellEnhancedBuff: {
-	// DisplayName: Flea Bell Enhanced Buff
-	// Description: Mods.PathOfTerraria.Buffs.FleaBellEnhancedBuff.Description
+RageStacksBuff: {
+	// DisplayName: Rage Stacks Buff
+	// Description: Mods.PathOfTerraria.Buffs.RageStacksBuff.Description
 }
