@@ -409,7 +409,7 @@ internal sealed class NPCNavigation : NPCComponent
 					bool atJumpPoint = MathF.Abs(dst.X - src.X) <= 3f;
 					bool mayBeStuck = npc.velocity == default && npc.collideX && npc.collideY && npc.oldPos.All(p => p == npc.position);
 
-#if DEBUG_LOGGING || true
+#if DEBUG_LOGGING
 					if (mayBeStuck && !atJumpPoint)
 					{
 						Main.NewText("Stuck! Jumping!", Color.Aqua);
