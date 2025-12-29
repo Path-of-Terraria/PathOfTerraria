@@ -346,7 +346,20 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 			foreach (ref EnemySpawn spawn in spawns.AsSpan())
 			{
-				spawn.Effect = EnemySpawnEffect.Teleport;
+				EnemySpawnEffect spawnEffect = EnemySpawnEffect.Teleport;
+				switch (Kind)
+				{
+					case ConfluxRiftKind.Glacial:
+						spawnEffect = EnemySpawnEffect.GlacialRift;
+						break;
+					case ConfluxRiftKind.Infernal:
+						spawnEffect = EnemySpawnEffect.InfernalRift;
+						break;
+					case ConfluxRiftKind.Celestial:
+						spawnEffect = EnemySpawnEffect.CelestialRift;
+						break;
+				}
+				spawn.Effect = spawnEffect;
 				if (spawn.SpawnPlacement.HasValue)
 				{
 					spawn.SpawnPlacement = spawn.SpawnPlacement.Value with { MinDistanceFromEnemies = 8f };
@@ -397,7 +410,20 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		// Despawn all remaining NPCs.
 		foreach (NPC npc in Encounter.IterateRemainingEnemies())
 		{
-			EnemySpawning.SpawnEffects(npc, EnemySpawnEffect.Teleport, npc.Center);
+			EnemySpawnEffect spawnEffect = EnemySpawnEffect.Teleport;
+			switch (Kind)
+			{
+				case ConfluxRiftKind.Glacial:
+					spawnEffect = EnemySpawnEffect.GlacialRift;
+					break;
+				case ConfluxRiftKind.Infernal:
+					spawnEffect = EnemySpawnEffect.InfernalRift;
+					break;
+				case ConfluxRiftKind.Celestial:
+					spawnEffect = EnemySpawnEffect.CelestialRift;
+					break;
+			}
+			EnemySpawning.SpawnEffects(npc, spawnEffect, npc.Center);
 			npc.active = false;
 
 			if (Main.netMode == NetmodeID.Server)
