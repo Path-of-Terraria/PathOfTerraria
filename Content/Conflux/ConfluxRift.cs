@@ -64,6 +64,8 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 	public bool Closing => (BitFlags & Flags.Closing) != 0;
 
 	private static Asset<Effect>? shader;
+
+	private float closeness;
 	public override void SetStaticDefaults()
 	{
 		ProjectileID.Sets.IsInteractable[Type] = true;
@@ -116,16 +118,6 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 			if (OpeningAnimation > 0.34f && false)
 			{
-				for (int i = 0; i < 3; i++)
-				{
-					Vector2 offset = Vector2.One.RotatedBy(Main.rand.NextDouble() * 6.28);
-					Vector2 dustVel = offset.RotatedBy(1.57f) * Main.rand.NextFloat() * 0.85f;
-					offset *= new Vector2(Main.rand.NextFloat(0.6f, 1) * 60, Main.rand.NextFloat(0.5f, 1f) * 70);
-					Dust dust = Dust.NewDustPerfect(Projectile.Center + offset, ModContent.DustType<ConfluxRiftSmoke>(), dustVel);
-					dust.scale = Main.rand.NextFloat(0.5f, 0.8f);
-					dust.alpha = Main.rand.Next(175, 200);
-					dust.color = Color.Lerp(Color.Purple, Color.White, Main.rand.NextFloat(0.25f, 0.75f));
-				}
 			}
 		}
 
@@ -150,12 +142,24 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		{
 			(int torchId, int dustId, _) = GetVisualParameters();
 
-			if (Main.rand.NextBool(10))
+			if (Main.rand.NextBool(10) && Activated && OpeningAnimation > 0.34f)
 			{
 				Dust.NewDust(Projectile.position + new Vector2(8), Projectile.width - 16, Projectile.height - 16, dustId);
 			}
 
 			Lighting.AddLight(Projectile.Center, torchId);
+		}
+
+		if (!Activated)
+		{
+			float maxDist = 180;
+			float minDist = 100;
+			float playerDist = Vector2.Distance(Main.LocalPlayer.Center, Projectile.Center);
+			closeness = Math.Clamp((playerDist - maxDist) / (minDist - maxDist),0, 1);
+		}
+		else
+		{
+			closeness = 1;
 		}
 	}
 
@@ -180,11 +184,28 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		}
 
 		effect.Parameters["timeManual"].SetValue((float)Main.timeForVisualEffects * 0.027f);
-		effect.Parameters["progress"].SetValue(OpeningAnimation);
+		effect.Parameters["progress"].SetValue((OpeningAnimation * 0.75f) + (closeness * 0.25f));
 		effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(Texture + "_PerlinNoiseMap").Value);
-		effect.Parameters["_PaletteTex"].SetValue(ModContent.Request<Texture2D>(Texture + "_Palette").Value);
+		effect.Parameters["_PaletteTex"].SetValue(ModContent.Request<Texture2D>(Texture + "_Palette_" + Kind.ToString()).Value);
 		effect.Parameters["_PNoiseTex"].SetValue(ModContent.Request<Texture2D>(Texture + "_PerlinNoiseMap").Value);
 		effect.Parameters["_DNoiseTex"].SetValue(ModContent.Request<Texture2D>(Texture + "_DisplacementNoiseMap").Value);
+		effect.Parameters["closingProgress"].SetValue(ClosingAnimation);
+
+		effect.Parameters["xCameraOffset"].SetValue(Main.screenPosition.X - Projectile.Center.X);
+		effect.Parameters["yCameraOffset"].SetValue(Main.screenPosition.Y - Projectile.Center.Y);
+
+
+		Texture2D spaceTex1 = ModContent.Request<Texture2D>(Texture + "_SpaceMap1_" + Kind.ToString()).Value;
+		Texture2D spaceTex2 = ModContent.Request<Texture2D>(Texture + "_SpaceMap2_" + Kind.ToString()).Value;
+
+		effect.Parameters["mapResX"].SetValue(spaceTex1.Width);
+		effect.Parameters["mapResY"].SetValue(spaceTex1.Height);
+
+		effect.Parameters["resX"].SetValue(tex.Width * Projectile.scale * 4.0f);
+		effect.Parameters["resY"].SetValue(tex.Height * Projectile.scale * 4.0f);
+		effect.Parameters["_SpaceTex1"].SetValue(spaceTex1);
+		effect.Parameters["_SpaceTex2"].SetValue(spaceTex2);
+
 
 		Main.spriteBatch.End();
 		Main.spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointClamp, default, default, effect, Main.GameViewMatrix.TransformationMatrix);

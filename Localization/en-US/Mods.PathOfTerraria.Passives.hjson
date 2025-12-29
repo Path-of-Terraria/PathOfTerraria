@@ -1086,7 +1086,7 @@ AddRagePassive: {
 
 AddMaxRagePassive: {
 	Name: AddMaxRagePassive
-  Tooltip: ""
+	Tooltip: ""
 }
 
 RockAndStoneMastery: {
