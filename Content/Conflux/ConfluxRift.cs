@@ -97,6 +97,7 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 	public Encounter Encounter { get; private set; }
 	public float OpeningAnimation { get; private set; }
 	public float ClosingAnimation { get; private set; }
+	public float ProgressAnimation { get; private set; }
 	public float ApproachAnimation { get; private set; }
 
 	/// <summary> The rift's type. </summary>
@@ -164,6 +165,7 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 		Projectile.rotation += 0.05f;
 		Projectile.Opacity = MathHelper.Lerp(Projectile.Opacity, 1f, 0.25f);
+		ProgressAnimation = MathHelper.Lerp(ProgressAnimation, Progress, 0.1f);
 
 		if (Closing)
 		{
@@ -198,15 +200,6 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 			float oldValue = OpeningAnimation;
 			OpeningAnimation = MathF.Min(1f, OpeningAnimation + (TimeSystem.LogicDeltaTime / 7f));
 			ApproachAnimation = 1f;
-
-			// Effects.
-			if (!Main.dedServ)
-			{
-				if (oldValue <= 0f)
-				{
-					if (visuals.Filter != null) { Filters.Scene.Activate(visuals.Filter); }
-				}
-			}
 		}
 		else
 		{
@@ -243,7 +236,7 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 				UpdateProgress();
 			}
 
-			if (Activated && !Closing && OpeningAnimation >= 0.25f)
+			if (Activated && !Closing && OpeningAnimation >= 0.1f)
 			{
 				// Create the encounter once enough time has passed.
 				if (Encounter == default)
@@ -272,6 +265,8 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 	private void UpdateEffects()
 	{
+		if (Main.dedServ) { return; }
+
 		VisualParams visuals = GetVisualParameters();
 
 		if (Main.rand.NextBool(10) && Activated && OpeningAnimation > 0.34f)
@@ -280,6 +275,11 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		}
 
 		Lighting.AddLight(Projectile.Center, visuals.TorchId);
+
+		if (Activated && !Closing && visuals.Filter != null)
+		{
+			Filters.Scene.Activate(visuals.Filter);
+		}
 	}
 	private void UpdateAudio()
 	{
@@ -323,15 +323,16 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 			return false;
 		}
 
-		float progress = MathUtils.Clamp01(OpeningAnimation + (ApproachAnimation * 0.25f));
+		float openFactor = MathUtils.Clamp01((OpeningAnimation * 0.75f) + (ApproachAnimation * 0.25f));
+		float closeFactor = MathUtils.Clamp01((ClosingAnimation * 0.8f) + (ProgressAnimation * 0.2f));
 
+		effect.Parameters["progress"].SetValue(openFactor);
+		effect.Parameters["closingProgress"].SetValue(closeFactor);
 		effect.Parameters["timeManual"].SetValue((float)Main.timeForVisualEffects * 0.027f);
-		effect.Parameters["progress"].SetValue(progress);
 		effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(Texture + "_PerlinNoiseMap").Value);
 		effect.Parameters["_PaletteTex"].SetValue(ModContent.Request<Texture2D>(Texture + "_Palette_" + Kind.ToString()).Value);
 		effect.Parameters["_PNoiseTex"].SetValue(ModContent.Request<Texture2D>(Texture + "_PerlinNoiseMap").Value);
 		effect.Parameters["_DNoiseTex"].SetValue(ModContent.Request<Texture2D>(Texture + "_DisplacementNoiseMap").Value);
-		effect.Parameters["closingProgress"].SetValue(ClosingAnimation);
 
 		effect.Parameters["xCameraOffset"].SetValue(Main.screenPosition.X - Projectile.Center.X);
 		effect.Parameters["yCameraOffset"].SetValue(Main.screenPosition.Y - Projectile.Center.Y);
@@ -634,6 +635,8 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 	bool IRightClickableProjectile.RightClick(Player player, bool mouseDirectlyOver)
 	{
+		if (Activated) { return false; }
+
 		if (Main.mouseRight && Main.mouseRightRelease)
 		{
 			Activate();
