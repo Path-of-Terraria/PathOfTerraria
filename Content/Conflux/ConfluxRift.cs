@@ -7,10 +7,14 @@ using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Common.UI;
+using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Content.Dusts;
 using PathOfTerraria.Core.Time;
+using PathOfTerraria.Utilities;
 using PathOfTerraria.Utilities.Xna;
 using ReLogic.Content;
+using ReLogic.Utilities;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -43,6 +47,7 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 	public Encounter Encounter { get; private set; }
 	public float OpeningAnimation { get; private set; }
 	public float ClosingAnimation { get; private set; }
+	public float ApproachAnimation { get; private set; }
 
 	/// <summary> The rift's type. </summary>
 	public ConfluxRiftKind Kind
@@ -65,7 +70,6 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 	private static Asset<Effect>? shader;
 
-	private float closeness;
 	public override void SetStaticDefaults()
 	{
 		ProjectileID.Sets.IsInteractable[Type] = true;
@@ -105,20 +109,34 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 	public override void AI()
 	{
+		Vector2 center = Projectile.Center;
+
 		Projectile.rotation += 0.05f;
 		Projectile.Opacity = MathHelper.Lerp(Projectile.Opacity, 1f, 0.25f);
 
 		if (Closing)
 		{
-			ClosingAnimation = MathF.Min(1f, ClosingAnimation + (TimeSystem.LogicDeltaTime / 3f));
+			ClosingAnimation = MathF.Min(1f, ClosingAnimation + (TimeSystem.LogicDeltaTime / 4f));
+			ApproachAnimation = 0f;
 		}
 		else if (Activated)
 		{
-			OpeningAnimation = MathF.Min(1f, OpeningAnimation + (TimeSystem.LogicDeltaTime / 3f));
-
-			if (OpeningAnimation > 0.34f && false)
+			OpeningAnimation = MathF.Min(1f, OpeningAnimation + (TimeSystem.LogicDeltaTime / 7f));
+			ApproachAnimation = 1f;
+		}
+		else
+		{
+			(Player? closestPlayer, float minSqrDist) = (null, float.PositiveInfinity);
+			foreach (Player player in Main.ActivePlayers)
 			{
+				(closestPlayer, minSqrDist) = (player, MathF.Min(minSqrDist, player.DistanceSQ(center)));
 			}
+
+			Vector2 compareSpot = Main.LocalPlayer.Center;
+			bool isInteractible = closestPlayer?.IsProjectileInteractibleAndInInteractionRange(Projectile, ref compareSpot) == true;
+			float targetApproach = isInteractible ? 1f : 0f;
+			ApproachAnimation = MathHelper.Lerp(ApproachAnimation, targetApproach, 0.05f);
+			ApproachAnimation = MathUtils.StepTowards(ApproachAnimation, targetApproach, 0.01f);
 		}
 
 		// Encounter logic.
@@ -140,24 +158,20 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		// Effects.
 		if (!Main.dedServ)
 		{
-			(int torchId, int dustId, _) = GetVisualParameters();
-
-			if (Main.rand.NextBool(10) && Activated && OpeningAnimation > 0.34f)
-			{
-				Dust.NewDust(Projectile.position + new Vector2(8), Projectile.width - 16, Projectile.height - 16, dustId);
-			}
-
-			Lighting.AddLight(Projectile.Center, torchId);
+			UpdateEffects();
 		}
 
-		if (!Activated)
+	private void UpdateEffects()
+	{
+		(int torchId, int dustId, _) = GetVisualParameters();
+
+		if (Main.rand.NextBool(10) && Activated && OpeningAnimation > 0.34f)
 		{
-			float maxDist = 180;
-			float minDist = 100;
-			float playerDist = Vector2.Distance(Main.LocalPlayer.Center, Projectile.Center);
-			closeness = Math.Clamp((playerDist - maxDist) / (minDist - maxDist),0, 1);
+			Dust.NewDust(Projectile.position + new Vector2(8), Projectile.width - 16, Projectile.height - 16, dustId);
 		}
-		else
+
+		Lighting.AddLight(Projectile.Center, torchId);
+	}
 		{
 			closeness = 1;
 		}
@@ -183,8 +197,10 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 			return false;
 		}
 
+		float progress = MathUtils.Clamp01(OpeningAnimation + (ApproachAnimation * 0.25f)) * 2f;
+
 		effect.Parameters["timeManual"].SetValue((float)Main.timeForVisualEffects * 0.027f);
-		effect.Parameters["progress"].SetValue((OpeningAnimation * 0.75f) + (closeness * 0.25f));
+		effect.Parameters["progress"].SetValue(progress);
 		effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(Texture + "_PerlinNoiseMap").Value);
 		effect.Parameters["_PaletteTex"].SetValue(ModContent.Request<Texture2D>(Texture + "_Palette_" + Kind.ToString()).Value);
 		effect.Parameters["_PNoiseTex"].SetValue(ModContent.Request<Texture2D>(Texture + "_PerlinNoiseMap").Value);
@@ -193,7 +209,6 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 		effect.Parameters["xCameraOffset"].SetValue(Main.screenPosition.X - Projectile.Center.X);
 		effect.Parameters["yCameraOffset"].SetValue(Main.screenPosition.Y - Projectile.Center.Y);
-
 
 		Texture2D spaceTex1 = ModContent.Request<Texture2D>(Texture + "_SpaceMap1_" + Kind.ToString()).Value;
 		Texture2D spaceTex2 = ModContent.Request<Texture2D>(Texture + "_SpaceMap2_" + Kind.ToString()).Value;
@@ -205,7 +220,6 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		effect.Parameters["resY"].SetValue(tex.Height * Projectile.scale * 4.0f);
 		effect.Parameters["_SpaceTex1"].SetValue(spaceTex1);
 		effect.Parameters["_SpaceTex2"].SetValue(spaceTex2);
-
 
 		Main.spriteBatch.End();
 		Main.spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointClamp, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
@@ -346,20 +360,14 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 			foreach (ref EnemySpawn spawn in spawns.AsSpan())
 			{
-				EnemySpawnEffect spawnEffect = EnemySpawnEffect.Teleport;
-				switch (Kind)
+				spawn.Effect = Kind switch
 				{
-					case ConfluxRiftKind.Glacial:
-						spawnEffect = EnemySpawnEffect.GlacialRift;
-						break;
-					case ConfluxRiftKind.Infernal:
-						spawnEffect = EnemySpawnEffect.InfernalRift;
-						break;
-					case ConfluxRiftKind.Celestial:
-						spawnEffect = EnemySpawnEffect.CelestialRift;
-						break;
-				}
-				spawn.Effect = spawnEffect;
+					ConfluxRiftKind.Glacial => EnemySpawnEffect.GlacialRift,
+					ConfluxRiftKind.Infernal => EnemySpawnEffect.InfernalRift,
+					ConfluxRiftKind.Celestial => EnemySpawnEffect.CelestialRift,
+					_ => EnemySpawnEffect.Teleport,
+				};
+
 				if (spawn.SpawnPlacement.HasValue)
 				{
 					spawn.SpawnPlacement = spawn.SpawnPlacement.Value with { MinDistanceFromEnemies = 8f };

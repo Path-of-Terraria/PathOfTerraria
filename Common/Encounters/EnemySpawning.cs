@@ -179,7 +179,7 @@ internal static class EnemySpawning
 				Dust.NewDustDirect(npc.position, npc.width, npc.height, DustID.WitherLightning);
 			}
 		}
-		if (effect == EnemySpawnEffect.GlacialRift || effect == EnemySpawnEffect.InfernalRift || effect == EnemySpawnEffect.CelestialRift)
+		if (effect is EnemySpawnEffect.GlacialRift or EnemySpawnEffect.InfernalRift or EnemySpawnEffect.CelestialRift)
 		{
 			(Projectile? rift, float closestSqrDst) = (null, float.PositiveInfinity);
 
@@ -192,19 +192,21 @@ internal static class EnemySpawning
 				};
 			}
 			SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.25f, Pitch = -0.6f, PitchVariance = 0.2f }, position);
+
 			if (rift != null)
 			{
 				int dustID = 173;
 				float dustVelocity = 0;
 				float dustDensity = 1;
 				float dustScale = 1;
+
 				switch (effect)
 				{
 					case EnemySpawnEffect.CelestialRift:
 						dustID = 173;
 						dustVelocity = 0.2f;
 						dustDensity = 32;
-						dustScale = 1;
+						dustScale = 1.5f;
 
 						for (int i = 0; i < 10; i++)
 						{
@@ -215,7 +217,7 @@ internal static class EnemySpawning
 						dustID = 185;
 						dustVelocity = 0.3f;
 						dustDensity = 32;
-						dustScale = 1;
+						dustScale = 1.5f;
 
 						for (int i = 0; i < 10; i++)
 						{
@@ -234,9 +236,14 @@ internal static class EnemySpawning
 						}
 						break;
 				}
-				for (float i = 0; i < closestSqrDst; i += dustDensity * dustDensity)
+
+				Vector2 lineStart = rift.Center + Main.rand.NextVector2Circular(32f, 32f);
+
+				for (float i = 0, step = dustDensity * dustDensity; i < closestSqrDst; i += step)
 				{
-					Vector2 dustPos = Vector2.Lerp(rift.Center, position, i / closestSqrDst);
+					var dustPos = Vector2.Lerp(lineStart, position, i / closestSqrDst);
+					dustPos += Main.rand.NextVector2Circular(5f, 5f);
+
 					Dust.NewDustPerfect(dustPos, dustID, Vector2.One.RotatedByRandom(6.28) * dustVelocity, 0, default, dustScale).noGravity = true;
 				}
 			}
