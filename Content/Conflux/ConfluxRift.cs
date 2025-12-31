@@ -643,11 +643,7 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 		if (mouseDirectlyOver)
 		{
-			Tooltip.Create(new TooltipDescription
-			{
-				Identifier = "ConfluxRift",
-				SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),
-			});
+			Main.instance.MouseText(Language.GetTextValue("Mods.PathOfTerraria.Misc.Rifts.Touch"), rare: 1);
 		}
 
 		return false;
