@@ -7,6 +7,17 @@ float3 secondary;
 float progress;
 float timeManual;
 
+float xCameraOffset;
+float yCameraOffset;
+
+float mapResX;
+float mapResY;
+
+float resX;
+float resY;
+
+float closingProgress;
+
 texture sampleTexture : register(ps, s0);
 sampler2D u_tex0 = sampler_state { Texture = sampleTexture; magfilter = LINEAR; minfilter = LINEAR; mipfilter = LINEAR; AddressU = wrap; AddressV = wrap; };
 
@@ -18,6 +29,12 @@ sampler2D u_tex3 = sampler_state { Texture = _PNoiseTex; magfilter = POINT; minf
 
 texture _DNoiseTex : register(ps, s3);
 sampler2D u_tex4 = sampler_state { Texture = _DNoiseTex; magfilter = POINT; minfilter = POINT; mipfilter = POINT; AddressU = Wrap; AddressV = Wrap; };
+
+texture _SpaceTex1 : register(ps, s3);
+sampler2D u_tex5 = sampler_state { Texture = _SpaceTex1; magfilter = POINT; minfilter = POINT; mipfilter = POINT; AddressU = Wrap; AddressV = Wrap; };
+
+texture _SpaceTex2 : register(ps, s3);
+sampler2D u_tex6 = sampler_state { Texture = _SpaceTex2; magfilter = POINT; minfilter = POINT; mipfilter = POINT; AddressU = Wrap; AddressV = Wrap; };
 
 float inverseLerp(float a, float b, float val)
 {
@@ -93,7 +110,7 @@ float4 PixelShaderFunction(float2 startUV : TEXCOORD) : COLOR0
 	float thicknessTotalPow = lerp(2.0, 2.0, expandProgress);
 
 	float riftHeightInverseBefore = 7.0;
-	float riftHeightInverseAfter = 2.05;
+	float riftHeightInverseAfter = lerp(2.05, 9.0, closingProgress);
 
 	float riftHeightPow = 2.0;
 
@@ -184,7 +201,7 @@ float4 PixelShaderFunction(float2 startUV : TEXCOORD) : COLOR0
 	paletteX = lerp(paletteX, paletteX - (ballVal * ballProgress * paletteBallMult), 1.0 - step(paletteX, paletteX - (ballVal * ballProgress * paletteBallMult)));
 	//paletteX -= ringVal * ballProgress;
 
-	float2 portalCoords = makeCoordsRadial(float2((uv.x - 0.5) * lerp(7.0, 3.5, expandProgress), (uv.y - 0.5) * 1.6));
+	float2 portalCoords = makeCoordsRadial(float2((uv.x - 0.5) * lerp(7.0, lerp(3.5, 9.0, closingProgress), expandProgress), (uv.y - 0.5) * lerp(1.6, 10.6, closingProgress)));
 
 	float2 bumpCoords = float2((portalCoords.x * 1.0) + (timeManual * 0.1), (portalCoords.y) - (timeManual * 0.15));
 	float portalBumps = tex2D(u_tex4, bumpCoords).r;
@@ -197,12 +214,31 @@ float4 PixelShaderFunction(float2 startUV : TEXCOORD) : COLOR0
 
 	portalVal *= pow(inverseLerp(0.2 * pow(expandProgress, 1.7), 0.4 * pow(expandProgress, 1.4), portalDist), 3);
 	paletteX = min(paletteX, portalVal);
+	paletteX += closingProgress;
 	float2 paletteCoords = float2(paletteX, tex2D(u_tex0, uv).r * 0.1);
 	float4 ret = tex2D(u_tex2, paletteCoords);
 
 	if (length(ret.rgb) == 0.0)
 	{
 		return float4(0, 0, 0, 0);
+	}
+
+	if (paletteX < 13.0 / 52.0)
+	{
+		float spaceMultX = resX / mapResX;
+		float spaceMultY = resY / mapResY;
+
+		float relativeSpaceOffsetX = xCameraOffset / resX;
+		float relativeSpaceOffsetY = yCameraOffset / resY;
+
+		float2 spaceCoords = (startUV - float2(relativeSpaceOffsetX, relativeSpaceOffsetY)) * float2(spaceMultX, spaceMultY);
+		float2 spaceCoords2 = spaceCoords;
+
+		spaceCoords += float2(timeManual * 0.06, timeManual * 0.04);
+		spaceCoords2 += float2(timeManual * -0.03, timeManual * -0.05);
+
+		ret += tex2D(u_tex5, spaceCoords);
+		ret += tex2D(u_tex6, spaceCoords2);
 	}
 
 	return ret;
