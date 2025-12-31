@@ -172,13 +172,19 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 			ApproachAnimation = 0f;
 
 			// Effects.
-			if (!Main.dedServ)
+			if (oldValue <= 0f)
 			{
-				if (oldValue <= 0f)
+				if (!Main.dedServ && visuals.Filter != null) { Filters.Scene.Deactivate(visuals.Filter); }
+			}
+			// Item drop.
+			else if (oldValue < 0.6f && ClosingAnimation >= 0.6f)
+			{
+				if (Main.netMode != NetmodeID.MultiplayerClient)
 				{
-					if (visuals.Filter != null) { Filters.Scene.Deactivate(visuals.Filter); }
+					DropRewards();
 				}
-				else if (oldValue < 0.6f && ClosingAnimation >= 0.6f)
+
+				if (!Main.dedServ)
 				{
 					for (int i = 0; i < 50; i++)
 					{
@@ -237,10 +243,22 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 				UpdateProgress();
 			}
 
-			// Start closing when the encounter has been completed, or if the players have ran out of time.
-			if (Activated && !Closing && (!Encounter.IsValid || Encounter.Instance.State == EncounterState.Completed || Main.GameUpdateCount >= EndTime))
+			if (Activated && !Closing && OpeningAnimation >= 0.25f)
 			{
-				Close();
+				// Create the encounter once enough time has passed.
+				if (Encounter == default)
+				{
+					const uint lengthInSeconds = 30;
+					const uint spawnStartDelay = 1;
+
+					EndTime = Main.GameUpdateCount + ((lengthInSeconds + spawnStartDelay) * (uint)TimeSystem.LogicFramerate);
+					Encounter = CreateEncounter(lengthInSeconds);
+				}
+				// Start closing when the encounter has been completed, or if the players have ran out of time.
+				else if (!Encounter.IsValid || Encounter.Instance.State == EncounterState.Completed || Main.GameUpdateCount >= EndTime)
+				{
+					Close();
+				}
 			}
 		}
 
@@ -377,11 +395,7 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 			return;
 		}
 
-		const uint lengthInSeconds = 30;
-
 		BitFlags |= Flags.Activated;
-		EndTime = Main.GameUpdateCount + (lengthInSeconds * (uint)TimeSystem.LogicFramerate);
-		Encounter = CreateEncounter(lengthInSeconds);
 
 		if (Main.netMode == NetmodeID.Server)
 		{
@@ -420,7 +434,6 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 		UpdateProgress();
 		RemoveEncounter();
-		DropRewards();
 	}
 
 	public void UpdateProgress()
