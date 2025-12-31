@@ -191,7 +191,13 @@ internal static class EnemySpawning
 					(rift, closestSqrDst) = (projRift.Projectile, sqrDst);
 				};
 			}
-			SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.25f, Pitch = -0.6f, PitchVariance = 0.2f }, position);
+
+			SoundEngine.PlaySound(position: position, style: new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/RiftEnemySpawn")
+			{
+				Volume = 0.37f,
+				MaxInstances = 3,
+				PitchVariance = 0.2f,
+			});
 
 			if (rift != null)
 			{
