@@ -242,6 +242,6 @@ EverburningShadowflameDebuff: {
 }
 
 RageStacksBuff: {
-	// DisplayName: Rage Stacks Buff
-	// Description: Mods.PathOfTerraria.Buffs.RageStacksBuff.Description
+	// DisplayName: Rage Stacks
+	// Description: 1% increased ranged and melee damage per stack.
 }

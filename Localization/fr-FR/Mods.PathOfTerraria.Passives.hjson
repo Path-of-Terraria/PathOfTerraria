@@ -1065,26 +1065,51 @@ ReprisalMastery: {
 }
 
 ImmolationStrideMastery: {
-	// Name: ImmolationStrideMastery
-	// Tooltip: ""
+	// Name: Immolation Stride
+	// Tooltip: Unused.
 }
 
 ShortFuseMastery: {
-	// Name: ShortFuseMastery
-	// Tooltip: ""
-}
-
-AddMaxRangePassive: {
-	// Name: AddMaxRangePassive
-	// Tooltip: ""
+	// Name: Short Fuse
+	// Tooltip: Unused.
 }
 
 AddRagePassive: {
-	// Name: AddRagePassive
-	// Tooltip: ""
+	// Name: Add Rage
+	// Tooltip: Gain {0} {^0:stack;stacks} of rage per enemy hit, which fades quickly if not refreshed
 }
 
 AddMaxRagePassive: {
-	// Name: AddMaxRagePassive
-	// Tooltip: ""
+	// Name: Add Max Rage
+	// Tooltip: Max rage is increased by {0}
+}
+
+AddRageCritPassive: {
+	// Name: Rage Critical Strike Chance
+	// Tooltip: Gain {0}% critical strike chance per rage stack
+}
+
+SlowRageDecayPassive: {
+	// Name: Slower Rage Decay
+	// Tooltip: Rage hold time increased by {0}%
+}
+
+RageResistancePassive: {
+	// Name: Raging Resistance
+	// Tooltip: When at one or more rage stacks, gain {0}% damage reduction
+}
+
+BurningRageMastery: {
+	// Name: Burning Rage
+	// Tooltip: Gain {0}% max health per rage stack. Gain 100% fire type damage conversion at max rage
+}
+
+FuriousSiphonMastery: {
+	// Name: Furious Siphon
+	// Tooltip: When at max rage, [mechanic/shift:Siphon] 1% of melee or ranged damage
+}
+
+RagingSpeedMastery: {
+	// Name: Raging Speed
+	// Tooltip: Gain {0}% attack speed per rage stack. At max rage, gain a {1}% chance for hits to apply twice
 }
