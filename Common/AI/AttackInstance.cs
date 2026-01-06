@@ -66,8 +66,8 @@ internal class AttackInstance()
 			EntityKind kind = 0;
 			kind |= (npc.boss || NPCID.Sets.ShouldBeCountedAsBoss[npc.type]) ? EntityKind.BossNPC : 0;
 			kind |= (npc.friendly) ? EntityKind.FriendlyNPC : 0;
-			kind |= (npc.damage <= 0) ? EntityKind.NeutralNPC : 0;
-			kind |= (npc.damage > 0 && !npc.friendly) ? EntityKind.EnemyNPC : 0;
+			kind |= (npc.damage <= 0 && npc.defDamage <= 0) ? EntityKind.NeutralNPC : 0;
+			kind |= ((npc.damage > 0 || npc.defDamage > 0) && !npc.friendly) ? EntityKind.EnemyNPC : 0;
 
 			if (!npc.immortal && (Filter & kind) != 0 && hitIndex != ExcludedEntityIndex && Predicate!(npc) && Aabb.Intersects(npc.Hitbox) && HitEntities?.Contains(hitIndex) != true)
 			{
