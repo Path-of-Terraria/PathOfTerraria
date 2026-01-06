@@ -154,3 +154,10 @@ RavencrestSubworld: {
 	Mining: "{$DefaultMining}"
 	Placing: "{$DefaultPlacing}"
 }
+
+SwampArea: {
+	DisplayName: SwampArea
+	Description: SwampArea
+	Mining: '''"[i:1] Only torches and ropes can be mined"'''
+	Placing: '''"[i:2] Only torches and ropes can be placed"'''
+}
