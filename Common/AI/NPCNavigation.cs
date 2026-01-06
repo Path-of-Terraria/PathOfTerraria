@@ -6,15 +6,12 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using PathOfTerraria.Common.NPCs.Components;
-using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Core.Pathfinding;
 using PathOfTerraria.Utilities.Xna;
 using ReLogic.Graphics;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader.IO;
 using Wayfarer.API;
 using Wayfarer.Data;
 using Wayfarer.Edges;
@@ -74,6 +71,7 @@ internal sealed class NPCNavigation : NPCComponent
 	private Vector2 targetPosition;
 	private Vector2 lastPathSourcePos;
 	private Vector2 lastPathTargetPos;
+	private Vector2 lastNavMeshCenter;
 
 	/// <summary> Possible jump range in tiles. </summary>
 	public Vector2Int JumpRange { get; set; } = new(10, 10);
@@ -161,6 +159,7 @@ internal sealed class NPCNavigation : NPCComponent
 		var navigatorParameters = new NavigatorParameters(hitbox, WayfarerPresets.DefaultJumpFunction, JumpRange, GetGravity, SelectDestination);
 
 		Pathfinding.Attempt(navMeshParameters, navigatorParameters, out pathfinding);
+		lastNavMeshCenter = npc.Center;
 
 		return pathfinding != null;
 	}
@@ -183,6 +182,7 @@ internal sealed class NPCNavigation : NPCComponent
 		const uint InEdgeRepathingDelay = 30;
 		const float MinTargetMove = 32f;
 		const float MinSelfMove = 64f;
+		const float MinNavMeshMove = 30 * 16;
 
 		uint tick = Main.GameUpdateCount;
 
@@ -250,7 +250,13 @@ internal sealed class NPCNavigation : NPCComponent
 		lastPathSourcePos = npc.Center;
 		lastPathTargetPos = targetPosition;
 
-		WayfarerAPI.RecalculateNavMesh(pathfinding!.WfHandle, npc.Center.ToTileCoordinates());
+		// Only recalculate navmesh if the NPC is far away from the current one's center.
+		if (Vector2.DistanceSquared(npc.Center, lastNavMeshCenter) >= (MinNavMeshMove * MinNavMeshMove))
+		{
+			lastNavMeshCenter = npc.Center;
+			WayfarerAPI.RecalculateNavMesh(pathfinding!.WfHandle, npc.Center.ToTileCoordinates());
+		}
+
 		WayfarerAPI.RecalculatePath(pathfinding!.WfHandle, footingTiles, r => OnPathFound(npc, r));
 	}
 
@@ -280,6 +286,10 @@ internal sealed class NPCNavigation : NPCComponent
 			StateFlags &= ~StateFlag.PathNotFound;
 		}
 
+#if DEBUG_LOGGING
+		Main.NewText($"Received path: {(path != null ? "not null" : "null")}");
+#endif
+
 		//if (!BehaviorFlags.HasFlag(BehaviorFlag.CheckGroundBeforeRepath) || npc.velocity.Y == 0f)
 		{
 			path = result;
@@ -301,7 +311,7 @@ internal sealed class NPCNavigation : NPCComponent
 		// It is also used to make overshoots in specific directions count as the target being reached.
 		bool CheckDestination(ref Result result, Vector2 src, Vector2 dst, Vector4 dirMul)
 		{
-			float closeEnoughDistance = npc.width * 0.25f;
+			float closeEnoughDistance = MathF.Max(3, npc.width * 0.25f);
 			float closeEnoughSqrDistance = closeEnoughDistance * closeEnoughDistance;
 			Vector2 dstDiff = dst - src;
 			Vector2 diffMul = new(dstDiff.X >= 0f ? dirMul.Z : dirMul.X, dstDiff.Y >= 0f ? dirMul.W : dirMul.Y);
@@ -396,8 +406,6 @@ internal sealed class NPCNavigation : NPCComponent
 				{
 					horizontalMovement = (destination.Src.X, destination.Dst.X);
 				}
-
-				result.FallThroughPlatforms = true;
 			}
 			else if (edge.Is<Jump>())
 			{
@@ -442,6 +450,8 @@ internal sealed class NPCNavigation : NPCComponent
 				}
 			}
 
+			result.FallThroughPlatforms = edge.To.Y > edge.From.Y;
+
 			break;
 		}
 
@@ -463,6 +473,8 @@ internal sealed class NPCNavigation : NPCComponent
 
 	public override void PostDraw(NPC npc, SpriteBatch sb, Vector2 screenPos, Color color)
 	{
+		if (!Enabled) { return; }
+
 #if DEBUG && DEBUG_GIZMOS
 		if (path is { HasPath: true })
 		{
