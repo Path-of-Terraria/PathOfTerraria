@@ -67,7 +67,9 @@ internal sealed class NPCAnimations : NPCComponent
 		}
 
 		int frameIndex = animation.Frames[CurrentFrame % animation.Frames.Length];
-		SpriteFrame frameRect = BaseFrame.With((byte)(frameIndex % BaseFrame.ColumnCount), (byte)(frameIndex / BaseFrame.RowCount));
+		byte x = (byte)(frameIndex % BaseFrame.ColumnCount);
+		byte y = (byte)(frameIndex / BaseFrame.ColumnCount);
+		SpriteFrame frameRect = BaseFrame.With(columnToUse: x, rowToUse: y);
 		npc.frame = frameRect.GetSourceRectangle(texture);
 	}
 }
