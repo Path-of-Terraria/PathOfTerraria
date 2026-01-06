@@ -19,6 +19,7 @@ internal class RagingSpeedMastery : Passive
 			public int Timer = 60;
 		}
 
+		[ThreadStatic]
 		private static bool DelayedHitRunning = false;
 
 		public List<DelayedHit> DelayedHits = [];
