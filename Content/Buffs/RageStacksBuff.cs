@@ -39,10 +39,10 @@ public class RageStacksBuff : ModBuff
 
 		if (plr.Rage > 1)
 		{
-			buffName += $" ({plr.Rage})";
+			buffName += $" ({(int)plr.Rage})";
 		}
 
-		tip = Language.GetTextValue(Description.Key, plr.Rage);
+		tip = Language.GetTextValue(Description.Key, (int)plr.Rage);
 	}
 
 	public override void PostDraw(SpriteBatch spriteBatch, int buffIndex, BuffDrawParams drawParams)
