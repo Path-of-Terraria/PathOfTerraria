@@ -1,9 +1,8 @@
-﻿using PathOfTerraria.Common.World.Generation;
+﻿using PathOfTerraria.Common.Subworlds.MappingAreas.SwampAreaContent;
+using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
 using PathOfTerraria.Content.Tiles.Maps.Swamp;
-using ReLogic.Content;
 using System.Collections.Generic;
-using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
@@ -17,14 +16,14 @@ namespace PathOfTerraria.Common.Subworlds.MappingAreas;
 internal class SwampArea : MappingWorld, IExplorationWorld
 {
 	public const int FloorY = 400;
-	public const int WaterY = FloorY + 15;
+	public const int WaterY = FloorY + 10;
 	private const int MapHeight = 800;
 
 	public static UnifiedRandom Random => Main.rand;
 
 	private static bool LeftSpawn = false;
 
-	public override int Width => 2600 + 150 * Main.rand.Next(3);
+	public override int Width => 3000 + 150 * Main.rand.Next(3);
 	public override int Height => MapHeight;
 	public override int[] WhitelistedCutTiles => [TileID.Cobweb];
 	public override int[] WhitelistedMiningTiles => [TileID.CrackedBlueDungeonBrick, TileID.Cobweb];
@@ -51,6 +50,8 @@ internal class SwampArea : MappingWorld, IExplorationWorld
 		noise.SetFractalGain(0.45f);
 		noise.SetFractalWeightedStrength(10.71f);
 
+		FastNoiseLite perlin = new(Random.Next());
+
 		Dictionary<int, int> mapping = MapY();
 
 		for (int i = 2; i < Main.maxTilesX - 2; ++i)
@@ -60,12 +61,12 @@ internal class SwampArea : MappingWorld, IExplorationWorld
 				int floor = mapping[i];
 				Tile tile = Main.tile[i, j];
 
-				if (j > floor + 60 + noise.GetNoise(i, j) * 15)
+				if (j > floor + 80 + noise.GetNoise(i, j) * 15)
 				{
 					tile.HasTile = true;
 					tile.TileType = TileID.Mudstone;
 				}
-				else if (j > floor + noise.GetNoise(i, 0) * 4)
+				else if (j > floor + perlin.GetNoise(i * 2.5f, 0) * 4)
 				{
 					tile.HasTile = true;
 					tile.TileType = TileID.Mud;
@@ -78,20 +79,34 @@ internal class SwampArea : MappingWorld, IExplorationWorld
 				}
 			}
 
+			progress.Set(i / (float)Main.maxTilesX);
+		}
+
+		for (int i = 2; i < Main.maxTilesX / 240 - 2; ++i)
+		{
+			BranchTreeMicrobiome biome = new();
+			biome.Place(new(i * 300, Random.Next(300, 370)), GenVars.structures ?? new());
+		}
+
+		for (int i = 1; i < Main.maxTilesX - 2; ++i)
+		{
 			float yOff = Math.Abs(noise.GetNoise(i * 0.5f, 15000));
-			float height = Math.Abs(noise.GetNoise(i, 6000) * 3);
+			float height = Math.Abs(noise.GetNoise(i * 0.8f, 6000) * 3);
 
-			for (int j = (int)(WaterY - yOff); j < WaterY + height; ++j)
+			if (Height > 3)
 			{
-				Tile tile = Main.tile[i, j];
-
-				if (tile.HasTile)
+				for (int j = WaterY + 1; j < WaterY + height - 3; ++j)
 				{
-					continue;
-				}
+					Tile tile = Main.tile[i, j];
 
-				tile.HasTile = true;
-				tile.TileType = (ushort)ModContent.TileType<SwampMoss>();
+					if (tile.HasTile)
+					{
+						continue;
+					}
+
+					tile.HasTile = true;
+					tile.TileType = (ushort)ModContent.TileType<SwampMoss>();
+				}
 			}
 
 			progress.Set(i / (float)Main.maxTilesX);
@@ -112,6 +127,11 @@ internal class SwampArea : MappingWorld, IExplorationWorld
 				{
 					tile.HasTile = true;
 					tile.TileType = (ushort)ModContent.TileType<SwampGrass>();
+
+					if (!Random.NextBool(4))
+					{
+						WorldGen.PlaceTile(i, j - 1, ModContent.TileType<SwampPlants1x1>(), true, false, -1, Random.Next(6));
+					}
 				}
 			}
 		
@@ -146,7 +166,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld
 		}
 
 		float realY = FloorY;
-		float rigidness = Random.NextFloat(0.25f, 0.35f);
+		float rigidness = Random.NextFloat(0.25f, 0.5f);
 
 		for (int i = 2; i < Main.maxTilesX - 2; ++i)
 		{

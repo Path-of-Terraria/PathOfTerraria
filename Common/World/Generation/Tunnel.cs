@@ -27,6 +27,24 @@ internal static class Tunnel
 		return CreateEquidistantSet(results, equidistantSpacing, true);
 	}
 
+	public static Vector2[] GenerateBezier(Vector2[] points, float equidistantSpacing, float variationMultiplier = 1f)
+	{
+		if (variationMultiplier != 0)
+		{
+			points = AddVariationToPoints(points, variationMultiplier);
+		}
+
+		double[] realPos = new double[points.Length * 2];
+		for (int i = 0; i < points.Length; ++i)
+		{
+			realPos[i * 2] = points[i].X;
+			realPos[i * 2 + 1] = points[i].Y;
+		}
+
+		Vector2[] results = BezierCurve.GetBezier(realPos);
+		return CreateEquidistantSet(results, equidistantSpacing, true);
+	}
+
 	/// <summary>
 	/// Generates a list of points that creates a cohesive, singular, smooth tunnel. This overload returns the 'base' spline before the equidistant set for debugging.
 	/// </summary>

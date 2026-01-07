@@ -1,0 +1,211 @@
+﻿using PathOfTerraria.Common.World.Generation;
+using System.Collections.Generic;
+using System.Linq;
+using Terraria.DataStructures;
+using Terraria.ID;
+using Terraria.WorldBuilding;
+
+namespace PathOfTerraria.Common.Subworlds.MappingAreas.SwampAreaContent;
+
+internal class BranchTreeMicrobiome : MicroBiome
+{
+	public readonly record struct LeafInstance(Point16 Position, float SizeModifier, float Angle);
+
+	public override bool Place(Point origin, StructureMap structures)
+	{
+		int width = _random.Next(90, 160);
+		FastNoiseLite noise = new(_random.Next());
+
+		List<Vector2> canopy = GenerateCanopy(origin, width, noise);
+		Dictionary<Vector2, float> branchTips = [];
+		GenerateBranches(canopy, noise, branchTips);
+		GenerateRoots(canopy, noise, width, origin);
+		GenerateLeaves(branchTips);
+		//GeneratePlatforms(canopy);
+
+		return true;
+	}
+
+	private void GenerateLeaves(Dictionary<Vector2, float> branchTips)
+	{
+		int leafCount = 6;
+
+		foreach ((Vector2 branchTip, float branchAngle) in branchTips)
+		{
+			List<LeafInstance> moreLeaves = [];
+
+			for (int i = 0; i < leafCount; ++i)
+			{
+				float angle = branchAngle + _random.NextFloat(-MathHelper.PiOver2, MathHelper.PiOver2);
+				GenPlacement.Leaf(branchTip, _random.NextFloat(10, 16), _random.NextFloat(12, 20), angle, (x, y, a) => PlaceLeaf(x, y, a, moreLeaves, 1), false);
+			}
+
+			while (moreLeaves.Count > 0)
+			{
+				List<LeafInstance> leaves = [];
+
+				foreach (LeafInstance instance in moreLeaves)
+				{
+					float angle = instance.Angle + _random.NextFloat(-MathHelper.PiOver2, MathHelper.PiOver2);
+					float width = _random.NextFloat(10, 16) * instance.SizeModifier;
+					float height = _random.NextFloat(12, 20) * instance.SizeModifier;
+					GenPlacement.Leaf(instance.Position.ToVector2(), width, height, angle, (x, y, a) => PlaceLeaf(x, y, a, leaves, instance.SizeModifier), false);
+				}
+
+				moreLeaves.Clear();
+
+				foreach (LeafInstance instance in leaves)
+				{
+					moreLeaves.Add(instance);
+				}
+			}
+		}
+	}
+
+	private static void PlaceLeaf(int x, int y, float angle, List<LeafInstance> moreLeaves, float size)
+	{
+		Tile tile = Main.tile[x, y];
+		tile.HasTile = true;
+		tile.TileType = TileID.LeafBlock;
+
+		if (_random.NextBool(80))
+		{
+			moreLeaves.Add(new(new Point16(x, y), size * _random.NextFloat(0.9f, 1f), angle));
+		}
+	}
+
+	private static void GenerateRoots(List<Vector2> canopy, FastNoiseLite noise, int width, Point origin)
+	{
+		const float MinSize = 3;
+		const float MaxSize = 7;
+
+		int branchCount = _random.Next(3, 8);
+		List<Vector2> taken = [];
+		List<(Vector2, float)> rootPlacements = [];
+
+		for (int i = 0; i < branchCount; ++i)
+		{
+			Vector2 randomPointOnCanopy;
+			int stuckCount = 0;
+
+			do
+			{
+				randomPointOnCanopy = _random.Next(canopy);
+				stuckCount++;
+
+				if (stuckCount > 1500)
+				{
+					goto placement;
+				}
+			} while (taken.Any(x => Math.Abs(randomPointOnCanopy.X - x.X) < 15));
+
+			const int RootHorizontalDisplacementRange = 80;
+
+			Vector2 midPoint = randomPointOnCanopy + new Vector2(_random.Next(-10, 10), _random.Next(20, 60));
+			float widthFactor = MathHelper.Clamp(Utils.GetLerpValue(origin.X - width / 2, origin.X + width / 2, randomPointOnCanopy.X, true) + _random.NextFloat(-0.1f, 0.1f), 0, 1);
+			Vector2 searchPoint = midPoint + new Vector2(MathHelper.Lerp(-RootHorizontalDisplacementRange, RootHorizontalDisplacementRange + 20, widthFactor), 10);
+
+			if (!WorldUtils.Find(searchPoint.ToPoint(), new Searches.Down(300).Conditions(new Conditions.IsSolid()), out Point bottom))
+			{
+				continue;
+			}
+
+			taken.Add(randomPointOnCanopy);
+
+			Vector2 bottomPos = bottom.ToVector2() + new Vector2(0, 10);
+			List<Vector2> currentPoints = [.. Tunnel.GenerateBezier([randomPointOnCanopy, midPoint, bottomPos], 4, 0)];
+
+			float minY = currentPoints.Min(x => x.Y);
+			float maxY = currentPoints.Max(x => x.Y);
+
+			foreach (Vector2 point in currentPoints)
+			{
+				float size = MathHelper.Lerp(MinSize, MaxSize, Utils.GetLerpValue(minY, maxY, point.Y, true));
+				rootPlacements.Add((point, size));
+			}
+		}
+
+		placement:
+
+		foreach ((Vector2 point, float size) in rootPlacements)
+		{
+			GenPlacement.TileCircle(point, size + noise.GetNoise(point.X, point.Y) * 0.8f, TileID.LivingWood, false);
+		}
+	}
+
+	private static void GenerateBranches(List<Vector2> canopy, FastNoiseLite noise, Dictionary<Vector2, float> branchTips)
+	{
+		int branchCount = _random.Next(3, 8);
+		List<Vector2> taken = [];
+
+		for (int i = 0; i < branchCount; ++i)
+		{
+			Vector2 randomPointOnCanopy;
+
+			do
+			{
+				randomPointOnCanopy = _random.Next(canopy);
+			} while (taken.Any(x => x.DistanceSQ(randomPointOnCanopy) < 20 * 20));
+
+			Vector2 midPoint = randomPointOnCanopy + new Vector2(_random.Next(-40, 40), _random.Next(-25, -10));
+			Vector2 tip = midPoint - new Vector2(_random.Next(-20, 20), _random.Next(10, 20));
+			List<Vector2> currentPoints = [.. Tunnel.GenerateBezier([randomPointOnCanopy, midPoint, tip], 8, 0)];
+
+			foreach (Vector2 point in currentPoints)
+			{
+				GenPlacement.TileCircle(point, 2 + noise.GetNoise(point.X, point.Y) * 0.8f, TileID.LivingWood);
+			}
+
+			branchTips.Add(tip, tip.AngleFrom(currentPoints[^5]));
+		}
+	}
+
+	private static List<Vector2> GenerateCanopy(Point origin, int width, FastNoiseLite noise)
+	{
+		List<Vector2> controls = [];
+		int controlCount = _random.Next(8, 18);
+
+		for (int i = 0; i < controlCount; ++i)
+		{
+			Vector2 pos;
+			int repeats = 0;
+
+			do
+			{
+				pos = new Vector2(origin.X + _random.Next(-width / 2, width / 2), origin.Y + _random.Next(-30, 30));
+				repeats++;
+
+				if (repeats > 15000)
+				{
+					goto cut;
+				}
+			} while (controls.Any(x => MathF.Abs(pos.X - x.X) < 20));
+
+			controls.Add(pos);
+		}
+
+		cut:
+
+		controls = [.. controls.OrderBy(x => x.X)];
+		List<Vector2> total = [];
+
+		GenerateSegmentCanopyBranch(controls, noise, total);
+		return total;
+	}
+
+	private static void GenerateSegmentCanopyBranch(List<Vector2> controls, FastNoiseLite noise, List<Vector2> total)
+	{
+		for (int i = 0; i < controls.Count - 2; ++i)
+		{
+			Vector2 centerPoint = Vector2.Lerp(controls[i], controls[i + 1], 0.5f) + _random.NextVector2Circular(50, 50);
+			List<Vector2> currentPoints = [.. Tunnel.GenerateBezier([controls[i], centerPoint, controls[i + 1]], 8, 0)];
+
+			foreach (Vector2 point in currentPoints)
+			{
+				GenPlacement.TileCircle(point, 4 + noise.GetNoise(point.X, point.Y) * 2, TileID.LivingWood);
+			}
+
+			total.AddRange(currentPoints);
+		}
+	}
+}
