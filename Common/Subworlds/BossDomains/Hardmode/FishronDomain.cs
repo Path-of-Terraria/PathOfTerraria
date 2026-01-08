@@ -13,6 +13,7 @@ using Terraria.ID;
 using Terraria.IO;
 using Terraria.Localization;
 using Terraria.WorldBuilding;
+using PathOfTerraria.Common.Tiles.FramingKinds;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 
@@ -113,7 +114,7 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 			} while (Collision.SolidCollision(new Vector2((x - 10) * 16, WaterLine * 16), 20 * 16, 16) || xs.Any(v => Math.Abs(v - x) < 36));
 
 			xs.Add(x);
-			PlaceMushroomLily(x, WaterLine + 1);
+			ILilyPadTile.PlacePad<Mushpad>(x, WaterLine + 1, false);
 
 			if (Math.Abs(NewSpawn.X - Width / 2) > Math.Abs(x - Width / 2))
 			{
@@ -122,7 +123,7 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 		}
 	}
 
-	internal static void PlaceMushroomLily(int x, int y)
+	internal static void PlacePad(int x, int y)
 	{
 		int width = WorldGen.genRand.Next(9, 21);
 
@@ -367,7 +368,7 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 		}
 	}
 
-	private static void SpawnMushroomVine(int x, int y)
+	internal static void SpawnMushroomVine(int x, int y)
 	{
 		int vineType = WorldGen.genRand.NextBool(3) ? ModContent.TileType<Flowervine>() : TileID.MushroomVines;
 

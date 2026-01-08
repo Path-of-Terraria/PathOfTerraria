@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.World.Generation;
+using PathOfTerraria.Content.Tiles.Maps.Forest;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
@@ -13,20 +14,100 @@ internal class BranchTreeMicrobiome : MicroBiome
 
 	public override bool Place(Point origin, StructureMap structures)
 	{
-		int width = _random.Next(90, 160);
+		int width = _random.Next(160, 300);
 		FastNoiseLite noise = new(_random.Next());
-
 		List<Vector2> canopy = GenerateCanopy(origin, width, noise);
 		Dictionary<Vector2, float> branchTips = [];
 		GenerateBranches(canopy, noise, branchTips);
 		GenerateRoots(canopy, noise, width, origin);
 		GenerateLeaves(branchTips);
-		//GeneratePlatforms(canopy);
+		GeneratePlatforms(canopy);
 
 		return true;
 	}
 
-	private void GenerateLeaves(Dictionary<Vector2, float> branchTips)
+	private static void GeneratePlatforms(List<Vector2> canopy)
+	{
+		int count = _random.Next(7, 14);
+		List<Vector2> taken = [];
+		int skip = 0;
+
+		for (int i = 0; i < count; ++i)
+		{
+			Vector2 randomPointOnCanopy;
+			int stuckCount = 0;
+
+			do
+			{
+				randomPointOnCanopy = _random.Next(canopy);
+				randomPointOnCanopy.Y += _random.Next(30, 90);
+				stuckCount++;
+
+				if (stuckCount > 1500)
+				{
+					return;
+				}
+			} while (taken.Any(x => randomPointOnCanopy.DistanceSQ(x) < 25 * 25));
+
+			int width = _random.Next(14, 21);
+			HashSet<Point16> platformPositions = [];
+
+			for (int x = (int)(randomPointOnCanopy.X - width / 2); x < randomPointOnCanopy.X + width / 2; ++x)
+			{
+				int y = (int)randomPointOnCanopy.Y;
+				Tile tile = Main.tile[x, y];
+
+				if (!tile.HasTile && tile.LiquidAmount <= 0 && WorldUtils.Find(new Point(x, y), new Searches.Up(y - 5).Conditions(new Conditions.IsSolid()), out Point foundPos) && foundPos.Y > 5)
+				{
+					platformPositions.Add(new Point16(x, y));
+				}
+				else
+				{
+					skip++;
+					goto skipAll;
+				}
+			}
+
+			taken.Add(randomPointOnCanopy);
+
+			foreach (Point16 pos in platformPositions)
+			{
+				WorldGen.PlaceTile(pos.X, pos.Y, TileID.Platforms, true);
+
+				if (pos.X == platformPositions.Min(x => x.X) || pos.X == platformPositions.Max(x => x.X))
+				{
+					Tile tile = Main.tile[pos.X, pos.Y - 1];
+					int y = -1;
+
+					while (!tile.HasTile)
+					{
+						WorldGen.PlaceTile(pos.X, pos.Y + y, TileID.VineRope, true);
+						y--;
+						tile = Main.tile[pos.X, pos.Y + y];
+					}
+
+					if (tile.TileType == TileID.Platforms)
+					{
+						WorldGen.PlaceTile(pos.X, pos.Y + y - 1, TileID.VineRope, true);
+					}
+				}
+			}
+
+			continue;
+
+			skipAll:
+
+			if (skip > 15000)
+			{
+				return;
+			}
+
+			i--;
+			continue;
+		}
+	}
+
+	private static void GenerateLeaves(Dictionary<Vector2, float> branchTips)
 	{
 		int leafCount = 6;
 
@@ -79,7 +160,7 @@ internal class BranchTreeMicrobiome : MicroBiome
 		const float MinSize = 3;
 		const float MaxSize = 7;
 
-		int branchCount = _random.Next(3, 8);
+		int branchCount = _random.Next(3, 6);
 		List<Vector2> taken = [];
 		List<(Vector2, float)> rootPlacements = [];
 
@@ -129,13 +210,19 @@ internal class BranchTreeMicrobiome : MicroBiome
 
 		foreach ((Vector2 point, float size) in rootPlacements)
 		{
-			GenPlacement.TileCircle(point, size + noise.GetNoise(point.X, point.Y) * 0.8f, TileID.LivingWood, false);
+			GenPlacement.TileCircle(point, size + noise.GetNoise(point.X, point.Y) * 0.8f, (x, y) =>
+			{
+				Tile tile = Main.tile[x, y];
+				tile.TileType = TileID.LivingWood;
+				tile.HasTile = true;
+				tile.IsActuated = true;
+			}, false);
 		}
 	}
 
 	private static void GenerateBranches(List<Vector2> canopy, FastNoiseLite noise, Dictionary<Vector2, float> branchTips)
 	{
-		int branchCount = _random.Next(3, 8);
+		int branchCount = _random.Next(5, 11);
 		List<Vector2> taken = [];
 
 		for (int i = 0; i < branchCount; ++i)

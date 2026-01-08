@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Subworlds.MappingAreas.SwampAreaContent;
+using PathOfTerraria.Common.Tiles.FramingKinds;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
 using PathOfTerraria.Content.Tiles.Maps.Swamp;
@@ -82,31 +83,65 @@ internal class SwampArea : MappingWorld, IExplorationWorld
 			progress.Set(i / (float)Main.maxTilesX);
 		}
 
-		for (int i = 2; i < Main.maxTilesX / 240 - 2; ++i)
+		//Queue<int> mahoganies = [];
+
+		//for (int i = 0; i < 2; ++i)
+		//{
+		//	int index;
+
+		//	do
+		//	{
+		//		index = Random.Next(2, Main.maxTilesX / 300 - 2);
+		//	} while (mahoganies.Contains(index));
+
+		//	mahoganies.Enqueue(index);
+		//}
+
+		//while (mahoganies.Count > 0)
+		//{
+		//	BranchTreeMicrobiome biome = new();
+		//	biome.Place(new(mahoganies.Dequeue() * 300, Random.Next(250, 320)), GenVars.structures ?? new());
+		//}
+
+		for (int i = 1; i < Main.maxTilesX / 200; ++i)
 		{
-			BranchTreeMicrobiome biome = new();
-			biome.Place(new(i * 300, Random.Next(300, 370)), GenVars.structures ?? new());
+			if (WorldGen.genRand.NextBool(3))
+			{
+				continue;
+			}
+
+			CypressTreeMicrobiome biome = new();
+
+			if (WorldUtils.Find(new(i * 200, FloorY), new Searches.Down(600).Conditions(new Conditions.IsSolid()), out Point result))
+			{
+				biome.Place(result, GenVars.structures);
+			}
 		}
 
 		for (int i = 1; i < Main.maxTilesX - 2; ++i)
 		{
-			float yOff = Math.Abs(noise.GetNoise(i * 0.5f, 15000));
-			float height = Math.Abs(noise.GetNoise(i * 0.8f, 6000) * 3);
+			//float yOff = Math.Abs(noise.GetNoise(i * 0.5f, 15000));
+			//float height = Math.Abs(noise.GetNoise(i * 0.8f, 6000) * 3);
 
-			if (Height > 3)
+			//if (Height > 3)
+			//{
+			//	for (int j = WaterY + 1; j < WaterY + height - 3; ++j)
+			//	{
+			//		Tile tile = Main.tile[i, j];
+
+			//		if (tile.HasTile)
+			//		{
+			//			continue;
+			//		}
+
+			//		tile.HasTile = true;
+			//		tile.TileType = (ushort)ModContent.TileType<SwampMoss>();
+			//	}
+			//}
+
+			if (Random.NextBool(40) && !Main.tile[i, WaterY + 1].HasTile)
 			{
-				for (int j = WaterY + 1; j < WaterY + height - 3; ++j)
-				{
-					Tile tile = Main.tile[i, j];
-
-					if (tile.HasTile)
-					{
-						continue;
-					}
-
-					tile.HasTile = true;
-					tile.TileType = (ushort)ModContent.TileType<SwampMoss>();
-				}
+				ILilyPadTile.PlacePad<SwampPad>(i, WaterY + 1, false);
 			}
 
 			progress.Set(i / (float)Main.maxTilesX);
@@ -116,7 +151,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld
 		{
 			for (int j = 2; j < Main.maxTilesY - 2; ++j)
 			{
-				if (!Random.NextBool(3))
+				if (!Random.NextBool(3) && WorldGen.TileIsExposedToAir(i, j))
 				{
 					Tile.SmoothSlope(i, j, false);
 				}

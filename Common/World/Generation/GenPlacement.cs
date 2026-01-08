@@ -209,6 +209,32 @@ internal static class GenPlacement
 		}
 	}
 
+	/// <summary>
+	/// Places a perfect circle of tiles.
+	/// </summary>
+	/// <param name="pos">Center of the circle.</param>
+	/// <param name="size">Radius of the circle.</param>
+	public static void TileCircle(Vector2 pos, float size, Action<int, int> action, bool noReplace = false)
+	{
+		for (int i = (int)(pos.X - size); i < (int)pos.X + size; ++i)
+		{
+			for (int j = (int)(pos.Y - size); j < (int)pos.Y + size; ++j)
+			{
+				if (Vector2.DistanceSquared(pos, new Vector2(i, j)) < size * size)
+				{
+					Tile tile = Main.tile[i, j];
+
+					if (!noReplace && tile.HasTile)
+					{
+						continue;
+					}
+
+					action(i, j);
+				}
+			}
+		}
+	}
+
 	public static void Leaf(Vector2 pos, float width, float length, float angle, Action<int, int, float> place, bool replace = true)
 	{
 		angle -= MathHelper.PiOver2;

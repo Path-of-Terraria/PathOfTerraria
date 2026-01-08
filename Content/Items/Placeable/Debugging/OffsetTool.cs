@@ -1,6 +1,9 @@
 ﻿#if DEBUG
 using PathOfTerraria.Common.Subworlds.MappingAreas.SwampAreaContent;
+using PathOfTerraria.Common.Tiles.FramingKinds;
 using PathOfTerraria.Common.World.Generation;
+using PathOfTerraria.Content.Tiles.BossDomain.Mushroom;
+using PathOfTerraria.Content.Tiles.Maps.Swamp;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.GameContent.Biomes;
@@ -33,8 +36,10 @@ internal class OffsetTool : ModItem
 
 	public override bool? UseItem(Player player)
 	{
-		//BranchTreeMicrobiome biome = new();
+		var coords = Main.MouseWorld.ToTileCoordinates();
+		//CypressTreeMicrobiome biome = new();
 		//biome.Place(Main.MouseWorld.ToTileCoordinates(), GenVars.structures ?? new());
+		//ILilyPadTile.PlacePad<SwampPad>(coords.X, coords.Y);
 
 		return true;
 
