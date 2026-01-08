@@ -75,22 +75,48 @@ internal sealed class FallenSavage : Fallen
 /// <summary> Sneaky fast-speed demon that teleports at the player.  </summary>
 internal sealed class FallenSchemer : Fallen
 {
-	public ref ushort TeleportCooldown => ref Unsafe.As<float, ushort>(ref Unsafe.AddByteOffset(ref NPC.localAI[2], 2));
+	private static readonly SpriteAnimation animIdle = new()
+	{
+		Id = "idle",
+		Frames = [0],
+	};
+	private static readonly SpriteAnimation animWalk = new()
+	{
+		Id = "walk",
+		Frames = [1, 2, 3, 4, 5, 6],
+	};
+	private static readonly SpriteAnimation animJump = new()
+	{
+		Id = "jump",
+		Frames = [2],
+		Speed = 4f,
+		Loop = true,
+	};
+	private static SpriteAnimation animAttack => new()
+	{
+		Id = "attack",
+		Frames = [7, 7, 8, 9, 9, 10, 10, 11, 12, 13, 13, 13, 13, 14],
+		Speed = 17f,
+		Loop = false,
+	};
+	private static readonly SpriteAnimation animTeleport = new()
+	{
+		Id = "teleport",
+		Frames = [15],
+	};
 
 	private Vector2 teleportSource;
 	private Vector2 teleportTarget;
 
-	private static readonly SpriteAnimation animTeleport = new()
-	{
-		Id = "teleport",
-		Frames = [6],
-	};
+	public ref ushort TeleportCooldown => ref Unsafe.As<float, ushort>(ref Unsafe.AddByteOffset(ref NPC.localAI[2], 2));
+
+	protected override Asset<Texture2D> SlashTexture => ModContent.Request<Texture2D>($"{GetType().FullName}_Slash".Replace('.', '/'));
 
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
 
-		Main.npcFrameCount[Type] = 7;
+		Main.npcFrameCount[Type] = 4;
 	}
 	public override void SetDefaults()
 	{
@@ -111,7 +137,7 @@ internal sealed class FallenSchemer : Fallen
 		Behavior.AttackDamageEndTick = (ushort)(Behavior.AttackDashTick + (0.25 * 60));
 		Behavior.MaxAttackCooldown = Behavior.MinAttackCooldown = 10;
 
-		NPC.GetGlobalNPC<NPCAnimations>().BaseFrame = new(1, 7);
+		NPC.GetGlobalNPC<NPCAnimations>().BaseFrame = new(4, 4);
 	}
 
 	public override void SendExtraAI(BinaryWriter writer)
@@ -138,12 +164,19 @@ internal sealed class FallenSchemer : Fallen
 
 	protected override SpriteAnimation? ChooseWantedAnimation(in Context ctx)
 	{
-		if (ActiveAction == ActionType.Teleport)
-		{
-			return animTeleport;
-		}
+		const float MinWalkSpeed = 0.5f;
 
-		return base.ChooseWantedAnimation(ctx);
+		Vector2 effectiveVelocity = NPC.position - NPC.oldPosition;
+
+		return ctx.Animations.Current switch
+		{
+			_ when ActiveAction == ActionType.Attack => animAttack,
+			_ when ActiveAction == ActionType.Teleport => animTeleport,
+			_ when MathF.Abs(effectiveVelocity.Y) > 5f => animJump,
+			_ when effectiveVelocity.Y == 0f && Math.Abs(effectiveVelocity.X) >= MinWalkSpeed => animWalk with { Speed = effectiveVelocity.X * animWalk.Speed * 4f * NPC.spriteDirection },
+			_ when effectiveVelocity.Y == 0f && Math.Abs(effectiveVelocity.X) <= MinWalkSpeed => animIdle,
+			_ => null,
+		};
 	}
 
 	private void Portalling(in Context ctx)
@@ -362,6 +395,8 @@ internal abstract class Fallen : ModNPC
 		set => AttackAngle = value.ToRotation();
 	}
 
+	protected virtual Asset<Texture2D> SlashTexture => ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Misc/Slash");
+
 	public override void SetStaticDefaults()
 	{
 		NPCID.Sets.TeleportationImmune[Type] = true;
@@ -514,7 +549,7 @@ internal abstract class Fallen : ModNPC
 #if !NEVER_ATTACK
 		Vector2 initRange = Behavior.AttackInitiationRange;
 
-		if (ActiveAction == ActionType.None && AttackCooldown == 0 && NPC.velocity.Y == 0f && MathF.Abs(targetDiff.X) <= initRange.X && MathF.Abs(targetDiff.Y) <= initRange.Y)
+		if (ActiveAction == ActionType.None && AttackCooldown == 0 /*&& NPC.velocity.Y == 0f*/ && MathF.Abs(targetDiff.X) <= initRange.X && MathF.Abs(targetDiff.Y) <= initRange.Y)
 		{
 			if (Collision.CanHitLine(NPC.position, NPC.width, NPC.height, ctx.TargetRect.TopLeft(), ctx.TargetRect.Width, ctx.TargetRect.Height))
 			{
@@ -664,9 +699,14 @@ internal abstract class Fallen : ModNPC
 		Texture2D tex = TextureAssets.Npc[NPC.type].Value;
 		Vector2 hitboxCorrection = new(0f, -((tex.Height / (Main.npcFrameCount[NPC.type])) - NPC.height) * 0.5f + 2);
 		Vector2 position = NPC.Center + new Vector2(0f, NPC.gfxOffY) + hitboxCorrection - Main.screenPosition;
-		color = color.MultiplyRGBA(NPC.color);
-		color = color.MultiplyRGBA(new Color(Vector4.One * ((byte.MaxValue - NPC.alpha) / (float)byte.MaxValue)));
-		Main.EntitySpriteDraw(tex, position, NPC.frame, color, NPC.rotation, NPC.frame.Size() * 0.5f, NPC.scale, NPC.spriteDirection >= 0 ? (SpriteEffects)1 : 0, 0f);
+		Color mulColor = NPC.color.MultiplyRGBA(new Color(Vector4.One * ((byte.MaxValue - NPC.alpha) / (float)byte.MaxValue)));
+		Main.EntitySpriteDraw(tex, position, NPC.frame, color.MultiplyRGBA(mulColor), NPC.rotation, NPC.frame.Size() * 0.5f, NPC.scale, NPC.spriteDirection >= 0 ? (SpriteEffects)1 : 0, 0f);
+
+		string slashPath = $"{GetType().FullName}_Glowmask".Replace('.', '/');
+		if (ModContent.HasAsset(slashPath) && ModContent.Request<Texture2D>(slashPath) is { IsLoaded: true, Value: { } glowmask })
+		{
+			Main.EntitySpriteDraw(glowmask, position, NPC.frame, mulColor, NPC.rotation, NPC.frame.Size() * 0.5f, NPC.scale, NPC.spriteDirection >= 0 ? (SpriteEffects)1 : 0, 0f);
+		}
 
 #if DEBUG && DEBUG_GIZMOS
 		Vector2 targetCenter = NPC.GetGlobalNPC<NPCTargetTracking>().GetTargetCenter(NPC);
@@ -680,11 +720,11 @@ internal abstract class Fallen : ModNPC
 	public override void PostDraw(SpriteBatch sb, Vector2 screenPos, Color color)
 	{
 		// Render the slash.
-		if (ActiveAction == ActionType.Attack && ActionProgress >= Behavior.AttackDashTick && ActionProgress < Behavior.AttackDamageEndTick)
+		if (ActiveAction == ActionType.Attack && ActionProgress >= Behavior.AttackDashTick && ActionProgress < Behavior.AttackDamageEndTick
+		&& SlashTexture is { IsLoaded: true, Value: { } slashTexture })
 		{
 			byte frameIndex = (byte)Math.Min(2, Math.Floor((ActionProgress - Behavior.AttackDashTick) / (float)(Behavior.AttackDamageEndTick - Behavior.AttackDashTick) * 3));
 			SpriteFrame slashFrame = new SpriteFrame(1, 3).With(0, AttackSign > 0 ? frameIndex : (byte)(2 - frameIndex));
-			Texture2D slashTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Misc/Slash", AssetRequestMode.ImmediateLoad).Value;
 			Color slashColor = Color.Lerp(color, Color.White, 0.33f).MultiplyRGBA(new(Vector4.One * 0.7f));
 
 			Rectangle srcRect = slashFrame.GetSourceRectangle(slashTexture);

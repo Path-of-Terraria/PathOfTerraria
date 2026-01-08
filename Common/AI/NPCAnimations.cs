@@ -38,7 +38,7 @@ internal sealed class NPCAnimations : NPCComponent
 		while (frameCounter >= 1f)
 		{
 			(int numFrames, int nextFrame) = (animation.Frames.Length, CurrentFrame + 1);
-			CurrentFrame = animation.Loop ? (nextFrame % numFrames) : Math.Min(nextFrame, numFrames);
+			CurrentFrame = animation.Loop ? (nextFrame % numFrames) : Math.Min(nextFrame, numFrames - 1);
 			Completed |= !animation.Loop && nextFrame >= numFrames;
 			frameCounter -= 1f;
 		}
