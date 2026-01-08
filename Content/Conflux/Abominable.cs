@@ -86,6 +86,14 @@ internal sealed class Abominable : ModNPC
 		set => AttackAngle = value.ToRotation();
 	}
 
+	public override void Load()
+	{
+		GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, $"{Texture}_GoreHead");
+		GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, $"{Texture}_GoreClaw");
+		GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, $"{Texture}_GoreLeg1");
+		GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, $"{Texture}_GoreLeg2");
+	}
+
 	public override void SetStaticDefaults()
 	{
 		NPCID.Sets.TeleportationImmune[Type] = true;
@@ -123,7 +131,10 @@ internal sealed class Abominable : ModNPC
 
 		NPC.TryEnableComponent<NPCHitEffects>(c =>
 		{
-			c.AddGore(new NPCHitEffects.GoreSpawnParameters(132, 10, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_GoreHead", 1, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_GoreClaw", 2, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_GoreLeg1", 1, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_GoreLeg2", 1, NPCHitEffects.OnDeath));
 
 			c.AddDust(new NPCHitEffects.DustSpawnParameters(DustID.Blood, 30));
 			c.AddDust(new NPCHitEffects.DustSpawnParameters(DustID.Blood, 200, NPCHitEffects.OnDeath));
