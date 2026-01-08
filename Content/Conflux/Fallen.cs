@@ -4,10 +4,12 @@
 using System.IO;
 using System.Runtime.CompilerServices;
 using PathOfTerraria.Common.AI;
+using PathOfTerraria.Common.Encounters;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Core.Time;
+using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
 using ReLogic.Content;
 using Terraria.Audio;
@@ -16,7 +18,9 @@ using Terraria.GameContent;
 using Terraria.ID;
 
 #nullable enable
+#pragma warning disable IDE0042 // Deconstruct variable declaration
 #pragma warning disable IDE0053 // Use expression body for lambda expression
+#pragma warning disable IDE2003 // Blank line required between block and subsequent statement
 
 namespace PathOfTerraria.Content.Conflux;
 
@@ -71,11 +75,22 @@ internal sealed class FallenSavage : Fallen
 /// <summary> Sneaky fast-speed demon that teleports at the player.  </summary>
 internal sealed class FallenSchemer : Fallen
 {
+	public ref ushort TeleportCooldown => ref Unsafe.As<float, ushort>(ref Unsafe.AddByteOffset(ref NPC.localAI[2], 2));
+
+	private Vector2 teleportSource;
+	private Vector2 teleportTarget;
+
+	private static readonly SpriteAnimation animTeleport = new()
+	{
+		Id = "teleport",
+		Frames = [6],
+	};
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
 
-		Main.npcFrameCount[Type] = 6;
+		Main.npcFrameCount[Type] = 7;
 	}
 	public override void SetDefaults()
 	{
@@ -95,6 +110,176 @@ internal sealed class FallenSchemer : Fallen
 		Behavior.AttackNoGravityEndTick = (ushort)(Behavior.AttackDashTick + (0.25 * 60));
 		Behavior.AttackDamageEndTick = (ushort)(Behavior.AttackDashTick + (0.25 * 60));
 		Behavior.MaxAttackCooldown = Behavior.MinAttackCooldown = 10;
+
+		NPC.GetGlobalNPC<NPCAnimations>().BaseFrame = new(1, 7);
+	}
+
+	public override void SendExtraAI(BinaryWriter writer)
+	{
+		base.SendExtraAI(writer);
+
+		writer.WriteVector2(teleportTarget);
+	}
+	public override void ReceiveExtraAI(BinaryReader reader)
+	{
+		base.ReceiveExtraAI(reader);
+
+		teleportTarget = reader.ReadVector2();
+	}
+
+	protected override Context InnerAI()
+	{
+		Context ctx = base.InnerAI();
+
+		Portalling(in ctx);
+
+		return ctx;
+	}
+
+	protected override SpriteAnimation? ChooseWantedAnimation(in Context ctx)
+	{
+		if (ActiveAction == ActionType.Teleport)
+		{
+			return animTeleport;
+		}
+
+		return base.ChooseWantedAnimation(ctx);
+	}
+
+	private void Portalling(in Context ctx)
+	{
+		// Cool down cooldowns.
+		if (TeleportCooldown > 0) { TeleportCooldown--; }
+
+		bool TryPickPosition(in Context ctx)
+		{
+			Point targetPoint = ctx.TargetCenter.ToTileCoordinates();
+			Rectangle targetArea = new Rectangle(targetPoint.X, targetPoint.Y, 0, 0).Inflated(10, 6);
+			var spawn = new SpawnPlacement
+			{
+				Area = targetArea,
+				CollisionSize = NPC.Size.ToPoint(),
+				MinDistanceFromPlayers = 8f,
+				MinDistanceFromEnemies = 64f,
+				SkippedLiquids = LiquidMask.All,
+				OnGround = true,
+			};
+
+			static bool IsSpawnPointSuitable(in Context ctx, Vector2 spawnPos)
+			{
+				// Must be significantly closer.
+				if (spawnPos.DistanceSQ(ctx.TargetCenter) > 128 + ctx.Center.DistanceSQ(ctx.TargetCenter)) { return false; }
+
+				// Must be change relative directions.	
+				if (Math.Sign(ctx.Center.X - ctx.TargetCenter.X) == Math.Sign(spawnPos.X - ctx.TargetCenter.X)) { return false; }
+
+				return true;
+			}
+
+			if (EnemySpawning.TryFindingSpawnPosition(spawn, out Vector2 spawnPos) && IsSpawnPointSuitable(in ctx, spawnPos))
+			{
+				teleportTarget = spawnPos;
+				NPC.netUpdate = true;
+				return true;
+			}
+
+			return false;
+		}
+
+		const float FarAwayDistance = 512f;
+		const int DisappearStart = (int)(0.0 * 60);
+		const int DisappearEnd = (int)(0.2 * 60);
+		const int ReappearStart = (int)(0.7 * 60);
+		const int ReappearEnd = (int)(0.9 * 60);
+		const int InvulnerabilityStart = (int)(0.0 * 60);
+		const int InvulnerabilityEnd = (int)(0.8 * 60);
+		const int MaxCooldown = (int)(3.0 * 60);
+
+		// Initiate teleportation if not busy.
+		if (Main.netMode != NetmodeID.MultiplayerClient
+		&& ActiveAction == ActionType.None && TeleportCooldown == 0)
+		{
+			bool farAway = ctx.Center.DistanceSQ(ctx.TargetCenter) >= FarAwayDistance * FarAwayDistance;
+			bool targetMayBeAttackingUs = NPC.HasValidTarget
+				&& NPC.GetTargetData().Type == Terraria.Enums.NPCTargetType.Player
+				&& Main.player[NPC.target] is { } p && p.itemAnimation > 0
+				&& p.direction == MathF.Sign(ctx.Center.X - p.Center.X);
+
+			if ((farAway || targetMayBeAttackingUs) && TryPickPosition(in ctx))
+			{
+				(ActiveAction, ActionProgress) = (ActionType.Teleport, 0);
+				NPC.netUpdate = true;
+			}
+		}
+
+		void SpawnParticles(Vector2 center, int amount)
+		{
+			if (Main.dedServ) { return; }
+
+			for (int i = 0; i < amount; i++)
+			{
+				Vector2 dustPos = center + Main.rand.NextVector2Circular(NPC.width * 0.5f, NPC.height * 0.5f);
+				Vector2 dustVel = Main.rand.NextVector2Circular(1f, 2f) - (Vector2.UnitY * 1f);
+				Dust.NewDustPerfect(dustPos, DustID.Blood, dustVel, Alpha: 10, Scale: 1.4f, newColor: Color.OrangeRed);
+			}
+		}
+
+		if (ActiveAction == ActionType.Teleport)
+		{
+			float alphaDisappear = MathUtils.Clamp01((ActionProgress - DisappearStart) / (float)(DisappearEnd - DisappearStart));
+			float alphaReappear = MathUtils.Clamp01((ActionProgress - ReappearStart) / (float)(ReappearEnd - ReappearStart));
+			float alphaTotal = 1f - alphaDisappear + alphaReappear;
+			NPC.alpha = byte.MaxValue - (byte)(alphaTotal * byte.MaxValue);
+
+			float entrancePower = MathUtils.DistancePower(MathF.Abs(ActionProgress - DisappearEnd), 1, 20);
+			float exitPower = MathUtils.DistancePower(MathF.Abs(ActionProgress - ReappearStart), 1, 20);
+
+			if (entrancePower > 0f) { Lighting.AddLight(teleportSource, Color.OrangeRed.ToVector3() * entrancePower); }
+			if (exitPower > 0f) { Lighting.AddLight(teleportTarget, Color.OrangeRed.ToVector3() * exitPower); }
+
+			if (ActionProgress == 0)
+			{
+				NPC.velocity.X = NPC.direction * 2f;
+				NPC.velocity.Y = -4f;
+			}
+
+			NPC.dontTakeDamage = ActionProgress >= InvulnerabilityStart && ActionProgress <= InvulnerabilityEnd;
+
+			if (ActionProgress < DisappearEnd)
+			{
+				SpawnParticles(NPC.Center, 1);
+				teleportSource = NPC.Center;
+			}
+			else if (ActionProgress == DisappearEnd)
+			{
+				SpawnParticles(NPC.Center, 10);
+				SoundEngine.PlaySound(SoundID.Shimmer1 with { Pitch = 0.4f, PitchVariance = 0.1f }, NPC.Center);
+				//SoundEngine.PlaySound(SoundID.DD2_DarkMageAttack with { Pitch = 0.4f, PitchVariance = 0.1f }, NPC.Center);
+				NPC.alpha = byte.MaxValue;
+
+				// Try to find a more up-to-date position.
+				TryPickPosition(in ctx);
+			}
+			else if (ActionProgress == ReappearStart)
+			{
+				NPC.Center = teleportTarget;
+				NPC.spriteDirection = NPC.direction = (ctx.Center.X - ctx.TargetCenter.X) > 0f ? 1 : -1;
+				NPC.velocity.X = NPC.direction * 2f;
+				NPC.velocity.Y = -5f;
+				
+				SpawnParticles(NPC.Center, 25);
+				SoundEngine.PlaySound(SoundID.DD2_DarkMageAttack with { Pitch = -0.2f, PitchVariance = 0.1f }, NPC.Center);
+			}
+			else if (ActionProgress >= ReappearEnd)
+			{
+				NPC.alpha = 0;
+				(ActiveAction, ActionProgress) = (ActionType.None, 0);
+				TeleportCooldown = MaxCooldown;
+				NPC.dontTakeDamage = false;
+			}
+
+			ActionProgress++;
+		}
 	}
 }
 
@@ -130,8 +315,12 @@ internal abstract class Fallen : ModNPC
 		public (float Ground, float Air) Friction = (8f, 2f);
 	}
 
-	private const float AttackDistanceX = 100f;
-	private const float AttackDistanceY = 250f;
+	public enum ActionType : byte
+	{
+		None,
+		Attack,
+		Teleport,
+	}
 
 	private static readonly SpriteAnimation animIdle = new()
 	{
@@ -158,13 +347,14 @@ internal abstract class Fallen : ModNPC
 		Loop = false,
 	};
 
-	private Footsteps footsteps;
+	private Footsteps footsteps = new();
 	protected AttackInstance? Attack;
 	protected Stats Behavior = new();
 
 	public ref float AttackAngle => ref NPC.localAI[0];
-	public ref ushort AttackProgress => ref Unsafe.As<float, ushort>(ref Unsafe.AddByteOffset(ref NPC.localAI[2], 0));
-	public ref ushort AttackCooldown => ref Unsafe.As<float, ushort>(ref Unsafe.AddByteOffset(ref NPC.localAI[2], 2));
+	public ref ushort ActionProgress => ref Unsafe.As<float, ushort>(ref Unsafe.AddByteOffset(ref NPC.localAI[1], 0));
+	public ref ushort AttackCooldown => ref Unsafe.As<float, ushort>(ref Unsafe.AddByteOffset(ref NPC.localAI[1], 2));
+	public ref ActionType ActiveAction => ref Unsafe.As<float, ActionType>(ref Unsafe.AddByteOffset(ref NPC.localAI[2], 0));
 	public int AttackSign => AttackDirection.X >= 0f ? 1 : -1;
 	public Vector2 AttackDirection
 	{
@@ -203,7 +393,9 @@ internal abstract class Fallen : ModNPC
 		});
 	}
 
-	public override void AI()
+	public override void AI() { InnerAI(); }
+
+	protected virtual Context InnerAI()
 	{
 		Context ctx = new(NPC);
 
@@ -213,6 +405,8 @@ internal abstract class Fallen : ModNPC
 		Attacking(ref ctx);
 		UpdateAnimations(ref ctx);
 		UpdateEffects(ref ctx);
+
+		return ctx;
 	}
 
 	private void UpdateTarget(ref Context ctx, bool forceReset = false)
@@ -262,7 +456,7 @@ internal abstract class Fallen : ModNPC
 
 		Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
 
-		if (!NPC.HasValidTarget || AttackProgress != 0)
+		if (!NPC.HasValidTarget || ActiveAction != ActionType.None)
 		{
 			return;
 		}
@@ -312,50 +506,49 @@ internal abstract class Fallen : ModNPC
 		Vector2 targetDiff = ctx.TargetCenter - ctx.Center;
 
 		// Reset mutated variables.
-		bool initiateAttack = false;
 		NPC.damage = -1;
 		NPC.noGravity = false;
 		NPC.color = Color.White;
 
 		// Check if we can initiate an attack.
 #if !NEVER_ATTACK
-		if (AttackProgress == 0 && AttackCooldown == 0 && NPC.velocity.Y == 0f && MathF.Abs(targetDiff.X) <= AttackDistanceX && MathF.Abs(targetDiff.Y) <= AttackDistanceY)
+		Vector2 initRange = Behavior.AttackInitiationRange;
+
+		if (ActiveAction == ActionType.None && AttackCooldown == 0 && NPC.velocity.Y == 0f && MathF.Abs(targetDiff.X) <= initRange.X && MathF.Abs(targetDiff.Y) <= initRange.Y)
 		{
 			if (Collision.CanHitLine(NPC.position, NPC.width, NPC.height, ctx.TargetRect.TopLeft(), ctx.TargetRect.Width, ctx.TargetRect.Height))
 			{
-				initiateAttack = true;
+				(ActiveAction, ActionProgress) = (ActionType.Attack, 0);
 			}
 		}
 #endif
 
 		// Update attacks.
-		if (AttackProgress != 0 || initiateAttack)
+		if (ActiveAction == ActionType.Attack)
 		{
-			AttackProgress++;
-
 			// Play sounds.
-			if (AttackProgress == Behavior.AttackDashSoundTick)
+			if (ActionProgress == Behavior.AttackDashSoundTick)
 			{
 				SoundEngine.PlaySound(position: NPC.Center, style: SoundID.Item71 with { Volume = 0.6f, Pitch = -0.80f, PitchVariance = 0.15f, MaxInstances = 3 });
 			}
-			else if (AttackProgress == Behavior.AttackSlashSoundTick)
+			else if (ActionProgress == Behavior.AttackSlashSoundTick)
 			{
 				SoundEngine.PlaySound(position: NPC.Center, style: SoundID.NPCHit56 with { Volume = 0.25f, Pitch = +0.85f, PitchVariance = 0.1f, MaxInstances = 3 });
 			}
 
-			if (AttackProgress < Behavior.AttackDashTick)
+			if (ActionProgress < Behavior.AttackDashTick)
 			{
 				// Update Attack direction.
 				AttackDirection = targetDiff.SafeNormalize(Vector2.UnitX * AttackSign);
 
 				// Aim starts to update slower and slower.
 				const float ChargeFactorForFullAimLag = 0.99f;
-				ctx.Tracking.AimLag = Vector2.Lerp(default, Vector2.One * 0.2f, MathF.Min(1f, (AttackProgress / (float)Behavior.AttackDashTick) / ChargeFactorForFullAimLag));
+				ctx.Tracking.AimLag = Vector2.Lerp(default, Vector2.One * 0.2f, MathF.Min(1f, (ActionProgress / (float)Behavior.AttackDashTick) / ChargeFactorForFullAimLag));
 
 				// Slow-slide.
 				NPC.velocity.X = 0.4f * AttackSign;
 			}
-			else if (AttackProgress == Behavior.AttackDashTick)
+			else if (ActionProgress == Behavior.AttackDashTick)
 			{
 				// Dash.
 				NPC.velocity = AttackDirection * Behavior.AttackDashVelocity;
@@ -380,12 +573,12 @@ internal abstract class Fallen : ModNPC
 				// Slow down.
 				NPC.velocity.X *= 0.86f;
 				// But also defy gravity for a few ticks.
-				NPC.noGravity = AttackProgress >= Behavior.AttackDashTick && AttackProgress < Behavior.AttackNoGravityEndTick;
+				NPC.noGravity = ActionProgress >= Behavior.AttackDashTick && ActionProgress < Behavior.AttackNoGravityEndTick;
 			}
 
 			// Deal damage starting with the dash.
 
-			if (Attack != null && AttackProgress >= Behavior.AttackDashTick && AttackProgress < Behavior.AttackDamageEndTick)
+			if (Attack != null && ActionProgress >= Behavior.AttackDashTick && ActionProgress < Behavior.AttackDamageEndTick)
 			{
 				(Vector2 hitboxCenter, Rectangle hitboxAabb) = GetDamageArea();
 				Attack.Aabb = hitboxAabb;
@@ -394,29 +587,37 @@ internal abstract class Fallen : ModNPC
 			}
 
 			// End attack, start cooldown.
-			if (AttackProgress >= Behavior.AttackLengthInTicks)
+			if (ActionProgress >= Behavior.AttackLengthInTicks)
 			{
-				AttackProgress = 0;
+				(ActiveAction, ActionProgress) = (ActionType.None, 0);
 				AttackCooldown = (ushort)Main.rand.Next(Behavior.MinAttackCooldown, Behavior.MaxAttackCooldown);
 				ctx.Tracking.AimLag = default;
 			}
+
+			ActionProgress++;
 		}
 	}
 
-	private void UpdateAnimations(ref Context ctx)
+	protected virtual SpriteAnimation? ChooseWantedAnimation(in Context ctx)
 	{
 		const float MinWalkSpeed = 0.5f;
 
 		Vector2 effectiveVelocity = NPC.position - NPC.oldPosition;
-		SpriteAnimation current = ctx.Animations.Current;
-		SpriteAnimation? targetAnimation = current switch
+
+		return ctx.Animations.Current switch
 		{
-			_ when AttackProgress != 0 => animAttack,
+			_ when ActiveAction == ActionType.Attack => animAttack,
 			_ when MathF.Abs(effectiveVelocity.Y) > 5f => animJump,
 			_ when effectiveVelocity.Y == 0f && Math.Abs(effectiveVelocity.X) >= MinWalkSpeed => animWalk with { Speed = effectiveVelocity.X * animWalk.Speed * 4f * NPC.spriteDirection },
 			_ when effectiveVelocity.Y == 0f && Math.Abs(effectiveVelocity.X) <= MinWalkSpeed => animIdle,
 			_ => null,
 		};
+	}
+
+	private void UpdateAnimations(ref Context ctx)
+	{
+		SpriteAnimation current = ctx.Animations.Current;
+		SpriteAnimation? targetAnimation = ChooseWantedAnimation(in ctx);
 
 		if (targetAnimation != null)
 		{
@@ -464,6 +665,7 @@ internal abstract class Fallen : ModNPC
 		Vector2 hitboxCorrection = new(0f, -((tex.Height / (Main.npcFrameCount[NPC.type])) - NPC.height) * 0.5f + 2);
 		Vector2 position = NPC.Center + new Vector2(0f, NPC.gfxOffY) + hitboxCorrection - Main.screenPosition;
 		color = color.MultiplyRGBA(NPC.color);
+		color = color.MultiplyRGBA(new Color(Vector4.One * ((byte.MaxValue - NPC.alpha) / (float)byte.MaxValue)));
 		Main.EntitySpriteDraw(tex, position, NPC.frame, color, NPC.rotation, NPC.frame.Size() * 0.5f, NPC.scale, NPC.spriteDirection >= 0 ? (SpriteEffects)1 : 0, 0f);
 
 #if DEBUG && DEBUG_GIZMOS
@@ -478,9 +680,9 @@ internal abstract class Fallen : ModNPC
 	public override void PostDraw(SpriteBatch sb, Vector2 screenPos, Color color)
 	{
 		// Render the slash.
-		if (AttackProgress >= Behavior.AttackDashTick && AttackProgress < Behavior.AttackDamageEndTick)
+		if (ActiveAction == ActionType.Attack && ActionProgress >= Behavior.AttackDashTick && ActionProgress < Behavior.AttackDamageEndTick)
 		{
-			byte frameIndex = (byte)Math.Min(2, Math.Floor((AttackProgress - Behavior.AttackDashTick) / (float)(Behavior.AttackDamageEndTick - Behavior.AttackDashTick) * 3));
+			byte frameIndex = (byte)Math.Min(2, Math.Floor((ActionProgress - Behavior.AttackDashTick) / (float)(Behavior.AttackDamageEndTick - Behavior.AttackDashTick) * 3));
 			SpriteFrame slashFrame = new SpriteFrame(1, 3).With(0, AttackSign > 0 ? frameIndex : (byte)(2 - frameIndex));
 			Texture2D slashTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Misc/Slash", AssetRequestMode.ImmediateLoad).Value;
 			Color slashColor = Color.Lerp(color, Color.White, 0.33f).MultiplyRGBA(new(Vector4.One * 0.7f));
