@@ -158,6 +158,7 @@ internal abstract class Fallen : ModNPC
 		Loop = false,
 	};
 
+	private Footsteps footsteps;
 	protected AttackInstance? Attack;
 	protected Stats Behavior = new();
 
@@ -211,6 +212,7 @@ internal abstract class Fallen : ModNPC
 		Movement(ref ctx);
 		Attacking(ref ctx);
 		UpdateAnimations(ref ctx);
+		UpdateEffects(ref ctx);
 	}
 
 	private void UpdateTarget(ref Context ctx, bool forceReset = false)
@@ -419,6 +421,21 @@ internal abstract class Fallen : ModNPC
 
 		// Update sprite direction.
 		NPC.spriteDirection = !current.Is(animAttack) ? NPC.direction : AttackSign;
+	}
+
+	private void UpdateEffects(ref Context ctx)
+	{
+		footsteps.Perform(new(NPC)
+		{
+			Frame = ctx.Animations.Current.Is(animWalk) ? (ctx.Animations.CurrentFrame, ctx.Animations.PreviousFrame ?? -1, 0, 3) : null,
+			StepSound = new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Footsteps/MonsterStomp", 3)
+			{
+				Volume = 0.06f,
+				Pitch = 0.8f,
+				PitchVariance = 0.2f,
+				MaxInstances = 8,
+			},
+		});
 	}
 
 	private (Vector2 Center, Rectangle Aabb) GetDamageArea()
