@@ -20,8 +20,32 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.Conflux;
 
-// Heavy
-internal sealed class FallenTank : Fallen
+/// <summary> Heavy low-speed demon that annihilates its targets.  </summary>
+internal sealed class FallenTyrant : Fallen
+{
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		Main.npcFrameCount[Type] = 6;
+	}
+	public override void SetDefaults()
+	{
+		base.SetDefaults();
+
+		NPC.lifeMax = 250;
+		NPC.defense = 20;
+		NPC.damage = 40;
+		NPC.width = 36;
+		NPC.height = 38;
+		NPC.knockBackResist = 0.2f;
+
+		Behavior.MaxSpeed = 1.5f;
+	}
+}
+
+/// <summary> Brute medium-speed demon that stabs its targets.  </summary>
+internal sealed class FallenSavage : Fallen
 {
 	public override void SetStaticDefaults()
 	{
@@ -34,39 +58,17 @@ internal sealed class FallenTank : Fallen
 		base.SetDefaults();
 
 		NPC.lifeMax = 150;
-		NPC.defense = 10;
-		NPC.damage = 40;
-		NPC.width = 36;
-		NPC.height = 38;
-
-		Behavior.MaxSpeed = 1.5f;
-	}
-}
-
-// Medium
-internal sealed class FallenRogue : Fallen
-{
-	public override void SetStaticDefaults()
-	{
-		base.SetStaticDefaults();
-
-		Main.npcFrameCount[Type] = 6;
-	}
-	public override void SetDefaults()
-	{
-		base.SetDefaults();
-
-		NPC.lifeMax = 100;
 		NPC.defense = 8;
-		NPC.damage = 25;
+		NPC.damage = 35;
 		NPC.width = 24;
 		NPC.height = 40;
+		NPC.knockBackResist = 0.3f;
 
 		Behavior.MaxSpeed = 3f;
 	}
 }
 
-// Light
+/// <summary> Sneaky fast-speed demon that teleports at the player.  </summary>
 internal sealed class FallenSchemer : Fallen
 {
 	public override void SetStaticDefaults()
@@ -79,11 +81,12 @@ internal sealed class FallenSchemer : Fallen
 	{
 		base.SetDefaults();
 
-		NPC.lifeMax = 80;
-		NPC.defense = 15;
+		NPC.lifeMax = 125;
+		NPC.defense = 25;
 		NPC.damage = 20;
 		NPC.width = 20;
 		NPC.height = 44;
+		NPC.knockBackResist = 0.5f;
 
 		Behavior.MaxSpeed = 5.5f;
 		Behavior.AttackDashTick = (ushort)(0.2 * 60);
