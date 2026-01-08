@@ -127,7 +127,7 @@ internal abstract class Fallen : ModNPC
 		public ushort MaxAttackCooldown = (ushort)(1.00f * 60);
 		public float MaxSpeed = 4f;
 		public float Acceleration = 32f;
-		public float Friction = 8f;
+		public (float Ground, float Air) Friction = (8f, 2f);
 	}
 
 	private const float AttackDistanceX = 100f;
@@ -254,10 +254,8 @@ internal abstract class Fallen : ModNPC
 		});
 
 		// Friction.
-		if (NPC.velocity.Y == 0f)
-		{
-			NPC.velocity.X = MathUtils.StepTowards(NPC.velocity.X, 0f, Behavior.Friction * TimeSystem.LogicDeltaTime);
-		}
+		float friction = NPC.velocity.Y == 0f ? Behavior.Friction.Ground : Behavior.Friction.Air;
+		NPC.velocity.X = MathUtils.StepTowards(NPC.velocity.X, 0f, friction * TimeSystem.LogicDeltaTime);
 
 		// Slopes.
 		if (NPC.velocity.Y == 0f) { Collision.StepDown(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY); }
@@ -292,7 +290,7 @@ internal abstract class Fallen : ModNPC
 		}
 
 		// Horizontal acceleration.
-		if (navResult.MovementVector.X != 0f)
+		if (NPC.velocity.Y == 0f && navResult.MovementVector.X != 0f)
 		{
 			NPC.velocity.X = MathUtils.StepTowards(NPC.velocity.X, Behavior.MaxSpeed * navResult.MovementVector.X, Behavior.Acceleration * TimeSystem.LogicDeltaTime);
 			NPC.direction = navResult.MovementVector.X > 0f ? 1 : -1;
