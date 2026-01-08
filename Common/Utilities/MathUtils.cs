@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.Utilities;
@@ -116,5 +117,18 @@ public static class MathUtils
 	public static int Percent(float value)
 	{
 		return (int)Math.Round(value * 100);
+	}
+
+	/// <summary> Calculates a [0..1] distance falloff factor given a distance value and start and end range. </summary>
+	public static float DistancePower(float distance, float closest, float farthest)
+	{
+		Debug.Assert(closest >= 0f);
+		Debug.Assert(farthest >= 0f);
+		Debug.Assert(distance >= 0f);
+		Debug.Assert(farthest >= closest);
+
+		float result = 1f - ((distance - closest) / (farthest - closest));
+
+		return float.IsNaN(result) ? 0f : result;
 	}
 }

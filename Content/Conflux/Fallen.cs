@@ -247,6 +247,12 @@ internal abstract class Fallen : ModNPC
 
 	private void Movement(ref Context ctx)
 	{
+		// Push against peers.
+		PushBehavior.Update(new PushBehavior.Context(NPC)
+		{
+			RequiredNpcType = NPC.type,
+		});
+
 		// Friction.
 		if (NPC.velocity.Y == 0f)
 		{

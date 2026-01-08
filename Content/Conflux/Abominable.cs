@@ -178,6 +178,13 @@ internal sealed class Abominable : ModNPC
 		const float Acceleration = 32f;
 		const float Friction = 8f;
 
+		// Push away everyone who's nearby.
+		PushBehavior.Update(new PushBehavior.Context(NPC)
+		{
+			RequiredNpcType = NPC.type,
+			Push = (16f, 64f, 2.1f, 0.6f),
+		});
+
 		// Friction.
 		if (NPC.velocity.Y == 0f)
 		{
@@ -348,7 +355,7 @@ internal sealed class Abominable : ModNPC
 
 	private void UpdateAnimations(ref Context ctx)
 	{
-		const float MinWalkSpeed = 0.5f;
+		const float MinWalkSpeed = 1.5f;
 
 		Vector2 effectiveVelocity = NPC.position - NPC.oldPosition;
 		SpriteAnimation current = ctx.Animations.Current;
