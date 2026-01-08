@@ -39,7 +39,7 @@ internal sealed class FallenTyrant : Fallen
 
 		NPC.lifeMax = 250;
 		NPC.defense = 20;
-		NPC.damage = 40;
+		NPC.damage = 50;
 		NPC.width = 36;
 		NPC.height = 38;
 		NPC.knockBackResist = 0.2f;
@@ -63,7 +63,7 @@ internal sealed class FallenSavage : Fallen
 
 		NPC.lifeMax = 150;
 		NPC.defense = 8;
-		NPC.damage = 35;
+		NPC.damage = 45;
 		NPC.width = 24;
 		NPC.height = 40;
 		NPC.knockBackResist = 0.3f;
@@ -107,6 +107,7 @@ internal sealed class FallenSchemer : Fallen
 
 	private Vector2 teleportSource;
 	private Vector2 teleportTarget;
+	private int lastSeenHealth;
 
 	public ref ushort TeleportCooldown => ref Unsafe.As<float, ushort>(ref Unsafe.AddByteOffset(ref NPC.localAI[2], 2));
 
@@ -124,18 +125,23 @@ internal sealed class FallenSchemer : Fallen
 
 		NPC.lifeMax = 125;
 		NPC.defense = 25;
-		NPC.damage = 20;
+		NPC.damage = 40;
 		NPC.width = 20;
 		NPC.height = 44;
 		NPC.knockBackResist = 0.5f;
 
 		Behavior.MaxSpeed = 5.5f;
-		Behavior.AttackDashTick = (ushort)(0.2 * 60);
+		Behavior.AttackInitiationRange = new(140f, 250f);
+		Behavior.AttackDashVelocity = new(15f, 10f);
+		Behavior.AttackDashTick = (ushort)(0.3 * 60);
 		Behavior.AttackDashSoundTick = (ushort)(Behavior.AttackDashTick - 5);
 		Behavior.AttackSlashSoundTick = (ushort)(Behavior.AttackDashTick - 3);
 		Behavior.AttackNoGravityEndTick = (ushort)(Behavior.AttackDashTick + (0.25 * 60));
 		Behavior.AttackDamageEndTick = (ushort)(Behavior.AttackDashTick + (0.25 * 60));
-		Behavior.MaxAttackCooldown = Behavior.MinAttackCooldown = 10;
+		Behavior.AttackLengthInTicks = (ushort)(Behavior.AttackDashTick + (0.7 * 60));
+		Behavior.AttackCooldown = 60;
+
+		TeleportCooldown = 60;
 
 		NPC.GetGlobalNPC<NPCAnimations>().BaseFrame = new(4, 4);
 	}
@@ -158,6 +164,8 @@ internal sealed class FallenSchemer : Fallen
 		Context ctx = base.InnerAI();
 
 		Portalling(in ctx);
+
+		lastSeenHealth = NPC.life;
 
 		return ctx;
 	}
@@ -182,7 +190,18 @@ internal sealed class FallenSchemer : Fallen
 	private void Portalling(in Context ctx)
 	{
 		// Cool down cooldowns.
-		if (TeleportCooldown > 0) { TeleportCooldown--; }
+		if (TeleportCooldown > 0)
+		{
+			TeleportCooldown--;
+
+			// Reduce the cooldown further when losing health.
+			if (Math.Max(0, lastSeenHealth - NPC.life) is > 0 and int lifeLost)
+			{
+				TeleportCooldown = (ushort)Math.Max(0, TeleportCooldown - (lifeLost + 10));
+			}
+
+			return;
+		}
 
 		bool TryPickPosition(in Context ctx)
 		{
@@ -192,7 +211,7 @@ internal sealed class FallenSchemer : Fallen
 			{
 				Area = targetArea,
 				CollisionSize = NPC.Size.ToPoint(),
-				MinDistanceFromPlayers = 8f,
+				MinDistanceFromPlayers = 32f,
 				MinDistanceFromEnemies = 64f,
 				SkippedLiquids = LiquidMask.All,
 				OnGround = true,
@@ -219,14 +238,14 @@ internal sealed class FallenSchemer : Fallen
 			return false;
 		}
 
-		const float FarAwayDistance = 512f;
+		const float FarAwayDistance = 356f;
 		const int DisappearStart = (int)(0.0 * 60);
 		const int DisappearEnd = (int)(0.2 * 60);
 		const int ReappearStart = (int)(0.7 * 60);
 		const int ReappearEnd = (int)(0.9 * 60);
 		const int InvulnerabilityStart = (int)(0.0 * 60);
-		const int InvulnerabilityEnd = (int)(0.8 * 60);
-		const int MaxCooldown = (int)(3.0 * 60);
+		const int InvulnerabilityEnd = (int)(0.75 * 60);
+		const int MaxCooldown = (int)(2.5 * 60);
 
 		// Initiate teleportation if not busy.
 		if (Main.netMode != NetmodeID.MultiplayerClient
@@ -341,8 +360,7 @@ internal abstract class Fallen : ModNPC
 		public ushort AttackSlashSoundTick = (ushort)(Default.AttackDashTick - 3);
 		public ushort AttackNoGravityEndTick = (ushort)(Default.AttackDashTick + (0.25 * 60));
 		public ushort AttackDamageEndTick = (ushort)(Default.AttackDashTick + (0.25 * 60));
-		public ushort MinAttackCooldown = (ushort)(1.00f * 60);
-		public ushort MaxAttackCooldown = (ushort)(1.00f * 60);
+		public ushort AttackCooldown = (ushort)(1.00f * 60);
 		public float MaxSpeed = 4f;
 		public float Acceleration = 32f;
 		public (float Ground, float Air) Friction = (8f, 2f);
@@ -606,7 +624,7 @@ internal abstract class Fallen : ModNPC
 			else
 			{
 				// Slow down.
-				NPC.velocity.X *= 0.86f;
+				NPC.velocity.X *= 0.9f;
 				// But also defy gravity for a few ticks.
 				NPC.noGravity = ActionProgress >= Behavior.AttackDashTick && ActionProgress < Behavior.AttackNoGravityEndTick;
 			}
@@ -625,7 +643,7 @@ internal abstract class Fallen : ModNPC
 			if (ActionProgress >= Behavior.AttackLengthInTicks)
 			{
 				(ActiveAction, ActionProgress) = (ActionType.None, 0);
-				AttackCooldown = (ushort)Main.rand.Next(Behavior.MinAttackCooldown, Behavior.MaxAttackCooldown);
+				AttackCooldown = Behavior.AttackCooldown;
 				ctx.Tracking.AimLag = default;
 			}
 
