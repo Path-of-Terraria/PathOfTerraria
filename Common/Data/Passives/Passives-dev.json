@@ -4575,7 +4575,7 @@
 				"referenceId": 210
 			},
 			{
-				"referenceId": 1123
+				"referenceId": 1137
 			}
 		],
 		"position": {
@@ -4590,7 +4590,7 @@
 		"value": 10,
 		"connections": [
 			{
-				"referenceId": 1123
+				"referenceId": 1137
 			}
 		],
 		"position": {
@@ -4605,7 +4605,7 @@
 		"value": 5,
 		"connections": [
 			{
-				"referenceId": 1123
+				"referenceId": 1137
 			}
 		],
 		"position": {
@@ -4615,7 +4615,7 @@
 	},
 	{
 		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1123,
+		"referenceId": 1137,
 		"maxLevel": 1,
 		"value": 5,
 		"connections": [
@@ -4638,7 +4638,7 @@
 	},
 	{
 		"internalIdentifier": "BurningRageMastery",
-		"referenceId": 1124,
+		"referenceId": 1138,
 		"maxLevel": 1,
 		"value": 2,
 		"position": {
@@ -4649,7 +4649,7 @@
 	},
 	{
 		"internalIdentifier": "FuriousSiphonMastery",
-		"referenceId": 1125,
+		"referenceId": 1139,
 		"maxLevel": 1,
 		"value": 50,
 		"position": {
@@ -4660,7 +4660,7 @@
 	},
 	{
 		"internalIdentifier": "RagingSpeedMastery",
-		"referenceId": 1126,
+		"referenceId": 1140,
 		"maxLevel": 1,
 		"value": 1,
 		"position": {
