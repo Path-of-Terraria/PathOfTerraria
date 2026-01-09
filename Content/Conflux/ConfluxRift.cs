@@ -7,12 +7,17 @@ using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Common.UI;
+using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Content.Dusts;
 using PathOfTerraria.Core.Time;
+using PathOfTerraria.Utilities;
 using PathOfTerraria.Utilities.Xna;
 using ReLogic.Content;
+using ReLogic.Utilities;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.Localization;
 
@@ -37,12 +42,63 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		Closing = 2,
 	}
 
+	private record struct VisualParams(int TorchId, int DustId, Color ColorBase, string? Filter);
+
+	private static SoundStyle SoundActivation => new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/RiftActivation")
+	{
+		Volume = 0.9f,
+		PauseBehavior = PauseBehavior.PauseWithGame,
+	};
+	private static SoundStyle SoundDeactivation => new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/RiftDeactivation")
+	{
+		Volume = 0.9f,
+		PauseBehavior = PauseBehavior.PauseWithGame,
+	};
+	private static SoundStyle SoundApproach => new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/RiftApproach")
+	{
+		Volume = 0.4f,
+		PitchVariance = 0.1f,
+		PauseBehavior = PauseBehavior.PauseWithGame,
+	};
+	private static SoundStyle SoundWithdraw => new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/RiftWithdraw")
+	{
+		Volume = 0.4f,
+		PitchVariance = 0.1f,
+		PauseBehavior = PauseBehavior.PauseWithGame,
+	};
+	private static SoundStyle SoundInactive => new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/RiftInactive")
+	{
+		Volume = 0.4f,
+		IsLooped = true,
+		PauseBehavior = PauseBehavior.PauseWithGame,
+	};
+	private static SoundStyle SoundApproached => new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/RiftApproached")
+	{
+		Volume = 0.5f,
+		IsLooped = true,
+		PauseBehavior = PauseBehavior.PauseWithGame,
+	};
+	private static SoundStyle SoundActive => new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/RiftActive")
+	{
+		Volume = 0.22f,
+		IsLooped = true,
+		PauseBehavior = PauseBehavior.PauseWithGame,
+	};
+
 	private static Asset<Texture2D> Highlight = null!;
+
+	private (SlotId Handle, float Volume) soundDormant;
+	private (SlotId Handle, float Volume) soundRousing;
+	private (SlotId Handle, float Volume) soundAwoken;
+	private ProjectileAudioTracker? audioTracker;
+	private bool approached;
 
 	public uint EndTime { get; set; }
 	public Encounter Encounter { get; private set; }
 	public float OpeningAnimation { get; private set; }
 	public float ClosingAnimation { get; private set; }
+	public float ProgressAnimation { get; private set; }
+	public float ApproachAnimation { get; private set; }
 
 	/// <summary> The rift's type. </summary>
 	public ConfluxRiftKind Kind
@@ -64,6 +120,7 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 	public bool Closing => (BitFlags & Flags.Closing) != 0;
 
 	private static Asset<Effect>? shader;
+
 	public override void SetStaticDefaults()
 	{
 		ProjectileID.Sets.IsInteractable[Type] = true;
@@ -103,30 +160,71 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 	public override void AI()
 	{
+		Vector2 center = Projectile.Center;
+		VisualParams visuals = GetVisualParameters();
+
 		Projectile.rotation += 0.05f;
 		Projectile.Opacity = MathHelper.Lerp(Projectile.Opacity, 1f, 0.25f);
+		ProgressAnimation = MathHelper.Lerp(ProgressAnimation, Progress, 0.1f);
 
 		if (Closing)
 		{
-			ClosingAnimation = MathF.Min(1f, ClosingAnimation + (TimeSystem.LogicDeltaTime / 3f));
+			float oldValue = ClosingAnimation;
+			ClosingAnimation = MathF.Min(1f, ClosingAnimation + (TimeSystem.LogicDeltaTime / 4f));
+			ApproachAnimation = 0f;
+
+			// Effects.
+			if (oldValue <= 0f)
+			{
+				if (!Main.dedServ && visuals.Filter != null) { Filters.Scene.Deactivate(visuals.Filter); }
+			}
+			// Item drop.
+			else if (oldValue < 0.6f && ClosingAnimation >= 0.6f)
+			{
+				if (Main.netMode != NetmodeID.MultiplayerClient)
+				{
+					DropRewards();
+				}
+
+				if (!Main.dedServ)
+				{
+					for (int i = 0; i < 50; i++)
+					{
+						Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(8f, 8f), visuals.DustId, Main.rand.NextVector2Circular(8f, 8f));
+					}
+				}
+			}
 		}
 		else if (Activated)
 		{
-			OpeningAnimation = MathF.Min(1f, OpeningAnimation + (TimeSystem.LogicDeltaTime / 3f));
-
-			if (OpeningAnimation > 0.34f && false)
+			float oldValue = OpeningAnimation;
+			OpeningAnimation = MathF.Min(1f, OpeningAnimation + (TimeSystem.LogicDeltaTime / 7f));
+			ApproachAnimation = 1f;
+		}
+		else
+		{
+			if (ApproachAnimation is <= 0f or >= 1f)
 			{
-				for (int i = 0; i < 3; i++)
+				(Player? closestPlayer, float minSqrDist) = (null, float.PositiveInfinity);
+				foreach (Player player in Main.ActivePlayers)
 				{
-					Vector2 offset = Vector2.One.RotatedBy(Main.rand.NextDouble() * 6.28);
-					Vector2 dustVel = offset.RotatedBy(1.57f) * Main.rand.NextFloat() * 0.85f;
-					offset *= new Vector2(Main.rand.NextFloat(0.6f, 1) * 60, Main.rand.NextFloat(0.5f, 1f) * 70);
-					Dust dust = Dust.NewDustPerfect(Projectile.Center + offset, ModContent.DustType<ConfluxRiftSmoke>(), dustVel);
-					dust.scale = Main.rand.NextFloat(0.5f, 0.8f);
-					dust.alpha = Main.rand.Next(175, 200);
-					dust.color = Color.Lerp(Color.Purple, Color.White, Main.rand.NextFloat(0.25f, 0.75f));
+					(closestPlayer, minSqrDist) = (player, MathF.Min(minSqrDist, player.DistanceSQ(center)));
+				}
+
+				Vector2 compareSpot = Main.LocalPlayer.Center;
+				bool isInteractible = closestPlayer?.IsProjectileInteractibleAndInInteractionRange(Projectile, ref compareSpot) == true;
+
+				if (isInteractible != approached)
+				{
+					approached = isInteractible;
+					SoundEngine.PlaySound(approached ? SoundApproach : SoundWithdraw, center);
 				}
 			}
+
+			float targetApproach = approached ? 1f : 0f;
+			float oldValue = ApproachAnimation;
+			ApproachAnimation = MathHelper.Lerp(ApproachAnimation, targetApproach, 0.05f);
+			ApproachAnimation = MathUtils.StepTowards(ApproachAnimation, targetApproach, 0.01f);
 		}
 
 		// Encounter logic.
@@ -138,25 +236,71 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 				UpdateProgress();
 			}
 
-			// Start closing when the encounter has been completed, or if the players have ran out of time.
-			if (Activated && !Closing && (!Encounter.IsValid || Encounter.Instance.State == EncounterState.Completed || Main.GameUpdateCount >= EndTime))
+			if (Activated && !Closing && OpeningAnimation >= 0.1f)
 			{
-				Close();
+				// Create the encounter once enough time has passed.
+				if (Encounter == default)
+				{
+					const uint lengthInSeconds = 30;
+					const uint spawnStartDelay = 1;
+
+					EndTime = Main.GameUpdateCount + ((lengthInSeconds + spawnStartDelay) * (uint)TimeSystem.LogicFramerate);
+					Encounter = CreateEncounter(lengthInSeconds);
+				}
+				// Start closing when the encounter has been completed, or if the players have ran out of time.
+				else if (!Encounter.IsValid || Encounter.Instance.State == EncounterState.Completed || Main.GameUpdateCount >= EndTime)
+				{
+					Close();
+				}
 			}
 		}
 
 		// Effects.
 		if (!Main.dedServ)
 		{
-			(int torchId, int dustId, _) = GetVisualParameters();
-
-			if (Main.rand.NextBool(10))
-			{
-				Dust.NewDust(Projectile.position + new Vector2(8), Projectile.width - 16, Projectile.height - 16, dustId);
-			}
-
-			Lighting.AddLight(Projectile.Center, torchId);
+			UpdateEffects();
+			UpdateAudio();
 		}
+	}
+
+	private void UpdateEffects()
+	{
+		if (Main.dedServ) { return; }
+
+		VisualParams visuals = GetVisualParameters();
+
+		if (Main.rand.NextBool(10) && Activated && OpeningAnimation > 0.34f)
+		{
+			Dust.NewDust(Projectile.position + new Vector2(8), Projectile.width - 16, Projectile.height - 16, visuals.DustId);
+		}
+
+		Lighting.AddLight(Projectile.Center, visuals.TorchId);
+
+		if (Activated && !Closing && visuals.Filter != null)
+		{
+			Filters.Scene.Activate(visuals.Filter);
+		}
+	}
+	private void UpdateAudio()
+	{
+		Vector2 center = Projectile.Center;
+		float distMul = new ExponentialRange(0f, 2048f, 2f).DistanceFactor(Main.LocalPlayer.Distance(center));
+		float distAndClosing = distMul * (1f - ClosingAnimation);
+
+		ProjectileAudioTracker tracker = (audioTracker ??= new ProjectileAudioTracker(Projectile));
+
+		void UpdateSound(in SoundStyle style, ref (SlotId Handle, float Volume) tuple, float target)
+		{
+			tuple.Volume = MathUtils.StepTowards(tuple.Volume, target, MathF.Max(0f, 2f * TimeSystem.LogicDeltaTime));
+			SoundUtils.UpdateLoopingSound(ref tuple.Handle, center, tuple.Volume, null, in style, _ => tracker.IsActiveAndInGame());
+		}
+
+		float posApproach = ApproachAnimation > 0f ? 1f : float.Epsilon;
+		float negApproach = ApproachAnimation > 0f ? float.Epsilon : 1f;
+
+		UpdateSound(SoundInactive, ref soundDormant, (Activated ? 0.2f : 1.0f) * negApproach * distAndClosing);
+		UpdateSound(SoundApproached, ref soundRousing, (Activated ? 0.3f : 1.0f) * posApproach * distAndClosing);
+		UpdateSound(SoundActive, ref soundAwoken, (Activated ? 1.0f : 0.0f) * distAndClosing);
 	}
 
 	public override void OnKill(int timeLeft)
@@ -179,12 +323,30 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 			return false;
 		}
 
+		float openFactor = MathUtils.Clamp01((OpeningAnimation * 0.75f) + (ApproachAnimation * 0.25f));
+		float closeFactor = MathUtils.Clamp01((ClosingAnimation * 0.8f) + (ProgressAnimation * 0.2f));
+
+		effect.Parameters["progress"].SetValue(openFactor);
+		effect.Parameters["closingProgress"].SetValue(closeFactor);
 		effect.Parameters["timeManual"].SetValue((float)Main.timeForVisualEffects * 0.027f);
-		effect.Parameters["progress"].SetValue(OpeningAnimation);
 		effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(Texture + "_PerlinNoiseMap").Value);
-		effect.Parameters["_PaletteTex"].SetValue(ModContent.Request<Texture2D>(Texture + "_Palette").Value);
+		effect.Parameters["_PaletteTex"].SetValue(ModContent.Request<Texture2D>(Texture + "_Palette_" + Kind.ToString()).Value);
 		effect.Parameters["_PNoiseTex"].SetValue(ModContent.Request<Texture2D>(Texture + "_PerlinNoiseMap").Value);
 		effect.Parameters["_DNoiseTex"].SetValue(ModContent.Request<Texture2D>(Texture + "_DisplacementNoiseMap").Value);
+
+		effect.Parameters["xCameraOffset"].SetValue(Main.screenPosition.X - Projectile.Center.X);
+		effect.Parameters["yCameraOffset"].SetValue(Main.screenPosition.Y - Projectile.Center.Y);
+
+		Texture2D spaceTex1 = ModContent.Request<Texture2D>(Texture + "_SpaceMap1_" + Kind.ToString()).Value;
+		Texture2D spaceTex2 = ModContent.Request<Texture2D>(Texture + "_SpaceMap2_" + Kind.ToString()).Value;
+
+		effect.Parameters["mapResX"].SetValue(spaceTex1.Width);
+		effect.Parameters["mapResY"].SetValue(spaceTex1.Height);
+
+		effect.Parameters["resX"].SetValue(tex.Width * Projectile.scale * 4.0f);
+		effect.Parameters["resY"].SetValue(tex.Height * Projectile.scale * 4.0f);
+		effect.Parameters["_SpaceTex1"].SetValue(spaceTex1);
+		effect.Parameters["_SpaceTex2"].SetValue(spaceTex2);
 
 		Main.spriteBatch.End();
 		Main.spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointClamp, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
@@ -234,15 +396,24 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 			return;
 		}
 
-		const uint lengthInSeconds = 30;
-
 		BitFlags |= Flags.Activated;
-		EndTime = Main.GameUpdateCount + (lengthInSeconds * (uint)TimeSystem.LogicFramerate);
-		Encounter = CreateEncounter(lengthInSeconds);
 
 		if (Main.netMode == NetmodeID.Server)
 		{
 			NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, Projectile.whoAmI);
+		}
+
+		// Effects.
+		if (!Main.dedServ)
+		{
+			VisualParams visuals = GetVisualParameters();
+
+			SoundEngine.PlaySound(SoundActivation, Projectile.Center);
+
+			for (int i = 0; i < 100; i++)
+			{
+				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(8f, 8f), visuals.DustId, Main.rand.NextVector2Circular(8f, 8f));
+			}
 		}
 	}
 
@@ -252,6 +423,11 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 		BitFlags |= Flags.Closing;
 
+		if (!Main.dedServ)
+		{
+			SoundEngine.PlaySound(SoundDeactivation, Projectile.Center);
+		}
+
 		if (Main.netMode == NetmodeID.Server)
 		{
 			NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, Projectile.whoAmI);
@@ -259,7 +435,6 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 		UpdateProgress();
 		RemoveEncounter();
-		DropRewards();
 	}
 
 	public void UpdateProgress()
@@ -325,7 +500,14 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 			foreach (ref EnemySpawn spawn in spawns.AsSpan())
 			{
-				spawn.Effect = EnemySpawnEffect.Teleport;
+				spawn.Effect = Kind switch
+				{
+					ConfluxRiftKind.Glacial => EnemySpawnEffect.GlacialRift,
+					ConfluxRiftKind.Infernal => EnemySpawnEffect.InfernalRift,
+					ConfluxRiftKind.Celestial => EnemySpawnEffect.CelestialRift,
+					_ => EnemySpawnEffect.Teleport,
+				};
+
 				if (spawn.SpawnPlacement.HasValue)
 				{
 					spawn.SpawnPlacement = spawn.SpawnPlacement.Value with { MinDistanceFromEnemies = 8f };
@@ -376,7 +558,20 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		// Despawn all remaining NPCs.
 		foreach (NPC npc in Encounter.IterateRemainingEnemies())
 		{
-			EnemySpawning.SpawnEffects(npc, EnemySpawnEffect.Teleport, npc.Center);
+			EnemySpawnEffect spawnEffect = EnemySpawnEffect.Teleport;
+			switch (Kind)
+			{
+				case ConfluxRiftKind.Glacial:
+					spawnEffect = EnemySpawnEffect.GlacialRift;
+					break;
+				case ConfluxRiftKind.Infernal:
+					spawnEffect = EnemySpawnEffect.InfernalRift;
+					break;
+				case ConfluxRiftKind.Celestial:
+					spawnEffect = EnemySpawnEffect.CelestialRift;
+					break;
+			}
+			EnemySpawning.SpawnEffects(npc, spawnEffect, npc.Center);
 			npc.active = false;
 
 			if (Main.netMode == NetmodeID.Server)
@@ -427,19 +622,21 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		}
 	}
 
-	private (int torchId, int dustId, Color colorBase) GetVisualParameters()
+	private VisualParams GetVisualParameters()
 	{
 		return Kind switch
 		{
-			ConfluxRiftKind.Glacial => (TorchID.Ice, DustID.Firework_Blue, Color.AliceBlue),
-			ConfluxRiftKind.Infernal => (TorchID.Red, DustID.Firework_Red, Color.OrangeRed),
-			ConfluxRiftKind.Celestial => (TorchID.Purple, DustID.WitherLightning, Color.MediumVioletRed),
+			ConfluxRiftKind.Glacial => new(TorchID.Ice, DustID.Firework_Blue, Color.AliceBlue, "Vortex"),
+			ConfluxRiftKind.Infernal => new(TorchID.Red, DustID.Firework_Red, Color.OrangeRed, "Solar"),
+			ConfluxRiftKind.Celestial => new(TorchID.Purple, DustID.WitherLightning, Color.MediumVioletRed, "Nebula"),
 			_ => throw new NotImplementedException(),
 		};
 	}
 
 	bool IRightClickableProjectile.RightClick(Player player, bool mouseDirectlyOver)
 	{
+		if (Activated) { return false; }
+
 		if (Main.mouseRight && Main.mouseRightRelease)
 		{
 			Activate();
@@ -449,11 +646,7 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 		if (mouseDirectlyOver)
 		{
-			Tooltip.Create(new TooltipDescription
-			{
-				Identifier = "ConfluxRift",
-				SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),
-			});
+			Main.instance.MouseText(Language.GetTextValue("Mods.PathOfTerraria.Misc.Rifts.Touch"), rare: 1);
 		}
 
 		return false;

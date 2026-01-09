@@ -1,4 +1,7 @@
-﻿namespace PathOfTerraria.Common.Systems.ModPlayers;
+﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
+using PathOfTerraria.Content.Passives;
+
+namespace PathOfTerraria.Common.Systems.ModPlayers;
 
 internal class RagePlayer : ModPlayer
 {
@@ -32,6 +35,6 @@ internal class RagePlayer : ModPlayer
 	public void AddRage(float add = 1)
 	{
 		Rage = MathHelper.Min(Rage + add, MaxRage.Value);
-		_rageDecay = 60;
+		_rageDecay = (int)(60 * (1 + Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<SlowRageDecayPassive>() * 0.01f));
 	}
 }

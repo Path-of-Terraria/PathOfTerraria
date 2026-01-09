@@ -204,7 +204,7 @@ internal sealed class ConfluxRifts : ModSystem
 		Rectangle uiHoverArea = new Rectangle((int)uiCenter.X, (int)uiCenter.Y, 0, 0).Inflated((int)(srcRect.Width * 0.4f), (int)(srcRect.Height * 0.4f));
 		if (uiHoverArea.Contains(Main.MouseScreen.ToPoint()))
 		{
-			Main.instance.MouseText(Language.GetTextValue("Mods.PathOfTerraria.Misc.RiftStability"));
+			Main.instance.MouseText(Language.GetTextValue("Mods.PathOfTerraria.Misc.Rifts.Stability"));
 		}
 
 		return true;
