@@ -51,11 +51,25 @@ internal sealed class FallenTyrant : Fallen
 /// <summary> Brute medium-speed demon that stabs its targets.  </summary>
 internal sealed class FallenSavage : Fallen
 {
+	private static readonly SpriteAnimation animIdle = new() { Id = "idle", Frames = [0, 5], Speed = 2f };
+	private static readonly SpriteAnimation animWalk = new() { Id = "walk", Frames = [10, 11, 12, 13, 14, 15], Speed = 4f };
+	private static readonly SpriteAnimation animJump = new() { Id = "jump", Frames = [6] };
+	private static readonly SpriteAnimation animFall = new() { Id = "fall", Frames = [7] };
+	private static readonly SpriteAnimation animJumpAttack = new() { Id = "jumpAttack", Frames = [8] };
+	private static readonly SpriteAnimation animFallAttack = new() { Id = "fallAttack", Frames = [9] };
+	private static readonly SpriteAnimation animAttack = new()
+	{
+		Id = "attack",
+		Frames = [16, 16, 17, 17, 17, 18, 19, 20, 21, 18, 19, 20, 21, 22, 22, 23],
+		Speed = 20f,
+		Loop = false,
+	};
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
 
-		Main.npcFrameCount[Type] = 6;
+		Main.npcFrameCount[Type] = 5;
 	}
 	public override void SetDefaults()
 	{
@@ -69,6 +83,28 @@ internal sealed class FallenSavage : Fallen
 		NPC.knockBackResist = 0.3f;
 
 		Behavior.MaxSpeed = 3f;
+		Behavior.MeleeHitbox = (new(40, 40), new(56f, 56f), new(+8f, +2f));
+
+		NPC.GetGlobalNPC<NPCAnimations>().BaseFrame = new(5, 5);
+	}
+
+	protected override SpriteAnimation? ChooseWantedAnimation(in Context ctx)
+	{
+		const float MinWalkSpeed = 0.5f;
+
+		Vector2 vel = NPC.position - NPC.oldPosition;
+		bool isAttacking = ActiveAction == ActionType.Attack;
+		bool rendersSlash = isAttacking && ActionProgress >= Behavior.AttackDashTick && ActionProgress <= Behavior.AttackDamageEndTick;
+
+		return ctx.Animations.Current switch
+		{
+			_ when vel.Y < 0f => rendersSlash ? animJumpAttack : animJump,
+			_ when vel.Y > 0f => rendersSlash ? animFallAttack : animFall,
+			_ when isAttacking => animAttack,
+			_ when vel.Y == 0f && Math.Abs(vel.X) >= MinWalkSpeed => animWalk with { Speed = vel.X * animWalk.Speed * NPC.spriteDirection },
+			_ when vel.Y == 0f && Math.Abs(vel.X) <= MinWalkSpeed => animIdle,
+			_ => null,
+		};
 	}
 }
 
@@ -92,7 +128,7 @@ internal sealed class FallenSchemer : Fallen
 		Speed = 4f,
 		Loop = true,
 	};
-	private static SpriteAnimation animAttack => new()
+	private static readonly SpriteAnimation animAttack = new()
 	{
 		Id = "attack",
 		Frames = [7, 7, 8, 9, 9, 10, 10, 11, 12, 13, 13, 13, 13, 14],
@@ -110,8 +146,6 @@ internal sealed class FallenSchemer : Fallen
 	private int lastSeenHealth;
 
 	public ref ushort TeleportCooldown => ref Unsafe.As<float, ushort>(ref Unsafe.AddByteOffset(ref NPC.localAI[2], 2));
-
-	protected override Asset<Texture2D> SlashTexture => ModContent.Request<Texture2D>($"{GetType().FullName}_Slash".Replace('.', '/'));
 
 	public override void SetStaticDefaults()
 	{
@@ -364,6 +398,7 @@ internal abstract class Fallen : ModNPC
 		public float MaxSpeed = 4f;
 		public float Acceleration = 32f;
 		public (float Ground, float Air) Friction = (8f, 2f);
+		public (Point16 Size, Vector2 Extent, Vector2 Offset) MeleeHitbox = (new(56, 56), new(24f, 32f), new(+12f, +2f));
 	}
 
 	public enum ActionType : byte
@@ -413,8 +448,6 @@ internal abstract class Fallen : ModNPC
 		set => AttackAngle = value.ToRotation();
 	}
 
-	protected virtual Asset<Texture2D> SlashTexture => ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Misc/Slash");
-
 	public override void SetStaticDefaults()
 	{
 		NPCID.Sets.TeleportationImmune[Type] = true;
@@ -441,7 +474,7 @@ internal abstract class Fallen : ModNPC
 		{
 			c.AddGore(new NPCHitEffects.GoreSpawnParameters(132, 1, NPCHitEffects.OnDeath));
 
-			c.AddDust(new NPCHitEffects.DustSpawnParameters(DustID.Blood, 15));
+			c.AddDust(new NPCHitEffects.DustSpawnParameters(DustID.Blood, 5));
 			c.AddDust(new NPCHitEffects.DustSpawnParameters(DustID.Blood, 100, NPCHitEffects.OnDeath));
 		});
 	}
@@ -698,15 +731,9 @@ internal abstract class Fallen : ModNPC
 
 	private (Vector2 Center, Rectangle Aabb) GetDamageArea()
 	{
-		const float RangeExtentX = 24f;
-		const float RangeExtentY = 32f;
-		const int SizeFull = 56;
-		const int SizeExtent = SizeFull / 2;
-		const int OriginOffsetX = 12;
-		const int OriginOffsetY = 2;
-
-		Vector2 center = NPC.Center + new Vector2(OriginOffsetX * AttackSign, OriginOffsetY) + (AttackDirection * new Vector2(RangeExtentX, RangeExtentY));
-		Rectangle aabb = new Rectangle((int)center.X, (int)center.Y, 0, 0).Inflated(SizeExtent, SizeExtent);
+		(Point16 Size, Vector2 Extent, Vector2 Offset) = Behavior.MeleeHitbox;
+		Vector2 center = NPC.Center + new Vector2(Offset.X * AttackSign, Offset.Y) + (AttackDirection * Extent);
+		Rectangle aabb = new Rectangle((int)center.X, (int)center.Y, 0, 0).Inflated(Size.X / 2, Size.Y / 2);
 
 		return (center, aabb);
 	}
@@ -720,8 +747,8 @@ internal abstract class Fallen : ModNPC
 		Color mulColor = NPC.color.MultiplyRGBA(new Color(Vector4.One * ((byte.MaxValue - NPC.alpha) / (float)byte.MaxValue)));
 		Main.EntitySpriteDraw(tex, position, NPC.frame, color.MultiplyRGBA(mulColor), NPC.rotation, NPC.frame.Size() * 0.5f, NPC.scale, NPC.spriteDirection >= 0 ? (SpriteEffects)1 : 0, 0f);
 
-		string slashPath = $"{GetType().FullName}_Glowmask".Replace('.', '/');
-		if (ModContent.HasAsset(slashPath) && ModContent.Request<Texture2D>(slashPath) is { IsLoaded: true, Value: { } glowmask })
+		string glowmaskPath = $"{GetType().FullName}_Glowmask".Replace('.', '/');
+		if (ModContent.HasAsset(glowmaskPath) && ModContent.Request<Texture2D>(glowmaskPath) is { IsLoaded: true, Value: { } glowmask })
 		{
 			Main.EntitySpriteDraw(glowmask, position, NPC.frame, mulColor, NPC.rotation, NPC.frame.Size() * 0.5f, NPC.scale, NPC.spriteDirection >= 0 ? (SpriteEffects)1 : 0, 0f);
 		}
@@ -738,24 +765,26 @@ internal abstract class Fallen : ModNPC
 	public override void PostDraw(SpriteBatch sb, Vector2 screenPos, Color color)
 	{
 		// Render the slash.
-		if (ActiveAction == ActionType.Attack && ActionProgress >= Behavior.AttackDashTick && ActionProgress < Behavior.AttackDamageEndTick
-		&& SlashTexture is { IsLoaded: true, Value: { } slashTexture })
+		if (ActiveAction == ActionType.Attack && ActionProgress >= Behavior.AttackDashTick && ActionProgress < Behavior.AttackDamageEndTick)
 		{
-			byte frameIndex = (byte)Math.Min(2, Math.Floor((ActionProgress - Behavior.AttackDashTick) / (float)(Behavior.AttackDamageEndTick - Behavior.AttackDashTick) * 3));
-			SpriteFrame slashFrame = new SpriteFrame(1, 3).With(0, AttackSign > 0 ? frameIndex : (byte)(2 - frameIndex));
-			Color slashColor = Color.Lerp(color, Color.White, 0.33f).MultiplyRGBA(new(Vector4.One * 0.7f));
+			string basePath = $"{GetType().FullName}_Slash".Replace('.', '/');
+			basePath = ModContent.HasAsset(basePath) ? basePath : $"{PoTMod.ModName}/Assets/Misc/Slash";
+			Texture2D texture = ModContent.Request<Texture2D>(basePath, AssetRequestMode.ImmediateLoad).Value;
 
-			Rectangle srcRect = slashFrame.GetSourceRectangle(slashTexture);
-			Rectangle dstRect = GetDamageArea().Aabb;
+			// First column is the diffuse, second is the glowmask.
+			var baseFrame = new SpriteFrame(2, (byte)(texture.Height / (texture.Width / 2)));
+			byte frameIndex = (byte)Math.Min((baseFrame.RowCount - 1), Math.Floor((ActionProgress - Behavior.AttackDashTick) / (float)(Behavior.AttackDamageEndTick - Behavior.AttackDashTick) * baseFrame.RowCount));
+			baseFrame = baseFrame.With(0, AttackSign > 0 ? frameIndex : (byte)((baseFrame.RowCount - 1) - frameIndex));
+
+			Vector2 center = GetDamageArea().Center;
+			Rectangle srcRect = baseFrame.GetSourceRectangle(texture);
+			Rectangle dstRect = new((int)(center.X), (int)(center.Y), srcRect.Width, srcRect.Height);
 			dstRect.X -= (int)Main.screenPosition.X;
 			dstRect.Y -= (int)Main.screenPosition.Y;
 			Vector2 origin = srcRect.Size() * 0.5f;
 
-			//DebugUtils.DrawRectangle(sb, dstRect, Color.Red, lineWidth: 2);
-
-			dstRect.X += (int)dstRect.Width / 2;
-			dstRect.Y += (int)dstRect.Height / 2;
-			sb.Draw(slashTexture, dstRect, srcRect, slashColor, AttackAngle, origin, 0, 0f);
+			sb.Draw(texture, dstRect, srcRect, color, AttackAngle, origin, 0, 0f);
+			sb.Draw(texture, dstRect, srcRect with { X = srcRect.Width }, Color.White, AttackAngle, origin, 0, 0f);
 		}
 	}
 }
