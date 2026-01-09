@@ -37,8 +37,8 @@ internal class OffsetTool : ModItem
 	public override bool? UseItem(Player player)
 	{
 		var coords = Main.MouseWorld.ToTileCoordinates();
-		//CypressTreeMicrobiome biome = new();
-		//biome.Place(Main.MouseWorld.ToTileCoordinates(), GenVars.structures ?? new());
+		BranchTreeMicrobiome biome = new();
+		biome.Place(coords, GenVars.structures ?? new());
 		//ILilyPadTile.PlacePad<SwampPad>(coords.X, coords.Y);
 
 		return true;

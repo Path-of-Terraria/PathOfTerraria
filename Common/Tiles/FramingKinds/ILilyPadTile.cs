@@ -18,7 +18,10 @@ internal interface ILilyPadTile : ILoadable
 	ushort Type { get; }
 	bool HasDefaultFraming => true;
 
-	public static void PlacePad<T>(int x, int y, bool overRide) where T: ModTile, ILilyPadTile
+	/// <summary>
+	/// Places a <see cref="ILilyPadTile"/> tile.
+	/// </summary>
+	public static void PlacePad<T>(int x, int y, bool overRide) where T : ModTile, ILilyPadTile
 	{
 		((ILilyPadTile)ModContent.GetInstance<T>()).PlacePad(x, y, overRide);
 	}

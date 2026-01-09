@@ -1,8 +1,10 @@
 ﻿using PathOfTerraria.Common.Subworlds.MappingAreas.SwampAreaContent;
 using PathOfTerraria.Common.Tiles.FramingKinds;
 using PathOfTerraria.Common.World.Generation;
+using PathOfTerraria.Common.World.Utilities;
 using PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
 using PathOfTerraria.Content.Tiles.Maps.Swamp;
+using PathOfTerraria.Utilities;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
@@ -16,9 +18,9 @@ namespace PathOfTerraria.Common.Subworlds.MappingAreas;
 
 internal class SwampArea : MappingWorld, IExplorationWorld
 {
-	public const int FloorY = 400;
+	public const int FloorY = 550;
 	public const int WaterY = FloorY + 10;
-	private const int MapHeight = 800;
+	private const int MapHeight = 900;
 
 	public static UnifiedRandom Random => Main.rand;
 
@@ -83,63 +85,62 @@ internal class SwampArea : MappingWorld, IExplorationWorld
 			progress.Set(i / (float)Main.maxTilesX);
 		}
 
-		//Queue<int> mahoganies = [];
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.TreesAndLeaves");
 
-		//for (int i = 0; i < 2; ++i)
-		//{
-		//	int index;
+		Queue<int> mangroves = [];
 
-		//	do
-		//	{
-		//		index = Random.Next(2, Main.maxTilesX / 300 - 2);
-		//	} while (mahoganies.Contains(index));
+		for (int i = 0; i < 2; ++i)
+		{
+			int index;
 
-		//	mahoganies.Enqueue(index);
-		//}
+			do
+			{
+				index = Random.Next(2, Main.maxTilesX / 300 - 2);
+			} while (mangroves.Contains(index));
 
-		//while (mahoganies.Count > 0)
-		//{
-		//	BranchTreeMicrobiome biome = new();
-		//	biome.Place(new(mahoganies.Dequeue() * 300, Random.Next(250, 320)), GenVars.structures ?? new());
-		//}
+			mangroves.Enqueue(index);
+		}
+
+		while (mangroves.Count > 0)
+		{
+			BranchTreeMicrobiome biome = new();
+			biome.Place(new(mangroves.Dequeue() * 300, FloorY - Random.Next(150, 340)), GenVars.structures ?? new());
+		}
+
+		PriorityQueue<Point, float> cypresses = new();
 
 		for (int i = 1; i < Main.maxTilesX / 200; ++i)
 		{
-			if (WorldGen.genRand.NextBool(3))
-			{
-				continue;
-			}
-
-			CypressTreeMicrobiome biome = new();
-
 			if (WorldUtils.Find(new(i * 200, FloorY), new Searches.Down(600).Conditions(new Conditions.IsSolid()), out Point result))
 			{
-				biome.Place(result, GenVars.structures);
+				Tile tile = Main.tile[result.X, result.Y - 4];
+
+				if (tile.LiquidAmount > 0 && GenVars.structures.CanPlace(new Rectangle(result.X - 30, result.Y - 30, 60, 60)))
+				{
+					cypresses.Enqueue(new Point(result.X, result.Y - 4), Random.NextFloat());
+				}
 			}
 		}
 
+		int cypressCount = Math.Min(8, cypresses.Count);
+		CypressTreeMicrobiome cypressBiome = new();
+		Action delayment = () => { };
+
+		for (int i = 0; i < cypressCount; ++i)
+		{
+			Point origin = cypresses.Dequeue();
+
+			delayment += () => cypressBiome.Place(origin, GenVars.structures);
+			PlaceExtraCypress(cypressBiome, origin, 1, ref delayment, 2, 0.8f);
+			PlaceExtraCypress(cypressBiome, origin, -1, ref delayment, 2, 0.8f);
+		}
+
+		delayment.Invoke();
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.PopulatingWorld");
+
 		for (int i = 1; i < Main.maxTilesX - 2; ++i)
 		{
-			//float yOff = Math.Abs(noise.GetNoise(i * 0.5f, 15000));
-			//float height = Math.Abs(noise.GetNoise(i * 0.8f, 6000) * 3);
-
-			//if (Height > 3)
-			//{
-			//	for (int j = WaterY + 1; j < WaterY + height - 3; ++j)
-			//	{
-			//		Tile tile = Main.tile[i, j];
-
-			//		if (tile.HasTile)
-			//		{
-			//			continue;
-			//		}
-
-			//		tile.HasTile = true;
-			//		tile.TileType = (ushort)ModContent.TileType<SwampMoss>();
-			//	}
-			//}
-
-			if (Random.NextBool(40) && !Main.tile[i, WaterY + 1].HasTile)
+			if (Random.NextBool(70) && !Main.tile[i, WaterY + 1].HasTile)
 			{
 				ILilyPadTile.PlacePad<SwampPad>(i, WaterY + 1, false);
 			}
@@ -168,9 +169,36 @@ internal class SwampArea : MappingWorld, IExplorationWorld
 						WorldGen.PlaceTile(i, j - 1, ModContent.TileType<SwampPlants1x1>(), true, false, -1, Random.Next(6));
 					}
 				}
+
+				if (WorldUtilities.SolidTile(i, j) && WorldUtilities.TileOrphaned(i, j))
+				{
+					tile.HasTile = false;
+				}
 			}
 		
 			progress.Set(i / (float)Main.maxTilesX);
+		}
+	}
+
+	private static void PlaceExtraCypress(CypressTreeMicrobiome cypressBiome, Point origin, int direction, ref Action delayment, int chance, float sizeMod)
+	{
+		if (sizeMod <= 0.4f)
+		{
+			return;
+		}
+
+		int offsetX = origin.X - (int)(Random.Next(80, 160) * direction * sizeMod);
+		ushort grass = (ushort)ModContent.TileType<SwampGrass>();
+
+		if (Random.NextBool(chance) && WorldUtils.Find(new(offsetX, FloorY), new Searches.Down(600).Conditions(new Conditions.IsSolid()), out Point result))
+		{
+			delayment += () =>
+			{
+				using var _ = ValueOverride.Create(ref CypressTreeMicrobiome.SizeModifier, Random.NextFloat(sizeMod * 0.75f, sizeMod));
+				cypressBiome.Place(result, GenVars.structures);
+			};
+
+			PlaceExtraCypress(cypressBiome, result, direction, ref delayment, chance * chance, sizeMod * 0.7f);
 		}
 	}
 

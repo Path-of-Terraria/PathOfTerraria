@@ -235,7 +235,7 @@ internal static class GenPlacement
 		}
 	}
 
-	public static void Leaf(Vector2 pos, float width, float length, float angle, Action<int, int, float> place, bool replace = true)
+	public static void GenerateLeaf(Vector2 pos, float width, float length, float angle, Action<int, int, float> place, bool replace = true)
 	{
 		angle -= MathHelper.PiOver2;
 		Vector2[] left = Tunnel.GenerateBezier([pos, pos + (angle + MathHelper.PiOver2).ToRotationVector2() * width, pos + new Vector2(length, 0).RotatedBy(angle)], 1, 0);

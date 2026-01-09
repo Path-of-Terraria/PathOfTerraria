@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Common.World.Generation;
-using PathOfTerraria.Content.Tiles.Maps.Forest;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
@@ -28,7 +27,7 @@ internal class BranchTreeMicrobiome : MicroBiome
 
 	private static void GeneratePlatforms(List<Vector2> canopy)
 	{
-		int count = _random.Next(7, 14);
+		int count = _random.Next(11, 19);
 		List<Vector2> taken = [];
 		int skip = 0;
 
@@ -40,14 +39,17 @@ internal class BranchTreeMicrobiome : MicroBiome
 			do
 			{
 				randomPointOnCanopy = _random.Next(canopy);
-				randomPointOnCanopy.Y += _random.Next(30, 90);
+
+				int yOffset = (int)MathHelper.Lerp(30, 200, MathF.Pow(_random.NextFloat(), 8));
+
+				randomPointOnCanopy.Y += yOffset;
 				stuckCount++;
 
 				if (stuckCount > 1500)
 				{
 					return;
 				}
-			} while (taken.Any(x => randomPointOnCanopy.DistanceSQ(x) < 25 * 25));
+			} while (taken.Any(x => randomPointOnCanopy.DistanceSQ(x) < 20 * 20));
 
 			int width = _random.Next(14, 21);
 			HashSet<Point16> platformPositions = [];
@@ -118,7 +120,7 @@ internal class BranchTreeMicrobiome : MicroBiome
 			for (int i = 0; i < leafCount; ++i)
 			{
 				float angle = branchAngle + _random.NextFloat(-MathHelper.PiOver2, MathHelper.PiOver2);
-				GenPlacement.Leaf(branchTip, _random.NextFloat(10, 16), _random.NextFloat(12, 20), angle, (x, y, a) => PlaceLeaf(x, y, a, moreLeaves, 1), false);
+				GenPlacement.GenerateLeaf(branchTip, _random.NextFloat(10, 16), _random.NextFloat(12, 20), angle, (x, y, a) => PlaceLeaf(x, y, a, moreLeaves, 1), false);
 			}
 
 			while (moreLeaves.Count > 0)
@@ -130,7 +132,7 @@ internal class BranchTreeMicrobiome : MicroBiome
 					float angle = instance.Angle + _random.NextFloat(-MathHelper.PiOver2, MathHelper.PiOver2);
 					float width = _random.NextFloat(10, 16) * instance.SizeModifier;
 					float height = _random.NextFloat(12, 20) * instance.SizeModifier;
-					GenPlacement.Leaf(instance.Position.ToVector2(), width, height, angle, (x, y, a) => PlaceLeaf(x, y, a, leaves, instance.SizeModifier), false);
+					GenPlacement.GenerateLeaf(instance.Position.ToVector2(), width, height, angle, (x, y, a) => PlaceLeaf(x, y, a, leaves, instance.SizeModifier), false);
 				}
 
 				moreLeaves.Clear();
@@ -149,7 +151,7 @@ internal class BranchTreeMicrobiome : MicroBiome
 		tile.HasTile = true;
 		tile.TileType = TileID.LeafBlock;
 
-		if (_random.NextBool(80))
+		if (_random.NextBool(60))
 		{
 			moreLeaves.Add(new(new Point16(x, y), size * _random.NextFloat(0.9f, 1f), angle));
 		}
@@ -186,7 +188,7 @@ internal class BranchTreeMicrobiome : MicroBiome
 			float widthFactor = MathHelper.Clamp(Utils.GetLerpValue(origin.X - width / 2, origin.X + width / 2, randomPointOnCanopy.X, true) + _random.NextFloat(-0.1f, 0.1f), 0, 1);
 			Vector2 searchPoint = midPoint + new Vector2(MathHelper.Lerp(-RootHorizontalDisplacementRange, RootHorizontalDisplacementRange + 20, widthFactor), 10);
 
-			if (!WorldUtils.Find(searchPoint.ToPoint(), new Searches.Down(300).Conditions(new Conditions.IsSolid()), out Point bottom))
+			if (!WorldUtils.Find(searchPoint.ToPoint(), new Searches.Down(500).Conditions(new Conditions.IsSolid()), out Point bottom))
 			{
 				continue;
 			}
@@ -232,18 +234,19 @@ internal class BranchTreeMicrobiome : MicroBiome
 			do
 			{
 				randomPointOnCanopy = _random.Next(canopy);
-			} while (taken.Any(x => x.DistanceSQ(randomPointOnCanopy) < 20 * 20));
+			} while (taken.Any(x => x.DistanceSQ(randomPointOnCanopy) < 12 * 12));
 
 			Vector2 midPoint = randomPointOnCanopy + new Vector2(_random.Next(-40, 40), _random.Next(-25, -10));
 			Vector2 tip = midPoint - new Vector2(_random.Next(-20, 20), _random.Next(10, 20));
 			List<Vector2> currentPoints = [.. Tunnel.GenerateBezier([randomPointOnCanopy, midPoint, tip], 8, 0)];
+			taken.Add(randomPointOnCanopy);
 
 			foreach (Vector2 point in currentPoints)
 			{
 				GenPlacement.TileCircle(point, 2 + noise.GetNoise(point.X, point.Y) * 0.8f, TileID.LivingWood);
 			}
 
-			branchTips.Add(tip, tip.AngleFrom(currentPoints[^5]));
+			branchTips.TryAdd(tip, tip.AngleFrom(currentPoints[^5]));
 		}
 	}
 
@@ -277,6 +280,10 @@ internal class BranchTreeMicrobiome : MicroBiome
 		List<Vector2> total = [];
 
 		GenerateSegmentCanopyBranch(controls, noise, total);
+
+		float topY = controls.Min(x => x.Y);
+		Rectangle structure = new((int)controls[0].X, (int)topY, (int)(controls[^1].X - controls[0].X), (int)(Main.maxTilesY - topY));
+		GenVars.structures.AddProtectedStructure(structure, 10);
 		return total;
 	}
 
