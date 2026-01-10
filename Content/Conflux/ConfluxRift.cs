@@ -6,9 +6,7 @@ using PathOfTerraria.Common.Encounters;
 using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Synchronization;
-using PathOfTerraria.Common.UI;
 using PathOfTerraria.Common.Utilities;
-using PathOfTerraria.Content.Dusts;
 using PathOfTerraria.Core.Time;
 using PathOfTerraria.Utilities;
 using PathOfTerraria.Utilities.Xna;
@@ -33,7 +31,22 @@ internal enum ConfluxRiftKind : byte
 	Count,
 }
 
-internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
+internal sealed class GlacialRift : ConfluxRift
+{
+	public override ConfluxRiftKind Kind => ConfluxRiftKind.Glacial;
+}
+
+internal sealed class InfernalRift : ConfluxRift
+{
+	public override ConfluxRiftKind Kind => ConfluxRiftKind.Infernal;
+}
+
+internal sealed class CelestialRift : ConfluxRift
+{
+	public override ConfluxRiftKind Kind => ConfluxRiftKind.Celestial;
+}
+
+internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile
 {
 	[Flags]
 	public enum Flags : int
@@ -85,7 +98,7 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		PauseBehavior = PauseBehavior.PauseWithGame,
 	};
 
-	private static Asset<Texture2D> Highlight = null!;
+	private static Asset<Effect>? shader;
 
 	private (SlotId Handle, float Volume) soundDormant;
 	private (SlotId Handle, float Volume) soundRousing;
@@ -101,11 +114,7 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 	public float ApproachAnimation { get; private set; }
 
 	/// <summary> The rift's type. </summary>
-	public ConfluxRiftKind Kind
-	{
-		get => (ConfluxRiftKind)(byte)Projectile.ai[0];
-		set => Projectile.ai[0] = (byte)value;
-	}
+	public abstract ConfluxRiftKind Kind { get; }
 	/// <summary> The rift's state flags. </summary>
 	public Flags BitFlags
 	{
@@ -119,7 +128,7 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 	/// <summary> Whether the rift is about to disappear. </summary>
 	public bool Closing => (BitFlags & Flags.Closing) != 0;
 
-	private static Asset<Effect>? shader;
+	public override string Texture => (GetType().Namespace + "." + nameof(ConfluxRift)).Replace('.', '/');
 
 	public override void SetStaticDefaults()
 	{
@@ -127,7 +136,7 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 		if (!Main.dedServ)
 		{
-			Highlight = ModContent.Request<Texture2D>(Texture + "_Highlight");
+			shader = Mod.Assets.Request<Effect>($"Assets/Effects/ConfluxRift");
 		}
 	}
 
@@ -354,7 +363,8 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 		Main.spriteBatch.End();
 		Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
-		this.DrawHighlightAndCheckRightClickInteraction(Highlight.Value, position, lightColor);
+		
+		this.TryInteracting();
 
 		/*
 		(_, _, Color colorBase) = GetVisualParameters();
@@ -650,17 +660,6 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		}
 
 		return false;
-	}
-
-	public override void Load()
-	{
-		base.Load();
-		shader = Mod.Assets.Request<Effect>($"Assets/Effects/ConfluxRift");
-	}
-
-	public override void Unload()
-	{
-		shader = null;
 	}
 }
 

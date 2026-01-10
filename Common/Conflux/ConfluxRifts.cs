@@ -141,8 +141,14 @@ internal sealed class ConfluxRifts : ModSystem
 
 			position.Y += 5 * TileUtils.PixelSizeInUnits;
 
-			var kind = (ConfluxRiftKind)(i % ((int)ConfluxRiftKind.Count));
-			var rift = Projectile.NewProjectileDirect(source, position, Vector2.Zero, ModContent.ProjectileType<ConfluxRift>(), 0, 0f, ai0: (float)kind);
+			int type = (i % ((int)ConfluxRiftKind.Count)) switch
+			{
+				0 => ModContent.ProjectileType<GlacialRift>(),
+				1 => ModContent.ProjectileType<InfernalRift>(),
+				2 => ModContent.ProjectileType<CelestialRift>(),
+				_ => throw new NotImplementedException(),
+			};
+			var rift = Projectile.NewProjectileDirect(source, position, Vector2.Zero, type, 0, 0f);
 
 			rifts.Add(rift);
 		}
