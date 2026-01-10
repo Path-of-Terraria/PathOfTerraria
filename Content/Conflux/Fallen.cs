@@ -111,35 +111,11 @@ internal sealed class FallenSavage : Fallen
 /// <summary> Sneaky fast-speed demon that teleports at the player.  </summary>
 internal sealed class FallenSchemer : Fallen
 {
-	private static readonly SpriteAnimation animIdle = new()
-	{
-		Id = "idle",
-		Frames = [0],
-	};
-	private static readonly SpriteAnimation animWalk = new()
-	{
-		Id = "walk",
-		Frames = [1, 2, 3, 4, 5, 6],
-	};
-	private static readonly SpriteAnimation animJump = new()
-	{
-		Id = "jump",
-		Frames = [2],
-		Speed = 4f,
-		Loop = true,
-	};
-	private static readonly SpriteAnimation animAttack = new()
-	{
-		Id = "attack",
-		Frames = [7, 7, 8, 9, 9, 10, 10, 11, 12, 13, 13, 13, 13, 14],
-		Speed = 17f,
-		Loop = false,
-	};
-	private static readonly SpriteAnimation animTeleport = new()
-	{
-		Id = "teleport",
-		Frames = [15],
-	};
+	private static readonly SpriteAnimation animIdle = new() { Id = "idle", Frames = [0] };
+	private static readonly SpriteAnimation animWalk = new() { Id = "walk", Frames = [1, 2, 3, 4, 5, 6] };
+	private static readonly SpriteAnimation animJump = new() { Id = "jump", Frames = [2], Speed = 4f };
+	private static readonly SpriteAnimation animAttack = new() { Id = "attack", Frames = [7, 7, 8, 9, 9, 10, 10, 11, 12, 13, 13, 13, 13, 14], Speed = 17f, Loop = false };
+	private static readonly SpriteAnimation animTeleport = new() { Id = "teleport", Frames = [15] };
 
 	private Vector2 teleportSource;
 	private Vector2 teleportTarget;
@@ -408,30 +384,10 @@ internal abstract class Fallen : ModNPC
 		Teleport,
 	}
 
-	private static readonly SpriteAnimation animIdle = new()
-	{
-		Id = "idle",
-		Frames = [1],
-	};
-	private static readonly SpriteAnimation animWalk = new()
-	{
-		Id = "walk",
-		Frames = [0, 1, 2, 3, 4, 5],
-	};
-	private static readonly SpriteAnimation animJump = new()
-	{
-		Id = "jump",
-		Frames = [2],
-		Speed = 4f,
-		Loop = true,
-	};
-	private static readonly SpriteAnimation animAttack = new()
-	{
-		Id = "attack",
-		Frames = [1, 1, 1, 4, 5, 5, 5],
-		Speed = 9f,
-		Loop = false,
-	};
+	private static readonly SpriteAnimation animIdle = new() { Id = "idle", Frames = [1] };
+	private static readonly SpriteAnimation animWalk = new() { Id = "walk", Frames = [0, 1, 2, 3, 4, 5] };
+	private static readonly SpriteAnimation animJump = new() { Id = "jump", Frames = [2], Speed = 4f };
+	private static readonly SpriteAnimation animAttack = new() { Id = "attack", Frames = [1, 1, 1, 4, 5, 5, 5], Speed = 9f, Loop = false };
 
 	private Footsteps footsteps = new();
 	protected AttackInstance? Attack;
