@@ -144,11 +144,22 @@ internal sealed class FallenSavage : Fallen
 /// <summary> Sneaky fast-speed demon that teleports at the player.  </summary>
 internal sealed class FallenSchemer : Fallen
 {
-	private static readonly SpriteAnimation animIdle = new() { Id = "idle", Frames = [0] };
-	private static readonly SpriteAnimation animWalk = new() { Id = "walk", Frames = [1, 2, 3, 4, 5, 6] };
-	private static readonly SpriteAnimation animJump = new() { Id = "jump", Frames = [2], Speed = 4f };
-	private static readonly SpriteAnimation animAttack = new() { Id = "attack", Frames = [7, 7, 8, 9, 9, 10, 10, 11, 12, 13, 13, 13, 13, 14], Speed = 17f, Loop = false };
-	private static readonly SpriteAnimation animTeleport = new() { Id = "teleport", Frames = [15] };
+	private const float FarAwayDistance = 356f;
+	private const int DisappearStart = (int)(0.0 * 60);
+	private const int DisappearEnd = (int)(0.2 * 60);
+	private const int ReappearStart = (int)(0.7 * 60);
+	private const int ReappearEnd = (int)(0.9 * 60);
+	private const int InvulnerabilityStart = (int)(0.0 * 60);
+	private const int InvulnerabilityEnd = (int)(0.75 * 60);
+	private const int MaxTeleportCooldown = (int)(2.5 * 60);
+
+	private static readonly SpriteAnimation animIdle = new() { Id = "idle", Frames = [0, 1, 2, 3], Speed = 3f };
+	private static readonly SpriteAnimation animJump = new() { Id = "jump", Frames = [4] };
+	private static readonly SpriteAnimation animFall = new() { Id = "fall", Frames = [5] };
+	private static readonly SpriteAnimation animWalk = new() { Id = "walk", Frames = [6, 7, 8, 9, 10, 11] };
+	private static readonly SpriteAnimation animAttack = new() { Id = "attack", Frames = [12, 12, 13, 14, 14, 15, 15, 16, 17, 18, 18, 18, 18, 19], Speed = 17f, Loop = false };
+	private static SpriteAnimation animVanish => new() { Id = "vanish", Frames = [20, 21, 22, 23, 24, 25, 26, 33], Speed = 20f, Loop = false };
+	private static SpriteAnimation animAppear => new() { Id = "appear", Frames = [26, 27, 28, 29, 30, 31, 32], Speed = 20f, Loop = false };
 
 	private Vector2 teleportSource;
 	private Vector2 teleportTarget;
@@ -160,7 +171,7 @@ internal sealed class FallenSchemer : Fallen
 	{
 		base.SetStaticDefaults();
 
-		Main.npcFrameCount[Type] = 4;
+		Main.npcFrameCount[Type] = 6;
 	}
 	public override void SetDefaults()
 	{
@@ -187,7 +198,7 @@ internal sealed class FallenSchemer : Fallen
 
 		TeleportCooldown = 60;
 
-		NPC.GetGlobalNPC<NPCAnimations>().BaseFrame = new(4, 4);
+		NPC.GetGlobalNPC<NPCAnimations>().BaseFrame = new SpriteFrame(6, 6) with { PaddingX = 0, PaddingY = 0 };
 	}
 
 	public override void SendExtraAI(BinaryWriter writer)
@@ -218,15 +229,16 @@ internal sealed class FallenSchemer : Fallen
 	{
 		const float MinWalkSpeed = 0.5f;
 
-		Vector2 effectiveVelocity = NPC.position - NPC.oldPosition;
+		Vector2 vel = NPC.position - NPC.oldPosition;
 
 		return ctx.Animations.Current switch
 		{
 			_ when ActiveAction == ActionType.Attack => animAttack,
-			_ when ActiveAction == ActionType.Teleport => animTeleport,
-			_ when MathF.Abs(effectiveVelocity.Y) > 5f => animJump,
-			_ when effectiveVelocity.Y == 0f && Math.Abs(effectiveVelocity.X) >= MinWalkSpeed => animWalk with { Speed = effectiveVelocity.X * animWalk.Speed * 4f * NPC.spriteDirection },
-			_ when effectiveVelocity.Y == 0f && Math.Abs(effectiveVelocity.X) <= MinWalkSpeed => animIdle,
+			_ when ActiveAction == ActionType.Teleport => ActionProgress < ReappearStart ? animVanish : animAppear,
+			_ when vel.Y < 0f => animJump,
+			_ when vel.Y > 0f => animFall,
+			_ when vel.Y == 0f && Math.Abs(vel.X) >= MinWalkSpeed => animWalk with { Speed = vel.X * animWalk.Speed * 4f * NPC.spriteDirection },
+			_ when vel.Y == 0f && Math.Abs(vel.X) <= MinWalkSpeed => animIdle,
 			_ => null,
 		};
 	}
@@ -282,15 +294,6 @@ internal sealed class FallenSchemer : Fallen
 			return false;
 		}
 
-		const float FarAwayDistance = 356f;
-		const int DisappearStart = (int)(0.0 * 60);
-		const int DisappearEnd = (int)(0.2 * 60);
-		const int ReappearStart = (int)(0.7 * 60);
-		const int ReappearEnd = (int)(0.9 * 60);
-		const int InvulnerabilityStart = (int)(0.0 * 60);
-		const int InvulnerabilityEnd = (int)(0.75 * 60);
-		const int MaxCooldown = (int)(2.5 * 60);
-
 		// Initiate teleportation if not busy.
 		if (Main.netMode != NetmodeID.MultiplayerClient
 		&& ActiveAction == ActionType.None && TeleportCooldown == 0)
@@ -308,25 +311,8 @@ internal sealed class FallenSchemer : Fallen
 			}
 		}
 
-		void SpawnParticles(Vector2 center, int amount)
-		{
-			if (Main.dedServ) { return; }
-
-			for (int i = 0; i < amount; i++)
-			{
-				Vector2 dustPos = center + Main.rand.NextVector2Circular(NPC.width * 0.5f, NPC.height * 0.5f);
-				Vector2 dustVel = Main.rand.NextVector2Circular(1f, 2f) - (Vector2.UnitY * 1f);
-				Dust.NewDustPerfect(dustPos, DustID.Blood, dustVel, Alpha: 10, Scale: 1.4f, newColor: Color.OrangeRed);
-			}
-		}
-
 		if (ActiveAction == ActionType.Teleport)
 		{
-			float alphaDisappear = MathUtils.Clamp01((ActionProgress - DisappearStart) / (float)(DisappearEnd - DisappearStart));
-			float alphaReappear = MathUtils.Clamp01((ActionProgress - ReappearStart) / (float)(ReappearEnd - ReappearStart));
-			float alphaTotal = 1f - alphaDisappear + alphaReappear;
-			NPC.alpha = byte.MaxValue - (byte)(alphaTotal * byte.MaxValue);
-
 			float entrancePower = MathUtils.DistancePower(MathF.Abs(ActionProgress - DisappearEnd), 1, 20);
 			float exitPower = MathUtils.DistancePower(MathF.Abs(ActionProgress - ReappearStart), 1, 20);
 
@@ -336,41 +322,38 @@ internal sealed class FallenSchemer : Fallen
 			if (ActionProgress == 0)
 			{
 				NPC.velocity.X = NPC.direction * 2f;
-				NPC.velocity.Y = -4f;
+				NPC.velocity.Y = -2f;
+				NPC.noGravity = true;
 			}
 
 			NPC.dontTakeDamage = ActionProgress >= InvulnerabilityStart && ActionProgress <= InvulnerabilityEnd;
 
 			if (ActionProgress < DisappearEnd)
 			{
-				SpawnParticles(NPC.Center, 1);
 				teleportSource = NPC.Center;
 			}
 			else if (ActionProgress == DisappearEnd)
 			{
-				SpawnParticles(NPC.Center, 10);
 				SoundEngine.PlaySound(SoundID.Shimmer1 with { Pitch = 0.4f, PitchVariance = 0.1f }, NPC.Center);
-				//SoundEngine.PlaySound(SoundID.DD2_DarkMageAttack with { Pitch = 0.4f, PitchVariance = 0.1f }, NPC.Center);
-				NPC.alpha = byte.MaxValue;
 
 				// Try to find a more up-to-date position.
 				TryPickPosition(in ctx);
 			}
 			else if (ActionProgress == ReappearStart)
 			{
+				NPC.noGravity = false;
 				NPC.Center = teleportTarget;
 				NPC.spriteDirection = NPC.direction = (ctx.Center.X - ctx.TargetCenter.X) > 0f ? 1 : -1;
 				NPC.velocity.X = NPC.direction * 2f;
 				NPC.velocity.Y = -5f;
 				
-				SpawnParticles(NPC.Center, 25);
 				SoundEngine.PlaySound(SoundID.DD2_DarkMageAttack with { Pitch = -0.2f, PitchVariance = 0.1f }, NPC.Center);
 			}
 			else if (ActionProgress >= ReappearEnd)
 			{
 				NPC.alpha = 0;
 				(ActiveAction, ActionProgress) = (ActionType.None, 0);
-				TeleportCooldown = MaxCooldown;
+				TeleportCooldown = MaxTeleportCooldown;
 				NPC.dontTakeDamage = false;
 			}
 
@@ -583,9 +566,11 @@ internal abstract class Fallen : ModNPC
 		Vector2 targetDiff = ctx.TargetCenter - ctx.Center;
 
 		// Reset mutated variables.
-		NPC.damage = -1;
-		NPC.noGravity = false;
-		NPC.color = Color.White;
+		if (ActiveAction == ActionType.None)
+		{
+			NPC.damage = -1;
+			NPC.color = Color.White;
+		}
 
 		// Check if we can initiate an attack.
 #if !NEVER_ATTACK

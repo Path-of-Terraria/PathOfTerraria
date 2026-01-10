@@ -27,7 +27,7 @@ internal sealed class NPCAnimations : NPCComponent
 	public bool Completed { get; private set; }
 	public int CurrentFrame { get; private set; }
 	public int? PreviousFrame { get; private set; }
-	public SpriteFrame BaseFrame { get; set; } = new(1, 1);
+	public SpriteFrame BaseFrame { get; set; } = new SpriteFrame(1, 1) with { PaddingX = 0, PaddingY = 0 };
 	public ref readonly SpriteAnimation Current => ref animation;
 
 	public void Advance()
