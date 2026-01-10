@@ -46,31 +46,11 @@ internal sealed class Abominable : ModNPC
 	private const ushort MinAttackCooldown = (ushort)(1.00f * 60);
 	private const ushort MaxAttackCooldown = (ushort)(1.60f * 60);
 
-	private static readonly SpriteAnimation animIdle = new()
-	{
-		Id = "idle",
-		Frames = [9],
-	};
-	private static readonly SpriteAnimation animWalk = new()
-	{
-		Id = "walk",
-		Frames = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-		Speed = 5f,
-	};
-	private static readonly SpriteAnimation animJump = new()
-	{
-		Id = "jump",
-		Frames = [14, 15],
-		Speed = 4f,
-		Loop = true,
-	};
-	private static readonly SpriteAnimation animAttack = new()
-	{
-		Id = "attack",
-		Frames = [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22],
-		Speed = 9f,
-		Loop = false,
-	};
+	private static readonly SpriteAnimation animIdle = new() { Id = "idle", Frames = [0] };
+	private static readonly SpriteAnimation animJump = new() { Id = "jump", Frames = [1] };
+	private static readonly SpriteAnimation animFall = new() { Id = "fall", Frames = [2] };
+	private static readonly SpriteAnimation animWalk = new() { Id = "walk", Frames = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], Speed = 5f };
+	private static readonly SpriteAnimation animAttack = new() { Id = "attack", Frames = [15, 16, 17, 18, 19, 20, 21, 22, 23, 24], Speed = 9f, Loop = false };
 
 	private AttackInstance? attack;
 	private Footsteps footsteps = new();
@@ -368,14 +348,15 @@ internal sealed class Abominable : ModNPC
 	{
 		const float MinWalkSpeed = 1.5f;
 
-		Vector2 effectiveVelocity = NPC.position - NPC.oldPosition;
+		Vector2 vel = NPC.position - NPC.oldPosition;
 		SpriteAnimation current = ctx.Animations.Current;
 		SpriteAnimation? targetAnimation = current switch
 		{
 			_ when AttackProgress != 0 => animAttack,
-			_ when MathF.Abs(effectiveVelocity.Y) > 5f => animJump,
-			_ when effectiveVelocity.Y == 0f && Math.Abs(effectiveVelocity.X) >= MinWalkSpeed => animWalk with { Speed = effectiveVelocity.X * animWalk.Speed * NPC.spriteDirection },
-			_ when effectiveVelocity.Y == 0f && Math.Abs(effectiveVelocity.X) <= MinWalkSpeed => animIdle,
+			_ when vel.Y < 0f => animJump,
+			_ when vel.Y > 0f => animFall,
+			_ when vel.Y == 0f && Math.Abs(vel.X) >= MinWalkSpeed => animWalk with { Speed = vel.X * animWalk.Speed * NPC.spriteDirection },
+			_ when vel.Y == 0f && Math.Abs(vel.X) <= MinWalkSpeed => animIdle,
 			_ => null,
 		};
 
