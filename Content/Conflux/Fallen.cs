@@ -49,9 +49,9 @@ internal sealed class FallenTyrant : Fallen
 	{
 		base.SetDefaults();
 
-		NPC.lifeMax = 250;
+		NPC.lifeMax = 550;
 		NPC.defense = 20;
-		NPC.damage = 50;
+		NPC.damage = 65;
 		NPC.width = 36;
 		NPC.height = 38;
 		NPC.knockBackResist = 0.2f;
@@ -107,9 +107,9 @@ internal sealed class FallenSavage : Fallen
 	{
 		base.SetDefaults();
 
-		NPC.lifeMax = 150;
+		NPC.lifeMax = 400;
 		NPC.defense = 8;
-		NPC.damage = 45;
+		NPC.damage = 50;
 		NPC.width = 24;
 		NPC.height = 40;
 		NPC.knockBackResist = 0.3f;
@@ -166,9 +166,9 @@ internal sealed class FallenSchemer : Fallen
 	{
 		base.SetDefaults();
 
-		NPC.lifeMax = 125;
+		NPC.lifeMax = 250;
 		NPC.defense = 25;
-		NPC.damage = 40;
+		NPC.damage = 45;
 		NPC.width = 20;
 		NPC.height = 44;
 		NPC.knockBackResist = 0.5f;
