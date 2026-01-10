@@ -27,11 +27,23 @@ namespace PathOfTerraria.Content.Conflux;
 /// <summary> Heavy low-speed demon that annihilates its targets.  </summary>
 internal sealed class FallenTyrant : Fallen
 {
+	private static readonly SpriteAnimation animIdle = new() { Id = "idle", Frames = [0], Speed = 2f };
+	private static readonly SpriteAnimation animJump = new() { Id = "jump", Frames = [1] };
+	private static readonly SpriteAnimation animFall = new() { Id = "fall", Frames = [2] };
+	private static readonly SpriteAnimation animWalk = new() { Id = "walk", Frames = [3, 4, 5, 6, 7, 8], Speed = 4f };
+	private static SpriteAnimation animAttack => new()
+	{
+		Id = "attack",
+		Frames = [20, 20, 21, 21, 21, 21, 22, 23, 24, 25, 25, 25, 26],
+		Speed = 20f,
+		Loop = false,
+	};
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
 
-		Main.npcFrameCount[Type] = 6;
+		Main.npcFrameCount[Type] = 5;
 	}
 	public override void SetDefaults()
 	{
@@ -45,6 +57,26 @@ internal sealed class FallenTyrant : Fallen
 		NPC.knockBackResist = 0.2f;
 
 		Behavior.MaxSpeed = 1.5f;
+		Behavior.SpriteOffset = new(0f, 1f);
+
+		NPC.GetGlobalNPC<NPCAnimations>().BaseFrame = new(6, 5);
+	}
+
+	protected override SpriteAnimation? ChooseWantedAnimation(in Context ctx)
+	{
+		const float MinWalkSpeed = 0.5f;
+
+		Vector2 vel = NPC.position - NPC.oldPosition;
+
+		return ctx.Animations.Current switch
+		{
+			_ when ActiveAction == ActionType.Attack => animAttack,
+			_ when vel.Y < 0f => animJump,
+			_ when vel.Y > 0f => animFall,
+			_ when vel.Y == 0f && Math.Abs(vel.X) >= MinWalkSpeed => animWalk with { Speed = vel.X * animWalk.Speed * NPC.spriteDirection },
+			_ when vel.Y == 0f && Math.Abs(vel.X) <= MinWalkSpeed => animIdle,
+			_ => null,
+		};
 	}
 }
 
@@ -84,6 +116,7 @@ internal sealed class FallenSavage : Fallen
 
 		Behavior.MaxSpeed = 3f;
 		Behavior.MeleeHitbox = (new(40, 40), new(56f, 56f), new(+8f, +2f));
+		Behavior.SpriteOffset = new(0f, -1f);
 
 		NPC.GetGlobalNPC<NPCAnimations>().BaseFrame = new(5, 5);
 	}
@@ -150,6 +183,7 @@ internal sealed class FallenSchemer : Fallen
 		Behavior.AttackDamageEndTick = (ushort)(Behavior.AttackDashTick + (0.25 * 60));
 		Behavior.AttackLengthInTicks = (ushort)(Behavior.AttackDashTick + (0.7 * 60));
 		Behavior.AttackCooldown = 60;
+		Behavior.SpriteOffset = new(0f, -3f);
 
 		TeleportCooldown = 60;
 
@@ -374,6 +408,7 @@ internal abstract class Fallen : ModNPC
 		public float MaxSpeed = 4f;
 		public float Acceleration = 32f;
 		public (float Ground, float Air) Friction = (8f, 2f);
+		public Vector2 SpriteOffset = new(0f, 1f);
 		public (Point16 Size, Vector2 Extent, Vector2 Offset) MeleeHitbox = (new(56, 56), new(24f, 32f), new(+12f, +2f));
 	}
 
@@ -698,8 +733,7 @@ internal abstract class Fallen : ModNPC
 	{
 		// Render the NPC using the proper source rectangle.
 		Texture2D tex = TextureAssets.Npc[NPC.type].Value;
-		Vector2 hitboxCorrection = new(0f, -((tex.Height / (Main.npcFrameCount[NPC.type])) - NPC.height) * 0.5f + 2);
-		Vector2 position = NPC.Center + new Vector2(0f, NPC.gfxOffY) + hitboxCorrection - Main.screenPosition;
+		Vector2 position = NPC.Center + new Vector2(0f, NPC.gfxOffY) + Behavior.SpriteOffset - Main.screenPosition;
 		Color mulColor = NPC.color.MultiplyRGBA(new Color(Vector4.One * ((byte.MaxValue - NPC.alpha) / (float)byte.MaxValue)));
 		Main.EntitySpriteDraw(tex, position, NPC.frame, color.MultiplyRGBA(mulColor), NPC.rotation, NPC.frame.Size() * 0.5f, NPC.scale, NPC.spriteDirection >= 0 ? (SpriteEffects)1 : 0, 0f);
 
