@@ -762,7 +762,7 @@ internal abstract class Fallen : ModNPC
 			Texture2D texture = ModContent.Request<Texture2D>(basePath, AssetRequestMode.ImmediateLoad).Value;
 
 			// First column is the diffuse, second is the glowmask.
-			var baseFrame = new SpriteFrame(2, (byte)(texture.Height / (texture.Width / 2)));
+			var baseFrame = new SpriteFrame(2, (byte)(texture.Height / (texture.Width / 2))) { PaddingX = 0, PaddingY = 0 };
 			byte frameIndex = (byte)Math.Min((baseFrame.RowCount - 1), Math.Floor((ActionProgress - Behavior.AttackDashTick) / (float)(Behavior.AttackDamageEndTick - Behavior.AttackDashTick) * baseFrame.RowCount));
 			baseFrame = baseFrame.With(0, AttackSign > 0 ? frameIndex : (byte)((baseFrame.RowCount - 1) - frameIndex));
 
