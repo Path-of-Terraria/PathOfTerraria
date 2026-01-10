@@ -27,14 +27,14 @@ namespace PathOfTerraria.Content.Conflux;
 /// <summary> Heavy low-speed demon that annihilates its targets.  </summary>
 internal sealed class FallenTyrant : Fallen
 {
-	private static readonly SpriteAnimation animIdle = new() { Id = "idle", Frames = [0], Speed = 2f };
-	private static readonly SpriteAnimation animJump = new() { Id = "jump", Frames = [1] };
-	private static readonly SpriteAnimation animFall = new() { Id = "fall", Frames = [2] };
-	private static readonly SpriteAnimation animWalk = new() { Id = "walk", Frames = [3, 4, 5, 6, 7, 8], Speed = 4f };
-	private static SpriteAnimation animAttack => new()
+	private static readonly SpriteAnimation animIdle = new() { Id = "idle", Frames = [0, 1, 2, 3], Speed = 3f };
+	private static readonly SpriteAnimation animJump = new() { Id = "jump", Frames = [4] };
+	private static readonly SpriteAnimation animFall = new() { Id = "fall", Frames = [5] };
+	private static readonly SpriteAnimation animWalk = new() { Id = "walk", Frames = [6, 7, 8, 9, 10, 11], Speed = 4f };
+	private static readonly SpriteAnimation animAttack = new()
 	{
 		Id = "attack",
-		Frames = [20, 20, 21, 21, 21, 21, 22, 23, 24, 25, 25, 25, 26],
+		Frames = [23, 23, 24, 24, 24, 24, 25, 26, 27, 28, 28, 28, 29],
 		Speed = 20f,
 		Loop = false,
 	};
@@ -58,8 +58,26 @@ internal sealed class FallenTyrant : Fallen
 
 		Behavior.MaxSpeed = 1.5f;
 		Behavior.SpriteOffset = new(0f, 1f);
+		Behavior.AttackDashVelocity = new(3f, 0f);
+		Behavior.AttackInitiationRange = new Vector2(512f, 384f);
 
-		NPC.GetGlobalNPC<NPCAnimations>().BaseFrame = new(6, 5);
+		NPC.GetGlobalNPC<NPCAnimations>().BaseFrame = new SpriteFrame(6, 5) with { PaddingX = 0, PaddingY = 0 };
+	}
+
+	protected override Context InnerAI()
+	{
+		Context ctx = base.InnerAI();
+
+		// The tyrant shoots projectiles with its normal attack.
+		if (ActiveAction == ActionType.Attack && ActionProgress == 20)
+		{
+			if (Main.netMode != NetmodeID.MultiplayerClient)
+			{
+				Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, AttackDirection * 6f, ProjectileID.DemonSickle, (int)(NPC.defDamage * 0.5f), 1f);
+			}
+		}
+
+		return ctx;
 	}
 
 	protected override SpriteAnimation? ChooseWantedAnimation(in Context ctx)
@@ -118,7 +136,7 @@ internal sealed class FallenSavage : Fallen
 		Behavior.MeleeHitbox = (new(40, 40), new(56f, 56f), new(+8f, +2f));
 		Behavior.SpriteOffset = new(0f, -1f);
 
-		NPC.GetGlobalNPC<NPCAnimations>().BaseFrame = new(5, 5);
+		NPC.GetGlobalNPC<NPCAnimations>().BaseFrame = new SpriteFrame(5, 5) with { PaddingX = 0, PaddingY = 0 };
 	}
 
 	protected override SpriteAnimation? ChooseWantedAnimation(in Context ctx)
@@ -440,7 +458,7 @@ internal abstract class Fallen : ModNPC
 		});
 		NPC.TryEnableComponent<NPCAnimations>(e =>
 		{
-			e.BaseFrame = new(1, 6);
+			e.BaseFrame = new SpriteFrame(1, 6) with { PaddingX = 0, PaddingY = 0 };
 		});
 		NPC.TryEnableComponent<NPCTargetTracking>();
 
