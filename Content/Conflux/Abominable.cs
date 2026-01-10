@@ -407,29 +407,24 @@ internal sealed class Abominable : ModNPC
 		// Render the slash.
 		if (AttackProgress >= AttackDashTick && AttackProgress < AttackDamageEndTick)
 		{
-			byte frameIndex = (byte)Math.Min(2, Math.Floor((AttackProgress - AttackDashTick) / (float)(AttackDamageEndTick - AttackDashTick) * 3));
-			SpriteFrame slashFrame = new SpriteFrame(1, 3).With(0, AttackSign > 0 ? frameIndex : (byte)(2 - frameIndex));
-			Texture2D slashTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Misc/Slash", AssetRequestMode.ImmediateLoad).Value;
-			Color slashColor = Color.Lerp(color, Color.White, 0.33f).MultiplyRGBA(new(Vector4.One * 0.7f));
-			
-			Rectangle srcRect = slashFrame.GetSourceRectangle(slashTexture);
-			Rectangle dstRect = GetDamageArea().Aabb;
+			string basePath = $"{GetType().FullName}_Slash".Replace('.', '/');
+			basePath = ModContent.HasAsset(basePath) ? basePath : $"{PoTMod.ModName}/Assets/Misc/Slash";
+			Texture2D texture = ModContent.Request<Texture2D>(basePath, AssetRequestMode.ImmediateLoad).Value;
+
+			// First column is the diffuse, second is the glowmask.
+			var baseFrame = new SpriteFrame(2, (byte)(texture.Height / (texture.Width / 2)));
+			byte frameIndex = (byte)Math.Min((baseFrame.RowCount - 1), Math.Floor((AttackProgress - AttackDashTick) / (float)(AttackDamageEndTick - AttackDashTick) * baseFrame.RowCount));
+			baseFrame = baseFrame.With(0, AttackSign > 0 ? frameIndex : (byte)((baseFrame.RowCount - 1) - frameIndex));
+
+			Vector2 center = GetDamageArea().Center;
+			Rectangle srcRect = baseFrame.GetSourceRectangle(texture);
+			Rectangle dstRect = new((int)(center.X), (int)(center.Y), srcRect.Width, srcRect.Height);
 			dstRect.X -= (int)Main.screenPosition.X;
 			dstRect.Y -= (int)Main.screenPosition.Y;
 			Vector2 origin = srcRect.Size() * 0.5f;
 
-#if DEBUG && DEBUG_GIZMOS
-			Main.DebugDrawer.Begin(Main.GameViewMatrix.TransformationMatrix);
-			Main.DebugDrawer.DrawLine(new(dstRect.Left, dstRect.Top), new(dstRect.Right, dstRect.Top), 2f, Color.Red);
-			Main.DebugDrawer.DrawLine(new(dstRect.Right, dstRect.Top), new(dstRect.Right, dstRect.Bottom), 2f, Color.Red);
-			Main.DebugDrawer.DrawLine(new(dstRect.Right, dstRect.Bottom), new(dstRect.Left, dstRect.Bottom), 2f, Color.Red);
-			Main.DebugDrawer.DrawLine(new(dstRect.Left, dstRect.Bottom), new(dstRect.Left, dstRect.Top), 2f, Color.Red);
-			Main.DebugDrawer.End();
-#endif
-
-			dstRect.X += (int)srcRect.Width;
-			dstRect.Y += (int)srcRect.Height;
-			sb.Draw(slashTexture, dstRect, srcRect, slashColor, AttackAngle, origin, 0, 0f);
+			sb.Draw(texture, dstRect, srcRect, color, AttackAngle, origin, 0, 0f);
+			sb.Draw(texture, dstRect, srcRect with { X = srcRect.Width }, Color.White, AttackAngle, origin, 0, 0f);
 		}
 
 #if DEBUG && DEBUG_GIZMOS
