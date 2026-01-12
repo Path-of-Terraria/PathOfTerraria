@@ -7,15 +7,12 @@ using PathOfTerraria.Common.AI;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Utilities;
-using PathOfTerraria.Core.Debugging;
 using PathOfTerraria.Core.Time;
 using PathOfTerraria.Utilities.Xna;
 using ReLogic.Content;
-using ReLogic.Graphics;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
-using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 
 #nullable enable
@@ -54,6 +51,7 @@ internal sealed class Abominable : ModNPC
 
 	private AttackInstance? attack;
 	private Footsteps footsteps = new();
+	private VoiceBehavior voice = new();
 
 	//public ref BitMask<uint> Flags => ref Unsafe.As<float, BitMask<uint>>(ref NPC.localAI[0]);
 	public ref float AttackAngle => ref NPC.localAI[0];
@@ -93,11 +91,12 @@ internal sealed class Abominable : ModNPC
 		NPC.damage = 44;
 		NPC.width = 44;
 		NPC.height = 80;
-		NPC.lifeMax = 250;
+		NPC.lifeMax = 600;
 		NPC.defense = 35;
-		NPC.HitSound = SoundID.NPCHit56 with { Pitch = -0.37f, PitchVariance = 0.11f, Identifier = "AbominableHit" };
-		NPC.DeathSound = SoundID.NPCDeath23 with { Pitch = -0.35f, PitchVariance = 0.15f, Identifier = "AbominableDeath" };
 		NPC.knockBackResist = 0.00f;
+
+		NPC.HitSound = new($"{nameof(PathOfTerraria)}/Assets/Sounds/HitEffects/FleshHit", 3) { MaxInstances = 5, Volume = 0.4f };
+		NPC.DeathSound = new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/AbominableDeath") { Volume = 0.6f, Pitch = -0.05f, PitchVariance = 0.1f };
 
 		NPC.TryEnableComponent<NPCNavigation>(e =>
 		{
@@ -111,13 +110,14 @@ internal sealed class Abominable : ModNPC
 
 		NPC.TryEnableComponent<NPCHitEffects>(c =>
 		{
-			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_GoreHead", 1, NPCHitEffects.OnDeath));
-			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_GoreClaw", 2, NPCHitEffects.OnDeath));
-			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_GoreLeg1", 1, NPCHitEffects.OnDeath));
-			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_GoreLeg2", 1, NPCHitEffects.OnDeath));
 
 			c.AddDust(new NPCHitEffects.DustSpawnParameters(DustID.Blood, 30));
 			c.AddDust(new NPCHitEffects.DustSpawnParameters(DustID.Blood, 200, NPCHitEffects.OnDeath));
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreHead", 1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+00, -32), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreClaw", 1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(-32, +00), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreClaw", 1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+32, +00), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreLeg1", 1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+32, -32), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreLeg2", 1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+32, +32), new(3, 3)) });
 		});
 	}
 
@@ -131,6 +131,27 @@ internal sealed class Abominable : ModNPC
 		Attacking(ref ctx);
 		UpdateAnimations(ref ctx);
 		UpdateEffects(ref ctx);
+	}
+
+	public override void HitEffect(NPC.HitInfo hit)
+	{
+		if (Main.dedServ) { return; }
+
+		if (NPC.life <= 0)
+		{
+			voice.Stop();
+			return;
+		}
+
+		if (Main.rand.NextBool(5))
+		{
+			voice.Play(NPC, new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/AbominablePain", 2)
+			{
+				MaxInstances = 3,
+				Volume = 0.5f,
+				PitchVariance = 0.1f,
+			});
+		}
 	}
 
 	private void UpdateTarget(ref Context ctx, bool forceReset = false)
@@ -252,7 +273,13 @@ internal sealed class Abominable : ModNPC
 
 				if (!Main.dedServ)
 				{
-					SoundEngine.PlaySound(position: NPC.Center, style: SoundID.NPCHit56 with { Pitch = +0.15f, PitchVariance = 0.1f, Identifier = "AbominableCharge" });
+					voice.Play(NPC, new SoundStyle($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/AbominableAttack", 2)
+					{
+						MaxInstances = 2,
+						Pitch = 0.1f,
+						Volume = 0.65f,
+						PitchVariance = 0.15f,
+					});
 				}
 			}
 		}

@@ -428,6 +428,7 @@ internal abstract class Fallen : ModNPC
 	private Footsteps footsteps = new();
 	protected AttackInstance? Attack;
 	protected Stats Behavior = new();
+	protected VoiceBehavior Voice = new();
 
 	public ref float AttackAngle => ref NPC.localAI[0];
 	public ref ushort ActionProgress => ref Unsafe.As<float, ushort>(ref Unsafe.AddByteOffset(ref NPC.localAI[1], 0));
@@ -449,8 +450,8 @@ internal abstract class Fallen : ModNPC
 	public override void SetDefaults()
 	{
 		NPC.aiStyle = -1;
-		NPC.HitSound = SoundID.NPCHit56 with { Pitch = +0.45f, PitchVariance = 0.11f, Identifier = "FallenHit" };
-		NPC.DeathSound = SoundID.NPCDeath23 with { Pitch = +0.45f, PitchVariance = 0.15f, Identifier = "FallenDeath" };
+		NPC.HitSound = new($"{nameof(PathOfTerraria)}/Assets/Sounds/HitEffects/FleshHit", 3) { MaxInstances = 5, Volume = 0.4f };
+		NPC.DeathSound = SoundID.NPCDeath23 with { Pitch = +0.1f, PitchVariance = 0.15f, Identifier = "FallenDeath" };
 
 		NPC.TryEnableComponent<NPCNavigation>(e =>
 		{
@@ -730,6 +731,22 @@ internal abstract class Fallen : ModNPC
 		Rectangle aabb = new Rectangle((int)center.X, (int)center.Y, 0, 0).Inflated(Size.X / 2, Size.Y / 2);
 
 		return (center, aabb);
+	}
+
+	public override void HitEffect(NPC.HitInfo hit)
+	{
+		if (Main.dedServ) { return; }
+
+		if (NPC.life <= 0)
+		{
+			Voice.Stop();
+			return;
+		}
+
+		if (Main.rand.NextBool(3))
+		{
+			Voice.Play(NPC, SoundID.NPCHit56 with { Pitch = +0.3f, PitchVariance = 0.4f, Identifier = "FallenHit" });
+		}
 	}
 
 	public override bool PreDraw(SpriteBatch sb, Vector2 screenPos, Color color)
