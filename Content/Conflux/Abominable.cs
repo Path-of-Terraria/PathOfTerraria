@@ -91,7 +91,7 @@ internal sealed class Abominable : ModNPC
 		NPC.damage = 44;
 		NPC.width = 44;
 		NPC.height = 80;
-		NPC.lifeMax = 600;
+		NPC.lifeMax = 750;
 		NPC.defense = 35;
 		NPC.knockBackResist = 0.00f;
 
