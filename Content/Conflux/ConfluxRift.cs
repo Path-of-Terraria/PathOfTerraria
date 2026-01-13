@@ -512,19 +512,17 @@ internal record struct EnemyRole
 		{
 			ConfluxRiftKind.Infernal => [
 				"Content/Encounters/Squads/InfernalRift",
+				"Content/Encounters/Squads/BruiserBrothers",
 			],
 			ConfluxRiftKind.Glacial => [
 				"Content/Encounters/Squads/InfernalRift",
 				"Content/Encounters/Squads/BruiserBrothers",
 			],
-			_ => [
-				"Content/Encounters/Squads/BloodSquadSmall",
-				"Content/Encounters/Squads/CaveSquadMedium",
-				"Content/Encounters/Squads/CorruptionSquadSmall",
-				"Content/Encounters/Squads/UndeadSquadLarge",
-				"Content/Encounters/Squads/ZombieSquadLarge",
-				"Content/Encounters/Squads/ZombieSquadSmall",
+			ConfluxRiftKind.Celestial => [
+				"Content/Encounters/Squads/InfernalRift",
+				"Content/Encounters/Squads/BruiserBrothers",
 			],
+			_ => throw new NotImplementedException(),
 		};
 		EncounterDescription[] baseEncounters = encounterPaths.Select(p => EncounterIO.GetEncounterFromModPath(Mod, p)).ToArray();
 		(EnemySpawn Spawn, EnemyRole Role)[] enemyPool = baseEncounters.SelectMany(e => e.Waves.SelectMany(w => w.Spawns.Select(s => (s, new EnemyRole())))).ToArray();
