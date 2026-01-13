@@ -572,7 +572,7 @@ internal record struct EnemyRole
 			// Play with printing to balance this out.
 			return new EnemyRole
 			{
-				Fodder = 4.00f + (Math.Max(0f, waveIndex) * -0.25f * MathF.Pow(1.00f, waveIndex)),
+				Fodder = 4.00f + (MappingWorld.MapTier * 0.5f) + (Math.Max(0f, waveIndex) * -0.25f * MathF.Pow(1.00f, waveIndex)),
 				Heavy = 0.50f + (Math.Max(0f, waveIndex) * 0.50f * MathF.Pow(1.00f, waveIndex)),
 				Boss = 0.00f + (Math.Max(0f, waveIndex - 2) * 1.50f * MathF.Pow(0.90f, waveIndex)),
 			};
