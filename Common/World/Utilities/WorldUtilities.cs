@@ -16,6 +16,18 @@ internal static class WorldUtilities
 		return Main.tileSolid[tile.TileType] && tile.HasTile;
 	}
 
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool SolidUnslopedTile(int i, int j, bool noHalfBrick = false)
+	{
+		return SolidUnslopedTile(Main.tile[i, j], noHalfBrick);
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool SolidUnslopedTile(Tile tile, bool noHalfBrick = false)
+	{
+		return Main.tileSolid[tile.TileType] && tile.HasTile && tile.Slope == Terraria.ID.SlopeType.Solid && (noHalfBrick || !tile.IsHalfBlock);
+	}
+
 	/// <summary>
 	/// Determines if the tile is standing without "anchors", i.e. it is midair by itself.
 	/// </summary>

@@ -431,7 +431,7 @@ internal class ForestArea : MappingWorld, IOverrideBiome, IExplorationWorld
 
 		FastNoiseLite noise = new();
 		noise.SetFrequency(0.015f);
-		Ellipse.GenOval(new Vector2(i, j), size, WorldGen.genRand.NextFloat(MathHelper.Pi) + MathHelper.PiOver2, isWall, type, noise);
+		GenPlacement.GenOval(new Vector2(i, j), size, WorldGen.genRand.NextFloat(MathHelper.Pi) + MathHelper.PiOver2, type, (x, y) => noise.GetNoise(x, y) * 10, isWall);
 		return true;
 	}
 
@@ -526,7 +526,7 @@ internal class ForestArea : MappingWorld, IOverrideBiome, IExplorationWorld
 		{
 			bool isWall = WorldGen.genRand.NextBool();
 			int type = isWall ? WallID.LivingLeaf : TileID.LeafBlock;
-			Ellipse.GenOval(pos.ToVector2(), WorldGen.genRand.NextFloat(10, 50), WorldGen.genRand.NextFloat(MathHelper.TwoPi), isWall, type, noise);
+			GenPlacement.GenOval(pos.ToVector2(), WorldGen.genRand.NextFloat(10, 50), WorldGen.genRand.NextFloat(MathHelper.TwoPi), type, (x, y) => noise.GetNoise(x, y) * 10, isWall);
 		}
 	}
 

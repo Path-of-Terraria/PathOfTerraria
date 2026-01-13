@@ -1,4 +1,5 @@
-﻿using Terraria.GameContent.Generation;
+﻿using PathOfTerraria.Common.World.Generation;
+using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.WorldBuilding;
 
@@ -73,7 +74,7 @@ internal class CypressTreeMicrobiome : MicroBiome
 			size = 0.6f;
 		}
 
-		int useWidth = i == 0 ? (int)(width * _random.NextFloat(1.5f, 2.5f)) : width;
+		int useWidth = i == 0 ? (int)(width * _random.NextFloat(1.5f, 2f)) : width;
 		int minX = Main.maxTilesX;
 		int maxX = 0;
 
@@ -150,6 +151,8 @@ internal class CypressTreeMicrobiome : MicroBiome
 			PlaceRoot(new Point(origin.X + (int)(MathHelper.Lerp(-widthLeft * 1.3f, widthRight, i / (rootCount - 1f)) * 0.8f), origin.Y));
 		}
 
+		FastNoiseLite noise = new(_random.Next());
+
 		for (int y = origin.Y; y > topY; --y)
 		{
 			int distance = y - topY;
@@ -163,10 +166,14 @@ internal class CypressTreeMicrobiome : MicroBiome
 				tile.HasTile = true;
 				tile.TileType = TileID.LivingWood;
 
-				if (y > SwampArea.FloorY + 60 && y <= SwampArea.FloorY + 80)
+				bool actuate = y > SwampArea.HeightMapping[x] - Math.Abs(noise.GetNoise(x, y) * 6) - 10 && y <= SwampArea.HeightMapping[x] - 5;
+
+				if (!actuate && tile.LiquidAmount > 0)
 				{
-					tile.IsActuated = true;
+					actuate = y > SwampArea.HeightMapping[x] - Math.Abs(noise.GetNoise(x, y) * 15) - 40 && y <= SwampArea.HeightMapping[x] - 30;
 				}
+
+				tile.IsActuated = actuate;
 			}
 		}
 

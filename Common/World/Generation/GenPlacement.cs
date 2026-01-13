@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Utilities;
 
@@ -275,5 +277,45 @@ internal static class GenPlacement
 				}
 			}
 		}
+	}
+
+	/// <summary>
+	/// Generates an ovoid shape. Returns the list of tile positions generated.
+	/// </summary>
+	public static List<Point16> GenOval(Vector2 origin, float size, float angle, Action<int, int> fillAction, Func<int, int, float> offsetAction)
+	{
+		var otherEnd = (origin + new Vector2(size, size / 2)).ToPoint16();
+		float ySize = size / WorldGen.genRand.NextFloat(2, 3);
+		return Ellipse.Fill(fillAction, origin.ToPoint16(), size, ySize, angle - MathHelper.PiOver2, offsetAction);
+	}
+
+	public static List<Point16> GenOval(Vector2 origin, float size, float angle, int id, Func<int, int, float> offsetAction, bool isWall = false)
+	{
+		return GenOval(origin, size, angle, (x, y) => 
+		{
+			if (isWall)
+			{
+				FastPlaceWall(x, y, id);
+			}
+			else
+			{
+				FastPlaceTile(x, y, id);
+			}
+		}, offsetAction);
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void FastPlaceTile(int x, int y, int type)
+	{
+		Tile tile = Main.tile[x, y];
+		tile.TileType = (ushort)type;
+		tile.HasTile = true;
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void FastPlaceWall(int x, int y, int type)
+	{
+		Tile tile = Main.tile[x, y];
+		tile.WallType = (ushort)type;
 	}
 }

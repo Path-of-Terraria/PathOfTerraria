@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.World.Generation;
+﻿using Microsoft.Build.Tasks;
+using PathOfTerraria.Common.World.Generation;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
@@ -6,6 +7,8 @@ using Terraria.ID;
 using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds.MappingAreas.SwampAreaContent;
+
+#nullable enable
 
 internal class BranchTreeMicrobiome : MicroBiome
 {
@@ -19,7 +22,7 @@ internal class BranchTreeMicrobiome : MicroBiome
 		Dictionary<Vector2, float> branchTips = [];
 		GenerateBranches(canopy, noise, branchTips);
 		GenerateRoots(canopy, noise, width, origin);
-		GenerateLeaves(branchTips);
+		GenerateLeaves(branchTips, canopy);
 		GeneratePlatforms(canopy);
 
 		return true;
@@ -109,7 +112,7 @@ internal class BranchTreeMicrobiome : MicroBiome
 		}
 	}
 
-	private static void GenerateLeaves(Dictionary<Vector2, float> branchTips)
+	private static void GenerateLeaves(Dictionary<Vector2, float> branchTips, List<Vector2> canopy)
 	{
 		int leafCount = 6;
 
@@ -143,15 +146,24 @@ internal class BranchTreeMicrobiome : MicroBiome
 				}
 			}
 		}
+
+		for (int i = 0; i < 40; ++i)
+		{
+			Vector2 randomPointOnCanopy = _random.Next(canopy);
+			float width = _random.NextFloat(3, 12);
+
+			GenPlacement.GenerateLeaf(randomPointOnCanopy, width, width * _random.NextFloat(1.5f, 3f), _random.NextFloat(-MathHelper.PiOver2, MathHelper.PiOver2), 
+				(x, y, a) => PlaceLeaf(x, y, a, null, 0), false);
+		}
 	}
 
-	private static void PlaceLeaf(int x, int y, float angle, List<LeafInstance> moreLeaves, float size)
+	private static void PlaceLeaf(int x, int y, float angle, List<LeafInstance>? moreLeaves, float size)
 	{
 		Tile tile = Main.tile[x, y];
 		tile.HasTile = true;
 		tile.TileType = TileID.LeafBlock;
 
-		if (_random.NextBool(60))
+		if (_random.NextBool(60) && moreLeaves is not null)
 		{
 			moreLeaves.Add(new(new Point16(x, y), size * _random.NextFloat(0.9f, 1f), angle));
 		}
@@ -226,6 +238,7 @@ internal class BranchTreeMicrobiome : MicroBiome
 	{
 		int branchCount = _random.Next(5, 11);
 		List<Vector2> taken = [];
+		int repeatCount = 0;
 
 		for (int i = 0; i < branchCount; ++i)
 		{
@@ -234,6 +247,11 @@ internal class BranchTreeMicrobiome : MicroBiome
 			do
 			{
 				randomPointOnCanopy = _random.Next(canopy);
+
+				if (repeatCount++ > 3000)
+				{
+					return;
+				}
 			} while (taken.Any(x => x.DistanceSQ(randomPointOnCanopy) < 12 * 12));
 
 			Vector2 midPoint = randomPointOnCanopy + new Vector2(_random.Next(-40, 40), _random.Next(-25, -10));
@@ -241,9 +259,10 @@ internal class BranchTreeMicrobiome : MicroBiome
 			List<Vector2> currentPoints = [.. Tunnel.GenerateBezier([randomPointOnCanopy, midPoint, tip], 8, 0)];
 			taken.Add(randomPointOnCanopy);
 
-			foreach (Vector2 point in currentPoints)
+			for (int j = 0; j < currentPoints.Count; j++)
 			{
-				GenPlacement.TileCircle(point, 2 + noise.GetNoise(point.X, point.Y) * 0.8f, TileID.LivingWood);
+				Vector2 point = currentPoints[j];
+				GenPlacement.TileCircle(point, (2 + noise.GetNoise(point.X, point.Y) * 0.8f) * (1.4f - j / (float)currentPoints.Count), TileID.LivingWood);
 			}
 
 			branchTips.TryAdd(tip, tip.AngleFrom(currentPoints[^5]));

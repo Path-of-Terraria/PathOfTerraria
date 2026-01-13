@@ -158,6 +158,6 @@ RavencrestSubworld: {
 SwampArea: {
 	// DisplayName: Fogburnt Swamp
 	// Description: Swamp
-	// Mining: '''"[i:1] Only torches and ropes can be mined"'''
-	// Placing: '''"[i:2] Only torches and ropes can be placed"'''
+	// Mining: "{$DefaultMining}"
+	// Placing: "{$DefaultPlacing}"
 }

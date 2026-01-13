@@ -11,7 +11,7 @@ internal class SwampMoss : ModTile
 	{
 		Main.tileBrick[Type] = true;
 		Main.tileSolid[Type] = true;
-		Main.tileBlockLight[Type] = false;
+		Main.tileBlockLight[Type] = true;
 		Main.tileBlendAll[Type] = true;
 
 		TileID.Sets.BlockMergesWithMergeAllBlock[Type] = true;
@@ -59,3 +59,5 @@ internal class SwampMoss : ModTile
 		}
 	}
 }
+
+internal class DeepMoss : SwampMoss { }

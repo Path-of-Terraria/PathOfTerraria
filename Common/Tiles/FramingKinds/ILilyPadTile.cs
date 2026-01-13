@@ -1,5 +1,8 @@
 ﻿namespace PathOfTerraria.Common.Tiles.FramingKinds;
 
+/// <summary>
+/// Defines a <see cref="ModTile"/> as a "lily pad" for framing purposes. Also containers helper methods.
+/// </summary>
 internal interface ILilyPadTile : ILoadable
 {
 	public class LilyPadFraming : GlobalTile
@@ -69,6 +72,11 @@ internal interface ILilyPadTile : ILoadable
 
 	public static bool DefaultFraming(int i, int j)
 	{
+		if (!WorldGen.InWorld(i, j, 30))
+		{
+			return false;
+		}
+
 		Tile tile = Main.tile[i, j];
 		bool left = HasTile(i - 1, j);
 		bool right = HasTile(i + 1, j);
