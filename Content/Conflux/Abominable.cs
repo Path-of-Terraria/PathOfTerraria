@@ -7,6 +7,7 @@ using PathOfTerraria.Common.AI;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Utilities;
+using PathOfTerraria.Content.Gores;
 using PathOfTerraria.Core.Time;
 using PathOfTerraria.Utilities.Xna;
 using ReLogic.Content;
@@ -66,10 +67,10 @@ internal sealed class Abominable : ModNPC
 
 	public override void Load()
 	{
-		GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, $"{Texture}_GoreHead");
-		GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, $"{Texture}_GoreClaw");
-		GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, $"{Texture}_GoreLeg1");
-		GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, $"{Texture}_GoreLeg2");
+		GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreHead");
+		GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreClaw");
+		GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreLeg1");
+		GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreLeg2");
 	}
 
 	public override void SetStaticDefaults()
@@ -110,14 +111,20 @@ internal sealed class Abominable : ModNPC
 
 		NPC.TryEnableComponent<NPCHitEffects>(c =>
 		{
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{nameof(BloodSplatSmall)}", 1));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 1));
 
-			c.AddDust(new NPCHitEffects.DustSpawnParameters(DustID.Blood, 30));
-			c.AddDust(new NPCHitEffects.DustSpawnParameters(DustID.Blood, 200, NPCHitEffects.OnDeath));
+			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatSmall)}", 5, NPCHitEffects.OnDeath));
+			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 5, NPCHitEffects.OnDeath));
+			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatLarge)}", 5, NPCHitEffects.OnDeath));
 			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreHead", 1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+00, -32), new(3, 3)) });
 			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreClaw", 1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(-32, +00), new(3, 3)) });
 			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreClaw", 1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+32, +00), new(3, 3)) });
 			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreLeg1", 1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+32, -32), new(3, 3)) });
 			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreLeg2", 1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+32, +32), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatSmall)}", 5, NPCHitEffects.OnDeath));
+			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 5, NPCHitEffects.OnDeath));
+			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatLarge)}", 5, NPCHitEffects.OnDeath));
 		});
 	}
 

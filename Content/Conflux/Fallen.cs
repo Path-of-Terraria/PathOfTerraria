@@ -8,6 +8,7 @@ using PathOfTerraria.Common.Encounters;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Utilities;
+using PathOfTerraria.Content.Gores;
 using PathOfTerraria.Core.Time;
 using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
@@ -465,10 +466,14 @@ internal abstract class Fallen : ModNPC
 
 		NPC.TryEnableComponent<NPCHitEffects>(c =>
 		{
-			c.AddGore(new NPCHitEffects.GoreSpawnParameters(132, 1, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 1));
 
-			c.AddDust(new NPCHitEffects.DustSpawnParameters(DustID.Blood, 5));
-			c.AddDust(new NPCHitEffects.DustSpawnParameters(DustID.Blood, 100, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters(134, 1, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters(135, 1, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters(136, 1, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{nameof(BloodSplatSmall)}", 5, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 3, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{nameof(BloodSplatLarge)}", 1, NPCHitEffects.OnDeath));
 		});
 	}
 
