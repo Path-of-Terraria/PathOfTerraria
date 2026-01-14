@@ -40,6 +40,15 @@ internal sealed class FallenTyrant : Fallen
 		Loop = false,
 	};
 
+	public override void Load()
+	{
+		GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, $"{Texture}_GoreBlade");
+		GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreHead");
+		GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreChest");
+		GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreArm");
+		GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreLeg");
+	}
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
@@ -63,6 +72,25 @@ internal sealed class FallenTyrant : Fallen
 		Behavior.AttackInitiationRange = new Vector2(512f, 384f);
 
 		NPC.GetGlobalNPC<NPCAnimations>().BaseFrame = new SpriteFrame(6, 5) with { PaddingX = 0, PaddingY = 0 };
+
+		NPC.TryEnableComponent<NPCHitEffects>(c =>
+		{
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 1));
+
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{nameof(BloodSplatSmall)}", 2, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 1, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{nameof(BloodSplatLarge)}", 1, NPCHitEffects.OnDeath));
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreHead", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+00, -16), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreChest", 1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+00, +00), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreBlade", 1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+00, +00), new(15, 15)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreArm", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(-16, +00), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreArm", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+16, +00), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreLeg", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+16, -16), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreLeg", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+16, +16), new(3, 3)) });
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{nameof(BloodSplatSmall)}", 2, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 1, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{nameof(BloodSplatLarge)}", 1, NPCHitEffects.OnDeath));
+		});
 	}
 
 	protected override Context InnerAI()
@@ -116,6 +144,15 @@ internal sealed class FallenSavage : Fallen
 		Loop = false,
 	};
 
+	public override void Load()
+	{
+		GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, $"{Texture}_GoreBlade");
+		GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreHead");
+		GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreChest");
+		GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreArm");
+		GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreLeg");
+	}
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
@@ -138,6 +175,25 @@ internal sealed class FallenSavage : Fallen
 		Behavior.SpriteOffset = new(0f, -1f);
 
 		NPC.GetGlobalNPC<NPCAnimations>().BaseFrame = new SpriteFrame(5, 5) with { PaddingX = 0, PaddingY = 0 };
+
+		NPC.TryEnableComponent<NPCHitEffects>(c =>
+		{
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 1));
+
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{nameof(BloodSplatSmall)}", 2, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 1, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{nameof(BloodSplatLarge)}", 1, NPCHitEffects.OnDeath));
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreHead", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+00, -16), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreChest", 1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+00, +00), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreBlade", 1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+00, +00), new(15, 15)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreArm", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(-16, +00), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreArm", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+16, +00), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreLeg", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+16, -16), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreLeg", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+16, +16), new(3, 3)) });
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{nameof(BloodSplatSmall)}", 2, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 1, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{nameof(BloodSplatLarge)}", 1, NPCHitEffects.OnDeath));
+		});
 	}
 
 	protected override SpriteAnimation? ChooseWantedAnimation(in Context ctx)
@@ -186,6 +242,16 @@ internal sealed class FallenSchemer : Fallen
 
 	public ref ushort TeleportCooldown => ref Unsafe.As<float, ushort>(ref Unsafe.AddByteOffset(ref NPC.localAI[2], 2));
 
+	public override void Load()
+	{
+		GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreHead");
+		GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreChest");
+		GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreArm1");
+		GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreArm2");
+		GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreLeg1");
+		GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreLeg2");
+	}
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
@@ -218,6 +284,24 @@ internal sealed class FallenSchemer : Fallen
 		TeleportCooldown = 60;
 
 		NPC.GetGlobalNPC<NPCAnimations>().BaseFrame = new SpriteFrame(6, 6) with { PaddingX = 0, PaddingY = 0 };
+
+		NPC.TryEnableComponent<NPCHitEffects>(c =>
+		{
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 1));
+
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{nameof(BloodSplatSmall)}", 2, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 1, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{nameof(BloodSplatLarge)}", 1, NPCHitEffects.OnDeath));
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreHead", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+00, -16), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreChest", 1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+00, +00), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreArm1", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(-16, +00), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreArm2", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+16, +00), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreLeg1", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+16, -16), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreLeg2", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+16, +16), new(3, 3)) });
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{nameof(BloodSplatSmall)}", 2, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 1, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{nameof(BloodSplatLarge)}", 1, NPCHitEffects.OnDeath));
+		});
 	}
 
 	public override void SendExtraAI(BinaryWriter writer)
@@ -463,18 +547,6 @@ internal abstract class Fallen : ModNPC
 			e.BaseFrame = new SpriteFrame(1, 6) with { PaddingX = 0, PaddingY = 0 };
 		});
 		NPC.TryEnableComponent<NPCTargetTracking>();
-
-		NPC.TryEnableComponent<NPCHitEffects>(c =>
-		{
-			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 1));
-
-			c.AddGore(new NPCHitEffects.GoreSpawnParameters(134, 1, NPCHitEffects.OnDeath));
-			c.AddGore(new NPCHitEffects.GoreSpawnParameters(135, 1, NPCHitEffects.OnDeath));
-			c.AddGore(new NPCHitEffects.GoreSpawnParameters(136, 1, NPCHitEffects.OnDeath));
-			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{nameof(BloodSplatSmall)}", 5, NPCHitEffects.OnDeath));
-			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 3, NPCHitEffects.OnDeath));
-			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{nameof(BloodSplatLarge)}", 1, NPCHitEffects.OnDeath));
-		});
 	}
 
 	public override void AI() { InnerAI(); }
