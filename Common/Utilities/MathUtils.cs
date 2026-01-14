@@ -127,8 +127,8 @@ public static class MathUtils
 		Debug.Assert(distance >= 0f);
 		Debug.Assert(farthest >= closest);
 
-		float result = 1f - ((distance - closest) / (farthest - closest));
+		float result = 1f - (distance - closest) / (farthest - closest);
 
-		return float.IsNaN(result) ? 0f : result;
+		return float.IsNaN(result) ? 0f : Clamp01(result);
 	}
 }
