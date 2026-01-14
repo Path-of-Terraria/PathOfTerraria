@@ -1,17 +1,18 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains;
+﻿using Ionic.Zlib;
+using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.Subworlds.MappingAreas.SwampAreaContent;
 using PathOfTerraria.Common.Tiles;
 using PathOfTerraria.Common.Tiles.FramingKinds;
 using PathOfTerraria.Common.World.Generation;
-using PathOfTerraria.Common.World.Generation.Tools;
+using PathOfTerraria.Common.World.Passes;
 using PathOfTerraria.Common.World.Utilities;
 using PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
-using PathOfTerraria.Content.Tiles.Maps.Forest;
 using PathOfTerraria.Content.Tiles.Maps.Swamp;
 using PathOfTerraria.Utilities;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
@@ -31,6 +32,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 	public const int CloudLayer = 200;
 	public const int MapHeight = 900;
 
+	public static float MossNoiseThreshold => -0.4f;
 	public static UnifiedRandom Random => Main.rand;
 
 	internal static Dictionary<int, int>? HeightMapping = null;
@@ -43,14 +45,15 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 	public override int[] WhitelistedMiningTiles => [TileID.CrackedBlueDungeonBrick, TileID.Cobweb];
 	public override (int time, bool isDay) ForceTime => ((int)Main.dayLength / 2, SunDevourerSunEdit.Blackout > 0);
 
-	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new PassLegacy("Terrain", GenerateTerrain)];
+	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new PassLegacy("Terrain", GenerateTerrain), new PassLegacy("SettleLiquids", SettleLiquidsStep.Generation)];
 
 	private void GenerateTerrain(GenerationProgress progress, GameConfiguration configuration)
 	{
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Terrain");
+		progress.Set(0);
 
-		Main.worldSurface = FloorY + 100;
-		Main.rockLayer = FloorY + 105;
+		Main.worldSurface = WaterY + 10;
+		Main.rockLayer = WaterY + 40;
 
 		LeftSpawn = Random.NextBool(2);
 		Main.spawnTileX = LeftSpawn ? 70 : Main.maxTilesX - 70;
@@ -130,7 +133,32 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.TreesAndLeaves");
 
 		GrowTrees();
+		GrowDeepMoss(progress);
 		GrowLilyPads(progress);
+
+		for (int i = 2; i < Main.maxTilesX - 2; ++i)
+		{
+			int topY = FloorY - 10 - (int)(Math.Abs(noise.GetNoise(i, 10000)) * 10);
+
+			for (int j = topY; j < Main.maxTilesY - 40; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+
+				if (!tile.HasTile || !WorldUtilities.SolidTile(tile))
+				{
+					continue;
+				}
+
+				bool actuate = j > HeightMapping[i] - Math.Abs(noise.GetNoise(i, j) * 6) - 10 && j <= HeightMapping[i] - 5;
+
+				if (!actuate)
+				{
+					actuate = j > HeightMapping[i] - Math.Abs(noise.GetNoise(i, j) * 15) - 40 && j <= HeightMapping[i] - 30;
+				}
+
+				tile.IsActuated = actuate;
+			}
+		}
 
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Clouds");
 
@@ -162,75 +190,219 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 		}
 
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Growing");
+		CleanUpAndDetail(progress, cloudNoise);
+	}
+
+	private static void GrowDeepMoss(GenerationProgress progress)
+	{
+		/// hey Gabe HasW on do this tomorrow thanks
+		FastNoiseLite noise = new(Random.Next());
+		//noise.SetCellularReturnType(FastNoiseLite.CellularReturnType.Distance2Mul);
+		//noise.SetCellularDistanceFunction(FastNoiseLite.CellularDistanceFunction.Manhattan);
+		//noise.SetCellularJitter(1.000f);
+		noise.SetNoiseType(FastNoiseLite.NoiseType.Cellular);
+		noise.SetFrequency(0.03f);
+
+		HashSet<Point16> positions = [];
+
+		for (int i = 300; i < Main.maxTilesX - 300; ++i)
+		{
+			for (int j = WaterY + 20; j < Main.maxTilesY - 60; ++j)
+			{
+				if (noise.GetNoise(i, j) > MossNoiseThreshold)
+				{
+					Point16 pos = new(Random.Next(300, Main.maxTilesX - 300), Random.Next(WaterY + 40, Main.maxTilesY - 40));
+					Recurse(pos, positions, noise);
+				}
+			}
+
+			progress.Set(i / (float)Main.maxTilesX);
+		}
+
+		//for (int i = 0; i < 3; ++i)
+		//{
+		//	bool added = false;
+
+		//	while (!added)
+		//	{
+		//		Point16 pos = new(Random.Next(300, Main.maxTilesX - 300), Random.Next(WaterY + 40, Main.maxTilesY - 40));
+		//		added = Recurse(pos, positions, noise);
+		//	}
+		//}
+
+		foreach (Point16 position in positions)
+		{
+			GenPlacement.FastPlaceTile(position.X, position.Y, ModContent.TileType<DeepMoss>());
+		}
+	}
+
+	private static bool Recurse(Point16 pos, HashSet<Point16> positions, FastNoiseLite noise)
+	{
+		Queue<Point16> next = new();
+		next.Enqueue(pos);
+		bool anyAdded = false;
+
+		while (next.Count > 0)
+		{
+			Point16 tile = next.Dequeue();
+			float i = tile.X;
+			float j = tile.Y;
+			tile = new Point16((int)i, (int)j);
+
+			if (positions.Contains(tile) || WorldUtilities.SolidTile(tile.X, tile.Y) || noise.GetNoise(i, j) < MossNoiseThreshold)
+			{
+				continue;
+			}
+
+			positions.Add(tile);
+			anyAdded = true;
+
+			next.Enqueue(new Point16(tile.X, tile.Y + 1));
+			next.Enqueue(new Point16(tile.X, tile.Y - 1));
+			next.Enqueue(new Point16(tile.X + 1, tile.Y));
+			next.Enqueue(new Point16(tile.X - 1, tile.Y));
+		}
+
+		return anyAdded;
+	}
+
+	private static void CleanUpAndDetail(GenerationProgress progress, FastNoiseLite cloudNoise)
+	{
+		List<Point16> leaves = [];
 
 		for (int i = 2; i < Main.maxTilesX - 2; ++i)
 		{
 			for (int j = 2; j < Main.maxTilesY - 2; ++j)
 			{
-				if (!Random.NextBool(3) && WorldGen.TileIsExposedToAir(i, j))
+				Tile tile = Main.tile[i, j];
+				bool touchingAir = WorldGen.TileIsExposedToAir(i, j);
+
+				if (!Random.NextBool(3) && touchingAir && (Main.tile[i, j - 1].LiquidAmount <= 0 || tile.TileType != ModContent.TileType<SwampGrass>()))
 				{
 					Tile.SmoothSlope(i, j, false);
 				}
 
-				Tile tile = Main.tile[i, j];
-
 				if (WorldUtilities.SolidUnslopedTile(i, j))
 				{
-					if (!WorldUtilities.SolidTile(i, j + 1) && tile.TileType == TileID.LeafBlock)
+					if (tile.TileType == TileID.LeafBlock)
 					{
-						bool isWall = Random.NextBool(3);
-						int length = isWall ? Random.Next(7, 23) : Random.Next(3, 12);
-
-						for (int v = isWall ? -1 : 1; v < length; ++v)
+						if (!WorldUtilities.SolidTile(i, j + 1))
 						{
-							if (!isWall && WorldUtilities.SolidTile(Main.tile[i, j + v]))
-							{
-								break;
-							}
+							bool isWall = Random.NextBool(3);
+							int length = isWall ? Random.Next(7, 23) : Random.Next(3, 12);
 
-							if (isWall)
+							for (int v = isWall ? -1 : 1; v < length; ++v)
 							{
-								GenPlacement.FastPlaceWall(i, j + v, WallID.LivingLeaf);
+								if (!isWall && WorldUtilities.SolidTile(Main.tile[i, j + v]))
+								{
+									break;
+								}
+
+								if (isWall)
+								{
+									GenPlacement.FastPlaceWall(i, j + v, WallID.LivingLeaf);
+								}
+								else
+								{
+									GenPlacement.FastPlaceTile(i, j + v, TileID.Vines);
+								}
 							}
-							else
-							{
-								GenPlacement.FastPlaceTile(i, j + v, TileID.Vines);
-							}
+						}
+
+						if (touchingAir)
+						{
+							leaves.Add(new Point16(i, j));
 						}
 					}
 
 					if (!WorldUtilities.SolidTile(i, j - 1) && tile.TileType == ModContent.TileType<SwampGrass>())
 					{
-						int height = (int)(cloudNoise.GetNoise(i * 3, j) * 26) + 36;
+						int height = (int)(cloudNoise.GetNoise(i * 3, j) * 260) + 2 + Random.Next(5);
 
 						for (int v = 1; v < height; ++v)
 						{
-							Tile weed = Main.tile[i, j - v];
-
-							if (weed.HasTile || weed.LiquidAmount < 200)
-							{
-								break;
-							}
-
-							weed.HasTile = true;
-							weed.TileType = (ushort)ModContent.TileType<SwampWeed>();
+							int frame = 0;
 
 							if (v < height / 3)
 							{
-								weed.TileFrameX = 36;
+								frame = 2;
 							}
 							else if (v < height / 3 * 2)
 							{
-								weed.TileFrameX = 18;
-							}
-							else
-							{
-								weed.TileFrameX = 0;
+								frame = 1;
 							}
 
-							WorldGen.TileFrame(i, j - v);
+							SwampWeed.Place(i, j - v, frame);
 						}
 					}
+				}
+			}
+
+			progress.Set(i / (float)Main.maxTilesX);
+		}
+
+		for (int i = 0; i < 150; ++i)
+		{
+			Point16 firstPoint = Random.Next(leaves);
+			Vector2 one = firstPoint.ToVector2() + OpenExtensions.GetDirectionRandom(OpenExtensions.GetUnsolidOpenings(firstPoint.X, firstPoint.Y, false, false)).ToVector2();
+
+			Point16 secondPoint;
+
+			do
+			{
+				secondPoint = Random.Next(leaves);
+			} while (firstPoint == secondPoint || one.DistanceSQ(secondPoint.ToVector2()) > 700 * 700);
+
+			Vector2 two = secondPoint.ToVector2() + OpenExtensions.GetDirectionRandom(OpenExtensions.GetUnsolidOpenings(secondPoint.X, secondPoint.Y, false, false)).ToVector2();
+			float distance = two.Distance(one);
+			Vector2[] vine = Tunnel.GenerateBezier([one, Vector2.Lerp(one, two, 0.5f) + new Vector2(0, Random.NextFloat(distance * 0.33f, distance * 0.5f)), two], 0.8f, 0);
+			float baseStrength = Random.NextFloat(0.8f, 1.5f) * (distance / 500f);
+
+			for (int j = 0; j < vine.Length; j++)
+			{
+				Vector2 pos = vine[j];
+				
+				if (pos.Y > WaterY)
+				{
+					float dif = pos.Y - WaterY;
+					pos.Y = WaterY + dif / 4f;
+				}
+
+				float str = MathF.Abs(j - vine.Length / 2) / (vine.Length / 2f);
+				GenPlacement.WallCircle(pos, baseStrength * str + 1.05f, WallID.LivingLeaf);
+
+				if (Random.NextBool(10))
+				{
+					leaves.Add(pos.ToPoint16());
+				}
+
+				if (Random.NextBool(80))
+				{
+					float length = str * Random.NextFloat(6f, 35f);
+
+					for (int v = 0; v < length; ++v)
+					{
+						GenPlacement.WallCircle(pos + new Vector2(0, v), 1.5f - (v / length), WallID.LivingLeaf);
+
+						if (Random.NextBool(8))
+						{
+							leaves.Add(new Point16((int)pos.X, (int)pos.Y + v));
+						}
+					}
+				}
+			}
+		}
+
+		for (int i = 2; i < Main.maxTilesX - 2; ++i)
+		{
+			for (int j = 2; j < Main.maxTilesY - 2; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+
+				if (j > WaterY)
+				{
+					tile.LiquidAmount = (byte)(j == WaterY + 1 ? 150 : 255);
+					tile.LiquidType = LiquidID.Water;
 				}
 			}
 
@@ -270,7 +442,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 		while (mangroves.Count > 0)
 		{
 			BranchTreeMicrobiome biome = new();
-			biome.Place(new(mangroves.Dequeue() * 300, FloorY - Random.Next(150, 280)), GenVars.structures ?? new());
+			biome.Place(new(mangroves.Dequeue() * 300, FloorY - Random.Next(150, 220)), GenVars.structures ?? new());
 		}
 
 		const int CypressSpace = 140;
@@ -312,14 +484,14 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 			position.Deconstruct(out short i, out short j);
 			bool underwater = Main.tile[position].LiquidAmount > 0;
 
-			if (Random.NextBool(50))
+			if (Random.NextBool(44))
 			{
 				int chance = underwater ? 4 : 2;
 				int id = !Random.NextBool() ? (underwater ? ModContent.TileType<DeepMoss>() : ModContent.TileType<SwampMoss>()) : TileID.Mudstone;
 				GenPlacement.GenOval(new Vector2(i, j), Random.NextFloat(2, 8), Random.NextFloat(MathHelper.PiOver2 - 0.3f, MathHelper.PiOver2 + 0.3f) * (Random.NextBool() ? -1 : 1),
 					id, (x, y) => noise.GetNoise(x, y) * 8);
 			}
-			else if (!Random.NextBool(4) && !underwater)
+			else if (!Random.NextBool(4) && !underwater && !Main.tile[i, j - 1].HasTile)
 			{
 				WorldGen.PlaceTile(i, j - 1, ModContent.TileType<SwampPlants1x1>(), true, false, -1, Random.Next(6));
 			}

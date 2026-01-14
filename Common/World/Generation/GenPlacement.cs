@@ -8,6 +8,13 @@ namespace PathOfTerraria.Common.World.Generation;
 
 internal static class GenPlacement
 {
+	public enum Replaceability : byte
+	{
+		None,
+		All,
+		Cuttable,
+	}
+
 	public const int MossMarker = -1;
 
 	/// <summary>
@@ -216,7 +223,7 @@ internal static class GenPlacement
 	/// </summary>
 	/// <param name="pos">Center of the circle.</param>
 	/// <param name="size">Radius of the circle.</param>
-	public static void TileCircle(Vector2 pos, float size, Action<int, int> action, bool noReplace = false)
+	public static void TileCircle(Vector2 pos, float size, Action<int, int> action, Replaceability replacing = Replaceability.All)
 	{
 		for (int i = (int)(pos.X - size); i < (int)pos.X + size; ++i)
 		{
@@ -226,7 +233,7 @@ internal static class GenPlacement
 				{
 					Tile tile = Main.tile[i, j];
 
-					if (!noReplace && tile.HasTile)
+					if ((replacing == Replaceability.None && tile.HasTile) || (replacing == Replaceability.Cuttable && tile.HasTile && !Main.tileCut[tile.TileType]))
 					{
 						continue;
 					}

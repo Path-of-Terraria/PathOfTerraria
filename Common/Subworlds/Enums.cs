@@ -208,7 +208,7 @@ public static class OpenExtensions
 		};
 	}
 
-	public static Point GetDirectionRandom(this OpenFlags flags, UnifiedRandom random = null)
+	public static Point GetDirectionRandom(this OpenFlags flags, UnifiedRandom random = null, bool safeClose = true)
 	{
 		PriorityQueue<OpenFlags, float> directions = new();
 		random ??= Main.rand;
@@ -226,6 +226,16 @@ public static class OpenExtensions
 		AddIfTrue(OpenFlags.Below);
 		AddIfTrue(OpenFlags.Left);
 		AddIfTrue(OpenFlags.Right);
+
+		AddIfTrue(OpenFlags.DownRight);
+		AddIfTrue(OpenFlags.UpRight);
+		AddIfTrue(OpenFlags.DownLeft);
+		AddIfTrue(OpenFlags.UpLeft);
+
+		if (safeClose && directions.Count == 0)
+		{
+			return Point.Zero;
+		}
 
 		return GetDirectionAbsolute(directions.Dequeue());
 	}

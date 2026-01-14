@@ -1,4 +1,6 @@
-﻿namespace PathOfTerraria.Common.Tiles.FramingKinds;
+﻿using PathOfTerraria.Common.World.Utilities;
+
+namespace PathOfTerraria.Common.Tiles.FramingKinds;
 
 /// <summary>
 /// Defines a <see cref="ModTile"/> as a "lily pad" for framing purposes. Also containers helper methods.
@@ -56,6 +58,11 @@ internal interface ILilyPadTile : ILoadable
 			}
 		}
 
+		ReframePad(x, y, width);
+	}
+
+	private static void ReframePad(int x, int y, int width)
+	{
 		for (int i = x - width; i < x + width; ++i)
 		{
 			WorldGen.TileFrame(i, y);
@@ -78,6 +85,7 @@ internal interface ILilyPadTile : ILoadable
 		}
 
 		Tile tile = Main.tile[i, j];
+		int type = tile.TileType;
 		bool left = HasTile(i - 1, j);
 		bool right = HasTile(i + 1, j);
 		bool below = HasTile(i, j + 1);
@@ -126,9 +134,9 @@ internal interface ILilyPadTile : ILoadable
 
 		return false;
 
-		static bool HasTile(int x, int y)
+		bool HasTile(int x, int y)
 		{
-			return Main.tile[x, y].HasTile && Main.tileSolid[Main.tile[x, y].TileType];
+			return WorldUtilities.SolidTile(x, y) && Main.tile[x, y].TileType == type;
 		}
 	}
 }

@@ -166,14 +166,14 @@ internal class CypressTreeMicrobiome : MicroBiome
 				tile.HasTile = true;
 				tile.TileType = TileID.LivingWood;
 
-				bool actuate = y > SwampArea.HeightMapping[x] - Math.Abs(noise.GetNoise(x, y) * 6) - 10 && y <= SwampArea.HeightMapping[x] - 5;
+				//bool actuate = y > SwampArea.HeightMapping[x] - Math.Abs(noise.GetNoise(x, y) * 6) - 10 && y <= SwampArea.HeightMapping[x] - 5;
 
-				if (!actuate && tile.LiquidAmount > 0)
-				{
-					actuate = y > SwampArea.HeightMapping[x] - Math.Abs(noise.GetNoise(x, y) * 15) - 40 && y <= SwampArea.HeightMapping[x] - 30;
-				}
+				//if (!actuate && tile.LiquidAmount > 0)
+				//{
+				//	actuate = y > SwampArea.HeightMapping[x] - Math.Abs(noise.GetNoise(x, y) * 15) - 40 && y <= SwampArea.HeightMapping[x] - 30;
+				//}
 
-				tile.IsActuated = actuate;
+				//tile.IsActuated = actuate;
 			}
 		}
 

@@ -230,7 +230,7 @@ internal class BranchTreeMicrobiome : MicroBiome
 				tile.TileType = TileID.LivingWood;
 				tile.HasTile = true;
 				tile.IsActuated = true;
-			}, false);
+			}, GenPlacement.Replaceability.Cuttable);
 		}
 	}
 
