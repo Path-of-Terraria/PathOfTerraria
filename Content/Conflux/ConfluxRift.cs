@@ -279,7 +279,7 @@ internal record struct EnemyRole
 				// Create the encounter once enough time has passed.
 				if (Encounter == default)
 				{
-					const uint lengthInSeconds = (uint)(1f * 60);
+					const uint lengthInSeconds = (uint)(1f * 3);
 					const uint spawnStartDelay = 1;
 
 					EndTime = Main.GameUpdateCount + ((lengthInSeconds + spawnStartDelay) * (uint)TimeSystem.LogicFramerate);
@@ -711,9 +711,10 @@ internal record struct EnemyRole
 
 		for (int i = 0; i < rewardAmount; i++)
 		{
-			int itemIdx = Item.NewItem(null, Projectile.Center + Main.rand.NextVector2Circular(72f, 72f), rewardType, 1, noBroadcast: true);
+			Vector2 position = Projectile.Center + Main.rand.NextVector2Circular(8f, 8f);
+			int itemIdx = Item.NewItem(null, position, rewardType, 1, noBroadcast: true);
 			Item item = Main.item[itemIdx];
-			item.velocity = Main.rand.NextVector2Circular(10f, 10f);
+			item.velocity = Vector2.UnitX.RotatedBy((i / (float)rewardAmount) * MathHelper.TwoPi).RotatedByRandom(0.1f) * 5f;
 
 			if (Main.netMode == NetmodeID.Server)
 			{
