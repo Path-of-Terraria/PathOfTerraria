@@ -312,17 +312,19 @@ internal static class GenPlacement
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static void FastPlaceTile(int x, int y, int type)
+	public static Tile FastPlaceTile(int x, int y, int type)
 	{
 		Tile tile = Main.tile[x, y];
 		tile.TileType = (ushort)type;
 		tile.HasTile = true;
+		return tile;
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static void FastPlaceWall(int x, int y, int type)
+	public static Tile FastPlaceWall(int x, int y, int type)
 	{
 		Tile tile = Main.tile[x, y];
 		tile.WallType = (ushort)type;
+		return tile;
 	}
 }

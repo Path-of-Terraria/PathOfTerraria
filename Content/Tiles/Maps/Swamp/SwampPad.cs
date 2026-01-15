@@ -16,7 +16,7 @@ internal class SwampPad : ModTile, ILilyPadTile
 
 		DustType = DustID.Grass;
 
-		AddMapEntry(new Color(182, 175, 130));
+		AddMapEntry(new Color(159, 196, 125));
 	}
 
 	public override void NearbyEffects(int i, int j, bool closer)

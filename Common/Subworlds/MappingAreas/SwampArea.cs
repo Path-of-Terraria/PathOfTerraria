@@ -1,7 +1,6 @@
-﻿using Ionic.Zlib;
+﻿using PathOfTerraria.Common.Encounters;
 using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.Subworlds.MappingAreas.SwampAreaContent;
-using PathOfTerraria.Common.Tiles;
 using PathOfTerraria.Common.Tiles.FramingKinds;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Passes;
@@ -12,7 +11,6 @@ using PathOfTerraria.Utilities;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
@@ -36,8 +34,11 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 	public static UnifiedRandom Random => Main.rand;
 
 	internal static Dictionary<int, int>? HeightMapping = null;
+	internal static List<Vector2> EncounterLocations = [];
+	internal static HashSet<Point16> SkipActuationLocations = [];
 
-	private static bool LeftSpawn = false;
+	private bool LeftSpawn = false;
+	private bool spawnedEncounters = false;
 
 	public override int Width => 3000 + 200 * Main.rand.Next(3);
 	public override int Height => MapHeight;
@@ -55,7 +56,11 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 		Main.worldSurface = WaterY + 10;
 		Main.rockLayer = WaterY + 40;
 
+		spawnedEncounters = false;
+		EncounterLocations.Clear();
 		LeftSpawn = Random.NextBool(2);
+		SkipActuationLocations.Clear();
+
 		Main.spawnTileX = LeftSpawn ? 70 : Main.maxTilesX - 70;
 		Main.spawnTileY = FloorY - 6;
 
@@ -144,7 +149,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 			{
 				Tile tile = Main.tile[i, j];
 
-				if (!tile.HasTile || !WorldUtilities.SolidTile(tile))
+				if (!tile.HasTile || !WorldUtilities.SolidTile(tile) || SkipActuationLocations.Contains(new Point16(i, j)))
 				{
 					continue;
 				}
@@ -195,13 +200,9 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 
 	private static void GrowDeepMoss(GenerationProgress progress)
 	{
-		/// hey Gabe HasW on do this tomorrow thanks
 		FastNoiseLite noise = new(Random.Next());
-		//noise.SetCellularReturnType(FastNoiseLite.CellularReturnType.Distance2Mul);
-		//noise.SetCellularDistanceFunction(FastNoiseLite.CellularDistanceFunction.Manhattan);
-		//noise.SetCellularJitter(1.000f);
 		noise.SetNoiseType(FastNoiseLite.NoiseType.Cellular);
-		noise.SetFrequency(0.03f);
+		noise.SetFrequency(0.05f);
 
 		HashSet<Point16> positions = [];
 
@@ -212,23 +213,12 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 				if (noise.GetNoise(i, j) > MossNoiseThreshold)
 				{
 					Point16 pos = new(Random.Next(300, Main.maxTilesX - 300), Random.Next(WaterY + 40, Main.maxTilesY - 40));
-					Recurse(pos, positions, noise);
+					RecursiveExploreNoise(pos, positions, noise);
 				}
 			}
 
 			progress.Set(i / (float)Main.maxTilesX);
 		}
-
-		//for (int i = 0; i < 3; ++i)
-		//{
-		//	bool added = false;
-
-		//	while (!added)
-		//	{
-		//		Point16 pos = new(Random.Next(300, Main.maxTilesX - 300), Random.Next(WaterY + 40, Main.maxTilesY - 40));
-		//		added = Recurse(pos, positions, noise);
-		//	}
-		//}
 
 		foreach (Point16 position in positions)
 		{
@@ -236,7 +226,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 		}
 	}
 
-	private static bool Recurse(Point16 pos, HashSet<Point16> positions, FastNoiseLite noise)
+	private static bool RecursiveExploreNoise(Point16 pos, HashSet<Point16> positions, FastNoiseLite noise)
 	{
 		Queue<Point16> next = new();
 		next.Enqueue(pos);
@@ -315,9 +305,14 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 						}
 					}
 
-					if (!WorldUtilities.SolidTile(i, j - 1) && tile.TileType == ModContent.TileType<SwampGrass>())
+					if (!WorldUtilities.SolidTile(i, j - 1) && (tile.TileType == ModContent.TileType<SwampGrass>() || tile.TileType == ModContent.TileType<DeepMoss>()))
 					{
 						int height = (int)(cloudNoise.GetNoise(i * 3, j) * 260) + 2 + Random.Next(5);
+
+						if (tile.TileType == ModContent.TileType<DeepMoss>())
+						{
+							height /= 2;
+						}
 
 						for (int v = 1; v < height; ++v)
 						{
@@ -479,21 +474,61 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 
 	private static void GrowGrasses(List<Point16> grasses, FastNoiseLite noise)
 	{
+		Dictionary<int, PriorityQueue<Point16, float>> decor = [];
+
 		foreach (Point16 position in CollectionsMarshal.AsSpan(grasses))
 		{
 			position.Deconstruct(out short i, out short j);
 			bool underwater = Main.tile[position].LiquidAmount > 0;
 
-			if (Random.NextBool(44))
+			if (!underwater && Random.NextBool(70))
 			{
-				int chance = underwater ? 4 : 2;
-				int id = !Random.NextBool() ? (underwater ? ModContent.TileType<DeepMoss>() : ModContent.TileType<SwampMoss>()) : TileID.Mudstone;
-				GenPlacement.GenOval(new Vector2(i, j), Random.NextFloat(2, 8), Random.NextFloat(MathHelper.PiOver2 - 0.3f, MathHelper.PiOver2 + 0.3f) * (Random.NextBool() ? -1 : 1),
-					id, (x, y) => noise.GetNoise(x, y) * 8);
+				decor.TryAdd(0, new());
+				decor[0].Enqueue(position, Random.NextFloat());
+			}
+			else if (Random.NextBool(44))
+			{
+				decor.TryAdd(1, new());
+				decor[1].Enqueue(position, Random.NextFloat());
 			}
 			else if (!Random.NextBool(4) && !underwater && !Main.tile[i, j - 1].HasTile)
 			{
 				WorldGen.PlaceTile(i, j - 1, ModContent.TileType<SwampPlants1x1>(), true, false, -1, Random.Next(6));
+			}
+		}
+
+		while (decor[1].Count > 0)
+		{
+			Point16 boulders = decor[1].Dequeue();
+			bool underwater = Main.tile[boulders].LiquidAmount > 0;
+			int chance = underwater ? 4 : 2;
+			int id = !Random.NextBool() ? (underwater ? ModContent.TileType<DeepMoss>() : ModContent.TileType<SwampMoss>()) : TileID.Mudstone;
+			GenPlacement.GenOval(boulders.ToVector2(), Random.NextFloat(2, 8), Random.NextFloat(MathHelper.PiOver2 - 0.3f, MathHelper.PiOver2 + 0.3f) * (Random.NextBool() ? -1 : 1),
+				id, (x, y) => noise.GetNoise(x, y) * 8);
+		}
+
+		while (decor[0].Count > 0)
+		{
+			Point16 log = decor[0].Dequeue();
+			log.Deconstruct(out short i, out short j);
+
+			while (WorldUtilities.SolidTile(i, j))
+			{
+				j--;
+			}
+
+			int width = Random.Next(5, 9);
+			int height = Random.Next(3, 6);
+
+			j -= (short)(height / 2);
+
+			for (int x = i; x < i + width; ++x)
+			{
+				for (int y = j; y < j + height; ++y)
+				{
+					GenPlacement.FastPlaceTile(x, y, TileID.LivingWood).IsActuated = y != j && y != j + height - 1;
+					SkipActuationLocations.Add(new Point16(x, y));
+				}
 			}
 		}
 	}
@@ -585,6 +620,21 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 	public override void Update()
 	{
 		Liquid.UpdateLiquid();
+
+		if (!spawnedEncounters && Main.ActivePlayers.GetEnumerator().MoveNext())
+		{
+			PlaceEncounters();
+			spawnedEncounters = true;
+		}
+	}
+
+	private static void PlaceEncounters()
+	{
+		foreach (Vector2 position in EncounterLocations)
+		{
+			Encounter encounter = EncounterIO.CreateEncounterFromModPath(PoTMod.Instance, "Content/Encounters/SwampMangrove");
+			encounter.MoveEverythingTo(position.ToPoint16());
+		}
 	}
 
 	public void OverrideBiome()

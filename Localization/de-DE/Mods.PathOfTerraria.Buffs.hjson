@@ -228,26 +228,31 @@ WideSwingsBuff: {
 }
 
 DwarvishBuff: {
-	// DisplayName: Dwarvish Buff
+	// DisplayName: Dwarvish
 	// Description: Mods.PathOfTerraria.Buffs.DwarvishBuff.Description
 }
 
 AvariceBuff: {
-	// DisplayName: Avarice Buff
+	// DisplayName: Avarice
 	// Description: Mods.PathOfTerraria.Buffs.AvariceBuff.Description
 }
 
 SlowburnDebuff: {
-	// DisplayName: Slowburn Debuff
+	// DisplayName: Slowburn
 	// Description: Mods.PathOfTerraria.Buffs.SlowburnDebuff.Description
 }
 
 EverburningShadowflameDebuff: {
-	// DisplayName: Everburning Shadowflame Debuff
+	// DisplayName: Everburning Shadowflame
 	// Description: Mods.PathOfTerraria.Buffs.EverburningShadowflameDebuff.Description
 }
 
 RageStacksBuff: {
-	// DisplayName: Rage Stacks Buff
+	// DisplayName: Rage Stacks
 	// Description: Mods.PathOfTerraria.Buffs.RageStacksBuff.Description
+}
+
+SwampAlgaeBuff: {
+	// DisplayName: Swamp Algae
+	// Description: You are much less inhibited by water...but you may attract unwanted attention
 }

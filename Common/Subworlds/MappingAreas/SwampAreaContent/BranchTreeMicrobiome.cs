@@ -1,9 +1,11 @@
-﻿using Microsoft.Build.Tasks;
+﻿using PathOfTerraria.Common.ItemDropping;
 using PathOfTerraria.Common.World.Generation;
+using PathOfTerraria.Core.Items;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds.MappingAreas.SwampAreaContent;
@@ -24,8 +26,17 @@ internal class BranchTreeMicrobiome : MicroBiome
 		GenerateRoots(canopy, noise, width, origin);
 		GenerateLeaves(branchTips, canopy);
 		GeneratePlatforms(canopy);
+		GetEncounterPosition(canopy);
 
 		return true;
+	}
+
+	private static void GetEncounterPosition(List<Vector2> canopy)
+	{
+		Vector2 maxY = canopy.MaxBy(x => x.Y);
+		float midX = (canopy.MaxBy(x => x.X).X + canopy.MinBy(x => x.X).X) / 2f;
+
+		SwampArea.EncounterLocations.Add(new Vector2(midX, maxY.Y));
 	}
 
 	private static void GeneratePlatforms(List<Vector2> canopy)
@@ -33,6 +44,7 @@ internal class BranchTreeMicrobiome : MicroBiome
 		int count = _random.Next(11, 19);
 		List<Vector2> taken = [];
 		int skip = 0;
+		List<Point16> chestPlacementOptions = [];
 
 		for (int i = 0; i < count; ++i)
 		{
@@ -75,11 +87,14 @@ internal class BranchTreeMicrobiome : MicroBiome
 
 			taken.Add(randomPointOnCanopy);
 
+			short minPlatformX = platformPositions.Min(x => x.X);
+			short maxPlatformX = platformPositions.Max(x => x.X);
+
 			foreach (Point16 pos in platformPositions)
 			{
 				WorldGen.PlaceTile(pos.X, pos.Y, TileID.Platforms, true);
 
-				if (pos.X == platformPositions.Min(x => x.X) || pos.X == platformPositions.Max(x => x.X))
+				if (pos.X == minPlatformX || pos.X == maxPlatformX)
 				{
 					Tile tile = Main.tile[pos.X, pos.Y - 1];
 					int y = -1;
@@ -98,17 +113,69 @@ internal class BranchTreeMicrobiome : MicroBiome
 				}
 			}
 
+			foreach (Point16 pos in platformPositions)
+			{
+				if (pos.X != minPlatformX && pos.X != maxPlatformX)
+				{
+					chestPlacementOptions.Add(new Point16(pos.X, pos.Y - 1));
+				}
+			}
+
 			continue;
 
 			skipAll:
 
 			if (skip > 15000)
 			{
-				return;
+				break;
 			}
 
 			i--;
 			continue;
+		}
+
+		for (int i = 0; i < 2; ++i)
+		{
+			Point16 pos = _random.Next(chestPlacementOptions);
+			int chest = WorldGen.PlaceChest(pos.X, pos.Y, TileID.Containers, false, 12);
+
+			if (chest == -1)
+			{
+				i--;
+				continue;
+			}
+			else
+			{
+				PopulateChest(chest);
+			}
+		}
+	}
+
+	private static void PopulateChest(int chestIndex)
+	{
+		Chest chest = Main.chest[chestIndex];
+
+		WeightedRandom<(int type, Range stackRange)> miscChestLoot = new();
+		miscChestLoot.Add((ItemID.DesertFossil, 9..30), 1f);
+
+		Tile tile = Main.tile[chest.x, chest.y];
+		List<ItemDatabase.ItemRecord> drops = DropTable.RollManyMobDrops(3, PoTItemHelper.PickItemLevel(), 1f, random: WorldGen.genRand);
+
+		if (tile.HasTile && TileID.Sets.BasicChest[tile.TileType])
+		{
+			for (int k = 0; k < 5; ++k)
+			{
+				if (k < 3)
+				{
+					ItemDatabase.ItemRecord drop = drops[k];
+					chest.item[k] = new Item(drop.ItemId, drop.Item.stack);
+				}
+				else
+				{
+					(int type, Range stackRange) = miscChestLoot.Get();
+					chest.item[k] = new Item(type, Main.rand.Next(stackRange.Start.Value, stackRange.End.Value + 1));
+				}
+			}
 		}
 	}
 

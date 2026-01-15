@@ -37,6 +37,11 @@ internal interface ILilyPadTile : ILoadable
 
 		for (int i = x - width + 1; i < x + width; ++i)
 		{
+			if (!WorldGen.InWorld(i, y, 10))
+			{
+				continue;
+			}
+
 			Tile tile = Main.tile[i, y];
 
 			if (tile.HasTile && !overRide)
