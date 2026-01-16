@@ -7,6 +7,7 @@ using PathOfTerraria.Common.World.Passes;
 using PathOfTerraria.Common.World.Utilities;
 using PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
 using PathOfTerraria.Content.Tiles.Maps.Swamp;
+using PathOfTerraria.Content.Walls;
 using PathOfTerraria.Utilities;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +39,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 	internal static HashSet<Point16> SkipActuationLocations = [];
 
 	private bool LeftSpawn = false;
-	private bool spawnedEncounters = false;
+	private bool spawnedTemporaryContent = false;
 
 	public override int Width => 3000 + 200 * Main.rand.Next(3);
 	public override int Height => MapHeight;
@@ -56,7 +57,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 		Main.worldSurface = WaterY + 10;
 		Main.rockLayer = WaterY + 40;
 
-		spawnedEncounters = false;
+		spawnedTemporaryContent = false;
 		EncounterLocations.Clear();
 		LeftSpawn = Random.NextBool(2);
 		SkipActuationLocations.Clear();
@@ -166,7 +167,14 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 		}
 
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Clouds");
+		FastNoiseLite cloudNoise = GenerateClouds(progress);
 
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Growing");
+		CleanUpAndDetail(progress, cloudNoise);
+	}
+
+	private static FastNoiseLite GenerateClouds(GenerationProgress progress)
+	{
 		FastNoiseLite cloudNoise = new(Random.Next());
 		cloudNoise.SetNoiseType(FastNoiseLite.NoiseType.ValueCubic);
 		cloudNoise.SetFractalType(FastNoiseLite.FractalType.FBm);
@@ -181,21 +189,26 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 			for (int j = 2; j < CloudLayer; ++j)
 			{
 				float value = MathHelper.Lerp(cloudNoise.GetNoise(i, j), 0.1f, j > bottomY - 90 ? Utils.GetLerpValue(bottomY - 90, bottomY, j) : 0);
-				bool canGenerate = value <= 0;
 
-				if (canGenerate)
+				if (value <= 0)
 				{
 					Tile tile = Main.tile[i, j];
-					tile.TileType = TileID.Cloud;
+					tile.TileType = (ushort)ModContent.TileType<PurpleClouds>();
 					tile.HasTile = true;
+				}
+
+				value = MathHelper.Lerp(cloudNoise.GetNoise(i, j + 12000), 0.1f, j > bottomY - 90 ? Utils.GetLerpValue(bottomY - 90, bottomY, j) : 0);
+
+				if (value <= 0)
+				{
+					GenPlacement.FastPlaceWall(i, j, ModContent.WallType<PurpleCloudWall>());
 				}
 			}
 
 			progress.Set(i / (float)Main.maxTilesX);
 		}
-
-		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Growing");
-		CleanUpAndDetail(progress, cloudNoise);
+		
+		return cloudNoise;
 	}
 
 	private static void GrowDeepMoss(GenerationProgress progress)
@@ -409,7 +422,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 	{
 		for (int i = 1; i < Main.maxTilesX - 2; ++i)
 		{
-			if (Random.NextBool(70) && !Main.tile[i, WaterY + 1].HasTile)
+			if (Random.NextBool(210) && !Main.tile[i, WaterY + 1].HasTile)
 			{
 				ILilyPadTile.PlacePad<SwampPad>(i, WaterY + 1, false);
 			}
@@ -621,10 +634,27 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 	{
 		Liquid.UpdateLiquid();
 
-		if (!spawnedEncounters && Main.ActivePlayers.GetEnumerator().MoveNext())
+		if (!spawnedTemporaryContent && Main.ActivePlayers.GetEnumerator().MoveNext())
 		{
 			PlaceEncounters();
-			spawnedEncounters = true;
+			SpawnMudplatforms();
+			spawnedTemporaryContent = true;
+		}
+	}
+
+	private static void SpawnMudplatforms()
+	{
+		for (int i = 0; i < 20; ++i)
+		{
+			Vector2 position;
+
+			do
+			{
+				position = new Vector2(Random.Next(300 * 16, (Main.maxTilesX - 300) * 16), Random.Next(FloorY * 16 - 200, FloorY * 16 + 200));
+			} while (Collision.SolidCollision(position, 100, 20) || !Collision.WetCollision(position, 100, 20) || Collision.WetCollision(position - new Vector2(0, 30), 100, 20));
+
+			int type = Random.NextBool() ? ModContent.ProjectileType<FloatingMudplatform>() : ModContent.ProjectileType<BrittleFloatingMudplatform>();
+			Projectile.NewProjectile(new EntitySource_WorldGen(), position, Vector2.Zero, type, 0, 0, -1);
 		}
 	}
 
