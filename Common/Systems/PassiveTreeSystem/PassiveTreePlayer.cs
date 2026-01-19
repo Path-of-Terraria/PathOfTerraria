@@ -119,7 +119,30 @@ internal class PassiveTreePlayer : ModPlayer
 		
 		tag["extraPoints"] = ExtraPoints;
 
-		_saveData = tag;
+		_saveData = (TagCompound)tag.Clone();
+	}
+
+	public void ResetAllNodes()
+	{
+		foreach (Passive node in ActiveNodes)
+		{
+			if (node is AnchorPassive)
+			{
+				continue;
+			}
+
+			while (node.Level > 0)
+			{
+				node.OnDeallocate(Player);
+
+				if (node is not MasteryPassive)
+				{
+					Points++;
+				}
+			}
+		}
+
+		SaveData([]);
 	}
 
 	public override void LoadData(TagCompound tag)
