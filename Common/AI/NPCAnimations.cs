@@ -75,12 +75,12 @@ internal sealed class NPCAnimations : NPCComponent
 
 	public override void FindFrame(NPC npc, int frameHeight)
 	{
-		if (!Enabled || Main.dedServ || animation.Frames == null || TextureAssets.Npc[npc.type] is not { IsLoaded: true, Value: { } texture })
+		if (!Enabled || Main.dedServ || TextureAssets.Npc[npc.type] is not { IsLoaded: true, Value: { } texture })
 		{
 			return;
 		}
 
-		int frameIndex = animation.Frames[CurrentFrame % animation.Frames.Length];
+		int frameIndex = animation.Frames != null ? animation.Frames[CurrentFrame % animation.Frames.Length] : 0;
 		byte x = (byte)(frameIndex % BaseFrame.ColumnCount);
 		byte y = (byte)(frameIndex / BaseFrame.ColumnCount);
 		SpriteFrame frameRect = BaseFrame.With(columnToUse: x, rowToUse: y);
@@ -90,6 +90,11 @@ internal sealed class NPCAnimations : NPCComponent
 	public override bool PreDraw(NPC npc, SpriteBatch sb, Vector2 screenPos, Color drawColor)
 	{
 		if (!Enabled) { return true; }
+
+		if (npc.IsABestiaryIconDummy)
+		{
+			FindFrame(npc, 0);
+		}
 
 		// Render the NPC using the proper source rectangle.
 		Texture2D tex = TextureAssets.Npc[npc.type].Value;
