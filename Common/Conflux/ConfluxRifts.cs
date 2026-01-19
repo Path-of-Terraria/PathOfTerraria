@@ -119,8 +119,8 @@ internal sealed class ConfluxRifts : ModSystem
 
 		int targetRifts = MappingWorld.MapTier switch
 		{
-			>= 8 => 3,
-			>= 4 => 2,
+			>= 7 => 3,
+			>= 2 => 2,
 			_ => 1,
 		};
 
