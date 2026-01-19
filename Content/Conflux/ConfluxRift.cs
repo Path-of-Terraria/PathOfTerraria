@@ -279,7 +279,7 @@ internal record struct EnemyRole
 				// Create the encounter once enough time has passed.
 				if (Encounter == default)
 				{
-					const uint lengthInSeconds = (uint)(1f * 3);
+					const uint lengthInSeconds = 60;
 					const uint spawnStartDelay = 1;
 
 					EndTime = Main.GameUpdateCount + ((lengthInSeconds + spawnStartDelay) * (uint)TimeSystem.LogicFramerate);
