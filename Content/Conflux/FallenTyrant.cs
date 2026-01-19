@@ -30,7 +30,7 @@ internal sealed class FallenTyrant : ModNPC
 	{
 		Id = "attack",
 		Frames = [23, 23, 24, 24, 24, 24, 25, 26, 27, 28, 28, 28, 29],
-		Speed = 20f,
+		Speed = 12f,
 		Loop = false,
 	};
 
@@ -80,13 +80,13 @@ internal sealed class FallenTyrant : ModNPC
 		NPC.TryEnableComponent<NPCTargeting>();
 		NPC.TryEnableComponent<NPCAttacking>(e =>
 		{
-			e.Data.LengthInTicks = 60;
-			e.Data.CooldownLength = 60;
+			e.Data.LengthInTicks = 120;
+			e.Data.CooldownLength = 120;
 			e.Data.NoGravityLength = 15;
 			e.Data.InitiationRange = new(512f, 384f);
-			e.Data.Dash = (18, 33, new(3f, 0f));
-			e.Data.Damage = (18, 33, DamageInstance.EnemyAttackFilterWithInfighting);
-			e.Data.Hitbox = (new(40, 40), new(56f, 56f), new(+8f, +2f));
+			e.Data.Dash = (40, 55, new(3f, 0f));
+			e.Data.Damage = (40, 55, DamageInstance.EnemyAttackFilterWithInfighting);
+			e.Data.Hitbox = (new(40, 40), new(32f, 32f), new(+8f, +2f));
 			e.Data.Movement = (0.4f, 0.9f);
 
 			if (!Main.dedServ)
@@ -94,8 +94,8 @@ internal sealed class FallenTyrant : ModNPC
 				e.Data.SlashTexture = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/Misc/Slash");
 				e.Data.Sounds =
 				[
-					(13, SoundID.Item71 with { Volume = 0.6f, Pitch = -0.80f, PitchVariance = 0.15f, MaxInstances = 3 }),
-					(15, SoundID.NPCHit56 with { Volume = 0.25f, Pitch = +0.85f, PitchVariance = 0.1f, MaxInstances = 3 }),
+					(5, SoundID.NPCHit56 with { Volume = 0.25f, Pitch = +0.4f, PitchVariance = 0.1f, MaxInstances = 3 }),
+					(25, SoundID.Item71 with { Volume = 0.6f, Pitch = -0.80f, PitchVariance = 0.15f, MaxInstances = 3 }),
 				];
 			}
 		});
@@ -146,7 +146,7 @@ internal sealed class FallenTyrant : ModNPC
 
 		// The tyrant shoots projectiles with its normal attack.
 		//TODO: This is a proof of concept.
-		if (ctx.Attacking.Active && ctx.Attacking.Data.Progress == 20)
+		if (ctx.Attacking.Active && ctx.Attacking.Data.Progress == ctx.Attacking.Data.Damage.Start - 5)
 		{
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
