@@ -169,24 +169,7 @@ internal class TreeState : TabsUiState
 		
 		AvailablePassivePointsText.DrawResettablePoints(spriteBatch, points, GetRectangle().TopLeft() + pointsDrawPoin, ref _confirmTimer, () =>
 		{
-			foreach (Passive node in LocalPassiveTreePlayer.ActiveNodes)
-			{
-				if (node is AnchorPassive)
-				{
-					continue;
-				}
-
-				// Level will rarely be >0 but whatever, free check
-				while (node.Level > 0)
-				{
-					node.OnDeallocate(Main.LocalPlayer);
-
-					if (node is not MasteryPassive)
-					{
-						LocalPassiveTreePlayer.Points++;
-					}
-				}
-			}
+			LocalPassiveTreePlayer.ResetAllNodes();
 		});
 	}
 

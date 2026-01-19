@@ -16,7 +16,7 @@ internal class ElementalProjectile : GlobalProjectile
 	/// <summary>
 	/// Shorthand for adding to <see cref="ElementalContainer"/>'s <see cref="ElementalDamage"/> values.
 	/// </summary>
-	public void AddElementalValues(params ReadOnlySpan<(ElementType type, int add, float conv)> values)
+	public void AddElementalValues(params (ElementType type, int add, float conv)[] values)
 	{
 		Container.AddElementalValues(values);
 	}
