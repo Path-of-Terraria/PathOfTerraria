@@ -36,7 +36,6 @@ internal class SkillTreeInnerPanel : AllocatableInnerPanel
 				while (node is not Anchor && node.Level > 0)
 				{
 					node.OnDeallocate(Main.LocalPlayer);
-					_skill.Tree.Points++;
 				}
 			}
 
