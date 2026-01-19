@@ -123,50 +123,6 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 		}
 	}
 
-	internal static void PlacePad(int x, int y)
-	{
-		int width = WorldGen.genRand.Next(9, 21);
-
-		for (int i = x - width + 1; i < x + width; ++i)
-		{
-			Tile tile = Main.tile[i, y];
-			tile.HasTile = true;
-			tile.TileType = (ushort)ModContent.TileType<Mushpad>();
-
-			if (i == x)
-			{
-				for (int j = 1; j < width / 3; ++j)
-				{
-					Tile stem = Main.tile[i, y + j];
-					stem.HasTile = true;
-					stem.TileType = (ushort)ModContent.TileType<Mushpad>();
-				}
-			}
-		}
-
-		for (int i = x - width; i < x + width; ++i)
-		{
-			WorldGen.TileFrame(i, y);
-
-			if (i == x)
-			{
-				for (int j = 1; j < width / 3; ++j)
-				{
-					WorldGen.TileFrame(i, y + j);
-				}
-			}
-			else
-			{
-				SpawnMushroomVine(i, y);
-			}
-		}
-
-		if (!WorldGen.genRand.NextBool(3))
-		{
-			WorldGen.PlaceObject(x, y - 1, ModContent.TileType<MushpadFlower>(), true, WorldGen.genRand.Next(2));
-		}
-	}
-
 	private void DecorateWorld(GenerationProgress progress, GameConfiguration configuration)
 	{
 		MushroomsBroken = 0;

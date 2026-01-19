@@ -3,7 +3,7 @@
 namespace PathOfTerraria.Common.Tiles.FramingKinds;
 
 /// <summary>
-/// Defines a <see cref="ModTile"/> as a "lily pad" for framing purposes. Also containers helper methods.
+/// Defines a <see cref="ModTile"/> as a "lily pad" for framing purposes. Also contains helper methods for placing and framing.
 /// </summary>
 internal interface ILilyPadTile : ILoadable
 {

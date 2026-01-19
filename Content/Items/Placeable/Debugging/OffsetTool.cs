@@ -1,14 +1,7 @@
 ﻿#if DEBUG
-using PathOfTerraria.Common.Subworlds.MappingAreas.SwampAreaContent;
-using PathOfTerraria.Common.Tiles.FramingKinds;
-using PathOfTerraria.Common.World.Generation;
-using PathOfTerraria.Content.Tiles.BossDomain.Mushroom;
-using PathOfTerraria.Content.Tiles.Maps.Swamp;
 using System.Collections.Generic;
 using Terraria.DataStructures;
-using Terraria.GameContent.Biomes;
 using Terraria.ID;
-using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Content.Items.Placeable.Debugging;
 
@@ -36,13 +29,6 @@ internal class OffsetTool : ModItem
 
 	public override bool? UseItem(Player player)
 	{
-		var coords = Main.MouseWorld.ToTileCoordinates();
-		BranchTreeMicrobiome biome = new();
-		biome.Place(coords, GenVars.structures ?? new());
-		//ILilyPadTile.PlacePad<SwampPad>(coords.X, coords.Y);
-
-		return true;
-
 		if (player.altFunctionUse == 2)
 		{
 			Anchor = Main.MouseWorld.ToTileCoordinates16();

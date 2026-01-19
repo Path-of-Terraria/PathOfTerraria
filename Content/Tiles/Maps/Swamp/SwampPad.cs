@@ -24,7 +24,7 @@ internal class SwampPad : ModTile, ILilyPadTile
 		if (SubworldSystem.Current is SwampArea)
 		{
 			Tile tile = Main.tile[i, j];
-			tile.LiquidAmount = 150;
+			tile.LiquidAmount = 150; // Water settling occasionally makes the lily pad look awful if not in water
 		}
 	}
 }
