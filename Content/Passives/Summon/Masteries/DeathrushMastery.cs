@@ -17,8 +17,10 @@ internal class DeathrushMastery : Passive
 		{
 			if (projectile.TryGetOwner(out Player player) && player.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<DeathrushMastery>(out float value))
 			{
+				// Value is scaled by 100 in the JSON (e.g. 150 = 1.5).
+				// Minion speed bonus: (Value / 10000) per minion (capped at 10 minions).
 				float minions = MathF.Min(player.GetModPlayer<OldSummonSlotPlayer>().OldSlots, 10);
-				projectile.GetGlobalProjectile<SpeedUpProjectile>().AddBehaviourSpeed(value / 100f * minions);
+				projectile.GetGlobalProjectile<SpeedUpProjectile>().AddBehaviourSpeed(value / 10000f * minions);
 			}
 
 			return true;
@@ -27,6 +29,8 @@ internal class DeathrushMastery : Passive
 
 	public override void BuffPlayer(Player player)
 	{
-		player.moveSpeed += MathF.Min(player.slotsMinions, 10) * Value / 10f;
+		// Value is scaled by 100 in the JSON for better tunability (e.g. 150 = 1.5).
+		// Player movement speed bonus: (Value / 1000) per minion (capped at 10 minions).
+		player.moveSpeed += MathF.Min(player.slotsMinions, 10) * Value / 1000f;
 	}
 }
