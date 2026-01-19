@@ -5,7 +5,7 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.Tiles.Maps.Swamp;
 
-internal class SwampMoss : ModTile
+internal class SwampMoss : ModTile, IAutoloadTileItem
 {
 	public override void SetStaticDefaults()
 	{
@@ -49,4 +49,4 @@ internal class SwampMoss : ModTile
 	}
 }
 
-internal class DeepMoss : SwampMoss { }
+internal class DeepMoss : SwampMoss, IAutoloadTileItem { }

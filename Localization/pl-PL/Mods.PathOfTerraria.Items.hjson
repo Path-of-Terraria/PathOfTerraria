@@ -1460,3 +1460,18 @@ FireDiamondRing: {
 	// DisplayName: Fire Diamond Ring
 	// Tooltip: ""
 }
+
+DeepMossItem: {
+	// DisplayName: Deep Moss
+	// Tooltip: ""
+}
+
+PurpleCloudsItem: {
+	// DisplayName: Purple Clouds
+	// Tooltip: ""
+}
+
+SwampMossItem: {
+	// DisplayName: Swamp Moss
+	// Tooltip: ""
+}

@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems.ModPlayers;
+using System.Collections.Generic;
 
 namespace PathOfTerraria.Common.Projectiles;
 
@@ -10,6 +11,11 @@ internal interface ISolidTopProjectile
 {
 	internal class SolidTopProjectileHooks : ModPlayer
 	{
+		/// <summary>
+		/// Defines the offset from the top of the projectile that the player stands at. Defaults to 2. The value should be between 1 and the entity's height.
+		/// </summary>
+		public readonly static Dictionary<int, float> SolidTopOffsets = [];
+
 		public override void Load()
 		{
 			On_NPC.UpdateCollision += CheckNPCCollision;
@@ -57,7 +63,8 @@ internal interface ISolidTopProjectile
 	{
 		Vector2 pos = projectile.position;
 		entity.velocity.Y = 0;
-		var newPos = new Vector2(entity.position.X, projectile.Hitbox.Top + 2 - entity.height); // Top needs to be adjusted by at least one pixel down to account for hitbox intersection
+		float offset = SolidTopProjectileHooks.SolidTopOffsets.TryGetValue(projectile.type, out float value) ? value : 2;
+		var newPos = new Vector2(entity.position.X, projectile.Hitbox.Top + offset - entity.height); // Top needs to be adjusted by at least one pixel down to account for hitbox intersection
 
 		if (!Collision.SolidCollision(newPos, entity.width, entity.height))
 		{
@@ -67,6 +74,7 @@ internal interface ISolidTopProjectile
 
 	public bool CanStandOn(Entity entity, Projectile projectile)
 	{
-		return entity.velocity.Y >= 0 && entity.Bottom.Y < projectile.Hitbox.Y + 12;
+		float offset = SolidTopProjectileHooks.SolidTopOffsets.TryGetValue(projectile.type, out float value) ? value : 2;
+		return entity.velocity.Y >= 0 && entity.Bottom.Y < projectile.Hitbox.Y + 10 + offset;
 	}
 }

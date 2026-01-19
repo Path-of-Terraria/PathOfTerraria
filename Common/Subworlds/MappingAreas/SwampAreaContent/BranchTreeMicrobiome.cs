@@ -1,5 +1,7 @@
 ﻿using PathOfTerraria.Common.ItemDropping;
+using PathOfTerraria.Common.Tiles;
 using PathOfTerraria.Common.World.Generation;
+using PathOfTerraria.Content.Tiles.Maps.Swamp;
 using PathOfTerraria.Core.Items;
 using System.Collections.Generic;
 using System.Linq;
@@ -156,7 +158,9 @@ internal class BranchTreeMicrobiome : MicroBiome
 		Chest chest = Main.chest[chestIndex];
 
 		WeightedRandom<(int type, Range stackRange)> miscChestLoot = new();
-		miscChestLoot.Add((ItemID.DesertFossil, 9..30), 1f);
+		miscChestLoot.Add((AutomaticItemContent.AutoItemType<SwampMoss>(), 9..15), 1f);
+		miscChestLoot.Add((AutomaticItemContent.AutoItemType<PurpleClouds>(), 9..15), 1f);
+		miscChestLoot.Add((AutomaticItemContent.AutoItemType<DeepMoss>(), 9..15), 1f);
 
 		Tile tile = Main.tile[chest.x, chest.y];
 		List<ItemDatabase.ItemRecord> drops = DropTable.RollManyMobDrops(3, PoTItemHelper.PickItemLevel(), 1f, random: WorldGen.genRand);

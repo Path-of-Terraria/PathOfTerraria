@@ -13,6 +13,7 @@ internal class SwampWeed : ModTile
 
 		if (TileInvalid(i, j) && TileInvalid(i, j + 1))
 		{
+			WorldGen.TileFrame(i, j + 1);
 			return;
 		}
 
@@ -51,7 +52,7 @@ internal class SwampWeed : ModTile
 	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 	{
 		Tile tile = Main.tile[i, j];
-		Tile above = Main.tile[i, j];
+		Tile above = Main.tile[i, j - 1];
 
 		if (!above.HasTile || above.TileType != Type)
 		{

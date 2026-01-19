@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Common.Projectiles;
-using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -13,11 +12,21 @@ internal class FloatingMudplatform : ModProjectile, ISolidTopProjectile
 	protected ref float StandingTimer => ref Projectile.ai[0];
 	protected ref float WasStandingTimer => ref Projectile.ai[1];
 
+	public override void SetStaticDefaults()
+	{
+		Main.projFrames[Type] = 2;
+
+		ISolidTopProjectile.SolidTopProjectileHooks.SolidTopOffsets[Type] = 8;
+	}
+
 	public override void SetDefaults()
 	{
-		Projectile.Size = new(94, 26);
+		Projectile.Size = new(104, 36);
 		Projectile.timeLeft = 2;
 		Projectile.tileCollide = false;
+		Projectile.frame = Main.rand.Next(2);
+		Projectile.direction = Projectile.spriteDirection = Main.rand.NextBool(2) ? -1 : 1;
+		Projectile.netImportant = true;
 	}
 
 	public override bool? CanDamage()
@@ -29,9 +38,9 @@ internal class FloatingMudplatform : ModProjectile, ISolidTopProjectile
 	{
 		Projectile.timeLeft++;
 
-		if (Collision.WetCollision(Projectile.Left, Projectile.width, 8))
+		if (Collision.WetCollision(Projectile.Left - new Vector2(0, 4), Projectile.width, 8))
 		{
-			if (Collision.WetCollision(Projectile.Left - new Vector2(0, 8), Projectile.width, 8) && StandingTimer <= MaxStandTime)
+			if (Collision.WetCollision(Projectile.Left - new Vector2(0, 12), Projectile.width, 8) && StandingTimer <= MaxStandTime)
 			{
 				Projectile.velocity.Y -= 0.05f;
 			}
@@ -94,7 +103,8 @@ internal class FloatingMudplatform : ModProjectile, ISolidTopProjectile
 
 		projectile.velocity.Y += entity.velocity.Y * 0.1f;
 		entity.velocity.Y = 0;
-		var newPos = new Vector2(entity.position.X, projectile.Hitbox.Top + 2 - entity.height);
+		float offset = ISolidTopProjectile.SolidTopProjectileHooks.SolidTopOffsets.TryGetValue(projectile.type, out float value) ? value : 2;
+		var newPos = new Vector2(entity.position.X, projectile.Hitbox.Top + offset - entity.height);
 
 		if (!Collision.SolidCollision(newPos, entity.width, entity.height))
 		{

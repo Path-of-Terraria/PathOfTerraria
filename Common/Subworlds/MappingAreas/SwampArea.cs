@@ -26,12 +26,12 @@ namespace PathOfTerraria.Common.Subworlds.MappingAreas;
 
 internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 {
-	public const int FloorY = 550;
+	public const int FloorY = 470;
 	public const int WaterY = FloorY + 10;
-	public const int CloudLayer = 200;
-	public const int MapHeight = 900;
+	public const int CloudLayer = 180;
+	public const int MapHeight = 730;
+	public const float MossNoiseThreshold = -0.4f;
 
-	public static float MossNoiseThreshold => -0.4f;
 	public static UnifiedRandom Random => Main.rand;
 
 	internal static Dictionary<int, int>? HeightMapping = null;
@@ -184,11 +184,13 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 
 		for (int i = 2; i < Main.maxTilesX - 2; ++i)
 		{
+			const int Distance = 100;
+
 			int bottomY = (int)(CloudLayer + cloudNoise.GetNoise(i * 0.5f, 3000) * 90);
 
-			for (int j = 2; j < CloudLayer; ++j)
+			for (int j = 2; j < CloudLayer + Distance; ++j)
 			{
-				float value = MathHelper.Lerp(cloudNoise.GetNoise(i, j), 0.1f, j > bottomY - 90 ? Utils.GetLerpValue(bottomY - 90, bottomY, j) : 0);
+				float value = MathHelper.Lerp(cloudNoise.GetNoise(i, j), 0.2f, j > bottomY - Distance ? Utils.GetLerpValue(bottomY - Distance, bottomY, j, true) : 0);
 
 				if (value <= 0)
 				{
@@ -197,7 +199,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 					tile.HasTile = true;
 				}
 
-				value = MathHelper.Lerp(cloudNoise.GetNoise(i, j + 12000), 0.1f, j > bottomY - 90 ? Utils.GetLerpValue(bottomY - 90, bottomY, j) : 0);
+				value = MathHelper.Lerp(cloudNoise.GetNoise(i, j + 12000), 0.2f, j > bottomY - Distance ? Utils.GetLerpValue(bottomY - Distance, bottomY, j, true) : 0);
 
 				if (value <= 0)
 				{
@@ -644,6 +646,8 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 
 	private static void SpawnMudplatforms()
 	{
+		List<float> xPositions = [];
+
 		for (int i = 0; i < 20; ++i)
 		{
 			Vector2 position;
@@ -651,10 +655,12 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 			do
 			{
 				position = new Vector2(Random.Next(300 * 16, (Main.maxTilesX - 300) * 16), Random.Next(FloorY * 16 - 200, FloorY * 16 + 200));
-			} while (Collision.SolidCollision(position, 100, 20) || !Collision.WetCollision(position, 100, 20) || Collision.WetCollision(position - new Vector2(0, 30), 100, 20));
+			} while (Collision.SolidCollision(position, 100, 20) || !Collision.WetCollision(position, 100, 20) || Collision.WetCollision(position - new Vector2(0, 30), 100, 20)
+				|| xPositions.Any(x => Math.Abs(x - position.X) < 120));
 
 			int type = Random.NextBool() ? ModContent.ProjectileType<FloatingMudplatform>() : ModContent.ProjectileType<BrittleFloatingMudplatform>();
-			Projectile.NewProjectile(new EntitySource_WorldGen(), position, Vector2.Zero, type, 0, 0, -1);
+			Projectile.NewProjectile(new EntitySource_WorldGen(), position, Vector2.Zero, type, 0, 0, Main.myPlayer);
+			xPositions.Add(position.X);
 		}
 	}
 

@@ -1,8 +1,9 @@
-﻿using Terraria.ID;
+﻿using PathOfTerraria.Common.Tiles;
+using Terraria.ID;
 
 namespace PathOfTerraria.Content.Tiles.Maps.Swamp;
 
-internal class PurpleClouds : ModTile
+internal class PurpleClouds : ModTile, IAutoloadTileItem
 {
 	public override void SetStaticDefaults()
 	{
