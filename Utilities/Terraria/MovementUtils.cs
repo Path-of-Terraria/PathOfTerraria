@@ -2,7 +2,7 @@
 
 internal static class MovementUtils
 {
-	/// <summary> Quake-like acceleration towards a direction. </summary>
+	/// <summary> Acceleration towards a direction. </summary>
 	public static Vector2 DirAccel(Vector2 velocity, Vector2 wishDirection, float wishSpeed, float acceleration)
 	{
 		Vector2 wishVelocity = wishDirection * wishSpeed;
@@ -17,7 +17,7 @@ internal static class MovementUtils
 		return velocity;
 	}
 
-	/// <summary> Quake-like acceleration towards a direction. </summary>
+	/// <summary> Quake-like acceleration towards a direction, generates abusable extra velocity when turning. </summary>
 	public static Vector2 DirAccelQ(Vector2 velocity, Vector2 wishDirection, float wishSpeed, float acceleration)
 	{
 		float currentSpeed = Vector2.Dot(velocity, wishDirection);
