@@ -12,6 +12,7 @@ using ReLogic.Graphics;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.ModLoader.IO;
 using Wayfarer.API;
 using Wayfarer.Data;
 using Wayfarer.Edges;
@@ -44,10 +45,8 @@ internal sealed class NPCNavigation : NPCComponent
 		PathNotFound = 1 << 2,
 	}
 
-	public record struct Context
+	public record struct Ctx(NPC NPC)
 	{
-		/// <summary> The NPC instance. </summary>
-		public required NPC NPC;
 		/// <summary> Where does this NPC aim to navigate. </summary>
 		public required Vector2 TargetPosition;
 	}
@@ -98,10 +97,17 @@ internal sealed class NPCNavigation : NPCComponent
 		pathfinding = null;
 	}
 
-	/// <summary> Serializes navigation information. </summary>
-	public void SendPath(NPC npc, BinaryWriter writer)
+	public override bool? CanFallThroughPlatforms(NPC npc)
 	{
-		_ = npc;
+		if (!Enabled) { return null; }
+
+		return FallThroughPlatforms;
+	}
+
+	/// <summary> Serializes navigation information. </summary>
+	public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter writer)
+	{
+		if (!Enabled) { return; }
 
 		// There must not be any desync.
 		Debug.Assert((path != null) == StateFlags.HasFlag(StateFlag.HasPath));
@@ -114,9 +120,9 @@ internal sealed class NPCNavigation : NPCComponent
 		}
 	}
 	/// <summary> Deserializes navigation information. </summary>
-	public void ReceivePath(NPC npc, BinaryReader reader)
+	public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader reader)
 	{
-		_ = npc;
+		if (!Enabled) { return; }
 
 		StateFlags = (StateFlag)reader.ReadByte();
 
@@ -164,7 +170,7 @@ internal sealed class NPCNavigation : NPCComponent
 		return pathfinding != null;
 	}
 
-	public void Process(out Result result, in Context ctx)
+	public void Process(out Result result, in Ctx ctx)
 	{
 		result = new();
 
@@ -174,7 +180,7 @@ internal sealed class NPCNavigation : NPCComponent
 		FallThroughPlatforms = result.FallThroughPlatforms;
 	}
 
-	private void Navigation(in Context ctx, ref Result result)
+	private void Navigation(in Ctx ctx, ref Result result)
 	{
 		NPC npc = ctx.NPC;
 
@@ -300,7 +306,7 @@ internal sealed class NPCNavigation : NPCComponent
 		npc.netUpdate = true;
 	}
 
-	private void Movement(in Context ctx, ref Result result)
+	private void Movement(in Ctx ctx, ref Result result)
 	{
 		NPC npc = ctx.NPC;
 		uint tick = Main.GameUpdateCount;

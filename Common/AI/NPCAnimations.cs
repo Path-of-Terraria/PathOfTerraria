@@ -11,6 +11,7 @@ internal record struct SpriteAnimation()
 	public required int[] Frames;
 	public float Speed = 1f;
 	public bool Loop = true;
+	public bool UpdateDirection = true;
 
 	public readonly bool Is(in SpriteAnimation other)
 	{
@@ -24,11 +25,20 @@ internal sealed class NPCAnimations : NPCComponent
 	private SpriteAnimation animation;
 	private float frameCounter;
 
+	public Vector2 SpriteOffset { get; set; }
+	public SpriteFrame BaseFrame { get; set; } = new SpriteFrame(1, 1) with { PaddingX = 0, PaddingY = 0 };
 	public bool Completed { get; private set; }
 	public int CurrentFrame { get; private set; }
 	public int? PreviousFrame { get; private set; }
-	public SpriteFrame BaseFrame { get; set; } = new SpriteFrame(1, 1) with { PaddingX = 0, PaddingY = 0 };
 	public ref readonly SpriteAnimation Current => ref animation;
+
+	public override void PostAI(NPC npc)
+	{
+		if (Current.UpdateDirection)
+		{
+			npc.spriteDirection = npc.direction;
+		}
+	}
 
 	public void Advance()
 	{
@@ -44,7 +54,11 @@ internal sealed class NPCAnimations : NPCComponent
 		}
 	}
 
-	public void Set(in SpriteAnimation animation)
+	public void Set(SpriteAnimation? animation)
+	{
+		if (animation.HasValue) { Set(animation.Value); }
+	}
+	public void Set(SpriteAnimation animation)
 	{
 		if (animation.Is(this.animation))
 		{
@@ -71,5 +85,24 @@ internal sealed class NPCAnimations : NPCComponent
 		byte y = (byte)(frameIndex / BaseFrame.ColumnCount);
 		SpriteFrame frameRect = BaseFrame.With(columnToUse: x, rowToUse: y);
 		npc.frame = frameRect.GetSourceRectangle(texture);
+	}
+
+	public override bool PreDraw(NPC npc, SpriteBatch sb, Vector2 screenPos, Color drawColor)
+	{
+		if (!Enabled) { return true; }
+
+		// Render the NPC using the proper source rectangle.
+		Texture2D tex = TextureAssets.Npc[npc.type].Value;
+		Vector2 position = npc.Center + new Vector2(0f, npc.gfxOffY) + SpriteOffset - screenPos;
+		Color mulColor = Color.White.MultiplyRGBA(new Color(Vector4.One * ((byte.MaxValue - npc.alpha) / (float)byte.MaxValue)));
+		Main.EntitySpriteDraw(tex, position, npc.frame, drawColor.MultiplyRGBA(mulColor), npc.rotation, npc.frame.Size() * 0.5f, npc.scale, npc.spriteDirection >= 0 ? (SpriteEffects)1 : 0, 0f);
+
+		string glowmaskPath = $"{GetType().FullName}_Glowmask".Replace('.', '/');
+		if (ModContent.HasAsset(glowmaskPath) && ModContent.Request<Texture2D>(glowmaskPath) is { IsLoaded: true, Value: { } glowmask })
+		{
+			Main.EntitySpriteDraw(glowmask, position, npc.frame, mulColor, npc.rotation, npc.frame.Size() * 0.5f, npc.scale, npc.spriteDirection >= 0 ? (SpriteEffects)1 : 0, 0f);
+		}
+
+		return false;
 	}
 }

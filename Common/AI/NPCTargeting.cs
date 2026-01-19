@@ -3,19 +3,36 @@ using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Core.Time;
 using Terraria.DataStructures;
 
+#pragma warning disable CA1822 // Mark members as static
+
 namespace PathOfTerraria.Common.AI;
 
-/// <summary> Implements "delayed" self-relative target tracking, which allows NPCs to strike at "outdated" positions. </summary>
-internal sealed class NPCTargetTracking : NPCComponent
+/// <summary> Manages target search and implements "delayed" self-relative target tracking, which allows NPCs to strike at "outdated" positions. </summary>
+internal sealed class NPCTargeting : NPCComponent
 {
-	private (int Index, int Type) lastTargetIdentity;
+	public struct Ctx(NPC npc)
+	{
+		public NPC NPC = npc;
+		public bool ForceReset;
+	}
+
 	private uint lastTickCount;
 
 	/// <summary>  Perceived target position vector, relative from the npc's own center. </summary>
 	public Vector2 AimVector { get; set; }
 	public Vector2 AimLag { get; set; } = default;
 
-	public bool UpdateTracking(NPC npc)
+	public void ManualUpdate(in Ctx ctx)
+	{
+		NPC npc = ctx.NPC;
+
+		if (!npc.HasValidTarget || ctx.ForceReset)
+		{
+			Terraria.Utilities.NPCUtils.TargetClosestCommon(npc, faceTarget: false);
+		}
+	}
+
+	private bool UpdateTracking(NPC npc)
 	{
 		if (!Enabled) { return false; }
 
