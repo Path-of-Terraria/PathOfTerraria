@@ -16,7 +16,7 @@ internal static class Tunnel
 	/// Offsets each point before creating the equidistant set. 0 skips variation entirely.
 	/// </param>
 	/// <returns>The equidistant, smooth and singular curved tunnel.</returns>
-	public static Vector2[] GeneratePoints(Vector2[] points, int splineCount, float equidistantSpacing, float variationMultiplier = 1f)
+	public static Vector2[] GeneratePoints(ReadOnlySpan<Vector2> points, int splineCount, float equidistantSpacing, float variationMultiplier = 1f)
 	{
 		if (variationMultiplier != 0)
 		{
@@ -27,14 +27,14 @@ internal static class Tunnel
 		return CreateEquidistantSet(results, equidistantSpacing, true);
 	}
 
-	public static Vector2[] GenerateBezier(Vector2[] points, float equidistantSpacing, float variationMultiplier = 1f)
+	public static Vector2[] GenerateBezier(ReadOnlySpan<Vector2> points, float equidistantSpacing, float variationMultiplier = 1f)
 	{
 		if (variationMultiplier != 0)
 		{
 			points = AddVariationToPoints(points, variationMultiplier);
 		}
 
-		double[] realPos = new double[points.Length * 2];
+		Span<double> realPos = stackalloc double[points.Length * 2];
 		for (int i = 0; i < points.Length; ++i)
 		{
 			realPos[i * 2] = points[i].X;
@@ -57,7 +57,7 @@ internal static class Tunnel
 	/// Offsets each point before creating the equidistant set. 0 skips variation entirely.
 	/// </param>
 	/// <returns>The equidistant, smooth and singular curved tunnel.</returns>
-	public static Vector2[] GeneratePoints(Vector2[] points, out Vector2[] baseSpline, int splineCount, float equidistantSpacing, float variationMultiplier = 1f)
+	public static Vector2[] GeneratePoints(ReadOnlySpan<Vector2> points, out Vector2[] baseSpline, int splineCount, float equidistantSpacing, float variationMultiplier = 1f)
 	{
 		if (variationMultiplier != 0)
 		{
@@ -68,7 +68,7 @@ internal static class Tunnel
 		return CreateEquidistantSet(baseSpline, equidistantSpacing, true);
 	}
 
-	public static Vector2[] AddVariationToPoints(Vector2[] points, float variationMultiplier = 1f)
+	public static Vector2[] AddVariationToPoints(ReadOnlySpan<Vector2> points, float variationMultiplier = 1f)
 	{
 		List<Vector2> newPoints = [];
 

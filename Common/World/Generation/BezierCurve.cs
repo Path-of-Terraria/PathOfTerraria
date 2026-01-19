@@ -1,72 +1,51 @@
-﻿namespace PathOfTerraria.Common.World.Generation;
+﻿#pragma warning disable IDE0011
+#pragma warning disable IDE0300
 
-/// <summary>Taken from https://www.codeproject.com/articles/25237/bezier-curves-made-simple</summary>
-class BezierCurve
+namespace PathOfTerraria.Common.World.Generation;
+
+/// <summary> Based on https://www.codeproject.com/articles/25237/bezier-curves-made-simple </summary>
+internal static class BezierCurve
 {
-	private static double[] FactorialLookup = [];
+	private static readonly double[] FactorialLookup = new double[33] {
+		// fill untill n=32. The rest is too high to represent
+		1.0,
+		1.0,
+		2.0,
+		6.0,
+		24.0,
+		120.0,
+		720.0,
+		5040.0,
+		40320.0,
+		362880.0,
+		3628800.0,
+		39916800.0,
+		479001600.0,
+		6227020800.0,
+		87178291200.0,
+		1307674368000.0,
+		20922789888000.0,
+		355687428096000.0,
+		6402373705728000.0,
+		121645100408832000.0,
+		2432902008176640000.0,
+		51090942171709440000.0,
+		1124000727777607680000.0,
+		25852016738884976640000.0,
+		620448401733239439360000.0,
+		15511210043330985984000000.0,
+		403291461126605635584000000.0,
+		10888869450418352160768000000.0,
+		304888344611713860501504000000.0,
+		8841761993739701954543616000000.0,
+		265252859812191058636308480000000.0,
+		8222838654177922817725562880000000.0,
+		263130836933693530167218012160000000.0,
+	};
 
-	static BezierCurve()
-	{
-		CreateFactorialTable();
-	}
-
-	// just check if n is appropriate, then return the result
 	private static double Factorial(int n)
 	{
-		if (n < 0) 
-		{ 
-			throw new Exception("n is less than 0"); 
-		}
-		else if (n > 32) 
-		{ 
-			throw new Exception("n is greater than 32"); 
-		}
-
 		return FactorialLookup[n]; /* returns the value n! as a SUMORealing point number */
-	}
-
-	// create lookup table for fast factorial calculation
-	private static void CreateFactorialTable()
-	{
-		// fill untill n=32. The rest is too high to represent
-		double[] a =
-		[
-			1.0,
-			1.0,
-			2.0,
-			6.0,
-			24.0,
-			120.0,
-			720.0,
-			5040.0,
-			40320.0,
-			362880.0,
-			3628800.0,
-			39916800.0,
-			479001600.0,
-			6227020800.0,
-			87178291200.0,
-			1307674368000.0,
-			20922789888000.0,
-			355687428096000.0,
-			6402373705728000.0,
-			121645100408832000.0,
-			2432902008176640000.0,
-			51090942171709440000.0,
-			1124000727777607680000.0,
-			25852016738884976640000.0,
-			620448401733239439360000.0,
-			15511210043330985984000000.0,
-			403291461126605635584000000.0,
-			10888869450418352160768000000.0,
-			304888344611713860501504000000.0,
-			8841761993739701954543616000000.0,
-			265252859812191058636308480000000.0,
-			8222838654177922817725562880000000.0,
-			263130836933693530167218012160000000.0,
-		];
-
-		FactorialLookup = a;
 	}
 
 	private static double Ni(int n, int i)
@@ -88,7 +67,7 @@ class BezierCurve
 		return basis;
 	}
 
-	private static void Bezier2D(double[] b, int cpts, double[] p)
+	private static void Bezier2D(ReadOnlySpan<double> b, int cpts, Span<double> p)
 	{
 		int npts = b.Length / 2;
 
@@ -121,11 +100,11 @@ class BezierCurve
 		}
 	}
 
-	public static Vector2[] GetBezier(double[] orderedPositions)
+	public static Vector2[] GetBezier(ReadOnlySpan<double> orderedPositions)
 	{
 		const int POINTS_ON_CURVE = 100;
 
-		double[] p = new double[POINTS_ON_CURVE];
+		Span<double> p = stackalloc double[POINTS_ON_CURVE];
 
 		Bezier2D(orderedPositions, POINTS_ON_CURVE / 2, p);
 
