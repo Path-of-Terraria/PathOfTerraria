@@ -1,12 +1,10 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using PathOfTerraria.Common.Tiles;
-using Terraria.DataStructures;
-using Terraria.GameContent;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
+using PathOfTerraria.Common.Tiles.FramingKinds;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Tiles.BossDomain.Mushroom;
 
-internal class Mushpad : ModTile
+internal class Mushpad : ModTile, ILilyPadTile
 {
 	public override void SetStaticDefaults()
 	{
@@ -41,60 +39,48 @@ internal class Mushpad : ModTile
 		}
 	}
 
-	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
+	void ILilyPadTile.PlacePad(int x, int y, bool overRide)
 	{
-		Tile tile = Main.tile[i, j];
-		bool left = HasTile(i - 1, j);
-		bool right = HasTile(i + 1, j);
-		bool below = HasTile(i, j + 1);
-		bool above = HasTile(i, j - 1);
+		int width = WorldGen.genRand.Next(9, 21);
 
-		if (left && right)
+		for (int i = x - width + 1; i < x + width; ++i)
 		{
-			if (below)
+			Tile tile = Main.tile[i, y];
+
+			if (tile.HasTile && !overRide)
 			{
-				tile.TileFrameX = 54;
+				continue;
+			}
+
+			tile.HasTile = true;
+			tile.TileType = Type;
+
+			if (i == x)
+			{
+				for (int j = 1; j < width / 3; ++j)
+				{
+					Tile stem = Main.tile[i, y + j];
+					stem.HasTile = true;
+					stem.TileType = Type;
+				}
+			}
+		}
+
+		for (int i = x - width; i < x + width; ++i)
+		{
+			WorldGen.TileFrame(i, y);
+
+			if (i == x)
+			{
+				for (int j = 1; j < width / 3; ++j)
+				{
+					WorldGen.TileFrame(i, y + j);
+				}
 			}
 			else
 			{
-				tile.TileFrameX = 18;
+				FishronDomain.SpawnMushroomVine(i, y);
 			}
-		}
-		else if (left && !right)
-		{
-			tile.TileFrameX = 36;
-		}
-		else if (!left && right)
-		{
-			tile.TileFrameX = 0;
-		}
-		else if (!left && !right)
-		{
-			if (above && below)
-			{
-				tile.TileFrameX = 72;
-			}
-			else if (above)
-			{
-				tile.TileFrameX = 90;
-			}
-			else
-			{
-				WorldGen.KillTile(i, j);
-			}
-		}
-		else
-		{
-			WorldGen.KillTile(i, j);
-		}
-
-		tile.TileFrameY = (short)(Main.rand.Next(3) * 18);
-
-		return false;
-
-		static bool HasTile(int x, int y)
-		{
-			return Main.tile[x, y].HasTile && Main.tileSolid[Main.tile[x, y].TileType];
 		}
 	}
 }

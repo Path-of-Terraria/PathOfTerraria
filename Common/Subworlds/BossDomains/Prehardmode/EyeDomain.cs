@@ -12,10 +12,8 @@ using Terraria.Enums;
 using Terraria.Localization;
 using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.Projectiles.Utility;
-using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Encounters;
 using PathOfTerraria.Utilities.Terraria;
-using PathOfTerraria.Utilities.Xna;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 

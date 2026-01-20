@@ -3,7 +3,9 @@ using System.Runtime.CompilerServices;
 using Terraria.ID;
 using Terraria.Utilities;
 
-namespace PathOfTerraria.Common.Subworlds.BossDomains;
+namespace PathOfTerraria.Common.Subworlds;
+
+#nullable enable
 
 [Flags]
 public enum OpenFlags
@@ -21,6 +23,9 @@ public enum OpenFlags
 
 public static class OpenExtensions
 {
+	[ThreadStatic]
+	private static PriorityQueue<OpenFlags, float>? DirectionsQueue;
+
 	public static OpenFlags GetOpenings(int i, int j, bool onlyVertical = true, bool noDiagonals = true)
 	{
 		OpenFlags flags = OpenFlags.None;
@@ -203,14 +208,27 @@ public static class OpenExtensions
 		{
 			OpenFlags.Above => new Point(0, -1),
 			OpenFlags.Below => new Point(0, 1),
+			OpenFlags.Left => new Point(-1, 0),
 			OpenFlags.Right => new Point(1, 0),
-			_ => new Point(-1, 0)
+			OpenFlags.UpLeft => new Point(-1, -1),
+			OpenFlags.UpRight => new Point(1, -1),
+			OpenFlags.DownLeft => new Point(-1, 1),
+			OpenFlags.DownRight => new Point(1, 1),
+			_ => throw new NotImplementedException($"flag {flag} ({(int)flag}) not found.")
 		};
 	}
 
-	public static Point GetDirectionRandom(this OpenFlags flags, UnifiedRandom random = null)
+	public static Point GetDirectionRandom(this OpenFlags flags, UnifiedRandom? random = null, bool safeClose = true)
 	{
-		PriorityQueue<OpenFlags, float> directions = new();
+		if (DirectionsQueue is null)
+		{
+			DirectionsQueue = new();
+		}
+		else
+		{
+			DirectionsQueue.Clear();
+		}
+
 		random ??= Main.rand;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -218,7 +236,7 @@ public static class OpenExtensions
 		{
 			if (flags.HasFlag(flag))
 			{
-				directions.Enqueue(flag, random.NextFloat());
+				DirectionsQueue!.Enqueue(flag, random.NextFloat());
 			}
 		}
 
@@ -227,7 +245,17 @@ public static class OpenExtensions
 		AddIfTrue(OpenFlags.Left);
 		AddIfTrue(OpenFlags.Right);
 
-		return GetDirectionAbsolute(directions.Dequeue());
+		AddIfTrue(OpenFlags.DownRight);
+		AddIfTrue(OpenFlags.UpRight);
+		AddIfTrue(OpenFlags.DownLeft);
+		AddIfTrue(OpenFlags.UpLeft);
+
+		if (safeClose && DirectionsQueue.Count == 0)
+		{
+			return Point.Zero;
+		}
+
+		return GetDirectionAbsolute(DirectionsQueue.Dequeue());
 	}
 
 	public static bool HasCardinal(this OpenFlags flags)

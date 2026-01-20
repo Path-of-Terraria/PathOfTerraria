@@ -1,22 +1,16 @@
-﻿using PathOfTerraria.Common.World.Generation;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Terraria.DataStructures;
-using Terraria.GameContent.RGB;
 
 namespace PathOfTerraria.Common.World;
 
+#nullable enable
+
 internal static class Ellipse
 {
-	public static void Outline(Action<int, int> action, Point16 first, Point16 last)
-	{
-		List<Point16> throwaway = [];
-		Outline(action, first, last, ref throwaway);
-	}
-
 	/// <summary>
 	/// Creates the outline of an ellipse.
 	/// </summary>
-	public static void Outline(Action<int, int> action, Point16 first, Point16 last, ref List<Point16> points)
+	public static List<Point16>? Outline(Action<int, int> action, Point16 first, Point16 last)
 	{
 		Point topLeft = new(Math.Min(first.X, last.X), Math.Min(first.Y, last.Y));
 		Point bottomRight = new(Math.Max(first.X, last.X), Math.Max(first.Y, last.Y));
@@ -28,11 +22,12 @@ internal static class Ellipse
 
 		if (perimeter == 0)
 		{
-			return;
+			return null;
 		}
 
 		Point16 lastPlace = new();
 		float interval = MathHelper.TwoPi / (perimeter * 1.5f);
+		List<Point16> points = [];
 
 		for (float repeats = 0; repeats < MathHelper.TwoPi; repeats += interval)
 		{
@@ -47,15 +42,11 @@ internal static class Ellipse
 				points.Add(new Point16(x, y));
 			}
 		}
+
+		return points;
 	}
 
-	public static void AngledOutline(Action<int, int> action, Point16 first, Point16 last, float angle)
-	{
-		List<Point16> points = [];	
-		AngledOutline(action, first, last, angle, ref points);
-	}
-
-	public static void AngledOutline(Action<int, int> action, Point16 first, Point16 last, float angle, ref List<Point16> points)
+	public static List<Point16>? AngledOutline(Action<int, int> action, Point16 first, Point16 last, float angle)
 	{
 		Point topLeft = new(Math.Min(first.X, last.X), Math.Min(first.Y, last.Y));
 		Point bottomRight = new(Math.Max(first.X, last.X), Math.Max(first.Y, last.Y));
@@ -67,11 +58,12 @@ internal static class Ellipse
 
 		if (perimeter == 0)
 		{
-			return;
+			return null;
 		}
 
 		Point16 lastPlace = new();
 		float interval = MathHelper.TwoPi / (perimeter * 1.5f);
+		List<Point16> points = [];
 
 		for (float repeats = 0; repeats < MathHelper.TwoPi; repeats += interval)
 		{
@@ -90,12 +82,15 @@ internal static class Ellipse
 				points.Add(new Point16(x, y));
 			}
 		}
+
+		return points;
 	}
 
-	public static void Fill(Action<int, int> action, Point16 origin, float widthSize, float heightSize, float angle, ref List<Point16> points, Func<int, int, float> offset)
+	public static List<Point16> Fill(Action<int, int> action, Point16 origin, float widthSize, float heightSize, float angle, Func<int, int, float>? offset)
 	{
 		float size = MathF.Max(widthSize, heightSize);
 		float dist = size / 3.5f;
+		List<Point16> points = [];
 		size *= 2f;
 
 		for (int i = origin.X - (int)size; i < origin.X + size; ++i)
@@ -121,28 +116,7 @@ internal static class Ellipse
 				}
 			}
 		}
-	}
 
-	public static void GenOval(Vector2 origin, float size, float angle, bool isWall, int typeId, FastNoiseLite noise)
-	{
-		var otherEnd = (origin + new Vector2(size, size / 2)).ToPoint16();
-		List<Point16> results = [];
-		float ySize = size / WorldGen.genRand.NextFloat(2, 3);
-		
-		Fill(!isWall ? (x, y) => FastPlaceTile(x, y, typeId) : (x, y) => FastPlaceWall(x, y, typeId),
-			origin.ToPoint16(), size, ySize, angle - MathHelper.PiOver2, ref results, (x, y) => noise.GetNoise(x, y) * 10);
-	}
-
-	public static void FastPlaceTile(int x, int y, int type)
-	{
-		Tile tile = Main.tile[x, y];
-		tile.TileType = (ushort)type;
-		tile.HasTile = true;
-	}
-
-	public static void FastPlaceWall(int x, int y, int type)
-	{
-		Tile tile = Main.tile[x, y];
-		tile.WallType = (ushort)type;
+		return points;
 	}
 }
