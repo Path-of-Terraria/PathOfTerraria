@@ -1,24 +1,45 @@
-﻿using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
-using PathOfTerraria.Common.Systems.Affixes;
+﻿using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using Terraria;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Buffs;
 
 public sealed class ShockDebuff : ModBuff
 {
-	public static void Apply(Player player, NPC npc, int damage)
+	/// <summary>
+	/// Applies this buff to a given entity (Player or NPC). If victim is an <see cref="NPC"/>, attacker is a <see cref="Player"/>. NPCs cannot apply this buff to other NPCs at this time.
+	/// </summary>
+	public static void Apply(Entity attacker, Entity victim, int damage)
 	{
-		float ailmentThreshold = npc.lifeMax;
-		float modifier = player.GetModPlayer<AffixPlayer>().StrengthOf<BuffShockedEffectAffix>() * 0.01f;
-		float effect = 0.5f * MathF.Pow(damage / ailmentThreshold, 0.4f) * (1 + modifier);
-
-		if (effect <= 0.05f)
+		if (victim is NPC npc)
 		{
-			return;
-		}
+			float ailmentThreshold = npc.lifeMax;
+			float modifier = attacker is Player player ? player.GetModPlayer<AffixPlayer>().StrengthOf<BuffShockedEffectAffix>() * 0.01f : 0;
+			float effect = 0.5f * MathF.Pow(damage / ailmentThreshold, 0.4f) * (1 + modifier);
 
-		npc.GetGlobalNPC<ShockedNPC>().ShockStrength = effect;
-		npc.AddBuff(ModContent.BuffType<ShockDebuff>(), 2 * 60);
+			if (effect <= 0.05f)
+			{
+				return;
+			}
+
+			npc.GetGlobalNPC<ShockedNPC>().ShockStrength = effect;
+			npc.AddBuff(ModContent.BuffType<ShockDebuff>(), 2 * 60);
+		}
+		else if (victim is Player player)
+		{
+			float ailmentThreshold = player.statLifeMax2;
+			float modifier = attacker is Player other ? other.GetModPlayer<AffixPlayer>().StrengthOf<BuffShockedEffectAffix>() * 0.01f : 0;
+			float effect = 0.5f * MathF.Pow(damage / ailmentThreshold, 0.4f) * (1 + modifier);
+
+			if (effect <= 0.05f)
+			{
+				return;
+			}
+
+			player.GetModPlayer<ShockPlayer>().ShockEffectiveness = effect;
+			player.AddBuff(ModContent.BuffType<ShockDebuff>(), 4 * 60);
+		}
 	}
 
 	public override void SetStaticDefaults()
@@ -60,7 +81,7 @@ public sealed class ShockedNPC : GlobalNPC
 	{
 		if (npc.HasBuff<ShockDebuff>())
 		{
-			modifiers.FinalDamage += ShockStrength * (1 + player.GetModPlayer<AffixPlayer>().StrengthOf<BuffShockedEffectAffix>() * 0.01f);
+			modifiers.FinalDamage += ShockStrength;
 		}
 	}
 
@@ -69,6 +90,19 @@ public sealed class ShockedNPC : GlobalNPC
 		if (npc.HasBuff<ShockDebuff>())
 		{
 			modifiers.FinalDamage += ShockStrength;
+		}
+	}
+}
+
+public class ShockPlayer : ModPlayer
+{
+	public float ShockEffectiveness { get; set; }
+
+	public override void ModifyHurt(ref Player.HurtModifiers modifiers)
+	{
+		if (Player.HasBuff<ShockDebuff>())
+		{
+			modifiers.FinalDamage += ShockEffectiveness;
 		}
 	}
 }
