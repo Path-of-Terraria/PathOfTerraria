@@ -72,7 +72,7 @@ internal sealed class Abominable : ModNPC
 		NPC.TryEnableComponent<NPCAnimations>(e =>
 		{
 			e.BaseFrame = new SpriteFrame(5, 5) with { PaddingX = 0, PaddingY = 0 };
-			e.SpriteOffset = new Vector2(0f, -6f);
+			e.SpriteOffset = new Vector2(0f, -9f);
 		});
 		NPC.TryEnableComponent<NPCTargeting>();
 		NPC.TryEnableComponent<NPCAttacking>(e =>
