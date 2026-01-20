@@ -481,7 +481,7 @@ internal sealed class EnemyEncounters : ModSystem
 		encounter.ResetWave();
 
 #if DEBUG
-		Main.NewText($"Wave {data.Instance.WaveIndex} of {data.Description.Waves.Length}", Color.MediumVioletRed);
+		Main.NewText($"Wave {data.Instance.WaveIndex + 1} of {data.Description.Waves.Length}", Color.MediumVioletRed);
 #endif
 	}
 

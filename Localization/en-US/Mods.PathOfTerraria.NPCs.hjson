@@ -988,3 +988,6 @@ AzarielNPC: {
 }
 
 Abominable.DisplayName: Abominable
+FallenSchemer.DisplayName: Fallen Schemer
+FallenSavage.DisplayName: Fallen Savage
+FallenTyrant.DisplayName: Fallen Tyrant

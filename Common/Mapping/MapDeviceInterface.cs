@@ -816,7 +816,10 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 			// Contents
 			if (ModContent.Request<Texture2D>(resource.CanisterLiquidTexture) is { IsLoaded: true, Value: Texture2D liquidTex })
 			{
-				sb.Draw(liquidTex, canisterCenter, null, canisterColor, 0f, liquidTex.Size() * 0.5f, scale, 0, 0f);
+				var frame = new SpriteFrame(1, 4) { PaddingX = 0, PaddingY = 0 };
+				byte frameIndex = (byte)(((int)Math.Floor(Main.timeForVisualEffects / 10f)) % frame.RowCount);
+				Rectangle srcRect = frame.With(0, frameIndex).GetSourceRectangle(liquidTex);
+				sb.Draw(liquidTex, canisterCenter, srcRect, canisterColor, 0f, srcRect.Size() * 0.5f, scale, 0, 0f);
 			}
 
 			// Amount

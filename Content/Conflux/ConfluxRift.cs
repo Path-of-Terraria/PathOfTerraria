@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -6,9 +8,7 @@ using PathOfTerraria.Common.Encounters;
 using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Synchronization;
-using PathOfTerraria.Common.UI;
 using PathOfTerraria.Common.Utilities;
-using PathOfTerraria.Content.Dusts;
 using PathOfTerraria.Core.Time;
 using PathOfTerraria.Utilities;
 using PathOfTerraria.Utilities.Xna;
@@ -20,6 +20,7 @@ using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.Localization;
+using Terraria.ModLoader.Config;
 
 #nullable enable
 
@@ -33,7 +34,48 @@ internal enum ConfluxRiftKind : byte
 	Count,
 }
 
-internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
+internal sealed class GlacialRift : ConfluxRift
+{
+	public override ConfluxRiftKind Kind => ConfluxRiftKind.Glacial;
+}
+
+internal sealed class InfernalRift : ConfluxRift
+{
+	public override ConfluxRiftKind Kind => ConfluxRiftKind.Infernal;
+}
+
+internal sealed class CelestialRift : ConfluxRift
+{
+	public override ConfluxRiftKind Kind => ConfluxRiftKind.Celestial;
+}
+
+/// <summary> Used for spawn quotas. </summary>
+internal record struct EnemyRole
+{
+	public float Fodder;
+	public float Heavy;
+	public float Boss;
+
+	public readonly bool CanPay(in EnemyRole price)
+	{
+		return Fodder >= price.Fodder && Heavy >= price.Heavy && Boss >= price.Boss;
+	}
+
+	public bool TryPay(in EnemyRole price)
+	{
+		if (CanPay(in price))
+		{
+			Fodder -= price.Fodder;
+			Heavy -= price.Heavy;
+			Boss -= price.Boss;
+			return true;
+		}
+
+		return false;
+	}
+}
+
+	internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile
 {
 	[Flags]
 	public enum Flags : int
@@ -85,7 +127,7 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		PauseBehavior = PauseBehavior.PauseWithGame,
 	};
 
-	private static Asset<Texture2D> Highlight = null!;
+	private static Asset<Effect>? shader;
 
 	private (SlotId Handle, float Volume) soundDormant;
 	private (SlotId Handle, float Volume) soundRousing;
@@ -101,11 +143,7 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 	public float ApproachAnimation { get; private set; }
 
 	/// <summary> The rift's type. </summary>
-	public ConfluxRiftKind Kind
-	{
-		get => (ConfluxRiftKind)(byte)Projectile.ai[0];
-		set => Projectile.ai[0] = (byte)value;
-	}
+	public abstract ConfluxRiftKind Kind { get; }
 	/// <summary> The rift's state flags. </summary>
 	public Flags BitFlags
 	{
@@ -119,7 +157,7 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 	/// <summary> Whether the rift is about to disappear. </summary>
 	public bool Closing => (BitFlags & Flags.Closing) != 0;
 
-	private static Asset<Effect>? shader;
+	public override string Texture => (GetType().Namespace + "." + nameof(ConfluxRift)).Replace('.', '/');
 
 	public override void SetStaticDefaults()
 	{
@@ -127,7 +165,7 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 		if (!Main.dedServ)
 		{
-			Highlight = ModContent.Request<Texture2D>(Texture + "_Highlight");
+			shader = Mod.Assets.Request<Effect>($"Assets/Effects/ConfluxRift");
 		}
 	}
 
@@ -241,7 +279,7 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 				// Create the encounter once enough time has passed.
 				if (Encounter == default)
 				{
-					const uint lengthInSeconds = 30;
+					const uint lengthInSeconds = 60;
 					const uint spawnStartDelay = 1;
 
 					EndTime = Main.GameUpdateCount + ((lengthInSeconds + spawnStartDelay) * (uint)TimeSystem.LogicFramerate);
@@ -354,7 +392,8 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 		Main.spriteBatch.End();
 		Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
-		this.DrawHighlightAndCheckRightClickInteraction(Highlight.Value, position, lightColor);
+		
+		this.TryInteracting();
 
 		/*
 		(_, _, Color colorBase) = GetVisualParameters();
@@ -469,62 +508,123 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		};
 		var rectangle = new Rectangle(area.X, area.Y, area.Z - area.X, area.W - area.Y);
 
-		string[] encounterPaths =
-		[
-			"Content/Encounters/Squads/BloodSquadSmall",
-			"Content/Encounters/Squads/CaveSquadMedium",
-			"Content/Encounters/Squads/CorruptionSquadSmall",
-			"Content/Encounters/Squads/UndeadSquadLarge",
-			"Content/Encounters/Squads/ZombieSquadLarge",
-			"Content/Encounters/Squads/ZombieSquadSmall",
-			"Content/Encounters/Squads/BruiserBrothers",
-		];
+		string[] encounterPaths = Kind switch
+		{
+			ConfluxRiftKind.Infernal => [
+				"Content/Encounters/Squads/InfernalRift",
+				"Content/Encounters/Squads/BruiserBrothers",
+			],
+			ConfluxRiftKind.Glacial => [
+				"Content/Encounters/Squads/InfernalRift",
+				"Content/Encounters/Squads/BruiserBrothers",
+			],
+			ConfluxRiftKind.Celestial => [
+				"Content/Encounters/Squads/InfernalRift",
+				"Content/Encounters/Squads/BruiserBrothers",
+			],
+			_ => throw new NotImplementedException(),
+		};
 		EncounterDescription[] baseEncounters = encounterPaths.Select(p => EncounterIO.GetEncounterFromModPath(Mod, p)).ToArray();
+		(EnemySpawn Spawn, EnemyRole Role)[] enemyPool = baseEncounters.SelectMany(e => e.Waves.SelectMany(w => w.Spawns.Select(s => (s, new EnemyRole())))).ToArray();
 
-		const uint timeInSecondsToCeaseSpawningFor = 15;
-		uint encounterSpawnDelays = 0;
-		uint encounterTargetSpawnDelays = Math.Max(0, (uint)((lengthInSeconds - timeInSecondsToCeaseSpawningFor) * TimeSystem.LogicFramerate));
+		foreach (ref (EnemySpawn Spawn, EnemyRole Role) tuple in enemyPool.AsSpan())
+		{
+			tuple.Role = tuple.Spawn switch
+			{
+				// Ugly hardcode for the sake of testing.
+				_ when tuple.Spawn.NpcType.Type == ModContent.NPCType<FallenSchemer>() => new() { Fodder = 2f },
+				_ when tuple.Spawn.NpcType.Type == ModContent.NPCType<FallenSavage>() => new() { Fodder = 1f },
+				_ when tuple.Spawn.NpcType.Type == ModContent.NPCType<FallenTyrant>() => new() { Heavy = 1f },
+				_ when tuple.Spawn.NpcType.Type == ModContent.NPCType<Abominable>() => new() { Boss = 1f },
+				_ => new EnemyRole { Fodder = 1f },
+			};
+		}
+
 		var waves = new List<EncounterWave>();
 
-		// The amount of enemies spawned every second is scaled by map tier.
-		uint cooldownPerEnemy = (uint)(180 / MathHelper.Lerp(1f, 5f, MathHelper.Clamp(MappingWorld.MapTier, 1f, 10f)));
+		// In-wave spawn pacing.
+		uint cooldownPerBatch = (uint)(180 * MathHelper.Lerp(1f, 0.2f, (MathHelper.Clamp(MappingWorld.MapTier, 1f, 10f) - 1f) / 9f));
+		uint accumulatedCooldownPerEnemy = (uint)(60 / MathHelper.Lerp(1f, 5f, MathHelper.Clamp(MappingWorld.MapTier, 1f, 10f)));
 		uint accumulatedCooldown = 0;
-		uint cooldownPerBatch = 60;
 
-		// Add base encounters as waves until we hit the time quota.
-		while (encounterSpawnDelays < encounterTargetSpawnDelays)
+		// The amount of enemies spawned every second is scaled by map tier.
+		uint waveCount = 4;
+		uint spawningPeriodInSeconds = lengthInSeconds - Math.Min(15 + 3, lengthInSeconds / 2);
+		uint spawningPeriodInTicks = (uint)(spawningPeriodInSeconds * TimeSystem.LogicFramerate);
+		float waveDelayPowFactor = 1.1f; //0.85f;
+		float waveDelayBase = spawningPeriodInTicks / MathF.Pow(waveDelayPowFactor, waveCount - 1) / waveCount;
+
+		EnemySpawnEffect spawnEffect = Kind switch
 		{
-			ref readonly EncounterDescription baseEncounter = ref baseEncounters[Main.rand.Next(baseEncounters.Length)];
+			ConfluxRiftKind.Glacial => EnemySpawnEffect.GlacialRift,
+			ConfluxRiftKind.Infernal => EnemySpawnEffect.InfernalRift,
+			ConfluxRiftKind.Celestial => EnemySpawnEffect.CelestialRift,
+			_ => EnemySpawnEffect.Teleport,
+		};
 
-			EnemySpawn[] spawns = baseEncounter.Waves.SelectMany(w => w.Spawns).ToArray();
+		uint GetWaveTick(int waveIndex)
+		{
+			return (uint)(waveIndex * waveDelayBase * MathF.Pow(waveDelayPowFactor, waveIndex));
+		}
 
-			foreach (ref EnemySpawn spawn in spawns.AsSpan())
+		EnemyRole GetWaveQuota(int waveIndex)
+		{
+			// Play with printing to balance this out.
+			return new EnemyRole
 			{
-				spawn.Effect = Kind switch
-				{
-					ConfluxRiftKind.Glacial => EnemySpawnEffect.GlacialRift,
-					ConfluxRiftKind.Infernal => EnemySpawnEffect.InfernalRift,
-					ConfluxRiftKind.Celestial => EnemySpawnEffect.CelestialRift,
-					_ => EnemySpawnEffect.Teleport,
-				};
+				Fodder = 4.00f + (MappingWorld.MapTier * 0.71f) + (Math.Max(0f, waveIndex) * -0.25f * MathF.Pow(1.00f, waveIndex)),
+				Heavy = 0.50f + (MappingWorld.MapTier * 0.41f) + (Math.Max(0f, waveIndex) * 0.50f * MathF.Pow(1.00f, waveIndex)),
+				Boss = 0.00f + (MappingWorld.MapTier * 0.26f) + (Math.Max(0f, waveIndex - 2) * 1.50f * MathF.Pow(0.90f, waveIndex)),
+			};
+		}
 
-				if (spawn.SpawnPlacement.HasValue)
+		// Add as many waves as needed.
+		for (int waveIndex = 0; waveIndex < waveCount; waveIndex++)
+		{
+			var spawns = new List<EnemySpawn>();
+
+			uint thisWaveTick = GetWaveTick(waveIndex);
+			uint nextWaveTick = GetWaveTick(waveIndex + 1);
+			uint delayUntilNextWave = nextWaveTick - thisWaveTick;
+
+			EnemyRole quota = GetWaveQuota(waveIndex);
+
+			// Add spawns to the wave as long the role quota is not filled.
+			while (true)
+			{
+				bool addedAnySpawn = false;
+
+				//TODO: Randomize this iteration.
+				foreach ((EnemySpawn baseSpawn, EnemyRole price) in enemyPool)
 				{
-					spawn.SpawnPlacement = spawn.SpawnPlacement.Value with { MinDistanceFromEnemies = 8f };
+					// Pay the 'price' for this spawn.
+					if (!quota.TryPay(price)) { continue; }
+
+					EnemySpawn spawn = baseSpawn;
+					spawn.Effect = spawnEffect;
+
+					if (spawn.SpawnPlacement is { } placement)
+					{
+						spawn.SpawnPlacement = placement with { MinDistanceFromEnemies = 8f };
+					}
+
+					uint cooldown = 0;
+					if ((accumulatedCooldown += accumulatedCooldownPerEnemy) >= cooldownPerBatch)
+					{
+						cooldown = cooldownPerBatch;
+						accumulatedCooldown -= cooldownPerBatch;
+					}
+
+					spawn.CooldownInTicks = cooldown;
+					spawns.Add(spawn);
+
+					addedAnySpawn = true;
 				}
 
-				accumulatedCooldown += cooldownPerEnemy;
-				uint cooldown = 0;
-
-				if (accumulatedCooldown >= cooldownPerBatch)
-				{
-					cooldown = cooldownPerBatch;
-					accumulatedCooldown -= cooldownPerBatch;
-				}
-
-				spawn.CooldownInTicks = cooldown;
-				encounterSpawnDelays += cooldown;
+				if (!addedAnySpawn) { break; }
 			}
+
+			spawns[^1] = spawns[^1] with { CooldownInTicks = delayUntilNextWave };
 
 			waves.Add(new EncounterWave
 			{
@@ -611,9 +711,10 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 		for (int i = 0; i < rewardAmount; i++)
 		{
-			int itemIdx = Item.NewItem(null, Projectile.Center + Main.rand.NextVector2Circular(72f, 72f), rewardType, 1, noBroadcast: true);
+			Vector2 position = Projectile.Center + Main.rand.NextVector2Circular(8f, 8f);
+			int itemIdx = Item.NewItem(null, position, rewardType, 1, noBroadcast: true);
 			Item item = Main.item[itemIdx];
-			item.velocity = Main.rand.NextVector2Circular(10f, 10f);
+			item.velocity = Vector2.UnitX.RotatedBy((i / (float)rewardAmount) * MathHelper.TwoPi).RotatedByRandom(0.1f) * 5f;
 
 			if (Main.netMode == NetmodeID.Server)
 			{
@@ -650,17 +751,6 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		}
 
 		return false;
-	}
-
-	public override void Load()
-	{
-		base.Load();
-		shader = Mod.Assets.Request<Effect>($"Assets/Effects/ConfluxRift");
-	}
-
-	public override void Unload()
-	{
-		shader = null;
 	}
 }
 
