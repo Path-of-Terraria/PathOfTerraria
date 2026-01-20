@@ -46,6 +46,7 @@ public sealed class AffixTooltips
 
 	internal static Color DefaultColor = ItemTooltips.Colors.DefaultText;
 
+	public readonly List<Type> Order = [];
 	public readonly Dictionary<Type, AffixTooltipLine> Lines = [];
 
 	/// <summary>
@@ -105,6 +106,10 @@ public sealed class AffixTooltips
 		if (Lines.TryGetValue(affixType, out AffixTooltipLine existing))
 		{
 			tooltip.Value += existing.Value;
+		}
+		else
+		{
+			Order.Add(affixType);
 		}
 
 		Lines[affixType] = tooltip;
@@ -188,7 +193,9 @@ public sealed class AffixTooltips
 		var sb = new StringBuilder();
 		bool lastImplicit = false;
 
-		foreach (AffixTooltipLine tip in Lines.Values.OrderByDescending(v => v.Value).OrderBy(v => v.Implicit ? 0f : 1f))
+		var orderedLines = Order.Select(type => Lines[type]).OrderBy(v => v.Implicit ? 0 : 1).ToList();
+
+		foreach (AffixTooltipLine tip in orderedLines)
 		{
 			sb.Clear();
 			sb.Append(ItemTooltips.ColoredDot(ItemTooltips.Colors.AffixAccent));
