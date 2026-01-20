@@ -197,7 +197,7 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 				ctx.NPC.velocity = Direction * Data.Dash.Velocity;
 
 				// Prepare damage.
-				Data.Attack = new DamageInstance
+				Data.Attack = new DamageInstance(Data.Attack)
 				{
 					Hitter = npc,
 					Aabb = default,
@@ -208,9 +208,7 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 					Predicate = e => e is not NPC n || n.type != npc.type,
 					DeathReason = _ => PlayerDeathReason.ByNPC(npc.whoAmI),
 					ExcludedEntity = npc,
-					HitEntities = Data.Attack?.HitEntities,
 				};
-				Data.Attack.HitEntities?.Clear();
 			}
 			else
 			{

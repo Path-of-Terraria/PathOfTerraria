@@ -23,7 +23,7 @@ internal enum EntityKind
 }
 
 /// <summary> Used to continuously deal damage during an attack, while skipping entities that already received it. </summary>
-internal class DamageInstance()
+internal class DamageInstance
 {
 	public static EntityKind EnemyAttackFilter => EntityKind.NeutralNPC | EntityKind.FriendlyNPC | EntityKind.LocalPlayer;
 	public static EntityKind EnemyAttackFilterWithInfighting => EntityKind.NeutralNPC | EntityKind.FriendlyNPC | EntityKind.EnemyNPC | EntityKind.LocalPlayer;
@@ -40,6 +40,17 @@ internal class DamageInstance()
 	//TODO: Create a concept of entity slot versions to account for sudden slot overtakes?
 	public HashSet<int>? HitEntities;
 	public DamageClass? DamageType;
+
+	/// <summary> Provide an older instance just to reuse collections. </summary>
+	public DamageInstance(DamageInstance? baseInstance = null)
+	{
+		// Reuse allocations.
+		if (HitEntities == null && baseInstance?.HitEntities != null)
+		{
+			HitEntities = baseInstance.HitEntities;
+			HitEntities.Clear();
+		}
+	}
 
 	public Entity ExcludedEntity
 	{
