@@ -1,5 +1,4 @@
 using ReLogic.Content;
-using Terraria.GameContent;
 using Terraria.UI;
 
 #nullable enable
@@ -12,15 +11,17 @@ namespace PathOfTerraria.Common.UI.Elements;
 /// <remarks>
 ///     <inheritdoc cref="UIImageItemSlot" />
 /// </remarks>
-public class UIHoverImageItemSlot(
+public class UIHoverImageItemSlot
+(
 	Asset<Texture2D> backgroundTexture,
 	Asset<Texture2D> iconTexture,
-UIImageItemSlot.SlotWrapper itemHandler,
+	UIImageItemSlot.SlotWrapper itemHandler,
 	(string Key, object Arg0)? hoverText = null,
 	int context = ItemSlot.Context.InventoryItem,
 	bool skipAutoSize = false,
-	float iconScalingSize = UIImageItemSlot.DefaultIconSize
-	) : UIImageItemSlot(backgroundTexture, iconTexture, itemHandler, context, hoverText, skipAutoSize, iconScalingSize)
+	float iconScalingSize = UIImageItemSlot.DefaultIconSize,
+	(int slot, bool vanilla)? armorHideSlot = null
+) : UIImageItemSlot(backgroundTexture, iconTexture, itemHandler, context, hoverText, skipAutoSize, iconScalingSize, armorHideSlot)
 {
 	/// <summary>
 	///     The target rotation for this image when it's being hovered by the mouse, in radians. Defaults to <c>0f</c>.

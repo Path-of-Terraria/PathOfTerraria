@@ -7,6 +7,10 @@ using Terraria.GameInput;
 using Terraria.Localization;
 using Terraria.UI;
 using Terraria.UI.Chat;
+using System.Runtime.CompilerServices;
+using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.AccessorySlots;
+using Terraria.ModLoader.Default;
 
 namespace PathOfTerraria.Common.UI.Elements;
 
@@ -23,7 +27,8 @@ public class UIImageItemSlot
 	int context = ItemSlot.Context.InventoryItem,
 	(string Key, object Arg0)? hoverText = null,
 	bool skipAutoSizing = false,
-	float iconScalingSize = UIImageItemSlot.DefaultIconSize
+	float iconScalingSize = UIImageItemSlot.DefaultIconSize,
+	(int slot, bool vanilla)? armorHideSlot = null
 ) : UIElement
 {
 	public const float DefaultIconSize = 24f;
@@ -58,6 +63,7 @@ public class UIImageItemSlot
 
 	private readonly SlotWrapper handler = itemHandler;
 	private readonly bool skipAutoSize = skipAutoSizing;
+	private readonly (int slot, bool vanilla)? ArmorHideSlot = armorHideSlot;
 
 	/// <summary>
 	///     The item that this slot wraps itself around.
@@ -143,6 +149,38 @@ public class UIImageItemSlot
 		};
 
 		Background.Append(Icon);
+
+		if (ArmorHideSlot is { } slot)
+		{
+			UIImage tick = new(TextureAssets.InventoryTickOn)
+			{
+				HAlign = 0.5f,
+				VAlign = 1f,
+				Width = StyleDimension.FromPixels(16),
+				Height = StyleDimension.FromPixels(12),
+			};
+
+			Background.OnMiddleClick += (_, _) =>
+			{
+				ref bool hide = ref slot.vanilla ? ref Main.LocalPlayer.hideVisibleAccessory[slot.slot] : ref ExtraAccessoryHidden(slot.slot);
+				hide = !hide;
+				tick.SetImage(!hide ? TextureAssets.InventoryTickOn : TextureAssets.InventoryTickOff);
+			};
+
+			Background.Append(tick);
+		}
+	}
+
+	public static ref bool ExtraAccessoryHidden(int slot)
+	{
+		AccessorySlotLoader accessoryLoader = LoaderManager.Get<AccessorySlotLoader>();
+		Player plr = Main.LocalPlayer;
+		ModAccessorySlot modSlot = accessoryLoader.Get(slot, plr);
+
+		return ref ExHideAccessory(plr.GetModPlayer<ModAccessorySlotPlayer>())[modSlot.Type];
+
+		[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "exHideAccessory")]
+		static extern ref bool[] ExHideAccessory(ModAccessorySlotPlayer player);
 	}
 
 	public override void Update(GameTime gameTime)
