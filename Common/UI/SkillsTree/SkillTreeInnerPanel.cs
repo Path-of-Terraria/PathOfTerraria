@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Systems.ModPlayers.SkillPlayers;
 using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Content.SkillPassives;
 using Terraria.UI;
@@ -37,6 +38,8 @@ internal class SkillTreeInnerPanel : AllocatableInnerPanel
 					node.OnDeallocate(Main.LocalPlayer);
 				}
 			}
+
+			Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>().SaveData([]);
 		});
 
 		base.Draw(spriteBatch);

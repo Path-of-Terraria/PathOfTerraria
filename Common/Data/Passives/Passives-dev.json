@@ -2986,7 +2986,7 @@
 		"internalIdentifier": "DeathrushMastery",
 		"referenceId": 1077,
 		"maxLevel": 1,
-		"value": 3,
+		"value": 150,
 		"position": {
 			"x": -557,
 			"y": -850
@@ -4620,13 +4620,13 @@
 		"value": 5,
 		"connections": [
 			{
-				"referenceId": 1124
+				"referenceId": 1138
 			},
 			{
-				"referenceId": 1125
+				"referenceId": 1139
 			},
 			{
-				"referenceId": 1126
+				"referenceId": 1140
 			}
 		],
 		"position": {

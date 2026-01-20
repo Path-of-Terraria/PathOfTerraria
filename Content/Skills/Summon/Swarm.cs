@@ -150,7 +150,7 @@ public class Swarm : Skill
 			Tile cur = Main.tile[point];
 			Tile above = Main.tile[point.X, point.Y - 1];
 
-			if ((WorldUtils.SolidTile(cur) || TileID.Sets.Platforms[cur.TileType]) && !WorldUtils.SolidTile(above))
+			if ((WorldUtilities.SolidTile(cur) || TileID.Sets.Platforms[cur.TileType]) && !WorldUtilities.SolidTile(above))
 			{
 				points.Add(point);
 			}

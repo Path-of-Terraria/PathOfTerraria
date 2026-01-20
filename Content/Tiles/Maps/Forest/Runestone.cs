@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains;
+﻿using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Tiles;
 using PathOfTerraria.Content.NPCs.Mapping.Forest.GrovetenderBoss;
 using ReLogic.Content;

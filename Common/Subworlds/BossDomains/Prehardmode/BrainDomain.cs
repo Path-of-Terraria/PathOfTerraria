@@ -16,6 +16,7 @@ using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.NPCs.Town;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.BoCDomain;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
+using System.Diagnostics;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 
@@ -246,6 +247,8 @@ public class BrainDomain : BossDomainSubworld
 
 		progress.Value = 0;
 
+		FastNoiseLite ovalNoise = GetGenNoise();
+
 		foreach ((Point16 start, Point16 end) in lines)
 		{
 			Vector2[] basePoints = [start.ToVector2(), Vector2.Lerp(start.ToVector2(), end.ToVector2(), 0.5f), end.ToVector2()];
@@ -259,7 +262,8 @@ public class BrainDomain : BossDomainSubworld
 			for (int i = 0; i < points.Length; i++)
 			{
 				float factor = i / (points.Length - 1f);
-				GenOval(points[i], MathHelper.Lerp(startSize, endSize, factor), MathHelper.Lerp(startAngle, endAngle, factor), false);
+				GenPlacement.GenOval(points[i], MathHelper.Lerp(startSize, endSize, factor), MathHelper.Lerp(startAngle, endAngle, factor), TileID.Crimstone, 
+					(x, y) => ovalNoise.GetNoise(x, y) * 10, false);
 				progress.Value += 1 / (float)points.Length * maxValue;
 			}
 		}
@@ -279,7 +283,8 @@ public class BrainDomain : BossDomainSubworld
 			{
 				float factor = i / (points.Length - 1f);
 				direction += WorldGen.genRand.NextVector2Circular(6, 6);
-				GenOval(points[i] + direction, MathHelper.Lerp(startSize, endSize, factor), MathHelper.Lerp(startAngle, endAngle, factor), true);
+				GenPlacement.GenOval(points[i] + direction, MathHelper.Lerp(startSize, endSize, factor), MathHelper.Lerp(startAngle, endAngle, factor), WallID.CrimstoneUnsafe, 
+					(x, y) => ovalNoise.GetNoise(x, y), true);
 				progress.Value += 1 / (float)points.Length * maxValue;
 			}
 		}
@@ -315,28 +320,6 @@ public class BrainDomain : BossDomainSubworld
 
 			WorldGen.TileRunner(x, y, WorldGen.genRand.Next(6, 16), WorldGen.genRand.Next(4, 20), TileID.Crimtane);
 		}
-	}
-
-	public static void GenOval(Vector2 origin, float size, float angle, bool isWall)
-	{
-		var otherEnd = (origin + new Vector2(size, size / 2)).ToPoint16();
-		List<Point16> results = [];
-		float ySize = size / WorldGen.genRand.NextFloat(2, 3);
-		Ellipse.Fill(!isWall ? (x, y) => FastPlaceTile(x, y, TileID.Crimstone) : (x, y) => FastPlaceWall(x, y, WallID.CrimstoneUnsafe),
-			origin.ToPoint16(), size, ySize, angle - MathHelper.PiOver2, ref results, (x, y) => GetGenNoise().GetNoise(x, y) * 10);
-	}
-
-	public static void FastPlaceTile(int x, int y, int type)
-	{
-		Tile tile = Main.tile[x, y];
-		tile.TileType = (ushort)type;
-		tile.HasTile = true;
-	}
-
-	public static void FastPlaceWall(int x, int y, int type)
-	{
-		Tile tile = Main.tile[x, y];
-		tile.WallType = (ushort)type;
 	}
 
 	private static FastNoiseLite GetGenNoise()

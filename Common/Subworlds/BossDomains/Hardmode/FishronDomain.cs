@@ -13,6 +13,7 @@ using Terraria.ID;
 using Terraria.IO;
 using Terraria.Localization;
 using Terraria.WorldBuilding;
+using PathOfTerraria.Common.Tiles.FramingKinds;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 
@@ -113,56 +114,12 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 			} while (Collision.SolidCollision(new Vector2((x - 10) * 16, WaterLine * 16), 20 * 16, 16) || xs.Any(v => Math.Abs(v - x) < 36));
 
 			xs.Add(x);
-			PlaceMushroomLily(x, WaterLine + 1);
+			ILilyPadTile.PlacePad<Mushpad>(x, WaterLine + 1, false);
 
 			if (Math.Abs(NewSpawn.X - Width / 2) > Math.Abs(x - Width / 2))
 			{
 				NewSpawn = new Point16(x, WaterLine - 3);
 			}
-		}
-	}
-
-	internal static void PlaceMushroomLily(int x, int y)
-	{
-		int width = WorldGen.genRand.Next(9, 21);
-
-		for (int i = x - width + 1; i < x + width; ++i)
-		{
-			Tile tile = Main.tile[i, y];
-			tile.HasTile = true;
-			tile.TileType = (ushort)ModContent.TileType<Mushpad>();
-
-			if (i == x)
-			{
-				for (int j = 1; j < width / 3; ++j)
-				{
-					Tile stem = Main.tile[i, y + j];
-					stem.HasTile = true;
-					stem.TileType = (ushort)ModContent.TileType<Mushpad>();
-				}
-			}
-		}
-
-		for (int i = x - width; i < x + width; ++i)
-		{
-			WorldGen.TileFrame(i, y);
-
-			if (i == x)
-			{
-				for (int j = 1; j < width / 3; ++j)
-				{
-					WorldGen.TileFrame(i, y + j);
-				}
-			}
-			else
-			{
-				SpawnMushroomVine(i, y);
-			}
-		}
-
-		if (!WorldGen.genRand.NextBool(3))
-		{
-			WorldGen.PlaceObject(x, y - 1, ModContent.TileType<MushpadFlower>(), true, WorldGen.genRand.Next(2));
 		}
 	}
 
@@ -367,7 +324,7 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 		}
 	}
 
-	private static void SpawnMushroomVine(int x, int y)
+	internal static void SpawnMushroomVine(int x, int y)
 	{
 		int vineType = WorldGen.genRand.NextBool(3) ? ModContent.TileType<Flowervine>() : TileID.MushroomVines;
 
