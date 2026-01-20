@@ -102,6 +102,27 @@ public class SimulacraEcho : ModProjectile
 {
     private const int EchoDelay = 14; 
     
+    /// <summary>
+    /// Gets the original position stored in the projectile's AI data
+    /// </summary>
+    private Vector2 OriginalPosition => new Vector2(Projectile.ai[0], Projectile.ai[1]);
+
+    /// <summary>
+    /// Gets the original velocity stored in the projectile's AI data
+    /// </summary>
+    private Vector2 OriginalVelocity => new Vector2(Projectile.ai[2], Projectile.localAI[0]);
+
+    /// <summary>
+    /// Gets the projectile type stored in the projectile's local AI data
+    /// </summary>
+    private int ProjectileType => (int)Projectile.localAI[1];
+
+    /// <summary>
+    /// Determines if this echo projectile is the original one (not created by a mirror)
+    /// Original echoes trigger mirror shots, while mirror echoes only fire from their own position
+    /// </summary>
+    private bool IsOriginalEcho => Projectile.localAI[2] == 0;
+    
     public override void SetDefaults()
     {
         Projectile.width = 10;
@@ -122,9 +143,9 @@ public class SimulacraEcho : ModProjectile
         {
             if (Main.myPlayer == Projectile.owner)
             {
-	            FireEchoProjectile(GetOriginalPosition(), GetOriginalVelocity());
+	            FireEchoProjectile(OriginalPosition, OriginalVelocity);
                 
-	            if (IsOriginalEcho())
+	            if (IsOriginalEcho)
 	            {
 		            FireFromAllMirrors();
 	            }
@@ -145,7 +166,7 @@ public class SimulacraEcho : ModProjectile
             Projectile.GetSource_FromThis(),
             position,
             velocity,
-            GetProjectileType(),
+            ProjectileType,
             Projectile.damage,
             Projectile.knockBack,
             Projectile.owner
@@ -158,7 +179,7 @@ public class SimulacraEcho : ModProjectile
     private void FireFromAllMirrors()
     {
         var mirrorClones = GetAllActiveMirrorClones();
-        Vector2 originalVelocity = GetOriginalVelocity();
+        Vector2 originalVelocity = OriginalVelocity;
         
         foreach (var mirror in mirrorClones)
         {
@@ -190,7 +211,7 @@ public class SimulacraEcho : ModProjectile
         );
         
         mirrorEcho.localAI[0] = velocity.Y;
-        mirrorEcho.localAI[1] = GetProjectileType();
+        mirrorEcho.localAI[1] = ProjectileType;
         mirrorEcho.localAI[2] = 1;
     }
 
@@ -221,36 +242,10 @@ public class SimulacraEcho : ModProjectile
         return directionToCursor * originalVelocity.Length();
     }
 
-    private Vector2 GetOriginalPosition()
-    {
-        return new Vector2(Projectile.ai[0], Projectile.ai[1]);
-    }
-
-    private Vector2 GetOriginalVelocity()
-    {
-        return new Vector2(Projectile.ai[2], Projectile.localAI[0]);
-    }
-
-    private int GetProjectileType()
-    {
-        return (int)Projectile.localAI[1];
-    }
-
     public override bool PreDraw(ref Color lightColor)
     {
         return false; 
     }
-    
-    /// <summary>
-    /// Determines if this echo projectile is the original one (not created by a mirror)
-    /// Original echoes trigger mirror shots, while mirror echoes only fire from their own position
-    /// </summary>
-    /// <returns>True if this is an original echo, false if it's a mirror echo</returns>
-    private bool IsOriginalEcho()
-    {
-	    return Projectile.localAI[2] == 0; 
-    }
-
 }
 
 public class SimulacraMirror : ModProjectile

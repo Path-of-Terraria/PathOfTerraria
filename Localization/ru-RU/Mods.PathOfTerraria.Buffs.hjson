@@ -252,17 +252,17 @@ EverburningShadowflameDebuff: {
 }
 
 PrismaticOrbBuff: {
-	// DisplayName: Prismatic Orb Buff
+	// DisplayName: Prismatic Enhancement
 	// Description: Your prismatic orb explosions will trigger twice.
 }
 
 FleaBellBuff: {
-	// DisplayName: Flea Bell Buff
+	// DisplayName: Flea Bell
 	// Description: It's fluffy beyond belief.
 }
 
 FleaBellEnhancedBuff: {
-	// DisplayName: Flea Bell Enhanced Buff
+	// DisplayName: Frenzied Fleas
 	// Description: Empowers your fleas with more attack speed, damage, and movement speed.
 }
 

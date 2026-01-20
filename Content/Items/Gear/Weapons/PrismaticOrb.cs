@@ -10,8 +10,8 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons;
 
 internal class PrismaticOrb : Gear
 {
-	private int buffTime = 60 * 5;
-	private int buffCooldown = 60 * 15;
+	private const int buffTime = 60 * 5;
+	private const int buffCooldown = 60 * 15;
     public override void SetStaticDefaults()
     {
 	    base.SetStaticDefaults();
@@ -71,20 +71,17 @@ internal class PrismaticOrb : Gear
 	    }
 	    return true;
     }
-
-    public override bool CanUseItem(Player player)
-    {
-        return player.statMana >= Item.mana;
-    }
 }
 
  public class PrismaticOrbProjectile : ModProjectile
 {
-    private int bounces = 0;
-    private const int maxBounces = 5;
-    private Vector2 originalVelocity;
-    private float baseHorizontalSpeed;
-    private bool hasInitialized = false;
+	private const int MaxBounces = 5;
+
+	private int bounces = 0;
+	private Vector2 originalVelocity;
+	private float baseHorizontalSpeed;
+	private bool hasInitialized = false;
+
 
     public override void SetDefaults()
     {
@@ -92,7 +89,7 @@ internal class PrismaticOrb : Gear
         Projectile.height = 20;
         Projectile.friendly = true;
         Projectile.DamageType = DamageClass.Magic;
-        Projectile.penetrate = maxBounces + 1;
+        Projectile.penetrate = MaxBounces + 1;
         Projectile.timeLeft = 600;
         Projectile.light = 0.5f;
         Projectile.tileCollide = true;
@@ -114,19 +111,19 @@ internal class PrismaticOrb : Gear
 
     public override bool OnTileCollide(Vector2 oldVelocity)
     {
-        if (bounces >= maxBounces)
+        if (bounces >= MaxBounces)
         {
             CreateExplosion();
             return true;
         }
         
-        float energyRetention = MathHelper.Lerp(0.85f, 0.7f, bounces / (float)maxBounces);
+        float energyRetention = MathHelper.Lerp(0.85f, 0.7f, bounces / (float)MaxBounces);
         
         float newHorizontalSpeed = baseHorizontalSpeed * energyRetention;
         int horizontalDirection = Math.Sign(originalVelocity.X);
         Projectile.velocity.X = newHorizontalSpeed * horizontalDirection;
         
-        float bounceHeight = MathHelper.Lerp(8f, 6f, bounces / (float)maxBounces);
+        float bounceHeight = MathHelper.Lerp(8f, 6f, bounces / (float)MaxBounces);
         
         float impactAngleFactor = Math.Abs(oldVelocity.Y) / oldVelocity.Length();
         bounceHeight *= (0.7f + impactAngleFactor * 0.5f); 

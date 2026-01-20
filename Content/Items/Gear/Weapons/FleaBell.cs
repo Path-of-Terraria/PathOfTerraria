@@ -33,7 +33,7 @@ public class FleaBell : Gear
 
         PoTStaticItemData staticData = this.GetStaticData();
         staticData.DropChance = 1f;
-        staticData.MinDropItemLevel = 1;
+        staticData.MinDropItemLevel = 25;
         staticData.IsUnique = true;
         staticData.Description = this.GetLocalization("Description");
         staticData.AltUseDescription = this.GetLocalization("AltUseDescription");
@@ -43,7 +43,7 @@ public class FleaBell : Gear
     {
         base.SetDefaults();
 
-        Item.damage = 25;
+        Item.damage = 40;
         Item.DamageType = DamageClass.Summon;
         Item.width = 26;
         Item.height = 34;
@@ -59,11 +59,6 @@ public class FleaBell : Gear
         Item.shoot = ModContent.ProjectileType<FleaBellMinion>();
     }
 
-    public override bool AltFunctionUse(Player player)
-    {
-        return true;
-    }
-
     public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
     {
 	    if (player.altFunctionUse != 2)
@@ -73,23 +68,26 @@ public class FleaBell : Gear
 	    }
     }
     
-    public override void HoldItem(Player player)
+    public override bool AltFunctionUse(Player player)
     {
-	    if (Main.myPlayer != player.whoAmI)
-	    {
-		    return;
-	    }
-    
-	    if (Main.mouseRight && Main.mouseRightRelease)
+	    return true;
+    }
+
+    public override bool? UseItem(Player player)
+    {
+	    if (player.altFunctionUse == 2)
 	    {
 		    var altUsePlayer = player.GetModPlayer<AltUsePlayer>();
 		    if (altUsePlayer.AltFunctionAvailable)
 		    {
 			    player.AddBuff(ModContent.BuffType<FleaBellEnhancedBuff>(), 5 * 60);
 			    altUsePlayer.SetAltCooldown(20 * 60);
-			    Main.mouseRightRelease = false;
 		    }
+		    return true;
 	    }
+    
+	    // Regular use logic here
+	    return base.UseItem(player);
     }
 
     public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -102,24 +100,24 @@ public class FleaBell : Gear
 
 public class FleaBellBuff : ModBuff
 {
-    public override void SetStaticDefaults()
-    {
-        Main.buffNoSave[Type] = true;
-        Main.buffNoTimeDisplay[Type] = true;
-    }
+	public override void SetStaticDefaults()
+	{
+		Main.buffNoSave[Type] = true;
+		Main.buffNoTimeDisplay[Type] = true;
+	}
 
-    public override void Update(Player player, ref int buffIndex)
-    {
-        if (player.ownedProjectileCounts[ModContent.ProjectileType<FleaBellMinion>()] > 0)
-        {
-            player.buffTime[buffIndex] = 18000;
-        }
-        else
-        {
-            player.DelBuff(buffIndex);
-            buffIndex--;
-        }
-    }
+	public override void Update(Player player, ref int buffIndex)
+	{
+		if (player.ownedProjectileCounts[ModContent.ProjectileType<FleaBellMinion>()] > 0)
+		{
+			player.buffTime[buffIndex] = 2;
+		}
+		else
+		{
+			player.DelBuff(buffIndex);
+			buffIndex--;
+		}
+	}
 }
 
 public class FleaBellEnhancedBuff : ModBuff
@@ -133,41 +131,62 @@ public class FleaBellEnhancedBuff : ModBuff
 
 public class FleaBellMinion : ModProjectile
 {
-    private const float IdleOffsetY = -48f;
-    private const float TeleportDistance = 700f;
-    private const float IdleThreshold = 20f;
-    private const float HoverFrequency = 0.05f; 
-    private const float VelocityResetFactor = 0.1f;
-    private const float DetectionRange = 400f;
-    private const float ChargeSpeed = 12f;
+	private enum AIState
+	{
+		Following,
+		Charging,
+		Bouncing
+	}
+
+	// Constants
+	private const float IdleOffsetY = -48f;
+	private const float TeleportDistance = 700f;
+	private const float IdleThreshold = 20f;
+	private const float HoverFrequency = 0.05f; 
+	private const float VelocityResetFactor = 0.1f;
+	private const float DetectionRange = 400f;
+	private const float ChargeSpeed = 12f;
     
-    //Bouncing
-    private const float BounceSpeed = 16f;
-    private const int BounceDuration = 45;
-    private const float BounceGravity = 0.3f;
-    private const float InitialBounceUpVelocity = -8f; 
-    private const float BounceHorizontalSpeed = 4f;
-    private bool hasBounceDestination = false;
+	// Bouncing constants
+	private const float BounceSpeed = 16f;
+	private const int BounceDuration = 45;
+	private const float BounceGravity = 0.3f;
+	private const float InitialBounceUpVelocity = -8f; 
+	private const float BounceHorizontalSpeed = 4f;
+    
+	private const int MinionDuration = 18000;
+	private const int HitCooldown = 30;
+    
+	private const float EnhancedDamageMultiplier = 1.5f;
+	private const float EnhancedSpeedMultiplier = 1.4f;
+	private const int EnhancedHitCooldown = 20;
+    
+	private const float SpreadRadius = 80f;
+    
+	// Animation constants
+	private const int AnimationFrameCount = 5;
+	private const int AnimationSpeed = 8;
+
+	// Properties
+	private AIState State
+	{
+		get => (AIState)Projectile.ai[0];
+		set => Projectile.ai[0] = (float)value;
+	}
+
+	private ref float StateTimer => ref Projectile.ai[1];
+	private ref float TargetWhoAmI => ref Projectile.ai[2];
+	private ref float HoverTimer => ref Projectile.localAI[0];
+
+	private bool IsEnhanced => Main.player[Projectile.owner].HasBuff(ModContent.BuffType<FleaBellEnhancedBuff>());
 
 
-    private const int MinionDuration = 18000;
-    private const int HitCooldown = 30;
-    
-    private float hoverTimer = 0f;
-    
-    private const float EnhancedDamageMultiplier = 1.5f;
-    private const float EnhancedSpeedMultiplier = 1.4f;
-    private const int EnhancedHitCooldown = 20;
-    
-    private const float SpreadRadius = 80f;
-    private Vector2 personalOffset = Vector2.Zero;
-    private bool hasCalculatedOffset = false;
-    
-    // Animation stuff
-    private const int AnimationFrameCount = 5;
-    private const int AnimationSpeed = 8;
-    private int animationFrame = 0;
-    private int animationTimer = 0;
+	// Fields
+	private bool hasBounceDestination = false;
+	private Vector2 personalOffset = Vector2.Zero;
+	private bool hasCalculatedOffset = false;
+	private int animationFrame = 0;
+	private int animationTimer = 0;
 
 
     public override void SetStaticDefaults()
@@ -196,59 +215,40 @@ public class FleaBellMinion : ModProjectile
         Projectile.localNPCHitCooldown = HitCooldown;
     }
 
-    private enum AIState
-    {
-        Following,
-        Charging,
-        Bouncing
-    }
-
-    private AIState State
-    {
-        get => (AIState)Projectile.ai[0];
-        set => Projectile.ai[0] = (float)value;
-    }
-
-    private ref float StateTimer => ref Projectile.ai[1];
-    private ref float TargetWhoAmI => ref Projectile.ai[2];
-
-    private bool IsEnhanced => Main.player[Projectile.owner].HasBuff(ModContent.BuffType<FleaBellEnhancedBuff>());
-
     private void CalculatePersonalOffset(Player owner)
     {
-        if (hasCalculatedOffset) return;
+	    if (hasCalculatedOffset) return;
 
-        int fleaIndex = 0;
-        int totalFleas = 0;
-        
-        for (int i = 0; i < Main.maxProjectiles; i++)
-        {
-            Projectile proj = Main.projectile[i];
-            if (proj.active && proj.type == Projectile.type && proj.owner == owner.whoAmI)
-            {
-                totalFleas++;
-                if (proj.whoAmI == Projectile.whoAmI)
-                {
-                    fleaIndex = totalFleas - 1;
-                }
-            }
-        }
+	    int fleaIndex = 0;
+	    int totalFleas = 0;
+    
+	    foreach (Projectile proj in Main.ActiveProjectiles)
+	    {
+		    if (proj.type == Projectile.type && proj.owner == owner.whoAmI)
+		    {
+			    totalFleas++;
+			    if (proj.whoAmI == Projectile.whoAmI)
+			    {
+				    fleaIndex = totalFleas - 1;
+			    }
+		    }
+	    }
 
-        if (totalFleas > 1)
-        {
-            float angle = (MathHelper.TwoPi / totalFleas) * fleaIndex;
-            float radius = SpreadRadius * Math.Min(totalFleas / 3f, 1f);
-            personalOffset = new Vector2(
-                (float)Math.Cos(angle) * radius,
-                (float)Math.Sin(angle) * radius * 0.5f 
-            );
-        }
-        else
-        {
-            personalOffset = Vector2.Zero;
-        }
+	    if (totalFleas > 1)
+	    {
+		    float angle = (MathHelper.TwoPi / totalFleas) * fleaIndex;
+		    float radius = SpreadRadius * Math.Min(totalFleas / 3f, 1f);
+		    personalOffset = new Vector2(
+			    (float)Math.Cos(angle) * radius,
+			    (float)Math.Sin(angle) * radius * 0.5f 
+		    );
+	    }
+	    else
+	    {
+		    personalOffset = Vector2.Zero;
+	    }
 
-        hasCalculatedOffset = true;
+	    hasCalculatedOffset = true;
     }
 
     public override void AI()
@@ -331,9 +331,7 @@ public class FleaBellMinion : ModProjectile
             }
         }
     }
-
-   
-
+    
     private void SearchForTargets(Player owner, out bool foundTarget, out float distanceFromTarget, out Vector2 targetCenter)
     {
 	    distanceFromTarget = DetectionRange;
@@ -380,143 +378,139 @@ public class FleaBellMinion : ModProjectile
 	    }
     }
 
-public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-{
-    SoundEngine.PlaySound(FleaBell.BellHitSound, Projectile.Center);
-
-    State = AIState.Bouncing;
-    StateTimer = 0f;
-    hasBounceDestination = false;
-
-    Vector2 direction = (Projectile.Center - target.Center).SafeNormalize(Vector2.UnitX);
-    float bounceSpeed = IsEnhanced ? BounceSpeed * EnhancedSpeedMultiplier : BounceSpeed;
-    Projectile.velocity = direction * bounceSpeed;
-}
-
-
-
-private void Movement(bool foundTarget, float distanceFromTarget, Vector2 targetCenter, 
-    float distanceToIdlePosition, Vector2 vectorToIdlePosition)
-{
-    float speedMultiplier = IsEnhanced ? EnhancedSpeedMultiplier : 1f;
-
-    if (foundTarget && State == AIState.Following)
-    {
-        State = AIState.Charging;
-        StateTimer = 0f;
-        hoverTimer = 0f;
-    }
-
-    if (State == AIState.Charging)
-    {
-        StateTimer++;
-        
-        if (!foundTarget || distanceFromTarget > DetectionRange * 2f)
-        {
-            TargetWhoAmI = -1;
-            State = AIState.Following;
-            StateTimer = 0f;
-            Projectile.friendly = false;
-            
-            Player owner = Main.player[Projectile.owner];
-            if (owner.HasMinionAttackTargetNPC)
-            {
-                NPC targetNPC = Main.npc[owner.MinionAttackTargetNPC];
-                if (!targetNPC.active || targetNPC.life <= 0 || Vector2.Distance(targetNPC.Center, Projectile.Center) > DetectionRange * 2f)
-                {
-                    owner.MinionAttackTargetNPC = -1;
-                }
-            }
-            return;
-        }
-        
-        Vector2 direction = targetCenter - Projectile.Center;
-        direction.Normalize();
-        Projectile.velocity = direction * ChargeSpeed * speedMultiplier;
-        Projectile.rotation = direction.ToRotation() + MathHelper.PiOver2;
-        
-        Projectile.friendly = true;
-    }
-    else if (State == AIState.Following)
-    {
-        TargetWhoAmI = -1;
-        Projectile.friendly = false;
-        
-        Vector2 idlePosition = Main.player[Projectile.owner].Center;
-        idlePosition.Y += IdleOffsetY;
-        CalculatePersonalOffset(Main.player[Projectile.owner]);
-        idlePosition += personalOffset;
-        
-        float hoverOffset = (float)Math.Sin(hoverTimer) * 8f; 
-        idlePosition.Y += hoverOffset;
-        
-        Vector2 vectorToIdle = idlePosition - Projectile.Center;
-        float distanceToIdle = vectorToIdle.Length();
-
-        if (distanceToIdle > IdleThreshold)
-        {
-            float moveSpeed = 8f * speedMultiplier; 
-            if (distanceToIdle > 600f)
-            {
-                moveSpeed = 12f * speedMultiplier;
-            }
-            
-            vectorToIdle.Normalize();
-            vectorToIdle *= moveSpeed;
-            
-            Projectile.velocity = (Projectile.velocity * 39f + vectorToIdle) / 40f;
-        }
-        else
-        {
-            Vector2 randomMovement = Main.rand.NextVector2Circular(0.8f, 0.8f);
-            Projectile.velocity += randomMovement * 0.1f;
-            Projectile.velocity *= 0.96f; 
-        }
-        
-        hoverTimer += HoverFrequency;
-        
-        if (Math.Abs(Projectile.velocity.X) > 0.1f)
-        {
-            Projectile.spriteDirection = Math.Sign(Projectile.velocity.X);
-        }
-    }
-    else if (State == AIState.Bouncing)
-    {
-        TargetWhoAmI = -1;
-        Projectile.friendly = false;
-        
-        StateTimer++;
-        
-        Player owner = Main.player[Projectile.owner];
-        
-        if (!hasBounceDestination)
-        {
-            Vector2 directionToPlayer = (owner.Center - Projectile.Center).SafeNormalize(Vector2.UnitX);
-            
-            float horizontalSpeed = IsEnhanced ? BounceHorizontalSpeed * EnhancedSpeedMultiplier : BounceHorizontalSpeed;
-            Projectile.velocity.X = directionToPlayer.X * horizontalSpeed;
-            
-            float upVelocity = IsEnhanced ? InitialBounceUpVelocity * 1.3f : InitialBounceUpVelocity;
-            Projectile.velocity.Y = upVelocity;
-            
-            hasBounceDestination = true;
-        }
-        
-        Projectile.velocity.Y += BounceGravity;
-        
-        Projectile.rotation *= 0.95f;
-        
-        int bounceDuration = IsEnhanced ? (int)(BounceDuration * 0.7f) : BounceDuration;
-        
-        if (StateTimer > bounceDuration)
-        {
-            State = AIState.Following;
-            StateTimer = 0f;
-            Projectile.rotation = 0f;
-            hasBounceDestination = false;
-        }
-    }
-}
+	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+	{
+	    SoundEngine.PlaySound(FleaBell.BellHitSound, Projectile.Center);
+	
+	    State = AIState.Bouncing;
+	    StateTimer = 0f;
+	    hasBounceDestination = false;
+	
+	    Vector2 direction = (Projectile.Center - target.Center).SafeNormalize(Vector2.UnitX);
+	    float bounceSpeed = IsEnhanced ? BounceSpeed * EnhancedSpeedMultiplier : BounceSpeed;
+	    Projectile.velocity = direction * bounceSpeed;
+	}
+	
+	private void Movement(bool foundTarget, float distanceFromTarget, Vector2 targetCenter, 
+	    float distanceToIdlePosition, Vector2 vectorToIdlePosition)
+	{
+	    float speedMultiplier = IsEnhanced ? EnhancedSpeedMultiplier : 1f;
+	
+	    if (foundTarget && State == AIState.Following)
+	    {
+	        State = AIState.Charging;
+	        StateTimer = 0f;
+	        HoverTimer = 0f;
+	    }
+	
+	    if (State == AIState.Charging)
+	    {
+	        StateTimer++;
+	        
+	        if (!foundTarget || distanceFromTarget > DetectionRange * 2f)
+	        {
+	            TargetWhoAmI = -1;
+	            State = AIState.Following;
+	            StateTimer = 0f;
+	            Projectile.friendly = false;
+	            
+	            Player owner = Main.player[Projectile.owner];
+	            if (owner.HasMinionAttackTargetNPC)
+	            {
+	                NPC targetNPC = Main.npc[owner.MinionAttackTargetNPC];
+	                if (!targetNPC.active || targetNPC.life <= 0 || Vector2.Distance(targetNPC.Center, Projectile.Center) > DetectionRange * 2f)
+	                {
+	                    owner.MinionAttackTargetNPC = -1;
+	                }
+	            }
+	            return;
+	        }
+	        
+	        Vector2 direction = Vector2.Normalize(targetCenter - Projectile.Center) * ChargeSpeed * speedMultiplier;
+	        Projectile.velocity = direction;
+	        Projectile.rotation = direction.ToRotation() + MathHelper.PiOver2;
+	        
+	        Projectile.friendly = true;
+	    }
+	    else if (State == AIState.Following)
+	    {
+	        TargetWhoAmI = -1;
+	        Projectile.friendly = false;
+	        
+	        Vector2 idlePosition = Main.player[Projectile.owner].Center;
+	        idlePosition.Y += IdleOffsetY;
+	        CalculatePersonalOffset(Main.player[Projectile.owner]);
+	        idlePosition += personalOffset;
+	        
+	        float hoverOffset = (float)Math.Sin(HoverTimer) * 8f; 
+	        idlePosition.Y += hoverOffset;
+	        
+	        Vector2 vectorToIdle = idlePosition - Projectile.Center;
+	        float distanceToIdle = vectorToIdle.Length();
+	
+	        if (distanceToIdle > IdleThreshold)
+	        {
+	            float moveSpeed = 8f * speedMultiplier; 
+	            if (distanceToIdle > 600f)
+	            {
+	                moveSpeed = 12f * speedMultiplier;
+	            }
+	            
+	            Vector2 moveDirection = Vector2.Normalize(vectorToIdle) * moveSpeed;
+	            Projectile.velocity = (Projectile.velocity * 39f + moveDirection) / 40f;
+	        }
+	        else
+	        {
+	            Vector2 randomMovement = Main.rand.NextVector2Circular(0.8f, 0.8f);
+	            Projectile.velocity += randomMovement * 0.1f;
+	            Projectile.velocity *= 0.96f; 
+	        }
+	        
+	        HoverTimer += HoverFrequency;
+	        
+	        if (Math.Abs(Projectile.velocity.X) > 0.1f)
+	        {
+	            Projectile.spriteDirection = Math.Sign(Projectile.velocity.X);
+	        }
+	    }
+	    else if (State == AIState.Bouncing)
+	    {
+	        TargetWhoAmI = -1;
+	        Projectile.friendly = false;
+	        
+	        StateTimer++;
+	        
+	        Player owner = Main.player[Projectile.owner];
+	        
+	        if (!hasBounceDestination)
+	        {
+	            Vector2 directionToPlayer = (owner.Center - Projectile.Center).SafeNormalize(Vector2.UnitX);
+	            
+	            float horizontalSpeed = IsEnhanced ? BounceHorizontalSpeed * EnhancedSpeedMultiplier : BounceHorizontalSpeed;
+	            Projectile.velocity.X = directionToPlayer.X * horizontalSpeed;
+	            
+	            float upVelocity = IsEnhanced ? InitialBounceUpVelocity * 1.3f : InitialBounceUpVelocity;
+	            Projectile.velocity.Y = upVelocity;
+	            
+	            hasBounceDestination = true;
+	        }
+	        
+	        Projectile.velocity.Y += BounceGravity;
+	        
+	        Projectile.rotation *= 0.95f;
+	        
+	        int bounceDuration = IsEnhanced ? (int)(BounceDuration * 0.7f) : BounceDuration;
+	        
+	        if (StateTimer > bounceDuration)
+	        {
+	            State = AIState.Following;
+	            StateTimer = 0f;
+	            Projectile.rotation = 0f;
+	            hasBounceDestination = false;
+	        }
+	    }
+	}
+	
     private void Visuals()
     {
         if (State != AIState.Charging)

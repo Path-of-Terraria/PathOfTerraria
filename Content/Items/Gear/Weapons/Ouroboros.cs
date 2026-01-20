@@ -65,10 +65,9 @@ public class Ouroboros : Gear
 			var altUsePlayer = player.GetModPlayer<AltUsePlayer>();
 			if (altUsePlayer.AltFunctionAvailable)
 			{
-				for (int i = 0; i < Main.maxProjectiles; i++)
+				foreach (Projectile proj in Main.ActiveProjectiles)
 				{
-					Projectile proj = Main.projectile[i];
-					if (proj.active && proj.owner == player.whoAmI && proj.ModProjectile is OuroborosProjectile yoyo)
+					if (proj.owner == player.whoAmI && proj.ModProjectile is OuroborosProjectile yoyo)
 					{
 						yoyo.ActivateDevour();
 						altUsePlayer.SetAltCooldown(8 * 60);
@@ -78,12 +77,6 @@ public class Ouroboros : Gear
 				}
 			}
 		}
-	}
-
-	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity,
-		int type, int damage, float knockback)
-	{
-		return true;
 	}
 }
 
@@ -196,52 +189,53 @@ public class OuroborosProjectile : ModProjectile
     
 	    return false;
     }
-
-
-
+    
     /// <summary>
     /// Handles the devour mode mechanics - pulling enemies and executing low health targets
     /// </summary>
     private void HandleDevourMode()
     {
-        devourTimer--;
-        
-        if (devourTimer <= 0)
-        {
-            devourActive = false;
-            return;
-        }
+	    devourTimer--;
+    
+	    if (devourTimer <= 0)
+	    {
+		    devourActive = false;
+		    return;
+	    }
 
-        //placeholder visuals
-        if (Main.rand.NextBool(2))
-        {
-            var dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.VenomStaff);
-            dust.velocity = Main.rand.NextVector2Circular(3f, 3f);
-            dust.noGravity = true;
-            dust.scale = 1.2f;
-        }
+	    //placeholder visuals
+	    if (Main.rand.NextBool(2))
+	    {
+		    var dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.VenomStaff);
+		    dust.velocity = Main.rand.NextVector2Circular(3f, 3f);
+		    dust.noGravity = true;
+		    dust.scale = 1.2f;
+	    }
 
-        // Pull enemies towards the yoyo - we can probably make this stronger later
-        for (int i = 0; i < Main.maxNPCs; i++)
-        {
-            NPC npc = Main.npc[i];
-            if (!npc.active || npc.life <= 0 || !npc.CanBeChasedBy()) continue;
+	    float devourRangeSquared = DevourRange * DevourRange;
 
-            float distance = Vector2.Distance(npc.Center, Projectile.Center);
-            if (distance <= DevourRange)
-            {
-                if ((float)npc.life / npc.lifeMax <= DevourExecuteThreshold)
-                {
-                    ExecuteEnemy(npc);
-                }
-                else
-                {
-                    Vector2 pullDirection = (Projectile.Center - npc.Center).SafeNormalize(Vector2.UnitX);
-                    float pullForce = DevourPullStrength * (1f - (distance / DevourRange));
-                    npc.velocity += pullDirection * pullForce * 0.1f;
-                }
-            }
-        }
+	    // Pull enemies towards the yoyo - we can probably make this stronger later
+	    for (int i = 0; i < Main.maxNPCs; i++)
+	    {
+		    NPC npc = Main.npc[i];
+		    if (!npc.active || npc.life <= 0 || !npc.CanBeChasedBy()) continue;
+
+		    float distanceSquared = npc.DistanceSQ(Projectile.Center);
+		    if (distanceSquared <= devourRangeSquared)
+		    {
+			    if ((float)npc.life / npc.lifeMax <= DevourExecuteThreshold)
+			    {
+				    ExecuteEnemy(npc);
+			    }
+			    else
+			    {
+				    Vector2 pullDirection = (Projectile.Center - npc.Center).SafeNormalize(Vector2.UnitX);
+				    float distance = (float)Math.Sqrt(distanceSquared);
+				    float pullForce = DevourPullStrength * (1f - (distance / DevourRange));
+				    npc.velocity += pullDirection * pullForce * 0.1f;
+			    }
+		    }
+	    }
     }
 
     /// <summary>
@@ -257,10 +251,10 @@ public class OuroborosProjectile : ModProjectile
 
         var hitInfo = new NPC.HitInfo()
         {
-            Damage = npc.life * 2,
-            Knockback = 0f,
-            HitDirection = 0,
-            DamageType = DamageClass.MeleeNoSpeed
+	        InstantKill = true,
+	        Knockback = 0f,
+	        HitDirection = 0,
+	        DamageType = DamageClass.MeleeNoSpeed
         };
 
         npc.StrikeNPC(hitInfo);
@@ -314,7 +308,7 @@ public class OuroborosProjectile : ModProjectile
 	    Vector2 playerCenter = Main.player[Projectile.owner].MountedCenter;
 	    Vector2 center = Projectile.Center;
 	    Vector2 distToProj = playerCenter - Projectile.Center;
-	    float projRotation = distToProj.ToRotation() - 1.57f;
+	    float projRotation = distToProj.ToRotation() - MathHelper.PiOver2;
 	    float distance = distToProj.Length();
     
 	    var stringTexture = ModContent.Request<Texture2D>("PathOfTerraria/Content/Items/Gear/Weapons/OuroborosString");
@@ -356,8 +350,7 @@ public class OuroborosPoisonGas : ModProjectile
 
     public override void SetDefaults()
     {
-        Projectile.width = (int)(GasRadius * 2);
-        Projectile.height = (int)(GasRadius * 2);
+	    Projectile.Size = new(GasRadius * 2); 
         Projectile.friendly = true;
         Projectile.DamageType = DamageClass.MeleeNoSpeed;
         Projectile.timeLeft = GasDuration;
@@ -371,43 +364,17 @@ public class OuroborosPoisonGas : ModProjectile
 
     public override void AI()
     {
-        poisonTickTimer++;
-        
-        Projectile.alpha = (int)MathHelper.Lerp(100, 255, 1f - (Projectile.timeLeft / (float)GasDuration));
+	    Projectile.alpha = (int)MathHelper.Lerp(100, 255, 1f - (Projectile.timeLeft / (float)GasDuration));
 
-        // another placeholder for visual fx
-        if (Main.rand.NextBool(3))
-        {
-            var dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.JungleSpore);
-            dust.velocity *= 0.1f;
-            dust.noGravity = true;
-            dust.alpha = 150;
-            dust.scale = 0.8f;
-        }
-
-        if (poisonTickTimer >= PoisonTickInterval && Main.myPlayer == Projectile.owner)
-        {
-            poisonTickTimer = 0;
-            
-            for (int i = 0; i < Main.maxNPCs; i++)
-            {
-                NPC npc = Main.npc[i];
-                if (!npc.active || npc.life <= 0 || !npc.CanBeChasedBy()) continue;
-
-                if (Vector2.Distance(npc.Center, Projectile.Center) <= GasRadius)
-                {
-                    var hitInfo = new NPC.HitInfo()
-                    {
-                        Damage = Projectile.damage,
-                        Knockback = 0f,
-                        HitDirection = 0,
-                        DamageType = DamageClass.MeleeNoSpeed
-                    };
-
-                    npc.StrikeNPC(hitInfo);
-                }
-            }
-        }
+	    // another placeholder for visual fx
+	    if (Main.rand.NextBool(3))
+	    {
+		    var dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.JungleSpore);
+		    dust.velocity *= 0.1f;
+		    dust.noGravity = true;
+		    dust.alpha = 150;
+		    dust.scale = 0.8f;
+	    }
     }
     
     public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
