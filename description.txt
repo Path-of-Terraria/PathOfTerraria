@@ -27,6 +27,7 @@ CREDITS:
 - Ian - Builder
 - chalibur - Developer
 - Tree - Developer
+- Mirsario - Developer
 
 Available Links:
 - Discord: https://discord.gg/5c2GrFQReE
