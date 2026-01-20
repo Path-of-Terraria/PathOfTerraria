@@ -19,4 +19,9 @@ internal struct Counter<T> where T : INumber<T>
 	{
 		if (Value > T.Zero) { Value--; }
 	}
+
+	/// <summary> Checked increment operation. </summary>
+	public void Increment() { checked { Value++; } }
+	/// <summary> Checked decrement operation. </summary>
+	public void Decrement() { checked { Value--; } }
 }

@@ -61,6 +61,9 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 		public bool Ended;
 	}
 
+	[ThreadStatic]
+	public static Counter<uint> AllowDamage;
+
 	public int Sign => Direction.X >= 0f ? 1 : -1;
 	public bool Active => Data.Progress >= 0;
 	public bool DealingDamage => Data.Progress >= 0 && Data.Progress >= Data.Damage.Start && Data.Progress < Data.Damage.End;
@@ -83,6 +86,15 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 
 		Data.Progress = reader.ReadInt16();
 		Data.Cooldown.Value = reader.ReadUInt16();
+	}
+
+	public override bool CanHitPlayer(NPC npc, Player target, ref int cooldownSlot)
+	{
+		return !Data.DisableContactDamage || AllowDamage.Value > 0;
+	}
+	public override bool CanHitNPC(NPC npc, NPC target)
+	{
+		return !Data.DisableContactDamage || AllowDamage.Value > 0;
 	}
 
 	public override void PostDraw(NPC npc, SpriteBatch sb, Vector2 screenPos, Color drawColor)
@@ -134,12 +146,6 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 	{
 		NPC npc = ctx.NPC;
 		var result = new Result();
-
-		//TODO: Implement in a way that prevents spawn-time damage.
-		if (Data.DisableContactDamage)
-		{
-			npc.damage = 0;
-		}
 
 		// Cool down cooldowns.
 		Data.Cooldown.CountDown();
@@ -223,7 +229,16 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 				(Vector2 hitboxCenter, Rectangle hitboxAabb) = GetDamageArea(in ctx);
 				Data.Attack.Aabb = hitboxAabb;
 				Data.Attack.Direction = Direction;
-				Data.Attack.DamageEntities();
+
+				try
+				{
+					AllowDamage.Increment();
+					Data.Attack.DamageEntities();
+				}
+				finally
+				{
+					AllowDamage.Decrement();
+				}
 			}
 
 			Data.Progress++;

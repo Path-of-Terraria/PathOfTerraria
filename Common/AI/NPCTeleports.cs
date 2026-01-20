@@ -213,7 +213,7 @@ internal sealed class NPCTeleports : NPCComponent<TeleportData>
 			// Must be significantly closer.
 			if (spawnPos.DistanceSQ(ctx.TargetCenter) > 128 + ctx.Center.DistanceSQ(ctx.TargetCenter)) { return false; }
 
-			// Must be change relative directions.	
+			// If in front of the target, then the portal exit should go behind it, or vice-versa.
 			if (Math.Sign(ctx.Center.X - ctx.TargetCenter.X) == Math.Sign(spawnPos.X - ctx.TargetCenter.X)) { return false; }
 
 			return true;
