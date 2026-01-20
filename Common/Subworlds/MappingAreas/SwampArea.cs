@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Common.Encounters;
-using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.Subworlds.MappingAreas.SwampAreaContent;
 using PathOfTerraria.Common.Tiles.FramingKinds;
 using PathOfTerraria.Common.World.Generation;
@@ -150,7 +149,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 			{
 				Tile tile = Main.tile[i, j];
 
-				if (!tile.HasTile || !WorldUtilities.SolidTile(tile) || SkipActuationLocations.Contains(new Point16(i, j)))
+				if (!tile.HasTile || !WorldUtilities.SolidOrActuatedTile(tile) || SkipActuationLocations.Contains(new Point16(i, j)))
 				{
 					continue;
 				}
@@ -219,56 +218,18 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 		noise.SetNoiseType(FastNoiseLite.NoiseType.Cellular);
 		noise.SetFrequency(0.05f);
 
-		HashSet<Point16> positions = [];
-
 		for (int i = 300; i < Main.maxTilesX - 300; ++i)
 		{
 			for (int j = WaterY + 20; j < Main.maxTilesY - 60; ++j)
 			{
-				if (noise.GetNoise(i, j) > MossNoiseThreshold)
+				if (noise.GetNoise(i, j) > MossNoiseThreshold && !WorldUtilities.SolidOrActuatedTile(i, j))
 				{
-					Point16 pos = new(Random.Next(300, Main.maxTilesX - 300), Random.Next(WaterY + 40, Main.maxTilesY - 40));
-					RecursiveExploreNoise(pos, positions, noise);
+					GenPlacement.FastPlaceTile(i, j, ModContent.TileType<DeepMoss>());
 				}
 			}
 
 			progress.Set(i / (float)Main.maxTilesX);
 		}
-
-		foreach (Point16 position in positions)
-		{
-			GenPlacement.FastPlaceTile(position.X, position.Y, ModContent.TileType<DeepMoss>());
-		}
-	}
-
-	private static bool RecursiveExploreNoise(Point16 pos, HashSet<Point16> positions, FastNoiseLite noise)
-	{
-		Queue<Point16> next = new();
-		next.Enqueue(pos);
-		bool anyAdded = false;
-
-		while (next.Count > 0)
-		{
-			Point16 tile = next.Dequeue();
-			float i = tile.X;
-			float j = tile.Y;
-			tile = new Point16((int)i, (int)j);
-
-			if (positions.Contains(tile) || WorldUtilities.SolidTile(tile.X, tile.Y) || noise.GetNoise(i, j) < MossNoiseThreshold)
-			{
-				continue;
-			}
-
-			positions.Add(tile);
-			anyAdded = true;
-
-			next.Enqueue(new Point16(tile.X, tile.Y + 1));
-			next.Enqueue(new Point16(tile.X, tile.Y - 1));
-			next.Enqueue(new Point16(tile.X + 1, tile.Y));
-			next.Enqueue(new Point16(tile.X - 1, tile.Y));
-		}
-
-		return anyAdded;
 	}
 
 	private static void CleanUpAndDetail(GenerationProgress progress, FastNoiseLite cloudNoise)

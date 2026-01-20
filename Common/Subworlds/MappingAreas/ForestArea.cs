@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Common.ItemDropping;
-using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.World;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Generation.Tools;

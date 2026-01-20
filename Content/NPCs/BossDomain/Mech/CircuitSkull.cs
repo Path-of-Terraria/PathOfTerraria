@@ -1,7 +1,7 @@
 ﻿using NPCUtils;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
-using PathOfTerraria.Common.Subworlds.BossDomains;
+using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Content.Scenes;
 using ReLogic.Content;
 using System.Collections.Generic;
