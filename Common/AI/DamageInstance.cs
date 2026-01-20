@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -27,6 +28,7 @@ internal class DamageInstance()
 	public static EntityKind EnemyAttackFilter => EntityKind.NeutralNPC | EntityKind.FriendlyNPC | EntityKind.LocalPlayer;
 	public static EntityKind EnemyAttackFilterWithInfighting => EntityKind.NeutralNPC | EntityKind.FriendlyNPC | EntityKind.EnemyNPC | EntityKind.LocalPlayer;
 
+	public required Entity? Hitter;
 	public required Rectangle Aabb;
 	public required Func<Player, PlayerDeathReason> DeathReason;
 	public required int Damage;
@@ -55,6 +57,18 @@ internal class DamageInstance()
 
 			if ((Filter & kind) != 0 && hitIndex != ExcludedEntityIndex && Predicate!(player) && Aabb.Intersects(player.Hitbox) && HitEntities?.Contains(hitIndex) != true)
 			{
+				// Invoke hooks.
+				int specialHitSetter = -1;
+				if (Hitter switch
+				{
+					NPC atkNpc => CombinedHooks.CanNPCHitPlayer(atkNpc, player, ref specialHitSetter) == false,
+					Projectile atkProj => CombinedHooks.CanHitPvpWithProj(atkProj, player) == false,
+					_ => false,
+				})
+				{
+					continue;
+				}
+
 				player.Hurt(DeathReason(player), Damage, directionSign);
 				(HitEntities ??= []).Add(hitIndex);
 			}
@@ -71,7 +85,19 @@ internal class DamageInstance()
 
 			if (!npc.immortal && (Filter & kind) != 0 && hitIndex != ExcludedEntityIndex && Predicate!(npc) && Aabb.Intersects(npc.Hitbox) && HitEntities?.Contains(hitIndex) != true)
 			{
-				npc.SimpleStrikeNPC(Damage, directionSign, false, Knockback);
+				// Invoke hooks.
+				if (Hitter switch
+				{
+					NPC atkNpc => NPCLoader.CanHitNPC(atkNpc, npc) == false,
+					Player atkPlayer => PlayerLoader.CanHitNPC(atkPlayer, npc) == false,
+					Projectile atkProj => ProjectileLoader.CanHitNPC(atkProj, npc) == false,
+					_ => false,
+				})
+				{
+					continue;
+				}
+
+				npc.SimpleStrikeNPC(Damage, directionSign, false, Knockback, noPlayerInteraction: true);
 				(HitEntities ??= []).Add(hitIndex);
 			}
 		}

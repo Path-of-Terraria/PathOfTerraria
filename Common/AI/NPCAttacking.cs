@@ -193,6 +193,7 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 				// Prepare damage.
 				Data.Attack = new DamageInstance
 				{
+					Hitter = npc,
 					Aabb = default,
 					Direction = default,
 					Damage = npc.defDamage,
