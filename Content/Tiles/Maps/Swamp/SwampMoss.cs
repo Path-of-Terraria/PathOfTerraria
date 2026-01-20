@@ -25,18 +25,18 @@ internal class SwampMoss : ModTile, IAutoloadTileItem
 
 	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 	{
-		Tile tile = Main.tile[i, j];
-
 		if (StaticNoise.Perlin.GetNoise(i * 22, j * 22) > 0.82f)
 		{
-			Draw(new Rectangle(i % 4 * 18, 90, 16, 16));
-		}
-
-		void Draw(Rectangle srcOverride)
-		{
+			Tile tile = Main.tile[i, j];
+			Rectangle srcOverride = new(i % 4 * 18, 90, 16, 16);
 			Vector2 off = tile.LiquidAmount > 0 ? new(0, MathF.Sin(Main.GameUpdateCount * 0.03f + i * MathHelper.PiOver4) * 2) : Vector2.Zero;
 			Vector2 position = TileExtensions.DrawPosition(i, j) + off;
 			Color color = Lighting.GetColor(i, j);
+
+			if (tile.IsActuated)
+			{
+				color = Color.Lerp(color, Color.Black, 0.6f);
+			}
 			
 			if (tile.LiquidAmount <= 0)
 			{

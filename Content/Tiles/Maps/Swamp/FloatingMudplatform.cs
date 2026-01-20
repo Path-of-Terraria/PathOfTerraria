@@ -92,6 +92,17 @@ internal class FloatingMudplatform : ModProjectile, ISolidTopProjectile
 		}
 	}
 
+	bool ISolidTopProjectile.CanStandOn(Entity entity, Projectile projectile)
+	{
+		return CanStandOn(entity, projectile);
+	}
+
+	protected virtual bool CanStandOn(Entity entity, Projectile projectile)
+	{
+		float offset = ISolidTopProjectile.SolidTopProjectileHooks.SolidTopOffsets.TryGetValue(projectile.type, out float value) ? value : 2;
+		return entity.velocity.Y >= 0 && entity.Bottom.Y < projectile.Hitbox.Y + 10 + offset;
+	}
+
 	void ISolidTopProjectile.UpdateSolidTop(Entity entity, Projectile projectile)
 	{
 		UpdateSolidTop(entity, projectile);
@@ -121,13 +132,15 @@ internal class FloatingMudplatform : ModProjectile, ISolidTopProjectile
 	}
 }
 
-internal class BrittleFloatingMudplatform : FloatingMudplatform
+internal sealed class BrittleFloatingMudplatform : FloatingMudplatform
 {
+	private ref float HideTimer => ref Projectile.ai[2];
+
 	public override void AI()
 	{
 		base.AI();
 
-		if (StandingTimer > MaxStandTime - 120)
+		if (StandingTimer > MaxStandTime - 80 && HideTimer <= 0)
 		{
 			StandingTimer++;
 			WasStandingTimer = 5;
@@ -135,7 +148,19 @@ internal class BrittleFloatingMudplatform : FloatingMudplatform
 
 		if (StandingTimer > MaxStandTime)
 		{
-			Projectile.Kill();
+			HideTimer = 600;
+
+			OnKill(0); // Display vfx for break but without dying
+		}
+
+		if (HideTimer > 0)
+		{
+			HideTimer--;
+			Projectile.Opacity = MathHelper.Lerp(Projectile.Opacity, 0.3f, 0.05f);
+		}
+		else
+		{
+			Projectile.Opacity = MathHelper.Lerp(Projectile.Opacity, 1, 0.05f);
 		}
 	}
 
@@ -143,7 +168,12 @@ internal class BrittleFloatingMudplatform : FloatingMudplatform
 	{
 		base.UpdateSolidTop(entity, projectile);
 
-		StandingTimer += 1;
+		StandingTimer += 3;
+	}
+
+	protected override bool CanStandOn(Entity entity, Projectile projectile)
+	{
+		return HideTimer <= 0 && base.CanStandOn(entity, projectile);
 	}
 
 	public override bool PreDraw(ref Color lightColor)
@@ -151,12 +181,12 @@ internal class BrittleFloatingMudplatform : FloatingMudplatform
 		Texture2D tex = TextureAssets.Projectile[Type].Value;
 		Vector2 pos = Projectile.Center - Main.screenPosition;
 
-		if (StandingTimer > MaxStandTime - 120)
+		if (StandingTimer > MaxStandTime - 80)
 		{
 			pos += Main.rand.NextVector2Circular(3, 3);
 		}
 
-		Main.spriteBatch.Draw(tex, pos, null, lightColor, Projectile.rotation, tex.Size() / 2f, Projectile.scale, SpriteEffects.None, 0);
+		Main.spriteBatch.Draw(tex, pos, null, lightColor * Projectile.Opacity, Projectile.rotation, tex.Size() / 2f, Projectile.scale, SpriteEffects.None, 0);
 
 		return false;
 	}
