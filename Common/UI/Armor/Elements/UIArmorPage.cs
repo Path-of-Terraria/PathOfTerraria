@@ -44,7 +44,7 @@ public abstract class UIArmorPage : UIElement
 
 	protected abstract UIHoverImageItemSlot?[] GetDefaultSlots(ref int numAccessorySlots);
 
-	protected abstract UIHoverImageItemSlot CreateCustomAccessorySlot(ModAccessorySlot modSlot, ref int numAccessorySlots);
+	protected abstract UIHoverImageItemSlot CreateCustomAccessorySlot(ModAccessorySlot modSlot, ref int numAccessorySlots, int customModSlot);
 
 	protected virtual void UpdateMouseOver(UIMouseEvent @event, UIElement element)
 	{
@@ -136,7 +136,7 @@ public abstract class UIArmorPage : UIElement
 				ModAccessorySlot modSlot = accessoryLoader.Get(i - numDefaultSlots, Player);
 				bool isVisible = ExtraAccessorySlots.IsModAccessorySlotVisible(modSlot);
 
-				uiSlot = CreateCustomAccessorySlot(modSlot, ref numAccessorySlots);
+				uiSlot = CreateCustomAccessorySlot(modSlot, ref numAccessorySlots, i - numDefaultSlots);
 				append = isVisible;
 
 				customSlots.Add((modSlot, uiSlot));
