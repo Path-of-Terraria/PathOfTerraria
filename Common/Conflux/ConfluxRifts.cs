@@ -16,6 +16,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.UI;
 using Terraria.UI.Chat;
+using Terraria.Utilities;
 
 #nullable enable
 
@@ -118,13 +119,12 @@ internal sealed class ConfluxRifts : ModSystem
 			SkippedLiquids = LiquidMask.All
 		};
 
-		int targetRifts = MappingWorld.MapTier switch
-		{
-			>= 7 => 4,
-			>= 2 => 3,
-			_ => 2,
-		};
+		WeightedRandom<int> targetRiftPool = new();
+		targetRiftPool.Add(3, 0.1f + (MathF.Pow(MappingWorld.MapTier - 1.0f, 2.50f) * 0.3f));
+		targetRiftPool.Add(2, 0.3f + (MathF.Pow(MappingWorld.MapTier - 1.0f, 2.05f) * 0.6f));
+		targetRiftPool.Add(1, 0.7f);
 
+		int targetRifts = targetRiftPool.Get();
 		IEntitySource? source = Entity.GetSource_None();
 		var rifts = new List<Projectile>(capacity: targetRifts);
 
@@ -170,6 +170,7 @@ internal sealed class ConfluxRifts : ModSystem
 		progressBarOutline ??= ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/Conflux/StabilityOutline");
 
 		if (progressBarTexture is not { IsLoaded: true, Value: { } uiTexture }) { return true; }
+
 		if (progressBarOutline is not { IsLoaded: true, Value: { } uiOutline }) { return true; }
 
 		float uiPulse = progressBarPulse * progressBarPulse;
