@@ -9,6 +9,7 @@ using PathOfTerraria.Core.Time;
 using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
 using SubworldLibrary;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
@@ -89,18 +90,34 @@ internal sealed class UnderwaterRift : ConfluxRift
 	{
 		Vector2 center = Projectile.Center;
 		Rectangle hitbox = Projectile.Hitbox;
+		bool activated = false;
 
-		if (Main.netMode != NetmodeID.MultiplayerClient)
+		void HandleActivator(Entity entity)
 		{
-			foreach (Item item in Main.ActiveItems)
+			// Strong pull.
+			PullPush(center, entity.Center, ref entity.velocity, (32f, 512f, 2f), (7.5f, 35f), default);
+
+			if (Main.netMode != NetmodeID.MultiplayerClient && !activated && entity.Hitbox.Intersects(hitbox))
 			{
-				if (item.type == ItemID.TruffleWorm && item.Hitbox.Intersects(hitbox))
-				{
-					item.active = false;
-					Activate();
-					break;
-				}
+				entity.active = false;
+				Activate();
+				activated = true;
 			}
+		}
+
+		foreach (Item item in Main.ActiveItems)
+		{
+			if (item.type != ItemID.TruffleWorm) { continue; }
+
+			HandleActivator(item);
+		}
+		foreach (Projectile proj in Main.ActiveProjectiles)
+		{
+			if (!proj.bobber) { continue; }
+			if (!proj.TryGetOwner(out Player owner)) { continue; }
+			if (owner.GetFishingConditions() is not { Bait.type: ItemID.TruffleWorm }) { continue; }
+
+			HandleActivator(proj);
 		}
 
 		if (Activated && Main.netMode != NetmodeID.Server && Main.LocalPlayer is { } player && player.Hitbox.Intersects(hitbox))
@@ -137,8 +154,7 @@ internal sealed class UnderwaterRift : ConfluxRift
 		}
 		foreach (Item item in Main.ActiveItems)
 		{
-			bool isPrioritized = item.type == ItemID.TruffleWorm;
-			PullPush(center, item.Center, ref item.velocity, defRange, (7.5f, isPrioritized ? 35f : 5f), (10f, isPrioritized ? 0.5f : 2.5f));
+			PullPush(center, item.Center, ref item.velocity, defRange, (7.5f, 5f), (10f, 2.5f));
 		}
 		foreach (Gore gore in Main.gore.AsSpan(0, Main.maxGore))
 		{
