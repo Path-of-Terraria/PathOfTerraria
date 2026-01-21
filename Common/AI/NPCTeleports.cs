@@ -219,7 +219,7 @@ internal sealed class NPCTeleports : NPCComponent<TeleportData>
 			return true;
 		}
 
-		if (EnemySpawning.TryFindingSpawnPosition(spawn, out Vector2 spawnPos) && IsSpawnPointSuitable(in ctx, spawnPos))
+		if (EnemySpawning.TryFindingSpawnPosition(out Vector2 spawnPos, spawn) && IsSpawnPointSuitable(in ctx, spawnPos))
 		{
 			Data.TeleportTarget = spawnPos;
 			npc.netUpdate = true;

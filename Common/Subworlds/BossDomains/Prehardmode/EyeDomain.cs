@@ -233,7 +233,7 @@ public class EyeDomain : BossDomainSubworld
 
 		for (int i = 0; i < 12; i++)
 		{
-			if (!EnemySpawning.TryFindingSpawnPosition(in placement, out Vector2 position))
+			if (!EnemySpawning.TryFindingSpawnPosition(out Vector2 position, in placement))
 			{
 				break;
 			}
