@@ -91,18 +91,27 @@ internal sealed class UnderwaterRift : ConfluxRift
 		Vector2 center = Projectile.Center;
 		Rectangle hitbox = Projectile.Hitbox;
 		bool activated = false;
+		bool consumedItem = false;
 
-		void HandleActivator(Entity entity)
+		bool HandleActivator(Entity entity)
 		{
 			// Strong pull.
 			PullPush(center, entity.Center, ref entity.velocity, (32f, 512f, 2f), (7.5f, 35f), default);
 
-			if (Main.netMode != NetmodeID.MultiplayerClient && !activated && entity.Hitbox.Intersects(hitbox))
+			if (!activated && entity.Hitbox.Intersects(hitbox))
 			{
-				entity.active = false;
-				Activate();
 				activated = true;
+				entity.active = false;
+
+				if (Main.netMode != NetmodeID.MultiplayerClient)
+				{
+					Activate();
+				}
+
+				return true;
 			}
+
+			return false;
 		}
 
 		foreach (Item item in Main.ActiveItems)
@@ -114,10 +123,14 @@ internal sealed class UnderwaterRift : ConfluxRift
 		foreach (Projectile proj in Main.ActiveProjectiles)
 		{
 			if (!proj.bobber) { continue; }
-			if (!proj.TryGetOwner(out Player owner)) { continue; }
-			if (owner.GetFishingConditions() is not { Bait.type: ItemID.TruffleWorm }) { continue; }
+			if (!proj.TryGetOwner(out Player? owner)) { continue; }
+			if (owner.GetFishingConditions() is not { BaitItemType: ItemID.TruffleWorm } fishCond) { continue; }
 
-			HandleActivator(proj);
+			if (HandleActivator(proj) && owner.whoAmI == Main.myPlayer && !consumedItem)
+			{
+				consumedItem = true;
+				owner.ConsumeItem(fishCond.BaitItemType);
+			}
 		}
 
 		if (Activated && Main.netMode != NetmodeID.Server && Main.LocalPlayer is { } player && player.Hitbox.Intersects(hitbox))
