@@ -9,10 +9,10 @@ namespace PathOfTerraria.Common.Systems.ElementalDamage;
 /// </summary>
 internal readonly struct HitInfoContainer
 {
-	public bool IsPlayerInfo => PlayerHurt is null;
+	public bool IsPlayerInfo => PlayerHurt is not null;
 
-	internal readonly NPC.HitInfo? NPCHurt = null;
-	internal readonly Player.HurtInfo? PlayerHurt = null;
+	public readonly NPC.HitInfo? NPCHurt = null;
+	public readonly Player.HurtInfo? PlayerHurt = null;
 
 	public HitInfoContainer(NPC.HitInfo? hit, Player.HurtInfo? hurt)
 	{
