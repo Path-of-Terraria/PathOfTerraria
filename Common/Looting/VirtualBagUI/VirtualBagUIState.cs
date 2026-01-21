@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Mapping;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.UI;
+using PathOfTerraria.Common.UI.Components;
 using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI;
@@ -96,10 +97,23 @@ internal class VirtualBagUIState : UIState, IMutuallyExclusiveUI, IAutopauseUI
 					Height = StyleDimension.FromPixels(topOffset + 16),
 					Top = StyleDimension.FromPixels(-12)
 				};
-
 				panel.Append(confluxPanel);
 
-				confluxPanel.Append(new UIText("Conflux", 1.1f));
+				var textUI = new UIText(Language.GetText(Path + "Conflux"), 1.1f);
+
+				textUI.OnUpdate += (self) =>
+				{
+					if (self.ContainsPoint(Main.MouseScreen))
+					{
+						Tooltip.Create(new TooltipDescription()
+						{
+							Identifier = "ConfluxTooltip",
+							SimpleSubtitle = Language.GetTextValue(Path + "ConfluxTooltip")
+						});
+					}
+				};
+
+				confluxPanel.Append(textUI);
 				confluxPanel.AddElement(new UIImageFramed(TextureAssets.MagicPixel, new Rectangle(0, 0, 70, 2)), x => x.Top = StyleDimension.FromPixels(20));
 
 				foreach (UIText text in textsToAdd)
