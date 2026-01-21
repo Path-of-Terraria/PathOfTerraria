@@ -75,7 +75,7 @@ internal record struct EnemyRole
 	}
 }
 
-	internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile
+internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile
 {
 	[Flags]
 	public enum Flags : int

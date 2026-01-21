@@ -115,13 +115,14 @@ internal sealed class ConfluxRifts : ModSystem
 			MinDistanceFromEnemies = 0f,
 			MinDistanceFromPlayers = 2048f,
 			MaxSearchAttempts = 4096,
+			SkippedLiquids = LiquidMask.All
 		};
 
 		int targetRifts = MappingWorld.MapTier switch
 		{
-			>= 7 => 3,
-			>= 2 => 2,
-			_ => 1,
+			>= 7 => 4,
+			>= 2 => 3,
+			_ => 2,
 		};
 
 		IEntitySource? source = Entity.GetSource_None();
