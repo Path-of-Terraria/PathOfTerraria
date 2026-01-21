@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using PathOfTerraria.Common.Systems.ElementalDamage;
+using PathOfTerraria.Common.Systems.NPCCritFunctionality;
+using System.IO;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 
@@ -80,11 +82,11 @@ public class MapBossHealthAffix : MapAffix
 
 public class MapMobCritChanceAffix : MapAffix
 {
-	public override void ModifyHitPlayer(NPC npc, Player player, ref Player.HurtModifiers modifiers)
+	public override void ModifyNewNPC(NPC npc)
 	{
-		if (Main.rand.NextFloat() < Value / 100f)
+		if (npc.TryGetGlobalNPC(out CriticalStrikeNPC crit))
 		{
-			modifiers.FinalDamage += 1.5f;
+			crit.CriticalStrikeChance += Value / 100f;
 		}
 	}
 }
@@ -121,5 +123,38 @@ public class EoLDaylightAffix : MapAffix
 			Corrupt = IsCorruptedAffix,
 			Implicit = IsImplicit,
 		};
+	}
+}
+
+public class MapFireConversionAffix : MapAffix
+{
+	public override void ModifyNewNPC(NPC npc)
+	{
+		if (npc.TryGetGlobalNPC(out ElementalNPC ele))
+		{
+			ele.Container.AddElementalValues((ElementType.Fire, 0, Value / 100f));
+		}
+	}
+}
+
+public class MapColdConversionAffix : MapAffix
+{
+	public override void ModifyNewNPC(NPC npc)
+	{
+		if (npc.TryGetGlobalNPC(out ElementalNPC ele))
+		{
+			ele.Container.AddElementalValues((ElementType.Cold, 0, Value / 100f));
+		}
+	}
+}
+
+public class MapLightningConversionAffix : MapAffix
+{
+	public override void ModifyNewNPC(NPC npc)
+	{
+		if (npc.TryGetGlobalNPC(out ElementalNPC ele))
+		{
+			ele.Container.AddElementalValues((ElementType.Lightning, 0, Value / 100f));
+		}
 	}
 }

@@ -332,7 +332,7 @@ public sealed class QuestDebugState : SmartUiState
 				e.SetDimensions(x: (0.0f, +buttonX), y: (0.0f, +24), width: (0.0f, +80), height: (0f, +32));
 				e.OnLeftClick += (evt, self) =>
 				{
-					quest.Reset();
+					quest.Reset(Main.LocalPlayer);
 					SmartUiLoader.GetUiState<QuestsUIState>().Refresh();
 				};
 

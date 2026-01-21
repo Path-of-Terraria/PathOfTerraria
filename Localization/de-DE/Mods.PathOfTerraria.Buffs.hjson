@@ -247,9 +247,24 @@ EverburningShadowflameDebuff: {
 	// Description: Mods.PathOfTerraria.Buffs.EverburningShadowflameDebuff.Description
 }
 
+PrismaticOrbBuff: {
+	// DisplayName: Prismatic Enhancement
+	// Description: Your prismatic orb explosions will trigger twice.
+}
+
+FleaBellBuff: {
+	// DisplayName: Flea Bell
+	// Description: It's fluffy beyond belief.
+}
+
+FleaBellEnhancedBuff: {
+	// DisplayName: Frenzied Fleas
+	// Description: Empowers your fleas with more attack speed, damage, and movement speed.
+}
+
 RageStacksBuff: {
-	// DisplayName: Rage Stacks
-	// Description: Mods.PathOfTerraria.Buffs.RageStacksBuff.Description
+	// DisplayName: Rage Stacks Buff
+	// Description: 1% increased ranged and melee damage per stack.
 }
 
 SwampAlgaeBuff: {

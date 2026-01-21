@@ -56,7 +56,7 @@ internal class ChanceToFreezePassive : Passive
 
 			if (Main.rand.NextFloat() < str)
 			{
-				ElementalPlayer.TryAddElementBuff(Player, target, ElementType.Cold, damageDone, hit);
+				ElementalPlayer.TryAddElementBuff(Player, target, ElementType.Cold, damageDone, new HitInfoContainer(hit, null));
 			}
 		}
 	}
@@ -78,7 +78,7 @@ internal class ChanceToIgnitePassive : Passive
 			if (Main.rand.NextFloat() < str)
 			{
 				hit.Crit = true; // Ignite doesn't proc otherwise
-				ElementalPlayer.TryAddElementBuff(Player, target, ElementType.Fire, damageDone, hit);
+				ElementalPlayer.TryAddElementBuff(Player, target, ElementType.Fire, damageDone, new HitInfoContainer(hit, null));
 			}
 		}
 	}
