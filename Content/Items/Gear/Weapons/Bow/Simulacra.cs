@@ -266,8 +266,12 @@ public class SimulacraMirror : ModProjectile
 
 	public override void AI()
 	{
-		Vector2 directionToCursor = (Main.MouseWorld - Projectile.Center).SafeNormalize(Vector2.UnitX);
-		Projectile.rotation = directionToCursor.ToRotation(); 
+		if (Main.myPlayer == Projectile.owner)
+		{
+			Vector2 directionToCursor = (Main.MouseWorld - Projectile.Center).SafeNormalize(Vector2.UnitX);
+			Projectile.rotation = directionToCursor.ToRotation();
+			Projectile.netUpdate = true;
+		}
 
 		if (Projectile.timeLeft > MirrorDuration - 60)
 		{

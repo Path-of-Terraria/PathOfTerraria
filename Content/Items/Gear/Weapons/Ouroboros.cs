@@ -87,6 +87,7 @@ public class OuroborosProjectile : ModProjectile
     private const float DevourRange = 200f;
     private const float DevourExecuteThreshold = 0.15f;
     private const float DevourPullStrength = 8f;
+    private const float DevourRangeSquared = DevourRange * DevourRange;
 
     private int poisonGasTimer = 0;
     private bool devourActive = false;
@@ -211,9 +212,7 @@ public class OuroborosProjectile : ModProjectile
 		    dust.noGravity = true;
 		    dust.scale = 1.2f;
 	    }
-
-	    float devourRangeSquared = DevourRange * DevourRange;
-
+	    
 	    // Pull enemies towards the yoyo - we can probably make this stronger later
 	    for (int i = 0; i < Main.maxNPCs; i++)
 	    {
@@ -221,7 +220,7 @@ public class OuroborosProjectile : ModProjectile
 		    if (!npc.active || npc.life <= 0 || !npc.CanBeChasedBy()) continue;
 
 		    float distanceSquared = npc.DistanceSQ(Projectile.Center);
-		    if (distanceSquared <= devourRangeSquared)
+		    if (distanceSquared <= DevourRangeSquared)
 		    {
 			    if ((float)npc.life / npc.lifeMax <= DevourExecuteThreshold)
 			    {

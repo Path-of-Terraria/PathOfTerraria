@@ -238,9 +238,10 @@ public class FleaBellMinion : ModProjectile
 	    {
 		    float angle = (MathHelper.TwoPi / totalFleas) * fleaIndex;
 		    float radius = SpreadRadius * Math.Min(totalFleas / 3f, 1f);
+		    Vector2 direction = angle.ToRotationVector2();
 		    personalOffset = new Vector2(
-			    (float)Math.Cos(angle) * radius,
-			    (float)Math.Sin(angle) * radius * 0.5f 
+			    direction.X * radius,
+			    direction.Y * radius * 0.5f 
 		    );
 	    }
 	    else
@@ -306,7 +307,7 @@ public class FleaBellMinion : ModProjectile
         vectorToIdlePosition = idlePosition - Projectile.Center;
         distanceToIdlePosition = vectorToIdlePosition.Length();
 
-        if (Main.myPlayer == owner.whoAmI && distanceToIdlePosition > TeleportDistance)
+        if (distanceToIdlePosition > TeleportDistance)
         {
             Projectile.position = idlePosition;
             Projectile.velocity *= VelocityResetFactor;
@@ -360,16 +361,16 @@ public class FleaBellMinion : ModProjectile
 		    {
 			    if (npc.CanBeChasedBy())
 			    {
-				    float between = Vector2.Distance(npc.Center, Projectile.Center);
-				    bool closest = Vector2.Distance(Projectile.Center, targetCenter) > between;
-				    bool inRange = between < distanceFromTarget;
+				    float betweenSq = Projectile.DistanceSQ(npc.Center);
+				    bool closest = Projectile.DistanceSQ(targetCenter) > betweenSq;
+				    bool inRange = betweenSq < distanceFromTarget * distanceFromTarget;
 				    bool lineOfSight = Collision.CanHitLine(Projectile.position, Projectile.width, Projectile.height, 
 					    npc.position, npc.width, npc.height);
-				    bool closeThroughWall = between < 100f;
+				    bool closeThroughWall = betweenSq < 100f * 100f;
 
 				    if (((closest && inRange) || !foundTarget) && (lineOfSight || closeThroughWall))
 				    {
-					    distanceFromTarget = between;
+					    distanceFromTarget = (float)Math.Sqrt(betweenSq);
 					    targetCenter = npc.Center;
 					    foundTarget = true;
 				    }
