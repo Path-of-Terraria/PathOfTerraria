@@ -15,6 +15,8 @@ namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuestin
 
 internal class DestroyerQuest() : Quest
 {
+	public static uint? CompletionVisit { get; private set; }
+
 	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct2;
 	public override int NPCQuestGiver => ModContent.NPCType<TinkerNPC>();
 
@@ -23,6 +25,7 @@ internal class DestroyerQuest() : Quest
 		new ActionRewards((p, v) =>
 		{
 			p.GetModPlayer<ExpModPlayer>().Exp += 30000;
+			CompletionVisit = ModContent.GetInstance<RavencrestSubworld>().TimesEntered;
 		},
 			"30000 experience"),
 	];
@@ -62,6 +65,7 @@ internal class DestroyerQuest() : Quest
 	public override bool Available()
 	{
 		Quest twinsQuest = GetLocalPlayerInstance<TwinsQuest>();
-		return twinsQuest.Completed && NPC.downedMechBoss2;
+		RavencrestSubworld subworld = ModContent.GetInstance<RavencrestSubworld>();
+		return twinsQuest.Completed && NPC.downedMechBoss2 && subworld.TimesEntered != TwinsQuest.CompletionVisit;
 	}
 }

@@ -1,8 +1,9 @@
+using System.Collections.Generic;
+using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
 using PathOfTerraria.Content.NPCs.Town;
-using System.Collections.Generic;
 using Terraria.ID;
 using Terraria.Localization;
 
@@ -10,6 +11,8 @@ namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuestin
 
 internal class TinkerIntroQuest() : Quest
 {
+	public static uint? CompletionVisit { get; private set; }
+
 	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct2;
 	public override int NPCQuestGiver => ModContent.NPCType<TinkerNPC>();
 
@@ -18,6 +21,7 @@ internal class TinkerIntroQuest() : Quest
 		new ActionRewards((p, v) =>
 		{
 			p.GetModPlayer<ExpModPlayer>().Exp += 30000;
+			CompletionVisit = ModContent.GetInstance<RavencrestSubworld>().TimesEntered;
 		}, "30000 experience"),
 	];
 

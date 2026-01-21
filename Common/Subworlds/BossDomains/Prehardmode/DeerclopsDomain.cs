@@ -482,6 +482,7 @@ public class DeerclopsDomain : BossDomainSubworld, IOverrideBiome
 
 	public override void OnEnter()
 	{
+		base.OnEnter();
 		FightTracker.Reset();
 	}
 
