@@ -17,6 +17,8 @@ namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuestin
 
 internal class TwinsQuest() : Quest
 {
+	public static uint? CompletionVisit { get; private set; }
+
 	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct2;
 	public override int NPCQuestGiver => ModContent.NPCType<TinkerNPC>();
 
@@ -25,6 +27,7 @@ internal class TwinsQuest() : Quest
 		new ActionRewards((p, v) =>
 		{
 			p.GetModPlayer<ExpModPlayer>().Exp += 30000;
+			CompletionVisit = ModContent.GetInstance<RavencrestSubworld>().TimesEntered;
 		}, "30000 experience"),
 	];
 
@@ -78,6 +81,7 @@ internal class TwinsQuest() : Quest
 	public override bool Available()
 	{
 		Quest tinkerIntroQuest = GetLocalPlayerInstance<TinkerIntroQuest>();
-		return tinkerIntroQuest.Completed && NPC.downedQueenSlime;
+		RavencrestSubworld subworld = ModContent.GetInstance<RavencrestSubworld>();
+		return tinkerIntroQuest.Completed && NPC.downedQueenSlime && subworld.TimesEntered != TinkerIntroQuest.CompletionVisit;
 	}
 }

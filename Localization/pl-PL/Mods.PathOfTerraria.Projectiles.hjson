@@ -229,6 +229,17 @@ ShadowflamePyreProjectile: {
 // CelestialRift.DisplayName: Celestial Rift
 // GlacialRift.DisplayName: Glacial Rift
 // InfernalRift.DisplayName: Infernal Rift
+
+UnderwaterRift: {
+	// DisplayName: Mysterious Rift
+
+	DeathReason: {
+		// 0: "{0} has become one with the void."
+		// 1: "{0} ventured beyond reality."
+		// 2: "{0} was not accepted by the other world."
+	}
+}
+
 // SlashAoE.DisplayName: Slash AoE
 // FloatingMudplatform.DisplayName: Floating Mudplatform
 // BrittleFloatingMudplatform.DisplayName: Brittle Floating Mudplatform

@@ -23,6 +23,9 @@ namespace PathOfTerraria.Common.Subworlds;
 /// </summary>
 public abstract class MappingWorld : Subworld
 {
+	/// <summary> How many times this subworld type has been started on this client or server. </summary>
+	public uint TimesEntered { get; private set; }
+
 	public override int Width => 1000;
 	public override int Height => 1000;
 
@@ -100,6 +103,11 @@ public abstract class MappingWorld : Subworld
 		{
 			LoadLoadingScreens();
 		}
+	}
+
+	public override void OnEnter()
+	{
+		TimesEntered++;
 	}
 
 	private void LoadLoadingScreens()

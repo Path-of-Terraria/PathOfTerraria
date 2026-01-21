@@ -1,8 +1,5 @@
 ﻿float3 u_mouse;
 float u_time;
-float3 primary;
-float3 primaryScaling;
-float3 secondary;
 
 float progress;
 float timeManual;
@@ -105,7 +102,7 @@ float4 PixelShaderFunction(float2 startUV : TEXCOORD) : COLOR0
 	float maxThicknessPow = lerp(200.0, 80.0, expandProgress); // Increase for a thinner minimum thickness
 
 	float thicknessPowBeforeExpansion = 1.0;
-	float thickenssPowAfterExpansion = 0.4;
+	float thicknessPowAfterExpansion = 0.4;
 
 	float thicknessTotalPow = lerp(2.0, 2.0, expandProgress);
 
@@ -168,7 +165,7 @@ float4 PixelShaderFunction(float2 startUV : TEXCOORD) : COLOR0
 	float2 noiseCoordsTwo = float2((timeManual * thicknessNoiseYScrollSpeed), uv.y * lerp(thicknessNoiseYScaleBefore, thicknessNoiseYScaleAfter, expandProgress));
 	float noiseVal2 = tex2D(u_tex3, noiseCoordsTwo).r;
 	noiseVal2 = pow(noiseVal2, thicknessValPow);
-	centerDistX = pow(centerDistX * lerp(minThicknessPow, maxThicknessPow, noiseVal2) * lerp(thicknessPowBeforeExpansion, thickenssPowAfterExpansion, expandProgress), thicknessTotalPow);
+	centerDistX = pow(centerDistX * lerp(minThicknessPow, maxThicknessPow, noiseVal2) * lerp(thicknessPowBeforeExpansion, thicknessPowAfterExpansion, expandProgress), thicknessTotalPow);
 	float paletteX = centerDistX;
 
 	float centerDistY = abs(uv.y - 0.5) * lerp(riftHeightInverseBefore, riftHeightInverseAfter, expandProgress);

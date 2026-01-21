@@ -140,7 +140,7 @@ internal static class EnemySpawning
 
 		if (spawn.SpawnPosition is not { } spawnPosition)
 		{
-			if (!TryFindingSpawnPosition(spawn.SpawnPlacement!.Value, out spawnPosition))
+			if (!TryFindingSpawnPosition(out spawnPosition, spawn.SpawnPlacement!.Value))
 			{
 				npc = default;
 				return false;
@@ -259,7 +259,7 @@ internal static class EnemySpawning
 	/// <summary>
 	/// Attempts to pick a suitable spawn position with the given <see cref="SpawnPlacement"/> options.
 	/// </summary>
-	public static bool TryFindingSpawnPosition(in SpawnPlacement spawn, out Vector2 spawnPosition)
+	public static bool TryFindingSpawnPosition(out Vector2 spawnPosition, in SpawnPlacement spawn)
 	{
 		if (spawn.Area == default)
 		{

@@ -84,7 +84,7 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile
 		Closing = 2,
 	}
 
-	private record struct VisualParams(int TorchId, int DustId, Color ColorBase, string? Filter);
+	private record struct VisualParams(int DustId, Color ColorBase, Color lightA, Color lightB, string? Filter);
 
 	private static SoundStyle SoundActivation => new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/RiftActivation")
 	{
@@ -137,10 +137,10 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 	public uint EndTime { get; set; }
 	public Encounter Encounter { get; private set; }
-	public float OpeningAnimation { get; private set; }
-	public float ClosingAnimation { get; private set; }
-	public float ProgressAnimation { get; private set; }
-	public float ApproachAnimation { get; private set; }
+	public float OpeningAnimation { get; protected set; }
+	public float ClosingAnimation { get; protected set; }
+	public float ProgressAnimation { get; protected set; }
+	public float ApproachAnimation { get; protected set; }
 
 	/// <summary> The rift's type. </summary>
 	public abstract ConfluxRiftKind Kind { get; }
@@ -158,6 +158,15 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile
 	public bool Closing => (BitFlags & Flags.Closing) != 0;
 
 	public override string Texture => (GetType().Namespace + "." + nameof(ConfluxRift)).Replace('.', '/');
+
+	public virtual bool CanInteract()
+	{
+		return true;
+	}
+	public virtual bool CountsAsActiveBattle()
+	{
+		return Activated;
+	}
 
 	public override void SetStaticDefaults()
 	{
@@ -235,7 +244,6 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile
 		}
 		else if (Activated)
 		{
-			float oldValue = OpeningAnimation;
 			OpeningAnimation = MathF.Min(1f, OpeningAnimation + (TimeSystem.LogicDeltaTime / 7f));
 			ApproachAnimation = 1f;
 		}
@@ -250,7 +258,7 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile
 				}
 
 				Vector2 compareSpot = Main.LocalPlayer.Center;
-				bool isInteractible = closestPlayer?.IsProjectileInteractibleAndInInteractionRange(Projectile, ref compareSpot) == true;
+				bool isInteractible = closestPlayer?.IsProjectileInteractibleAndInInteractionRange(Projectile, ref compareSpot) == true && CanInteract();
 
 				if (isInteractible != approached)
 				{
@@ -312,7 +320,15 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile
 			Dust.NewDust(Projectile.position + new Vector2(8), Projectile.width - 16, Projectile.height - 16, visuals.DustId);
 		}
 
-		Lighting.AddLight(Projectile.Center, visuals.TorchId);
+		float lightOffsetMul = 16f * MathUtils.Clamp01(OpeningAnimation - ClosingAnimation);
+		float lightPowerMul = MathUtils.Clamp01(MathF.Pow(MathUtils.Clamp01(1f - ClosingAnimation), 0.5f));
+
+		for (float offsetMul = OpeningAnimation - ClosingAnimation, yOffset = -5; yOffset <= +5; yOffset++)
+		{
+			float pulse = (MathF.Sin((float)Main.timeForVisualEffects * 0.1f) + 1f) * 0.5f;
+			var color = Color.Lerp(visuals.lightA, visuals.lightB, pulse).ToVector3();
+			Lighting.AddLight(Projectile.Center + new Vector2(0f, yOffset * lightOffsetMul), color * lightPowerMul);
+		}
 
 		if (Activated && !Closing && visuals.Filter != null)
 		{
@@ -381,8 +397,8 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile
 		effect.Parameters["mapResX"].SetValue(spaceTex1.Width);
 		effect.Parameters["mapResY"].SetValue(spaceTex1.Height);
 
-		effect.Parameters["resX"].SetValue(tex.Width * Projectile.scale * 4.0f);
-		effect.Parameters["resY"].SetValue(tex.Height * Projectile.scale * 4.0f);
+		effect.Parameters["resX"].SetValue(tex.Width * Projectile.scale * 4f);
+		effect.Parameters["resY"].SetValue(tex.Height * Projectile.scale * 4f);
 		effect.Parameters["_SpaceTex1"].SetValue(spaceTex1);
 		effect.Parameters["_SpaceTex2"].SetValue(spaceTex2);
 
@@ -492,7 +508,7 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile
 		}
 	}
 
-	private Encounter CreateEncounter(uint lengthInSeconds)
+	protected virtual Encounter CreateEncounter(uint lengthInSeconds)
 	{
 		const int extentsW = 40;
 		const int extentsH = 20;
@@ -727,16 +743,16 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile
 	{
 		return Kind switch
 		{
-			ConfluxRiftKind.Glacial => new(TorchID.Ice, DustID.Firework_Blue, Color.AliceBlue, "Vortex"),
-			ConfluxRiftKind.Infernal => new(TorchID.Red, DustID.Firework_Red, Color.OrangeRed, "Solar"),
-			ConfluxRiftKind.Celestial => new(TorchID.Purple, DustID.WitherLightning, Color.MediumVioletRed, "Nebula"),
+			ConfluxRiftKind.Glacial => new(DustID.Firework_Blue, Color.AliceBlue, ColorUtils.FromHexRgb(0x3b4782), ColorUtils.FromHexRgb(0xa4e1e4), "Vortex"),
+			ConfluxRiftKind.Infernal => new(DustID.Firework_Red, Color.OrangeRed, ColorUtils.FromHexRgb(0xa73d3d), ColorUtils.FromHexRgb(0xffcf85), "Solar"),
+			ConfluxRiftKind.Celestial => new(DustID.WitherLightning, Color.MediumVioletRed, ColorUtils.FromHexRgb(0x7f3b82), ColorUtils.FromHexRgb(0xe4a4be), "Nebula"),
 			_ => throw new NotImplementedException(),
 		};
 	}
 
 	bool IRightClickableProjectile.RightClick(Player player, bool mouseDirectlyOver)
 	{
-		if (Activated) { return false; }
+		if (Activated || !CanInteract()) { return false; }
 
 		if (Main.mouseRight && Main.mouseRightRelease)
 		{

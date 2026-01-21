@@ -61,7 +61,9 @@ internal sealed class ConfluxRifts : ModSystem
 
 		foreach (Projectile projectile in Main.ActiveProjectiles)
 		{
-			if (projectile.ModProjectile is not ConfluxRift { Activated: true } rift) { continue; }
+			if (projectile.ModProjectile is not ConfluxRift { } rift) { continue; }
+			
+			if (!rift.CountsAsActiveBattle()) { continue; }
 
 			float sqrDistance = projectile.DistanceSQ(playerCenter);
 			if (sqrDistance < minSqrDistance)
@@ -130,7 +132,7 @@ internal sealed class ConfluxRifts : ModSystem
 
 		for (int i = 0; i < targetRifts; i++)
 		{
-			if (!EnemySpawning.TryFindingSpawnPosition(in placement, out Vector2 position))
+			if (!EnemySpawning.TryFindingSpawnPosition(out Vector2 position, in placement))
 			{
 				break;
 			}

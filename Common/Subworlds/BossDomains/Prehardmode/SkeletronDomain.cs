@@ -693,6 +693,7 @@ public class SkeletronDomain : BossDomainSubworld
 
 	public override void OnEnter()
 	{
+		base.OnEnter();
 		FightTracker.Reset();
 	}
 

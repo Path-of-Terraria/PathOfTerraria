@@ -198,6 +198,7 @@ public class QueenBeeDomain : BossDomainSubworld
 
 	public override void OnEnter()
 	{
+		base.OnEnter();
 		FightTracker.Reset();
 	}
 
