@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Systems;
+﻿using PathOfTerraria.Common.Mapping;
+using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Core.Items;
@@ -7,6 +8,7 @@ using PathOfTerraria.Core.UI.SmartUI;
 using SubworldLibrary;
 using System.Collections.Generic;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.Localization;
@@ -61,6 +63,51 @@ internal class VirtualBagUIState : UIState, IMutuallyExclusiveUI, IAutopauseUI
 		panel.Append(bar);
 
 		RefreshStorage();
+
+		if (Main.LocalPlayer.TryGetModPlayer(out VirtualBagStoragePlayer plr))
+		{
+			List<UIText> textsToAdd = [];
+			int topOffset = 32;
+
+			foreach (MapResource resource in MapResources.Resources)
+			{
+				int id = resource.AssociatedItem;
+
+				if (plr.ConfluxResourcesCache.TryGetValue(id, out int value) && value < resource.Value)
+				{
+					textsToAdd.Add(new UIText($"[i:{resource.AssociatedItem}]: {(resource.Value - value)}x")
+					{
+						HAlign = 0,
+						VAlign = 0,
+						Top = StyleDimension.FromPixels(topOffset)
+					});
+
+					topOffset += 28;
+				}
+			}
+
+			if (textsToAdd.Count > 0)
+			{
+				UIPanel confluxPanel = new()
+				{
+					HAlign = 1,
+					Left = StyleDimension.FromPixels(110),
+					Width = StyleDimension.FromPixels(94),
+					Height = StyleDimension.FromPixels(topOffset + 16),
+					Top = StyleDimension.FromPixels(-12)
+				};
+
+				panel.Append(confluxPanel);
+
+				confluxPanel.Append(new UIText("Conflux", 1.1f));
+				confluxPanel.AddElement(new UIImageFramed(TextureAssets.MagicPixel, new Rectangle(0, 0, 70, 2)), x => x.Top = StyleDimension.FromPixels(20));
+
+				foreach (UIText text in textsToAdd)
+				{
+					confluxPanel.Append(text);
+				}
+			}
+		}
 	}
 
 	private void Close(UIMouseEvent evt, UIElement listeningElement)

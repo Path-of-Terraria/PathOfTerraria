@@ -90,11 +90,11 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 
 	public override bool CanHitPlayer(NPC npc, Player target, ref int cooldownSlot)
 	{
-		return !Data.DisableContactDamage || AllowDamage.Value > 0;
+		return !Enabled || !Data.DisableContactDamage || AllowDamage.Value > 0;
 	}
 	public override bool CanHitNPC(NPC npc, NPC target)
 	{
-		return !Data.DisableContactDamage || AllowDamage.Value > 0;
+		return !Enabled || !Data.DisableContactDamage || AllowDamage.Value > 0;
 	}
 
 	public override void PostDraw(NPC npc, SpriteBatch sb, Vector2 screenPos, Color drawColor)

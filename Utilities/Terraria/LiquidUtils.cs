@@ -20,7 +20,7 @@ internal static class LiquidUtils
 	{
 		// Exclusive.
 		(int checkX1, int checkX2) = (area.X, Math.Min(area.X + area.Width, Main.maxTilesX));
-		(int checkY1, int checkY2) = (area.X, Math.Min(area.X + area.Height, Main.maxTilesY));
+		(int checkY1, int checkY2) = (area.Y, Math.Min(area.Y + area.Height, Main.maxTilesY));
 
 		for (int checkX = checkX1; checkX < checkX2; checkX++)
 		{

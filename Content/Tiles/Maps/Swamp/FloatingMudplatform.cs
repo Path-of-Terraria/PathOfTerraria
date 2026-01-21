@@ -146,17 +146,20 @@ internal sealed class BrittleFloatingMudplatform : FloatingMudplatform
 			WasStandingTimer = 5;
 		}
 
-		if (StandingTimer > MaxStandTime)
+		if (StandingTimer > MaxStandTime && HideTimer <= 0)
 		{
 			HideTimer = 600;
 
-			OnKill(0); // Display vfx for break but without dying
+			for (int i = 0; i < 3; ++i)
+			{
+				OnKill(0); // Display vfx for break without dying
+			}
 		}
 
 		if (HideTimer > 0)
 		{
 			HideTimer--;
-			Projectile.Opacity = MathHelper.Lerp(Projectile.Opacity, 0.3f, 0.05f);
+			Projectile.Opacity = MathHelper.Lerp(Projectile.Opacity, 0.5f, 0.05f);
 		}
 		else
 		{
@@ -186,7 +189,9 @@ internal sealed class BrittleFloatingMudplatform : FloatingMudplatform
 			pos += Main.rand.NextVector2Circular(3, 3);
 		}
 
-		Main.spriteBatch.Draw(tex, pos, null, lightColor * Projectile.Opacity, Projectile.rotation, tex.Size() / 2f, Projectile.scale, SpriteEffects.None, 0);
+		Color color = lightColor * Projectile.Opacity;
+		Rectangle frame = tex.Frame(1, 2, 0, Projectile.frame, 0, 0);
+		Main.spriteBatch.Draw(tex, pos, frame, color, Projectile.rotation, frame.Size() / 2f, Projectile.scale, SpriteEffects.None, 0);
 
 		return false;
 	}
