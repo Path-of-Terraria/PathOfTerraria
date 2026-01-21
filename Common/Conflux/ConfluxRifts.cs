@@ -119,8 +119,8 @@ internal sealed class ConfluxRifts : ModSystem
 
 		int targetRifts = MappingWorld.MapTier switch
 		{
-			>= 8 => 3,
-			>= 4 => 2,
+			>= 7 => 3,
+			>= 2 => 2,
 			_ => 1,
 		};
 
@@ -141,8 +141,14 @@ internal sealed class ConfluxRifts : ModSystem
 
 			position.Y += 5 * TileUtils.PixelSizeInUnits;
 
-			var kind = (ConfluxRiftKind)(i % ((int)ConfluxRiftKind.Count));
-			var rift = Projectile.NewProjectileDirect(source, position, Vector2.Zero, ModContent.ProjectileType<ConfluxRift>(), 0, 0f, ai0: (float)kind);
+			int type = (i % ((int)ConfluxRiftKind.Count)) switch
+			{
+				0 => ModContent.ProjectileType<GlacialRift>(),
+				1 => ModContent.ProjectileType<InfernalRift>(),
+				2 => ModContent.ProjectileType<CelestialRift>(),
+				_ => throw new NotImplementedException(),
+			};
+			var rift = Projectile.NewProjectileDirect(source, position, Vector2.Zero, type, 0, 0f);
 
 			rifts.Add(rift);
 		}
@@ -204,7 +210,7 @@ internal sealed class ConfluxRifts : ModSystem
 		Rectangle uiHoverArea = new Rectangle((int)uiCenter.X, (int)uiCenter.Y, 0, 0).Inflated((int)(srcRect.Width * 0.4f), (int)(srcRect.Height * 0.4f));
 		if (uiHoverArea.Contains(Main.MouseScreen.ToPoint()))
 		{
-			Main.instance.MouseText(Language.GetTextValue("Mods.PathOfTerraria.Misc.RiftStability"));
+			Main.instance.MouseText(Language.GetTextValue("Mods.PathOfTerraria.Misc.Rifts.Stability"));
 		}
 
 		return true;

@@ -33,7 +33,7 @@ public sealed class UIVanityArmor : UIArmorPage
 		];
 	}
 
-	protected override UIHoverImageItemSlot CreateCustomAccessorySlot(ModAccessorySlot modSlot, ref int numAccessorySlots)
+	protected override UIHoverImageItemSlot CreateCustomAccessorySlot(ModAccessorySlot modSlot, ref int numAccessorySlots, int customModSlot)
 	{
 		int accessoryNumber = ++numAccessorySlots;
 		var handler = new UIImageItemSlot.SlotWrapper(() => modSlot.VanityItem, value => modSlot.VanityItem = value);

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace PathOfTerraria.Common.World.Generation;
 
@@ -8,7 +9,7 @@ namespace PathOfTerraria.Common.World.Generation;
 /// </summary>
 public static class Spline
 {
-	public static Vector2[] InterpolateXY(Vector2[] points, int count)
+	public static Vector2[] InterpolateXY(ReadOnlySpan<Vector2> points, int count)
 	{
 		double[] xs = new double[points.Length];
 		double[] ys = new double[points.Length];
@@ -33,9 +34,9 @@ public static class Spline
 	/// <summary>
 	/// Generate a smooth (interpolated) curve that follows the path of the given X/Y points
 	/// </summary>
-	public static (double[] xs, double[] ys) InterpolateXY(double[] xs, double[] ys, int count)
+	public static (double[] xs, double[] ys) InterpolateXY(ReadOnlySpan<double> xs, ReadOnlySpan<double> ys, int count)
 	{
-		if (xs is null || ys is null || xs.Length != ys.Length)
+		if (xs.Length != ys.Length)
 		{
 			throw new ArgumentException($"{nameof(xs)} and {nameof(ys)} must have same length");
 		}
@@ -57,7 +58,7 @@ public static class Spline
 		return (xsOut, ysOut);
 	}
 
-	private static double[] Interpolate(double[] xOrig, double[] yOrig, double[] xInterp)
+	private static double[] Interpolate(ReadOnlySpan<double> xOrig, ReadOnlySpan<double> yOrig, ReadOnlySpan<double> xInterp)
 	{
 		(double[] a, double[] b) = FitMatrix(xOrig, yOrig);
 
@@ -84,7 +85,7 @@ public static class Spline
 		return yInterp;
 	}
 
-	private static (double[] a, double[] b) FitMatrix(double[] x, double[] y)
+	private static (double[] a, double[] b) FitMatrix(ReadOnlySpan<double> x, ReadOnlySpan<double> y)
 	{
 		int n = x.Length;
 		double[] a = new double[n - 1];

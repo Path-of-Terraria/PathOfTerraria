@@ -2986,7 +2986,7 @@
 		"internalIdentifier": "DeathrushMastery",
 		"referenceId": 1077,
 		"maxLevel": 1,
-		"value": 3,
+		"value": 150,
 		"position": {
 			"x": -557,
 			"y": -850
@@ -4560,7 +4560,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddRageCritPassive",
 		"referenceId": 209,
 		"maxLevel": 1,
 		"value": 5,
@@ -4573,6 +4573,9 @@
 			},
 			{
 				"referenceId": 210
+			},
+			{
+				"referenceId": 1137
 			}
 		],
 		"position": {
@@ -4581,24 +4584,90 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "SlowRageDecayPassive",
 		"referenceId": 210,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 1137
+			}
+		],
 		"position": {
 			"x": -1139,
 			"y": 437
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "RageResistancePassive",
 		"referenceId": 211,
 		"maxLevel": 1,
 		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1137
+			}
+		],
 		"position": {
 			"x": -1323,
 			"y": 437
 		}
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1137,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1138
+			},
+			{
+				"referenceId": 1139
+			},
+			{
+				"referenceId": 1140
+			}
+		],
+		"position": {
+			"x": -1232,
+			"y": 498
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "BurningRageMastery",
+		"referenceId": 1138,
+		"maxLevel": 1,
+		"value": 2,
+		"position": {
+			"x": -1292,
+			"y": 588
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "FuriousSiphonMastery",
+		"referenceId": 1139,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": -1172,
+			"y": 588
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "RagingSpeedMastery",
+		"referenceId": 1140,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": -1232,
+			"y": 640
+		},
+		"isHidden": true
 	},
 	{
 		"internalIdentifier": "AddMaxRagePassive",

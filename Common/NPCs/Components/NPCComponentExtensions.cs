@@ -19,8 +19,7 @@ public static class NPCComponentExtensions
 			return false;
 		}
 
-		component.Enabled = true;
-		
+		component.SetEnabled(true);
 		initializer?.Invoke(component);
 
 		return true;

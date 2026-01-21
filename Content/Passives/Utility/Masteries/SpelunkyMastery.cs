@@ -9,13 +9,9 @@ internal class SpelunkyMastery : Passive
 {
 	internal class SpelunkyPlayer : ModPlayer
 	{
-		private static bool[] OreIds = [];
-
 		public override void Load()
 		{
 			On_Player.PickTile += PickTile;
-
-			OreIds = TileID.Sets.Ore;
 		}
 
 		private static void PickTile(On_Player.orig_PickTile orig, Player self, int x, int y, int pickPower)
@@ -26,7 +22,7 @@ internal class SpelunkyMastery : Passive
 
 			orig(self, x, y, pickPower);
 
-			if (hasTile && !tile.HasTile && OreIds[oldTileId] && self.GetModPlayer<PassiveTreePlayer>().HasNode<SpelunkyMastery>())
+			if (hasTile && !tile.HasTile && TileID.Sets.Ore[oldTileId] && self.GetModPlayer<PassiveTreePlayer>().HasNode<SpelunkyMastery>())
 			{
 				HashSet<Point16> takenPositions = [];
 				RecursiveMine(x, y, oldTileId, takenPositions);

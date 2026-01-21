@@ -9,7 +9,7 @@
 	<!-- General -->
 	<PropertyGroup>
 		<AssemblyName>PathOfTerraria</AssemblyName>
-		<LangVersion>latest</LangVersion>
+		<LangVersion>12.0</LangVersion>
 		<TargetFramework>net8.0</TargetFramework>
 		<Platforms>AnyCPU;x64</Platforms>
 		<Configurations>Debug;Release;Staging</Configurations>

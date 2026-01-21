@@ -46,7 +46,7 @@ public sealed class UIDyeArmor : UIArmorPage
 		return slots;
 	}
 
-	protected override UIHoverImageItemSlot CreateCustomAccessorySlot(ModAccessorySlot modSlot, ref int numAccessorySlots)
+	protected override UIHoverImageItemSlot CreateCustomAccessorySlot(ModAccessorySlot modSlot, ref int numAccessorySlots, int customModSlot)
 	{
 		int accessoryNumber = ++numAccessorySlots;
 		var handler = new UIImageItemSlot.SlotWrapper(() => modSlot.DyeItem, value => modSlot.DyeItem = value);

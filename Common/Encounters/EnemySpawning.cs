@@ -4,6 +4,7 @@ using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using PathOfTerraria.Common.Systems.Synchronization;
+using PathOfTerraria.Content.Conflux;
 using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
 using Terraria.Audio;
@@ -17,6 +18,9 @@ internal enum EnemySpawnEffect
 {
 	None,
 	Teleport,
+	GlacialRift,
+	InfernalRift,
+	CelestialRift
 }
 
 /// <summary> An enemy spawn description. </summary>
@@ -173,6 +177,81 @@ internal static class EnemySpawning
 			for (int i = 0; i < 10; i++)
 			{
 				Dust.NewDustDirect(npc.position, npc.width, npc.height, DustID.WitherLightning);
+			}
+		}
+		if (effect is EnemySpawnEffect.GlacialRift or EnemySpawnEffect.InfernalRift or EnemySpawnEffect.CelestialRift)
+		{
+			(Projectile? rift, float closestSqrDst) = (null, float.PositiveInfinity);
+
+			foreach (Projectile projectile in Main.ActiveProjectiles)
+			{
+				if (projectile.ModProjectile is ConfluxRift projRift && projRift.Activated)
+				{
+					if (projectile.DistanceSQ(position) is float sqrDst && sqrDst > closestSqrDst) { continue; }
+					(rift, closestSqrDst) = (projRift.Projectile, sqrDst);
+				};
+			}
+
+			SoundEngine.PlaySound(position: position, style: new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/RiftEnemySpawn")
+			{
+				Volume = 0.37f,
+				MaxInstances = 3,
+				PitchVariance = 0.2f,
+			});
+
+			if (rift != null)
+			{
+				int dustID = 173;
+				float dustVelocity = 0;
+				float dustDensity = 1;
+				float dustScale = 1;
+
+				switch (effect)
+				{
+					case EnemySpawnEffect.CelestialRift:
+						dustID = 173;
+						dustVelocity = 0.2f;
+						dustDensity = 32;
+						dustScale = 1.5f;
+
+						for (int i = 0; i < 10; i++)
+						{
+							Dust.NewDustDirect(npc.position, npc.width, npc.height, DustID.WitherLightning);
+						}
+						break;
+					case EnemySpawnEffect.GlacialRift:
+						dustID = 185;
+						dustVelocity = 0.3f;
+						dustDensity = 32;
+						dustScale = 1.5f;
+
+						for (int i = 0; i < 10; i++)
+						{
+							Dust.NewDustDirect(npc.position, npc.width, npc.height, 226);
+						}
+						break;
+					case EnemySpawnEffect.InfernalRift:
+						dustID = 127;
+						dustVelocity = 0.5f;
+						dustDensity = 32;
+						dustScale = 1.65f;
+
+						for (int i = 0; i < 20; i++)
+						{
+							Dust.NewDustDirect(npc.position, npc.width, npc.height, 174);
+						}
+						break;
+				}
+
+				Vector2 lineStart = rift.Center + Main.rand.NextVector2Circular(32f, 32f);
+
+				for (float i = 0, step = dustDensity * dustDensity; i < closestSqrDst; i += step)
+				{
+					var dustPos = Vector2.Lerp(lineStart, position, i / closestSqrDst);
+					dustPos += Main.rand.NextVector2Circular(5f, 5f);
+
+					Dust.NewDustPerfect(dustPos, dustID, Vector2.One.RotatedByRandom(6.28) * dustVelocity, 0, default, dustScale).noGravity = true;
+				}
 			}
 		}
 	}

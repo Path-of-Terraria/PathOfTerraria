@@ -1,0 +1,32 @@
+{
+	"Identifier": "BruiserBrothers",
+	"ActivationOrigin": [ 34152.984, 3931 ],
+	"ActivationRange": 512.0,
+	"SpawnArea": [ 2102, 229, 64, 32 ],
+	"SpawnOrigin": [ 2134, 245 ],
+	"Waves": [
+		{
+			"Spawns": [
+				{
+					"NpcType": "PathOfTerraria/FallenSchemer",
+					"SpawnPlacement": {
+						"OnGround": true
+					}
+				},
+				{
+					"NpcType": "PathOfTerraria/FallenSavage",
+					"SpawnPlacement": {
+						"OnGround": true
+					}
+				},
+				{
+					"NpcType": "PathOfTerraria/FallenTyrant",
+					"SpawnPlacement": {
+						"OnGround": true
+					}
+				}
+			]
+		}
+	],
+	"Music": "Terraria/None"
+}

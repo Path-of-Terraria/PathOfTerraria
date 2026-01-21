@@ -7,3 +7,8 @@ MechBiome: {
 	DisplayName: Mechanismen
 	TownNPCDialogueName: Die Mechanismen
 }
+
+SwampBiome: {
+	// DisplayName: Swamp Biome
+	// TownNPCDialogueName: the Swamp Biome
+}

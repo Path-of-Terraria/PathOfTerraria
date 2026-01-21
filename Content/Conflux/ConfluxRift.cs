@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -6,15 +8,19 @@ using PathOfTerraria.Common.Encounters;
 using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Synchronization;
-using PathOfTerraria.Common.UI;
-using PathOfTerraria.Content.Dusts;
+using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Core.Time;
+using PathOfTerraria.Utilities;
 using PathOfTerraria.Utilities.Xna;
 using ReLogic.Content;
+using ReLogic.Utilities;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.Localization;
+using Terraria.ModLoader.Config;
 
 #nullable enable
 
@@ -28,7 +34,48 @@ internal enum ConfluxRiftKind : byte
 	Count,
 }
 
-internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
+internal sealed class GlacialRift : ConfluxRift
+{
+	public override ConfluxRiftKind Kind => ConfluxRiftKind.Glacial;
+}
+
+internal sealed class InfernalRift : ConfluxRift
+{
+	public override ConfluxRiftKind Kind => ConfluxRiftKind.Infernal;
+}
+
+internal sealed class CelestialRift : ConfluxRift
+{
+	public override ConfluxRiftKind Kind => ConfluxRiftKind.Celestial;
+}
+
+/// <summary> Used for spawn quotas. </summary>
+internal record struct EnemyRole
+{
+	public float Fodder;
+	public float Heavy;
+	public float Boss;
+
+	public readonly bool CanPay(in EnemyRole price)
+	{
+		return Fodder >= price.Fodder && Heavy >= price.Heavy && Boss >= price.Boss;
+	}
+
+	public bool TryPay(in EnemyRole price)
+	{
+		if (CanPay(in price))
+		{
+			Fodder -= price.Fodder;
+			Heavy -= price.Heavy;
+			Boss -= price.Boss;
+			return true;
+		}
+
+		return false;
+	}
+}
+
+	internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile
 {
 	[Flags]
 	public enum Flags : int
@@ -37,19 +84,66 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		Closing = 2,
 	}
 
-	private static Asset<Texture2D> Highlight = null!;
+	private record struct VisualParams(int TorchId, int DustId, Color ColorBase, string? Filter);
+
+	private static SoundStyle SoundActivation => new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/RiftActivation")
+	{
+		Volume = 0.9f,
+		PauseBehavior = PauseBehavior.PauseWithGame,
+	};
+	private static SoundStyle SoundDeactivation => new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/RiftDeactivation")
+	{
+		Volume = 0.9f,
+		PauseBehavior = PauseBehavior.PauseWithGame,
+	};
+	private static SoundStyle SoundApproach => new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/RiftApproach")
+	{
+		Volume = 0.4f,
+		PitchVariance = 0.1f,
+		PauseBehavior = PauseBehavior.PauseWithGame,
+	};
+	private static SoundStyle SoundWithdraw => new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/RiftWithdraw")
+	{
+		Volume = 0.4f,
+		PitchVariance = 0.1f,
+		PauseBehavior = PauseBehavior.PauseWithGame,
+	};
+	private static SoundStyle SoundInactive => new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/RiftInactive")
+	{
+		Volume = 0.4f,
+		IsLooped = true,
+		PauseBehavior = PauseBehavior.PauseWithGame,
+	};
+	private static SoundStyle SoundApproached => new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/RiftApproached")
+	{
+		Volume = 0.5f,
+		IsLooped = true,
+		PauseBehavior = PauseBehavior.PauseWithGame,
+	};
+	private static SoundStyle SoundActive => new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/RiftActive")
+	{
+		Volume = 0.22f,
+		IsLooped = true,
+		PauseBehavior = PauseBehavior.PauseWithGame,
+	};
+
+	private static Asset<Effect>? shader;
+
+	private (SlotId Handle, float Volume) soundDormant;
+	private (SlotId Handle, float Volume) soundRousing;
+	private (SlotId Handle, float Volume) soundAwoken;
+	private ProjectileAudioTracker? audioTracker;
+	private bool approached;
 
 	public uint EndTime { get; set; }
 	public Encounter Encounter { get; private set; }
 	public float OpeningAnimation { get; private set; }
 	public float ClosingAnimation { get; private set; }
+	public float ProgressAnimation { get; private set; }
+	public float ApproachAnimation { get; private set; }
 
 	/// <summary> The rift's type. </summary>
-	public ConfluxRiftKind Kind
-	{
-		get => (ConfluxRiftKind)(byte)Projectile.ai[0];
-		set => Projectile.ai[0] = (byte)value;
-	}
+	public abstract ConfluxRiftKind Kind { get; }
 	/// <summary> The rift's state flags. </summary>
 	public Flags BitFlags
 	{
@@ -63,14 +157,15 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 	/// <summary> Whether the rift is about to disappear. </summary>
 	public bool Closing => (BitFlags & Flags.Closing) != 0;
 
-	private static Asset<Effect>? shader;
+	public override string Texture => (GetType().Namespace + "." + nameof(ConfluxRift)).Replace('.', '/');
+
 	public override void SetStaticDefaults()
 	{
 		ProjectileID.Sets.IsInteractable[Type] = true;
 
 		if (!Main.dedServ)
 		{
-			Highlight = ModContent.Request<Texture2D>(Texture + "_Highlight");
+			shader = Mod.Assets.Request<Effect>($"Assets/Effects/ConfluxRift");
 		}
 	}
 
@@ -103,30 +198,71 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 	public override void AI()
 	{
+		Vector2 center = Projectile.Center;
+		VisualParams visuals = GetVisualParameters();
+
 		Projectile.rotation += 0.05f;
 		Projectile.Opacity = MathHelper.Lerp(Projectile.Opacity, 1f, 0.25f);
+		ProgressAnimation = MathHelper.Lerp(ProgressAnimation, Progress, 0.1f);
 
 		if (Closing)
 		{
-			ClosingAnimation = MathF.Min(1f, ClosingAnimation + (TimeSystem.LogicDeltaTime / 3f));
+			float oldValue = ClosingAnimation;
+			ClosingAnimation = MathF.Min(1f, ClosingAnimation + (TimeSystem.LogicDeltaTime / 4f));
+			ApproachAnimation = 0f;
+
+			// Effects.
+			if (oldValue <= 0f)
+			{
+				if (!Main.dedServ && visuals.Filter != null) { Filters.Scene.Deactivate(visuals.Filter); }
+			}
+			// Item drop.
+			else if (oldValue < 0.6f && ClosingAnimation >= 0.6f)
+			{
+				if (Main.netMode != NetmodeID.MultiplayerClient)
+				{
+					DropRewards();
+				}
+
+				if (!Main.dedServ)
+				{
+					for (int i = 0; i < 50; i++)
+					{
+						Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(8f, 8f), visuals.DustId, Main.rand.NextVector2Circular(8f, 8f));
+					}
+				}
+			}
 		}
 		else if (Activated)
 		{
-			OpeningAnimation = MathF.Min(1f, OpeningAnimation + (TimeSystem.LogicDeltaTime / 3f));
-
-			if (OpeningAnimation > 0.34f && false)
+			float oldValue = OpeningAnimation;
+			OpeningAnimation = MathF.Min(1f, OpeningAnimation + (TimeSystem.LogicDeltaTime / 7f));
+			ApproachAnimation = 1f;
+		}
+		else
+		{
+			if (ApproachAnimation is <= 0f or >= 1f)
 			{
-				for (int i = 0; i < 3; i++)
+				(Player? closestPlayer, float minSqrDist) = (null, float.PositiveInfinity);
+				foreach (Player player in Main.ActivePlayers)
 				{
-					Vector2 offset = Vector2.One.RotatedBy(Main.rand.NextDouble() * 6.28);
-					Vector2 dustVel = offset.RotatedBy(1.57f) * Main.rand.NextFloat() * 0.85f;
-					offset *= new Vector2(Main.rand.NextFloat(0.6f, 1) * 60, Main.rand.NextFloat(0.5f, 1f) * 70);
-					Dust dust = Dust.NewDustPerfect(Projectile.Center + offset, ModContent.DustType<ConfluxRiftSmoke>(), dustVel);
-					dust.scale = Main.rand.NextFloat(0.5f, 0.8f);
-					dust.alpha = Main.rand.Next(175, 200);
-					dust.color = Color.Lerp(Color.Purple, Color.White, Main.rand.NextFloat(0.25f, 0.75f));
+					(closestPlayer, minSqrDist) = (player, MathF.Min(minSqrDist, player.DistanceSQ(center)));
+				}
+
+				Vector2 compareSpot = Main.LocalPlayer.Center;
+				bool isInteractible = closestPlayer?.IsProjectileInteractibleAndInInteractionRange(Projectile, ref compareSpot) == true;
+
+				if (isInteractible != approached)
+				{
+					approached = isInteractible;
+					SoundEngine.PlaySound(approached ? SoundApproach : SoundWithdraw, center);
 				}
 			}
+
+			float targetApproach = approached ? 1f : 0f;
+			float oldValue = ApproachAnimation;
+			ApproachAnimation = MathHelper.Lerp(ApproachAnimation, targetApproach, 0.05f);
+			ApproachAnimation = MathUtils.StepTowards(ApproachAnimation, targetApproach, 0.01f);
 		}
 
 		// Encounter logic.
@@ -138,25 +274,71 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 				UpdateProgress();
 			}
 
-			// Start closing when the encounter has been completed, or if the players have ran out of time.
-			if (Activated && !Closing && (!Encounter.IsValid || Encounter.Instance.State == EncounterState.Completed || Main.GameUpdateCount >= EndTime))
+			if (Activated && !Closing && OpeningAnimation >= 0.1f)
 			{
-				Close();
+				// Create the encounter once enough time has passed.
+				if (Encounter == default)
+				{
+					const uint lengthInSeconds = 60;
+					const uint spawnStartDelay = 1;
+
+					EndTime = Main.GameUpdateCount + ((lengthInSeconds + spawnStartDelay) * (uint)TimeSystem.LogicFramerate);
+					Encounter = CreateEncounter(lengthInSeconds);
+				}
+				// Start closing when the encounter has been completed, or if the players have ran out of time.
+				else if (!Encounter.IsValid || Encounter.Instance.State == EncounterState.Completed || Main.GameUpdateCount >= EndTime)
+				{
+					Close();
+				}
 			}
 		}
 
 		// Effects.
 		if (!Main.dedServ)
 		{
-			(int torchId, int dustId, _) = GetVisualParameters();
-
-			if (Main.rand.NextBool(10))
-			{
-				Dust.NewDust(Projectile.position + new Vector2(8), Projectile.width - 16, Projectile.height - 16, dustId);
-			}
-
-			Lighting.AddLight(Projectile.Center, torchId);
+			UpdateEffects();
+			UpdateAudio();
 		}
+	}
+
+	private void UpdateEffects()
+	{
+		if (Main.dedServ) { return; }
+
+		VisualParams visuals = GetVisualParameters();
+
+		if (Main.rand.NextBool(10) && Activated && OpeningAnimation > 0.34f)
+		{
+			Dust.NewDust(Projectile.position + new Vector2(8), Projectile.width - 16, Projectile.height - 16, visuals.DustId);
+		}
+
+		Lighting.AddLight(Projectile.Center, visuals.TorchId);
+
+		if (Activated && !Closing && visuals.Filter != null)
+		{
+			Filters.Scene.Activate(visuals.Filter);
+		}
+	}
+	private void UpdateAudio()
+	{
+		Vector2 center = Projectile.Center;
+		float distMul = new ExponentialRange(0f, 2048f, 2f).DistanceFactor(Main.LocalPlayer.Distance(center));
+		float distAndClosing = distMul * (1f - ClosingAnimation);
+
+		ProjectileAudioTracker tracker = (audioTracker ??= new ProjectileAudioTracker(Projectile));
+
+		void UpdateSound(in SoundStyle style, ref (SlotId Handle, float Volume) tuple, float target)
+		{
+			tuple.Volume = MathUtils.StepTowards(tuple.Volume, target, MathF.Max(0f, 2f * TimeSystem.LogicDeltaTime));
+			SoundUtils.UpdateLoopingSound(ref tuple.Handle, center, tuple.Volume, null, in style, _ => tracker.IsActiveAndInGame());
+		}
+
+		float posApproach = ApproachAnimation > 0f ? 1f : float.Epsilon;
+		float negApproach = ApproachAnimation > 0f ? float.Epsilon : 1f;
+
+		UpdateSound(SoundInactive, ref soundDormant, (Activated ? 0.2f : 1.0f) * negApproach * distAndClosing);
+		UpdateSound(SoundApproached, ref soundRousing, (Activated ? 0.3f : 1.0f) * posApproach * distAndClosing);
+		UpdateSound(SoundActive, ref soundAwoken, (Activated ? 1.0f : 0.0f) * distAndClosing);
 	}
 
 	public override void OnKill(int timeLeft)
@@ -179,12 +361,30 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 			return false;
 		}
 
+		float openFactor = MathUtils.Clamp01((OpeningAnimation * 0.75f) + (ApproachAnimation * 0.25f));
+		float closeFactor = MathUtils.Clamp01((ClosingAnimation * 0.8f) + (ProgressAnimation * 0.2f));
+
+		effect.Parameters["progress"].SetValue(openFactor);
+		effect.Parameters["closingProgress"].SetValue(closeFactor);
 		effect.Parameters["timeManual"].SetValue((float)Main.timeForVisualEffects * 0.027f);
-		effect.Parameters["progress"].SetValue(OpeningAnimation);
 		effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(Texture + "_PerlinNoiseMap").Value);
-		effect.Parameters["_PaletteTex"].SetValue(ModContent.Request<Texture2D>(Texture + "_Palette").Value);
+		effect.Parameters["_PaletteTex"].SetValue(ModContent.Request<Texture2D>(Texture + "_Palette_" + Kind.ToString()).Value);
 		effect.Parameters["_PNoiseTex"].SetValue(ModContent.Request<Texture2D>(Texture + "_PerlinNoiseMap").Value);
 		effect.Parameters["_DNoiseTex"].SetValue(ModContent.Request<Texture2D>(Texture + "_DisplacementNoiseMap").Value);
+
+		effect.Parameters["xCameraOffset"].SetValue(Main.screenPosition.X - Projectile.Center.X);
+		effect.Parameters["yCameraOffset"].SetValue(Main.screenPosition.Y - Projectile.Center.Y);
+
+		Texture2D spaceTex1 = ModContent.Request<Texture2D>(Texture + "_SpaceMap1_" + Kind.ToString()).Value;
+		Texture2D spaceTex2 = ModContent.Request<Texture2D>(Texture + "_SpaceMap2_" + Kind.ToString()).Value;
+
+		effect.Parameters["mapResX"].SetValue(spaceTex1.Width);
+		effect.Parameters["mapResY"].SetValue(spaceTex1.Height);
+
+		effect.Parameters["resX"].SetValue(tex.Width * Projectile.scale * 4.0f);
+		effect.Parameters["resY"].SetValue(tex.Height * Projectile.scale * 4.0f);
+		effect.Parameters["_SpaceTex1"].SetValue(spaceTex1);
+		effect.Parameters["_SpaceTex2"].SetValue(spaceTex2);
 
 		Main.spriteBatch.End();
 		Main.spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointClamp, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
@@ -192,7 +392,8 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 		Main.spriteBatch.End();
 		Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
-		this.DrawHighlightAndCheckRightClickInteraction(Highlight.Value, position, lightColor);
+		
+		this.TryInteracting();
 
 		/*
 		(_, _, Color colorBase) = GetVisualParameters();
@@ -234,15 +435,24 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 			return;
 		}
 
-		const uint lengthInSeconds = 30;
-
 		BitFlags |= Flags.Activated;
-		EndTime = Main.GameUpdateCount + (lengthInSeconds * (uint)TimeSystem.LogicFramerate);
-		Encounter = CreateEncounter(lengthInSeconds);
 
 		if (Main.netMode == NetmodeID.Server)
 		{
 			NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, Projectile.whoAmI);
+		}
+
+		// Effects.
+		if (!Main.dedServ)
+		{
+			VisualParams visuals = GetVisualParameters();
+
+			SoundEngine.PlaySound(SoundActivation, Projectile.Center);
+
+			for (int i = 0; i < 100; i++)
+			{
+				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(8f, 8f), visuals.DustId, Main.rand.NextVector2Circular(8f, 8f));
+			}
 		}
 	}
 
@@ -252,6 +462,11 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 		BitFlags |= Flags.Closing;
 
+		if (!Main.dedServ)
+		{
+			SoundEngine.PlaySound(SoundDeactivation, Projectile.Center);
+		}
+
 		if (Main.netMode == NetmodeID.Server)
 		{
 			NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, Projectile.whoAmI);
@@ -259,7 +474,6 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 		UpdateProgress();
 		RemoveEncounter();
-		DropRewards();
 	}
 
 	public void UpdateProgress()
@@ -294,55 +508,123 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		};
 		var rectangle = new Rectangle(area.X, area.Y, area.Z - area.X, area.W - area.Y);
 
-		string[] encounterPaths =
-		[
-			"Content/Encounters/Squads/BloodSquadSmall",
-			"Content/Encounters/Squads/CaveSquadMedium",
-			"Content/Encounters/Squads/CorruptionSquadSmall",
-			"Content/Encounters/Squads/UndeadSquadLarge",
-			"Content/Encounters/Squads/ZombieSquadLarge",
-			"Content/Encounters/Squads/ZombieSquadSmall",
-			"Content/Encounters/Squads/BruiserBrothers",
-		];
+		string[] encounterPaths = Kind switch
+		{
+			ConfluxRiftKind.Infernal => [
+				"Content/Encounters/Squads/InfernalRift",
+				"Content/Encounters/Squads/BruiserBrothers",
+			],
+			ConfluxRiftKind.Glacial => [
+				"Content/Encounters/Squads/InfernalRift",
+				"Content/Encounters/Squads/BruiserBrothers",
+			],
+			ConfluxRiftKind.Celestial => [
+				"Content/Encounters/Squads/InfernalRift",
+				"Content/Encounters/Squads/BruiserBrothers",
+			],
+			_ => throw new NotImplementedException(),
+		};
 		EncounterDescription[] baseEncounters = encounterPaths.Select(p => EncounterIO.GetEncounterFromModPath(Mod, p)).ToArray();
+		(EnemySpawn Spawn, EnemyRole Role)[] enemyPool = baseEncounters.SelectMany(e => e.Waves.SelectMany(w => w.Spawns.Select(s => (s, new EnemyRole())))).ToArray();
 
-		const uint timeInSecondsToCeaseSpawningFor = 15;
-		uint encounterSpawnDelays = 0;
-		uint encounterTargetSpawnDelays = Math.Max(0, (uint)((lengthInSeconds - timeInSecondsToCeaseSpawningFor) * TimeSystem.LogicFramerate));
+		foreach (ref (EnemySpawn Spawn, EnemyRole Role) tuple in enemyPool.AsSpan())
+		{
+			tuple.Role = tuple.Spawn switch
+			{
+				// Ugly hardcode for the sake of testing.
+				_ when tuple.Spawn.NpcType.Type == ModContent.NPCType<FallenSchemer>() => new() { Fodder = 2f },
+				_ when tuple.Spawn.NpcType.Type == ModContent.NPCType<FallenSavage>() => new() { Fodder = 1f },
+				_ when tuple.Spawn.NpcType.Type == ModContent.NPCType<FallenTyrant>() => new() { Heavy = 1f },
+				_ when tuple.Spawn.NpcType.Type == ModContent.NPCType<Abominable>() => new() { Boss = 1f },
+				_ => new EnemyRole { Fodder = 1f },
+			};
+		}
+
 		var waves = new List<EncounterWave>();
 
-		// The amount of enemies spawned every second is scaled by map tier.
-		uint cooldownPerEnemy = (uint)(180 / MathHelper.Lerp(1f, 5f, MathHelper.Clamp(MappingWorld.MapTier, 1f, 10f)));
+		// In-wave spawn pacing.
+		uint cooldownPerBatch = (uint)(180 * MathHelper.Lerp(1f, 0.2f, (MathHelper.Clamp(MappingWorld.MapTier, 1f, 10f) - 1f) / 9f));
+		uint accumulatedCooldownPerEnemy = (uint)(60 / MathHelper.Lerp(1f, 5f, MathHelper.Clamp(MappingWorld.MapTier, 1f, 10f)));
 		uint accumulatedCooldown = 0;
-		uint cooldownPerBatch = 60;
 
-		// Add base encounters as waves until we hit the time quota.
-		while (encounterSpawnDelays < encounterTargetSpawnDelays)
+		// The amount of enemies spawned every second is scaled by map tier.
+		uint waveCount = 4;
+		uint spawningPeriodInSeconds = lengthInSeconds - Math.Min(15 + 3, lengthInSeconds / 2);
+		uint spawningPeriodInTicks = (uint)(spawningPeriodInSeconds * TimeSystem.LogicFramerate);
+		float waveDelayPowFactor = 1.1f; //0.85f;
+		float waveDelayBase = spawningPeriodInTicks / MathF.Pow(waveDelayPowFactor, waveCount - 1) / waveCount;
+
+		EnemySpawnEffect spawnEffect = Kind switch
 		{
-			ref readonly EncounterDescription baseEncounter = ref baseEncounters[Main.rand.Next(baseEncounters.Length)];
+			ConfluxRiftKind.Glacial => EnemySpawnEffect.GlacialRift,
+			ConfluxRiftKind.Infernal => EnemySpawnEffect.InfernalRift,
+			ConfluxRiftKind.Celestial => EnemySpawnEffect.CelestialRift,
+			_ => EnemySpawnEffect.Teleport,
+		};
 
-			EnemySpawn[] spawns = baseEncounter.Waves.SelectMany(w => w.Spawns).ToArray();
+		uint GetWaveTick(int waveIndex)
+		{
+			return (uint)(waveIndex * waveDelayBase * MathF.Pow(waveDelayPowFactor, waveIndex));
+		}
 
-			foreach (ref EnemySpawn spawn in spawns.AsSpan())
+		EnemyRole GetWaveQuota(int waveIndex)
+		{
+			// Play with printing to balance this out.
+			return new EnemyRole
 			{
-				spawn.Effect = EnemySpawnEffect.Teleport;
-				if (spawn.SpawnPlacement.HasValue)
+				Fodder = 4.00f + (MappingWorld.MapTier * 0.71f) + (Math.Max(0f, waveIndex) * -0.25f * MathF.Pow(1.00f, waveIndex)),
+				Heavy = 0.50f + (MappingWorld.MapTier * 0.41f) + (Math.Max(0f, waveIndex) * 0.50f * MathF.Pow(1.00f, waveIndex)),
+				Boss = 0.00f + (MappingWorld.MapTier * 0.26f) + (Math.Max(0f, waveIndex - 2) * 1.50f * MathF.Pow(0.90f, waveIndex)),
+			};
+		}
+
+		// Add as many waves as needed.
+		for (int waveIndex = 0; waveIndex < waveCount; waveIndex++)
+		{
+			var spawns = new List<EnemySpawn>();
+
+			uint thisWaveTick = GetWaveTick(waveIndex);
+			uint nextWaveTick = GetWaveTick(waveIndex + 1);
+			uint delayUntilNextWave = nextWaveTick - thisWaveTick;
+
+			EnemyRole quota = GetWaveQuota(waveIndex);
+
+			// Add spawns to the wave as long the role quota is not filled.
+			while (true)
+			{
+				bool addedAnySpawn = false;
+
+				//TODO: Randomize this iteration.
+				foreach ((EnemySpawn baseSpawn, EnemyRole price) in enemyPool)
 				{
-					spawn.SpawnPlacement = spawn.SpawnPlacement.Value with { MinDistanceFromEnemies = 8f };
+					// Pay the 'price' for this spawn.
+					if (!quota.TryPay(price)) { continue; }
+
+					EnemySpawn spawn = baseSpawn;
+					spawn.Effect = spawnEffect;
+
+					if (spawn.SpawnPlacement is { } placement)
+					{
+						spawn.SpawnPlacement = placement with { MinDistanceFromEnemies = 8f };
+					}
+
+					uint cooldown = 0;
+					if ((accumulatedCooldown += accumulatedCooldownPerEnemy) >= cooldownPerBatch)
+					{
+						cooldown = cooldownPerBatch;
+						accumulatedCooldown -= cooldownPerBatch;
+					}
+
+					spawn.CooldownInTicks = cooldown;
+					spawns.Add(spawn);
+
+					addedAnySpawn = true;
 				}
 
-				accumulatedCooldown += cooldownPerEnemy;
-				uint cooldown = 0;
-
-				if (accumulatedCooldown >= cooldownPerBatch)
-				{
-					cooldown = cooldownPerBatch;
-					accumulatedCooldown -= cooldownPerBatch;
-				}
-
-				spawn.CooldownInTicks = cooldown;
-				encounterSpawnDelays += cooldown;
+				if (!addedAnySpawn) { break; }
 			}
+
+			spawns[^1] = spawns[^1] with { CooldownInTicks = delayUntilNextWave };
 
 			waves.Add(new EncounterWave
 			{
@@ -376,7 +658,20 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		// Despawn all remaining NPCs.
 		foreach (NPC npc in Encounter.IterateRemainingEnemies())
 		{
-			EnemySpawning.SpawnEffects(npc, EnemySpawnEffect.Teleport, npc.Center);
+			EnemySpawnEffect spawnEffect = EnemySpawnEffect.Teleport;
+			switch (Kind)
+			{
+				case ConfluxRiftKind.Glacial:
+					spawnEffect = EnemySpawnEffect.GlacialRift;
+					break;
+				case ConfluxRiftKind.Infernal:
+					spawnEffect = EnemySpawnEffect.InfernalRift;
+					break;
+				case ConfluxRiftKind.Celestial:
+					spawnEffect = EnemySpawnEffect.CelestialRift;
+					break;
+			}
+			EnemySpawning.SpawnEffects(npc, spawnEffect, npc.Center);
 			npc.active = false;
 
 			if (Main.netMode == NetmodeID.Server)
@@ -416,9 +711,10 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 		for (int i = 0; i < rewardAmount; i++)
 		{
-			int itemIdx = Item.NewItem(null, Projectile.Center + Main.rand.NextVector2Circular(72f, 72f), rewardType, 1, noBroadcast: true);
+			Vector2 position = Projectile.Center + Main.rand.NextVector2Circular(8f, 8f);
+			int itemIdx = Item.NewItem(null, position, rewardType, 1, noBroadcast: true);
 			Item item = Main.item[itemIdx];
-			item.velocity = Main.rand.NextVector2Circular(10f, 10f);
+			item.velocity = Vector2.UnitX.RotatedBy((i / (float)rewardAmount) * MathHelper.TwoPi).RotatedByRandom(0.1f) * 5f;
 
 			if (Main.netMode == NetmodeID.Server)
 			{
@@ -427,19 +723,21 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		}
 	}
 
-	private (int torchId, int dustId, Color colorBase) GetVisualParameters()
+	private VisualParams GetVisualParameters()
 	{
 		return Kind switch
 		{
-			ConfluxRiftKind.Glacial => (TorchID.Ice, DustID.Firework_Blue, Color.AliceBlue),
-			ConfluxRiftKind.Infernal => (TorchID.Red, DustID.Firework_Red, Color.OrangeRed),
-			ConfluxRiftKind.Celestial => (TorchID.Purple, DustID.WitherLightning, Color.MediumVioletRed),
+			ConfluxRiftKind.Glacial => new(TorchID.Ice, DustID.Firework_Blue, Color.AliceBlue, "Vortex"),
+			ConfluxRiftKind.Infernal => new(TorchID.Red, DustID.Firework_Red, Color.OrangeRed, "Solar"),
+			ConfluxRiftKind.Celestial => new(TorchID.Purple, DustID.WitherLightning, Color.MediumVioletRed, "Nebula"),
 			_ => throw new NotImplementedException(),
 		};
 	}
 
 	bool IRightClickableProjectile.RightClick(Player player, bool mouseDirectlyOver)
 	{
+		if (Activated) { return false; }
+
 		if (Main.mouseRight && Main.mouseRightRelease)
 		{
 			Activate();
@@ -449,25 +747,10 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 		if (mouseDirectlyOver)
 		{
-			Tooltip.Create(new TooltipDescription
-			{
-				Identifier = "ConfluxRift",
-				SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),
-			});
+			Main.instance.MouseText(Language.GetTextValue("Mods.PathOfTerraria.Misc.Rifts.Touch"), rare: 1);
 		}
 
 		return false;
-	}
-
-	public override void Load()
-	{
-		base.Load();
-		shader = Mod.Assets.Request<Effect>($"Assets/Effects/ConfluxRift");
-	}
-
-	public override void Unload()
-	{
-		shader = null;
 	}
 }
 
