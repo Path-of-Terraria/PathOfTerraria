@@ -1,6 +1,7 @@
-﻿using PathOfTerraria.Common.NPCs.QuestMarkers;
+﻿using System.Collections.Generic;
+using PathOfTerraria.Common.NPCs.QuestMarkers;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
-using System.Collections.Generic;
+using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
@@ -146,7 +147,8 @@ public abstract class Quest : ModType, ILocalizedModType
 	/// </summary>
 	public static bool PlayerHasQuest(int who, string questName)
 	{
-		return Main.player[who].GetModPlayer<QuestModPlayer>().EnabledQuestsByName.Contains(questName);
+		QuestModPlayer quester = Main.player[who].GetModPlayer<QuestModPlayer>();
+		return quester.EnabledQuestsByName.Contains(questName);
 	}
 
 	/// <inheritdoc cref="PlayerHasQuest(int, string)"/>
@@ -180,7 +182,8 @@ public abstract class Quest : ModType, ILocalizedModType
 		GiveRewards(player);
 		OnCompleted();
 
-		player.GetModPlayer<QuestModPlayer>().EnabledQuestsByName.Remove(Name);
+		QuestModPlayer quester = player.GetModPlayer<QuestModPlayer>();
+		quester.EnabledQuestsByName.Remove(FullName);
 
 		if (player.whoAmI == Main.myPlayer && Main.netMode == NetmodeID.MultiplayerClient)
 		{
@@ -254,7 +257,7 @@ public abstract class Quest : ModType, ILocalizedModType
 
 	private void Load(TagCompound tag, Player player)
 	{
-		Reset();
+		Reset(player);
 
 		if (tag.GetBool("completed"))
 		{
@@ -305,11 +308,14 @@ public abstract class Quest : ModType, ILocalizedModType
 		}
 	}
 
-	public void Reset()
+	public void Reset(Player player)
 	{
 		state = State.NotStarted;
 		CurrentStep = 0;
 		QuestSteps = SetSteps();
+
+		QuestModPlayer quester = player.GetModPlayer<QuestModPlayer>();
+		quester.EnabledQuestsByName.Remove(FullName);
 	}
 
 	/// <summary>
