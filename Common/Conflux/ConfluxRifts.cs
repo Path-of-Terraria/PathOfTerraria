@@ -120,9 +120,9 @@ internal sealed class ConfluxRifts : ModSystem
 		};
 
 		WeightedRandom<int> targetRiftPool = new();
-		targetRiftPool.Add(3, 0.1f + (MappingWorld.MapTier * 0.1f));
-		targetRiftPool.Add(2, 0.2f + (MappingWorld.MapTier * 0.05f));
-		targetRiftPool.Add(1, 0.8f);
+		targetRiftPool.Add(3, 0.1f + (MathF.Pow(MappingWorld.MapTier - 1.0f, 2.50f) * 0.3f));
+		targetRiftPool.Add(2, 0.3f + (MathF.Pow(MappingWorld.MapTier - 1.0f, 2.05f) * 0.6f));
+		targetRiftPool.Add(1, 0.7f);
 
 		int targetRifts = targetRiftPool.Get();
 		IEntitySource? source = Entity.GetSource_None();
