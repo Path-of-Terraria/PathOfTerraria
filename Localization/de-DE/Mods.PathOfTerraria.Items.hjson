@@ -1461,6 +1461,34 @@ FireDiamondRing: {
 	// Tooltip: ""
 }
 
+PrismaticOrb: {
+	// Description: Toss forward a prismatic orb, bouncing like a skipping stone in the direction thrown. Each bounce causes a random elemental explosion.
+	// AltUseDescription: Causes your orb explosions to trigger twice for the next 5 seconds.
+	// DisplayName: Prismatic Orb
+	// Tooltip: ""
+}
+
+FleaBell: {
+	// DisplayName: Flea Bell
+	// Tooltip: ""
+	// Description: Spawns a flea which will throw itself into enemies to deal damage. When hitting a target, they will bounce off of it, and begin to charge again.
+	// AltUseDescription: Right click to empower the fleas, causing them to attack faster, move faster, and deal more damage for X seconds.
+}
+
+Simulacra: {
+	// Description: Fires an arrow, which is then repeated after a short delay at the same original trajectory.
+	// AltUseDescription: Right click to create a mirror clone of your weapon at your cursors location for X seconds. All arrows shot with the Echo Bow will be duplicated from that location, towards your cursor.
+	// DisplayName: Simulacra
+	// Tooltip: ""
+}
+
+Ouroboros: {
+	// Description: Leaves behind a trail of gas that applies Poison.
+	// AltUseDescription: Right click to begin to devour nearby enemies, dragging them towards the yoyo and executing enemies below 15% life.
+	// DisplayName: Ouroboros
+	// Tooltip: ""
+}
+
 DeepMossItem: {
 	// DisplayName: Deep Moss
 	// Tooltip: ""

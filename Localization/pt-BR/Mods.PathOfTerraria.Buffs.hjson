@@ -236,31 +236,41 @@ WideSwingsBuff: {
 }
 
 DwarvishBuff: {
-	// DisplayName: Dwarvish
+	// DisplayName: Dwarvish Buff
 	// Description: Mods.PathOfTerraria.Buffs.DwarvishBuff.Description
 }
 
 AvariceBuff: {
-	// DisplayName: Avarice
+	// DisplayName: Avarice Buff
 	// Description: Mods.PathOfTerraria.Buffs.AvariceBuff.Description
 }
 
 SlowburnDebuff: {
-	// DisplayName: Slowburn
+	// DisplayName: Slowburn Debuff
 	// Description: Mods.PathOfTerraria.Buffs.SlowburnDebuff.Description
 }
 
 EverburningShadowflameDebuff: {
-	// DisplayName: Everburning Shadowflame
+	// DisplayName: Everburning Shadowflame Debuff
 	// Description: Mods.PathOfTerraria.Buffs.EverburningShadowflameDebuff.Description
 }
 
-RageStacksBuff: {
-	// DisplayName: Rage Stacks
-	// Description: Mods.PathOfTerraria.Buffs.RageStacksBuff.Description
+PrismaticOrbBuff: {
+	// DisplayName: Prismatic Enhancement
+	// Description: Your prismatic orb explosions will trigger twice.
 }
 
-SwampAlgaeBuff: {
-	// DisplayName: Swamp Algae
-	// Description: You are much less inhibited by water...but you may attract unwanted attention
+FleaBellBuff: {
+	// DisplayName: Flea Bell
+	// Description: It's fluffy beyond belief.
+}
+
+FleaBellEnhancedBuff: {
+	// DisplayName: Frenzied Fleas
+	// Description: Empowers your fleas with more attack speed, damage, and movement speed.
+}
+
+RageStacksBuff: {
+	// DisplayName: Rage Stacks Buff
+	// Description: 1% increased ranged and melee damage per stack.
 }
