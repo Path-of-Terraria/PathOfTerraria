@@ -412,7 +412,7 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 		//button = Language.GetTextValue("LegacyInterface.28");
 		button2 = "";
 
-		if (Quest.GetLocalPlayerInstance<EoWQuest>().CanBeStarted)
+		if (Quest.GetLocalPlayerInstance<EoWQuest>().QuestNotStarted)
 		{
 			button2 = Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 		}
@@ -432,7 +432,7 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 		{
 			Quest quest = Quest.GetLocalPlayerInstance<EoWQuest>();
 
-			if (quest.CanBeStarted)
+			if (quest.QuestNotStarted)
 			{
 				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<EoWQuest>();
 				Main.npcChatText = Quest.GetSingleton<EoWQuest>().GetLocalization("MorvenDialogue").Value;

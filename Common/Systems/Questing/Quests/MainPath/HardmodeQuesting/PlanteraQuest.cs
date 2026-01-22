@@ -59,7 +59,7 @@ internal class PlanteraQuest() : HardmodeQuest(5)
 		return "Overworld";
 	}
 
-	public override bool Available()
+	protected override bool InternalAvailable()
 	{
 		Quest skelePrimeQuest = GetLocalPlayerInstance<SkelePrimeQuest>();
 		return skelePrimeQuest.Completed && NPC.downedMechBoss3;

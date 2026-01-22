@@ -44,7 +44,7 @@ public abstract class Quest : ModType, ILocalizedModType
 	/// <summary>
 	/// Checks if the quest is both inactive and not completed.
 	/// </summary>
-	public bool CanBeStarted => state == State.NotStarted;
+	public bool QuestNotStarted => state == State.NotStarted;
 
 	public string LocalizationCategory => $"Quests.Quest";
 
@@ -87,9 +87,18 @@ public abstract class Quest : ModType, ILocalizedModType
 	/// For example, returning true unconditionally will mean that this is available as soon as the player talks to the requisite NPC.<br/>
 	/// By default: returns true.
 	/// </summary>
-	public virtual bool Available()
+	protected virtual bool InternalAvailable()
 	{
 		return true;
+	}
+
+	/// <summary>
+	/// Whether this quest is available. That is, if <see cref="InternalAvailable"/> returns true and <see cref="QuestNotStarted"/> is true.
+	/// </summary>
+	/// <returns></returns>
+	public bool Available()
+	{
+		return QuestNotStarted && InternalAvailable();
 	}
 
 	protected override void Register()

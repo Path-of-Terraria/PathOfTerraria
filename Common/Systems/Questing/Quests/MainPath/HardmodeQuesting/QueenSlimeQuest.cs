@@ -56,7 +56,7 @@ internal class QueenSlimeQuest() : Quest
 		return "Overworld";
 	}
 
-	public override bool Available()
+	protected override bool InternalAvailable()
 	{
 		return Main.hardMode;
 	}

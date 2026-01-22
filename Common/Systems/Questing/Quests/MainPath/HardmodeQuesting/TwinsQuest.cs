@@ -78,7 +78,7 @@ internal class TwinsQuest() : Quest
 		return "Overworld";
 	}
 
-	public override bool Available()
+	protected override bool InternalAvailable()
 	{
 		Quest tinkerIntroQuest = GetLocalPlayerInstance<TinkerIntroQuest>();
 		RavencrestSubworld subworld = ModContent.GetInstance<RavencrestSubworld>();

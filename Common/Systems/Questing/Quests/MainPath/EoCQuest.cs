@@ -90,7 +90,7 @@ internal class EoCQuest : Quest
 		];
 	}
 
-	public override bool Available()
+	protected override bool InternalAvailable()
 	{
 		return BossTracker.TotalBossesDowned.Contains(NPCID.KingSlime);
 	}

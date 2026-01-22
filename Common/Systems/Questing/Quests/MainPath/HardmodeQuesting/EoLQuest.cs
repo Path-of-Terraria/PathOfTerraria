@@ -63,7 +63,7 @@ internal class EoLQuest() : Quest
 		return "Overworld";
 	}
 
-	public override bool Available()
+	protected override bool InternalAvailable()
 	{
 		Quest fishronQuest = GetLocalPlayerInstance<FishronQuest>();
 		return fishronQuest.Completed && NPC.downedFishron;

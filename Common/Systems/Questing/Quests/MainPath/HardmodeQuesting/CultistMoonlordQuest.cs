@@ -73,7 +73,7 @@ internal class CultistMoonlordQuest() : Quest
 		return "Overworld";
 	}
 
-	public override bool Available()
+	protected override bool InternalAvailable()
 	{
 		Quest empressQuest = GetLocalPlayerInstance<EoLQuest>();
 		return empressQuest.Completed && NPC.downedEmpressOfLight;
