@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace PathOfTerraria.Core.Commands;
 
-#if DEBUG
+#if DEBUG || STAGING
 public sealed class SpawnItemCommand : ModCommand
 {
 	public override string Command => "spawnitem";
