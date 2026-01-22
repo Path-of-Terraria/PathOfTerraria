@@ -991,3 +991,16 @@ Abominable.DisplayName: Abominable
 FallenSchemer.DisplayName: Fallen Schemer
 FallenSavage.DisplayName: Fallen Savage
 FallenTyrant.DisplayName: Fallen Tyrant
+
+SwampCroc: {
+	DisplayName: Crocolog
+	Entry: These sneaky reptiles have evolved to mimic the logs sometimes found floating in their Swamp. Their skin is like sandpaper, but the sand is small blades.
+}
+
+GiantEel: {
+	DisplayName: Mammoth Moss-Eel
+	Entry: What happens when you combine large, territorial and overgrown? This! It is extremely aggressive and unbelievably strong.
+}
+
+GiantEelBody.DisplayName: "{$GiantEel.DisplayName}"
+GiantEelTail.DisplayName: "{$GiantEel.DisplayName}"
