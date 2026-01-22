@@ -4,7 +4,7 @@ using Terraria.ModLoader.Core;
 
 namespace PathOfTerraria.Core.Commands;
 
-#if DEBUG
+#if DEBUG || STAGING
 public sealed class GrantSkillPassiveCommand : ModCommand
 {
 	public override string Command => "skillpoint";
@@ -34,10 +34,6 @@ public sealed class GrantSkillPassiveCommand : ModCommand
 		}
 
 		var skill = Skill.GetAndPrepareSkill(skillType);
-		/*if (!caller.Player.TryGetModPlayer(out SkillPassivePlayer skillPassivePlayer))
-		{
-			return;
-		}*/
 
 		int count = 1;
 
