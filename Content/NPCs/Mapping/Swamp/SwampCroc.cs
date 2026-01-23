@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.AI;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
+using PathOfTerraria.Content.Dusts;
 using PathOfTerraria.Content.Gores;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
@@ -25,22 +26,15 @@ internal class SwampCroc : ModNPC
 	}
 
 	private static readonly SpriteAnimation animIdle = new() { Id = "idle", Frames = [0], Speed = 0 };
-	private static readonly SpriteAnimation animWake = new() { Id = "wake", Frames = [1, 2, 3, 4], Speed = 12f };
+	private static readonly SpriteAnimation animWake = new() { Id = "wake", Frames = [1, 2, 3, 4], Speed = 8f, Loop = false };
 	private static readonly SpriteAnimation animSwim = new() { Id = "swim", Frames = [5, 6, 7, 8, 9, 10, 11, 12], Speed = 12f, Loop = true, UpdateDirection = true };
+
+	private Vector2 HeadPosition => NPC.position + new Vector2(NPC.direction == 1 ? 30 : NPC.width - 30, 0);
 
 	private States State
 	{
 		get => (States)NPC.ai[0];
 		set => NPC.ai[0] = (float)value;
-	}
-
-	public override void Load()
-	{
-		//GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, $"{Texture}_GoreBlade");
-		//GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreHead");
-		//GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreChest");
-		//GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreArm");
-		//GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreLeg");
 	}
 
 	public override void SetStaticDefaults()
@@ -81,13 +75,11 @@ internal class SwampCroc : ModNPC
 			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatSmall)}", 2, NPCHitEffects.OnDeath));
 			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 1, NPCHitEffects.OnDeath));
 			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatLarge)}", 1, NPCHitEffects.OnDeath));
-			//c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreHead", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+00, -16), new(3, 3)) });
-			//c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreChest", 1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+00, +00), new(3, 3)) });
-			//c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreBlade", 1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+00, +00), new(15, 15)) });
-			//c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreArm", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(-16, +00), new(3, 3)) });
-			//c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreArm", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+16, +00), new(3, 3)) });
-			//c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreLeg", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+16, -16), new(3, 3)) });
-			//c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreLeg", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+16, +16), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_0", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(+12, +20) - NPC.Size / 2f, new(3, 3)), FlipWithDirection = true });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_1", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(+116, +14) - NPC.Size / 2f, new(3, 3)), FlipWithDirection = true });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_2", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(+70, +32) - NPC.Size / 2f, new(3, 3)), FlipWithDirection = true });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_3", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(+68, +18) - NPC.Size / 2f, new(12, 3)), FlipWithDirection = true });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_4", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(+36, +32) - NPC.Size / 2f, new(3, 3)), FlipWithDirection = true });
 			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatSmall)}", 2, NPCHitEffects.OnDeath));
 			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 1, NPCHitEffects.OnDeath));
 			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatLarge)}", 1, NPCHitEffects.OnDeath));
@@ -115,6 +107,12 @@ internal class SwampCroc : ModNPC
 		{
 			NPC.direction = -Math.Sign(NPC.velocity.X);
 		}
+		else
+		{
+			NPC.direction = NPC.spriteDirection;
+		}
+
+		Lighting.AddLight(HeadPosition, new Vector3(0.05f, 0.1f, 0.08f));
 
 		if (State == States.Idle)
 		{
@@ -141,8 +139,14 @@ internal class SwampCroc : ModNPC
 
 			if (ctx.Targeting.GetTargetCenter(NPC).DistanceSQ(NPC.Center) < 160 * 160)
 			{
-				State = States.Swim;
+				State = States.Wake;
+
+				Dust.NewDustPerfect(HeadPosition, ModContent.DustType<AlertDust>(), new Vector2(0, -6), 0);
 			}
+		}
+		else if (State == States.Wake && ctx.Animations.Completed)
+		{
+			State = States.Swim;
 		}
 		else if (State == States.Swim)
 		{
