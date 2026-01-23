@@ -136,12 +136,9 @@ internal class SubExtraFireDamage : ItemAffix
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		ref ElementalDamage.ElementalDamage damage = ref player.GetModPlayer<ElementalPlayer>().Container[ElementType.Fire].DamageModifier;
-		damage = damage.AddModifiers((int)Math.Round(player.GetWeaponDamage(item) * (1f + (Value / 100f))), null);
-	}
+		float bonus = player.GetWeaponDamage(item) * (Value / 100f);
 
-	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
-	{
-		return base.CreateDefaultTooltip(player, item) with { Value = (int)Math.Round(Value) };
+		damage = damage.AddModifiers((int)Math.Round(bonus), null);
 	}
 }
 
@@ -150,12 +147,9 @@ internal class SubExtraLightningDamage : ItemAffix
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		ref ElementalDamage.ElementalDamage damage = ref player.GetModPlayer<ElementalPlayer>().Container[ElementType.Lightning].DamageModifier;
-		damage = damage.AddModifiers((int)Math.Round(player.GetWeaponDamage(item) * (1f + (Value / 100f))), null);
-	}
+		float bonus = player.GetWeaponDamage(item) * (Value / 100f);
 
-	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
-	{
-		return base.CreateDefaultTooltip(player, item) with { Value = (int)Math.Round(Value) };
+		damage = damage.AddModifiers((int)Math.Round(bonus), null);
 	}
 }
 
@@ -164,12 +158,9 @@ internal class SubExtraColdDamage : ItemAffix
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		ref ElementalDamage.ElementalDamage damage = ref player.GetModPlayer<ElementalPlayer>().Container[ElementType.Cold].DamageModifier;
-		damage = damage.AddModifiers((int)Math.Round(player.GetWeaponDamage(item) * (1f + (Value / 100f))), null);
-	}
+		float bonus = player.GetWeaponDamage(item) * (Value / 100f);
 
-	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
-	{
-		return base.CreateDefaultTooltip(player, item) with { Value = (int)Math.Round(Value) };
+		damage = damage.AddModifiers((int)Math.Round(bonus), null);
 	}
 }
 
@@ -178,12 +169,9 @@ internal class ExtraFireDamage : ItemAffix
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		ref ElementalDamage.ElementalDamage damage = ref player.GetModPlayer<ElementalPlayer>().Container[ElementType.Fire].DamageModifier;
-		damage = damage.AddModifiers((int)Math.Round(player.GetWeaponDamage(item) * (1f + (Value / 100f))), null);
-	}
+		float bonus = player.GetWeaponDamage(item) * (Value / 100f);
 
-	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
-	{
-		return base.CreateDefaultTooltip(player, item) with { Value = (int)Math.Round(Value) };
+		damage = damage.AddModifiers((int)Math.Round(bonus), null);
 	}
 }
 
@@ -192,12 +180,9 @@ internal class ExtraLightningDamage : ItemAffix
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		ref ElementalDamage.ElementalDamage damage = ref player.GetModPlayer<ElementalPlayer>().Container[ElementType.Lightning].DamageModifier;
-		damage = damage.AddModifiers((int)Math.Round(player.GetWeaponDamage(item) * (1f + (Value / 100f))), null);
-	}
+		float bonus = player.GetWeaponDamage(item) * (Value / 100f);
 
-	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
-	{
-		return base.CreateDefaultTooltip(player, item) with { Value = (int)Math.Round(Value) };
+		damage = damage.AddModifiers((int)Math.Round(bonus), null);
 	}
 }
 
@@ -206,11 +191,8 @@ internal class ExtraColdDamage : ItemAffix
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		ref ElementalDamage.ElementalDamage damage = ref player.GetModPlayer<ElementalPlayer>().Container[ElementType.Cold].DamageModifier;
-		damage = damage.AddModifiers((int)Math.Round(player.GetWeaponDamage(item) * (1f + (Value / 100f))), null);
-	}
+		float bonus = player.GetWeaponDamage(item) * (Value / 100f);
 
-	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
-	{
-		return base.CreateDefaultTooltip(player, item) with { Value = (int)Math.Round(Value) };
+		damage = damage.AddModifiers((int)Math.Round(bonus), null);
 	}
 }
