@@ -187,6 +187,7 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile
 		Projectile.Size = new Vector2(120, 120);
 		Projectile.Opacity = 0f;
 		Projectile.hide = true;
+		Projectile.netImportant = true;
 	}
 
 	public override bool? CanDamage()

@@ -157,8 +157,8 @@ Quest: {
 		// Description: ""
 		// EnterDomain: Enter the Destroyer's domain
 		// Boss: Defeat the Destroyer
-		// WorldFeeders: Defeat ({0}/{1}) World Feeders
 		// CollectCursedFlame: Collect ({0}/{1}) Cursed Flames
+		// KillClingers: Defeat ({0}/{1}) Clingers
 	}
 
 	SkelePrimeQuest: {

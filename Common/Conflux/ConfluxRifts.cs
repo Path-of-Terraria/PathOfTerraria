@@ -40,7 +40,7 @@ internal sealed class ConfluxRifts : ModSystem
 
 	public override void PostUpdateWorld()
 	{
-		if (!checkedRifts)
+		if (!checkedRifts && Main.ActiveNPCs.GetEnumerator().MoveNext())
 		{
 			if (ShouldRiftsSpawnInWorld(SubworldSystem.Current))
 			{

@@ -39,7 +39,7 @@ internal class DestroyerQuest() : Quest
 
 			new ParallelQuestStep("Branch", [
 				new CollectCount("GetFlames", ItemID.CursedFlame, 20),
-				new KillCount("Kill", NPCID.Clinger, 5, this.GetLocalization("WorldFeeders"))
+				new KillCount("Kill", NPCID.Clinger, 5, this.GetLocalization("KillClingers"))
 			], Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerDestroyerDialogue1")),
 			
 			// TODO: Add in wavelength matching minigame? Placing antennae in overworld?
