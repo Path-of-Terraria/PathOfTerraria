@@ -189,7 +189,8 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 				ctx.Tracking.AimLag = Vector2.Lerp(Data.AimLag.Value.Min, Data.AimLag.Value.Max, aimLagFactor);
 
 				// Slow-slide.
-				npc.velocity.X = Data.Movement.Slide * Sign;
+				if (Data.Movement.Slide != 0f) { npc.velocity.X = Data.Movement.Slide * Sign; }
+				if (Data.Movement.Friction != 0f) { npc.velocity.X *= Data.Movement.Friction; }
 			}
 			else if (Data.Progress == Data.Damage.Start)
 			{
@@ -215,7 +216,7 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 				// Slow down.
 				npc.velocity.X *= Data.Movement.Friction;
 				// But also defy gravity for a few ticks.
-				npc.noGravity = Data.Progress >= Data.Damage.Start && Data.Progress < (Data.Damage.Start + Data.NoGravityLength);
+				npc.noGravity = Data.NoGravityLength != 0 ? (Data.Progress >= Data.Damage.Start && Data.Progress < (Data.Damage.Start + Data.NoGravityLength)) : npc.noGravity;
 			}
 
 			// Force direction.

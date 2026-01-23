@@ -45,7 +45,9 @@ This file lists sound sources used to create sounds in this directory.
 		SONNISS GDC/David Dumais Audio - Spells Magic 1/Magic_Spells_CastLong_Combo_Dark02.flac
 	- RiftClosing
 		SONNISS GDC/David Dumais Audio - Spells Magic 1/Magic_Spells_CastLong_Combo_Dark02.flac
-		
+- HitEffects
+	- FrostMagic
+		SONNISS GDC/David Dumais Audio - Ice & Frost Magic 1/Magic_Spells_Impact_Ice13.flac
 - Footsteps
 	- MonsterStomp
 		Monster Stomp Footsteps Sequence by Vilkas_Sound -- https://freesound.org/s/753178/ -- License: Attribution 4.0
