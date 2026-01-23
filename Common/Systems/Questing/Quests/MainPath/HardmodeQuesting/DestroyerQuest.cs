@@ -62,7 +62,7 @@ internal class DestroyerQuest() : Quest
 		return "Overworld";
 	}
 
-	public override bool Available()
+	protected override bool InternalAvailable()
 	{
 		Quest twinsQuest = GetLocalPlayerInstance<TwinsQuest>();
 		RavencrestSubworld subworld = ModContent.GetInstance<RavencrestSubworld>();

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Common.Encounters;
-using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.ModPlayers;
@@ -15,7 +14,6 @@ using PathOfTerraria.Utilities.Xna;
 using SubworldLibrary;
 using Terraria.ID;
 using Terraria.Localization;
-
 
 #nullable enable
 
@@ -78,7 +76,7 @@ internal class FishronQuest() : Quest
 		return "Overworld";
 	}
 
-	public override bool Available()
+	protected override bool InternalAvailable()
 	{
 		Quest golemQuest = GetLocalPlayerInstance<GolemQuest>();
 		return golemQuest.Completed && NPC.downedGolemBoss;

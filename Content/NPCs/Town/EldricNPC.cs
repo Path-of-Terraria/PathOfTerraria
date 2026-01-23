@@ -124,7 +124,7 @@ public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 		//button = Language.GetTextValue("LegacyInterface.28");
 
 		Quest quest = Quest.GetLocalPlayerInstance<EoCQuest>();
-		button2 = !quest.CanBeStarted ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+		button2 = !quest.Available() ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 
 		if (quest.Active && quest.CurrentStep >= 1 && !Main.LocalPlayer.HasItem(ModContent.ItemType<LunarObject>()))
 		{

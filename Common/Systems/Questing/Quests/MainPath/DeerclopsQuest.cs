@@ -54,7 +54,7 @@ internal class DeerclopsQuest : Quest
 		];
 	}
 
-	public override bool Available()
+	protected override bool InternalAvailable()
 	{
 		return NPC.downedBoss1;
 	}

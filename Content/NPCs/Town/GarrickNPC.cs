@@ -110,7 +110,7 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
-		button2 = (!Quest.GetLocalPlayerInstance<KingSlimeQuest>().CanBeStarted && !Quest.GetLocalPlayerInstance<QueenSlimeQuest>().CanBeStarted) ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+		button2 = (!Quest.GetLocalPlayerInstance<KingSlimeQuest>().Available() && !Quest.GetLocalPlayerInstance<QueenSlimeQuest>().Available()) ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 		Quest quest = Quest.GetLocalPlayerInstance<EoCQuest>();
 
 		if (quest.Active && quest.CurrentStep >= 1 && !Main.LocalPlayer.HasItem(ModContent.ItemType<LunarLiquid>()))
@@ -180,12 +180,12 @@ public override void OnChatButtonClicked(bool firstButton, ref string shopName)
 		Quest kingSlimeQuest = Quest.GetLocalPlayerInstance<KingSlimeQuest>();
 		Quest queenSlimeQuest = Quest.GetLocalPlayerInstance<QueenSlimeQuest>();
 
-		if (kingSlimeQuest.CanBeStarted)
+		if (kingSlimeQuest.QuestNotStarted)
 		{
 			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.GarrickNPC.Dialogue.Quest");
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<KingSlimeQuest>();
 		}
-		else if (queenSlimeQuest.CanBeStarted)
+		else if (queenSlimeQuest.Available())
 		{
 			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.GarrickNPC.Dialogue.QueenSlime1");
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<QueenSlimeQuest>();

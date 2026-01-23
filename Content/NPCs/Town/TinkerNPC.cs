@@ -2,7 +2,6 @@ using NPCUtils;
 using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Dialogue;
-using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.NPCs.OverheadDialogue;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
@@ -130,7 +129,6 @@ public class TinkerNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnIn
 				Language.GetTextValue("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerSkeletronPrimeDialogue1");
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<SkelePrimeQuest>();
 		}
-
 	}
 
 	public override void AddShops()
@@ -182,22 +180,25 @@ public class TinkerNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnIn
 		Quest destroyerQuest = Quest.GetLocalPlayerInstance<DestroyerQuest>();
 		Quest skelePrimeQuest = Quest.GetLocalPlayerInstance<SkelePrimeQuest>();
 
-		if (tinkerIntroQuest.CanBeStarted || (tinkerIntroQuest.Active && !tinkerIntroQuest.Completed))
+		if (tinkerIntroQuest.QuestNotStarted || (tinkerIntroQuest.Active && !tinkerIntroQuest.Completed))
 		{
 			quest = tinkerIntroQuest;
 			return true;
 		}
-		if (twinsQuest.CanBeStarted || (twinsQuest.Active && !twinsQuest.Completed))
+
+		if (twinsQuest.QuestNotStarted || (twinsQuest.Active && !twinsQuest.Completed))
 		{
 			quest = twinsQuest;
 			return true;
 		}
-		if (destroyerQuest.CanBeStarted || (destroyerQuest.Active && !destroyerQuest.Completed))
+
+		if (destroyerQuest.QuestNotStarted || (destroyerQuest.Active && !destroyerQuest.Completed))
 		{
 			quest = destroyerQuest;
 			return true;
 		}
-		if (skelePrimeQuest.CanBeStarted || (skelePrimeQuest.Active && !skelePrimeQuest.Completed))
+
+		if (skelePrimeQuest.QuestNotStarted || (skelePrimeQuest.Active && !skelePrimeQuest.Completed))
 		{
 			quest = skelePrimeQuest;
 			return true;
