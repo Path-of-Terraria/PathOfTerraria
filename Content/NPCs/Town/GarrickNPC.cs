@@ -110,7 +110,7 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
-		button2 = (!Quest.GetLocalPlayerInstance<KingSlimeQuest>().QuestNotStarted && !Quest.GetLocalPlayerInstance<QueenSlimeQuest>().Available()) ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+		button2 = (!Quest.GetLocalPlayerInstance<KingSlimeQuest>().Available() && !Quest.GetLocalPlayerInstance<QueenSlimeQuest>().Available()) ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 		Quest quest = Quest.GetLocalPlayerInstance<EoCQuest>();
 
 		if (quest.Active && quest.CurrentStep >= 1 && !Main.LocalPlayer.HasItem(ModContent.ItemType<LunarLiquid>()))
