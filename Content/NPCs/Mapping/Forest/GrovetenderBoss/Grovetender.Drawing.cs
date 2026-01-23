@@ -54,12 +54,14 @@ internal partial class Grovetender : ModNPC
 
 		if (!NPC.IsABestiaryIconDummy)
 		{
-			for (int i = 0; i < tex.Width / 16 + 1; ++i)
+			const int Size = 18;
+
+			for (int i = 0; i < tex.Width / Size + 1; ++i)
 			{
-				for (int j = 0; j < tex.Height / 16 + 1; ++j)
+				for (int j = 0; j < tex.Height / Size + 1; ++j)
 				{
-					var frame = new Rectangle(NPC.frame.X + i * 16, NPC.frame.Y + j * 16, 16, 16);
-					Vector2 drawPos = position + new Vector2(i * 16, j * 16);
+					var frame = new Rectangle(NPC.frame.X + i * Size, NPC.frame.Y + j * Size, Size, Size);
+					Vector2 drawPos = position + new Vector2(i * Size, j * Size);
 					Color color = NPC.IsABestiaryIconDummy ? Color.White : Lighting.GetColor((drawPos + screenPos - new Vector2(200, 340)).ToTileCoordinates());
 
 					Main.EntitySpriteDraw(tex, drawPos, frame, color, NPC.rotation, NPC.frame.Size() / 2f, 1f, effect);
