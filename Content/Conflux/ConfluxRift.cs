@@ -531,8 +531,7 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile
 				"Content/Encounters/Squads/BruiserBrothers",
 			],
 			ConfluxRiftKind.Glacial => [
-				"Content/Encounters/Squads/InfernalRift",
-				"Content/Encounters/Squads/BruiserBrothers",
+				"Content/Encounters/Squads/GlacialRift",
 			],
 			ConfluxRiftKind.Celestial => [
 				"Content/Encounters/Squads/InfernalRift",
@@ -551,6 +550,7 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile
 				_ when tuple.Spawn.NpcType.Type == ModContent.NPCType<FallenSchemer>() => new() { Fodder = 2f },
 				_ when tuple.Spawn.NpcType.Type == ModContent.NPCType<FallenSavage>() => new() { Fodder = 1f },
 				_ when tuple.Spawn.NpcType.Type == ModContent.NPCType<FallenTyrant>() => new() { Heavy = 1f },
+				_ when tuple.Spawn.NpcType.Type == ModContent.NPCType<CryoStalker>() => new() { Fodder = 2f },
 				_ when tuple.Spawn.NpcType.Type == ModContent.NPCType<Abominable>() => new() { Boss = 1f },
 				_ => new EnemyRole { Fodder = 1f },
 			};

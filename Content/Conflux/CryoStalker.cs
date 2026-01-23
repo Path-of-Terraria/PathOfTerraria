@@ -1,12 +1,15 @@
-﻿using PathOfTerraria.Common.AI;
+﻿using System.Diagnostics;
+using PathOfTerraria.Common.AI;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Content.Gores;
 using PathOfTerraria.Core.Time;
+using PathOfTerraria.Utilities;
 using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
 using ReLogic.Content;
+using ReLogic.Utilities;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -57,7 +60,8 @@ internal sealed class CryoStalkerIcicle : ModProjectile
 			{
 				Volume = 0.15f,
 				MaxInstances = 5,
-				PitchVariance = 0.25f,
+				Pitch = 0.15f,
+				PitchVariance = 0.2f,
 			};
 			SoundEngine.PlaySound(in sound, Projectile.Center);
 
@@ -87,7 +91,7 @@ internal sealed class CryoStalker : ModNPC
 	{
 		public Vector2 Center { get; } = npc.Center;
 		public NPCMovement Movement { get; } = npc.GetGlobalNPC<NPCMovement>();
-		public NPCNavigation Navigation { get; } = npc.GetGlobalNPC<NPCNavigation>();
+		//public NPCNavigation Navigation { get; } = npc.GetGlobalNPC<NPCNavigation>();
 		public NPCTargeting Targeting { get; } = npc.GetGlobalNPC<NPCTargeting>();
 		public NPCAttacking Attacking { get; } = npc.GetGlobalNPC<NPCAttacking>();
 		public NPCAnimations Animations { get; } = npc.GetGlobalNPC<NPCAnimations>();
@@ -99,9 +103,13 @@ internal sealed class CryoStalker : ModNPC
 	private static readonly SpriteAnimation animVanish = new() { Id = "vanish", Frames = [16, 17, 18, 19], Speed = 5f, Loop = false };
 	private static readonly SpriteAnimation animAppear = new() { Id = "appear", Frames = [19, 18, 17, 16], Speed = 9f, Loop = false };
 
+	private SlotId loopSound;
+
 	public override void Load()
 	{
-		//TODO: Gore.
+		//TODO: Add own gores.
+		GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, $"{Mod.Name}/Assets/Conflux/FallenShaman_GoreCloth1");
+		GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, $"{Mod.Name}/Assets/Conflux/FallenShaman_GoreCloth2");
 	}
 
 	public override void SetStaticDefaults()
@@ -116,20 +124,20 @@ internal sealed class CryoStalker : ModNPC
 		//NPC.aiStyle = -1;
 		NPC.aiStyle = NPCAIStyleID.DemonEye;
 		NPC.damage = 35;
-		NPC.width = 60;
+		NPC.width = 40;
 		NPC.height = 32;
 		NPC.lifeMax = 500;
 		NPC.defense = 30;
 		NPC.knockBackResist = 0.5f;
 		NPC.noGravity = true;
 
-		NPC.HitSound = new($"{nameof(PathOfTerraria)}/Assets/Sounds/HitEffects/FleshHit", 3) { Pitch = +0.35f, MaxInstances = 5, Volume = 0.4f, PitchVariance = 0.2f };
-		NPC.DeathSound = SoundID.NPCDeath51 with { Volume = 0.53f, Pitch = -0.1f, PitchVariance = 0.1f };
+		NPC.HitSound = new($"{nameof(PathOfTerraria)}/Assets/Sounds/HitEffects/BoneHit", 3) { Pitch = +0f, MaxInstances = 5, Volume = 0.8f, PitchVariance = 0.2f };
+		NPC.DeathSound = SoundID.NPCDeath51 with { Volume = 0.45f, Pitch = -0.15f, PitchVariance = 0.1f };
 
-		NPC.TryEnableComponent<NPCNavigation>(e =>
-		{
-			e.JumpRange = new(15, 40);
-		});
+		//NPC.TryEnableComponent<NPCNavigation>(e =>
+		//{
+		//	e.JumpRange = new(15, 40);
+		//});
 		NPC.TryEnableComponent<NPCMovement>(e =>
 		{
 			e.Data.MaxSpeed = 4f;
@@ -168,8 +176,14 @@ internal sealed class CryoStalker : ModNPC
 				[
 					(0, SoundID.NPCDeath51 with {
 						MaxInstances = 2,
-						Volume = 0.2f,
+						Volume = 0.15f,
 						Pitch = -0.8f,
+						PitchVariance = 0.15f,
+					}),
+					(0, new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/CryoStalkerCast") {
+						MaxInstances = 2,
+						Volume = 0.3f,
+						Pitch = -0f,
 						PitchVariance = 0.15f,
 					}),
 				];
@@ -177,22 +191,26 @@ internal sealed class CryoStalker : ModNPC
 		});
 		NPC.TryEnableComponent<NPCVoice>(e =>
 		{
-			e.Data.PainSound = (3, SoundID.NPCHit20 with
-			{
-				MaxInstances = 3,
-				Volume = 0.9f,
-				PitchVariance = 0.15f,
-			});
+			//e.Data.PainSound = (3, SoundID.NPCHit20 with
+			//{
+			//	MaxInstances = 3,
+			//	Volume = 0.9f,
+			//	PitchVariance = 0.15f,
+			//});
+			e.Data.PainSound = (5, SoundID.NPCDeath51 with { Volume = 0.2f, Pitch = +0.8f, PitchVariance = 0.1f });
 		});
 		NPC.TryEnableComponent<NPCHitEffects>(c =>
 		{
-			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{nameof(BloodSplatSmall)}", 1));
-			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 1));
+			c.AddDust(new(DustID.Ice, 7));
+			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatSmall)}", 1));
+			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 1));
 
+			c.AddDust(new(DustID.Ice, 50, NPCHitEffects.OnDeath, d => d.velocity.Y -= 5f));
 			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatSmall)}", 2, NPCHitEffects.OnDeath));
 			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 2, NPCHitEffects.OnDeath));
 			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatLarge)}", 2, NPCHitEffects.OnDeath));
-			//TODO: Gores.
+			c.AddGore(new($"{PoTMod.ModName}/FallenShaman_GoreCloth1", 2, NPCHitEffects.OnDeath));
+			c.AddGore(new($"{PoTMod.ModName}/FallenShaman_GoreCloth2", 2, NPCHitEffects.OnDeath));
 			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatSmall)}", 2, NPCHitEffects.OnDeath));
 			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 2, NPCHitEffects.OnDeath));
 			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatLarge)}", 2, NPCHitEffects.OnDeath));
@@ -208,7 +226,9 @@ internal sealed class CryoStalker : ModNPC
 		//ctx.Teleports.ManualUpdate(new(NPC));
 		ctx.Attacking.ManualUpdate(new(NPC));
 		ctx.Movement.ManualUpdate(new(NPC));
-		ctx.Animations.Set(PickAnimation(ref ctx));
+		ctx.Animations.Set(PickAnimation(in ctx));
+
+		UpdateEffects(in ctx);
 
 		// Prevent staying too high.
 		Vector2 targetCenter = ctx.Targeting.GetTargetCenter(NPC);
@@ -216,23 +236,6 @@ internal sealed class CryoStalker : ModNPC
 		if (targetDiff.Y > 200f)
 		{
 			NPC.velocity = MovementUtils.DirAccel(NPC.velocity, Vector2.UnitY, 8f, 1f * TimeSystem.LogicDeltaTime);
-		}
-
-		if (!Main.dedServ)
-		{
-			NPC.rotation = 0f;
-
-			if (NPC.spriteDirection == (targetDiff.X >= 0f ? 1 : -1))
-			{
-				NPC.rotation += (targetDiff * NPC.spriteDirection).ToRotation() * 0.5f;
-			}
-
-			NPC.rotation += (NPC.velocity.X * 0.05f);
-			NPC.rotation += (NPC.velocity.Y * -0.05f);
-
-			float castPower = MathUtils.DistancePower(MathF.Abs(ctx.Attacking.Data.Progress - (ctx.Attacking.Data.Damage.Start - 1)), 1, 30);
-			float lightPower = MathHelper.Lerp(0.2f, 1.0f, castPower);
-			Lighting.AddLight(ctx.Center, ColorUtils.FromHexRgb(0x7ce8ff).ToVector3() * lightPower);
 		}
 
 		// Shoot projectiles during the attack.
@@ -244,7 +247,7 @@ internal sealed class CryoStalker : ModNPC
 
 			if (!Main.dedServ)
 			{
-				SoundEngine.PlaySound(SoundID.Item92 with { Volume = 0.5f, MaxInstances = 3, PitchVariance = 0.2f }, ctx.Center);
+				SoundEngine.PlaySound(SoundID.Item92 with { Volume = 0.65f, MaxInstances = 3, Pitch = 0.2f, PitchVariance = 0.2f }, ctx.Center);
 			}
 
 			if (Main.netMode != NetmodeID.MultiplayerClient)
@@ -257,7 +260,7 @@ internal sealed class CryoStalker : ModNPC
 		}
 	}
 
-	private SpriteAnimation? PickAnimation(ref Context ctx)
+	private SpriteAnimation? PickAnimation(in Context ctx)
 	{
 		Vector2 vel = NPC.position - NPC.oldPosition;
 
@@ -267,5 +270,43 @@ internal sealed class CryoStalker : ModNPC
 			_ when ctx.Teleports.Active => ctx.Teleports.Data.Progress <= ctx.Teleports.Data.Reappear.Start ? animVanish : animAppear,
 			_ => animIdle with { Speed = NPC.velocity.LengthSquared() },
 		};
+	}
+
+	private void UpdateEffects(in Context ctx)
+	{
+		if (Main.dedServ) { return; }
+
+		// Rotation
+		NPC.rotation = -0.4f * NPC.spriteDirection;
+		NPC.rotation += (NPC.velocity.X * 0.05f);
+		NPC.rotation += (NPC.velocity.Y * -0.05f);
+		if (NPC.HasValidTarget)
+		{
+			Vector2 targetDiff = ctx.Targeting.GetTargetCenter(NPC) - ctx.Center;
+
+			if (NPC.spriteDirection == (targetDiff.X >= 0f ? 1 : -1))
+			{
+				NPC.rotation += (targetDiff * NPC.spriteDirection).ToRotation() * 0.5f;
+			}
+		}
+
+		// Light
+		float castPower = MathUtils.DistancePower(MathF.Abs(ctx.Attacking.Data.Progress - (ctx.Attacking.Data.Damage.Start - 1)), 1, 30);
+		float lightPower = MathHelper.Lerp(0.2f, 1.0f, castPower);
+		Lighting.AddLight(ctx.Center, ColorUtils.FromHexRgb(0x7ce8ff).ToVector3() * lightPower);
+
+		// Sound
+		var sound = new SoundStyle($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/CryoStalkerLoop")
+		{
+			Volume = 0.5f,
+			MaxInstances = 3,
+			SoundLimitBehavior = SoundLimitBehavior.IgnoreNew,
+			PauseBehavior = PauseBehavior.PauseWithGame,
+			IsLooped = true,
+		};
+		float speed = NPC.velocity.Length();
+		float volume = 1f; // Math.Clamp(speed * 0.1f, 0.01f, 1f);
+		float pitch = Math.Clamp(-1f + (speed * 0.2f), -1f, 1f);
+		SoundUtils.UpdateLoopingSound(ref loopSound, ctx.Center, volume, null, sound, _ => Main.npc[NPC.whoAmI] is { active: true } n && n == NPC);
 	}
 }

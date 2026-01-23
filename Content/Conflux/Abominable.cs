@@ -1,6 +1,4 @@
-﻿//#define NEVER_ATTACK
-
-using PathOfTerraria.Common.AI;
+﻿using PathOfTerraria.Common.AI;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Content.Gores;
