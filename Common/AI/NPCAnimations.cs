@@ -102,7 +102,7 @@ internal sealed class NPCAnimations : NPCComponent
 		Color mulColor = Color.White.MultiplyRGBA(new Color(Vector4.One * ((byte.MaxValue - npc.alpha) / (float)byte.MaxValue)));
 		Main.EntitySpriteDraw(tex, position, npc.frame, drawColor.MultiplyRGBA(mulColor), npc.rotation, npc.frame.Size() * 0.5f, npc.scale, npc.spriteDirection >= 0 ? (SpriteEffects)1 : 0, 0f);
 
-		string glowmaskPath = $"{GetType().FullName}_Glowmask".Replace('.', '/');
+		string glowmaskPath = $"{npc.ModNPC?.Texture}_Glowmask";
 		if (ModContent.HasAsset(glowmaskPath) && ModContent.Request<Texture2D>(glowmaskPath) is { IsLoaded: true, Value: { } glowmask })
 		{
 			Main.EntitySpriteDraw(glowmask, position, npc.frame, mulColor, npc.rotation, npc.frame.Size() * 0.5f, npc.scale, npc.spriteDirection >= 0 ? (SpriteEffects)1 : 0, 0f);
