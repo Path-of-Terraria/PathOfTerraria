@@ -50,19 +50,25 @@ internal partial class Grovetender : ModNPC
 		}
 
 		Main.EntitySpriteDraw(Sockets.Value, position, NPC.frame, drawColor, NPC.rotation, NPC.frame.Size() / 2f, 1f, effect);
-
 		DrawEyes(screenPos);
 
-		for (int i = 0; i < tex.Width / 16 + 1; ++i)
+		if (!NPC.IsABestiaryIconDummy)
 		{
-			for (int j = 0; j < tex.Height / 16 + 1; ++j)
+			for (int i = 0; i < tex.Width / 16 + 1; ++i)
 			{
-				var frame = new Rectangle(NPC.frame.X + i * 16, NPC.frame.Y + j * 16, 16, 16);
-				Vector2 drawPos = position + new Vector2(i * 16, j * 16);
-				Color color = NPC.IsABestiaryIconDummy ? Color.White : Lighting.GetColor((drawPos + screenPos - new Vector2(200, 340)).ToTileCoordinates());
+				for (int j = 0; j < tex.Height / 16 + 1; ++j)
+				{
+					var frame = new Rectangle(NPC.frame.X + i * 16, NPC.frame.Y + j * 16, 16, 16);
+					Vector2 drawPos = position + new Vector2(i * 16, j * 16);
+					Color color = NPC.IsABestiaryIconDummy ? Color.White : Lighting.GetColor((drawPos + screenPos - new Vector2(200, 340)).ToTileCoordinates());
 
-				Main.EntitySpriteDraw(tex, drawPos, frame, color, NPC.rotation, NPC.frame.Size() / 2f, 1f, effect);
+					Main.EntitySpriteDraw(tex, drawPos, frame, color, NPC.rotation, NPC.frame.Size() / 2f, 1f, effect);
+				}
 			}
+		}
+		else
+		{
+			Main.EntitySpriteDraw(tex, position, null, Color.White, NPC.rotation, NPC.frame.Size() / 2f, 1f, effect);
 		}
 
 		return false;

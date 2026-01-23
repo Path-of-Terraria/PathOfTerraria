@@ -100,7 +100,7 @@ internal class MiniteraHook : ModNPC
 		Vector2 center = NPC.Center;
 		Vector2 offset = Parent.Center + new Vector2(-10, 20) - center;
 
-		if (Parent.Center.DistanceSQ(center) < 4 * 4 || NPC.Center.HasNaNs() || offset.HasNaNs())
+		if (NPC.IsABestiaryIconDummy || Parent.Center.DistanceSQ(center) < 4 * 4 || NPC.Center.HasNaNs() || offset.HasNaNs())
 		{
 			return false;
 		}
