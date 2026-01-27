@@ -15,7 +15,7 @@ internal class MobAffixIconDrawing : GlobalNPC
 	{
 		List<MobAffix> affixes = npc.GetGlobalNPC<ArpgNPC>().Affixes;
 
-		if (affixes.Count == 0 || npc.GetGlobalNPC<FreezeNPC>().Frozen)
+		if (affixes.Count == 0 || npc.GetGlobalNPC<FreezeNPC>().Frozen || npc.alpha == byte.MaxValue)
 		{
 			return;
 		}
