@@ -52,7 +52,7 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 		public NPCTargeting Tracking = npc.GetGlobalNPC<NPCTargeting>();
 		public NPCMovement? Movement = npc.TryGetGlobalNPC(out NPCMovement c) ? c : null;
 		public Vector2 TargetCenter = npc.GetGlobalNPC<NPCTargeting>().GetTargetCenter(npc);
-		public Rectangle TargetRect = npc.GetTargetData().Hitbox;
+		public Rectangle TargetRect = npc.GetTargetData(false).Hitbox;
 	}
 
 	public struct Result()

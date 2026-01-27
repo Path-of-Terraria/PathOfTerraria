@@ -78,8 +78,8 @@ internal sealed class NPCTeleports : NPCComponent<TeleportData>
 		public NPC NPC = npc;
 		public Vector2 Center = npc.Center;
 		public NPCMovement? Movement = npc.TryGetGlobalNPC(out NPCMovement c) ? c : null;
-		public Vector2 TargetCenter = npc.TryGetGlobalNPC(out NPCTargeting c) ? c.GetTargetCenter(npc) : npc.GetTargetData().Center;
-		public NPCAimedTarget Target = npc.GetTargetData();
+		public Vector2 TargetCenter = npc.TryGetGlobalNPC(out NPCTargeting c) ? c.GetTargetCenter(npc) : npc.GetTargetData(false).Center;
+		public NPCAimedTarget Target = npc.GetTargetData(false);
 		//TODO: Create an action counter/tracking/interaction system to remove this type of coupling.
 		public NPCAttacking? Attacking = npc.TryGetGlobalNPC(out NPCAttacking c) ? c : null;
 	}

@@ -91,7 +91,7 @@ internal sealed class NPCMovement : NPCComponent<MovementData>
 		}
 		else if (ctx.Navigation != null)
 		{
-			Vector2 targetCenter = ctx.Targeting?.GetTargetCenter(npc) ?? npc.GetTargetData().Center;
+			Vector2 targetCenter = ctx.Targeting?.GetTargetCenter(npc) ?? npc.GetTargetData(false).Center;
 
 			ctx.Navigation.Process(out NPCNavigation.Result navResult, new()
 			{
