@@ -38,6 +38,7 @@ internal sealed class Abominable : ModNPC
 
 	public override void SetStaticDefaults()
 	{
+		NPCID.Sets.UsesNewTargetting[Type] = true;
 		NPCID.Sets.TeleportationImmune[Type] = true;
 		NPCID.Sets.SpecificDebuffImmunity[Type][BuffID.Shimmer] = true;
 		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, new() { CustomTexturePath = $"{Mod.Name}/Assets/Conflux/{Name}_Bestiary" });

@@ -45,6 +45,7 @@ internal sealed class FallenTyrant : ModNPC
 
 	public override void SetStaticDefaults()
 	{
+		NPCID.Sets.UsesNewTargetting[Type] = true;
 		NPCID.Sets.TeleportationImmune[Type] = true;
 		NPCID.Sets.SpecificDebuffImmunity[Type][BuffID.Shimmer] = true;
 		Main.npcFrameCount[Type] = 5;

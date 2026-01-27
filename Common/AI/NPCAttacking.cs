@@ -1,4 +1,4 @@
-﻿//#define NEVER_ATTACK
+﻿// #define NEVER_ATTACK
 
 using System.IO;
 using PathOfTerraria.Common.NPCs.Components;
