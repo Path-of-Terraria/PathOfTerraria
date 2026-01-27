@@ -1,0 +1,355 @@
+﻿using PathOfTerraria.Common.AI;
+using PathOfTerraria.Common.NPCs.Components;
+using PathOfTerraria.Common.NPCs.Effects;
+using PathOfTerraria.Common.World.Utilities;
+using PathOfTerraria.Content.Gores;
+using PathOfTerraria.Core.Time;
+using PathOfTerraria.Utilities.Terraria;
+using PathOfTerraria.Utilities.Xna;
+using ReLogic.Content;
+using Terraria.Audio;
+using Terraria.DataStructures;
+using Terraria.GameContent;
+using Terraria.ID;
+
+#nullable enable
+
+namespace PathOfTerraria.Content.Conflux;
+
+internal sealed class FallenShamanRocket : ModProjectile
+{
+	private static Asset<Texture2D>? glowmask;
+
+	public ref float Activation => ref Projectile.ai[0];
+
+	public override void SetStaticDefaults()
+	{
+		Main.projFrames[Type] = 2;
+	}
+	public override void SetDefaults()
+	{
+		Projectile.damage = 1;
+		Projectile.Size = new(16);
+		//Projectile.timeLeft = 300;
+		Projectile.hostile = true;
+		Projectile.friendly = false;
+		Projectile.aiStyle = -1;
+		Projectile.extraUpdates = 1;
+	}
+
+	public override void AI()
+	{
+		if (Projectile.velocity == default)
+		{
+			Projectile.velocity = Vector2.UnitX * 5f;
+		}
+		
+		Vector2 center = Projectile.Center;
+		(Player? closestPlayer, float closestSqrDst) = (null, float.PositiveInfinity);
+		foreach (Player player in Main.ActivePlayers)
+		{
+			if (player.DistanceSQ(center) is float sqrDst && sqrDst < closestSqrDst)
+			{
+				(closestPlayer, closestSqrDst) = (player, sqrDst);
+			}
+		}
+
+		if (closestPlayer != null)
+		{
+			float currAngle = Projectile.velocity.ToRotation();
+			float wishAngle = center.AngleTo(closestPlayer.Center);
+			Vector2 currDirection = currAngle.ToRotationVector2();
+			Vector2 wishDirection = wishAngle.ToRotationVector2();
+			bool canTurn = Vector2.Dot(wishDirection, currDirection) > -0.1f;
+			wishDirection = canTurn ? wishDirection : currDirection;
+			float wishSpeed = MathF.Min(10f, (3600 - Projectile.timeLeft) * 0.15f);
+			float acceleration = 3f * TimeSystem.LogicDeltaTime;
+			Projectile.velocity = MovementUtils.DirAccelQ(Projectile.velocity, wishDirection, wishSpeed, acceleration);
+		}
+
+		Projectile.frame = (int)MathF.Floor(((float)Main.timeForVisualEffects + (Projectile.identity * 100f)) / 5f) % 2;
+		Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.ToRadians(180f + (Projectile.frame == 0 ? 59f : 39f));
+		Lighting.AddLight(Projectile.Center, Color.IndianRed.ToVector3());
+	}
+
+	public override void OnHitPlayer(Player target, Player.HurtInfo info)
+	{
+		Projectile.Kill();
+	}
+	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+	{
+		Projectile.Kill();
+	}
+
+	public override void OnKill(int timeLeft)
+	{
+		if (!Main.dedServ)
+		{
+			var sound = new SoundStyle($"{nameof(PathOfTerraria)}/Assets/Sounds/HitEffects/FrostMagic")
+			{
+				Volume = 0.175f,
+				MaxInstances = 5,
+				Pitch = +0.50f,
+				PitchVariance = 0.4f,
+			};
+			SoundEngine.PlaySound(in sound, Projectile.Center);
+
+			for (int i = 0; i < 10; i++) { Dust.NewDustPerfect(Projectile.Center, DustID.SomethingRed, Main.rand.NextVector2Circular(10f, 10f)); }
+		}
+	}
+
+	public override bool PreDraw(ref Color lightColor)
+	{
+		Texture2D texture = TextureAssets.Projectile[Type].Value;
+		SpriteFrame spriteFrame = new(1, (byte)Main.projFrames[Type]) { PaddingX = 0, PaddingY = 0 };
+		Rectangle frame = spriteFrame.With(0, (byte)Projectile.frame).GetSourceRectangle(texture);
+		Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, frame, Color.White, Projectile.rotation, frame.Size() * 0.5f, Projectile.scale, 0, 0f);
+		
+		if ((glowmask ??= ModContent.Request<Texture2D>($"{Texture}_Glowmask")) is { IsLoaded: true, Value: { } glowTexture })
+		{
+			Main.EntitySpriteDraw(glowTexture, Projectile.Center - Main.screenPosition, frame, Color.White, Projectile.rotation, frame.Size() * 0.5f, Projectile.scale, 0, 0f);
+		}
+
+		return false;
+	}
+}
+
+/// <summary> Necromancer miniboss that supports its army of demons. </summary>
+internal sealed class FallenShaman : ModNPC
+{
+	private readonly struct Context(NPC npc)
+	{
+		public Vector2 Center { get; } = npc.Center;
+		public NPCMovement Movement { get; } = npc.GetGlobalNPC<NPCMovement>();
+		public NPCNavigation Navigation { get; } = npc.GetGlobalNPC<NPCNavigation>();
+		public NPCTargeting Targeting { get; } = npc.GetGlobalNPC<NPCTargeting>();
+		public NPCAttacking Attacking { get; } = npc.GetGlobalNPC<NPCAttacking>();
+		public NPCAnimations Animations { get; } = npc.GetGlobalNPC<NPCAnimations>();
+		public NPCTeleports Teleports { get; } = npc.GetGlobalNPC<NPCTeleports>();
+	}
+
+	private static readonly SpriteAnimation animIdle = new() { Id = "idle", Frames = [23, 24, 25, 26, 27, 28, 29, 30], Speed = 3f };
+	private static readonly SpriteAnimation animJump = new() { Id = "jump", Frames = [5] };
+	private static readonly SpriteAnimation animFall = new() { Id = "fall", Frames = [1] };
+	private static readonly SpriteAnimation animWalk = new() { Id = "walk", Frames = [0, 1, 2, 3, 4, 5] };
+	private static readonly SpriteAnimation animAttack = new() { Id = "attack", Frames = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22], Speed = 17f, Loop = false };
+	private static readonly SpriteAnimation animVanish = new() { Id = "vanish", Frames = [7, 8, 9, 10, 11], Speed = 20f, Loop = false };
+	private static readonly SpriteAnimation animAppear = new() { Id = "appear", Frames = [11, 10, 9, 8, 7], Speed = 20f, Loop = false };
+
+	public ref float FlightCounter => ref NPC.ai[3];
+
+	public override void Load()
+	{
+		GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreHead");
+		GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreChest");
+		GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreLeg");
+		GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, $"{Texture}_GoreCloth1");
+		GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, $"{Texture}_GoreCloth2");
+		GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, $"{Texture}_GoreStaff1");
+		GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, $"{Texture}_GoreStaff2");
+		GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, $"{Texture}_GoreStaff3");
+	}
+
+	public override void SetStaticDefaults()
+	{
+		NPCID.Sets.UsesNewTargetting[Type] = true;
+		NPCID.Sets.TeleportationImmune[Type] = true;
+		NPCID.Sets.SpecificDebuffImmunity[Type][BuffID.Shimmer] = true;
+		Main.npcFrameCount[Type] = 4;
+	}
+	public override void SetDefaults()
+	{
+		// NPC.aiStyle = -1;
+		NPC.aiStyle = NPCAIStyleID.Bird;
+		NPC.lifeMax = 1000;
+		NPC.defense = 35;
+		NPC.damage = 50;
+		NPC.width = 20;
+		NPC.height = 44;
+		NPC.knockBackResist = 0.0f;
+
+		NPC.HitSound = new($"{nameof(PathOfTerraria)}/Assets/Sounds/HitEffects/FleshHit", 3) { Volume = 0.4f, Pitch = -0.5f, MaxInstances = 5 };
+		NPC.DeathSound = SoundID.NPCDeath23 with { Pitch = -0.85f, PitchVariance = 0.15f, Identifier = "FallenShamanDeath" };
+
+		NPC.TryEnableComponent<NPCNavigation>(e =>
+		{
+			e.JumpRange = new(8, 20);
+		});
+		NPC.TryEnableComponent<NPCMovement>(e =>
+		{
+			e.Data.MaxSpeed = 1.5f;
+			e.Data.Acceleration = 16f;
+			e.Data.Friction = (8f, 2f);
+			e.Data.Push = new() { };
+		});
+		NPC.TryEnableComponent<NPCAnimations>(e =>
+		{
+			e.BaseFrame = new SpriteFrame(8, 4) with { PaddingX = 0, PaddingY = 0 };
+			e.SpriteOffset = new(0f, -31f);
+		});
+		NPC.TryEnableComponent<NPCTargeting>();
+		NPC.TryEnableComponent<NPCAttacking>(e =>
+		{
+			e.Data.LengthInTicks = 120;
+			e.Data.CooldownLength = 60;
+			e.Data.NoGravityLength = 0;
+			e.Data.InitiationRange = new(384f, 192f);
+			e.Data.Dash = (60, 80, new(0f, 0f));
+			e.Data.Damage = (60, 80, DamageInstance.EnemyAttackFilter);
+			// e.Data.Hitbox = (new(512, 512), new(+0f, +0f), new(+0f, +0f));
+			e.Data.Hitbox = default;
+			e.Data.Movement = (0.0f, 0.80f);
+
+			if (!Main.dedServ)
+			{
+				e.Data.Sounds =
+				[
+					(0, new("Terraria/Sounds/Zombie_", [88, 89, 90, 91]) {
+						MaxInstances = 2,
+						Volume = 0.3f,
+						Pitch = +0.1f,
+						PitchVariance = 0.15f,
+					}),
+					(20, new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/CryoStalkerCast") {
+						MaxInstances = 2,
+						Volume = 0.3f,
+						Pitch = -0f,
+						PitchVariance = 0.15f,
+					}),
+				];
+			}
+		});
+		NPC.TryEnableComponent<NPCTeleports>(e =>
+		{
+			// General
+			e.Data.Movement = TeleportType.Interpolated;
+			e.Data.MaxCooldown = 60;
+			e.Data.Disappear = (0, 12);
+			e.Data.Reappear = (42, 54);
+			e.Data.Invulnerability = (0, 45);
+			e.Data.CooldownDamage = (0f, 0);
+			e.Data.Velocity = (new(1f, -1f), new(1f, -2f));
+			e.Data.LightColor = Color.IndianRed.ToVector3();
+			e.Data.DisappearSound = (0, SoundID.Shimmer1 with { Pitch = -0.4f, PitchVariance = 0.1f });
+			e.Data.ReappearSound = (41, SoundID.DD2_DarkMageAttack with { Pitch = -0.8f, PitchVariance = 0.1f });
+			// Triggers
+			e.Data.TriggerAtDistance = (400f, float.PositiveInfinity);
+				// e.Data.TriggerAtDistance = (0f, 64f);
+			// Placement
+			e.Data.PlaceOriginAtTarget = false;
+			// e.Data.RequireDifferentDirection = true;
+			e.Data.RequireReachablePoint = true;
+			e.Data.RequireLineOfSightOnExit = true;
+			e.Data.RequiredTargetDistance = (250f, 350f);
+			e.Data.BasePlacement.Area = new Rectangle() with { Width = 64, Height = 48 };
+			e.Data.BasePlacement.OnGround = false;
+			e.Data.BasePlacement.MinDistanceFromPlayers = 250f;
+		});
+		NPC.TryEnableComponent<NPCFootsteps>(e =>
+		{
+			e.Data.Frames = new() { { "walk", [0, 3] } };
+			e.Data.StepSound = new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Footsteps/MonsterStomp", 3)
+			{
+				Volume = 0.06f,
+				Pitch = 0.8f,
+				PitchVariance = 0.2f,
+				MaxInstances = 8,
+			};
+		});
+		NPC.TryEnableComponent<NPCVoice>(e =>
+		{
+			e.Data.PainSound = (3, SoundID.NPCHit56 with { Pitch = 0f, PitchVariance = 0.5f, Identifier = "ShamanHit" });
+		});
+		NPC.TryEnableComponent<NPCHitEffects>(c =>
+		{
+			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 1));
+
+			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatSmall)}", 3, NPCHitEffects.OnDeath));
+			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 2, NPCHitEffects.OnDeath));
+			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatLarge)}", 1, NPCHitEffects.OnDeath));
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreHead", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+00, -16), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreChest", 1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+00, +00), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreLeg", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+16, -16), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreLeg", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+16, +16), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreStaff1", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(-16, -32), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreStaff2", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+00, -16), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreStaff3", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+16, +00), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreCloth1", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+16, +00), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreCloth2", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+16, +00), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatSmall)}", 3, NPCHitEffects.OnDeath));
+			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 2, NPCHitEffects.OnDeath));
+			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatLarge)}", 1, NPCHitEffects.OnDeath));
+		});
+	}
+
+	public override void AI()
+	{
+		Context ctx = new(NPC);
+
+		const int flightAI = NPCAIStyleID.Bat;
+		NPC.aiStyle = (((int)FlightCounter / 900) % 2 == 0) ? flightAI : -1;
+		NPC.noGravity = NPC.aiStyle == flightAI;
+		FlightCounter++;
+
+		ctx.Animations.Advance();
+		ctx.Targeting.ManualUpdate(new(NPC));
+		ctx.Teleports.ManualUpdate(new(NPC));
+		ctx.Attacking.ManualUpdate(new(NPC));
+		ctx.Movement.ManualUpdate(new(NPC));
+		ctx.Animations.Set(PickAnimation(in ctx));
+	
+		// Shoot projectiles during the attack.
+		bool atkActive = ctx.Attacking.Active;
+		int atkProg = ctx.Attacking.Data.Progress;
+		int atkBase = ctx.Attacking.Data.Dash.Start;
+		for (int i = 0; i < (atkActive ? 6 : 0); i++)
+		{
+			if (atkProg != atkBase + (i * 5)) { continue; }
+
+			if (!Main.dedServ)
+			{
+				SoundEngine.PlaySound(SoundID.Item92 with { Volume = 0.70f, MaxInstances = 5, Pitch = -0.1f, PitchVariance = 0.5f }, ctx.Center);
+			}
+
+			if (Main.netMode != NetmodeID.MultiplayerClient)
+			{
+				int projType = ModContent.ProjectileType<FallenShamanRocket>();
+				Vector2 position = NPC.Center + new Vector2(0f, -48f);
+				// Move out of solid tiles.
+				for (Point16 xy = position.ToTileCoordinates16(); xy.Y < 0 || WorldUtilities.SolidTile(xy.X, xy.Y);)
+				{
+					position.Y += 8f;
+					xy = position.ToTileCoordinates16();
+				}
+				
+				float angle = ctx.Targeting.GetTargetCenter(NPC).AngleFrom(position) + (Main.rand.NextFloatDirection() * MathHelper.ToRadians(40f));
+				Vector2 velocity = angle.ToRotationVector2() * 1f;
+				Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), position, velocity, projType, NPC.defDamage, 1f);
+			}
+		}
+
+		if (!Main.dedServ)
+		{
+			Lighting.AddLight(NPC.Top, Color.Red.ToVector3() * 0.5f);
+		}
+	}
+
+	private SpriteAnimation? PickAnimation(in Context ctx)
+	{
+		const float MinWalkSpeed = 0.5f;
+
+		Vector2 vel = NPC.position - NPC.oldPosition;
+
+		return ctx.Animations.Current switch
+		{
+			_ when ctx.Attacking.Active => animAttack with { Speed = 7f },
+			_ when ctx.Teleports.Active => ctx.Teleports.Data.Progress <= ctx.Teleports.Data.Reappear.Start ? animVanish with { Speed = 6f } : animAppear,
+			_ when vel.Y < 0f => animJump,
+			_ when vel.Y > 0f => animFall,
+			_ when vel.Y == 0f && Math.Abs(vel.X) >= MinWalkSpeed => animWalk with { Speed = vel.X * animWalk.Speed * 4f * NPC.spriteDirection },
+			_ when vel.Y == 0f && Math.Abs(vel.X) <= MinWalkSpeed => animIdle with { Speed = 6f },
+			_ => null,
+		};
+	}
+}
+

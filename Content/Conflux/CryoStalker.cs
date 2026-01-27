@@ -108,8 +108,8 @@ internal sealed class CryoStalker : ModNPC
 	public override void Load()
 	{
 		//TODO: Add own gores.
-		GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, $"{Mod.Name}/Assets/Conflux/FallenShaman_GoreCloth1");
-		GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, $"{Mod.Name}/Assets/Conflux/FallenShaman_GoreCloth2");
+		// GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, $"{Mod.Name}/Assets/Conflux/FallenShaman_GoreCloth1");
+		// GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, $"{Mod.Name}/Assets/Conflux/FallenShaman_GoreCloth2");
 	}
 
 	public override void SetStaticDefaults()

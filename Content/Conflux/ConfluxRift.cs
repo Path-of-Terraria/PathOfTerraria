@@ -528,14 +528,13 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile
 		{
 			ConfluxRiftKind.Infernal => [
 				"Content/Encounters/Squads/InfernalRift",
-				"Content/Encounters/Squads/BruiserBrothers",
 			],
 			ConfluxRiftKind.Glacial => [
 				"Content/Encounters/Squads/GlacialRift",
 			],
 			ConfluxRiftKind.Celestial => [
 				"Content/Encounters/Squads/InfernalRift",
-				"Content/Encounters/Squads/BruiserBrothers",
+				"Content/Encounters/Squads/GlacialRift",
 			],
 			_ => throw new NotImplementedException(),
 		};
