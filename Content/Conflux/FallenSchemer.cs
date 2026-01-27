@@ -85,7 +85,7 @@ internal sealed class FallenSchemer : ModNPC
 			e.Data.NoGravityLength = 15;
 			e.Data.InitiationRange = new(140f, 250f);
 			e.Data.Dash = (18, 33, new(15f, 10f));
-			e.Data.Damage = (18, 33, DamageInstance.EnemyAttackFilterWithInfighting);
+			e.Data.Damage = (18, 33, DamageInstance.EnemyAttackFilter);
 			e.Data.Hitbox = (new(112, 112), new(48f, 32f), new(12f, 2f));
 			e.Data.Movement = (0.4f, 0.9f);
 
@@ -106,7 +106,7 @@ internal sealed class FallenSchemer : ModNPC
 			e.Data.Disappear = (0, 12);
 			e.Data.Reappear = (42, 54);
 			e.Data.Invulnerability = (0, 45);
-			e.Data.CooldownDamage = (0f, 0);
+			e.Data.CooldownDamage = (1f, 5);
 			e.Data.Velocity = (new(2f, -2f), new(2f, -5f));
 			e.Data.TurnInvisible = true;
 			e.Data.DisableGravity = true;
@@ -118,8 +118,9 @@ internal sealed class FallenSchemer : ModNPC
 			// Placement
 			e.Data.PlaceOriginAtTarget = true;
 			e.Data.RequireDifferentDirection = true;
-			e.Data.RequiredTargetDistance = (+32f, +64f);
-			e.Data.BasePlacement.Area = new Rectangle() with { Width = 10, Height = 6 };
+			e.Data.RequiredTargetDistance = (+8f, +64f);
+			e.Data.BasePlacement.Area = new Rectangle() with { Width = 16, Height = 8 };
+			e.Data.BasePlacement.MinDistanceFromPlayers = 0f;
 		});
 		NPC.TryEnableComponent<NPCFootsteps>(e =>
 		{
