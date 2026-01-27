@@ -156,6 +156,11 @@ internal sealed class FallenTyrant : ModNPC
 			}
 		}
 	}
+	public override void OnKill()
+	{
+		// Spawn soul.
+		Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, default, ModContent.ProjectileType<FallenSoul>(), 0, 0f, ai0: Type);
+	}
 
 	private SpriteAnimation? PickAnimation(in Context ctx)
 	{

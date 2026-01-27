@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.AI;
+﻿using System.Runtime.CompilerServices;
+using PathOfTerraria.Common.AI;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.World.Utilities;
@@ -20,8 +21,6 @@ internal sealed class FallenShamanRocket : ModProjectile
 {
 	private static Asset<Texture2D>? glowmask;
 
-	public ref float Activation => ref Projectile.ai[0];
-
 	public override void SetStaticDefaults()
 	{
 		Main.projFrames[Type] = 2;
@@ -30,7 +29,7 @@ internal sealed class FallenShamanRocket : ModProjectile
 	{
 		Projectile.damage = 1;
 		Projectile.Size = new(16);
-		//Projectile.timeLeft = 300;
+		Projectile.timeLeft = 300;
 		Projectile.hostile = true;
 		Projectile.friendly = false;
 		Projectile.aiStyle = -1;
@@ -43,7 +42,7 @@ internal sealed class FallenShamanRocket : ModProjectile
 		{
 			Projectile.velocity = Vector2.UnitX * 5f;
 		}
-		
+
 		Vector2 center = Projectile.Center;
 		(Player? closestPlayer, float closestSqrDst) = (null, float.PositiveInfinity);
 		foreach (Player player in Main.ActivePlayers)
@@ -104,7 +103,7 @@ internal sealed class FallenShamanRocket : ModProjectile
 		SpriteFrame spriteFrame = new(1, (byte)Main.projFrames[Type]) { PaddingX = 0, PaddingY = 0 };
 		Rectangle frame = spriteFrame.With(0, (byte)Projectile.frame).GetSourceRectangle(texture);
 		Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, frame, Color.White, Projectile.rotation, frame.Size() * 0.5f, Projectile.scale, 0, 0f);
-		
+
 		if ((glowmask ??= ModContent.Request<Texture2D>($"{Texture}_Glowmask")) is { IsLoaded: true, Value: { } glowTexture })
 		{
 			Main.EntitySpriteDraw(glowTexture, Projectile.Center - Main.screenPosition, frame, Color.White, Projectile.rotation, frame.Size() * 0.5f, Projectile.scale, 0, 0f);
@@ -117,6 +116,10 @@ internal sealed class FallenShamanRocket : ModProjectile
 /// <summary> Necromancer miniboss that supports its army of demons. </summary>
 internal sealed class FallenShaman : ModNPC
 {
+	public enum Flag : byte
+	{
+		Resurrecting = 1 << 0,
+	}
 	private readonly struct Context(NPC npc)
 	{
 		public Vector2 Center { get; } = npc.Center;
@@ -136,7 +139,8 @@ internal sealed class FallenShaman : ModNPC
 	private static readonly SpriteAnimation animVanish = new() { Id = "vanish", Frames = [7, 8, 9, 10, 11], Speed = 20f, Loop = false };
 	private static readonly SpriteAnimation animAppear = new() { Id = "appear", Frames = [11, 10, 9, 8, 7], Speed = 20f, Loop = false };
 
-	public ref float FlightCounter => ref NPC.ai[3];
+	// public ref float FlightCounter => ref NPC.ai[3];
+	public ref Flag Flags => ref Unsafe.As<float, Flag>(ref NPC.ai[2]);
 
 	public override void Load()
 	{
@@ -204,12 +208,6 @@ internal sealed class FallenShaman : ModNPC
 			{
 				e.Data.Sounds =
 				[
-					(0, new("Terraria/Sounds/Zombie_", [88, 89, 90, 91]) {
-						MaxInstances = 2,
-						Volume = 0.3f,
-						Pitch = +0.1f,
-						PitchVariance = 0.15f,
-					}),
 					(20, new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/CryoStalkerCast") {
 						MaxInstances = 2,
 						Volume = 0.3f,
@@ -234,7 +232,7 @@ internal sealed class FallenShaman : ModNPC
 			e.Data.ReappearSound = (41, SoundID.DD2_DarkMageAttack with { Pitch = -0.8f, PitchVariance = 0.1f });
 			// Triggers
 			e.Data.TriggerAtDistance = (400f, float.PositiveInfinity);
-				// e.Data.TriggerAtDistance = (0f, 64f);
+			// e.Data.TriggerAtDistance = (0f, 64f);
 			// Placement
 			e.Data.PlaceOriginAtTarget = false;
 			// e.Data.RequireDifferentDirection = true;
@@ -286,47 +284,128 @@ internal sealed class FallenShaman : ModNPC
 	{
 		Context ctx = new(NPC);
 
-		const int flightAI = NPCAIStyleID.Bat;
-		NPC.aiStyle = (((int)FlightCounter / 900) % 2 == 0) ? flightAI : -1;
-		NPC.noGravity = NPC.aiStyle == flightAI;
-		FlightCounter++;
-
 		ctx.Animations.Advance();
 		ctx.Targeting.ManualUpdate(new(NPC));
 		ctx.Teleports.ManualUpdate(new(NPC));
-		ctx.Attacking.ManualUpdate(new(NPC));
+		NPCAttacking.Result atkResult = ctx.Attacking.ManualUpdate(new(NPC));
 		ctx.Movement.ManualUpdate(new(NPC));
 		ctx.Animations.Set(PickAnimation(in ctx));
-	
-		// Shoot projectiles during the attack.
+
 		bool atkActive = ctx.Attacking.Active;
 		int atkProg = ctx.Attacking.Data.Progress;
 		int atkBase = ctx.Attacking.Data.Dash.Start;
-		for (int i = 0; i < (atkActive ? 6 : 0); i++)
+		(FallenSoul? soul, float soulSqrDst) = (null, float.PositiveInfinity);
+
+		// Look for a soul to respawn.
+		if (!atkActive || Flags.HasFlag(Flag.Resurrecting))
 		{
+			const float respawnRange = 300f;
+			const float respawnRangeSqr = respawnRange * respawnRange;
+
+			foreach (Projectile proj in Main.ActiveProjectiles)
+			{
+				if (proj.ModProjectile is not FallenSoul thisSoul) { continue; }
+				float sqrDst = proj.DistanceSQ(ctx.Center);
+				if (sqrDst > respawnRangeSqr) { continue; }
+
+				if (sqrDst < soulSqrDst)
+				{
+					(soul, soulSqrDst) = (thisSoul, sqrDst);
+				}
+			}
+		}
+
+		// Decide whether the next casting animation will be an attack or a resurrection.
+		if (!atkActive && Flags.HasFlag(Flag.Resurrecting) is bool alreadyIs && (soul != null) is bool shouldBe && shouldBe != alreadyIs)
+		{
+			Flags = shouldBe ? (Flags | Flag.Resurrecting) : (Flags & ~Flag.Resurrecting);
+			NPC.netUpdate = true;
+		}
+
+		// Resurrection.
+		if (soul != null && atkActive && atkProg <= atkBase)
+		{
+			Vector2 projCenter = soul.Projectile.Center;
+
+			// Spawn effects.
+			for (int i = 0; i < ((atkProg >= atkBase - 30) ? (atkProg == atkBase ? 10 : 1) : 0); i++)
+			{
+				Vector2 basePos = projCenter - new Vector2(16f, 16f);
+				Vector2 gorePos = basePos + Main.rand.NextVector2Circular(32f, 32f);
+				Vector2 goreVel = gorePos.DirectionTo(basePos) * 5f;
+				Gore.NewGore(null, gorePos, goreVel, ModContent.GoreType<BloodSplatMedium>());
+			}
+			if (atkResult.Initiated)
+			{
+				SoundEngine.PlaySound(new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/FallenShamanResurrect", 2) {
+					MaxInstances = 2,
+					Volume = 0.5f,
+					PitchVariance = 0.15f,
+				}, ctx.Center);
+			}
+			if (atkProg == atkBase - 15)
+			{
+				SoundEngine.PlaySound(new($"{nameof(PathOfTerraria)}/Assets/Sounds/Enemies/ResurrectBloody", 3)
+				{
+					Volume = 0.75f,
+					MaxInstances = 3,
+				}, projCenter);
+			}
+
+			// Respawn.
+			if (atkProg == atkBase && soul.Respawn())
+			{
+				// Reset the flight cooldown because we did something good (evil).
+				// FlightCounter = 0;
+				// NPC.netUpdate = true;
+			}
+		}
+
+		// Shoot projectiles during non-respawn attacks.
+		for (int i = 0; i < (atkActive && !Flags.HasFlag(Flag.Resurrecting) ? 6 : 0); i++)
+		{
+			if (atkResult.Initiated)
+			{
+				SoundEngine.PlaySound(new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/FallenShamanAttack") {
+					MaxInstances = 2,
+					Volume = 0.5f,
+					PitchVariance = 0.15f,
+				}, ctx.Center);
+			}
+			
 			if (atkProg != atkBase + (i * 5)) { continue; }
 
-			if (!Main.dedServ)
-			{
-				SoundEngine.PlaySound(SoundID.Item92 with { Volume = 0.70f, MaxInstances = 5, Pitch = -0.1f, PitchVariance = 0.5f }, ctx.Center);
-			}
+			Vector2 targetCenter = ctx.Targeting.GetTargetCenter(NPC);
+			// Self-knockback.
+			NPC.velocity = MovementUtils.DirAccel(NPC.velocity, -targetCenter.AngleFrom(NPC.Center).ToRotationVector2(), 3f, 1f);
 
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				int projType = ModContent.ProjectileType<FallenShamanRocket>();
-				Vector2 position = NPC.Center + new Vector2(0f, -48f);
 				// Move out of solid tiles.
+				Vector2 position = NPC.Center + new Vector2(0f, -48f);
 				for (Point16 xy = position.ToTileCoordinates16(); xy.Y < 0 || WorldUtilities.SolidTile(xy.X, xy.Y);)
 				{
 					position.Y += 8f;
 					xy = position.ToTileCoordinates16();
 				}
-				
-				float angle = ctx.Targeting.GetTargetCenter(NPC).AngleFrom(position) + (Main.rand.NextFloatDirection() * MathHelper.ToRadians(40f));
-				Vector2 velocity = angle.ToRotationVector2() * 1f;
-				Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), position, velocity, projType, NPC.defDamage, 1f);
+				float projAngle = targetCenter.AngleFrom(position) + (Main.rand.NextFloatDirection() * MathHelper.ToRadians(40f));
+				Vector2 projVel = projAngle.ToRotationVector2() * 0.5f;
+				Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), position, projVel, projType, NPC.defDamage, 1f);
+			}
+
+			if (!Main.dedServ)
+			{
+				SoundEngine.PlaySound(SoundID.Item92 with { Volume = 0.70f, MaxInstances = 5, Pitch = -0.1f, PitchVariance = 0.5f }, ctx.Center);
 			}
 		}
+
+		// Handle flight.
+		const int flightAI = NPCAIStyleID.Bat;
+		bool isFlying = soul == null; // && (((int)FlightCounter / 900) % 2 == 0);
+		NPC.aiStyle = isFlying ? flightAI : -1;
+		NPC.noGravity = isFlying;
+		// FlightCounter = isFlying ? (FlightCounter + 1) : FlightCounter;
 
 		if (!Main.dedServ)
 		{

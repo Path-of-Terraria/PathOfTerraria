@@ -168,6 +168,11 @@ internal sealed class FallenSchemer : ModNPC
 		ctx.Movement.ManualUpdate(new(NPC));
 		ctx.Animations.Set(PickAnimation(in ctx));
 	}
+	public override void OnKill()
+	{
+		// Spawn soul.
+		Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, default, ModContent.ProjectileType<FallenSoul>(), 0, 0f, ai0: Type);
+	}
 
 	private SpriteAnimation? PickAnimation(in Context ctx)
 	{
