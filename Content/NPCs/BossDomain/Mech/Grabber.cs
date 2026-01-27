@@ -1,6 +1,7 @@
 ﻿using NPCUtils;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
+using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Content.Scenes;
 using ReLogic.Content;
@@ -12,7 +13,7 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.NPCs.BossDomain.Mech;
 
-internal class Grabber : ModNPC
+internal class Grabber : ModNPC, IGrabberNPC
 {
 	private static Asset<Texture2D> Glow = null;
 	private static Asset<Texture2D> Cord = null;
@@ -37,6 +38,23 @@ internal class Grabber : ModNPC
 	}
 
 	private ref float RegrabTimer => ref NPC.localAI[0];
+
+	void IGrabberNPC.OnGrab(int playerGrabbed)
+	{
+		ShakeTimer = 0;
+		HoldingPlayer = playerGrabbed;
+	}
+
+	void IGrabberNPC.UpdateGrabbing(int playerGrabbed, float attemptedPlayerMoveMagnitude, bool grappling)
+	{
+		ShakeTimer += attemptedPlayerMoveMagnitude / (grappling ? 40 : 1);
+		NPC.netUpdate = true;
+	}
+
+	Vector2 IGrabberNPC.GetGrabOffset(int playerGrabbed)
+	{
+		return (NPC.rotation - MathHelper.PiOver2).ToRotationVector2() * 20;
+	}
 
 	public override void SetStaticDefaults()
 	{
@@ -123,7 +141,7 @@ internal class Grabber : ModNPC
 				ShakeTimer = -1;
 				RegrabTimer = 180;
 
-				captive.GetModPlayer<GrabberPlayer>().BeingGrabbed = -1;
+				captive.GetModPlayer<GrabbedPlayer>().BeingGrabbed = -1;
 
 				NPC.netUpdate = true;
 			}
@@ -166,7 +184,7 @@ internal class Grabber : ModNPC
 
 			NPC.netUpdate = true;
 
-			target.GetModPlayer<GrabberPlayer>().BeingGrabbed = NPC.whoAmI;
+			target.GetModPlayer<GrabbedPlayer>().BeingGrabbed = NPC.whoAmI;
 
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 			{
@@ -313,60 +331,5 @@ internal class Grabber : ModNPC
 
 		Vector2 position = NPC.Center - screenPos;
 		spriteBatch.Draw(Glow.Value, position, NPC.frame, Color.White, NPC.rotation, NPC.frame.Size() / new Vector2(2, 1), 1f, SpriteEffects.None, 0);
-	}
-}
-
-public class GrabberPlayer : ModPlayer
-{
-	public int BeingGrabbed = -1;
-
-	public override void Load()
-	{
-		On_Player.GrappleMovement += ResetThePlayerToGrabberAgain;
-	}
-
-	private void ResetThePlayerToGrabberAgain(On_Player.orig_GrappleMovement orig, Player self)
-	{
-		orig(self);
-
-		self.GetModPlayer<GrabberPlayer>().UpdateGrabbed();
-	}
-
-	public void UpdateGrabbed()
-	{
-		if (Player.dead)
-		{
-			BeingGrabbed = -1;
-		}
-
-		if (BeingGrabbed >= 0)
-		{
-			NPC grabber = Main.npc[BeingGrabbed];
-
-			if (!grabber.active || grabber.type != ModContent.NPCType<Grabber>())
-			{
-				BeingGrabbed = -1;
-				return;
-			}
-
-			Player.Center = grabber.Center + (grabber.rotation - MathHelper.PiOver2).ToRotationVector2() * 20;
-
-			float speed = Player.velocity.Length() * 2;
-
-			if (Player.grappling[0] > -1)
-			{
-				speed /= 20f;
-			}
-
-			grabber.ai[2] += speed;
-			grabber.netUpdate = true;
-			Player.velocity = Vector2.Zero;
-		}
-	}
-
-	public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genDust, ref PlayerDeathReason damageSource)
-	{
-		BeingGrabbed = -1;
-		return true;
 	}
 }

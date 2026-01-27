@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Content.NPCs.BossDomain.Mech;
+﻿using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Content.NPCs.BossDomain.Mech;
 using System.IO;
 using Terraria.ID;
 
@@ -19,10 +20,13 @@ internal class SyncPlayerGrabbed : Handler
 	internal override void Receive(BinaryReader reader, byte sender)
 	{
 		short npc = reader.ReadInt16();
-		Main.player[sender].GetModPlayer<GrabberPlayer>().BeingGrabbed = npc;
+		Main.player[sender].GetModPlayer<GrabbedPlayer>().BeingGrabbed = npc;
 		NPC grabber = Main.npc[npc];
-		grabber.ai[2] = 0;
-		grabber.ai[3] = sender;
+
+		if (grabber.ModNPC is IGrabberNPC grab)
+		{
+			grab.OnGrab(sender);
+		}
 
 		if (Main.netMode == NetmodeID.Server)
 		{

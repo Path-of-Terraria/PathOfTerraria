@@ -2,16 +2,12 @@
 using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
-using PathOfTerraria.Common.Subworlds;
-using PathOfTerraria.Common.Systems.BossTrackingSystems;
-using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Content.Items.Gear.Amulets.AddedLife;
 using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
 using PathOfTerraria.Content.Items.Placeable;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.Maps.Forest;
 using ReLogic.Content;
-using SubworldLibrary;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;

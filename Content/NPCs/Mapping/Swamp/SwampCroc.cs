@@ -75,11 +75,11 @@ internal class SwampCroc : ModNPC
 			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatSmall)}", 2, NPCHitEffects.OnDeath));
 			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 1, NPCHitEffects.OnDeath));
 			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatLarge)}", 1, NPCHitEffects.OnDeath));
-			c.AddGore(new($"{PoTMod.ModName}/{Name}_0", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(+12, +20) - NPC.Size / 2f, new(3, 3)), FlipWithDirection = true });
-			c.AddGore(new($"{PoTMod.ModName}/{Name}_1", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(+116, +14) - NPC.Size / 2f, new(3, 3)), FlipWithDirection = true });
-			c.AddGore(new($"{PoTMod.ModName}/{Name}_2", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(+70, +32) - NPC.Size / 2f, new(3, 3)), FlipWithDirection = true });
-			c.AddGore(new($"{PoTMod.ModName}/{Name}_3", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(+68, +18) - NPC.Size / 2f, new(12, 3)), FlipWithDirection = true });
-			c.AddGore(new($"{PoTMod.ModName}/{Name}_4", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(+36, +32) - NPC.Size / 2f, new(3, 3)), FlipWithDirection = true });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_0", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(+12, +20), new(3, 3)), FlipWithDirection = false, NoCentering = true });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_1", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(+116, +14), new(3, 3)), FlipWithDirection = false, NoCentering = true });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_2", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(+70, +32), new(3, 3)), FlipWithDirection = false, NoCentering = true });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_3", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(+68, +18), new(12, 3)), FlipWithDirection = false, NoCentering = true });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_4", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(+36, +32), new(3, 3)), FlipWithDirection = false, NoCentering = true });
 			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatSmall)}", 2, NPCHitEffects.OnDeath));
 			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 1, NPCHitEffects.OnDeath));
 			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatLarge)}", 1, NPCHitEffects.OnDeath));
@@ -118,9 +118,9 @@ internal class SwampCroc : ModNPC
 		{
 			NPC.velocity.X *= 0.95f;
 
-			if (Collision.WetCollision(NPC.Left - new Vector2(0, 12), NPC.width, 8))
+			if (Collision.WetCollision(NPC.Left - new Vector2(0, 8), NPC.width, 8))
 			{
-				if (Collision.WetCollision(NPC.Left - new Vector2(0, 20), NPC.width, 8))
+				if (Collision.WetCollision(NPC.Left - new Vector2(0, 16), NPC.width, 8))
 				{
 					NPC.velocity.Y -= 0.07f;
 				}
