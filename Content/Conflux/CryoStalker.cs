@@ -129,7 +129,7 @@ internal sealed class CryoStalker : ModNPC
 		NPC.height = 32;
 		NPC.lifeMax = 500;
 		NPC.defense = 30;
-		NPC.knockBackResist = 0.5f;
+		NPC.knockBackResist = 0.4f;
 		NPC.noGravity = true;
 
 		NPC.HitSound = new($"{nameof(PathOfTerraria)}/Assets/Sounds/HitEffects/BoneHit", 3) { Pitch = +0f, MaxInstances = 5, Volume = 0.8f, PitchVariance = 0.2f };
@@ -153,11 +153,26 @@ internal sealed class CryoStalker : ModNPC
 		});
 		NPC.TryEnableComponent<NPCTeleports>(e =>
 		{
-			e.Data.MaxCooldown = 300;
+			// General
+			e.Data.Movement = TeleportType.Interpolated;
+			e.Data.MaxCooldown = 150;
 			e.Data.Disappear = (0, 12);
 			e.Data.Reappear = (42, 54);
-			e.Data.Invulnerability = (0, 45);
+			e.Data.Invulnerability = (14, 40);
 			e.Data.CooldownDamage = (0f, 0);
+			e.Data.Velocity = (new(0f, 0f), new(0f, 0f));
+			e.Data.TurnInvisible = false;
+			e.Data.DisableGravity = false;
+			e.Data.DisappearSound = (0, SoundID.Item77 with { Identifier = "Disappear", Volume = 0.5f, Pitch = -0.4f, PitchVariance = 0.2f });
+			e.Data.ReappearSound = (40, SoundID.Item77 with { Identifier = "Reappear", Volume = 0.5f, Pitch = +0.4f, PitchVariance = 0.2f });
+			// Triggers
+				// e.Data.TriggerIfEndangered = true;
+			e.Data.TriggerAtDistance = (0f, 192f);
+			// Placement
+			e.Data.RequiredTargetDistance = (350f, 500f);
+			e.Data.RequireLineOfSightOnExit = true;
+			e.Data.BasePlacement.OnGround = false;
+			e.Data.BasePlacement.Area = new Rectangle() with { Width = 64, Height = 32 };
 		});
 		NPC.TryEnableComponent<NPCTargeting>();
 		NPC.TryEnableComponent<NPCAttacking>(e =>
@@ -225,7 +240,7 @@ internal sealed class CryoStalker : ModNPC
 
 		ctx.Animations.Advance();
 		ctx.Targeting.ManualUpdate(new(NPC));
-		//ctx.Teleports.ManualUpdate(new(NPC));
+		ctx.Teleports.ManualUpdate(new(NPC));
 		ctx.Attacking.ManualUpdate(new(NPC));
 		ctx.Movement.ManualUpdate(new(NPC));
 		ctx.Animations.Set(PickAnimation(in ctx));
@@ -241,9 +256,10 @@ internal sealed class CryoStalker : ModNPC
 		}
 
 		// Shoot projectiles during the attack.
+		bool atkActive = ctx.Attacking.Active;
 		int atkProg = ctx.Attacking.Data.Progress;
 		int atkBase = ctx.Attacking.Data.Dash.Start;
-		for (int i = 0; i < (ctx.Attacking.Active ? 3 : 0); i++)
+		for (int i = 0; i < (atkActive ? 3 : 0); i++)
 		{
 			if (atkProg != atkBase + (i * 3)) { continue; }
 
@@ -260,6 +276,13 @@ internal sealed class CryoStalker : ModNPC
 				Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, velocity, projType, NPC.defDamage, 1f);
 			}
 		}
+
+		// if (ctx.Teleports.Active && ctx.Teleports.Data.Progress % 10 == 0)
+		// {
+		// 	int projType = ProjectileID.HappyBomb;
+		// 	Vector2 velocity = new Vector2(0f, -5f);
+		// 	Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, velocity, projType, NPC.defDamage, 1f);
+		// }
 	}
 
 	private SpriteAnimation? PickAnimation(in Context ctx)
@@ -269,7 +292,7 @@ internal sealed class CryoStalker : ModNPC
 		return 0 switch
 		{
 			_ when ctx.Attacking.Active && ctx.Attacking.Data.Progress <= ctx.Attacking.Data.Damage.Start => animCast with { Speed = 25f },
-			_ when ctx.Teleports.Active => ctx.Teleports.Data.Progress <= ctx.Teleports.Data.Reappear.Start ? animVanish : animAppear,
+			_ when ctx.Teleports.Active => ctx.Teleports.Data.Progress <= ctx.Teleports.Data.Reappear.Start ? animVanish with { Speed = 10f } : animAppear,
 			_ => animIdle with { Speed = NPC.velocity.LengthSquared() },
 		};
 	}

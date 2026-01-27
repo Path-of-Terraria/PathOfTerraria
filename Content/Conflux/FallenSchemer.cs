@@ -101,11 +101,25 @@ internal sealed class FallenSchemer : ModNPC
 		});
 		NPC.TryEnableComponent<NPCTeleports>(e =>
 		{
+			// General
 			e.Data.MaxCooldown = 60;
 			e.Data.Disappear = (0, 12);
 			e.Data.Reappear = (42, 54);
 			e.Data.Invulnerability = (0, 45);
 			e.Data.CooldownDamage = (0f, 0);
+			e.Data.Velocity = (new(2f, -2f), new(2f, -5f));
+			e.Data.TurnInvisible = true;
+			e.Data.DisableGravity = true;
+			e.Data.DisappearSound = (0, SoundID.Shimmer1 with { Pitch = 0.4f, PitchVariance = 0.1f });
+			e.Data.ReappearSound = (41, SoundID.DD2_DarkMageAttack with { Pitch = -0.2f, PitchVariance = 0.1f });
+			// Triggers
+			e.Data.TriggerIfEndangered = true;
+			e.Data.TriggerAtDistance = (256f, float.PositiveInfinity);
+			// Placement
+			e.Data.PlaceOriginAtTarget = true;
+			e.Data.RequireDifferentDirection = true;
+			e.Data.RequiredTargetDistance = (+32f, +64f);
+			e.Data.BasePlacement.Area = new Rectangle() with { Width = 10, Height = 6 };
 		});
 		NPC.TryEnableComponent<NPCFootsteps>(e =>
 		{

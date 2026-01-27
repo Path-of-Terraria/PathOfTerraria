@@ -2,10 +2,12 @@
 using PathOfTerraria.Common.Encounters;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.Utilities;
+using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Utilities;
 using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 
@@ -15,20 +17,54 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.AI;
 
+internal enum TeleportType
+{
+	None,
+	Immediate,
+	Interpolated,
+}
+
 internal sealed class TeleportData()
 {
 	// Config
-	public float FarAwayDistance;
+	public ushort MaxCooldown = 150;
+	public bool TurnInvisible;
+	public bool DisableGravity;
+	public TeleportType Movement = TeleportType.Immediate;
 	public (ushort Start, ushort End) Disappear = (0, 12);
 	public (ushort Start, ushort End) Reappear = (42, 54);
 	public (ushort Start, ushort End) Invulnerability = (0, 45);
-	public ushort MaxCooldown = 150;
 	public (float Factor, ushort FlatBonus) CooldownDamage = (0f, 0);
+	public (Vector2? Disappear, Vector2? Reappear) Velocity;
+	public (ushort Tick, SoundStyle Style)? DisappearSound = (0, SoundID.Shimmer1);
+	public (ushort Tick, SoundStyle Style)? ReappearSound = (0, SoundID.DD2_DarkMageAttack);
+	// Triggers
+	public bool TriggerIfEndangered;
+	public (float Min, float Max)? TriggerAtDistance;
+	// Placement
+	public bool PlaceOriginAtTarget;
+	public bool RequireReachablePoint;
+	public bool? RequireDifferentDirection;
+	public bool? RequirePlacementBehind;
+	public bool? RequireLineOfSightOnTrigger;
+	public bool? RequireLineOfSightOnExit;
+	public (float Min, float Max)? RequiredTargetDistance;
+	public (float Min, float Max)? RequiredTargetDistanceDiff;
+	public SpawnPlacement BasePlacement = new()
+	{
+		Area = new(default, default, 64, 64),
+		CollisionSize = default,
+		MinDistanceFromPlayers = 32f,
+		MinDistanceFromEnemies = 64f,
+		SkippedLiquids = LiquidMask.All,
+		OnGround = true,
+	};
 
 	// State
 	public int LastSeenHealth;
 	public Vector2 TeleportSource;
 	public Vector2 TeleportTarget;
+	public Vector2 StoredVelocity;
 	public short Progress = -1;
 	public Counter<ushort> Cooldown;
 	public bool IsBusy;
@@ -43,7 +79,7 @@ internal sealed class NPCTeleports : NPCComponent<TeleportData>
 		public Vector2 Center = npc.Center;
 		public NPCMovement? Movement = npc.TryGetGlobalNPC(out NPCMovement c) ? c : null;
 		public Vector2 TargetCenter = npc.TryGetGlobalNPC(out NPCTargeting c) ? c.GetTargetCenter(npc) : npc.GetTargetData().Center;
-		public Rectangle TargetRect = npc.GetTargetData().Hitbox;
+		public NPCAimedTarget Target = npc.GetTargetData();
 		//TODO: Create an action counter/tracking/interaction system to remove this type of coupling.
 		public NPCAttacking? Attacking = npc.TryGetGlobalNPC(out NPCAttacking c) ? c : null;
 	}
@@ -61,7 +97,12 @@ internal sealed class NPCTeleports : NPCComponent<TeleportData>
 
 		writer.Write((short)Data.Progress);
 		writer.Write((ushort)Data.Cooldown.Value);
-		writer.WriteVector2(Data.TeleportTarget);
+		if (Active)
+		{
+			writer.WriteVector2(Data.TeleportSource);
+			writer.WriteVector2(Data.TeleportTarget);
+			writer.WriteVector2(Data.StoredVelocity);
+		}
 	}
 	public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader reader)
 	{
@@ -69,34 +110,64 @@ internal sealed class NPCTeleports : NPCComponent<TeleportData>
 
 		Data.Progress = reader.ReadInt16();
 		Data.Cooldown.Value = reader.ReadUInt16();
-		Data.TeleportTarget = reader.ReadVector2();
+		if (Active)
+		{
+			Data.StoredVelocity = reader.ReadVector2();
+			Data.TeleportTarget = reader.ReadVector2();
+			Data.StoredVelocity = reader.ReadVector2();
+		}
 	}
 
-	public bool TryStarting(in Ctx ctx)
+	private bool StartBehaviors(in Ctx ctx)
 	{
 		NPC npc = ctx.NPC;
 
-		if (Main.netMode == NetmodeID.MultiplayerClient) { return false; }
-		if (Active || Data.IsBusy || Data.Cooldown.Value > 0) { return false; }
-		if (ctx.Attacking?.Active == true) { return false; }
+		bool HasReason(in Ctx ctx)
+		{
+			// Trigger at specific distances from the target.
+			if (Data.TriggerAtDistance is { } range
+			&& npc.HasValidTarget
+			&& ctx.Center.DistanceSQ(ctx.TargetCenter) is float sqrDst
+			&& sqrDst >= range.Min * range.Min && sqrDst <= range.Max * range.Max)
+			{
+				return true;
+			}
 
-		bool farAway = npc.HasValidTarget && ctx.Center.DistanceSQ(ctx.TargetCenter) >= Data.FarAwayDistance * Data.FarAwayDistance;
-		bool targetMayBeAttacking = npc.HasValidTarget
-			&& npc.GetTargetData().Type == Terraria.Enums.NPCTargetType.Player
+			// Trigger if our target may be initiating an attack on us.
+			if (Data.TriggerIfEndangered
+			&& npc.HasValidTarget && npc.GetTargetData().Type == Terraria.Enums.NPCTargetType.Player
 			&& Main.player[npc.target] is { } p && p.itemAnimation > 0
-			&& p.direction == MathF.Sign(ctx.Center.X - p.Center.X);
+			&& p.direction == MathF.Sign(ctx.Center.X - p.Center.X))
+			{
+				return true;
+			}
 
-		if ((!farAway && !targetMayBeAttacking) || !TryPickPosition(in ctx)) { return false; }
+			return false;
+		}
 
-		Start(in ctx);
+		if (!HasReason(in ctx)) { return false; }
 
-		return true;
+		// Check line of sight if needed.
+		if (Data.RequireLineOfSightOnTrigger is bool req
+		&& req != Collision.CanHitLine(npc.position, npc.width, npc.height, ctx.Target.Position, ctx.Target.Width, ctx.Target.Height))
+		{
+			return false;
+		}
+
+		return TryStarting(in ctx);
 	}
 
-	public void Start(in Ctx ctx)
+	public bool TryStarting(in Ctx ctx, bool bypassCooldowns = false)
 	{
+		if (Main.netMode == NetmodeID.MultiplayerClient) { return false; }
+		if (Active) { return false; }
+		if (!bypassCooldowns && (ctx.Attacking?.Active == true || Data.IsBusy || Data.Cooldown.Value > 0)) { return false; }
+		if (!TryPickPosition(in ctx)) { return false; }
+
 		Data.Progress = 0;
 		ctx.NPC.netUpdate = true;
+
+		return true;
 	}
 
 	public Result ManualUpdate(in Ctx ctx)
@@ -123,7 +194,7 @@ internal sealed class NPCTeleports : NPCComponent<TeleportData>
 		}
 
 		// Try initiating teleportation.
-		if (TryStarting(in ctx))
+		if (StartBehaviors(in ctx))
 		{
 			result.Initiated = true;
 		}
@@ -149,10 +220,15 @@ internal sealed class NPCTeleports : NPCComponent<TeleportData>
 
 			if (Data.Progress == 0)
 			{
-				npc.velocity.X = npc.direction * 2f;
-				npc.velocity.Y = -2f;
-				npc.noGravity = true;
+				Data.StoredVelocity = npc.velocity;
+				if (Data.Velocity.Disappear is { } vel) { npc.velocity = vel * new Vector2(npc.direction, 1f); }
+
+				npc.noGravity = Data.DisableGravity | npc.noGravity;
 			}
+
+			// Play audio.
+			if (Data.DisappearSound is { } snd1 && Data.Progress == snd1.Tick) { SoundEngine.PlaySound(snd1.Style, npc.Center); }
+			if (Data.ReappearSound is { } snd2 && Data.Progress == snd2.Tick) { SoundEngine.PlaySound(snd2.Style, npc.Center); }
 
 			npc.dontTakeDamage = Data.Progress >= Data.Invulnerability.Start && Data.Progress <= Data.Invulnerability.End;
 
@@ -162,27 +238,42 @@ internal sealed class NPCTeleports : NPCComponent<TeleportData>
 			}
 			else if (Data.Progress == Data.Disappear.End)
 			{
-				SoundEngine.PlaySound(SoundID.Shimmer1 with { Pitch = 0.4f, PitchVariance = 0.1f }, npc.Center);
-
+				npc.alpha = Data.TurnInvisible ? byte.MaxValue : npc.alpha;
 				// Try to find a more up-to-date position.
 				TryPickPosition(in ctx);
 			}
 			else if (Data.Progress == Data.Reappear.Start)
 			{
-				npc.noGravity = false;
-				npc.Center = Data.TeleportTarget;
+				npc.alpha = Data.TurnInvisible ? 0 : npc.alpha;
+				npc.noGravity = Data.DisableGravity ? ContentSamples.NpcsByNetId[npc.type].noGravity : npc.noGravity;
 				npc.spriteDirection = npc.direction = (ctx.Center.X - ctx.TargetCenter.X) > 0f ? 1 : -1;
-				npc.velocity.X = npc.direction * 2f;
-				npc.velocity.Y = -5f;
 
-				SoundEngine.PlaySound(SoundID.DD2_DarkMageAttack with { Pitch = -0.2f, PitchVariance = 0.1f }, npc.Center);
+				if (Data.Movement == TeleportType.Immediate) { npc.Center = Data.TeleportTarget; }
+
+				// Restore or reset velocity.
+				npc.velocity = (Data.Velocity.Reappear is { } vel) ? (vel * new Vector2(npc.direction, 1f)) : Data.StoredVelocity;
+			}
+
+			if (Data.Movement is TeleportType.Interpolated
+			&& Data.Progress >= Data.Disappear.End && Data.Progress <= Data.Reappear.Start)
+			{
+				static float Easing(float x)
+				{
+					return (x < 0.5f) ? (4f * x * x * x) : (1f - MathF.Pow((-2f * x) + 2f, 2f) / 2f);
+				}
+
+				float moveStep = (Data.Progress - Data.Disappear.End) / (float)(Data.Reappear.Start - Data.Disappear.End);
+				if (Data.Progress >= Data.Reappear.Start) { moveStep = 1f; }
+				moveStep = Easing(moveStep);
+				npc.Center = Vector2.Lerp(Data.TeleportSource, Data.TeleportTarget, moveStep);
+				npc.velocity = default;
 			}
 
 			Data.Progress++;
 
 			if (Data.Progress >= Data.Reappear.End)
 			{
-				npc.alpha = 0;
+				result.Ended = true;
 				Data.Cooldown.Set(Data.MaxCooldown);
 				Data.Progress = -1;
 				npc.dontTakeDamage = false;
@@ -196,30 +287,65 @@ internal sealed class NPCTeleports : NPCComponent<TeleportData>
 	{
 		NPC npc = ctx.NPC;
 
-		Point targetPoint = ctx.TargetCenter.ToTileCoordinates();
-		Rectangle targetArea = new Rectangle(targetPoint.X, targetPoint.Y, 0, 0).Inflated(10, 6);
-		var spawn = new SpawnPlacement
+		Vector2 center = ctx.Center;
+		NPCAimedTarget target = ctx.Target;
+		Vector2 targetCenter = ctx.TargetCenter;
+		Point targetPoint = targetCenter.ToTileCoordinates();
+		Func<Point16, bool>? basePredicate = Data.BasePlacement.CustomPredicate;
+
+		bool IsSpawnPointSuitable(Point16 tilePos)
 		{
-			Area = targetArea,
-			CollisionSize = npc.Size.ToPoint(),
-			MinDistanceFromPlayers = 32f,
-			MinDistanceFromEnemies = 64f,
-			SkippedLiquids = LiquidMask.All,
-			OnGround = true,
-		};
+			Vector2 spawnPos = tilePos.ToWorldCoordinates();
 
-		static bool IsSpawnPointSuitable(in Ctx ctx, Vector2 spawnPos)
-		{
-			// Must be significantly closer.
-			if (spawnPos.DistanceSQ(ctx.TargetCenter) > 128 + ctx.Center.DistanceSQ(ctx.TargetCenter)) { return false; }
+			// Check if this is sufficiently close to the target.
+			if (Data.RequiredTargetDistance is { } rtd
+			&& !MathUtils.IntersectsRangeSqr(rtd, spawnPos.DistanceSQ(targetCenter)))
+			{
+				return false;
+			}
 
-			// If in front of the target, then the portal exit should go behind it, or vice-versa.
-			if (Math.Sign(ctx.Center.X - ctx.TargetCenter.X) == Math.Sign(spawnPos.X - ctx.TargetCenter.X)) { return false; }
+			// Check if this is sufficiently closer to the target relative to the previous position.
+			if (Data.RequiredTargetDistanceDiff is { } rtdd
+			&& !MathUtils.IntersectsRangeSqr(rtdd, spawnPos.DistanceSQ(targetCenter) - center.DistanceSQ(targetCenter)))
+			{
+				return false;
+			}
 
-			return true;
+			// Preference for whether to swap the relative direction towards the target.
+			if (Data.RequireDifferentDirection is bool mustSwap
+			&& (Math.Sign(center.X - targetCenter.X) != Math.Sign(spawnPos.X - targetCenter.X)) is bool swapped
+			&& mustSwap != swapped)
+			{
+				return false;
+			}
+
+			// Preference for whether to teleport in front or behind the target.
+			if (Data.RequirePlacementBehind is bool mustBeBehind
+			&& npc.GetTargetEntity() is Entity targetEntity
+			&& (targetEntity.direction != npc.direction) is bool isBehind
+			&& mustBeBehind != isBehind)
+			{
+				return false;
+			}
+
+			if (Data.RequireLineOfSightOnExit is bool req
+			&& req != Collision.CanHitLine(spawnPos, 1, 1, target.Position, target.Width, target.Height))
+			{
+				return false;
+			}
+
+			return basePredicate?.Invoke(tilePos) != false;
 		}
 
-		if (EnemySpawning.TryFindingSpawnPosition(out Vector2 spawnPos, spawn) && IsSpawnPointSuitable(in ctx, spawnPos))
+		SpawnPlacement spawn = Data.BasePlacement with
+		{
+			Area = Data.BasePlacement.Area with { X = targetPoint.X, Y = targetPoint.Y },
+			AreaOrigin = Data.RequireReachablePoint ? targetPoint.ToPoint16() : null,
+			CollisionSize = npc.Size.ToPoint(),
+			CustomPredicate = IsSpawnPointSuitable,
+		};
+
+		if (EnemySpawning.TryFindingSpawnPosition(out Vector2 spawnPos, spawn))
 		{
 			Data.TeleportTarget = spawnPos;
 			npc.netUpdate = true;
