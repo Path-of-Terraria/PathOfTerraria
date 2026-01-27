@@ -144,6 +144,7 @@ internal sealed class CryoStalker : ModNPC
 			e.Data.MaxSpeed = 4f;
 			e.Data.Acceleration = 32f;
 			e.Data.Friction = (8f, 2f);
+			e.Data.Push = new() { RequiredNpcType = Type, ApplyOnlyOnGround = false };
 		});
 		NPC.TryEnableComponent<NPCAnimations>(e =>
 		{

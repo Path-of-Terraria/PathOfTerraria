@@ -19,7 +19,6 @@ internal sealed class MovementData()
 {
 	public struct PushCfg()
 	{
-		public bool Enabled;
 		public (float Closest, float Farthest) Range = (6f, 32f);
 		public (float Target, float Acceleration) Speed = (2f, 0.5f);
 		public int RequiredNpcType = -1;
@@ -134,7 +133,6 @@ internal sealed class NPCMovement : NPCComponent<MovementData>
 		//if (!ctx.PushOthersRatherThanSelf && ctx.ApplyOnlyOnGround && ctx.Velocity.Y != 0f) { return; }
 
 		float minSqrDst = push.Range.Farthest * push.Range.Farthest;
-
 		if (minSqrDst <= 0f) { return; }
 
 		foreach (NPC other in Main.ActiveNPCs)

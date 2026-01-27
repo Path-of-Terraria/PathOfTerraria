@@ -70,6 +70,7 @@ internal sealed class FallenSchemer : ModNPC
 			e.Data.MaxSpeed = 5.5f;
 			e.Data.Acceleration = 32f;
 			e.Data.Friction = (8f, 2f);
+			e.Data.Push = new() { RequiredNpcType = Type };
 		});
 		NPC.TryEnableComponent<NPCAnimations>(e =>
 		{
