@@ -30,6 +30,7 @@ internal sealed class TeleportData()
 	public ushort MaxCooldown = 150;
 	public bool TurnInvisible;
 	public bool DisableGravity;
+	public Vector3 LightColor;
 	public TeleportType Movement = TeleportType.Immediate;
 	public (ushort Start, ushort End) Disappear = (0, 12);
 	public (ushort Start, ushort End) Reappear = (42, 54);
@@ -212,12 +213,6 @@ internal sealed class NPCTeleports : NPCComponent<TeleportData>
 				attacking.Data.Cooldown.Set(2);
 			}
 
-			float entrancePower = MathUtils.DistancePower(MathF.Abs(Data.Progress - Data.Disappear.End), 1, 20);
-			float exitPower = MathUtils.DistancePower(MathF.Abs(Data.Progress - Data.Reappear.Start), 1, 20);
-
-			if (entrancePower > 0f) { Lighting.AddLight(Data.TeleportSource, Color.OrangeRed.ToVector3() * entrancePower); }
-			if (exitPower > 0f) { Lighting.AddLight(Data.TeleportTarget, Color.OrangeRed.ToVector3() * exitPower); }
-
 			if (Data.Progress == 0)
 			{
 				Data.StoredVelocity = npc.velocity;
@@ -226,9 +221,25 @@ internal sealed class NPCTeleports : NPCComponent<TeleportData>
 				npc.noGravity = Data.DisableGravity | npc.noGravity;
 			}
 
-			// Play audio.
-			if (Data.DisappearSound is { } snd1 && Data.Progress == snd1.Tick) { SoundEngine.PlaySound(snd1.Style, npc.Center); }
-			if (Data.ReappearSound is { } snd2 && Data.Progress == snd2.Tick) { SoundEngine.PlaySound(snd2.Style, npc.Center); }
+			if (!Main.dedServ)
+			{
+				// Play audio.
+				if (Data.DisappearSound is { } snd1 && Data.Progress == snd1.Tick) { SoundEngine.PlaySound(snd1.Style, npc.Center); }
+				if (Data.ReappearSound is { } snd2 && Data.Progress == snd2.Tick) { SoundEngine.PlaySound(snd2.Style, npc.Center); }
+
+				// Shine lights.
+				float entrancePower = MathUtils.DistancePower(MathF.Abs(Data.Progress - Data.Disappear.End), 1, 20);
+				float exitPower = MathUtils.DistancePower(MathF.Abs(Data.Progress - Data.Reappear.Start), 1, 20);
+				if (Data.Movement is TeleportType.Interpolated)
+				{
+					Lighting.AddLight(ctx.Center, Data.LightColor * MathF.Max(entrancePower, exitPower));
+				}
+				else
+				{
+					if (entrancePower > 0f) { Lighting.AddLight(Data.TeleportSource, Data.LightColor * entrancePower); }
+					if (exitPower > 0f) { Lighting.AddLight(Data.TeleportTarget, Data.LightColor * exitPower); }
+				}
+			}
 
 			npc.dontTakeDamage = Data.Progress >= Data.Invulnerability.Start && Data.Progress <= Data.Invulnerability.End;
 
@@ -290,7 +301,7 @@ internal sealed class NPCTeleports : NPCComponent<TeleportData>
 		Vector2 center = ctx.Center;
 		NPCAimedTarget target = ctx.Target;
 		Vector2 targetCenter = ctx.TargetCenter;
-		Point targetPoint = targetCenter.ToTileCoordinates();
+		Point targetPoint = (targetCenter).ToTileCoordinates();
 		Func<Point16, bool>? basePredicate = Data.BasePlacement.CustomPredicate;
 
 		bool IsSpawnPointSuitable(Point16 tilePos)

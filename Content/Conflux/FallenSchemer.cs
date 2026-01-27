@@ -110,6 +110,7 @@ internal sealed class FallenSchemer : ModNPC
 			e.Data.Velocity = (new(2f, -2f), new(2f, -5f));
 			e.Data.TurnInvisible = true;
 			e.Data.DisableGravity = true;
+			e.Data.LightColor = Color.IndianRed.ToVector3();
 			e.Data.DisappearSound = (0, SoundID.Shimmer1 with { Pitch = 0.4f, PitchVariance = 0.1f });
 			e.Data.ReappearSound = (41, SoundID.DD2_DarkMageAttack with { Pitch = -0.2f, PitchVariance = 0.1f });
 			// Triggers

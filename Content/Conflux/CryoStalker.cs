@@ -155,7 +155,7 @@ internal sealed class CryoStalker : ModNPC
 		{
 			// General
 			e.Data.Movement = TeleportType.Interpolated;
-			e.Data.MaxCooldown = 150;
+			e.Data.MaxCooldown = 30;
 			e.Data.Disappear = (0, 12);
 			e.Data.Reappear = (42, 54);
 			e.Data.Invulnerability = (14, 40);
@@ -163,16 +163,19 @@ internal sealed class CryoStalker : ModNPC
 			e.Data.Velocity = (new(0f, 0f), new(0f, 0f));
 			e.Data.TurnInvisible = false;
 			e.Data.DisableGravity = false;
+			e.Data.LightColor = ColorUtils.FromHexRgb(0x7ce8ff).ToVector3();
 			e.Data.DisappearSound = (0, SoundID.Item77 with { Identifier = "Disappear", Volume = 0.5f, Pitch = -0.4f, PitchVariance = 0.2f });
 			e.Data.ReappearSound = (40, SoundID.Item77 with { Identifier = "Reappear", Volume = 0.5f, Pitch = +0.4f, PitchVariance = 0.2f });
 			// Triggers
-				// e.Data.TriggerIfEndangered = true;
-			e.Data.TriggerAtDistance = (0f, 192f);
+			e.Data.TriggerIfEndangered = true;
+			e.Data.TriggerAtDistance = (1024f, float.PositiveInfinity); //(0f, 192f);
 			// Placement
-			e.Data.RequiredTargetDistance = (350f, 500f);
+			e.Data.PlaceOriginAtTarget = true;
 			e.Data.RequireLineOfSightOnExit = true;
+			e.Data.RequiredTargetDistance = (300f, 520f);
+			// e.Data.RequiredTargetDistanceDiff = (-32f, -64f);
 			e.Data.BasePlacement.OnGround = false;
-			e.Data.BasePlacement.Area = new Rectangle() with { Width = 64, Height = 32 };
+			e.Data.BasePlacement.Area = new Rectangle() with { Width = 64, Height = 35 };
 		});
 		NPC.TryEnableComponent<NPCTargeting>();
 		NPC.TryEnableComponent<NPCAttacking>(e =>
@@ -208,12 +211,6 @@ internal sealed class CryoStalker : ModNPC
 		});
 		NPC.TryEnableComponent<NPCVoice>(e =>
 		{
-			//e.Data.PainSound = (3, SoundID.NPCHit20 with
-			//{
-			//	MaxInstances = 3,
-			//	Volume = 0.9f,
-			//	PitchVariance = 0.15f,
-			//});
 			e.Data.PainSound = (5, SoundID.NPCDeath51 with { Volume = 0.2f, Pitch = +0.8f, PitchVariance = 0.1f });
 		});
 		NPC.TryEnableComponent<NPCHitEffects>(c =>
@@ -277,6 +274,7 @@ internal sealed class CryoStalker : ModNPC
 			}
 		}
 
+		// Experiment with it leaving trail projectiles.
 		// if (ctx.Teleports.Active && ctx.Teleports.Data.Progress % 10 == 0)
 		// {
 		// 	int projType = ProjectileID.HappyBomb;
