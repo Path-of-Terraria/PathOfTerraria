@@ -52,7 +52,7 @@ internal sealed class Abominable : ModNPC
 		NPC.width = 44;
 		NPC.height = 80;
 		NPC.lifeMax = 750;
-		NPC.defense = 35;
+		NPC.defense = 55;
 		NPC.knockBackResist = 0.00f;
 
 		NPC.HitSound = new($"{nameof(PathOfTerraria)}/Assets/Sounds/HitEffects/FleshHit", 3) { MaxInstances = 5, Volume = 0.4f };
