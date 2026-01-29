@@ -107,20 +107,15 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 		}
 	}
 
-	public bool TryStarting(in Context ctx)
+	public bool StartBehaviors(in Context ctx)
 	{
 #if NEVER_ATTACK
 		return false;
 #endif
 
 		NPC npc = ctx.NPC;
-
-		if (Data.Progress >= 0 || Data.Cooldown.Value != 0)
-		{
-			return false;
-		}
-
 		Vector2 targetDiff = ctx.TargetCenter - ctx.Center;
+
 		if (MathF.Abs(targetDiff.X) > Data.InitiationRange.X || MathF.Abs(targetDiff.Y) > Data.InitiationRange.Y)
 		{
 			return false;
@@ -131,15 +126,19 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 			return false;
 		}
 
-		Start(in ctx);
-
-		return true;
+		return TryStarting(in ctx);
 	}
 
-	public void Start(in Context ctx)
+	public bool TryStarting(in Context ctx, bool bypassCooldowns = false)
 	{
-		_ = ctx;
+		NPC npc = ctx.NPC;
+
+		if (Data.Progress >= 0) { return false; }
+		if (!bypassCooldowns && Data.Cooldown.Value != 0) { return false; }
+
 		Data.Progress = 0;
+
+		return true;
 	}
 
 	public Result ManualUpdate(in Context ctx)
@@ -156,7 +155,7 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 		npc.noGravity = Data.NoGravityLength != 0 ? ContentSamples.NpcsByNetId[npc.type].noGravity : npc.noGravity;
 
 		// Check if we can initiate an attack.
-		if (!Data.ManualInitiation && (!Data.InitiateOnlyOnGround || npc.velocity.Y == 0f) && TryStarting(in ctx))
+		if (!Data.ManualInitiation && (!Data.InitiateOnlyOnGround || npc.velocity.Y == 0f) && StartBehaviors(in ctx))
 		{
 			result.Initiated = true;
 		}

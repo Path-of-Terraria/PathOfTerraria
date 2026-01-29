@@ -197,7 +197,7 @@ internal sealed class FallenShaman : ModNPC
 			e.Data.LengthInTicks = 120;
 			e.Data.CooldownLength = 60;
 			e.Data.NoGravityLength = 0;
-			e.Data.InitiationRange = new(384f, 192f);
+			e.Data.InitiationRange = new(512f, 192f);
 			e.Data.Dash = (60, 80, new(0f, 0f));
 			e.Data.Damage = (60, 80, DamageInstance.EnemyAttackFilter);
 			// e.Data.Hitbox = (new(512, 512), new(+0f, +0f), new(+0f, +0f));
@@ -299,14 +299,18 @@ internal sealed class FallenShaman : ModNPC
 		// Look for a soul to respawn.
 		if (!atkActive || Flags.HasFlag(Flag.Resurrecting))
 		{
-			const float respawnRange = 300f;
+			const float triggerRange = 150f;
+			const float triggerRangeSqr = triggerRange * triggerRange;
+			const float respawnRange = 350f;
 			const float respawnRangeSqr = respawnRange * respawnRange;
+
+			float usedSqrRange = (atkActive && Flags.HasFlag(Flag.Resurrecting)) ? respawnRangeSqr : triggerRangeSqr;
 
 			foreach (Projectile proj in Main.ActiveProjectiles)
 			{
 				if (proj.ModProjectile is not FallenSoul thisSoul) { continue; }
 				float sqrDst = proj.DistanceSQ(ctx.Center);
-				if (sqrDst > respawnRangeSqr) { continue; }
+				if (sqrDst > usedSqrRange) { continue; }
 
 				if (sqrDst < soulSqrDst)
 				{
@@ -322,6 +326,12 @@ internal sealed class FallenShaman : ModNPC
 			NPC.netUpdate = true;
 		}
 
+		// Start resurrections if close.
+		if (!atkActive && Flags.HasFlag(Flag.Resurrecting))
+		{
+			ctx.Attacking.TryStarting(new(NPC));
+		}
+
 		// Resurrection.
 		if (soul != null && atkActive && atkProg <= atkBase)
 		{
@@ -335,7 +345,7 @@ internal sealed class FallenShaman : ModNPC
 				Vector2 goreVel = gorePos.DirectionTo(basePos) * 5f;
 				Gore.NewGore(null, gorePos, goreVel, ModContent.GoreType<BloodSplatMedium>());
 			}
-			if (atkResult.Initiated)
+			if (atkProg == 1)
 			{
 				SoundEngine.PlaySound(new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/FallenShamanResurrect", 2) {
 					MaxInstances = 2,
@@ -364,7 +374,7 @@ internal sealed class FallenShaman : ModNPC
 		// Shoot projectiles during non-respawn attacks.
 		for (int i = 0; i < (atkActive && !Flags.HasFlag(Flag.Resurrecting) ? 6 : 0); i++)
 		{
-			if (atkResult.Initiated)
+			if (atkProg == 1)
 			{
 				SoundEngine.PlaySound(new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/FallenShamanAttack") {
 					MaxInstances = 2,
