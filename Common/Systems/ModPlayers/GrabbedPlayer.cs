@@ -66,15 +66,22 @@ public class GrabbedPlayer : ModPlayer
 			Player.Center = grabber.Center + grabbingNpc.GetGrabOffset(Player.whoAmI);
 
 			float speed = Player.velocity.Length() * 2;
-
-			if (Player.grappling[0] > -1)
-			{
-				speed /= 20f;
-			}
-
-			grabbingNpc.UpdateGrabbing(Player.whoAmI, speed, Player.grappling[0] > -1);
+			grabbingNpc.UpdateGrabbing(Player.whoAmI, speed - Player.gravity * 2, Player.grappling[0] > -1);
 			Player.velocity = Vector2.Zero;
 			Player.gfxOffY = 0;
+		}
+	}
+
+	/// Note for posterity: The code in DrawEffects crashes if the player holds a torch if that code is put in this method. Why? Not sure.
+	//public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
+	//{
+	//}
+
+	public override void DrawEffects(PlayerDrawSet drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
+	{
+		if (BeingGrabbed >= 0)
+		{
+			Player.bodyFrame.Y = 56 * 5;
 		}
 	}
 

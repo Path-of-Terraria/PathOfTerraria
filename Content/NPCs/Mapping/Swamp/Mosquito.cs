@@ -5,7 +5,6 @@ using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Content.Gores;
-using PathOfTerraria.Content.Tiles.BossDomain;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
@@ -66,7 +65,7 @@ internal class Mosquito : ModNPC, IGrabberNPC
 
 	void IGrabberNPC.UpdateGrabbing(int playerGrabbed, float attemptedPlayerMoveMagnitude, bool grappling)
 	{
-		ShakeTimer += attemptedPlayerMoveMagnitude * (grappling ? 0.01f : 1f);
+		ShakeTimer += attemptedPlayerMoveMagnitude * (grappling ? 0.02f : 1f);
 	}
 
 	bool IGrabberNPC.LetGo()
@@ -95,7 +94,7 @@ internal class Mosquito : ModNPC, IGrabberNPC
 		NPC.damage = 5;
 		NPC.width = 142;
 		NPC.height = 42;
-		NPC.knockBackResist = 0.3f;
+		NPC.knockBackResist = 0;
 		NPC.noGravity = true;
 		NPC.hide = true;
 
@@ -119,8 +118,8 @@ internal class Mosquito : ModNPC, IGrabberNPC
 			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatSmall)}", 2, NPCHitEffects.OnDeath));
 			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 1, NPCHitEffects.OnDeath));
 			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatLarge)}", 1, NPCHitEffects.OnDeath));
-			//c.AddGore(new($"{PoTMod.ModName}/{Name}_0", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(+12, +20), new(3, 3)), FlipWithDirection = false, NoCentering = true });
-			//c.AddGore(new($"{PoTMod.ModName}/{Name}_1", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(+116, +14), new(3, 3)), FlipWithDirection = false, NoCentering = true });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_Head", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(-25, +13), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_Body", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(-10, +1), new(3, 3)) });
 			//c.AddGore(new($"{PoTMod.ModName}/{Name}_2", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(+70, +32), new(3, 3)), FlipWithDirection = false, NoCentering = true });
 			//c.AddGore(new($"{PoTMod.ModName}/{Name}_3", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(+68, +18), new(12, 3)), FlipWithDirection = false, NoCentering = true });
 			//c.AddGore(new($"{PoTMod.ModName}/{Name}_4", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(+36, +32), new(3, 3)), FlipWithDirection = false, NoCentering = true });
@@ -214,14 +213,16 @@ internal class Mosquito : ModNPC, IGrabberNPC
 			if (!HasLetGo)
 			{
 				CarryingPlayer.GetModPlayer<GrabbedPlayer>().BeingGrabbed = NPC.whoAmI;
+
+				NPC.velocity = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(Main.MouseWorld) * 6, 0.1f);
+				NPC.velocity *= 0.9f;
 			}
 			else
 			{
 				ShakeTimer--;
-			}
 
-			NPC.velocity = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(Main.MouseWorld) * 4, 0.1f);
-			NPC.velocity *= 0.9f;
+				NPC.velocity *= 0.95f;
+			}
 
 			if (CarryingPlayer.dead || (HasLetGo && ShakeTimer <= 0))
 			{
