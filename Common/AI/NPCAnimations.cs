@@ -73,6 +73,15 @@ internal sealed class NPCAnimations : NPCComponent
 		Completed = false;
 	}
 
+	public override void SetDefaults(NPC npc)
+	{
+		// Recalculate the default frame to avoid showing a full-width source-rect.
+		if (!Main.dedServ && Enabled && npc.whoAmI >= 0 && npc.whoAmI < Main.maxNPCs && Main.npc[npc.whoAmI] == npc)
+		{
+			npc.FindFrame();
+		}
+	}
+
 	public override void FindFrame(NPC npc, int frameHeight)
 	{
 		if (!Enabled || Main.dedServ || TextureAssets.Npc[npc.type] is not { IsLoaded: true, Value: { } texture })
