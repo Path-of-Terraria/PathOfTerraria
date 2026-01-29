@@ -13,6 +13,8 @@ internal class MobAffixIconDrawing : GlobalNPC
 
 	public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
+		if (Main.hideUI) { return; }
+		
 		List<MobAffix> affixes = npc.GetGlobalNPC<ArpgNPC>().Affixes;
 
 		if (affixes.Count == 0 || npc.GetGlobalNPC<FreezeNPC>().Frozen || npc.alpha == byte.MaxValue)
