@@ -56,6 +56,8 @@ internal sealed class FallenSoul : ModProjectile
 		var npc = NPC.NewNPCDirect(Projectile.GetSource_FromThis(), Projectile.Center, NpcType);
 		if (npc.whoAmI >= 0 && npc.whoAmI < Main.maxNPCs)
 		{
+			// Prevent loot experience gain.
+			npc.SpawnedFromStatue = true;
 			Projectile.Kill();
 			return true;
 		}
