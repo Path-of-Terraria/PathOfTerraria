@@ -122,6 +122,9 @@ internal sealed class FallenSchemer : ModNPC
 			e.Data.RequiredTargetDistance = (+8f, +64f);
 			e.Data.BasePlacement.Area = new Rectangle() with { Width = 16, Height = 8 };
 			e.Data.BasePlacement.MinDistanceFromPlayers = 0f;
+
+			// Initial cooldown.
+			e.Data.Cooldown.Value = 50;
 		});
 		NPC.TryEnableComponent<NPCFootsteps>(e =>
 		{
