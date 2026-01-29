@@ -140,7 +140,7 @@ internal sealed class FallenShaman : ModNPC
 	private static readonly SpriteAnimation animAppear = new() { Id = "appear", Frames = [11, 10, 9, 8, 7], Speed = 20f, Loop = false };
 
 	// public ref float FlightCounter => ref NPC.ai[3];
-	public ref Flag Flags => ref Unsafe.As<float, Flag>(ref NPC.ai[2]);
+	public ref Flag Flags => ref Unsafe.As<float, Flag>(ref NPC.ai[3]);
 
 	public override void Load()
 	{
@@ -320,7 +320,7 @@ internal sealed class FallenShaman : ModNPC
 		}
 
 		// Decide whether the next casting animation will be an attack or a resurrection.
-		if (!atkActive && Flags.HasFlag(Flag.Resurrecting) is bool alreadyIs && (soul != null) is bool shouldBe && shouldBe != alreadyIs)
+		if (!atkActive && (Flags.HasFlag(Flag.Resurrecting) is bool alreadyIs) && ((soul != null) is bool shouldBe) && shouldBe != alreadyIs)
 		{
 			Flags = shouldBe ? (Flags | Flag.Resurrecting) : (Flags & ~Flag.Resurrecting);
 			NPC.netUpdate = true;
