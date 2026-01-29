@@ -441,6 +441,11 @@ internal sealed class NPCNavigation : NPCComponent
 						//	Math.Min(edgeJump.Y, bodyJump.Y)
 						//);
 						result.JumpVector = edgeJump;
+
+						if (npc.wet)
+						{
+							result.JumpVector = Vector2.Clamp(result.JumpVector * 2f, -JumpRange, JumpRange);
+						}
 					}
 					else
 					{
