@@ -420,6 +420,11 @@ internal sealed class FallenShaman : ModNPC
 		if (!Main.dedServ)
 		{
 			Lighting.AddLight(NPC.Top, Color.Red.ToVector3() * 0.5f);
+
+			if (isFlying)
+			{
+				Dust.NewDustDirect(NPC.BottomLeft + new Vector2(0f, -8f), NPC.width, 8, DustID.SomethingRed, NPC.velocity.X * 2f, NPC.velocity.Y * 2f, Scale: 1f);
+			}
 		}
 	}
 
