@@ -449,18 +449,18 @@ internal sealed class FallenShaman : ModNPC
 				Dust.NewDustDirect(NPC.BottomLeft + new Vector2(0f, -8f), NPC.width, 8, DustID.SomethingRed, NPC.velocity.X * 2f, NPC.velocity.Y * 2f, Scale: 1f);
 			}
 
-			var style = new SoundStyle($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/FallenShamanFlight")
+			var loopSound = new SoundStyle($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/FallenShamanFlight")
 			{
 				Volume = 0.1f,
 				IsLooped = true,
 				PauseBehavior = PauseBehavior.PauseWithGame,
 			};
 			float speed = NPC.velocity.Length();
-			float halfStep = (isFlying ? 1f : 2f) / TimeSystem.LogicDeltaTime;
+			float halfStep = (isFlying ? 1f : 1f) * TimeSystem.LogicDeltaTime;
 			float target = isFlying ? MathUtils.Clamp01(0.25f + NPC.velocity.Length() / 4f) : 0f;
 			float volume = flightVolume = MathUtils.StepTowards(MathHelper.Lerp(flightVolume, target, halfStep), target, halfStep);
-			float pitch = Math.Clamp(-1f + (speed * 0.2f), -1f, 1f);
-			SoundUtils.UpdateLoopingSound(ref flightSound, ctx.Center, volume, pitch, style, _ => Main.npc[NPC.whoAmI] is { active: true } n && n == NPC);
+			float pitch = Math.Clamp(-0.5f + (speed * 0.1f), -0.5f, 0.2f);
+			SoundUtils.UpdateLoopingSound(ref flightSound, ctx.Center, volume, pitch, loopSound,_ => Main.npc[NPC.whoAmI] is { active: true } n && n == NPC);
 		}
 	}
 
