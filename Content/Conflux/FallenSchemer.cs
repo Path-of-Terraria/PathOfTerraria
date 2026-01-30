@@ -76,6 +76,7 @@ internal sealed class FallenSchemer : ModNPC
 		{
 			e.BaseFrame = new SpriteFrame(6, 6) with { PaddingX = 0, PaddingY = 0 };
 			e.SpriteOffset = new(0f, -3f);
+			e.IgnoreAlpha = true;
 		});
 		NPC.TryEnableComponent<NPCTargeting>();
 		NPC.TryEnableComponent<NPCAttacking>(e =>
@@ -108,7 +109,7 @@ internal sealed class FallenSchemer : ModNPC
 			e.Data.Invulnerability = (0, 45);
 			e.Data.CooldownDamage = (1f, 5);
 			e.Data.Velocity = (new(2f, -2f), new(2f, -5f));
-			e.Data.TurnInvisible = true;
+			e.Data.TurnInvisible = true; // Not really, as alpha is ignored in rendering.
 			e.Data.DisableGravity = true;
 			e.Data.LightColor = Color.IndianRed.ToVector3();
 			e.Data.DisappearSound = (0, SoundID.Shimmer1 with { Pitch = 0.4f, PitchVariance = 0.1f });
