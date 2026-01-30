@@ -181,10 +181,10 @@ internal sealed class FallenShaman : ModNPC
 		});
 		NPC.TryEnableComponent<NPCMovement>(e =>
 		{
-			e.Data.MaxSpeed = 1.5f;
+			e.Data.MaxSpeed = 3.5f;
 			e.Data.Acceleration = 16f;
 			e.Data.Friction = (8f, 2f);
-			e.Data.Push = new() { };
+			// e.Data.Push = new() { RequiredNpcType = Type };
 		});
 		NPC.TryEnableComponent<NPCAnimations>(e =>
 		{
@@ -284,43 +284,59 @@ internal sealed class FallenShaman : ModNPC
 	{
 		Context ctx = new(NPC);
 
+		// Invoke behaviors.
+		CustomBehavior(in ctx);
 		ctx.Animations.Advance();
 		ctx.Targeting.ManualUpdate(new(NPC));
 		ctx.Teleports.ManualUpdate(new(NPC));
-		NPCAttacking.Result atkResult = ctx.Attacking.ManualUpdate(new(NPC));
+		ctx.Attacking.ManualUpdate(new(NPC));
 		ctx.Movement.ManualUpdate(new(NPC));
 		ctx.Animations.Set(PickAnimation(in ctx));
+	}
 
+	private void CustomBehavior(in Context ctx)
+	{
 		bool atkActive = ctx.Attacking.Active;
 		int atkProg = ctx.Attacking.Data.Progress;
 		int atkBase = ctx.Attacking.Data.Dash.Start;
 		(FallenSoul? soul, float soulSqrDst) = (null, float.PositiveInfinity);
 
-		// Look for a soul to respawn.
+		// Reset overrides.
+		ctx.Movement.Data.TargetOverride = null;
+		ctx.Attacking.Data.ManualInitiation = false;
+
+		// Look for a soul to potentially respawn.
+		const float seekRangeSqr = 600f * 600f;
+		const float triggerRangeSqr = 60f * 60f;
+		const float respawnRangeSqr = 350f * 350f;
+		float resurrectRangeSqr = (atkActive && Flags.HasFlag(Flag.Resurrecting)) ? respawnRangeSqr : triggerRangeSqr;
 		if (!atkActive || Flags.HasFlag(Flag.Resurrecting))
 		{
-			const float triggerRange = 150f;
-			const float triggerRangeSqr = triggerRange * triggerRange;
-			const float respawnRange = 350f;
-			const float respawnRangeSqr = respawnRange * respawnRange;
-
-			float usedSqrRange = (atkActive && Flags.HasFlag(Flag.Resurrecting)) ? respawnRangeSqr : triggerRangeSqr;
-
 			foreach (Projectile proj in Main.ActiveProjectiles)
 			{
 				if (proj.ModProjectile is not FallenSoul thisSoul) { continue; }
 				float sqrDst = proj.DistanceSQ(ctx.Center);
-				if (sqrDst > usedSqrRange) { continue; }
+				if (sqrDst > seekRangeSqr) { continue; }
 
 				if (sqrDst < soulSqrDst)
 				{
 					(soul, soulSqrDst) = (thisSoul, sqrDst);
 				}
 			}
+
+			if (soul != null && !atkActive)
+			{
+				// Navigate towards the soul.
+				ctx.Movement.Data.TargetOverride = soul.Projectile.Center;
+				ctx.Attacking.Data.ManualInitiation = true;
+			}
 		}
 
 		// Decide whether the next casting animation will be an attack or a resurrection.
-		if (!atkActive && (Flags.HasFlag(Flag.Resurrecting) is bool alreadyIs) && ((soul != null) is bool shouldBe) && shouldBe != alreadyIs)
+		if (!atkActive
+		&& (Flags.HasFlag(Flag.Resurrecting) is bool alreadyIs)
+		&& ((soul != null && soulSqrDst <= resurrectRangeSqr) is bool shouldBe)
+		&& shouldBe != alreadyIs)
 		{
 			Flags = shouldBe ? (Flags | Flag.Resurrecting) : (Flags & ~Flag.Resurrecting);
 			NPC.netUpdate = true;
@@ -417,6 +433,7 @@ internal sealed class FallenShaman : ModNPC
 		NPC.noGravity = isFlying;
 		// FlightCounter = isFlying ? (FlightCounter + 1) : FlightCounter;
 
+		// Effects.
 		if (!Main.dedServ)
 		{
 			Lighting.AddLight(NPC.Top, Color.Red.ToVector3() * 0.5f);
