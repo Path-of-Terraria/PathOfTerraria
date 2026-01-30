@@ -35,9 +35,6 @@ internal sealed class FallenSoul : ModProjectile
 		{
 			NpcType = NPCID.Zombie;
 		}
-
-		Projectile.frame = (int)MathF.Floor(((float)Projectile.timeLeft + (Projectile.identity * 100f)) / 5f) % 8;
-		Lighting.AddLight(Projectile.Center, Color.IndianRed.ToVector3() * 0.1f);
 	}
 
 	public override void OnKill(int timeLeft)
@@ -67,10 +64,16 @@ internal sealed class FallenSoul : ModProjectile
 
 	public override bool PreDraw(ref Color lightColor)
 	{
+		const int numFrames = 8;
+		Projectile.frame = (int)MathF.Floor(((float)Main.timeForVisualEffects + (Projectile.identity * 100f)) / 5f) % numFrames;
+		Lighting.AddLight(Projectile.Center, Color.IndianRed.ToVector3() * 0.3f);
+		Projectile.gfxOffY = MathF.Sin((float)Main.timeForVisualEffects / 20f) * 2f - 1f;
+
 		Texture2D texture = TextureAssets.Projectile[Type].Value;
 		SpriteFrame spriteFrame = new(1, (byte)Main.projFrames[Type]) { PaddingX = 0, PaddingY = 0 };
 		Rectangle frame = spriteFrame.With(0, (byte)Projectile.frame).GetSourceRectangle(texture);
-		Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, frame, Color.White, Projectile.rotation, frame.Size() * 0.5f, Projectile.scale, 0, 0f);
+		Vector2 pos = Projectile.Center + new Vector2(0f, Projectile.gfxOffY) - Main.screenPosition;
+		Main.EntitySpriteDraw(texture, pos, frame, Color.White, Projectile.rotation, frame.Size() * 0.5f, Projectile.scale, 0, 0f);
 
 		return false;
 	}
