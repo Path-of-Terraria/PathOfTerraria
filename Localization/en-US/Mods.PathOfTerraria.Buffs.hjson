@@ -279,3 +279,8 @@ SwampAlgaeBuff: {
 	DisplayName: Swamp Algae
 	Description: You are much less inhibited by water...but you may attract unwanted attention
 }
+
+MosquitoTrappedDebuff: {
+	DisplayName: Squeezed
+	Description: Losing life
+}

@@ -1005,7 +1005,7 @@ GiantEel: {
 GiantEelBody.DisplayName: "{$GiantEel.DisplayName}"
 GiantEelTail.DisplayName: "{$GiantEel.DisplayName}"
 
-Mosquito: {
-	DisplayName: Mosquiton
-	Entry: The nature of the Swamp made the Mosquiton evolve in a particular manner. Its job is to bring up prey for the Mammoth Moss-Eel to eat, and then the Mosquiton can enjoy the scraps.
+DragonFly: {
+	DisplayName: Dragonfollow
+	Entry: The nature of the Swamp made the Dragonfollow evolve in a particular manner. Its job is to bring up prey for the Mammoth Moss-Eel to eat, and then the Dragonfollow can enjoy the scraps.
 }

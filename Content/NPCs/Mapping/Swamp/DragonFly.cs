@@ -4,14 +4,16 @@ using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.Gores;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.NPCs.Mapping.Swamp;
 
-internal class Mosquito : ModNPC, IGrabberNPC
+internal class DragonFly : ModNPC, IGrabberNPC
 {
 	private readonly struct Context(NPC npc)
 	{
@@ -26,7 +28,9 @@ internal class Mosquito : ModNPC, IGrabberNPC
 		CarryingPlayer
 	}
 
-	private static readonly SpriteAnimation animFly = new() { Id = "fly", Frames = [0, 1, 2, 3, 4, 5], Speed = 10 };
+	private static readonly SpriteAnimation animFly = new() { Id = "fly", Frames = [0, 1, 2, 3], Speed = 10 };
+	private static readonly SpriteAnimation animStartGrab = new() { Id = "startGrab", Frames = [4, 5, 6, 7], Speed = 10, Loop = false };
+	private static readonly SpriteAnimation animTryGrab = new() { Id = "tryGrab", Frames = [8, 9, 10, 11], Speed = 10 };
 	private static readonly SpriteAnimation animCarry = new() { Id = "carry", Frames = [12, 13, 14, 15], Speed = 12 };
 
 	private States State
@@ -52,6 +56,12 @@ internal class Mosquito : ModNPC, IGrabberNPC
 	}
 
 	private ref float ShakeTimer => ref NPC.ai[3];
+
+	private bool SwitchingToGrab
+	{
+		get => NPC.localAI[1] == 1;
+		set => NPC.localAI[1] = value ? 1 : 0;
+	}
 
 	void IGrabberNPC.OnGrab(int playerGrabbed)
 	{
@@ -119,14 +129,23 @@ internal class Mosquito : ModNPC, IGrabberNPC
 			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 1, NPCHitEffects.OnDeath));
 			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatLarge)}", 1, NPCHitEffects.OnDeath));
 			c.AddGore(new($"{PoTMod.ModName}/{Name}_Head", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(-25, +13), new(3, 3)) });
-			c.AddGore(new($"{PoTMod.ModName}/{Name}_Body", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(-10, +1), new(3, 3)) });
-			//c.AddGore(new($"{PoTMod.ModName}/{Name}_2", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(+70, +32), new(3, 3)), FlipWithDirection = false, NoCentering = true });
-			//c.AddGore(new($"{PoTMod.ModName}/{Name}_3", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(+68, +18), new(12, 3)), FlipWithDirection = false, NoCentering = true });
-			//c.AddGore(new($"{PoTMod.ModName}/{Name}_4", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(+36, +32), new(3, 3)), FlipWithDirection = false, NoCentering = true });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_Body", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(-10, +01), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_Mandible", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(+10, +32), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_Mandible", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(-23, +32), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_Wings", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(+05, -19), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_Wings", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(-25, -23), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_WingSmall", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(-09, -17), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_WingSmall", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(+17, -18), new(3, 3)) });
+			c.AddGore(new($"{PoTMod.ModName}/{Name}_TailTip", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new Vector2(+51, +15), new(3, 3)) });
 			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatSmall)}", 2, NPCHitEffects.OnDeath));
 			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 1, NPCHitEffects.OnDeath));
 			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatLarge)}", 1, NPCHitEffects.OnDeath));
 		});
+	}
+
+	public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+	{
+		return false;
 	}
 
 	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
@@ -184,6 +203,11 @@ internal class Mosquito : ModNPC, IGrabberNPC
 
 			if (ctx.Targeting.GetTargetCenter(NPC).DistanceSQ(NPC.Center) < 500 * 500)
 			{
+				SwitchingToGrab = true;
+			}
+
+			if (SwitchingToGrab && ctx.Animations.Completed)
+			{
 				State = States.ChaseFly;
 			}
 		}
@@ -213,6 +237,7 @@ internal class Mosquito : ModNPC, IGrabberNPC
 			if (!HasLetGo)
 			{
 				CarryingPlayer.GetModPlayer<GrabbedPlayer>().BeingGrabbed = NPC.whoAmI;
+				CarryingPlayer.AddBuff(ModContent.BuffType<MosquitoTrappedDebuff>(), 2);
 
 				NPC.velocity = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(Main.MouseWorld) * 6, 0.1f);
 				NPC.velocity *= 0.9f;
@@ -237,12 +262,34 @@ internal class Mosquito : ModNPC, IGrabberNPC
 	{
 		Vector2 vel = NPC.position - NPC.oldPosition;
 
+		if (State == States.IdleFly && SwitchingToGrab)
+		{
+			return animStartGrab;
+		}
+
 		return ctx.Animations.Current switch
 		{
-			_ when State == States.ChaseFly || NPC.IsABestiaryIconDummy => animFly with { Speed = 16 },
+			_ when State == States.ChaseFly || NPC.IsABestiaryIconDummy => animTryGrab with { Speed = 16 },
 			_ when State == States.IdleFly => animFly,
-			_ when State == States.CarryingPlayer => animCarry,
+			_ when State == States.CarryingPlayer && !HasLetGo => animCarry,
+			_ when State == States.CarryingPlayer && HasLetGo => animFly,
 			_ => null,
 		};
 	}
+
+	/// Doesn't run when NPC.hide = true?
+	//public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+	//{
+	//	Texture2D tex = TextureAssets.Npc[Type].Value;
+	//	Vector2 position = NPC.Center - Main.screenPosition;
+	//	SpriteEffects effects = NPC.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+
+	//	if (State == States.CarryingPlayer && !HasLetGo)
+	//	{
+	//		position += Main.rand.NextVector2CircularEdge(ShakeTimer / 5f, ShakeTimer / 5f);
+	//	}
+		
+	//	spriteBatch.Draw(tex, position, NPC.frame, drawColor, NPC.rotation, NPC.frame.Size() / 2f, 1f, effects, 0);
+	//	return false;
+	//}
 }
