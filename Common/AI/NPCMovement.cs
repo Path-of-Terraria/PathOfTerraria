@@ -5,7 +5,6 @@ using PathOfTerraria.Utilities;
 using PathOfTerraria.Utilities.Terraria;
 
 #nullable enable
-#pragma warning disable IDE2003 // Blank line required between block and subsequent statement
 
 namespace PathOfTerraria.Common.AI;
 
@@ -36,6 +35,8 @@ internal sealed class MovementData()
 	public Counter<ushort> NoAccelerationTime;
 	public Counter<ushort> NoFrictionTime;
 	public MovementInput? InputOverride;
+	public Vector2? TargetOverride;
+	public Vector2 LastTargetPoint;
 
 	public void ResetOverrides()
 	{
@@ -76,7 +77,7 @@ internal sealed class NPCMovement : NPCComponent<MovementData>
 
 		Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
 
-		if (!npc.HasValidTarget || Data.NoAccelerationTime.Value > 0)
+		if ((!npc.HasValidTarget && !Data.TargetOverride.HasValue) || Data.NoAccelerationTime.Value > 0)
 		{
 			Data.NoAccelerationTime.CountDown();
 			Data.ResetOverrides();
@@ -91,7 +92,7 @@ internal sealed class NPCMovement : NPCComponent<MovementData>
 		}
 		else if (ctx.Navigation != null)
 		{
-			Vector2 targetCenter = ctx.Targeting?.GetTargetCenter(npc) ?? npc.GetTargetData(false).Center;
+			Vector2 targetCenter = Data.LastTargetPoint = Data.TargetOverride ?? ctx.Targeting?.GetTargetCenter(npc) ?? npc.GetTargetData(false).Center;
 
 			ctx.Navigation.Process(out NPCNavigation.Result navResult, new()
 			{
