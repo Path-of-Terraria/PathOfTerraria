@@ -200,7 +200,8 @@ internal sealed class NPCNavigation : NPCComponent
 		}
 
 		// Halt if no one has moved.
-		if (Vector2.DistanceSquared(npc.Center, lastPathSourcePos) <= (MinSelfMove * MinSelfMove)
+		if (lastPathRequestTick != 0
+		&& Vector2.DistanceSquared(npc.Center, lastPathSourcePos) <= (MinSelfMove * MinSelfMove)
 		&& Vector2.DistanceSquared(ctx.TargetPosition, lastPathTargetPos) <= (MinTargetMove * MinTargetMove))
 		{
 			return;

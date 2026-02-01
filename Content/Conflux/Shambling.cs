@@ -65,7 +65,7 @@ internal sealed class Shambling : ModNPC
 
 		NPC.TryEnableComponent<NPCNavigation>(e =>
 		{
-			e.JumpRange = new(7, 13);
+			e.JumpRange = new(7, 14);
 		});
 		NPC.TryEnableComponent<NPCMovement>(e =>
 		{
@@ -89,20 +89,28 @@ internal sealed class Shambling : ModNPC
 		NPC.TryEnableComponent<NPCAttacking>(e =>
 		{
 			e.Data.LengthInTicks = 90;
-			e.Data.CooldownLength = 90;
+			e.Data.CooldownLength = 60;
 			e.Data.NoGravityLength = 15;
 			e.Data.InitiationRange = new(100f, 180f);
-			e.Data.Dash = (30, 45, new(7f, 4f));
+			e.Data.Dash = (30, 45, new(8f, 4f));
 			e.Data.Damage = (30, 45, DamageInstance.EnemyAttackFilter);
 			e.Data.Hitbox = (new(80, 80), new(32f, 24), new(8f, 2f));
-			e.Data.Movement = (0f, 0.9f, 1f);
+			e.Data.Movement = (0f, 0.95f, 1f);
 
 			if (!Main.dedServ)
 			{
 				e.Data.SlashTexture = ModContent.Request<Texture2D>($"{Texture}_Slash");
 				e.Data.Sounds =
 				[
-					(13, SoundID.Item71 with { Volume = 0.6f, Pitch = -0.90f, PitchVariance = 0.15f, MaxInstances = 3 }),
+					(0, SoundID.NPCHit55 with
+					{
+						MaxInstances = 3,
+						Volume = 0.2f,
+						Pitch = 0.0f,
+						PitchVariance = 0.2f,
+						Identifier = $"{nameof(Shambling)}Attack",
+					}),
+					(20, SoundID.Item71 with { Volume = 0.6f, Pitch = -0.90f, PitchVariance = 0.15f, MaxInstances = 3 }),
 					// (15, SoundID.NPCHit56 with { Volume = 0.25f, Pitch = +0.9f, PitchVariance = 0.1f, MaxInstances = 3 }),
 				];
 			}
@@ -156,7 +164,7 @@ internal sealed class Shambling : ModNPC
 		ctx.Attacking.Data.InitiationRange = new(100f, 180f);
 
 		bool climbing = false;
-		bool chased = false;
+		float closestChase = float.PositiveInfinity;
 		foreach (NPC other in Main.ActiveNPCs)
 		{
 			if (other == NPC) { continue; }
@@ -170,15 +178,23 @@ internal sealed class Shambling : ModNPC
 				climbing = true;
 			}
 
-			if (!chased && other.direction == NPC.direction && howMuchAhead > 0f)
+			if (other.direction == NPC.direction && MathF.Abs(other.position.Y - NPC.position.Y) <= 32f && howMuchAhead > 0f)
 			{
-				float multiplier = MathHelper.Lerp(0.25f, 1.0f, MathUtils.Clamp01(howMuchAhead / 300f));
-				ctx.Movement.Data.MaxSpeed *= multiplier;
-				chased = true;
+				closestChase = MathF.Min(closestChase, howMuchAhead);
 			}
 		}
 
-		if (climbing)
+		// Slow down to let friends boost themselves.
+		if (closestChase < float.PositiveInfinity)
+		{
+			float linear = MathUtils.Clamp01(closestChase / 250f);
+			float exponential = MathF.Pow(linear, 2f);
+			// Main.NewText($"{exponential:0.00}");
+			float multiplier = MathHelper.Lerp(0.1f, 1.0f, exponential);
+			ctx.Movement.Data.MaxSpeed *= multiplier;
+		}
+
+		if (climbing && ctx.Attacking.Data.Cooldown.Value <= 0)
 		{
 			// NPC.velocity.X = NPC.direction * 5f;
 			NPC.velocity = MovementUtils.DirAccel(NPC.velocity, NPC.DirectionTo(ctx.Targeting.GetTargetCenter(NPC)), 5.5f, 5.5f);
@@ -186,9 +202,10 @@ internal sealed class Shambling : ModNPC
 			NPC.spriteDirection = NPC.direction;
 
 			// Having climbed, trigger attacks at a high range.
-			ctx.Attacking.Data.InitiationRange.X = 400f;
+			ctx.Attacking.Data.InitiationRange.X = 360f;
 
-			if (!Main.dedServ) {
+			if (!Main.dedServ)
+			{
 				NPC.GetGlobalNPC<NPCVoice>().Play(NPC, new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/AbominablePain", 2)
 				{
 					MaxInstances = 3,
