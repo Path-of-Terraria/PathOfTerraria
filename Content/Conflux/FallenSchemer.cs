@@ -88,7 +88,7 @@ internal sealed class FallenSchemer : ModNPC
 			e.Data.Dash = (18, 33, new(15f, 10f));
 			e.Data.Damage = (18, 33, DamageInstance.EnemyAttackFilter);
 			e.Data.Hitbox = (new(112, 112), new(48f, 32f), new(12f, 2f));
-			e.Data.Movement = (0.4f, 0.9f);
+			e.Data.Movement = (0.4f, 0.9f, 0.95f);
 
 			if (!Main.dedServ)
 			{

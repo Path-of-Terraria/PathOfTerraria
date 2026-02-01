@@ -91,7 +91,7 @@ internal sealed class FallenSavage : ModNPC
 			e.Data.Dash = (18, 33, new(10f, 5f));
 			e.Data.Damage = (18, 33, DamageInstance.EnemyAttackFilterWithInfighting);
 			e.Data.Hitbox = (new(40, 40), new(56f, 56f), new(+8f, +2f));
-			e.Data.Movement = (0.4f, 0.9f);
+			e.Data.Movement = (0.4f, 0.9f, 0.95f);
 
 			if (!Main.dedServ)
 			{

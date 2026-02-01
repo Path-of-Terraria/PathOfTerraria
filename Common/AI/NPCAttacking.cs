@@ -27,7 +27,7 @@ internal sealed class AttackingData()
 	public ushort LengthInTicks = 60;
 	public ushort NoGravityLength = 15;
 	public ushort CooldownLength = 60;
-	public (float Slide, float Friction) Movement = (+0.4f, 0.9f);
+	public (float Slide, float GroundFriction, float AirFriction) Movement = (+0.4f, 0.9f, 0.95f);
 	public (ushort Start, ushort End, EntityKind Filter) Damage = (20, 35, DamageInstance.EnemyAttackFilter);
 	public (ushort Start, ushort End, Vector2 Velocity) Dash = (20, 35, new(10f, 5f));
 	public (Point16 Size, Vector2 Extent, Vector2 Offset) Hitbox = (new(56, 56), new(24f, 32f), new(+12f, +2f));
@@ -189,7 +189,7 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 
 				// Slow-slide.
 				if (Data.Movement.Slide != 0f) { npc.velocity.X = Data.Movement.Slide * Sign; }
-				if (Data.Movement.Friction != 0f) { npc.velocity.X *= Data.Movement.Friction; }
+				npc.velocity.X *= npc.velocity.Y == 0f ? Data.Movement.GroundFriction : Data.Movement.AirFriction;
 			}
 			else if (Data.Progress == Data.Damage.Start)
 			{
@@ -213,7 +213,7 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 			else
 			{
 				// Slow down.
-				npc.velocity.X *= Data.Movement.Friction;
+				npc.velocity.X *= npc.velocity.Y == 0f ? Data.Movement.GroundFriction : Data.Movement.AirFriction;
 				// But also defy gravity for a few ticks.
 				npc.noGravity = Data.NoGravityLength != 0 ? (Data.Progress >= Data.Damage.Start && Data.Progress < (Data.Damage.Start + Data.NoGravityLength)) : npc.noGravity;
 			}

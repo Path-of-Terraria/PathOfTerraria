@@ -208,7 +208,7 @@ internal sealed class FallenShaman : ModNPC
 			e.Data.Damage = (60, 80, DamageInstance.EnemyAttackFilter);
 			// e.Data.Hitbox = (new(512, 512), new(+0f, +0f), new(+0f, +0f));
 			e.Data.Hitbox = default;
-			e.Data.Movement = (0.0f, 0.80f);
+			e.Data.Movement = (0.0f, 0.80f, 0.95f);
 
 			if (!Main.dedServ)
 			{

@@ -187,7 +187,7 @@ internal sealed class CryoStalker : ModNPC
 			e.Data.Dash = (39, 54, new(-9f, -5f)); // Knocked back.
 			e.Data.Damage = (39, 54, 0);
 			e.Data.Hitbox = default;
-			e.Data.Movement = (0f, 1f);
+			e.Data.Movement = (0f, 1f, 1f);
 			e.Data.AimLag = ((new(0.01f), new(0.01f)), (0f, 0.99f));
 
 			if (!Main.dedServ)

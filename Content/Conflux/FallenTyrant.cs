@@ -89,7 +89,7 @@ internal sealed class FallenTyrant : ModNPC
 			e.Data.Dash = (40, 55, new(3f, 0f));
 			e.Data.Damage = (40, 55, DamageInstance.EnemyAttackFilterWithInfighting);
 			e.Data.Hitbox = (new(40, 40), new(32f, 32f), new(+8f, +2f));
-			e.Data.Movement = (0.4f, 0.9f);
+			e.Data.Movement = (0.4f, 0.9f, 0.95f);
 
 			if (!Main.dedServ)
 			{
