@@ -1,5 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using PathOfTerraria.Common.AI;
+using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Utilities;
@@ -414,6 +415,7 @@ internal sealed class FallenShaman : ModNPC
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				int projType = ModContent.ProjectileType<FallenShamanRocket>();
+				int projDamage = ModeUtils.ProjectileDamage(NPC.damage);
 				// Move out of solid tiles.
 				Vector2 position = NPC.Center + new Vector2(0f, -48f);
 				for (Point16 xy = position.ToTileCoordinates16(); xy.Y < 0 || WorldUtilities.SolidTile(xy.X, xy.Y);)
@@ -423,7 +425,7 @@ internal sealed class FallenShaman : ModNPC
 				}
 				float projAngle = targetCenter.AngleFrom(position) + (Main.rand.NextFloatDirection() * MathHelper.ToRadians(40f));
 				Vector2 projVel = projAngle.ToRotationVector2() * 0.5f;
-				Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), position, projVel, projType, NPC.defDamage, 1f);
+				Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), position, projVel, projType, projDamage, 1f);
 			}
 
 			if (!Main.dedServ)

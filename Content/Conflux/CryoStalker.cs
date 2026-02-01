@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using PathOfTerraria.Common.AI;
+using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Utilities;
@@ -270,7 +271,8 @@ internal sealed class CryoStalker : ModNPC
 				int projType = ModContent.ProjectileType<CryoStalkerIcicle>();
 				float angleOffset = (i == 0 ? 0f : (i == 1 ? -1f : +1f)) * MathHelper.ToRadians(10f);
 				Vector2 velocity = (ctx.Attacking.Data.Angle + angleOffset).ToRotationVector2() * 7f;
-				Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, velocity, projType, NPC.defDamage, 1f);
+				int projDamage = ModeUtils.ProjectileDamage(NPC.damage);
+				Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, velocity, projType, projDamage, 1f);
 			}
 		}
 
