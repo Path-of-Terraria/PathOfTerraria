@@ -873,7 +873,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 
 		Asset<Texture2D> backgroundTexture = ModContent.Request<Texture2D>($"{BasePath}/MapDeviceBase", AssetRequestMode.ImmediateLoad);
 		Vector2 windowAreaSize = backgroundTexture.Size();
-		Vector2 uiOrigin = new Vector2(Main.screenWidth, Main.screenHeight) / 2;
+		var uiOrigin = ((Main.ScreenSize.ToVector2() / Main.UIScale) * new Vector2(0.5f, 0.7f)).ToPoint().ToVector2();
 
 		Window = this.AddElement(new WindowElement(backgroundTexture), e =>
 		{
