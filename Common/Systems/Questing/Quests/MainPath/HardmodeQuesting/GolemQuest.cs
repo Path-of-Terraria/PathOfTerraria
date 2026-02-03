@@ -59,7 +59,7 @@ internal class GolemQuest() : Quest
 		return "Overworld";
 	}
 
-	public override bool Available()
+	protected override bool InternalAvailable()
 	{
 		Quest planteraQuest = GetLocalPlayerInstance<PlanteraQuest>();
 		return planteraQuest.Completed && NPC.downedPlantBoss;

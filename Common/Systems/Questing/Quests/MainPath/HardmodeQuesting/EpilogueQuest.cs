@@ -49,7 +49,7 @@ internal class EpilogueQuest() : Quest
 		return "Overworld";
 	}
 
-	public override bool Available()
+	protected override bool InternalAvailable()
 	{
 		Quest moonlordQuest = GetLocalPlayerInstance<CultistMoonlordQuest>();
 		return moonlordQuest.Completed && NPC.downedMoonlord;

@@ -3,7 +3,7 @@ using SubworldLibrary;
 
 namespace PathOfTerraria.Core.Commands;
 
-#if DEBUG
+#if DEBUG || STAGING
 public sealed class TravelCommand : ModCommand
 {
 	public override string Command => "travel";

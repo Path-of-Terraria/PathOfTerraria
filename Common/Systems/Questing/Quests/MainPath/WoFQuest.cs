@@ -73,7 +73,7 @@ internal class WoFQuest : Quest
 		];
 	}
 
-	public override bool Available()
+	protected override bool InternalAvailable()
 	{
 		return NPC.downedDeerclops.ToInt() + NPC.downedQueenBee.ToInt() + NPC.downedBoss3.ToInt() >= 2 && NPC.downedBoss2;
 	}

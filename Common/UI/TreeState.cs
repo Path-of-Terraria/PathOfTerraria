@@ -2,11 +2,12 @@
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.ModPlayers.SkillPlayers;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
+using PathOfTerraria.Common.UI.Components;
 using PathOfTerraria.Common.UI.PassiveTree;
 using PathOfTerraria.Common.UI.SkillsTree;
 using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Content.Passives;
-using PathOfTerraria.Content.Passives.Misc;
+using PathOfTerraria.Core.UI;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.GameContent.UI.Elements;
 using Terraria.Localization;
@@ -19,8 +20,8 @@ namespace PathOfTerraria.Common.UI;
 /// </summary>
 internal class TreeState : TabsUiState
 {
-	private const int ShrinkX = 80;
-	private const int ShrinkY = 20;
+	private const int ShrinkX = 160;
+	private const int ShrinkY = 40;
 
 	private PassiveTreeInnerPanel _passiveTreeInner;
 	private SkillSelectionPanel _skillSelection;
@@ -61,7 +62,10 @@ internal class TreeState : TabsUiState
 		}
 
 		_passiveTreeInner = new PassiveTreeInnerPanel();
+		_passiveTreeInner.AddComponent(new UIBlockMouse());
+
 		_skillSelection = new SkillSelectionPanel();
+		_skillSelection.AddComponent(new UIBlockMouse());
 
 		var localizedTexts = new (string key, LocalizedText text)[]
 		{
@@ -167,10 +171,7 @@ internal class TreeState : TabsUiState
 			return;
 		}
 		
-		AvailablePassivePointsText.DrawResettablePoints(spriteBatch, points, GetRectangle().TopLeft() + pointsDrawPoin, ref _confirmTimer, () =>
-		{
-			LocalPassiveTreePlayer.ResetAllNodes();
-		});
+		AvailablePassivePointsText.DrawResettablePoints(spriteBatch, points, GetRectangle().TopLeft() + pointsDrawPoin, ref _confirmTimer, LocalPassiveTreePlayer.ResetAllNodes);
 	}
 
 	internal void SetSkillTree(Skill skill)
