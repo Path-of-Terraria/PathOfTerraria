@@ -43,14 +43,14 @@ internal sealed class TeleportData()
 	public bool TriggerIfEndangered;
 	public (float Min, float Max)? TriggerAtDistance;
 	// Placement
-	public bool PlaceOriginAtTarget;
-	public bool RequireReachablePoint;
-	public bool? RequireDifferentDirection;
-	public bool? RequirePlacementBehind;
-	public bool? RequireLineOfSightOnTrigger;
-	public bool? RequireLineOfSightOnExit;
-	public (float Min, float Max)? RequiredTargetDistance;
-	public (float Min, float Max)? RequiredTargetDistanceDiff;
+	public bool PlaceOriginAtTarget = false;
+	public bool RequireReachablePoint = false;
+	public bool? RequireDifferentDirection = false;
+	public bool? RequirePlacementBehind = null;
+	public bool? RequireLineOfSightOnTrigger = null;
+	public bool? RequireLineOfSightOnExit = null;
+	public (float Min, float Max)? RequiredTargetDistance = null;
+	public (float Min, float Max)? RequiredTargetDistanceDiff = null;
 	public SpawnPlacement BasePlacement = new()
 	{
 		Area = new(default, default, 64, 64),
@@ -68,7 +68,6 @@ internal sealed class TeleportData()
 	public Vector2 StoredVelocity;
 	public short Progress = -1;
 	public Counter<ushort> Cooldown;
-	public bool IsBusy;
 }
 
 /// <summary> Implements combat teleportation behavior logic for NPCs. </summary>
@@ -162,7 +161,7 @@ internal sealed class NPCTeleports : NPCComponent<TeleportData>
 	{
 		if (Main.netMode == NetmodeID.MultiplayerClient) { return false; }
 		if (Active) { return false; }
-		if (!bypassCooldowns && (ctx.Attacking?.Active == true || Data.IsBusy || Data.Cooldown.Value > 0)) { return false; }
+		if (!bypassCooldowns && (ctx.Attacking?.Active == true || Data.Cooldown.Value > 0)) { return false; }
 		if (!TryPickPosition(in ctx)) { return false; }
 
 		Data.Progress = 0;

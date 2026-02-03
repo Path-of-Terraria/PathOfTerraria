@@ -131,7 +131,7 @@ internal static class EnemySpawning
 	/// <br/> Can fail if spawn logic gives up on picking a viable position.
 	/// <br/> Will fail if there are too many enemies in the world.
 	/// </summary>
-	public static bool TrySpawningEnemy(IEntitySource source, in EnemySpawn spawn, [NotNullWhen(true)] out NPC npc)
+	public static bool TrySpawningEnemy(IEntitySource source, in EnemySpawn spawn, [NotNullWhen(true)] out NPC? npc)
 	{
 		if (Main.netMode == NetmodeID.MultiplayerClient)
 		{

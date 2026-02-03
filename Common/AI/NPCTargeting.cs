@@ -13,7 +13,7 @@ internal sealed class NPCTargeting : NPCComponent
 	public struct Ctx(NPC npc)
 	{
 		public NPC NPC = npc;
-		public bool ForceReset;
+		public bool ForceReset = false;
 	}
 
 	private uint lastTickCount;
