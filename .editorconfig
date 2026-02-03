@@ -48,7 +48,7 @@ dotnet_remove_unnecessary_suppression_exclusions = none
 
 # New line preferences
 dotnet_style_allow_multiple_blank_lines_experimental = false:warning
-dotnet_style_allow_statement_immediately_after_block_experimental = false:warning
+dotnet_style_allow_statement_immediately_after_block_experimental = false:none
 
 #### C# Coding Conventions ####
 

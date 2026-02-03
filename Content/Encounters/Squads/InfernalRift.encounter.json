@@ -24,6 +24,12 @@
 					"SpawnPlacement": {
 						"OnGround": true
 					}
+				},
+				{
+					"NpcType": "PathOfTerraria/FallenShaman",
+					"SpawnPlacement": {
+						"OnGround": false
+					}
 				}
 			]
 		}

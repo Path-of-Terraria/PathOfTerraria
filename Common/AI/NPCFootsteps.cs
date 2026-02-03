@@ -10,11 +10,11 @@ namespace PathOfTerraria.Common.AI;
 internal sealed class FootstepsData()
 {
 	/// <summary> Source animation indices, before spritesheet mapping. </summary>
-	public Dictionary<string, int[]>? Frames;
-	public SoundStyle? StepSound;
-	public SoundStyle? JumpSound;
-	public SoundStyle? LandSound;
-	public bool ScreenShake;
+	public Dictionary<string, int[]>? Frames = null;
+	public SoundStyle? StepSound = null;
+	public SoundStyle? JumpSound = null;
+	public SoundStyle? LandSound = null;
+	public bool ScreenShake = false;
 	public ushort MinTicksBetweenSteps = 10;
 }
 
