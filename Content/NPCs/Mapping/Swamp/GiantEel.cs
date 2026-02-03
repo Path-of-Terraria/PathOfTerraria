@@ -27,6 +27,7 @@ internal class GiantEel : ModNPC
 			NPC.damage = 60;
 			NPC.HitSound = SoundID.NPCHit34;
 			NPC.DeathSound = SoundID.NPCHit53;
+			NPC.defense = 100;
 		}
 
 		public override bool CheckActive()
@@ -91,8 +92,6 @@ internal class GiantEel : ModNPC
 	private bool _spawnedSegments = false;
 	private Vector2[] _spline = [];
 
-	//private readonly List<Segment> _segments = [];
-
 	public override void Load()
 	{
 		//GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, $"{Texture}_GoreBlade");
@@ -106,7 +105,7 @@ internal class GiantEel : ModNPC
 	{
 		NPC.aiStyle = -1;
 		NPC.lifeMax = 150000;
-		NPC.defense = 150;
+		NPC.defense = 100;
 		NPC.damage = 50;
 		NPC.width = 62;
 		NPC.height = 62;

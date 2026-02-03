@@ -17,6 +17,7 @@ internal class Mudsquit : ModNPC
 	private readonly struct Context(NPC npc)
 	{
 		public NPCAnimations Animations { get; } = npc.GetGlobalNPC<NPCAnimations>();
+		public NPCMovement Movement { get; } = npc.GetGlobalNPC<NPCMovement>();
 	}
 
 	private enum States
@@ -65,6 +66,10 @@ internal class Mudsquit : ModNPC
 		//	e.BaseFrame = new SpriteFrame(1, (byte)Main.npcFrameCount[Type]) with { PaddingX = 0, PaddingY = 0 };
 		//	e.SpriteOffset = new(0f, 0f);
 		//});
+		NPC.TryEnableComponent<NPCMovement>(e =>
+		{
+			e.Data.Push = new() { RequiredNpcType = Type, Enabled = true };
+		});
 		NPC.TryEnableComponent<NPCVoice>(e =>
 		{
 			e.Data.PainSound = (3, SoundID.NPCHit56 with { Pitch = +0.3f, PitchVariance = 0.4f, Identifier = "FallenHit" });
@@ -111,6 +116,7 @@ internal class Mudsquit : ModNPC
 	public override void AI()
 	{
 		Context ctx = new(NPC);
+		ctx.Movement.ManualUpdate(new(NPC));
 
 		if (Math.Abs(NPC.velocity.X) > 0.01f)
 		{
@@ -147,12 +153,12 @@ internal class Mudsquit : ModNPC
 				if (Main.netMode != NetmodeID.MultiplayerClient)
 				{
 					var package = new ExplosionHitbox.VFXPackage(8, 30, 30, SmokeDustType: DustID.Blood, TorchDustType: DustID.RedTorch, DustVelocityModifier: 3f);
-					ExplosionHitbox.QuickSpawn(NPC.GetSource_Death(), NPC, ModeUtils.ProjectileDamage(50, 70, 110, 200), Main.myPlayer, new Vector2(200, 200), package, false);
+					ExplosionHitbox.QuickSpawn(NPC.GetSource_Death(), NPC, ModeUtils.ProjectileDamage(120, 170, 230, 300), Main.myPlayer, new Vector2(200, 200), package, false);
 				}
 
 				foreach (NPC npc in Main.ActiveNPCs)
 				{
-					if (npc.whoAmI != NPC.whoAmI && npc.type == Type && NPC.DistanceSQ(npc.Center) < 180 * 180)
+					if (npc.whoAmI != NPC.whoAmI && npc.type == Type && NPC.DistanceSQ(npc.Center) < 180 * 180 && npc.ai[0] != 1)
 					{
 						npc.ai[0] = 1;
 						npc.ai[1] = 0;
@@ -169,8 +175,14 @@ internal class Mudsquit : ModNPC
 
 	public override void OnHitPlayer(Player target, Player.HurtInfo hurtInfo)
 	{
+		if (State == States.BloatAndExplode)
+		{
+			return;
+		}
+
 		State = States.BloatAndExplode;
 		Timer = 0;
+		NPC.netUpdate = true;
 	}
 
 	private SpriteAnimation? PickAnimation(in Context ctx)
@@ -202,7 +214,6 @@ internal class Mudsquit : ModNPC
 		if (State == States.BloatAndExplode)
 		{
 			redFactor = MathF.Abs(MathF.Sin(Timer * (0.15f + Timer * 0.001f)));
-			Main.NewText(redFactor);
 		}
 
 		spriteBatch.Draw(tex, position, NPC.frame, Color.Lerp(drawColor, new Color(255, 100, 100), redFactor), NPC.rotation, NPC.frame.Size() / 2f, 1f, effects, 0);
