@@ -69,7 +69,7 @@ internal class ExplosionHitbox : ModProjectile
 	/// Copies vanilla's bomb/grenade explosion VFX with some modifyability.
 	/// </summary>
 	/// <param name="entity">Enity that's spawning the VFX.</param>
-	public static void VFX(Entity entity, VFXPackage? package = null)
+	public static void VFX(Entity entity, in VFXPackage? package = null)
 	{
 		VFXPackage value = package ?? new VFXPackage(4);
 

@@ -994,7 +994,7 @@ FallenTyrant.DisplayName: Fallen Tyrant
 
 SwampCroc: {
 	DisplayName: Crocolog
-	Entry: These sneaky reptiles have evolved to mimic the logs sometimes found floating in their Swamp. Their skin is like sandpaper, but the sand is small blades.
+	Entry: These sneaky reptiles have evolved to mimic the logs sometimes found floating in their swamp. Their skin is like sandpaper, but the sand part is small blades instead.
 }
 
 GiantEel: {
@@ -1008,4 +1008,9 @@ GiantEelTail.DisplayName: "{$GiantEel.DisplayName}"
 DragonFly: {
 	DisplayName: Dragonfollow
 	Entry: The nature of the Swamp made the Dragonfollow evolve in a particular manner. Its job is to bring up prey for the Mammoth Moss-Eel to eat, and then the Dragonfollow can enjoy the scraps.
+}
+
+Mudsquit: {
+	DisplayName: Mudsquit
+	Entry: ""
 }

@@ -45,6 +45,16 @@ internal abstract class WormSegment : ModNPC
 		return npc;
 	}
 
+	public NPC GetHead()
+	{
+		if (Parent.ModNPC is WormSegment segment)
+		{
+			return segment.GetHead();
+		}
+
+		return Parent;
+	}
+
 	public override void SetStaticDefaults()
 	{
 		ArpgNPC.NoAffixesSet.Add(Type);

@@ -5,6 +5,7 @@ using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Passes;
 using PathOfTerraria.Common.World.Utilities;
 using PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
+using PathOfTerraria.Content.NPCs.Mapping.Swamp;
 using PathOfTerraria.Content.Tiles.Maps.Swamp;
 using PathOfTerraria.Content.Walls;
 using PathOfTerraria.Utilities;
@@ -51,7 +52,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 	private void GenerateTerrain(GenerationProgress progress, GameConfiguration configuration)
 	{
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Terrain");
-		progress.Set(0);
+		progress.CurrentPassWeight = 1;
 
 		Main.worldSurface = WaterY + 10;
 		Main.rockLayer = WaterY + 40;
@@ -597,31 +598,45 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 	{
 		Liquid.UpdateLiquid();
 
+		if (NPC.CountNPCS(ModContent.NPCType<GiantEel>()) < Main.CurrentFrameFlags.ActivePlayersCount)
+		{
+			NPC.NewNPC(new EntitySource_WorldGen(), Main.spawnTileX * 16, 120 * 16, ModContent.NPCType<GiantEel>(), 0, 0, 0, Main.CurrentFrameFlags.ActivePlayersCount - 1);
+		}
+
 		if (!spawnedTemporaryContent && Main.ActivePlayers.GetEnumerator().MoveNext())
 		{
 			PlaceEncounters();
-			SpawnMudplatforms();
+			SpawnGenEntities();
 			spawnedTemporaryContent = true;
 		}
 	}
 
-	private static void SpawnMudplatforms()
+	private static void SpawnGenEntities()
 	{
 		List<float> xPositions = [];
 
-		for (int i = 0; i < 20; ++i)
+		for (int i = 0; i < 25; ++i)
 		{
-			Vector2 position;
+			Vector2 pos;
 
 			do
 			{
-				position = new Vector2(Random.Next(300 * 16, (Main.maxTilesX - 300) * 16), Random.Next(FloorY * 16 - 200, FloorY * 16 + 200));
-			} while (Collision.SolidCollision(position, 100, 20) || !Collision.WetCollision(position, 100, 20) || Collision.WetCollision(position - new Vector2(0, 30), 100, 20)
-				|| xPositions.Any(x => Math.Abs(x - position.X) < 120));
+				pos = new Vector2(Random.Next(300 * 16, (Main.maxTilesX - 300) * 16), Random.Next(FloorY * 16 - 200, FloorY * 16 + 200));
+			} while (Collision.SolidCollision(pos - new Vector2(50, 0), 200, 60) || !Collision.WetCollision(pos, 100, 20) || Collision.WetCollision(pos - new Vector2(0, 30), 100, 20)
+				|| xPositions.Any(x => Math.Abs(x - pos.X) < 120));
 
 			int type = Random.NextBool() ? ModContent.ProjectileType<FloatingMudplatform>() : ModContent.ProjectileType<BrittleFloatingMudplatform>();
-			Projectile.NewProjectile(new EntitySource_WorldGen(), position, Vector2.Zero, type, 0, 0, Main.myPlayer);
-			xPositions.Add(position.X);
+
+			if (i >= 5)
+			{
+				Projectile.NewProjectile(new EntitySource_WorldGen(), pos, Vector2.Zero, type, 0, 0, Main.myPlayer);
+			}
+			else
+			{
+				NPC.NewNPC(new EntitySource_WorldGen(), (int)pos.X, (int)pos.Y, ModContent.NPCType<SwampCroc>(), 0, 0, 1);
+			}
+
+			xPositions.Add(pos.X);
 		}
 	}
 

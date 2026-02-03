@@ -11,7 +11,7 @@ public class SwampWaterStyle : ModWaterStyle
 
 	public override string Texture => "PathOfTerraria/Assets/BiomeContent/SwampWaterStyle";
 
-	private static float _waterTransparence = 0;
+	private static float _waterTransparency = 0;
 
 	public override void Load()
 	{
@@ -26,8 +26,8 @@ public class SwampWaterStyle : ModWaterStyle
 		if (!bg && waterStyle == slot)
 		{
 			bool wet = Collision.WetCollision(plr.position, plr.width, plr.height);
-			_waterTransparence = MathHelper.Lerp(_waterTransparence, wet ? 1f : 1.8f, wet ? 0.1f : 0.02f);
-			Alpha = _waterTransparence;
+			_waterTransparency = MathHelper.Lerp(_waterTransparency, wet ? 1f : 1.8f, wet ? 0.13f : 0.05f);
+			Alpha = _waterTransparency;
 		}
 
 		orig(self, bg, waterStyle, Alpha, drawSinglePassLiquids);

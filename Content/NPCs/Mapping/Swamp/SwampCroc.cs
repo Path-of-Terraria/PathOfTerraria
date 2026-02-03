@@ -37,6 +37,12 @@ internal class SwampCroc : ModNPC
 		set => NPC.ai[0] = (float)value;
 	}
 
+	private bool WorldSpawned
+	{
+		get => NPC.ai[1] == 1;
+		set => NPC.ai[1] = value ? 1 : 0;
+	}
+
 	public override void SetStaticDefaults()
 	{
 		NPCID.Sets.TeleportationImmune[Type] = true;
@@ -47,13 +53,14 @@ internal class SwampCroc : ModNPC
 	public override void SetDefaults()
 	{
 		NPC.aiStyle = -1;
-		NPC.lifeMax = 400;
+		NPC.lifeMax = 600;
 		NPC.defense = 15;
 		NPC.damage = 50;
 		NPC.width = 142;
 		NPC.height = 42;
-		NPC.knockBackResist = 0.3f;
+		NPC.knockBackResist = 0.1f;
 		NPC.noGravity = true;
+		NPC.value = Item.buyPrice(0, 0, 35, 0);
 
 		NPC.HitSound = new($"{nameof(PathOfTerraria)}/Assets/Sounds/HitEffects/FleshHit", 3) { MaxInstances = 5, Volume = 0.4f };
 		NPC.DeathSound = SoundID.NPCDeath23 with { Pitch = +0.1f, PitchVariance = 0.15f, Identifier = "FallenDeath" };
@@ -86,6 +93,16 @@ internal class SwampCroc : ModNPC
 		});
 	}
 
+	public override bool CheckActive()
+	{
+		return !WorldSpawned;
+	}
+
+	public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
+	{
+		return State == States.Idle ? false : null;
+	}
+
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
 	{
 		bestiaryEntry.AddInfo(this, "");
@@ -112,6 +129,7 @@ internal class SwampCroc : ModNPC
 			NPC.direction = NPC.spriteDirection;
 		}
 
+		NPC.ShowNameOnHover = State != States.Idle;
 		Lighting.AddLight(HeadPosition, new Vector3(0.05f, 0.1f, 0.08f));
 
 		if (State == States.Idle)

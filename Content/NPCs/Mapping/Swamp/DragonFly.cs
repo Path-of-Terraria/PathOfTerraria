@@ -7,7 +7,6 @@ using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.Gores;
 using Terraria.DataStructures;
-using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
@@ -99,7 +98,7 @@ internal class DragonFly : ModNPC, IGrabberNPC
 	public override void SetDefaults()
 	{
 		NPC.aiStyle = -1;
-		NPC.lifeMax = 400;
+		NPC.lifeMax = 300;
 		NPC.defense = 15;
 		NPC.damage = 5;
 		NPC.width = 142;
@@ -107,6 +106,7 @@ internal class DragonFly : ModNPC, IGrabberNPC
 		NPC.knockBackResist = 0;
 		NPC.noGravity = true;
 		NPC.hide = true;
+		NPC.value = Item.buyPrice(0, 0, 20, 0);
 
 		NPC.HitSound = new($"{nameof(PathOfTerraria)}/Assets/Sounds/HitEffects/FleshHit", 3) { MaxInstances = 5, Volume = 0.4f };
 		NPC.DeathSound = SoundID.NPCDeath23 with { Pitch = +0.1f, PitchVariance = 0.15f, Identifier = "FallenDeath" };
@@ -148,11 +148,6 @@ internal class DragonFly : ModNPC, IGrabberNPC
 		return false;
 	}
 
-	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
-	{
-		NPC.damage = ModeUtils.ByMode(5, 10, 20, 33);
-	}
-
 	public override void DrawBehind(int index)
 	{
 		Main.instance.DrawCacheNPCsOverPlayers.Add(index);
@@ -188,18 +183,7 @@ internal class DragonFly : ModNPC, IGrabberNPC
 
 		if (State == States.IdleFly)
 		{
-			if (Timer == 120)
-			{
-				Timer = 0;
-
-				if (Main.netMode != NetmodeID.MultiplayerClient)
-				{
-					NPC.velocity = Main.rand.NextVector2CircularEdge(4, 4) * Main.rand.NextFloat(0.5f, 1f);
-					NPC.netUpdate = true;
-				}
-			}
-
-			NPC.velocity *= 0.967f;
+			IdleMovement();
 
 			if (ctx.Targeting.GetTargetCenter(NPC).DistanceSQ(NPC.Center) < 500 * 500)
 			{
@@ -229,6 +213,7 @@ internal class DragonFly : ModNPC, IGrabberNPC
 			if (NPC.DistanceSQ(targetCenter) > 600 * 600)
 			{
 				State = States.IdleFly;
+				SwitchingToGrab = false;
 				Timer = 0;
 			}
 		}
@@ -239,8 +224,26 @@ internal class DragonFly : ModNPC, IGrabberNPC
 				CarryingPlayer.GetModPlayer<GrabbedPlayer>().BeingGrabbed = NPC.whoAmI;
 				CarryingPlayer.AddBuff(ModContent.BuffType<MosquitoTrappedDebuff>(), 2);
 
-				NPC.velocity = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(Main.MouseWorld) * 6, 0.1f);
-				NPC.velocity *= 0.9f;
+				if (!Collision.SolidCollision(NPC.position - new Vector2(0, 120), NPC.width, 80) && NPC.position.Y > (Main.offLimitBorderTiles + 30) * 16) 
+				{
+					NPC.velocity = Vector2.SmoothStep(NPC.velocity, new Vector2(0, -8 + ShakeTimer / 25f), 0.1f);
+
+					if (Timer >= 30 && Main.netMode != NetmodeID.MultiplayerClient)
+					{
+						Timer = 0;
+
+						NPC.velocity.X = Main.rand.NextFloat(0.25f, 2) * NPC.spriteDirection;
+					}
+				}
+				else
+				{
+					IdleMovement(true);
+
+					if (NPC.velocity.Y < 0)
+					{
+						NPC.velocity.Y *= 0.9f;
+					}
+				}
 			}
 			else
 			{
@@ -254,8 +257,31 @@ internal class DragonFly : ModNPC, IGrabberNPC
 				State = States.IdleFly;
 				HasLetGo = false;
 				Timer = 0;
+				SwitchingToGrab = false;
 			}
 		}
+	}
+
+	private void IdleMovement(bool carrying = false)
+	{
+		if (Timer == (carrying ? 60 : 120))
+		{
+			Timer = 0;
+
+			if (Main.netMode != NetmodeID.MultiplayerClient)
+			{
+				NPC.velocity = Main.rand.NextVector2CircularEdge(4, 4) * Main.rand.NextFloat(0.5f, 1f);
+				NPC.netUpdate = true;
+
+				if (carrying)
+				{
+					NPC.velocity.Y = MathF.Abs(NPC.velocity.Y);
+					NPC.velocity *= Main.rand.NextFloat(1.25f, 2f);
+				}
+			}
+		}
+
+		NPC.velocity *= 0.967f;
 	}
 
 	private SpriteAnimation? PickAnimation(in Context ctx)
@@ -271,7 +297,7 @@ internal class DragonFly : ModNPC, IGrabberNPC
 		{
 			_ when State == States.ChaseFly || NPC.IsABestiaryIconDummy => animTryGrab with { Speed = 16 },
 			_ when State == States.IdleFly => animFly,
-			_ when State == States.CarryingPlayer && !HasLetGo => animCarry,
+			_ when State == States.CarryingPlayer && !HasLetGo => animCarry with { Speed = 12 + ShakeTimer / 5f },
 			_ when State == States.CarryingPlayer && HasLetGo => animFly,
 			_ => null,
 		};
