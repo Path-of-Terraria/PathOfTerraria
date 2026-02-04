@@ -1,19 +1,14 @@
 using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
 using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.UI.Elements;
-using PathOfTerraria.Common.UI.Guide;
 using PathOfTerraria.Core.UI;
 using ReLogic.Content;
 using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.Waypoints.UI;
@@ -76,7 +71,6 @@ public sealed class UIWaypointMenu : UIState
 	private UIImage thumbnailImage;
 
 	private UIText waypointText;
-	private UIText tutorialTipText;
 
 	public override void OnInitialize()
 	{
@@ -92,22 +86,6 @@ public sealed class UIWaypointMenu : UIState
 		};
 
 		rootElement.Append(BuildPanel());
-
-		// Add tip to clear up confusion on the return button in tutorial
-		string tutorialTipLocalized = Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.Waypoints.TutorialTip");
-		tutorialTipText = new UIText(tutorialTipLocalized, 0.8f)
-		{
-			HAlign = 0.5f,
-			VAlign = 0.0f,
-			Top = { Pixels = -45f },
-			Width = { Pixels = FullWidth },
-			TextOriginX = 0.5f,
-			WrappedTextBottomPadding = 0f,
-			IsWrapped = true
-		};
-		
-		rootElement.Append(tutorialTipText);
-
 		Append(rootElement);
 
 		listRootElement = new UIElement
@@ -145,7 +123,10 @@ public sealed class UIWaypointMenu : UIState
 
 		buttonElement.OnLeftClick += (_, _) =>
 		{
-			if (ModContent.GetInstance<PersistentDataSystem>().ObelisksByLocation.Contains(SelectedListWaypoint.LocationEnum) && SelectedListWaypoint.CanGoto())
+			string location = SelectedListWaypoint.LocationEnum;
+			bool hasLocation = ModContent.GetInstance<PersistentDataSystem>().ObelisksByLocation.Contains(location);
+
+			if ((location == "Overworld" || hasLocation) && SelectedListWaypoint.CanGoto())
 			{
 				SelectedListWaypoint.Teleport(Main.LocalPlayer);
 				Enabled = false;
@@ -257,16 +238,6 @@ public sealed class UIWaypointMenu : UIState
 			Main.LocalPlayer.mouseInterface = true;
 		}
 		
-		bool hasArcaneObelisk = ModContent.GetInstance<PersistentDataSystem>().ObelisksByLocation.Contains("Overworld");
-		bool tutorialTipCurrentlyShowing = rootElement.Children.Contains(tutorialTipText);
-
-		// Check if player has placed an obelisk in the main world, and if the tutorialtiptext currently exists
-		if (hasArcaneObelisk && tutorialTipCurrentlyShowing)
-		{
-			// Remove the tip if obelisk is placed and tip is showing
-			tutorialTipText.Remove();
-		}
-
 		UpdateInput();
 
 		float target = Enabled ? 0f : Main.screenHeight;

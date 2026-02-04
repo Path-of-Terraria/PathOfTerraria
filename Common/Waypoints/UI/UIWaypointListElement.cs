@@ -17,7 +17,7 @@ public sealed class UIWaypointListElement(Asset<Texture2D> icon, LocalizedText n
 	public const float FullHeight = 48f;
 	public const float ElementMargin = 16f;
 
-	public bool CanClick => ModContent.GetInstance<PersistentDataSystem>().ObelisksByLocation.Contains(Location);
+	public bool CanClick => Location == "Overworld" || ModContent.GetInstance<PersistentDataSystem>().ObelisksByLocation.Contains(Location);
 
 	public readonly Asset<Texture2D> Icon = icon;
 	public readonly int Index = index;

@@ -15,8 +15,8 @@ public sealed class HomeWaypoint : ModWaypoint
 
 	public override bool CanGoto()
 	{
-		bool isHomeObeliskMissing = !ModContent.GetInstance<PersistentDataSystem>().ObelisksByLocation.Contains("Overworld");
-		
-		return SubworldSystem.Current is not null && !isHomeObeliskMissing;
+		//bool isHomeObeliskMissing = !ModContent.GetInstance<PersistentDataSystem>().ObelisksByLocation.Contains("Overworld");
+
+		return SubworldSystem.Current is not null;// && !isHomeObeliskMissing;
 	}
 }
