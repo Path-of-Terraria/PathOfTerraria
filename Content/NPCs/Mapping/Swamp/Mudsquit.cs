@@ -1,10 +1,13 @@
 ﻿using NPCUtils;
 using PathOfTerraria.Common.AI;
+using PathOfTerraria.Common.Encounters;
 using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
+using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Content.Gores;
 using PathOfTerraria.Content.Projectiles.Utility;
+using System.IO;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
@@ -18,6 +21,26 @@ internal class Mudsquit : ModNPC
 	{
 		public NPCAnimations Animations { get; } = npc.GetGlobalNPC<NPCAnimations>();
 		public NPCMovement Movement { get; } = npc.GetGlobalNPC<NPCMovement>();
+	}
+
+	public class ExplodeMudsquitHandler : Handler
+	{
+		public static void Send(NPC npc)
+		{
+			ModPacket packet = Networking.GetPacket<ExplodeMudsquitHandler>();
+			packet.Write((byte)npc.whoAmI);
+			packet.Send();
+		}
+
+		internal override void Receive(BinaryReader reader, byte sender)
+		{
+			byte who = reader.ReadByte();
+			NPC npc = Main.npc[who];
+
+			npc.ai[0] = 1;
+			npc.ai[1] = 0;
+			npc.netUpdate = true;
+		}
 	}
 
 	private enum States
@@ -150,18 +173,21 @@ internal class Mudsquit : ModNPC
 			{
 				NPC.active = false;
 
+				var package = new ExplosionHitbox.VFXPackage(8, 30, 30, SmokeDustType: DustID.Blood, TorchDustType: DustID.RedTorch, DustVelocityModifier: 3f);
+				int damage = ModeUtils.ProjectileDamage(120, 170, 230, 300);
+				IEntitySource src = NPC.GetSource_Death();
+				ExplosionHitbox.QuickSpawn(src, NPC, damage, Main.myPlayer, new Vector2(200, 200), ExplosionSpawnInfo.HostileSpawn, package);
+
 				if (Main.netMode != NetmodeID.MultiplayerClient)
 				{
-					var package = new ExplosionHitbox.VFXPackage(8, 30, 30, SmokeDustType: DustID.Blood, TorchDustType: DustID.RedTorch, DustVelocityModifier: 3f);
-					ExplosionHitbox.QuickSpawn(NPC.GetSource_Death(), NPC, ModeUtils.ProjectileDamage(120, 170, 230, 300), Main.myPlayer, new Vector2(200, 200), package, false);
-				}
-
-				foreach (NPC npc in Main.ActiveNPCs)
-				{
-					if (npc.whoAmI != NPC.whoAmI && npc.type == Type && NPC.DistanceSQ(npc.Center) < 180 * 180 && npc.ai[0] != 1)
+					foreach (NPC npc in Main.ActiveNPCs)
 					{
-						npc.ai[0] = 1;
-						npc.ai[1] = 0;
+						if (npc.whoAmI != NPC.whoAmI && npc.type == Type && NPC.DistanceSQ(npc.Center) < 180 * 180 && npc.ai[0] != 1)
+						{
+							npc.ai[0] = 1;
+							npc.ai[1] = 0;
+							npc.netUpdate = true;
+						}
 					}
 				}
 			}
@@ -183,6 +209,11 @@ internal class Mudsquit : ModNPC
 		State = States.BloatAndExplode;
 		Timer = 0;
 		NPC.netUpdate = true;
+
+		if (Main.netMode == NetmodeID.MultiplayerClient)
+		{
+			ExplodeMudsquitHandler.Send(NPC);
+		}
 	}
 
 	private SpriteAnimation? PickAnimation(in Context ctx)

@@ -35,6 +35,7 @@ internal abstract class WormSegment : ModNPC
 			int type = i == segmentCount - 1 ? ModContent.NPCType<TTail>() : ModContent.NPCType<TBody>();
 			npc = NPC.NewNPC(source, (int)spawner.Center.X, (int)spawner.Center.Y, type, 0, segmentLength, parent.whoAmI);
 			parent = Main.npc[npc];
+			parent.netUpdate = true;
 
 			if (setRealLife)
 			{

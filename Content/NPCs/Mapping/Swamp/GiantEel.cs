@@ -4,9 +4,11 @@ using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.NPCs.Worms;
 using PathOfTerraria.Common.Subworlds.MappingAreas;
+using PathOfTerraria.Common.Systems.MobSystem;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.Dusts;
 using PathOfTerraria.Content.Gores;
+using System.IO;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
@@ -21,6 +23,13 @@ internal class GiantEel : ModNPC
 {
 	internal class GiantEelBody : WormSegment
 	{
+		public override void SetStaticDefaults()
+		{
+			base.SetStaticDefaults();
+
+			Main.npcFrameCount[Type] = 6;
+		}
+
 		public override void Defaults()
 		{
 			NPC.Size = new Vector2(50);
@@ -33,6 +42,17 @@ internal class GiantEel : ModNPC
 		public override bool CheckActive()
 		{
 			return false;
+		}
+
+		public override void FindFrame(int frameHeight)
+		{
+			if (NPC.ai[2] == 0)
+			{
+				NPC.ai[2] = Main.rand.Next(2) + 1;
+			}
+
+			NPC.frameCounter++;
+			NPC.frame.Y = frameHeight * (int)((NPC.frameCounter * 0.15f + NPC.whoAmI * MathHelper.PiOver2) % 3) + frameHeight * (int)((NPC.ai[2] - 1) * 3);
 		}
 
 		public override void AI()
@@ -66,6 +86,18 @@ internal class GiantEel : ModNPC
 
 	internal class GiantEelTail : GiantEelBody
 	{
+		public override void SetStaticDefaults()
+		{
+			base.SetStaticDefaults();
+
+			Main.npcFrameCount[Type] = 3;
+		}
+
+		public override void FindFrame(int frameHeight)
+		{
+			NPC.frameCounter++;
+			NPC.frame.Y = frameHeight * (int)((NPC.frameCounter * 0.15f + NPC.whoAmI * MathHelper.PiOver2) % 3);
+		}
 	}
 
 	private enum States
@@ -101,14 +133,19 @@ internal class GiantEel : ModNPC
 		//GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreLeg");
 	}
 
+	public override void SetStaticDefaults()
+	{
+		ArpgNPC.NoAffixesSet.Add(Type);
+	}
+
 	public override void SetDefaults()
 	{
 		NPC.aiStyle = -1;
 		NPC.lifeMax = 150000;
 		NPC.defense = 100;
 		NPC.damage = 50;
-		NPC.width = 62;
-		NPC.height = 62;
+		NPC.width = 50;
+		NPC.height = 50;
 		NPC.knockBackResist = 0f;
 		NPC.noGravity = true;
 		NPC.noTileCollide = true;
@@ -145,10 +182,12 @@ internal class GiantEel : ModNPC
 
 	public override void AI()
 	{
-		if (!_spawnedSegments && Main.netMode != NetmodeID.MultiplayerClient)
+		if (!_spawnedSegments)
 		{
-			WormSegment.SpawnWhole<GiantEelBody, GiantEelTail>(NPC.GetSource_FromAI(), NPC, 46, 16);
+			WormSegment.SpawnWhole<GiantEelBody, GiantEelTail>(NPC.GetSource_FromAI(), NPC, 42, 16);
 			_spawnedSegments = true;
+
+			NPC.netUpdate = true;
 		}
 
 		if (Math.Abs(NPC.velocity.X) > 0.01f)
@@ -172,6 +211,7 @@ internal class GiantEel : ModNPC
 			if (targetPlayer.DistanceSQ(NPC.Center) < aggro * aggro)
 			{
 				State = States.Chase;
+				Timer = 0;
 			}
 		}
 		else if (State == States.Chase)
@@ -187,6 +227,7 @@ internal class GiantEel : ModNPC
 
 					Vector2 reverseDirection = destination.DirectionFrom(NPC.Center);
 					_spline = Spline.InterpolateXY([NPC.Center, destination + reverseDirection * 650, destination - reverseDirection * 300 - new Vector2(0, 800)], 6);
+					NPC.netUpdate = true;
 				}
 			}
 			else
@@ -203,6 +244,7 @@ internal class GiantEel : ModNPC
 				{
 					MiscTimer = 0;
 					SplineIndex = 0;
+					NPC.netUpdate = true;
 				}
 			}
 
@@ -215,7 +257,16 @@ internal class GiantEel : ModNPC
 					State = States.Flee;
 					MiscTimer = 0;
 					AvoidWaterTimer = 0;
+					NPC.netUpdate = true;
 				}
+			}
+
+			if (targetPlayer.dead || !targetPlayer.active)
+			{
+				State = States.Flee;
+				MiscTimer = 0;
+				AvoidWaterTimer = 0;
+				NPC.netUpdate = true;
 			}
 		}
 		else if (State == States.Flee)
@@ -226,6 +277,14 @@ internal class GiantEel : ModNPC
 			{
 				State = States.Roaming;
 			}
+		}
+	}
+
+	public override void OnHitPlayer(Player target, Player.HurtInfo hurtInfo)
+	{
+		if (target.statLife - hurtInfo.Damage <= 0)
+		{
+			State = States.Flee;
 		}
 	}
 
@@ -248,5 +307,27 @@ internal class GiantEel : ModNPC
 
 		spriteBatch.Draw(tex, NPC.Center - screenPos, NPC.frame, drawColor, NPC.rotation, NPC.frame.Size() / 2f, 1f, flip, 0);
 		return false;
+	}
+
+	public override void SendExtraAI(BinaryWriter writer)
+	{
+		writer.Write((byte)_spline.Length);
+
+		for (int i = 0; i < _spline.Length; i++)
+		{
+			writer.WriteVector2(_spline[i]);
+		}
+	}
+
+	public override void ReceiveExtraAI(BinaryReader reader)
+	{
+		byte count = reader.ReadByte();
+
+		_spline = new Vector2[count];
+		
+		for (int i = 0; i < count; ++i)
+		{
+			_spline[i] = reader.ReadVector2();
+		}
 	}
 }

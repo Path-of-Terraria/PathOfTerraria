@@ -1,4 +1,5 @@
-﻿using Terraria.DataStructures;
+﻿using PathOfTerraria.Common.Systems.ModPlayers.LivesSystem;
+using Terraria.DataStructures;
 
 namespace PathOfTerraria.Common.Systems.ModPlayers;
 
@@ -19,7 +20,7 @@ public interface IGrabberNPC
 	}
 }
 
-public class GrabbedPlayer : ModPlayer
+public class GrabbedPlayer : ModPlayer, IPreDomainRespawnPlayer
 {
 	public int BeingGrabbed = -1;
 
@@ -74,8 +75,6 @@ public class GrabbedPlayer : ModPlayer
 
 	/// Note for posterity: The code in DrawEffects crashes if the player holds a torch if that code is put in this method. Why? Not sure.
 	//public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
-	//{
-	//}
 
 	public override void DrawEffects(PlayerDrawSet drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
 	{
@@ -86,6 +85,11 @@ public class GrabbedPlayer : ModPlayer
 	}
 
 	public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource)
+	{
+		BeingGrabbed = -1;
+	}
+
+	public void OnDomainRespawn()
 	{
 		BeingGrabbed = -1;
 	}

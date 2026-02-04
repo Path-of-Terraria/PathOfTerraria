@@ -153,11 +153,12 @@ internal class SwampCroc : ModNPC
 			}
 
 			NPCAimedTarget data = NPC.GetTargetData();
-			float dist = Collision.WetCollision(data.Position, data.Width, data.Height) ? 280 * 280 : 160 * 160;
+			float dist = Collision.WetCollision(data.Position - new Vector2(0, 40), data.Width, data.Height) ? 360 * 360 : 160 * 160;
 
-			if (ctx.Targeting.GetTargetCenter(NPC).DistanceSQ(NPC.Center) < 160 * 160)
+			if (ctx.Targeting.GetTargetCenter(NPC).DistanceSQ(NPC.Center) < dist)
 			{
 				State = States.Wake;
+				NPC.netUpdate = true;
 
 				Dust.NewDustPerfect(HeadPosition, ModContent.DustType<AlertDust>(), new Vector2(0, -6), 0);
 			}
@@ -182,6 +183,7 @@ internal class SwampCroc : ModNPC
 			if (ctx.Targeting.GetTargetCenter(NPC).DistanceSQ(NPC.Center) > dist || !Collision.CanHit(NPC, NPC.GetTargetData()))
 			{
 				State = States.Idle;
+				NPC.netUpdate = true;
 			}
 		}
 	}

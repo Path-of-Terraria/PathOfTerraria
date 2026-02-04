@@ -43,8 +43,6 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 
 	public override int Width => 3000 + 200 * Main.rand.Next(3);
 	public override int Height => MapHeight;
-	public override int[] WhitelistedCutTiles => [TileID.Cobweb];
-	public override int[] WhitelistedMiningTiles => [TileID.CrackedBlueDungeonBrick, TileID.Cobweb];
 	public override (int time, bool isDay) ForceTime => ((int)Main.dayLength / 2, SunDevourerSunEdit.Blackout > 0);
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new PassLegacy("Terrain", GenerateTerrain), new PassLegacy("SettleLiquids", SettleLiquidsStep.Generation)];
@@ -598,15 +596,21 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 	{
 		Liquid.UpdateLiquid();
 
-		if (NPC.CountNPCS(ModContent.NPCType<GiantEel>()) < Main.CurrentFrameFlags.ActivePlayersCount)
+		if (Main.ActivePlayers.GetEnumerator().MoveNext() && NPC.CountNPCS(ModContent.NPCType<GiantEel>()) < Main.CurrentFrameFlags.ActivePlayersCount)
 		{
-			NPC.NewNPC(new EntitySource_WorldGen(), Main.spawnTileX * 16, 120 * 16, ModContent.NPCType<GiantEel>(), 0, 0, 0, Main.CurrentFrameFlags.ActivePlayersCount - 1);
+			int npc = NPC.NewNPC(new EntitySource_WorldGen(), Main.spawnTileX * 16, 120 * 16, ModContent.NPCType<GiantEel>(), 0, 0, 0, Main.CurrentFrameFlags.ActivePlayersCount - 1);
+			Main.npc[npc].netUpdate = true;
 		}
 
 		if (!spawnedTemporaryContent && Main.ActivePlayers.GetEnumerator().MoveNext())
 		{
 			PlaceEncounters();
-			SpawnGenEntities();
+
+			if (Main.netMode != NetmodeID.MultiplayerClient)
+			{
+				SpawnGenEntities();
+			}
+
 			spawnedTemporaryContent = true;
 		}
 	}

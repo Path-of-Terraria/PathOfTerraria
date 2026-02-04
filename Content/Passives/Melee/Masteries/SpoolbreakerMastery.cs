@@ -59,7 +59,8 @@ internal class SpoolbreakerMastery : Passive
 
 			if (projectile.scale > 3f)
 			{
-				ExplosionHitbox.QuickSpawn(projectile.GetSource_Death(), target, (int)(damageDone * value / 100f), projectile.owner, new Vector2(200));
+				int damage = (int)(damageDone * value / 100f);
+				ExplosionHitbox.QuickSpawn(projectile.GetSource_Death(), target, damage, projectile.owner, new Vector2(200), ExplosionSpawnInfo.PlayerOwned(projectile.owner));
 				projectile.scale = 0f;
 				projectile.GetOwner().channel = false;
 			}

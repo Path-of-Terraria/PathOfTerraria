@@ -4,6 +4,24 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.Projectiles.Utility;
 
+public readonly record struct ExplosionSpawnInfo(bool Friendly = true, float Knockback = 8f, Vector2? Velocity = null, int BuffType = 0, int BuffLength = 0, bool CanSpawnProjectile = true)
+{
+	/// <summary>
+	/// Spawns a hostile projectile, only on the singleplayer or server.
+	/// </summary>
+	public static readonly ExplosionSpawnInfo HostileSpawn = new(false, CanSpawnProjectile: Main.netMode != NetmodeID.MultiplayerClient);
+
+	internal static readonly ExplosionSpawnInfo FriendlySpawn = new(true);
+
+	/// <summary>
+	/// Spawns a friendly projectile, only on the owner.
+	/// </summary>
+	public static ExplosionSpawnInfo PlayerOwned(int owner)
+	{
+		return FriendlySpawn with { CanSpawnProjectile = owner == Main.myPlayer };
+	}
+}
+
 /// <summary>
 /// Defines a generic "explosion" class with variable <see cref="Width"/> and <see cref="Height"/> - ai[0] and ai[1], 
 /// alongside <see cref="BuffId"/> + <see cref="BuffLength"/> (localAI[0] and [1]) for flexibility.
@@ -122,14 +140,24 @@ internal class ExplosionHitbox : ModProjectile
 		}
 	}
 
-	public static int QuickSpawn(IEntitySource source, Entity sourceEntity, int damage, int owner, Vector2 size, VFXPackage? package = null, bool friendly = true, float knockback = 8f, 
-		Vector2? velocity = null, int buffType = 0, int buffLength = 0)
+	/// <summary>
+	/// Quickly and easily spawns a <see cref="ExplosionHitbox"/> and also calls <see cref="VFXPackage"/> for visuals.<br/>
+	/// Use <paramref name="info"/>'s <see cref="ExplosionSpawnInfo.CanSpawnProjectile"/> to spawn the projectile only on the owner - 
+	/// ideally, either using <see cref="ExplosionSpawnInfo.HostileSpawn"/> or <see cref="ExplosionSpawnInfo.PlayerOwned(int)"/>.
+	/// </summary>
+	public static int QuickSpawn(IEntitySource source, Entity sourceEntity, int damage, int owner, Vector2 size, in ExplosionSpawnInfo info, in VFXPackage? package = null)
 	{
-		int type = friendly ? ModContent.ProjectileType<ExplosionHitboxFriendly>() : ModContent.ProjectileType<ExplosionHitbox>();
-		int proj = Projectile.NewProjectile(source, sourceEntity.Center, velocity ?? Vector2.Zero, type, damage, knockback, owner, size.X, size.Y);
-		Projectile projectile = Main.projectile[proj];
-		projectile.localAI[0] = buffType;
-		projectile.localAI[1] = buffLength;
+		int proj = -1;
+
+		if (info.CanSpawnProjectile)
+		{
+			int type = info.Friendly ? ModContent.ProjectileType<ExplosionHitboxFriendly>() : ModContent.ProjectileType<ExplosionHitbox>();
+			proj = Projectile.NewProjectile(source, sourceEntity.Center, info.Velocity ?? Vector2.Zero, type, damage, info.Knockback, owner, size.X, size.Y);
+			Projectile projectile = Main.projectile[proj];
+			projectile.localAI[0] = info.BuffType;
+			projectile.localAI[1] = info.BuffLength;
+		}
+
 		VFX(sourceEntity, package);
 		return proj;
 	}

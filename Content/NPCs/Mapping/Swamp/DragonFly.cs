@@ -1,4 +1,5 @@
 ﻿using NPCUtils;
+using PathOfTerraria.Common;
 using PathOfTerraria.Common.AI;
 using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
@@ -198,11 +199,11 @@ internal class DragonFly : ModNPC, IGrabberNPC
 		else if (State == States.ChaseFly)
 		{
 			Vector2 targetCenter = ctx.Targeting.GetTargetCenter(NPC);
-			NPC.velocity = Vector2.SmoothStep(NPC.velocity, NPC.DirectionTo(targetCenter) * 13, 0.1f);
+			NPC.velocity = Vector2.SmoothStep(NPC.velocity, NPC.SafeDirectionTo(targetCenter) * 13, 0.1f);
 
 			foreach (Player player in Main.ActivePlayers)
 			{
-				if (player.Hitbox.Intersects(NPC.Hitbox) && player.GetModPlayer<GrabbedPlayer>().BeingGrabbed == -1)
+				if (player.Hitbox.Intersects(NPC.Hitbox) && player.GetModPlayer<GrabbedPlayer>().BeingGrabbed == -1 && !player.dead)
 				{
 					CarryingPlayerWhoAmI = player.whoAmI;
 					State = States.CarryingPlayer;
@@ -219,6 +220,11 @@ internal class DragonFly : ModNPC, IGrabberNPC
 		}
 		else if (State == States.CarryingPlayer)
 		{
+			if (CarryingPlayer.dead || !CarryingPlayer.active)
+			{
+				HasLetGo = true;
+			}
+
 			if (!HasLetGo)
 			{
 				CarryingPlayer.GetModPlayer<GrabbedPlayer>().BeingGrabbed = NPC.whoAmI;

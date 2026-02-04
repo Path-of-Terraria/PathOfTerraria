@@ -241,7 +241,8 @@ public class Fireball : Skill
 
 				int buffType = Owner.HasTreePassive<FireballTree, SlowingSmolderingFury>() ? ModContent.BuffType<SlowburnDebuff>() : 0;
 				ExplosionHitbox.VFXPackage vfx = new(4, TorchDustType: DustType);
-				ExplosionHitbox.QuickSpawn(target.GetSource_Death(), target, explosionDamage, Projectile.owner, target.Size * sizeBuff, vfx, buffType: buffType, buffLength: 3 * 60);
+				ExplosionSpawnInfo spawnInfo = new ExplosionSpawnInfo(true, 8, null, buffType, 3 * 60, CanSpawnProjectile: Owner.whoAmI == Main.myPlayer);
+				ExplosionHitbox.QuickSpawn(target.GetSource_Death(), target, explosionDamage, Projectile.owner, target.Size * sizeBuff, spawnInfo, vfx);
 			}
 		}
 
@@ -409,7 +410,8 @@ public class Fireball : Skill
 				Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<ColdAura>(), 0, 0, Projectile.owner);
 			}
 
-			int proj = ExplosionHitbox.QuickSpawn(Projectile.GetSource_Death(), Projectile, (int)(Projectile.damage * 0.75f), Projectile.owner, Projectile.Size * 2, ExplosionVfx);
+			ExplosionSpawnInfo info = ExplosionSpawnInfo.PlayerOwned(Owner.whoAmI);
+			int proj = ExplosionHitbox.QuickSpawn(Projectile.GetSource_Death(), Projectile, (int)(Projectile.damage * 0.75f), Projectile.owner, Projectile.Size * 2, info, ExplosionVfx);
 			ElementalProjectile ele = Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>();
 			ele.AddElementalValues((ElementType.Fire, 0, 1), (ElementType.Cold, 0, 1));
 		}
@@ -445,7 +447,8 @@ public class Fireball : Skill
 			target.DelBuff(ignitedIndex);
 
 			IEntitySource src = Projectile.GetSource_Death();
-			int proj = ExplosionHitbox.QuickSpawn(src, Projectile, (int)(Projectile.damage * 4), Projectile.owner, Projectile.Size * 15, ExplosionHitbox.VFXPackage.None);
+			ExplosionSpawnInfo info = ExplosionSpawnInfo.PlayerOwned(Owner.whoAmI);
+			int proj = ExplosionHitbox.QuickSpawn(src, Projectile, (int)(Projectile.damage * 4), Projectile.owner, Projectile.Size * 15, info, ExplosionHitbox.VFXPackage.None);
 			ElementalProjectile ele = Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>();
 			ele.AddElementalValues((ElementType.Fire, 0, 1), (ElementType.Cold, 0, 1));
 
