@@ -243,7 +243,7 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 
 			// Debugging to show the calculated path.
 			// This'll only show in DEBUG, for the local player.
-			#if DEBUG
+#if DEBUG
 			if (Main.myPlayer == followPlayer)
 			{
 				foreach (Pathfinder.FoundPoint item in pathfinder.Path)
@@ -254,7 +254,7 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 					dust.noGravity = true;
 				}
 			}
-			#endif
+#endif
 		}
 		else
 		{
