@@ -217,7 +217,7 @@ internal class TutorialUIState : UIState
 				}
 			}
 		}
-		else if (Step == 12 && !tutPlr.Restarted)
+		else if (Step == 12 && !tutPlr.Restarted && !plr.HasItem(ModContent.ItemType<ArcaneObeliskItem>()))
 		{
 			plr.QuickSpawnItem(new EntitySource_Misc("Quest"), ModContent.ItemType<ArcaneObeliskItem>());
 		}

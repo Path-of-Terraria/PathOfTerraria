@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Common.UI.Components;
@@ -172,26 +173,50 @@ internal class MapDeviceShiftClickPlayer : ModPlayer
 
 	public override bool ShiftClickSlot(Item[] inventory, int context, int slot)
 	{
-		if (ItemSlot.ShiftInUse
-		&& context == ItemSlot.Context.InventoryItem
-		&& inventory[slot] is { IsAir: false }
-		&& SmartUiLoader.TryGetUiState(out MapDeviceState? map) && map is { Visible: true } && MapDeviceInterface.Entity is not null)
+		if (SmartUiLoader.TryGetUiState(out MapDeviceState? map) && map is { Visible: true } && MapDeviceInterface.Entity is not null)
 		{
-			Item[] storage = MapDeviceInterface.Entity.Storage;
-
-			for (int i = 0; i < MapDeviceEntity.StorageSize; i++)
+			if (context == ItemSlot.Context.InventoryItem && inventory[slot] is { IsAir: false }) // Move from inventory to storage/slot
 			{
-				ref Item item = ref storage[i];
-				if (!item.IsAir) { continue; }
+				// Move into main slot if there's space & not holding left ctrl
+				if (inventory[slot].ModItem is Map && MapDeviceInterface.Entity.StoredMap is { IsAir: true } && !Main.keyState.IsKeyDown(Keys.LeftControl))
+				{
+					Item invItem = inventory[slot].Clone();
+					inventory[slot].TurnToAir();
+					MapDeviceInterface.Entity.StoredMap = invItem;
+					SoundEngine.PlaySound(SoundID.Grab);
+					return true;
+				}
 
-				Item invItem = inventory[slot].Clone();
-				inventory[slot].TurnToAir();
-				item = invItem;
-				SoundEngine.PlaySound(SoundID.Grab);
-				break;
+				// Otherwise, move into storage
+				Item[] storage = MapDeviceInterface.Entity.Storage;
+
+				for (int i = 0; i < MapDeviceEntity.StorageSize; i++)
+				{
+					ref Item item = ref storage[i];
+					if (!item.IsAir) { continue; }
+
+					Item invItem = inventory[slot].Clone();
+					inventory[slot].TurnToAir();
+					item = invItem;
+					SoundEngine.PlaySound(SoundID.Grab);
+					break;
+				}
+
+				return true;
 			}
 
-			return true;
+			if (context == ItemSlot.Context.BankItem) // Move from storage to slot if needed
+			{
+				// Move into main slot if there's space & not holding left ctrl
+				if (inventory[slot].ModItem is Map && MapDeviceInterface.Entity.StoredMap is { IsAir: true } && !Main.keyState.IsKeyDown(Keys.LeftControl))
+				{
+					Item invItem = inventory[slot].Clone();
+					inventory[slot].TurnToAir();
+					MapDeviceInterface.Entity.StoredMap = invItem;
+					SoundEngine.PlaySound(SoundID.Grab);
+					return true;
+				}
+			}
 		}
 
 		return false;
