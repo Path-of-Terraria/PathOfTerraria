@@ -12,8 +12,6 @@ internal class WideSwingsMastery : Passive
 {
 	internal class WideSwingsPlayer : ModPlayer
 	{
-		public static Asset<Texture2D> PoisonIcon = null!;
-
 		internal int StacksCount => _stacks.Count;
 
 		private readonly List<int> _stacks = [];
@@ -24,11 +22,6 @@ internal class WideSwingsMastery : Passive
 		public void AddStack(int stack)
 		{
 			_stacks.Add(stack);
-		}
-
-		public override void Load()
-		{
-			PoisonIcon = ModContent.Request<Texture2D>("PathOfTerraria/Assets/Misc/VFX/PoisonIcon");
 		}
 
 		public override void PostUpdateEquips()
@@ -43,7 +36,10 @@ internal class WideSwingsMastery : Passive
 
 		public override void ModifyItemScale(Item item, ref float scale)
 		{
-			scale += _stacks.Count / 10f;
+			if (item.noMelee)
+			{
+				scale += _stacks.Count / 10f;
+			}
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
