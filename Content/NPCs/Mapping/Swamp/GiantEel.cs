@@ -6,6 +6,7 @@ using PathOfTerraria.Common.NPCs.Worms;
 using PathOfTerraria.Common.Subworlds.MappingAreas;
 using PathOfTerraria.Common.Systems.MobSystem;
 using PathOfTerraria.Common.World.Generation;
+using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.Dusts;
 using PathOfTerraria.Content.Gores;
 using System.IO;
@@ -204,7 +205,7 @@ internal class GiantEel : ModNPC
 
 		if (State == States.Roaming)
 		{
-			float aggro = Utils.Remap(targetPlayer.Center.Y / 16f, 40, SwampArea.FloorY, 4000, 1200, true);
+			float aggro = Utils.Remap(targetPlayer.Center.Y / 16f, 40, SwampArea.FloorY, 3000, 1200, true) * (targetPlayer.HasBuff<SwampAlgaeBuff>() ? 1.3333f : 1);
 			Vector2 targetDirection = NPC.DirectionTo(new Vector2(targetPlayer.Center.X, MathF.Sin(Timer * 0.008f) * (30 * 16) + 180 * 16)) * new Vector2(2.5f, 1);
 			NPC.velocity = Vector2.SmoothStep(NPC.velocity, targetDirection * 8, 0.05f) + new Vector2(MathF.Sin(Timer * 0.04f) * 0.25f, 0);
 
@@ -252,7 +253,7 @@ internal class GiantEel : ModNPC
 			{
 				AvoidWaterTimer++;
 
-				if (AvoidWaterTimer > 120)
+				if (AvoidWaterTimer > 60)
 				{
 					State = States.Flee;
 					MiscTimer = 0;
@@ -285,6 +286,7 @@ internal class GiantEel : ModNPC
 		if (target.statLife - hurtInfo.Damage <= 0)
 		{
 			State = States.Flee;
+			MiscTimer = 0;
 		}
 	}
 
@@ -307,6 +309,16 @@ internal class GiantEel : ModNPC
 
 		spriteBatch.Draw(tex, NPC.Center - screenPos, NPC.frame, drawColor, NPC.rotation, NPC.frame.Size() / 2f, 1f, flip, 0);
 		return false;
+	}
+
+	public override void BossHeadRotation(ref float rotation)
+	{
+		rotation = NPC.rotation;
+	}
+
+	public override void BossHeadSpriteEffects(ref SpriteEffects spriteEffects)
+	{
+		spriteEffects = NPC.velocity.X >= 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
 	}
 
 	public override void SendExtraAI(BinaryWriter writer)

@@ -12,10 +12,10 @@ internal class SwampSpawns : GlobalNPC
 		{
 			pool.Clear();
 
-			if (spawnInfo.Water)
-			{
-				pool[ModContent.NPCType<SwampCroc>()] = 0.3f;
-			}
+			//if (spawnInfo.Water)
+			//{
+			//	pool[ModContent.NPCType<SwampCroc>()] = 0.3f;
+			//}
 		}
 	}
 }
