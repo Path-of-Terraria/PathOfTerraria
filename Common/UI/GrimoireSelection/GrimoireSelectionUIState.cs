@@ -381,7 +381,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 			{
 				foreach (ItemAffix affix in affixes)
 				{
-					affix.ApplyTooltips(Main.LocalPlayer, material.GetInstanceData().RealLevel, handler);
+					affix.ApplyTooltips(Main.LocalPlayer, material, handler);
 					affix.ApplyAffix(_modificationsPlayer, _modificationsPlayer.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier, material);
 				}
 			}

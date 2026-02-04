@@ -106,7 +106,7 @@ public static class PoTItemHelper
 	    PoTInstanceItemData data = item.GetInstanceData();
 	    foreach (ItemAffix affix in data.Affixes)
 	    {
-	        affix.Value = AffixRegistry.GetRandomAffixValue(affix, GetItemLevel.Invoke(item));
+	        affix.Value = AffixRegistry.GetRandomAffixValue(affix, item, GetItemLevel.Invoke(item));
 	    }
 	}
 
@@ -123,7 +123,7 @@ public static class PoTItemHelper
 			return;
 		}
 
-		ItemAffixData chosenAffix = AffixRegistry.GetRandomAffixDataByItemType(data.ItemType, excludedAffixes: data.Affixes.Select(a => a.GetData()));
+		ItemAffixData chosenAffix = AffixRegistry.GetRandomAffixDataByItemType(data.ItemType, excludedAffixes: data.Affixes.Select(a => a.GetData(item)));
 		if (chosenAffix is null)
 		{
 			return;
@@ -135,7 +135,7 @@ public static class PoTItemHelper
 			return;
 		}
 
-		affix.Value = AffixRegistry.GetRandomAffixValue(affix, GetItemLevel.Invoke(item));
+		affix.Value = AffixRegistry.GetRandomAffixValue(affix, item, GetItemLevel.Invoke(item));
 		if (affix.Value == 0)
 		{
 			return; //If the affix has no value, don't add it. This usually happens when there's no TierData associated with the given item

@@ -70,23 +70,20 @@ public class ItemAffixData
 
 	public ItemType GetEquipTypes()
 	{
-		string[] split = EquipTypes.Split(' ');
-		ItemType types = ItemType.None;
-
-		foreach (string item in split)
+		return GetSeparateEquipTypes().Aggregate((a, b) => a | b);
+	}
+	private IEnumerable<ItemType> GetSeparateEquipTypes()
+	{
+		foreach (string item in EquipTypes.Split(' '))
 		{
 			if (Enum.TryParse(item, out ItemType type))
 			{
-				types |= type;
+				yield return type;
+				continue;
 			}
-			else
-			{
-				Console.WriteLine($"Affix attempted to load nonexisting {item} ItemType enumeration. Types: " + EquipTypes);
-				Console.WriteLine(Environment.StackTrace);
-			}
+			
+			PoTMod.Instance.Logger.Error($"Affix attempted to load non-existing {item} ItemType enumeration. Types: {EquipTypes}\n{Environment.StackTrace}");
 		}
-
-		return types;
 	}
 
 	public Influence GetInfluences()
