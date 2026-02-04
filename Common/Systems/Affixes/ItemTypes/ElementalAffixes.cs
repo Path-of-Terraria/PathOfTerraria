@@ -130,3 +130,36 @@ internal class ChaosFlatDamage : ItemAffix
 		return base.CreateDefaultTooltip(player, item) with { Value = (int)Math.Round(Value) };
 	}
 }
+
+internal class ExtraFireDamage : ItemAffix
+{
+	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+	{
+		ref ElementalDamage.ElementalDamage damage = ref player.GetModPlayer<ElementalPlayer>().Container[ElementType.Fire].DamageModifier;
+		float bonus = player.GetWeaponDamage(item) * (Value / 100f);
+
+		damage = damage.AddModifiers((int)Math.Round(bonus), null);
+	}
+}
+
+internal class ExtraLightningDamage : ItemAffix
+{
+	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+	{
+		ref ElementalDamage.ElementalDamage damage = ref player.GetModPlayer<ElementalPlayer>().Container[ElementType.Lightning].DamageModifier;
+		float bonus = player.GetWeaponDamage(item) * (Value / 100f);
+
+		damage = damage.AddModifiers((int)Math.Round(bonus), null);
+	}
+}
+
+internal class ExtraColdDamage : ItemAffix
+{
+	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+	{
+		ref ElementalDamage.ElementalDamage damage = ref player.GetModPlayer<ElementalPlayer>().Container[ElementType.Cold].DamageModifier;
+		float bonus = player.GetWeaponDamage(item) * (Value / 100f);
+
+		damage = damage.AddModifiers((int)Math.Round(bonus), null);
+	}
+}
