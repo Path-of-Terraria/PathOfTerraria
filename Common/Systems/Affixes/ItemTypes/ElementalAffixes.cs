@@ -131,39 +131,6 @@ internal class ChaosFlatDamage : ItemAffix
 	}
 }
 
-internal class SubExtraFireDamage : ItemAffix
-{
-	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
-	{
-		ref ElementalDamage.ElementalDamage damage = ref player.GetModPlayer<ElementalPlayer>().Container[ElementType.Fire].DamageModifier;
-		float bonus = player.GetWeaponDamage(item) * (Value / 100f);
-
-		damage = damage.AddModifiers((int)Math.Round(bonus), null);
-	}
-}
-
-internal class SubExtraLightningDamage : ItemAffix
-{
-	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
-	{
-		ref ElementalDamage.ElementalDamage damage = ref player.GetModPlayer<ElementalPlayer>().Container[ElementType.Lightning].DamageModifier;
-		float bonus = player.GetWeaponDamage(item) * (Value / 100f);
-
-		damage = damage.AddModifiers((int)Math.Round(bonus), null);
-	}
-}
-
-internal class SubExtraColdDamage : ItemAffix
-{
-	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
-	{
-		ref ElementalDamage.ElementalDamage damage = ref player.GetModPlayer<ElementalPlayer>().Container[ElementType.Cold].DamageModifier;
-		float bonus = player.GetWeaponDamage(item) * (Value / 100f);
-
-		damage = damage.AddModifiers((int)Math.Round(bonus), null);
-	}
-}
-
 internal class ExtraFireDamage : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)

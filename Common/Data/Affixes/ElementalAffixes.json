@@ -528,8 +528,8 @@
 		]
 	},
 	{
-		"affixType": "SubExtraFireDamage",
-		"equipTypes": "Magic Wand",
+		"affixType": "ExtraFireDamage",
+		"equipTypes": "Magic -Staff",
 		"tiers": [
 			{
 				"minValue": 2,
@@ -558,8 +558,8 @@
 		]
 	},
 	{
-		"affixType": "SubExtraLightningDamage",
-		"equipTypes": "Magic Wand",
+		"affixType": "ExtraLightningDamage",
+		"equipTypes": "Magic -Staff",
 		"tiers": [
 			{
 				"minValue": 2,
@@ -588,8 +588,8 @@
 		]
 	},
 	{
-		"affixType": "SubExtraColdDamage",
-		"equipTypes": "Magic Wand",
+		"affixType": "ExtraColdDamage",
+		"equipTypes": "Magic -Staff",
 		"tiers": [
 			{
 				"minValue": 2,
