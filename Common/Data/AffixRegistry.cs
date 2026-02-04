@@ -31,7 +31,9 @@ public class AffixRegistry : ILoadable
 
 		foreach (string entry in AllItemData.Select(d => $"'{d.EquipTypes}'->'{d.AffixType}'").OrderBy(x => x))
 		{
-			Console.WriteLine($"Affix data registered: {entry}.");
+#if DEBUG
+			mod.Logger.Debug($"Affix data registered: {entry}.");
+#endif
 		}
 	}
 
@@ -45,13 +47,15 @@ public class AffixRegistry : ILoadable
 	public static ItemAffixData? TryGetAffixData(Type affixType, ItemType itemType)
 	{
 		Debug.Assert(BitOperations.PopCount((ulong)itemType) == 1);
-		
+
 		if (ByAffixAndItemType.TryGetValue((affixType, itemType), out ItemAffixData? values))
 		{
 			return values;
 		}
 
-		PoTMod.Instance.Logger.Error($"ItemAffixData not found for affix-item type pair ({affixType.Name}, {itemType}).");
+		string msg = $"ItemAffixData not found for affix-item type pair ({affixType.Name}, {itemType}).";
+		PoTMod.Instance.Logger.Error(msg);
+		Debug.Fail(msg);
 		return null;
 	}
 
@@ -86,9 +90,9 @@ public class AffixRegistry : ILoadable
 		var typesByName = AssemblyManager.GetLoadableTypes(ModContent.GetInstance<PoTMod>().Code)
 			.Where(x => typeof(Affix).IsAssignableFrom(x) && !x.IsAbstract)
 			.ToDictionary(x => x.Name);
-		
+
 		ByAffixAndItemType.EnsureCapacity(typesByName.Count);
-		ByItemType.EnsureCapacity(32);
+		ByItemType.EnsureCapacity((int)ItemType.TypeCount);
 
 		foreach (Stream jsonStream in jsonFiles
 			.Where(path => path.StartsWith("Common/Data/Affixes") && path.EndsWith(".json"))
@@ -109,7 +113,7 @@ public class AffixRegistry : ILoadable
 					PoTMod.Instance.Logger.Warn($"Affix of type {data.AffixType} not found.");
 					continue;
 				}
-				
+
 				AddAffixData(affixType, data);
 			}
 		}
@@ -132,7 +136,7 @@ public class AffixRegistry : ILoadable
 		foreach (int bitIndex in bits)
 		{
 			var itemType = (ItemType)(1ul << bitIndex);
-			
+
 			AddToDictList(ByItemType, itemType, data);
 
 			if (!ByAffixAndItemType.TryAdd((affixType, itemType), data))

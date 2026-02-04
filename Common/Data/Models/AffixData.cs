@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using PathOfTerraria.Common.Enums;
 
@@ -33,45 +35,45 @@ public class ItemAffixData
 	public (int MinInclusive, int MaxInclusive) GetPossibleTierRange(int level)
 	{
 		var eligibleTiers = Tiers.Where(t => t.MinimumLevel <= level).ToList();
-		
+
 		return (0, eligibleTiers.Count - 1);
 	}
 
 	public TierData GetAppropriateTierData(int level, out int tierIndex)
-    {
-        var eligibleTiers = Tiers.Where(t => t.MinimumLevel <= level).ToList();
+	{
+		var eligibleTiers = Tiers.Where(t => t.MinimumLevel <= level).ToList();
 
 		tierIndex = 0;
 
-        if (eligibleTiers.Count == 0)
-        {
-            return null;
-        }
+		if (eligibleTiers.Count == 0)
+		{
+			return null;
+		}
 
-        float totalWeight = eligibleTiers.Sum(t => t.Weight);
+		float totalWeight = eligibleTiers.Sum(t => t.Weight);
 
-        float randomWeight = (float) Main.rand.NextDouble() * totalWeight;
-        float cumulativeWeight = 0;
+		float randomWeight = (float)Main.rand.NextDouble() * totalWeight;
+		float cumulativeWeight = 0;
 
-        foreach (TierData tier in eligibleTiers)
-        {
-            cumulativeWeight += tier.Weight;
+		foreach (TierData tier in eligibleTiers)
+		{
+			cumulativeWeight += tier.Weight;
 
-            if (randomWeight <= cumulativeWeight)
-            {
+			if (randomWeight <= cumulativeWeight)
+			{
 				tierIndex = eligibleTiers.IndexOf(tier);
-                return tier;
-            }
-        }
+				return tier;
+			}
+		}
 
 		tierIndex = eligibleTiers.Count - 1;
-        return eligibleTiers.Last(); //Just in case we don't return a tier?
-    }
+		return eligibleTiers.Last(); //Just in case we don't return a tier?
+	}
 
 	public ItemType GetEquipTypes()
 	{
 		ItemType result = 0;
-		
+
 		foreach (string item in EquipTypes.Split(' '))
 		{
 			bool? negate = item.StartsWith('-') ? true : (item.StartsWith('+') ? false : null);
@@ -81,8 +83,10 @@ public class ItemAffixData
 				result = negate != true ? (result | type) : (result &= ~type);
 				continue;
 			}
-			
-			PoTMod.Instance.Logger.Error($"Affix attempted to load non-existing '{item}' ItemType enumeration. Types: {EquipTypes}\n{Environment.StackTrace}");
+
+			string msg = $"Affix attempted to load non-existing '{item}' ItemType enumeration. Types: {EquipTypes}\n{Environment.StackTrace}";
+			PoTMod.Instance.Logger.Error(msg);
+			Debug.Fail(msg);
 		}
 
 		return result;
