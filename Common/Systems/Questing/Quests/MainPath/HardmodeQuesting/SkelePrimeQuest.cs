@@ -57,7 +57,7 @@ internal class SkelePrimeQuest() : Quest
 		return "Overworld";
 	}
 
-	public override bool Available()
+	protected override bool InternalAvailable()
 	{
 		Quest destroyerQuest = GetLocalPlayerInstance<DestroyerQuest>();
 		RavencrestSubworld subworld = ModContent.GetInstance<RavencrestSubworld>();

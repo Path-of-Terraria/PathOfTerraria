@@ -12,6 +12,8 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader.Config;
 
+#nullable enable
+
 namespace PathOfTerraria.Common.Encounters;
 
 internal enum EnemySpawnEffect
@@ -71,6 +73,9 @@ internal record struct SpawnPlacement()
 	/// <summary> How many dynamic placement attempts to perform before giving up. High values may affect performance. </summary>
 	[Range(1, 1024), Increment(1), DefaultValue(10)]
 	public int MaxSearchAttempts { get; set; } = 10;
+	/// <summary> Predicate for declaring custom placement requirements. Cannot be serialized. </summary>
+	[JsonIgnore]
+	public Func<Point16, bool>? CustomPredicate;
 
 	/// <summary> Guesses defaults to use for a given NPC sample. Not always ideal. </summary>
 	public SpawnPlacement WithDefaults(int npcType)
@@ -126,7 +131,7 @@ internal static class EnemySpawning
 	/// <br/> Can fail if spawn logic gives up on picking a viable position.
 	/// <br/> Will fail if there are too many enemies in the world.
 	/// </summary>
-	public static bool TrySpawningEnemy(IEntitySource source, in EnemySpawn spawn, [NotNullWhen(true)] out NPC npc)
+	public static bool TrySpawningEnemy(IEntitySource source, in EnemySpawn spawn, [NotNullWhen(true)] out NPC? npc)
 	{
 		if (Main.netMode == NetmodeID.MultiplayerClient)
 		{
@@ -373,6 +378,12 @@ internal static class EnemySpawning
 				{
 					continue;
 				}
+			}
+
+			// Run custom checks. Before the most expensive one.
+			if (spawn.CustomPredicate?.Invoke(new(x, y)) == false)
+			{
+				continue;
 			}
 
 			// As the last check, perform an optional floodfill loop to see if we can reach the encounter's center.

@@ -345,8 +345,6 @@ public class OuroborosPoisonGas : ModProjectile
     private const float GasRadius = 64f;
     private const int PoisonTickInterval = 30; 
 
-    private int poisonTickTimer = 0;
-
     public override void SetDefaults()
     {
 	    Projectile.Size = new(GasRadius * 2); 

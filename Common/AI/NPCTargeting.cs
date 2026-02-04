@@ -13,7 +13,7 @@ internal sealed class NPCTargeting : NPCComponent
 	public struct Ctx(NPC npc)
 	{
 		public NPC NPC = npc;
-		public bool ForceReset;
+		public bool ForceReset = false;
 	}
 
 	private uint lastTickCount;
@@ -39,7 +39,7 @@ internal sealed class NPCTargeting : NPCComponent
 		uint tickCount = Main.GameUpdateCount;
 		float deltaTime = (lastTickCount != 0 ? (tickCount - lastTickCount) : 1) * TimeSystem.LogicDeltaTime;
 
-		NPCAimedTarget target = npc.GetTargetData();
+		NPCAimedTarget target = npc.GetTargetData(false);
 		Vector2 relativeTargetCenter = !target.Invalid ? (target.Center - npc.Center) : default;
 
 		AimVector = lastTickCount == 0 ? relativeTargetCenter : new Vector2

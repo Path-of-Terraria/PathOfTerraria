@@ -44,11 +44,6 @@ internal class FirstQuest : Quest
 		];
 	}
 
-	public override bool Available()
-	{
-		return true;
-	}
-
 	public override string MarkerLocation()
 	{
 		return "";

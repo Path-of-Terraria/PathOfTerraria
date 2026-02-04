@@ -112,7 +112,7 @@ internal class TutorialUIState : UIState
 			{
 				Step = 12;
 
-				if (!Quest.GetLocalPlayerInstance<FirstQuest>().CanBeStarted)
+				if (!Quest.GetLocalPlayerInstance<FirstQuest>().QuestNotStarted)
 				{
 					Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<FirstQuest>();
 				}

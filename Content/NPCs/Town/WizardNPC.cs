@@ -145,10 +145,12 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 		{
 			return Quest.GetLocalPlayerInstance<WizardStartQuest>();
 		}
+
 		if (QuestUnlockManager.CanStartQuest<EoLQuest>())
 		{
 			return Quest.GetLocalPlayerInstance<EoLQuest>();
 		}
+
 		return Quest.GetLocalPlayerInstance<WizardStartQuest>(); //Shouldn't be possible, but just in case
 	}
 
@@ -156,14 +158,8 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
 		
-		Quest startQuest = Quest.GetLocalPlayerInstance<WizardStartQuest>();
-		if (startQuest.Active || startQuest.Completed) //Don't display the shop until the player has received the first quest
-		{
-			button = Language.GetTextValue("LegacyInterface.28"); //Shop
-		}
-
 		bool hasAvailableQuest = QuestUnlockManager.CanStartQuest<WizardStartQuest>() ||
-		                         QuestUnlockManager.CanStartQuest<EoLQuest>();
+		    QuestUnlockManager.CanStartQuest<EoLQuest>();
 
 		button2 = hasAvailableQuest ? Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest") : "";
 	}
@@ -173,6 +169,7 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 		if (firstButton)
 		{
 			shopName = "Shop";
+			return;
 		}
 		
 		Quest quest = DetermineNewestQuest();

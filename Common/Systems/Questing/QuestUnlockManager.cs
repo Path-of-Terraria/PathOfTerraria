@@ -17,12 +17,15 @@ internal class QuestUnlockManager : ModSystem
 		return CanStartQuest(ModContent.GetInstance<T>().FullName);
 	}
 
+	/// <summary>
+	/// Whether this quest is able to be started, <b>BUT NOT</b> if it's available. <see cref="Quest.Available"/> is used for if a quest can be obtained.
+	/// </summary>
 	public static bool CanStartQuest(string name)
 	{
 		// We need to use TryGetValue here as otherwise very early access to this method can throw KeyNotFound.
 		// This is because the isAvailable population occurs late in the update process.
 		QuestUnlockManager manager = ModContent.GetInstance<QuestUnlockManager>();
-		return manager.isAvailable.TryGetValue(name, out bool value) && value && Quest.GetLocalPlayerInstance(name).CanBeStarted;
+		return manager.isAvailable.TryGetValue(name, out bool value) && value && Quest.GetLocalPlayerInstance(name).QuestNotStarted;
 	}
 
 	public static bool LocationHasQuest(string location)
@@ -42,7 +45,7 @@ internal class QuestUnlockManager : ModSystem
 
 		foreach (Quest quest in quests)
 		{
-			isAvailable[quest.FullName] = quest.CanBeStarted && quest.Available();
+			isAvailable[quest.FullName] = quest.Available();
 
 			if (isAvailable[quest.FullName])
 			{

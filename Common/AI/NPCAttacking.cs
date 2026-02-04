@@ -1,4 +1,4 @@
-﻿//#define NEVER_ATTACK
+﻿// #define NEVER_ATTACK
 
 using System.IO;
 using PathOfTerraria.Common.NPCs.Components;
@@ -27,7 +27,7 @@ internal sealed class AttackingData()
 	public ushort LengthInTicks = 60;
 	public ushort NoGravityLength = 15;
 	public ushort CooldownLength = 60;
-	public (float Slide, float Friction) Movement = (+0.4f, 0.9f);
+	public (float Slide, float GroundFriction, float AirFriction) Movement = (+0.4f, 0.9f, 0.95f);
 	public (ushort Start, ushort End, EntityKind Filter) Damage = (20, 35, DamageInstance.EnemyAttackFilter);
 	public (ushort Start, ushort End, Vector2 Velocity) Dash = (20, 35, new(10f, 5f));
 	public (Point16 Size, Vector2 Extent, Vector2 Offset) Hitbox = (new(56, 56), new(24f, 32f), new(+12f, +2f));
@@ -52,7 +52,7 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 		public NPCTargeting Tracking = npc.GetGlobalNPC<NPCTargeting>();
 		public NPCMovement? Movement = npc.TryGetGlobalNPC(out NPCMovement c) ? c : null;
 		public Vector2 TargetCenter = npc.GetGlobalNPC<NPCTargeting>().GetTargetCenter(npc);
-		public Rectangle TargetRect = npc.GetTargetData().Hitbox;
+		public Rectangle TargetRect = npc.GetTargetData(false).Hitbox;
 	}
 
 	public struct Result()
@@ -107,20 +107,15 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 		}
 	}
 
-	public bool TryStarting(in Context ctx)
+	public bool StartBehaviors(in Context ctx)
 	{
 #if NEVER_ATTACK
 		return false;
 #endif
 
 		NPC npc = ctx.NPC;
-
-		if (Data.Progress >= 0 || Data.Cooldown.Value != 0)
-		{
-			return false;
-		}
-
 		Vector2 targetDiff = ctx.TargetCenter - ctx.Center;
+
 		if (MathF.Abs(targetDiff.X) > Data.InitiationRange.X || MathF.Abs(targetDiff.Y) > Data.InitiationRange.Y)
 		{
 			return false;
@@ -131,15 +126,19 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 			return false;
 		}
 
-		Start(in ctx);
-
-		return true;
+		return TryStarting(in ctx);
 	}
 
-	public void Start(in Context ctx)
+	public bool TryStarting(in Context ctx, bool bypassCooldowns = false)
 	{
-		_ = ctx;
+		NPC npc = ctx.NPC;
+
+		if (Data.Progress >= 0) { return false; }
+		if (!bypassCooldowns && Data.Cooldown.Value != 0) { return false; }
+
 		Data.Progress = 0;
+
+		return true;
 	}
 
 	public Result ManualUpdate(in Context ctx)
@@ -156,7 +155,7 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 		npc.noGravity = Data.NoGravityLength != 0 ? ContentSamples.NpcsByNetId[npc.type].noGravity : npc.noGravity;
 
 		// Check if we can initiate an attack.
-		if (!Data.ManualInitiation && (!Data.InitiateOnlyOnGround || npc.velocity.Y == 0f) && TryStarting(in ctx))
+		if (!Data.ManualInitiation && (!Data.InitiateOnlyOnGround || npc.velocity.Y == 0f) && StartBehaviors(in ctx))
 		{
 			result.Initiated = true;
 		}
@@ -189,7 +188,8 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 				ctx.Tracking.AimLag = Vector2.Lerp(Data.AimLag.Value.Min, Data.AimLag.Value.Max, aimLagFactor);
 
 				// Slow-slide.
-				npc.velocity.X = Data.Movement.Slide * Sign;
+				if (Data.Movement.Slide != 0f) { npc.velocity.X = Data.Movement.Slide * Sign; }
+				npc.velocity.X *= npc.velocity.Y == 0f ? Data.Movement.GroundFriction : Data.Movement.AirFriction;
 			}
 			else if (Data.Progress == Data.Damage.Start)
 			{
@@ -213,9 +213,9 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 			else
 			{
 				// Slow down.
-				npc.velocity.X *= Data.Movement.Friction;
+				npc.velocity.X *= npc.velocity.Y == 0f ? Data.Movement.GroundFriction : Data.Movement.AirFriction;
 				// But also defy gravity for a few ticks.
-				npc.noGravity = Data.Progress >= Data.Damage.Start && Data.Progress < (Data.Damage.Start + Data.NoGravityLength);
+				npc.noGravity = Data.NoGravityLength != 0 ? (Data.Progress >= Data.Damage.Start && Data.Progress < (Data.Damage.Start + Data.NoGravityLength)) : npc.noGravity;
 			}
 
 			// Force direction.

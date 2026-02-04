@@ -92,6 +92,7 @@ internal sealed class ConfluxRifts : ModSystem
 	public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
 	{
 		progressBarLayer ??= new LegacyGameInterfaceLayer($"{nameof(PathOfTerraria)}/ConfluxRiftProgress", DrawProgressBar, InterfaceScaleType.UI);
+		progressBarLayer.Active = true;
 		layers.Insert(Math.Max(0, layers.FindIndex(l => l.Name.Equals("Vanilla: Mouse Text")) - 1), progressBarLayer);
 	}
 
