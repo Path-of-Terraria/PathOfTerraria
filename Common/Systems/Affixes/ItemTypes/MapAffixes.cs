@@ -112,7 +112,7 @@ public class MapIncreasedBehaviourAffix : MapAffix
 
 public class EoLDaylightAffix : MapAffix
 {
-	protected override AffixTooltipLine CreateDefaultTooltip(Player player, int itemLevel)
+	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
 	{
 		return new AffixTooltipLine
 		{
