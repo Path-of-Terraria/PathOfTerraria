@@ -45,8 +45,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 	public override int Height => MapHeight;
 	public override (int time, bool isDay) ForceTime => ((int)Main.dayLength / 2, SunDevourerSunEdit.Blackout > 0);
 
-	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new PassLegacy("Terrain", GenerateTerrain), new PassLegacy("Arena", SwampArenaGeneration.Generate),
-		new PassLegacy("SettleLiquids", SettleLiquidsStep.Generation)];
+	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new PassLegacy("Terrain", GenerateTerrain), new PassLegacy("SettleLiquids", SettleLiquidsStep.Generation)];
 
 	private void GenerateTerrain(GenerationProgress progress, GameConfiguration configuration)
 	{
@@ -168,7 +167,10 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Clouds");
 		FastNoiseLite cloudNoise = GenerateClouds(progress);
 
-		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Growing");
+        progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Clouds");
+		SwampArenaGeneration.Generate(progress, configuration);
+
+        progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Growing");
 		CleanUpAndDetail(progress, cloudNoise);
 	}
 
