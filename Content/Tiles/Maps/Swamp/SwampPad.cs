@@ -1,5 +1,5 @@
-﻿using PathOfTerraria.Common.Subworlds.MappingAreas;
-using PathOfTerraria.Common.Tiles.FramingKinds;
+﻿using PathOfTerraria.Common.Tiles.FramingKinds;
+using PathOfTerraria.Content.Swamp;
 using SubworldLibrary;
 using Terraria.ID;
 

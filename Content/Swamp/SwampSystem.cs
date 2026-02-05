@@ -1,6 +1,7 @@
-﻿using SubworldLibrary;
+﻿using PathOfTerraria.Content.Swamp;
+using SubworldLibrary;
 
-namespace PathOfTerraria.Common.Subworlds.MappingAreas.SwampAreaContent;
+namespace PathOfTerraria.Content.Swamp;
 
 internal class SwampSystem : ModSystem
 {

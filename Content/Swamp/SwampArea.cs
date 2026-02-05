@@ -1,10 +1,12 @@
 ﻿using PathOfTerraria.Common.Encounters;
-using PathOfTerraria.Common.Subworlds.MappingAreas.SwampAreaContent;
+using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.Subworlds.MappingAreas;
 using PathOfTerraria.Common.Tiles.FramingKinds;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Passes;
 using PathOfTerraria.Common.World.Utilities;
 using PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
+using PathOfTerraria.Content.Swamp.NPCs;
 using PathOfTerraria.Content.Tiles.Maps.Swamp;
 using PathOfTerraria.Content.Walls;
 using PathOfTerraria.Utilities;
@@ -19,7 +21,7 @@ using Terraria.Localization;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
-namespace PathOfTerraria.Common.Subworlds.MappingAreas;
+namespace PathOfTerraria.Content.Swamp;
 
 #nullable enable
 
@@ -42,8 +44,6 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 
 	public override int Width => 3000 + 200 * Main.rand.Next(3);
 	public override int Height => MapHeight;
-	public override int[] WhitelistedCutTiles => [TileID.Cobweb];
-	public override int[] WhitelistedMiningTiles => [TileID.CrackedBlueDungeonBrick, TileID.Cobweb];
 	public override (int time, bool isDay) ForceTime => ((int)Main.dayLength / 2, SunDevourerSunEdit.Blackout > 0);
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new PassLegacy("Terrain", GenerateTerrain), new PassLegacy("SettleLiquids", SettleLiquidsStep.Generation)];
@@ -51,7 +51,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 	private void GenerateTerrain(GenerationProgress progress, GameConfiguration configuration)
 	{
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Terrain");
-		progress.Set(0);
+		progress.CurrentPassWeight = 1;
 
 		Main.worldSurface = WaterY + 10;
 		Main.rockLayer = WaterY + 40;
@@ -315,7 +315,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 		for (int i = 0; i < 150; ++i)
 		{
 			Point16 firstPoint = Random.Next(leaves);
-			Vector2 one = firstPoint.ToVector2() + OpenExtensions.GetDirectionRandom(OpenExtensions.GetUnsolidOpenings(firstPoint.X, firstPoint.Y, false, false)).ToVector2();
+			Vector2 one = firstPoint.ToVector2() + OpenExtensions.GetUnsolidOpenings(firstPoint.X, firstPoint.Y, false, false).GetDirectionRandom().ToVector2();
 
 			Point16 secondPoint;
 
@@ -324,7 +324,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 				secondPoint = Random.Next(leaves);
 			} while (firstPoint == secondPoint || one.DistanceSQ(secondPoint.ToVector2()) > 700 * 700);
 
-			Vector2 two = secondPoint.ToVector2() + OpenExtensions.GetDirectionRandom(OpenExtensions.GetUnsolidOpenings(secondPoint.X, secondPoint.Y, false, false)).ToVector2();
+			Vector2 two = secondPoint.ToVector2() + OpenExtensions.GetUnsolidOpenings(secondPoint.X, secondPoint.Y, false, false).GetDirectionRandom().ToVector2();
 			float distance = two.Distance(one);
 			Vector2[] vine = Tunnel.GenerateBezier([one, Vector2.Lerp(one, two, 0.5f) + new Vector2(0, Random.NextFloat(distance * 0.33f, distance * 0.5f)), two], 0.8f, 0);
 			float baseStrength = Random.NextFloat(0.8f, 1.5f) * (distance / 500f);
@@ -353,7 +353,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 
 					for (int v = 0; v < length; ++v)
 					{
-						GenPlacement.WallCircle(pos + new Vector2(0, v), 1.5f - (v / length), WallID.LivingLeaf);
+						GenPlacement.WallCircle(pos + new Vector2(0, v), 1.5f - v / length, WallID.LivingLeaf);
 
 						if (Random.NextBool(8))
 						{
@@ -478,7 +478,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 			Point16 boulders = decor[1].Dequeue();
 			bool underwater = Main.tile[boulders].LiquidAmount > 0;
 			int chance = underwater ? 4 : 2;
-			int id = !Random.NextBool() ? (underwater ? ModContent.TileType<DeepMoss>() : ModContent.TileType<SwampMoss>()) : TileID.Mudstone;
+			int id = !Random.NextBool() ? underwater ? ModContent.TileType<DeepMoss>() : ModContent.TileType<SwampMoss>() : TileID.Mudstone;
 			GenPlacement.GenOval(boulders.ToVector2(), Random.NextFloat(2, 8), Random.NextFloat(MathHelper.PiOver2 - 0.3f, MathHelper.PiOver2 + 0.3f) * (Random.NextBool() ? -1 : 1),
 				id, (x, y) => noise.GetNoise(x, y) * 8);
 		}
@@ -543,7 +543,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 		{
 			x++;
 
-			if (Random.NextBool(150) || (x - lastX) > 400)
+			if (Random.NextBool(150) || x - lastX > 400)
 			{
 				if (x < Main.maxTilesX - 400)
 				{
@@ -597,31 +597,51 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 	{
 		Liquid.UpdateLiquid();
 
+		if (Main.ActivePlayers.GetEnumerator().MoveNext() && NPC.CountNPCS(ModContent.NPCType<GiantEel>()) < Main.CurrentFrameFlags.ActivePlayersCount)
+		{
+			int npc = NPC.NewNPC(new EntitySource_WorldGen(), Main.spawnTileX * 16, 120 * 16, ModContent.NPCType<GiantEel>(), 0, 0, 0, Main.CurrentFrameFlags.ActivePlayersCount - 1);
+			Main.npc[npc].netUpdate = true;
+		}
+
 		if (!spawnedTemporaryContent && Main.ActivePlayers.GetEnumerator().MoveNext())
 		{
 			PlaceEncounters();
-			SpawnMudplatforms();
+
+			if (Main.netMode != NetmodeID.MultiplayerClient)
+			{
+				SpawnGenEntities();
+			}
+
 			spawnedTemporaryContent = true;
 		}
 	}
 
-	private static void SpawnMudplatforms()
+	private static void SpawnGenEntities()
 	{
 		List<float> xPositions = [];
 
-		for (int i = 0; i < 20; ++i)
+		for (int i = 0; i < 25; ++i)
 		{
-			Vector2 position;
+			Vector2 pos;
 
 			do
 			{
-				position = new Vector2(Random.Next(300 * 16, (Main.maxTilesX - 300) * 16), Random.Next(FloorY * 16 - 200, FloorY * 16 + 200));
-			} while (Collision.SolidCollision(position, 100, 20) || !Collision.WetCollision(position, 100, 20) || Collision.WetCollision(position - new Vector2(0, 30), 100, 20)
-				|| xPositions.Any(x => Math.Abs(x - position.X) < 120));
+				pos = new Vector2(Random.Next(300 * 16, (Main.maxTilesX - 300) * 16), Random.Next(FloorY * 16 - 200, FloorY * 16 + 200));
+			} while (Collision.SolidCollision(pos - new Vector2(50, 0), 200, 60) || !Collision.WetCollision(pos, 100, 20) || Collision.WetCollision(pos - new Vector2(0, 30), 100, 20)
+				|| xPositions.Any(x => Math.Abs(x - pos.X) < 120));
 
 			int type = Random.NextBool() ? ModContent.ProjectileType<FloatingMudplatform>() : ModContent.ProjectileType<BrittleFloatingMudplatform>();
-			Projectile.NewProjectile(new EntitySource_WorldGen(), position, Vector2.Zero, type, 0, 0, Main.myPlayer);
-			xPositions.Add(position.X);
+
+			if (i >= 5)
+			{
+				Projectile.NewProjectile(new EntitySource_WorldGen(), pos, Vector2.Zero, type, 0, 0, Main.myPlayer);
+			}
+			else
+			{
+				NPC.NewNPC(new EntitySource_WorldGen(), (int)pos.X, (int)pos.Y, ModContent.NPCType<SwampCroc>(), 0, 0, 1);
+			}
+
+			xPositions.Add(pos.X);
 		}
 	}
 

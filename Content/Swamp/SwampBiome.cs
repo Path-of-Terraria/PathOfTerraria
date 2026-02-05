@@ -1,7 +1,8 @@
-﻿using SubworldLibrary;
+﻿using PathOfTerraria.Content.Swamp;
+using SubworldLibrary;
 using Terraria.Graphics.Capture;
 
-namespace PathOfTerraria.Common.Subworlds.MappingAreas.SwampAreaContent;
+namespace PathOfTerraria.Content.Swamp;
 
 internal class SwampBiome : ModBiome
 {

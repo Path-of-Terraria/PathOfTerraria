@@ -17,7 +17,7 @@ internal class ShatteredBondMastery : Passive
 		{
 			if (projectile.TryGetOwner(out Player plr) && plr.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<ShatteredBondMastery>(out float value))
 			{
-				ExplosionHitbox.QuickSpawn(projectile.GetSource_Death(), projectile, projectile.damage * 3, plr.whoAmI, new Vector2(240, 240));
+				ExplosionHitbox.QuickSpawn(projectile.GetSource_Death(), projectile, projectile.damage * 3, plr.whoAmI, new Vector2(240, 240), ExplosionSpawnInfo.PlayerOwned(plr.whoAmI));
 			}
 		}
 	}

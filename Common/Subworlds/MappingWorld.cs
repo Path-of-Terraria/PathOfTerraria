@@ -139,6 +139,7 @@ public abstract class MappingWorld : Subworld
 #pragma warning restore IDE0060 // Remove unused parameter
 	{
 		WorldGenerator.CurrentGenerationProgress = progress;
+		progress.CurrentPassWeight = 1;
 		Main.ActiveWorldFileData.SetSeedToRandom();
 		GenVars.structures = new();
 		WorldGen._genRandSeed = Main.rand.Next();

@@ -25,6 +25,10 @@ public sealed class NPCHitEffects : NPCComponent
 		public (Vector2 HitboxFactor, Vector2 Flat, Vector2 Random) Position = (new(1f, 1f), new(0f, 0f), new(0f, 0f));
 		/// <summary> The velocity values to use for spawning gores. </summary>
 		public (Vector2 InheritFactor, Vector2 Flat, Vector2 Random) Velocity = (new(1f, 1f), new(0f, 0f), new(1f, 1f));
+		/// <summary> Allows for flipping the <see cref="Position"/>'s Flat value according to the NPC's direction; 
+		/// if true, flips when direction is -1, if false, flips when direction is 1, otherwise, doesn't flip.</summary>
+		public bool? FlipWithDirection = null;
+		public bool NoCentering = false;
 
 		public GoreSpawnParameters(int type, int minAmount, int maxAmount, Func<NPC, bool>? predicate = null)
 		{
@@ -195,12 +199,25 @@ public sealed class NPCHitEffects : NPCComponent
 				}
 
 				Vector2 pos = npc.position;
+        
 				// Add hitbox factor.
 				pos += pool.Position.HitboxFactor * new Vector2(Main.rand.NextFloat(), Main.rand.NextFloat()) * npcSize;
-				// If hitbox factor is below 1, move towards center.
-				pos += npcSize * 0.5f * (Vector2.One - pool.Position.HitboxFactor);
+
+				if (!pool.NoCentering)
+				{
+					// If hitbox factor is below 1, move towards center.
+					pos += npcSize * 0.5f * (Vector2.One - pool.Position.HitboxFactor);
+				}
+        
 				// Add flat.
-				pos += pool.Position.Flat;
+				Vector2 flat = pool.Position.Flat;
+
+				if ((pool.FlipWithDirection is true && npc.direction == -1) || (pool.FlipWithDirection == false && npc.direction == 1))
+				{
+					flat = npcSize - flat;
+				}
+				
+				pos += flat;
 				// Add circular random.
 				pos += Main.rand.NextVector2Circular(pool.Position.Random.X, pool.Position.Random.Y) * 0.5f;
 

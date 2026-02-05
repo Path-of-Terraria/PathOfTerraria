@@ -1,6 +1,6 @@
 using Terraria.ID;
 
-namespace PathOfTerraria.Common.Subworlds.MappingAreas.SwampAreaContent;
+namespace PathOfTerraria.Content.Swamp;
 
 public class SwampWaterStyle : ModWaterStyle
 {
@@ -10,6 +10,28 @@ public class SwampWaterStyle : ModWaterStyle
 	}
 
 	public override string Texture => "PathOfTerraria/Assets/BiomeContent/SwampWaterStyle";
+
+	private static float _waterTransparency = 0;
+
+	public override void Load()
+	{
+		On_Main.DrawLiquid += DrawLiquidMoreOpaque;
+	}
+
+	private void DrawLiquidMoreOpaque(On_Main.orig_DrawLiquid orig, Main self, bool bg, int waterStyle, float Alpha, bool drawSinglePassLiquids)
+	{
+		int slot = ModContent.GetInstance<SwampWaterStyle>().Slot;
+		Player plr = Main.LocalPlayer;
+
+		if (!bg && waterStyle == slot)
+		{
+			bool wet = Collision.WetCollision(plr.position, plr.width, plr.height);
+			_waterTransparency = MathHelper.Lerp(_waterTransparency, wet ? 1f : 1.8f, wet ? 0.13f : 0.05f);
+			Alpha = _waterTransparency;
+		}
+
+		orig(self, bg, waterStyle, Alpha, drawSinglePassLiquids);
+	}
 
 	public override int ChooseWaterfallStyle()
 	{

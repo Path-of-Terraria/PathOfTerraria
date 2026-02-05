@@ -21,7 +21,8 @@ internal class PainTransferenceMastery : Passive
 				_timer = 0;
 
 				ExplosionHitbox.VFXPackage package = new(0, 12, 0, false, 0, null, DustID.LifeDrain);
-				ExplosionHitbox.QuickSpawn(Player.GetSource_FromThis(), Player, AccruedHealing, Player.whoAmI, new Vector2(PoTMod.NearbyDistance * 2), package);
+				var size = new Vector2(PoTMod.NearbyDistance * 2);
+				ExplosionHitbox.QuickSpawn(Player.GetSource_FromThis(), Player, AccruedHealing, Player.whoAmI, size, ExplosionSpawnInfo.PlayerOwned(Player.whoAmI), package);
 				AccruedHealing = 0;
 			}
 		}

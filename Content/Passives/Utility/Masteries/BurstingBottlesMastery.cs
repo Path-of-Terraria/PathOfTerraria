@@ -14,7 +14,8 @@ internal class BurstingBottlesMastery : Passive
 			if (Player.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<BurstingBottlesMastery>(out float value))
 			{
 				ExplosionHitbox.VFXPackage package = new(3, 4, 14, true, 0.4f, null, DustID.HealingPlus, DustID.RedTorch);
-				ExplosionHitbox.QuickSpawn(Player.GetSource_Misc("PotionUse"), Player, 10, Player.whoAmI, new Vector2(150), package, true, value / 100f);
+				var info = new ExplosionSpawnInfo(true, value / 100f, CanSpawnProjectile: Main.myPlayer == Player.whoAmI);
+				ExplosionHitbox.QuickSpawn(Player.GetSource_Misc("PotionUse"), Player, 10, Player.whoAmI, new Vector2(150), info, package);
 			}
 		}
 	}

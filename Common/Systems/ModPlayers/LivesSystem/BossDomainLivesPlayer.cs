@@ -7,6 +7,11 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.ModPlayers.LivesSystem;
 
+public interface IPreDomainRespawnPlayer
+{
+	public void OnDomainRespawn();
+}
+
 internal class BossDomainLivesPlayer : ModPlayer
 {
 	public bool InDomain = false;
@@ -78,6 +83,14 @@ internal class BossDomainLivesPlayer : ModPlayer
 			Player.statLife = Player.statLifeMax2;
 			Player.Teleport(new Vector2(Main.spawnTileX, Main.spawnTileY).ToWorldCoordinates(), TeleportationStyleID.RodOfDiscord);
 			Player.velocity = Vector2.Zero;
+
+			foreach (ModPlayer player in Player.ModPlayers)
+			{
+				if (player is IPreDomainRespawnPlayer preRespawn)
+				{
+					preRespawn.OnDomainRespawn();
+				}
+			}
 
 			for (int i = 0; i < Player.buffTime.Length; ++i)
 			{
