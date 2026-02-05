@@ -1,7 +1,8 @@
 ﻿using PathOfTerraria.Content.Buffs;
+using PathOfTerraria.Content.Swamp;
 using SubworldLibrary;
 
-namespace PathOfTerraria.Common.Subworlds.MappingAreas.SwampAreaContent;
+namespace PathOfTerraria.Content.Swamp;
 
 internal class SwampPlayer : ModPlayer
 {

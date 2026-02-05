@@ -3,7 +3,7 @@ using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.WorldBuilding;
 
-namespace PathOfTerraria.Common.Subworlds.MappingAreas.SwampAreaContent;
+namespace PathOfTerraria.Content.Swamp;
 
 internal class CypressTreeMicrobiome : MicroBiome
 {

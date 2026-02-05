@@ -199,15 +199,16 @@ public sealed class NPCHitEffects : NPCComponent
 				}
 
 				Vector2 pos = npc.position;
+        
 				// Add hitbox factor.
-				pos += pool.Position.HitboxFactor * Main.rand.NextFloat() * npcSize;
+				pos += pool.Position.HitboxFactor * new Vector2(Main.rand.NextFloat(), Main.rand.NextFloat()) * npcSize;
 
 				if (!pool.NoCentering)
 				{
 					// If hitbox factor is below 1, move towards center.
 					pos += npcSize * 0.5f * (Vector2.One - pool.Position.HitboxFactor);
 				}
-
+        
 				// Add flat.
 				Vector2 flat = pool.Position.Flat;
 

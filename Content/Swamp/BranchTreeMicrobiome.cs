@@ -10,7 +10,7 @@ using Terraria.ID;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
-namespace PathOfTerraria.Common.Subworlds.MappingAreas.SwampAreaContent;
+namespace PathOfTerraria.Content.Swamp;
 
 #nullable enable
 

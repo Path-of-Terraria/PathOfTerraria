@@ -88,6 +88,8 @@ file sealed class FishronQuestSystem : ModSystem
 {
 	public override void PreUpdateWorld()
 	{
+		if (SubworldSystem.Current is not null) { return; }
+		
 		int riftType = ModContent.ProjectileType<UnderwaterRift>();
 		bool riftShouldExist = false;
 		foreach (Player player in Main.ActivePlayers)

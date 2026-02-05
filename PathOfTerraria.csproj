@@ -48,6 +48,8 @@
 		<EmbeddedResource Remove="BuildTools\**" />
 		
 		<Folder Include="Common\Data\VanillaItemData\" />
+		
+		<Folder Include="Content\NPCs\Mapping\Swamp\" />
 	</ItemGroup>
 
 	<!-- Altered build target, utilizing the BuildCommand variable. -->

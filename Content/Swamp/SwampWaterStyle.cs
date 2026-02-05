@@ -1,6 +1,6 @@
 using Terraria.ID;
 
-namespace PathOfTerraria.Common.Subworlds.MappingAreas.SwampAreaContent;
+namespace PathOfTerraria.Content.Swamp;
 
 public class SwampWaterStyle : ModWaterStyle
 {
