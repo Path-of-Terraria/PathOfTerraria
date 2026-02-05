@@ -20,7 +20,7 @@ public abstract class ItemAffix : Affix
 	/// </summary>
 	public virtual void ApplyTooltips(Player player, Item item, AffixTooltips handler)
 	{
-		var instanceData = item.GetInstanceData();
+		PoTInstanceItemData instanceData = item.GetInstanceData();
 		handler.AddOrModify(GetType(), CreateDefaultTooltip(player, instanceData.ItemType, instanceData.RealLevel));
 	}
 	/// <inheritdoc cref="ApplyTooltips(Player, Item, AffixTooltips)"/>
@@ -31,7 +31,7 @@ public abstract class ItemAffix : Affix
 
 	protected virtual AffixTooltipLine CreateDefaultTooltip(Player player, ItemType itemType, int itemLevel)
 	{
-		ItemAffixData? data = GetData(itemType);
+		ItemAffixData? data = TryGetData(itemType);
 
 		if (data is null) // Data can be null if the affix doesn't exist in the json data. This skips the checks below.
 		{
@@ -68,29 +68,29 @@ public abstract class ItemAffix : Affix
 		return CreateDefaultTooltip(player, item);
 	}
 
-	/// <summary> Retrieves the item affix data for the current <see cref="ItemAffix"/> instance and the provided exact item type. </summary>
-	public ItemAffixData? GetData(ItemType exactItemType)
-	{
-		return AffixRegistry.TryGetAffixData(GetType(), exactItemType);
-	}
-	/// <summary> Retrieves the item affix data for the current <see cref="ItemAffix"/> instance and the provided item. </summary>
-	public ItemAffixData? GetData(Item item)
-	{
-		return AffixRegistry.TryGetAffixData(GetType(), item);
-	}
-	/// <summary> Retrieves all the item affix data for the current <see cref="ItemAffix"/> instance. </summary>
-	public IEnumerable<ItemAffixData> GetDatas()
-	{
-		return AffixRegistry.TryGetAffixDatas(GetType());
-	}
+	/// <inheritdoc cref="AffixRegistry.GetItemData(Type)"/>
+	public IEnumerable<ItemAffixData> GetData() { return AffixRegistry.GetItemData(GetType()); }
+	/// <inheritdoc cref="AffixRegistry.GetItemData(Type, Item)"/>
+	public ItemAffixData GetData(Item item) { return AffixRegistry.GetItemData(GetType(), item); }
+	/// <inheritdoc cref="AffixRegistry.GetItemData(Type, ItemType)"/>
+	public ItemAffixData GetData(ItemType exactItemType) { return AffixRegistry.GetItemData(GetType(), exactItemType); }
+
+	/// <inheritdoc cref="AffixRegistry.TryGetItemData(Type)"/>
+	public IEnumerable<ItemAffixData>? TryGetData() { return AffixRegistry.TryGetItemData(GetType()); }
+	/// <inheritdoc cref="AffixRegistry.TryGetItemData(Type, Item)"/>
+	public ItemAffixData? TryGetData(Item item) { return AffixRegistry.TryGetItemData(GetType(), item); }
+	/// <inheritdoc cref="AffixRegistry.TryGetItemData(Type, ItemType)"/>
+	public ItemAffixData? TryGetData(ItemType exactItemType) { return AffixRegistry.TryGetItemData(GetType(), exactItemType); }
 
 	public Influence GetRequiredInfluence(Item item)
 	{
-		return GetData(item)?.GetInfluences() ?? Influence.None;
+		const Influence Default = Influence.None;
+		return TryGetData(item)?.GetInfluences() ?? Default;
 	}
 	public ItemType GetPossibleTypes()
 	{
-		return GetDatas().Aggregate<ItemAffixData, ItemType>(default, (current, data) => current | data.GetEquipTypes());
+		const ItemType Default = ItemType.None;
+		return TryGetData()?.Aggregate(Default, (current, data) => current | data.GetEquipTypes()) ?? Default;
 	}
 
 	internal override void CreateLocalization()
