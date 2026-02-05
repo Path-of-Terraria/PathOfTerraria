@@ -267,6 +267,7 @@ internal sealed class InfernalConflux : ConfluxResource
 			Cost = 100,
 			AssociatedItem = Type,
 			AccentColor = Color.OrangeRed,
+			PortalDestination = $"{nameof(PathOfTerraria)}/{nameof(InfernalRealm)}",
 			CanisterLiquidTexture = $"{nameof(PathOfTerraria)}/Assets/UI/MapDevice/Liquid_{GetType().Name}",
 		};
 	}
