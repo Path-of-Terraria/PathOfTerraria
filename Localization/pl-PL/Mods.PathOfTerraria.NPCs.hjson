@@ -1014,3 +1014,6 @@ Mudsquit: {
 	// DisplayName: Mudsquit
 	// Entry: A simple, classic, home-grown fish-that-explodes-when-full. That's right! If it has even the barest taste of your blood, it will explode violently. Why? Well, it explodes its friends too! Hope that helps.
 }
+// CryoStalker.DisplayName: Cryo Stalker
+// FallenShaman.DisplayName: Fallen Shaman
+// Shambling.DisplayName: Shambling

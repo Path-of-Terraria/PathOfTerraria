@@ -34,6 +34,7 @@ public enum ItemType : long
 	Quiver = 1 << 25,
 	Talisman = 1 << 26,
 	Focus = 1 << 27,
+	TypeCount = 28,
 
 	Armor = Helmet | Chestplate | Leggings,
 	Accessories = Ring | Charm | Amulet,

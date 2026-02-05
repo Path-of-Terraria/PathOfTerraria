@@ -131,4 +131,21 @@ public static class MathUtils
 
 		return float.IsNaN(result) ? 0f : Clamp01(result);
 	}
+
+	public static bool InsideRange((float Min, float Max) range, float value)
+	{
+		return value > range.Min && value < range.Max;
+	}
+	public static bool InsideRangeSqr((float Min, float Max) range, float sqrValue)
+	{
+		return InsideRange((range.Min * range.Min, range.Max * range.Max), sqrValue);
+	}
+	public static bool IntersectsRange((float Min, float Max) range, float value)
+	{
+		return value >= range.Min && value <= range.Max;
+	}
+	public static bool IntersectsRangeSqr((float Min, float Max) range, float sqrValue)
+	{
+		return IntersectsRange((range.Min * range.Min, range.Max * range.Max), sqrValue);
+	}
 }

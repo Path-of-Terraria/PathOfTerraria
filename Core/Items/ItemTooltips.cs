@@ -382,9 +382,9 @@ public sealed partial class ItemTooltips : GlobalItem
 				{
 					// pick element color based on type
 					Color elementColor = instance.Type.ElementColor();
-					
+
 					// numbers tinted with element color
-					string highlightNumbers = HighlightNumbers($"[{Math.Round(eleMinDamage, 2)}-{Math.Round(eleMaxDamage, 2)}]", elementColor);
+					string highlightNumbers = HighlightNumbers((eleMinDamage == eleMaxDamage) ? $"[{Math.Round(eleMinDamage, 2)}]" : $"[{Math.Round(eleMinDamage, 2)}-{Math.Round(eleMaxDamage, 2)}]", elementColor);
 					var newDamageLine = new TooltipLine(Mod, "Damage" + instance.Type, $"    {ColoredDot(Colors.StatsAccent)} {highlightNumbers} {elementName}");
 					elementLines.Add(newDamageLine);
 				}

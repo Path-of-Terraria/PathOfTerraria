@@ -1,18 +1,23 @@
 ﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Mapping;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Common.Systems.ModPlayers.LivesSystem;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Core.Items;
+using PathOfTerraria.Core.UI.SmartUI;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 using Terraria.Utilities;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
+
+#nullable enable
 
 public abstract class Map : ModItem, GenerateNameAffixes.IItem, GenerateAffixes.IItem, GenerateImplicits.IItem, IPoTGlobalItem, GetItemLevel.IItem, SetItemLevel.IItem
 {
@@ -28,7 +33,7 @@ public abstract class Map : ModItem, GenerateNameAffixes.IItem, GenerateAffixes.
 	public override ModItem Clone(Item newEntity)
 	{
 		var map = base.Clone(newEntity) as Map;
-		map.Tier = Tier;
+		map!.Tier = Tier;
 		map.ItemLevel = ItemLevel;
 		return map;
 	}
@@ -46,6 +51,27 @@ public abstract class Map : ModItem, GenerateNameAffixes.IItem, GenerateAffixes.
 
 		PoTInstanceItemData data = this.GetInstanceData();
 		data.ItemType = ItemType.Map;
+	}
+
+	public override bool CanRightClick()
+	{
+		return SmartUiLoader.TryGetUiState(out MapDeviceState? map) && map is { Visible: true } && MapDeviceInterface.Entity is not null;
+	}
+
+	public override void RightClick(Player player)
+	{
+		if (SmartUiLoader.TryGetUiState(out MapDeviceState? map) && MapDeviceInterface.Entity is not null && MapDeviceInterface.Entity.StoredMap is null or { IsAir: true })
+		{
+			Item invItem = Item.Clone();
+			Item.TurnToAir();
+			MapDeviceInterface.Entity.StoredMap = invItem;
+			SoundEngine.PlaySound(SoundID.Grab);
+		}
+	}
+
+	public override bool ConsumeItem(Player player)
+	{
+		return false;
 	}
 
 	public virtual ushort GetTileAt(int x, int y) { return TileID.Stone; }
@@ -80,7 +106,7 @@ public abstract class Map : ModItem, GenerateNameAffixes.IItem, GenerateAffixes.
 	{
 		var item = new Item();
 		item.SetDefaults(ModContent.ItemType<T>());
-		(item.ModItem as Map).Tier = 1;
+		(item.ModItem as Map)!.Tier = 1;
 
 		Item.NewItem(null, pos, Vector2.Zero, item);
 	}

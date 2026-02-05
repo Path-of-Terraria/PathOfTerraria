@@ -202,13 +202,11 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 		bool canPath = pathfinder.HasPath && pathfinder.Path.Count > 0;
 		bool goDown = false;
 
-		if (!canPath) // Retry pathing, not to the nearest orb
+		if (pathfinder.RefreshTimer == pathfinder.RefreshTime && !canPath) // Retry pathing, not to the nearest orb
 		{
 			target = FollowPlayer.position;
 			pathEnd = target.ToTileCoordinates16();
 
-			// Resetting timer allows us to re-run pathfinding immediately.
-			pathfinder.RefreshTimer = 1;
 			pathfinder.CheckDrawPath(pathStart, pathEnd, pathSize, null, pathOffset);
 
 			canPath = pathfinder.HasPath && pathfinder.Path.Count > 0;

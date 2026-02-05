@@ -47,6 +47,7 @@ internal sealed class FallenSavage : ModNPC
 
 	public override void SetStaticDefaults()
 	{
+		NPCID.Sets.UsesNewTargetting[Type] = true;
 		NPCID.Sets.TeleportationImmune[Type] = true;
 		NPCID.Sets.SpecificDebuffImmunity[Type][BuffID.Shimmer] = true;
 		Main.npcFrameCount[Type] = 5;
@@ -73,6 +74,7 @@ internal sealed class FallenSavage : ModNPC
 			e.Data.MaxSpeed = 3f;
 			e.Data.Acceleration = 32f;
 			e.Data.Friction = (8f, 2f);
+			e.Data.Push = new() { RequiredNpcType = Type };
 		});
 		NPC.TryEnableComponent<NPCAnimations>(e =>
 		{
@@ -89,7 +91,7 @@ internal sealed class FallenSavage : ModNPC
 			e.Data.Dash = (18, 33, new(10f, 5f));
 			e.Data.Damage = (18, 33, DamageInstance.EnemyAttackFilterWithInfighting);
 			e.Data.Hitbox = (new(40, 40), new(56f, 56f), new(+8f, +2f));
-			e.Data.Movement = (0.4f, 0.9f);
+			e.Data.Movement = (0.4f, 0.9f, 0.95f);
 
 			if (!Main.dedServ)
 			{
@@ -145,6 +147,12 @@ internal sealed class FallenSavage : ModNPC
 		ctx.Attacking.ManualUpdate(new(NPC));
 		ctx.Movement.ManualUpdate(new(NPC));
 		ctx.Animations.Set(PickAnimation(in ctx));
+	}
+
+	public override void OnKill()
+	{
+		// Spawn soul.
+		Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, default, ModContent.ProjectileType<FallenSoul>(), 0, 0f, ai0: Type);
 	}
 
 	private SpriteAnimation? PickAnimation(in Context ctx)

@@ -1,6 +1,4 @@
-﻿//#define NEVER_ATTACK
-
-using PathOfTerraria.Common.AI;
+﻿using PathOfTerraria.Common.AI;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Content.Gores;
@@ -40,6 +38,7 @@ internal sealed class Abominable : ModNPC
 
 	public override void SetStaticDefaults()
 	{
+		NPCID.Sets.UsesNewTargetting[Type] = true;
 		NPCID.Sets.TeleportationImmune[Type] = true;
 		NPCID.Sets.SpecificDebuffImmunity[Type][BuffID.Shimmer] = true;
 		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, new() { CustomTexturePath = $"{Mod.Name}/Assets/Conflux/{Name}_Bestiary" });
@@ -53,7 +52,7 @@ internal sealed class Abominable : ModNPC
 		NPC.width = 44;
 		NPC.height = 80;
 		NPC.lifeMax = 750;
-		NPC.defense = 35;
+		NPC.defense = 55;
 		NPC.knockBackResist = 0.00f;
 
 		NPC.HitSound = new($"{nameof(PathOfTerraria)}/Assets/Sounds/HitEffects/FleshHit", 3) { MaxInstances = 5, Volume = 0.4f };
@@ -68,6 +67,7 @@ internal sealed class Abominable : ModNPC
 			e.Data.MaxSpeed = 4f;
 			e.Data.Acceleration = 32f;
 			e.Data.Friction = (8f, 2f);
+			e.Data.Push = new() { RequiredNpcType = Type };
 		});
 		NPC.TryEnableComponent<NPCAnimations>(e =>
 		{
@@ -84,7 +84,7 @@ internal sealed class Abominable : ModNPC
 			e.Data.Dash = (39, 54, new(30f, 12f));
 			e.Data.Damage = (39, 54, DamageInstance.EnemyAttackFilterWithInfighting);
 			e.Data.Hitbox = (new(112, 112), new(48f, 32f), new(12f, 2f));
-			e.Data.Movement = (0.4f, 0.84f);
+			e.Data.Movement = (0.4f, 0.84f, 0.90f);
 
 			if (!Main.dedServ)
 			{

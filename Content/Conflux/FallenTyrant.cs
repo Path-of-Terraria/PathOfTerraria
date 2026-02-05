@@ -45,6 +45,7 @@ internal sealed class FallenTyrant : ModNPC
 
 	public override void SetStaticDefaults()
 	{
+		NPCID.Sets.UsesNewTargetting[Type] = true;
 		NPCID.Sets.TeleportationImmune[Type] = true;
 		NPCID.Sets.SpecificDebuffImmunity[Type][BuffID.Shimmer] = true;
 		Main.npcFrameCount[Type] = 5;
@@ -71,6 +72,7 @@ internal sealed class FallenTyrant : ModNPC
 			e.Data.MaxSpeed = 1.5f;
 			e.Data.Acceleration = 32f;
 			e.Data.Friction = (8f, 2f);
+			e.Data.Push = new() { RequiredNpcType = Type };
 		});
 		NPC.TryEnableComponent<NPCAnimations>(e =>
 		{
@@ -87,7 +89,7 @@ internal sealed class FallenTyrant : ModNPC
 			e.Data.Dash = (40, 55, new(3f, 0f));
 			e.Data.Damage = (40, 55, DamageInstance.EnemyAttackFilterWithInfighting);
 			e.Data.Hitbox = (new(40, 40), new(32f, 32f), new(+8f, +2f));
-			e.Data.Movement = (0.4f, 0.9f);
+			e.Data.Movement = (0.4f, 0.9f, 0.95f);
 
 			if (!Main.dedServ)
 			{
@@ -153,6 +155,11 @@ internal sealed class FallenTyrant : ModNPC
 				Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, ctx.Attacking.Direction * 6f, ProjectileID.DemonSickle, (int)(NPC.defDamage * 0.5f), 1f);
 			}
 		}
+	}
+	public override void OnKill()
+	{
+		// Spawn soul.
+		Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, default, ModContent.ProjectileType<FallenSoul>(), 0, 0f, ai0: Type);
 	}
 
 	private SpriteAnimation? PickAnimation(in Context ctx)

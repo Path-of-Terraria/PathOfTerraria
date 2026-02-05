@@ -1,5 +1,5 @@
-﻿//#define DEBUG_GIZMOS
-//#define DEBUG_LOGGING
+﻿// #define DEBUG_GIZMOS
+// #define DEBUG_LOGGING
 
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Core.Pathfinding;
+using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
 using ReLogic.Graphics;
 using Terraria.DataStructures;
@@ -199,7 +200,8 @@ internal sealed class NPCNavigation : NPCComponent
 		}
 
 		// Halt if no one has moved.
-		if (Vector2.DistanceSquared(npc.Center, lastPathSourcePos) <= (MinSelfMove * MinSelfMove)
+		if (lastPathRequestTick != 0
+		&& Vector2.DistanceSquared(npc.Center, lastPathSourcePos) <= (MinSelfMove * MinSelfMove)
 		&& Vector2.DistanceSquared(ctx.TargetPosition, lastPathTargetPos) <= (MinTargetMove * MinTargetMove))
 		{
 			return;
@@ -234,7 +236,7 @@ internal sealed class NPCNavigation : NPCComponent
 				Tile tile = Main.tile[x, y];
 				bool isValid = tile.HasUnactuatedTile && (Main.tileSolid[tile.TileType] || Main.tileSolidTop[tile.TileType]);
 
-#if DEBUG && DEBUG_GIZMOS
+#if (DEBUG && DEBUG_GIZMOS)
 				int xCopy = x;
 				int yCopy = y;
 				Core.Debugging.DebugUtils.DrawInWorld(sb =>
@@ -441,6 +443,11 @@ internal sealed class NPCNavigation : NPCComponent
 						//	Math.Min(edgeJump.Y, bodyJump.Y)
 						//);
 						result.JumpVector = edgeJump;
+
+						if (npc.wet)
+						{
+							result.JumpVector = Vector2.Clamp(result.JumpVector * 2f, -JumpRange, JumpRange);
+						}
 					}
 					else
 					{
@@ -456,7 +463,7 @@ internal sealed class NPCNavigation : NPCComponent
 				}
 			}
 
-			result.FallThroughPlatforms = edge.To.Y > edge.From.Y;
+			result.FallThroughPlatforms = edge.To.Y > edge.From.Y || (edge.From.Y * TileUtils.TileSizeInPixels) > npc.Bottom.Y;
 
 			break;
 		}
