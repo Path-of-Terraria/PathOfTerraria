@@ -12,10 +12,7 @@ internal class SwampSpawns : GlobalNPC
 		{
 			pool.Clear();
 
-			//if (spawnInfo.Water)
-			//{
-			//	pool[ModContent.NPCType<SwampCroc>()] = 0.3f;
-			//}
+			// No natural spawning, enemies are either generated or come from encounters.
 		}
 	}
 }
