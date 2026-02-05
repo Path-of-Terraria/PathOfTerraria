@@ -308,20 +308,4 @@ internal class DragonFly : ModNPC, IGrabberNPC
 			_ => null,
 		};
 	}
-
-	/// Doesn't run when NPC.hide = true?
-	//public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
-	//{
-	//	Texture2D tex = TextureAssets.Npc[Type].Value;
-	//	Vector2 position = NPC.Center - Main.screenPosition;
-	//	SpriteEffects effects = NPC.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-
-	//	if (State == States.CarryingPlayer && !HasLetGo)
-	//	{
-	//		position += Main.rand.NextVector2CircularEdge(ShakeTimer / 5f, ShakeTimer / 5f);
-	//	}
-		
-	//	spriteBatch.Draw(tex, position, NPC.frame, drawColor, NPC.rotation, NPC.frame.Size() / 2f, 1f, effects, 0);
-	//	return false;
-	//}
 }
