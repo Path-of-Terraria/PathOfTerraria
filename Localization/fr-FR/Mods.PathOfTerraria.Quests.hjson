@@ -57,6 +57,7 @@ Quest: {
 	WizardStartQuest: {
 		Name: Retour Magique
 		// Description: ""
+		// KillScout: Kill a Goblin Surveyor in Ravencrest's outskirts
 	}
 
 	EoCQuest: {
@@ -74,7 +75,6 @@ Quest: {
 		// ReturnToOverworld: Return to the Overworld
 		// MorvenDialogue: Hm...oh. Hello, stranger. Thank you for getting me out of that bind. I'm afraid I went down here to track some Devourers I tagged...no matter. My trusty tools failed me, and somehow I'd become encased in this fetid stone. For a grueling few hours I've been here. Would you be so kind as to escort me out and bring me to the Raven Statue? I'll reward you greatly...or something.
 		// EnterEvilBiome: Find the Scientist in the Underground Corruption
-		// BlacksmithInput: Mods.PathOfTerraria.Quests.Quest.EoWQuest.BlacksmithInput
 	}
 
 	BoCQuest: {
