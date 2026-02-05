@@ -7,6 +7,7 @@ using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Data;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Utilities;
 using SubworldLibrary;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
@@ -123,7 +124,8 @@ public static class PoTItemHelper
 			return;
 		}
 
-		ItemAffixData chosenAffix = AffixRegistry.GetRandomAffixDataByItemType(data.ItemType, excludedAffixes: data.Affixes.Select(a => a.GetData(item)));
+		IEnumerable<ItemAffixData> exclusions = data.Affixes.SelectExcept(null, a => a.TryGetData(item));
+		ItemAffixData chosenAffix = AffixRegistry.GetRandomAffixDataByItemType(data.ItemType, excludedAffixes: exclusions);
 		if (chosenAffix is null)
 		{
 			return;

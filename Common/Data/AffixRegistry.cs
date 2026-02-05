@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -40,40 +41,47 @@ public class AffixRegistry : ILoadable
 	public virtual void Unload() { }
 
 #nullable enable
-	public static ItemAffixData? TryGetAffixData(Type affixType, Item item)
+	/// <summary> Returns one or more affix item distributions entry specific to the provided arguments. Errors if none are found! </summary>
+	public static IEnumerable<ItemAffixData> GetItemData(Type affixType)
 	{
-		return TryGetAffixData(affixType, item.GetInstanceData().ItemType);
+		if (ByAffix.TryGetValue(affixType, out List<ItemAffixData>? values) && values.Count != 0)
+		{
+			return values;
+		}
+
+		throw new KeyNotFoundException($"No item data found for affix type '{affixType.Name}'!");
 	}
-	public static ItemAffixData? TryGetAffixData(Type affixType, ItemType itemType)
+	/// <summary> Unsafely acquires an ItemAffixData entry specific to the provided arguments. Errors if no such data exists! </summary>
+	public static ItemAffixData GetItemData(Type affixType, Item item)
+	{
+		return GetItemData(affixType, item.GetInstanceData().ItemType);
+	}
+	/// <summary> Unsafely acquires an ItemAffixData entry specific to the provided arguments. Errors if no such data exists! </summary>
+	public static ItemAffixData GetItemData(Type affixType, ItemType itemType)
+	{
+		if (TryGetItemData(affixType, itemType) is { } values)
+		{
+			return values;
+		}
+
+		throw new KeyNotFoundException($"No item data found for affix-type pair ('{affixType.Name}', '{itemType}')!");
+	}
+
+	/// <summary> Returns zero or more affix item distributions entry specific to the provided arguments. </summary>
+	public static IEnumerable<ItemAffixData>? TryGetItemData(Type affixType)
+	{
+		return ByAffix.TryGetValue(affixType, out List<ItemAffixData>? values) ? values : null;
+	}
+	/// <summary> Safely tries to acquire an affix item distribution entry specific to the provided arguments. </summary>
+	public static ItemAffixData? TryGetItemData(Type affixType, Item item)
+	{
+		return TryGetItemData(affixType, item.GetInstanceData().ItemType);
+	}
+	/// <summary> Safely tries to acquire an affix item distribution entry specific to the provided arguments. </summary>
+	public static ItemAffixData? TryGetItemData(Type affixType, ItemType itemType)
 	{
 		Debug.Assert(BitOperations.PopCount((ulong)itemType) == 1);
-
-		if (ByAffixAndItemType.TryGetValue((affixType, itemType), out ItemAffixData? values))
-		{
-			return values;
-		}
-
-		string msg = $"ItemAffixData not found for affix-item type pair ({affixType.Name}, {itemType}).";
-		PoTMod.Instance.Logger.Error(msg);
-		Debug.Fail(msg);
-		return null;
-	}
-
-	/// <summary> Provides a safe way of getting ItemAffixData from the ItemAffixData map. </summary>
-	public static IEnumerable<ItemAffixData> TryGetAffixDatas<T>() where T : Affix
-	{
-		return TryGetAffixDatas(typeof(T));
-	}
-	/// <summary> Provides a safe way of getting ItemAffixData from the ItemAffixData map. </summary>
-	public static IEnumerable<ItemAffixData> TryGetAffixDatas(Type affixType)
-	{
-		if (ByAffix.TryGetValue(affixType, out List<ItemAffixData>? values))
-		{
-			return values;
-		}
-
-		PoTMod.Instance.Logger.Error($"ItemAffixData not found for affix type {affixType.Name}.");
-		return [];
+		return ByAffixAndItemType.TryGetValue((affixType, itemType), out ItemAffixData? result) ? result : null;
 	}
 #nullable disable
 
@@ -205,10 +213,7 @@ public class AffixRegistry : ILoadable
 	{
 		// Get the corresponding ItemAffixData for the affix's type
 		Type affixType = affix.GetType();
-		if (TryGetAffixData(affixType, item) is not ItemAffixData affixData)
-		{
-			throw new ArgumentException($"ItemAffixData not found for affix type: {affixType.Name}");
-		}
+		ItemAffixData affixData = GetItemData(affixType, item);
 
 		if (itemLevel == 0)
 		{
