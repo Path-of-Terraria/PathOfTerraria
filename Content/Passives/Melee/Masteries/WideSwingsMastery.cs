@@ -36,7 +36,7 @@ internal class WideSwingsMastery : Passive
 
 		public override void ModifyItemScale(Item item, ref float scale)
 		{
-			if (item.noMelee)
+			if (!item.noMelee)
 			{
 				scale += _stacks.Count / 10f;
 			}

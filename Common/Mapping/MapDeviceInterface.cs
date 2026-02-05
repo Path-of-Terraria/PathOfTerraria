@@ -159,13 +159,24 @@ internal class MapDeviceShiftClickPlayer : ModPlayer
 {
 	public override bool HoverSlot(Item[] inventory, int context, int slot)
 	{
-		if (ItemSlot.ShiftInUse
-		&& context == ItemSlot.Context.InventoryItem
-		&& SmartUiLoader.TryGetUiState(out MapDeviceState? map) && map is { Visible: true } && MapDeviceInterface.Entity is not null
-		&& inventory[slot] is { IsAir: false })
+		if (SmartUiLoader.TryGetUiState(out MapDeviceState? map) && map is { Visible: true } && MapDeviceInterface.Entity is not null)
 		{
-			Main.cursorOverride = CursorOverrideID.InventoryToChest;
-			return true;
+			// Move item into storage (cursorOverride functionality only)
+			if (ItemSlot.ShiftInUse
+				&& context == ItemSlot.Context.InventoryItem
+				&& inventory[slot] is { IsAir: false })
+			{
+				Main.cursorOverride = CursorOverrideID.InventoryToChest;
+				return true;
+			}
+
+			// Move item into slot (all functionality)
+			if (Main.mouseRight && Main.mouseRightRelease && context == ItemSlot.Context.BankItem)
+			{
+				// RightClick isn't called for bank items, so we have to run this manually.
+				// This may cause issues but should be fine as long as other mods don't do anything silly here.
+				ItemLoader.RightClick(inventory[slot], Main.LocalPlayer);
+			}
 		}
 		
 		return false;
@@ -173,53 +184,33 @@ internal class MapDeviceShiftClickPlayer : ModPlayer
 
 	public override bool ShiftClickSlot(Item[] inventory, int context, int slot)
 	{
-		if (SmartUiLoader.TryGetUiState(out MapDeviceState? map) && map is { Visible: true } && MapDeviceInterface.Entity is not null)
+		if (SmartUiLoader.TryGetUiState(out MapDeviceState? map) && map is { Visible: true } && MapDeviceInterface.Entity is not null
+			&& context == ItemSlot.Context.InventoryItem && inventory[slot] is { IsAir: false }) // Move from inventory to storage/slot
 		{
-			if (context == ItemSlot.Context.InventoryItem && inventory[slot] is { IsAir: false }) // Move from inventory to storage/slot
-			{
-				// Move into main slot if there's space & not holding left ctrl
-				if (inventory[slot].ModItem is Map && MapDeviceInterface.Entity.StoredMap is { IsAir: true } && !Main.keyState.IsKeyDown(Keys.LeftControl))
-				{
-					Item invItem = inventory[slot].Clone();
-					inventory[slot].TurnToAir();
-					MapDeviceInterface.Entity.StoredMap = invItem;
-					SoundEngine.PlaySound(SoundID.Grab);
-					return true;
-				}
+			// Move into storage
+			MoveItemIntoStorage(ref inventory[slot]);
 
-				// Otherwise, move into storage
-				Item[] storage = MapDeviceInterface.Entity.Storage;
-
-				for (int i = 0; i < MapDeviceEntity.StorageSize; i++)
-				{
-					ref Item item = ref storage[i];
-					if (!item.IsAir) { continue; }
-
-					Item invItem = inventory[slot].Clone();
-					inventory[slot].TurnToAir();
-					item = invItem;
-					SoundEngine.PlaySound(SoundID.Grab);
-					break;
-				}
-
-				return true;
-			}
-
-			if (context == ItemSlot.Context.BankItem) // Move from storage to slot if needed
-			{
-				// Move into main slot if there's space & not holding left ctrl
-				if (inventory[slot].ModItem is Map && MapDeviceInterface.Entity.StoredMap is { IsAir: true } && !Main.keyState.IsKeyDown(Keys.LeftControl))
-				{
-					Item invItem = inventory[slot].Clone();
-					inventory[slot].TurnToAir();
-					MapDeviceInterface.Entity.StoredMap = invItem;
-					SoundEngine.PlaySound(SoundID.Grab);
-					return true;
-				}
-			}
+			return true;
 		}
 
 		return false;
+	}
+
+	internal static void MoveItemIntoStorage(ref Item originalItem)
+	{
+		Item[] storage = MapDeviceInterface.Entity!.Storage;
+
+		for (int i = 0; i < MapDeviceEntity.StorageSize; i++)
+		{
+			ref Item item = ref storage[i];
+			if (!item.IsAir) { continue; }
+
+			Item invItem = originalItem.Clone();
+			originalItem.TurnToAir();
+			item = invItem;
+			SoundEngine.PlaySound(SoundID.Grab);
+			break;
+		}
 	}
 }
 
