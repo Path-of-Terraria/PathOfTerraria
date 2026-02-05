@@ -999,7 +999,7 @@ SwampCroc: {
 
 GiantEel: {
 	DisplayName: Mammoth Moss-Eel
-	Entry: What happens when you combine large, territorial and overgrown? This! It is extremely aggressive and unbelievably strong.
+	Entry: What happens when you combine large, territorial and overgrown? This! It is extremely aggressive and unbelievably strong. It's best to walk- well, run away.
 }
 
 GiantEelBody.DisplayName: "{$GiantEel.DisplayName}"
