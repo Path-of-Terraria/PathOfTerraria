@@ -63,7 +63,7 @@ internal class SwampCroc : ModNPC
 		NPC.value = Item.buyPrice(0, 0, 35, 0);
 
 		NPC.HitSound = new($"{nameof(PathOfTerraria)}/Assets/Sounds/HitEffects/FleshHit", 3) { MaxInstances = 5, Volume = 0.4f };
-		NPC.DeathSound = SoundID.NPCDeath23 with { Pitch = +0.1f, PitchVariance = 0.15f, Identifier = "FallenDeath" };
+		NPC.DeathSound = SoundID.NPCDeath23 with { Pitch = +0.1f, PitchVariance = 0.15f, Identifier = $"{Name}Death" };
 
 		NPC.TryEnableComponent<NPCTargeting>();
 		NPC.TryEnableComponent<NPCAnimations>(e =>
@@ -73,7 +73,7 @@ internal class SwampCroc : ModNPC
 		});
 		NPC.TryEnableComponent<NPCVoice>(e =>
 		{
-			e.Data.PainSound = (3, SoundID.NPCHit56 with { Pitch = +0.3f, PitchVariance = 0.4f, Identifier = "FallenHit" });
+			e.Data.PainSound = (3, SoundID.NPCHit56 with { Pitch = +0.3f, PitchVariance = 0.4f, Identifier = $"{Name}Hit" });
 		});
 		NPC.TryEnableComponent<NPCHitEffects>(c =>
 		{
