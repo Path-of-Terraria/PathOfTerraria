@@ -1,6 +1,5 @@
 ﻿using NPCUtils;
 using PathOfTerraria.Common.AI;
-using PathOfTerraria.Common.Encounters;
 using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
@@ -91,7 +90,7 @@ internal class Mudsquit : ModNPC
 		//});
 		NPC.TryEnableComponent<NPCMovement>(e =>
 		{
-			e.Data.Push = new() { RequiredNpcType = Type, Enabled = true };
+			e.Data.Push = new() { RequiredNpcType = Type };
 		});
 		NPC.TryEnableComponent<NPCVoice>(e =>
 		{
@@ -144,6 +143,7 @@ internal class Mudsquit : ModNPC
 		if (Math.Abs(NPC.velocity.X) > 0.01f)
 		{
 			NPC.direction = Math.Sign(NPC.velocity.X);
+			NPC.spriteDirection = NPC.direction;
 		}
 		else
 		{
@@ -163,6 +163,23 @@ internal class Mudsquit : ModNPC
 			else
 			{
 				NPC.velocity.Y += 0.3f;
+
+				if (NPC.collideY)
+				{
+					NPC.velocity.X *= 0.8f;
+
+					if (Timer > 120)
+					{
+						Timer = 0;
+						NPC.velocity.Y = -4;
+
+						if (Main.netMode != NetmodeID.MultiplayerClient)
+						{
+							NPC.velocity.X = Main.rand.NextFloat(-1, 1);
+							NPC.netUpdate = true;
+						}
+					}
+				}
 			}
 		}
 		else
@@ -216,6 +233,7 @@ internal class Mudsquit : ModNPC
 		}
 	}
 
+	// Placeholder for animations
 	private SpriteAnimation? PickAnimation(in Context ctx)
 	{
 		Vector2 vel = NPC.position - NPC.oldPosition;
@@ -238,7 +256,7 @@ internal class Mudsquit : ModNPC
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
 		Texture2D tex = TextureAssets.Npc[Type].Value;
-		Vector2 position = NPC.Center - Main.screenPosition;
+		Vector2 position = NPC.Center - screenPos;
 		SpriteEffects effects = NPC.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 		float redFactor = 0f;
 
@@ -247,7 +265,7 @@ internal class Mudsquit : ModNPC
 			redFactor = MathF.Abs(MathF.Sin(Timer * (0.15f + Timer * 0.001f)));
 		}
 
-		spriteBatch.Draw(tex, position, NPC.frame, Color.Lerp(drawColor, new Color(255, 100, 100), redFactor), NPC.rotation, NPC.frame.Size() / 2f, 1f, effects, 0);
+		spriteBatch.Draw(tex, position, null, Color.Lerp(drawColor, new Color(255, 100, 100), redFactor), NPC.rotation, NPC.frame.Size() / 2f, 1f, effects, 0);
 		return false;
 	}
 }

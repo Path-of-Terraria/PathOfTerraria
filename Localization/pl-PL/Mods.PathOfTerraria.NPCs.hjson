@@ -999,7 +999,7 @@ SwampCroc: {
 
 GiantEel: {
 	// DisplayName: Mammoth Moss-Eel
-	// Entry: What happens when you combine large, territorial and overgrown? This! It is extremely aggressive and unbelievably strong.
+	// Entry: What happens when you combine large, territorial and overgrown? This! It is extremely aggressive and unbelievably strong. It's best to walk- well, run away.
 }
 
 // GiantEelBody.DisplayName: "{$GiantEel.DisplayName}"
@@ -1014,6 +1014,7 @@ Mudsquit: {
 	// DisplayName: Mudsquit
 	// Entry: A simple, classic, home-grown fish-that-explodes-when-full. That's right! If it has even the barest taste of your blood, it will explode violently. Why? Well, it explodes its friends too! Hope that helps.
 }
+
 // CryoStalker.DisplayName: Cryo Stalker
 // FallenShaman.DisplayName: Fallen Shaman
 // Shambling.DisplayName: Shambling
