@@ -27,7 +27,7 @@ public struct FightTracker(int[] npcTypes)
 	public bool ManualStart { get; init; }
 	/// <summary> If true when enemies vanish without properly dying, the fight's data will be reset automatically, allowing a restart. </summary>
 	public bool ResetOnVanish { get; init; }
-	/// <summary> If true when enemies vanish without properly dying, the tracker's state will be put into <see cref="FightState.Halted"/> for the specified bit of time. </summary>
+	/// <summary> If not null when enemies vanish without properly dying, the tracker's state will be put into <see cref="FightState.Halted"/> for the specified bit of time. </summary>
 	public uint? HaltTimeOnVanish { get; init; }
 
 	public bool Started { get; private set; }

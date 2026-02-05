@@ -170,8 +170,7 @@ internal sealed class FallenShaman : ModNPC
 	}
 	public override void SetDefaults()
 	{
-		// NPC.aiStyle = -1;
-		NPC.aiStyle = NPCAIStyleID.Bird;
+		NPC.aiStyle = -1;
 		NPC.lifeMax = 1000;
 		NPC.defense = 35;
 		NPC.damage = 50;

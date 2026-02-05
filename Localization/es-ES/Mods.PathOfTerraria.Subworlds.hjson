@@ -161,3 +161,10 @@ SwampArea: {
 	// Mining: "{$DefaultMining}"
 	// Placing: "{$DefaultPlacing}"
 }
+
+InfernalRealm: {
+	// DisplayName: Infernal Realm
+	// Description: You have found the origin of the infernal rifts. Defeat the ruler of this hellish realm!
+	// Mining: "[i:1] Only torches and ropes can be mined"
+	// Placing: "[i:2] Only torches and ropes can be placed"
+}
