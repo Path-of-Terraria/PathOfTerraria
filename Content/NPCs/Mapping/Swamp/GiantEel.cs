@@ -152,11 +152,11 @@ internal class GiantEel : ModNPC
 		NPC.noTileCollide = true;
 
 		NPC.HitSound = new($"{nameof(PathOfTerraria)}/Assets/Sounds/HitEffects/FleshHit", 3) { MaxInstances = 5, Volume = 0.4f };
-		NPC.DeathSound = SoundID.NPCDeath23 with { Pitch = +0.1f, PitchVariance = 0.15f, Identifier = "FallenDeath" };
+		NPC.DeathSound = SoundID.NPCDeath23 with { Pitch = +0.1f, PitchVariance = 0.15f, Identifier = $"{Name}Death" };
 
 		NPC.TryEnableComponent<NPCVoice>(e =>
 		{
-			e.Data.PainSound = (3, SoundID.NPCHit56 with { Pitch = +0.3f, PitchVariance = 0.4f, Identifier = "FallenHit" });
+			e.Data.PainSound = (3, SoundID.NPCHit56 with { Pitch = +0.3f, PitchVariance = 0.4f, Identifier = $"{Name}Hit" });
 		});
 		NPC.TryEnableComponent<NPCHitEffects>(c =>
 		{
