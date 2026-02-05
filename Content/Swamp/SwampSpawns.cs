@@ -1,8 +1,7 @@
-﻿using PathOfTerraria.Content.NPCs.Mapping.Swamp;
-using SubworldLibrary;
+﻿using SubworldLibrary;
 using System.Collections.Generic;
 
-namespace PathOfTerraria.Common.Subworlds.MappingAreas.SwampAreaContent;
+namespace PathOfTerraria.Content.Swamp;
 
 internal class SwampSpawns : GlobalNPC
 {

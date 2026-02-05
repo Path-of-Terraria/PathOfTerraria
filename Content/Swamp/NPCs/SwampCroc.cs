@@ -8,7 +8,7 @@ using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.NPCs.Mapping.Swamp;
+namespace PathOfTerraria.Content.Swamp.NPCs;
 
 internal class SwampCroc : ModNPC
 {

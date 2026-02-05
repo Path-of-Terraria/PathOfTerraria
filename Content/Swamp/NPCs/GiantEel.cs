@@ -3,7 +3,6 @@ using PathOfTerraria.Common.AI;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.NPCs.Worms;
-using PathOfTerraria.Common.Subworlds.MappingAreas;
 using PathOfTerraria.Common.Systems.MobSystem;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.Buffs;
@@ -15,7 +14,7 @@ using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.NPCs.Mapping.Swamp;
+namespace PathOfTerraria.Content.Swamp.NPCs;
 
 #nullable enable
 

@@ -11,7 +11,7 @@ using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.NPCs.Mapping.Swamp;
+namespace PathOfTerraria.Content.Swamp.NPCs;
 
 internal class DragonFly : ModNPC, IGrabberNPC
 {
@@ -258,7 +258,7 @@ internal class DragonFly : ModNPC, IGrabberNPC
 				NPC.velocity *= 0.95f;
 			}
 
-			if (CarryingPlayer.dead || (HasLetGo && ShakeTimer <= 0))
+			if (CarryingPlayer.dead || HasLetGo && ShakeTimer <= 0)
 			{
 				State = States.IdleFly;
 				HasLetGo = false;
