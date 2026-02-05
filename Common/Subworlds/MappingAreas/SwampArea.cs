@@ -37,15 +37,16 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 	internal static Dictionary<int, int>? HeightMapping = null;
 	internal static List<Vector2> EncounterLocations = [];
 	internal static HashSet<Point16> SkipActuationLocations = [];
-
-	private bool LeftSpawn = false;
-	private bool spawnedTemporaryContent = false;
+	internal static bool LeftSpawn = false;
+	
+	private static bool spawnedTemporaryContent = false;
 
 	public override int Width => 3000 + 200 * Main.rand.Next(3);
 	public override int Height => MapHeight;
 	public override (int time, bool isDay) ForceTime => ((int)Main.dayLength / 2, SunDevourerSunEdit.Blackout > 0);
 
-	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new PassLegacy("Terrain", GenerateTerrain), new PassLegacy("SettleLiquids", SettleLiquidsStep.Generation)];
+	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new PassLegacy("Terrain", GenerateTerrain), new PassLegacy("Arena", SwampArenaGeneration.Generate),
+		new PassLegacy("SettleLiquids", SettleLiquidsStep.Generation)];
 
 	private void GenerateTerrain(GenerationProgress progress, GameConfiguration configuration)
 	{
@@ -534,8 +535,9 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 	{
 		Dictionary<int, int> yPerX = [];
 
-		int x = 400;
-		int lastX = 400;
+		int x = !LeftSpawn ? 700 : 300;
+		int maxX = LeftSpawn ? 800 : 400;
+        int lastX = 400;
 		List<Point16> dips = [];
 
 		while (x < Main.maxTilesX - 250)
@@ -544,7 +546,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 
 			if (Random.NextBool(150) || (x - lastX) > 400)
 			{
-				if (x < Main.maxTilesX - 400)
+				if (x < Main.maxTilesX - maxX)
 				{
 					dips.Add(new Point16(x, FloorY + Random.Next(90, 180)));
 					x += Random.Next(200);
@@ -552,7 +554,6 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 				}
 				else if (Random.NextBool(40))
 				{
-					dips.Add(new Point16(Main.maxTilesX - 400, FloorY + Random.Next(40, 80)));
 					break;
 				}
 			}
