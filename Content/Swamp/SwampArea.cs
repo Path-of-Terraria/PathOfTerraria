@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Subworlds.MappingAreas;
 using PathOfTerraria.Common.Tiles.FramingKinds;
+using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Passes;
 using PathOfTerraria.Common.World.Utilities;
@@ -140,8 +141,9 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 		GrowTrees();
 		GrowDeepMoss(progress);
 		GrowLilyPads(progress);
+        SwampArenaGeneration.Generate(progress, configuration);
 
-		for (int i = 2; i < Main.maxTilesX - 2; ++i)
+        for (int i = 2; i < Main.maxTilesX - 2; ++i)
 		{
 			int topY = FloorY - 10 - (int)(Math.Abs(noise.GetNoise(i, 10000)) * 10);
 
@@ -167,9 +169,6 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Clouds");
 		FastNoiseLite cloudNoise = GenerateClouds(progress);
-
-        progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Clouds");
-		SwampArenaGeneration.Generate(progress, configuration);
 
         progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Growing");
 		CleanUpAndDetail(progress, cloudNoise);
@@ -310,6 +309,12 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 						}
 					}
 				}
+				
+				if (MossyChance(i) && WorldUtilities.SolidTile(i, j) && tile.TileType == ModContent.TileType<PurpleClouds>() && (Random.NextBool(70) || WorldGen.TileIsExposedToAir(i, j)))
+				{
+					tile.TileType = (ushort)ModContent.TileType<MossyPurpleClouds>();
+					tile.WallType = WallID.None;
+				}
 			}
 
 			progress.Set(i / (float)Main.maxTilesX);
@@ -384,6 +389,27 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 		}
 	}
 
+	private static bool MossyChance(int i)
+	{
+		bool left = i < SwampArenaGeneration.ArenaWidth;
+
+		if (left || i > Main.maxTilesX - SwampArenaGeneration.ArenaWidth)
+		{
+			if (left && i > SwampArenaGeneration.ArenaWidth - 40)
+			{
+				return Random.NextFloat() > Utils.GetLerpValue(SwampArenaGeneration.ArenaWidth - 40, SwampArenaGeneration.ArenaWidth, i, true);
+			}
+			else if (!left && i < Main.maxTilesX - SwampArenaGeneration.ArenaWidth + 40)
+			{
+                return Random.NextFloat() > Utils.GetLerpValue(Main.maxTilesX - SwampArenaGeneration.ArenaWidth + 40, Main.maxTilesX - SwampArenaGeneration.ArenaWidth, i, true);
+            }
+
+			return true;
+		}
+
+		return false;
+    }
+
 	private static void GrowLilyPads(GenerationProgress progress)
 	{
 		for (int i = 1; i < Main.maxTilesX - 2; ++i)
@@ -413,10 +439,13 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 			mangroves.Enqueue(index);
 		}
 
-		while (mangroves.Count > 0)
+        int minTreeX = LeftSpawn ? 300 : 800;
+        int maxTreeX = Main.maxTilesX - (LeftSpawn ? 800 : 300);
+
+        while (mangroves.Count > 0)
 		{
 			BranchTreeMicrobiome biome = new();
-			biome.Place(new(mangroves.Dequeue() * 300, FloorY - Random.Next(150, 220)), GenVars.structures ?? new());
+			biome.Place(new((int)Utils.Remap(mangroves.Dequeue(), 2, Main.maxTilesX / 300 - 2, minTreeX, maxTreeX), FloorY - Random.Next(150, 220)), GenVars.structures ?? new());
 		}
 
 		const int CypressSpace = 140;
@@ -424,7 +453,9 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 
 		for (int i = 1; i < Main.maxTilesX / CypressSpace; ++i)
 		{
-			if (WorldUtils.Find(new(i * CypressSpace, FloorY), new Searches.Down(600).Conditions(new Conditions.IsSolid()), out Point result))
+            int x = (int)Utils.Remap(i, 1, Main.maxTilesX / CypressSpace, minTreeX - 60, maxTreeX + 60);
+
+            if (WorldUtils.Find(new(x, FloorY), new Searches.Down(600).Conditions(new Conditions.IsSolid()), out Point result))
 			{
 				Tile tile = Main.tile[result.X, result.Y - 4];
 
@@ -538,7 +569,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 	{
 		Dictionary<int, int> yPerX = [];
 
-		int x = !LeftSpawn ? 700 : 300;
+		int x = !LeftSpawn ? 800 : 400;
 		int maxX = LeftSpawn ? 800 : 400;
         int lastX = 400;
 		List<Point16> dips = [];
@@ -629,7 +660,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 
 			do
 			{
-				pos = new Vector2(Random.Next(300 * 16, (Main.maxTilesX - 300) * 16), Random.Next(FloorY * 16 - 200, FloorY * 16 + 200));
+				pos = new Vector2(Random.Next(SwampArenaGeneration.ArenaWidth * 16, (Main.maxTilesX - SwampArenaGeneration.ArenaWidth) * 16), Random.Next(FloorY * 16 - 200, FloorY * 16 + 200));
 			} while (Collision.SolidCollision(pos - new Vector2(50, 0), 200, 60) || !Collision.WetCollision(pos, 100, 20) || Collision.WetCollision(pos - new Vector2(0, 30), 100, 20)
 				|| xPositions.Any(x => Math.Abs(x - pos.X) < 120));
 

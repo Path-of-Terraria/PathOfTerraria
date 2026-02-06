@@ -9,16 +9,15 @@ internal class SwampWeed : ModTile
 {
 	public static void Place(int i, int j, int frame)
 	{
-		Tile weed = Main.tile[i, j];
-
 		if (TileInvalid(i, j) && TileInvalid(i, j + 1))
 		{
 			WorldGen.TileFrame(i, j + 1);
 			return;
 		}
 
+		Tile weed = Main.tile[i, j];
 		weed.HasTile = true;
-		weed.TileType = (ushort)ModContent.TileType<SwampWeed>();
+        weed.TileType = (ushort)ModContent.TileType<SwampWeed>();
 		weed.TileFrameX = (short)(18 * frame);
 		weed.TileFrameNumber = Main.rand.NextBool(70) ? 1 : 0;
 		WorldGen.TileFrame(i, j);
