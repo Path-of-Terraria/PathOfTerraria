@@ -3,6 +3,8 @@ using PathOfTerraria.Core.Time;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 
+#nullable enable
+
 namespace PathOfTerraria.Common.AI;
 
 internal record struct SpriteAnimation()
@@ -25,6 +27,7 @@ internal sealed class NPCAnimations : NPCComponent
 	private SpriteAnimation animation;
 	private float frameCounter;
 
+	public bool ManualInvoke { get; set; }
 	public bool IgnoreAlpha { get; set; }
 	public Vector2 SpriteOffset { get; set; }
 	public SpriteFrame BaseFrame { get; set; } = new SpriteFrame(1, 1) with { PaddingX = 0, PaddingY = 0 };
@@ -41,6 +44,7 @@ internal sealed class NPCAnimations : NPCComponent
 		}
 	}
 
+	/// <summary> Should be called in FindFrame(). </summary>
 	public void Advance()
 	{
 		frameCounter += animation.Speed * TimeSystem.LogicDeltaTime;
@@ -99,26 +103,30 @@ internal sealed class NPCAnimations : NPCComponent
 
 	public override bool PreDraw(NPC npc, SpriteBatch sb, Vector2 screenPos, Color drawColor)
 	{
-		if (!Enabled) { return true; }
+		if (!Enabled || ManualInvoke) { return true; }
 
 		if (npc.IsABestiaryIconDummy)
 		{
 			FindFrame(npc, 0);
 		}
 
+		Render(TextureAssets.Npc[npc.type].Value, npc, screenPos, drawColor);
+
+		return false;
+	}
+
+	public void Render(Texture2D texture, NPC npc, Vector2 screenPos, Color drawColor)
+	{
 		// Render the NPC using the proper source rectangle.
-		Texture2D tex = TextureAssets.Npc[npc.type].Value;
 		Vector2 position = npc.Center + new Vector2(0f, npc.gfxOffY) + SpriteOffset - screenPos;
 		Color alphaColor = Color.White.MultiplyRGBA(new Color(Vector4.One * ((byte.MaxValue - npc.alpha) / (float)byte.MaxValue)));
 		if (IgnoreAlpha) { alphaColor = Color.White; }
-		Main.EntitySpriteDraw(tex, position, npc.frame, drawColor.MultiplyRGBA(alphaColor), npc.rotation, npc.frame.Size() * 0.5f, npc.scale, npc.spriteDirection >= 0 ? (SpriteEffects)1 : 0, 0f);
+		Main.EntitySpriteDraw(texture, position, npc.frame, drawColor.MultiplyRGBA(alphaColor), npc.rotation, npc.frame.Size() * 0.5f, npc.scale, npc.spriteDirection >= 0 ? (SpriteEffects)1 : 0, 0f);
 
 		string glowmaskPath = $"{npc.ModNPC?.Texture}_Glowmask";
 		if (ModContent.HasAsset(glowmaskPath) && ModContent.Request<Texture2D>(glowmaskPath) is { IsLoaded: true, Value: { } glowmask })
 		{
 			Main.EntitySpriteDraw(glowmask, position, npc.frame, alphaColor, npc.rotation, npc.frame.Size() * 0.5f, npc.scale, npc.spriteDirection >= 0 ? (SpriteEffects)1 : 0, 0f);
 		}
-
-		return false;
 	}
 }

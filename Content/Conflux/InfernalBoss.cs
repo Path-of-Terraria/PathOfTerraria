@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Linq;
+using System.Runtime.CompilerServices;
 using PathOfTerraria.Common.AI;
 using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
@@ -6,12 +7,18 @@ using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Common.World.Utilities;
 using PathOfTerraria.Content.Gores;
+using PathOfTerraria.Content.Passives;
+using PathOfTerraria.Core.IK;
 using PathOfTerraria.Core.Time;
 using PathOfTerraria.Utilities;
-using PathOfTerraria.Utilities.Terraria;
+using PathOfTerraria.Utilities.Xna;
+using ReLogic.Content;
+using ReLogic.Graphics;
 using ReLogic.Utilities;
+using Stubble.Core.Parser.TokenParsers;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 
 #nullable enable
@@ -31,24 +38,32 @@ internal sealed class InfernalBoss : ModNPC
 		public NPCTargeting Targeting { get; } = npc.GetGlobalNPC<NPCTargeting>();
 		public NPCAttacking Attacking { get; } = npc.GetGlobalNPC<NPCAttacking>();
 		public NPCAnimations Animations { get; } = npc.GetGlobalNPC<NPCAnimations>();
+		public NPCFootsteps Footsteps { get; } = npc.GetGlobalNPC<NPCFootsteps>();
 		// public NPCTeleports Teleports { get; } = npc.GetGlobalNPC<NPCTeleports>();
 	}
 
+	private static readonly InverseKinematics.Config ikCfg = new()
+	{
+		RadianQuantization = MathHelper.ToRadians(4f),
+	};
 	private static readonly SpriteAnimation animIdle = new() { Id = "idle", Frames = [0], Speed = 3f };
 	private static readonly SpriteAnimation animJump = new() { Id = "jump", Frames = [0] };
 	private static readonly SpriteAnimation animFall = new() { Id = "fall", Frames = [0] };
 	private static readonly SpriteAnimation animWalk = new() { Id = "walk", Frames = [0] };
 	private static readonly SpriteAnimation animAttack = new() { Id = "attack", Frames = [0], Speed = 17f, Loop = false };
+	private static Asset<Texture2D>? armsTexture;
+	private static Asset<Texture2D>? helmetTexture;
 
 	// public ref float FlightCounter => ref NPC.ai[3];
 	public ref Flag Flags => ref Unsafe.As<float, Flag>(ref NPC.ai[3]);
 
 	private float flightVolume;
 	private SlotId flightSound;
+	private IKLimb[] limbs = [];
 
 	public override void Load()
 	{
-		
+
 	}
 
 	public override void SetStaticDefaults()
@@ -69,7 +84,7 @@ internal sealed class InfernalBoss : ModNPC
 		NPC.defense = 35;
 		NPC.damage = 50;
 		NPC.width = 280;
-		NPC.height = 200;
+		NPC.height = 150;
 		NPC.knockBackResist = 0.0f;
 		NPC.boss = true;
 		NPC.lavaImmune = true;
@@ -80,11 +95,12 @@ internal sealed class InfernalBoss : ModNPC
 
 		NPC.TryEnableComponent<NPCNavigation>(e =>
 		{
-			e.JumpRange = new(20, 30);
+			e.JumpRange = new(25, 50);
 		});
 		NPC.TryEnableComponent<NPCMovement>(e =>
 		{
-			e.Data.MaxSpeed = 5f;
+			// e.Data.MaxSpeed = 0f;
+			e.Data.MaxSpeed = 7f;
 			e.Data.Acceleration = 16f;
 			e.Data.Friction = (8f, 2f);
 		});
@@ -92,6 +108,7 @@ internal sealed class InfernalBoss : ModNPC
 		{
 			e.BaseFrame = new SpriteFrame(1, 1) with { PaddingX = 0, PaddingY = 0 };
 			e.SpriteOffset = new(0f, -142f);
+			e.ManualInvoke = true;
 		});
 		NPC.TryEnableComponent<NPCTargeting>();
 		NPC.TryEnableComponent<NPCAttacking>(e =>
@@ -147,7 +164,9 @@ internal sealed class InfernalBoss : ModNPC
 		});
 		NPC.TryEnableComponent<NPCFootsteps>(e =>
 		{
-			e.Data.Frames = new() { { "walk", [0, 3] } };
+			e.Data.NoJumpSounds = true;
+			e.Data.NoLandSounds = false;
+			// e.Data.Frames = new() { { "walk", [0, 3] } };
 			e.Data.StepSound = new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Footsteps/MonsterStomp", 3)
 			{
 				Volume = 0.25f,
@@ -182,6 +201,8 @@ internal sealed class InfernalBoss : ModNPC
 			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 10, NPCHitEffects.OnDeath));
 			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatLarge)}", 5, NPCHitEffects.OnDeath));
 		});
+
+		SetupLimbs();
 	}
 
 	public override void AI()
@@ -190,12 +211,10 @@ internal sealed class InfernalBoss : ModNPC
 
 		// Invoke behaviors.
 		CustomBehavior(in ctx);
-		ctx.Animations.Advance();
 		ctx.Targeting.ManualUpdate(new(NPC));
 		// ctx.Teleports.ManualUpdate(new(NPC));
 		ctx.Attacking.ManualUpdate(new(NPC));
 		ctx.Movement.ManualUpdate(new(NPC));
-		ctx.Animations.Set(PickAnimation(in ctx));
 	}
 
 	private void CustomBehavior(in Context ctx)
@@ -213,13 +232,14 @@ internal sealed class InfernalBoss : ModNPC
 		{
 			if (atkProg == 1)
 			{
-				SoundEngine.PlaySound(new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/FallenShamanAttack") {
+				SoundEngine.PlaySound(new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/FallenShamanAttack")
+				{
 					MaxInstances = 2,
 					Volume = 0.5f,
 					PitchVariance = 0.15f,
 				}, ctx.Center);
 			}
-			
+
 			if (atkProg != atkBase + (i * 5)) { continue; }
 
 			Vector2 targetCenter = ctx.Targeting.GetTargetCenter(NPC);
@@ -249,12 +269,7 @@ internal sealed class InfernalBoss : ModNPC
 		// Effects.
 		if (!Main.dedServ)
 		{
-			Lighting.AddLight(NPC.Top, Color.Red.ToVector3() * 0.5f);
-
-			if (true)
-			{
-				Dust.NewDustDirect(NPC.BottomLeft + new Vector2(0f, -8f), NPC.width, 8, DustID.SomethingRed, NPC.velocity.X * 2f, NPC.velocity.Y * 2f, Scale: 1f);
-			}
+			// Lighting.AddLight(NPC.Top, Color.Red.ToVector3() * 0.1f);
 
 			var loopSound = new SoundStyle($"{nameof(PathOfTerraria)}/Assets/Sounds/Gore/FleshLoopChaotic")
 			{
@@ -267,7 +282,62 @@ internal sealed class InfernalBoss : ModNPC
 			float target = 1f;
 			float volume = flightVolume = MathUtils.StepTowards(MathHelper.Lerp(flightVolume, target, halfStep), target, halfStep);
 			float pitch = Math.Clamp(-0.9f + (speed * 0.1f), -0.9f, 0.2f);
-			SoundUtils.UpdateLoopingSound(ref flightSound, ctx.Center, volume, pitch, loopSound,_ => Main.npc[NPC.whoAmI] is { active: true } n && n == NPC);
+			SoundUtils.UpdateLoopingSound(ref flightSound, ctx.Center, volume, pitch, loopSound, _ => Main.npc[NPC.whoAmI] is { active: true } n && n == NPC);
+		}
+	}
+
+	private void SetupLimbs()
+	{
+		limbs =
+		[
+			new IKLimb()
+			{
+				Offset = new(-10, -60),
+				Segments =
+				[
+					new IKSegment() { SrcRect = new(002, 002, 72, 98), TextureOrigin = new(016, 016), Length = 096, BaseAngle = MathHelper.ToRadians(-55f) },
+					new IKSegment() { SrcRect = new(078, 002, 44, 52), TextureOrigin = new(082, 006), Length = 056, BaseAngle = MathHelper.ToRadians(-50f) },
+					new IKSegment() { SrcRect = new(126, 002, 36, 44), TextureOrigin = new(132, 004), Length = 020, BaseAngle = MathHelper.ToRadians(-55f) },
+				],
+				IsFlipped = true,
+			},
+			new IKLimb()
+			{
+				Offset = new(+100, -60),
+				Segments =
+				[
+					new IKSegment() { SrcRect = new(002, 002, 72, 98), TextureOrigin = new(016, 016), Length = 096, BaseAngle = MathHelper.ToRadians(-55f) },
+					new IKSegment() { SrcRect = new(078, 002, 44, 52), TextureOrigin = new(082, 006), Length = 056, BaseAngle = MathHelper.ToRadians(-50f) },
+					new IKSegment() { SrcRect = new(126, 002, 36, 44), TextureOrigin = new(132, 004), Length = 020, BaseAngle = MathHelper.ToRadians(-55f) },
+				],
+			},
+			new IKLimb()
+			{
+				Offset = new(-70, -40),
+				Segments =
+				[
+					new IKSegment() { SrcRect = new(002, 002, 72, 98), TextureOrigin = new(016, 016), Length = 096, BaseAngle = MathHelper.ToRadians(-55f) },
+					new IKSegment() { SrcRect = new(078, 002, 44, 52), TextureOrigin = new(082, 006), Length = 056, BaseAngle = MathHelper.ToRadians(-50f) },
+					new IKSegment() { SrcRect = new(126, 002, 36, 44), TextureOrigin = new(132, 004), Length = 020, BaseAngle = MathHelper.ToRadians(-55f) },
+				],
+				IsFlipped = true,
+			},
+			new IKLimb()
+			{
+				Offset = new(+50, -70),
+				Segments =
+				[
+					new IKSegment() { SrcRect = new(002, 002, 72, 98), TextureOrigin = new(016, 016), Length = 096, BaseAngle = MathHelper.ToRadians(-55f) },
+					new IKSegment() { SrcRect = new(078, 002, 44, 52), TextureOrigin = new(082, 006), Length = 056, BaseAngle = MathHelper.ToRadians(-50f) },
+					new IKSegment() { SrcRect = new(126, 002, 36, 44), TextureOrigin = new(132, 004), Length = 020, BaseAngle = MathHelper.ToRadians(-55f) },
+				],
+			},
+		];
+
+		foreach (ref IKLimb limb in limbs.AsSpan())
+		{
+			limb.TargetCurrent = NPC.Center;
+			limb.TargetWanted = NPC.Center;
 		}
 	}
 
@@ -287,6 +357,111 @@ internal sealed class InfernalBoss : ModNPC
 			_ when vel.Y == 0f && Math.Abs(vel.X) <= MinWalkSpeed => animIdle,
 			_ => null,
 		};
+	}
+
+	public override void FindFrame(int frameHeight)
+	{
+		Context ctx = new(NPC);
+
+		ctx.Animations.Advance();
+		ctx.Animations.Set(PickAnimation(in ctx));
+
+#if DEBUG
+		if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.N)) { SetupLimbs(); }
+#endif
+		
+		NPC.gfxOffY = MathF.Sin((float)Main.timeForVisualEffects / 10f) * 10f;
+
+		// Update limbs.
+		const int ikUpdateRate = 1;
+		bool anyInRange = false;
+		if (Main.GameUpdateCount % ikUpdateRate == 0)
+		{
+			int limbIndex = -1;
+			foreach (ref IKLimb limb in limbs.AsSpan())
+			{
+				limbIndex++;
+				limb.Resolve(NPC.Center + new Vector2(0f, NPC.gfxOffY), out InverseKinematics.Info info, in ikCfg);
+
+				if (!info.TargetInRange)
+				{
+					Vector2 limbStart = NPC.Center + limb.Offset;
+					Vector2Int tilePos = (limbStart + (new Vector2(NPC.direction * NPC.width * 0.4f, 32))).ToTileCoordinates();
+					int yOffset = 0, yStop = 10;
+					for (; tilePos.Y < Main.maxTilesY && yOffset < yStop; tilePos.Y++, yOffset++)
+					{
+						Tile tile = Main.tile[tilePos.X, tilePos.Y];
+						if (tile.HasTile && (Main.tileSolid[tile.TileType] || Main.tileSolidTop[tile.TileType]))
+						{
+							break;
+						}
+					}
+
+					if (yOffset != yStop)
+					{
+						limb.TargetWanted = ((Point16)tilePos).ToWorldCoordinates(autoAddY: -8f);
+					}
+				}
+				else
+				{
+					anyInRange = true;
+				}
+
+				float oldDistance = limb.TargetCurrent.Distance(limb.TargetWanted);
+				limb.TargetCurrent = Vector2.Lerp(limb.TargetCurrent, limb.TargetWanted, 0.3f);
+				float newDistance = limb.TargetCurrent.Distance(limb.TargetWanted);
+
+				const float soundRange = 8f;
+				if (!Main.dedServ && newDistance <= soundRange && oldDistance > soundRange)
+				{
+					// SoundEngine.PlaySound(ctx.Footsteps.Data.StepSound!.Value with { Volume = 0.1f, Pitch = 0.5f }, limb.TargetWanted);
+					SoundEngine.PlaySound(position: limb.TargetWanted, style: new($"{nameof(PathOfTerraria)}/Assets/Sounds/HitEffects/FleshHit", 3)
+					{
+						MaxInstances = 5,
+						Volume = 0.1f,
+						PitchVariance = 0.2f,
+						// SoundLimitBehavior = SoundLimitBehavior.IgnoreNew,
+					});
+				}
+			}
+		}
+
+		NPC.aiStyle = -1; //anyInRange ? NPCAIStyleID.DemonEye : -1;
+		NPC.noGravity = NPC.aiStyle != -1;
+	}
+
+	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+	{
+		NPC.spriteDirection = 1;
+
+		helmetTexture ??= ModContent.Request<Texture2D>($"{Texture}_Helmet", AssetRequestMode.ImmediateLoad);
+
+		Context ctx = new(NPC);
+		ctx.Animations.Render(TextureAssets.Npc[Type].Value, NPC, screenPos, drawColor);
+		RenderArms(screenPos);
+		// ctx.Animations.Render(helmetTexture.Value, NPC, screenPos, drawColor);
+		return false;
+	}
+
+	private void RenderArms(Vector2 screenPos)
+	{
+		armsTexture ??= ModContent.Request<Texture2D>($"{Texture}_Limbs", AssetRequestMode.ImmediateLoad);
+
+		foreach (ref IKLimb limb in limbs.AsSpan())
+		{
+			for (int j = 0; j < limb.Segments.Length; j++)
+			{
+				DrawData drawData = limb.GetDrawParams(armsTexture.Value, j, screenPos);
+				Main.EntitySpriteDraw(drawData);
+			}
+
+#if DEBUG && false
+			for (int j = 0; j < limb.Results.Length; j++)
+			{
+				Main.spriteBatch.DrawString(FontAssets.MouseText.Value, "x", arm.Results[j] - Main.screenPosition, Color.Cyan);
+			}
+#endif
+		}
 	}
 }
 
