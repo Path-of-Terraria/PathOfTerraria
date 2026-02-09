@@ -15,7 +15,7 @@ internal static class InverseKinematics
 
     public struct Config()
     {
-        public int NumIterations = 10;
+        public int NumIterations = 8;
         public float CloseEnoughRange = 0.1f;
         /// <summary> When more than zero, a pass will be ran to reduce the resolution of limbs' angles to this radian value.
         /// e.g. specifying Pi/2 will result in 90-degree snaps. </summary>

@@ -23,7 +23,8 @@ internal class InfernalRealm : BossDomainSubworld, IOverrideBiome
 
 	public override int Width => 768;
 	public override int Height => 768;
-	public override (int time, bool isDay) ForceTime => ((int)(Main.dayLength * 0.96), true);
+	// public override (int time, bool isDay) ForceTime => ((int)(Main.dayLength * 0.96), true);
+	public override (int time, bool isDay) ForceTime => ((int)(Main.nightLength * 0.5), false);
 
 	public override List<GenPass> Tasks =>
 	[

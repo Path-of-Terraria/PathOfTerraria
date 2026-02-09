@@ -12,12 +12,20 @@ internal record struct IKSegment()
 	public float BaseAngle;
 }
 
+internal record struct IKLimbContext
+{
+	public required Vector2 Center;
+	public required int Direction;
+}
+
 internal record struct IKLimb()
 {
 	/// <summary> Offset from the center of the body, in pixels. </summary>
 	public required Vector2 Offset;
 	/// <summary> All of this limb's segments. </summary>
 	public required IKSegment[] Segments;
+	/// <summary> The resting angle, a slight suggestion for how the limbs should bend. </summary>
+	public float RestingAngle = 0f;
 	/// <summary> Computed location cache. </summary>
 	public Vector2[] Results = [];
 	/// <summary> Whether to horizontally flip this limb's rendering. </summary>
@@ -25,6 +33,19 @@ internal record struct IKLimb()
 
     public Vector2 TargetCurrent { get; set; }
     public Vector2 TargetWanted { get; set; }
+
+	private float length;
+	public float Length
+	{
+		get
+		{
+			if (length > 0f) { return length; }
+
+			length = 0f;
+			foreach (ref readonly IKSegment seg in Segments.AsSpan()) { length += seg.Length; }
+			return length;
+		}
+	}
 
     public void EnsureReady()
     {
@@ -37,25 +58,32 @@ internal record struct IKLimb()
     //     if (immediate) { TargetCurrent = target; }
     // }
 
-    public void Resolve(Vector2 bodyCenter, out InverseKinematics.Info info, in InverseKinematics.Config cfg)
+	public readonly Vector2 GetOffset(float rotation = 0f, int xDir = 1, int yDir = 1)
+	{
+		var result = new Vector2(Offset.X * xDir, Offset.Y * yDir);
+		if (rotation != 0f) { result = result.RotatedBy(rotation); }
+		return result;
+	}
+	public readonly Vector2 GetPosition(Vector2 bodyCenter, float rotation = 0f, int xDir = 1, int yDir = 1)
+	{
+		return bodyCenter + GetOffset(rotation, xDir, yDir);
+	}
+
+    public void Resolve(out InverseKinematics.Info info, in InverseKinematics.Config cfg, in IKLimbContext ctx)
     {
         EnsureReady();
         
 		Span<float> lengths = stackalloc float[Segments.Length];
-        float totalLength = 0f;
-		for (int i = 0; i < Segments.Length; i++)
-        {
-            lengths[i] = Segments[i].Length;
-            totalLength += lengths[i];
-        }
+		for (int i = 0; i < Segments.Length; i++) { lengths[i] = Segments[i].Length; }
 	
 		InverseKinematics.Resolve(out info, in cfg, new()
 		{
             Target = TargetCurrent,
-			Origin = bodyCenter + Offset,
+			Origin = ctx.Center,
 			Results = Results,
 			Segments = lengths,
-			TotalLength = totalLength,
+			TotalLength = Length,
+			RestingAngle = RestingAngle + (ctx.Direction < 0 ? -MathHelper.Pi : 0f),
 		});
     }
 
@@ -65,7 +93,7 @@ internal record struct IKLimb()
         InverseKinematics.Quantize(Results, snapInRadians);
     }
 
-    public DrawData GetDrawParams(Texture2D texture, int segmentIdx, Vector2 screenPos)
+    public DrawData GetDrawParams(Texture2D texture, int segmentIdx, Vector2 screenPos, int direction)
     {
         EnsureReady();
 
@@ -76,9 +104,11 @@ internal record struct IKLimb()
 		Vector2 origin;
 		float spriteAngle;
 		SpriteEffects effects;
-		Color color = Lighting.GetColor(((start + end) * 0.5f).ToTileCoordinates());
+		Color color = Color.White;
+		// Color color = Lighting.GetColor(((start + end) * 0.5f).ToTileCoordinates());
 
-		if (!IsFlipped)
+		bool flipped = ((IsFlipped ? 1 : -1) * direction) < 0;
+		if (!flipped)
 		{
             origin = segment.TextureOrigin - segment.SrcRect.TopLeft();
 			spriteAngle = angle + segment.BaseAngle;

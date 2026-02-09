@@ -98,13 +98,6 @@ internal sealed class NPCNavigation : NPCComponent
 		pathfinding = null;
 	}
 
-	public override bool? CanFallThroughPlatforms(NPC npc)
-	{
-		if (!Enabled) { return null; }
-
-		return FallThroughPlatforms;
-	}
-
 	/// <summary> Serializes navigation information. </summary>
 	public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter writer)
 	{

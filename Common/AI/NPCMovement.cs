@@ -12,6 +12,7 @@ internal struct MovementInput()
 {
 	public Vector2 MovementVector;
 	public Vector2 JumpVector;
+	public bool FallThroughPlatforms;
 }
 
 internal sealed class MovementData()
@@ -34,6 +35,7 @@ internal sealed class MovementData()
 	// State
 	public Counter<ushort> NoAccelerationTime;
 	public Counter<ushort> NoFrictionTime;
+	public MovementInput LastInput;
 	public MovementInput? InputOverride;
 	public Vector2? TargetOverride;
 	public Vector2 LastTargetPoint;
@@ -53,6 +55,13 @@ internal sealed class NPCMovement : NPCComponent<MovementData>
 		public Vector2 Center = npc.Center;
 		public NPCTargeting? Targeting { get; } = npc.TryGetGlobalNPC(out NPCTargeting c) ? c : null;
 		public NPCNavigation? Navigation { get; } = npc.TryGetGlobalNPC(out NPCNavigation c) ? c : null;
+	}
+
+	public override bool? CanFallThroughPlatforms(NPC npc)
+	{
+		if (!Enabled) { return null; }
+
+		return Data.LastInput.FallThroughPlatforms;
 	}
 
 	public void ManualUpdate(in Ctx ctx)
@@ -104,15 +113,16 @@ internal sealed class NPCMovement : NPCComponent<MovementData>
 			{
 				MovementVector = navResult.MovementVector,
 				JumpVector = navResult.JumpVector,
+				FallThroughPlatforms = navResult.FallThroughPlatforms,
 			};
 		}
 		else
 		{
-			return;
+			input = new();
 		}
 
 		// Horizontal acceleration.
-		if (npc.velocity.Y == 0f && input.MovementVector.X != 0f)
+		if (input.MovementVector.X != 0f && npc.velocity.Y == 0f)
 		{
 			npc.velocity.X = MathUtils.StepTowards(npc.velocity.X, Data.MaxSpeed * input.MovementVector.X, Data.Acceleration * TimeSystem.LogicDeltaTime);
 			npc.direction = input.MovementVector.X > 0f ? 1 : -1;
@@ -124,6 +134,8 @@ internal sealed class NPCMovement : NPCComponent<MovementData>
 			npc.velocity = input.JumpVector;
 			npc.direction = input.JumpVector.X != 0f ? (input.JumpVector.X > 0f ? 1 : -1) : npc.direction;
 		}
+
+		Data.LastInput = input;
 	}
 
 	private void Push(in Ctx ctx)

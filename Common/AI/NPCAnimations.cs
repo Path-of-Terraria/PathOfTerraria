@@ -115,13 +115,15 @@ internal sealed class NPCAnimations : NPCComponent
 		return false;
 	}
 
-	public void Render(Texture2D texture, NPC npc, Vector2 screenPos, Color drawColor)
+	// Renders the NPC using the proper source rectangle.
+	public void Render(Texture2D texture, NPC npc, Vector2 screenPos, Color drawColor, Vector2? origin = null)
 	{
-		// Render the NPC using the proper source rectangle.
-		Vector2 position = npc.Center + new Vector2(0f, npc.gfxOffY) + SpriteOffset - screenPos;
+		origin ??= (npc.frame.Size() * 0.5f) - (SpriteOffset * new Vector2(npc.spriteDirection, 1f));
+		
+		Vector2 position = npc.Center + new Vector2(0f, npc.gfxOffY) - screenPos;
 		Color alphaColor = Color.White.MultiplyRGBA(new Color(Vector4.One * ((byte.MaxValue - npc.alpha) / (float)byte.MaxValue)));
 		if (IgnoreAlpha) { alphaColor = Color.White; }
-		Main.EntitySpriteDraw(texture, position, npc.frame, drawColor.MultiplyRGBA(alphaColor), npc.rotation, npc.frame.Size() * 0.5f, npc.scale, npc.spriteDirection >= 0 ? (SpriteEffects)1 : 0, 0f);
+		Main.EntitySpriteDraw(texture, position, npc.frame, drawColor.MultiplyRGBA(alphaColor), npc.rotation, origin.Value, npc.scale, npc.spriteDirection >= 0 ? (SpriteEffects)1 : 0, 0f);
 
 		string glowmaskPath = $"{npc.ModNPC?.Texture}_Glowmask";
 		if (ModContent.HasAsset(glowmaskPath) && ModContent.Request<Texture2D>(glowmaskPath) is { IsLoaded: true, Value: { } glowmask })

@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using PathOfTerraria.Common.AI;
 using PathOfTerraria.Common.NPCs;
@@ -11,6 +14,7 @@ using PathOfTerraria.Content.Passives;
 using PathOfTerraria.Core.IK;
 using PathOfTerraria.Core.Time;
 using PathOfTerraria.Utilities;
+using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
 using ReLogic.Content;
 using ReLogic.Graphics;
@@ -19,6 +23,7 @@ using Stubble.Core.Parser.TokenParsers;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 
 #nullable enable
@@ -27,6 +32,19 @@ namespace PathOfTerraria.Content.Conflux;
 
 internal sealed class InfernalBoss : ModNPC
 {
+	public record struct Limb()
+	{
+		public required IKLimb IK;
+		public Point16? TileAttachment;
+		public float PlacementAnimation;
+		public bool PlayedSound;
+
+		public static implicit operator Limb(IKLimb ik)
+		{
+			return new() { IK = ik };
+		}
+	}
+	
 	public enum Flag : byte
 	{
 	}
@@ -57,9 +75,13 @@ internal sealed class InfernalBoss : ModNPC
 	// public ref float FlightCounter => ref NPC.ai[3];
 	public ref Flag Flags => ref Unsafe.As<float, Flag>(ref NPC.ai[3]);
 
+	private float bodyAngleCurrent;
+	private float bodyAngleTarget;
+	private float movementAnimation;
 	private float flightVolume;
 	private SlotId flightSound;
-	private IKLimb[] limbs = [];
+	private Limb[] limbs = [];
+	private (int NextIndex, float Cooldown) limbMovement = (0, 0f);
 
 	public override void Load()
 	{
@@ -83,8 +105,8 @@ internal sealed class InfernalBoss : ModNPC
 		NPC.lifeMax = 1 << 17;
 		NPC.defense = 35;
 		NPC.damage = 50;
-		NPC.width = 280;
-		NPC.height = 150;
+		NPC.width = 125;
+		NPC.height = 125;
 		NPC.knockBackResist = 0.0f;
 		NPC.boss = true;
 		NPC.lavaImmune = true;
@@ -100,14 +122,14 @@ internal sealed class InfernalBoss : ModNPC
 		NPC.TryEnableComponent<NPCMovement>(e =>
 		{
 			// e.Data.MaxSpeed = 0f;
-			e.Data.MaxSpeed = 7f;
-			e.Data.Acceleration = 16f;
-			e.Data.Friction = (8f, 2f);
+			e.Data.MaxSpeed = 4.5f;
+			e.Data.Acceleration = 4f;
+			e.Data.Friction = (8f, 1f);
 		});
 		NPC.TryEnableComponent<NPCAnimations>(e =>
 		{
 			e.BaseFrame = new SpriteFrame(1, 1) with { PaddingX = 0, PaddingY = 0 };
-			e.SpriteOffset = new(0f, -142f);
+			e.SpriteOffset = new(-16, -80);
 			e.ManualInvoke = true;
 		});
 		NPC.TryEnableComponent<NPCTargeting>();
@@ -165,7 +187,7 @@ internal sealed class InfernalBoss : ModNPC
 		NPC.TryEnableComponent<NPCFootsteps>(e =>
 		{
 			e.Data.NoJumpSounds = true;
-			e.Data.NoLandSounds = false;
+			e.Data.NoLandSounds = true;
 			// e.Data.Frames = new() { { "walk", [0, 3] } };
 			e.Data.StepSound = new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Footsteps/MonsterStomp", 3)
 			{
@@ -177,7 +199,7 @@ internal sealed class InfernalBoss : ModNPC
 		});
 		NPC.TryEnableComponent<NPCVoice>(e =>
 		{
-			e.Data.PainSound = (15, SoundID.NPCHit56 with { Pitch = 0f, PitchVariance = 0.5f, Identifier = "ShamanHit" });
+			e.Data.PainSound = (9, SoundID.NPCHit56 with { Pitch = 0f, PitchVariance = 0.5f, Identifier = "ShamanHit" });
 		});
 		NPC.TryEnableComponent<NPCHitEffects>(c =>
 		{
@@ -210,8 +232,8 @@ internal sealed class InfernalBoss : ModNPC
 		Context ctx = new(NPC);
 
 		// Invoke behaviors.
-		CustomBehavior(in ctx);
 		ctx.Targeting.ManualUpdate(new(NPC));
+		CustomBehavior(in ctx);
 		// ctx.Teleports.ManualUpdate(new(NPC));
 		ctx.Attacking.ManualUpdate(new(NPC));
 		ctx.Movement.ManualUpdate(new(NPC));
@@ -226,6 +248,54 @@ internal sealed class InfernalBoss : ModNPC
 		// Reset overrides.
 		ctx.Movement.Data.TargetOverride = null;
 		ctx.Attacking.Data.ManualInitiation = true;
+
+		UpdateLimbs(in ctx, out int numAttached, out float averageAngle);
+
+		// NPC.aiStyle = -1;
+		bool isFlying = numAttached >= Math.Max(1, limbs.Length);
+		NPC.aiStyle = -1;
+		NPC.noGravity = isFlying;
+		
+		if (isFlying && NPC.HasValidTarget)
+		{
+			NPCAimedTarget target = NPC.GetTargetData(ignorePlayerTankPets: true);
+			Vector2 targetPos = target.Center;
+
+			// Stand up, but only if that doesn't prevent the creature from getting into tight spaces.
+			Vector2Int sizeInTiles = (NPC.Size * new Vector2(1f, 1.8f)).ToTileCoordinates();
+			if (TileUtils.TryFitRectangleIntoTilemap(targetPos.ToTileCoordinates(), sizeInTiles, out Vector2Int adjustedPoint))
+			{
+				targetPos = (adjustedPoint + (sizeInTiles * 0.5f)).ToWorldCoordinates();
+			}
+			
+			float acceleration = ctx.Movement.Data.Acceleration * TimeSystem.LogicDeltaTime;
+			Vector2 direction = ctx.Center.DirectionTo(targetPos);
+			
+			// Slight upwards bias.
+			direction = (direction + new Vector2(0f, -0.05f)).SafeNormalize(Vector2.UnitY);
+
+			NPC.velocity = MovementUtils.DirAccel(NPC.velocity, direction, ctx.Movement.Data.MaxSpeed, acceleration);
+			NPC.direction = direction.X > 0f ? 1 : -1;
+
+			// Prevent navigation-driven movement, allow going through platforms.
+			ctx.Movement.Data.InputOverride = new()
+			{
+				FallThroughPlatforms = true,
+			};
+		}
+
+		// Update offsets.
+		movementAnimation += MathF.Min(10f, NPC.velocity.Length());
+		NPC.gfxOffY = MathF.Sin(((float)Main.timeForVisualEffects / 25f) + (movementAnimation / 40f)) * 6f;
+
+		// Update rotation.
+		float limbNormal = averageAngle - MathHelper.PiOver2;
+		bodyAngleTarget = limbNormal * 0.55f;
+		bodyAngleCurrent = MathUtils.LerpRadians(bodyAngleCurrent, bodyAngleTarget, 0.75f * TimeSystem.LogicDeltaTime);
+		NPC.rotation = bodyAngleCurrent;
+		Debug.Assert(!float.IsNaN(bodyAngleTarget));
+		Debug.Assert(!float.IsNaN(bodyAngleCurrent));
+		Debug.Assert(!float.IsNaN(NPC.rotation));
 
 		// Shoot projectiles during non-respawn attacks.
 		for (int i = 0; i < (atkActive ? 15 : 0); i++)
@@ -288,74 +358,293 @@ internal sealed class InfernalBoss : ModNPC
 
 	private void SetupLimbs()
 	{
+		Vector2 baseOffset = new(-10, 65);
 		limbs =
 		[
+			// /*
 			new IKLimb()
 			{
-				Offset = new(-10, -60),
-				Segments =
-				[
-					new IKSegment() { SrcRect = new(002, 002, 72, 98), TextureOrigin = new(016, 016), Length = 096, BaseAngle = MathHelper.ToRadians(-55f) },
-					new IKSegment() { SrcRect = new(078, 002, 44, 52), TextureOrigin = new(082, 006), Length = 056, BaseAngle = MathHelper.ToRadians(-50f) },
-					new IKSegment() { SrcRect = new(126, 002, 36, 44), TextureOrigin = new(132, 004), Length = 020, BaseAngle = MathHelper.ToRadians(-55f) },
-				],
+				Offset = baseOffset + new Vector2(-10, -60),
 				IsFlipped = true,
-			},
-			new IKLimb()
-			{
-				Offset = new(+100, -60),
+				RestingAngle = MathHelper.Pi,
 				Segments =
 				[
-					new IKSegment() { SrcRect = new(002, 002, 72, 98), TextureOrigin = new(016, 016), Length = 096, BaseAngle = MathHelper.ToRadians(-55f) },
-					new IKSegment() { SrcRect = new(078, 002, 44, 52), TextureOrigin = new(082, 006), Length = 056, BaseAngle = MathHelper.ToRadians(-50f) },
-					new IKSegment() { SrcRect = new(126, 002, 36, 44), TextureOrigin = new(132, 004), Length = 020, BaseAngle = MathHelper.ToRadians(-55f) },
+					new() { SrcRect = new(002, 002, 72, 98), TextureOrigin = new(016, 016), Length = 096, BaseAngle = MathHelper.ToRadians(-55f) },
+					new() { SrcRect = new(078, 002, 44, 52), TextureOrigin = new(082, 006), Length = 056, BaseAngle = MathHelper.ToRadians(-55f) },
+					new() { SrcRect = new(126, 002, 36, 44), TextureOrigin = new(132, 004), Length = 024, BaseAngle = MathHelper.ToRadians(-55f) },
 				],
 			},
 			new IKLimb()
 			{
-				Offset = new(-70, -40),
+				Offset = baseOffset + new Vector2(+100, -60),
 				Segments =
 				[
-					new IKSegment() { SrcRect = new(002, 002, 72, 98), TextureOrigin = new(016, 016), Length = 096, BaseAngle = MathHelper.ToRadians(-55f) },
-					new IKSegment() { SrcRect = new(078, 002, 44, 52), TextureOrigin = new(082, 006), Length = 056, BaseAngle = MathHelper.ToRadians(-50f) },
-					new IKSegment() { SrcRect = new(126, 002, 36, 44), TextureOrigin = new(132, 004), Length = 020, BaseAngle = MathHelper.ToRadians(-55f) },
+					new() { SrcRect = new(002, 002, 72, 98), TextureOrigin = new(016, 016), Length = 096, BaseAngle = MathHelper.ToRadians(-55f) },
+					new() { SrcRect = new(078, 002, 44, 52), TextureOrigin = new(082, 006), Length = 056, BaseAngle = MathHelper.ToRadians(-55f) },
+					new() { SrcRect = new(126, 002, 36, 44), TextureOrigin = new(132, 004), Length = 024, BaseAngle = MathHelper.ToRadians(-55f) },
 				],
+			},
+			new IKLimb()
+			{
+				Offset = baseOffset + new Vector2(-70, -40),
 				IsFlipped = true,
+				RestingAngle = MathHelper.Pi,
+				Segments =
+				[
+					new() { SrcRect = new(002, 002, 72, 98), TextureOrigin = new(016, 016), Length = 096, BaseAngle = MathHelper.ToRadians(-55f) },
+					new() { SrcRect = new(078, 002, 44, 52), TextureOrigin = new(082, 006), Length = 056, BaseAngle = MathHelper.ToRadians(-55f) },
+					new() { SrcRect = new(126, 002, 36, 44), TextureOrigin = new(132, 004), Length = 024, BaseAngle = MathHelper.ToRadians(-55f) },
+				],
 			},
 			new IKLimb()
 			{
-				Offset = new(+50, -70),
+				Offset = baseOffset + new Vector2(+50, -70),
 				Segments =
 				[
-					new IKSegment() { SrcRect = new(002, 002, 72, 98), TextureOrigin = new(016, 016), Length = 096, BaseAngle = MathHelper.ToRadians(-55f) },
-					new IKSegment() { SrcRect = new(078, 002, 44, 52), TextureOrigin = new(082, 006), Length = 056, BaseAngle = MathHelper.ToRadians(-50f) },
-					new IKSegment() { SrcRect = new(126, 002, 36, 44), TextureOrigin = new(132, 004), Length = 020, BaseAngle = MathHelper.ToRadians(-55f) },
+					new() { SrcRect = new(002, 002, 72, 98), TextureOrigin = new(016, 016), Length = 096, BaseAngle = MathHelper.ToRadians(-55f) },
+					new() { SrcRect = new(078, 002, 44, 52), TextureOrigin = new(082, 006), Length = 056, BaseAngle = MathHelper.ToRadians(-55f) },
+					new() { SrcRect = new(126, 002, 36, 44), TextureOrigin = new(132, 004), Length = 024, BaseAngle = MathHelper.ToRadians(-55f) },
 				],
 			},
+			// */
 		];
 
-		foreach (ref IKLimb limb in limbs.AsSpan())
+#if false
+		// Double limbs.
+		List<Limb> list = limbs.ToList();
+		for (int i = 0; i < limbs.Length; i++)
 		{
-			limb.TargetCurrent = NPC.Center;
-			limb.TargetWanted = NPC.Center;
+			Limb newLimb = limbs[i];
+			newLimb.IK.Offset.X *= 0.5f;
+			newLimb.IK.Offset.Y -= 16f;
+			newLimb.IK.RestingAngle = MathF.Abs(newLimb.IK.RestingAngle - MathHelper.Pi);
+			list.Add(newLimb);
 		}
+		limbs = list.ToArray();
+#endif
+
+		foreach (ref Limb limb in limbs.AsSpan())
+		{
+			limb.IK.TargetCurrent = NPC.Center;
+			limb.IK.TargetWanted = NPC.Center;
+		}
+	}
+
+	private void UpdateLimbs(in Context ctx, out int numAttached, out float averageAngle)
+	{
+#if DEBUG && true
+		if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.N)) { SetupLimbs(); }
+#endif
+		
+		Vector2 visualBodyCenter = NPC.Center;
+
+		// DebugUtils.DrawInWorld(sb => sb.DrawString(FontAssets.MouseText.Value, "X", visualBodyCenter - Main.screenPosition, Color.Cyan));
+		
+		numAttached = 0;
+
+		// Cooldown is reduced by the current speed.
+		float moveSpeed = NPC.velocity.Length();
+		float coolSpeed = MathF.Max(1f, moveSpeed);
+		limbMovement.Cooldown = MathUtils.StepTowards(limbMovement.Cooldown, 0f, coolSpeed * TimeSystem.LogicDeltaTime);
+		limbMovement.NextIndex = Math.Clamp(limbMovement.NextIndex, 0, limbs.Length - 1);
+
+		int limbIndex = -1;
+		bool placeAll = limbs.All(l => l.TileAttachment == null);
+		bool advanceOrder = false;
+		bool playedSounds = false;
+		Vector2 averageDir = default;
+		foreach (ref Limb limb in limbs.AsSpan())
+		{
+			limbIndex++;
+
+			limb.IK.IsFlipped = limbIndex % 2 == 0;
+
+			bool upNext = placeAll || (limbMovement.Cooldown <= 0f && limbIndex == limbMovement.NextIndex);
+			float sqrLength = limb.IK.Length * limb.IK.Length;
+			Vector2 visualLimbPos = limb.IK.GetPosition(NPC.Center + new Vector2(0f, NPC.gfxOffY), rotation: bodyAngleCurrent, xDir: NPC.spriteDirection);
+			Vector2 logicalLimbPos = limb.IK.GetPosition(NPC.Center, rotation: bodyAngleCurrent, xDir: NPC.spriteDirection);
+			limb.IK.Resolve(out InverseKinematics.Info info, in ikCfg, new()
+			{
+				Center = visualLimbPos,
+				Direction = NPC.spriteDirection,
+			});
+
+			if (limb.TileAttachment?.ToWorldCoordinates() is {} attachPoint
+			&& (attachPoint.DistanceSQ(logicalLimbPos) <= sqrLength || attachPoint.DistanceSQ(visualLimbPos) <= sqrLength))
+			{
+				if (upNext) { advanceOrder = true; }
+			}
+			// If not attached or is out of range, pick a new target.
+			else if (upNext && PickLimbTarget(in ctx, ref limb, out Point16 tilePos))
+			{
+				limb.PlacementAnimation = 0f;
+				limb.PlayedSound = false;
+				limb.TileAttachment = tilePos;
+				limb.IK.TargetWanted = ((Point16)tilePos).ToWorldCoordinates();
+				(advanceOrder, limbMovement.Cooldown) = (true, (moveSpeed / limbs.Length) / 3f);
+			}
+			// Else - detach and flail.
+			else
+			{
+				limb.TileAttachment = null;
+				limb.IK.TargetCurrent = Vector2.Lerp(limb.IK.TargetCurrent, Vector2.Lerp(visualLimbPos + new Vector2(0f, 128f), NPC.GetTargetData().Center, 0.1f), 0.2f);
+			}
+
+			if (limb.TileAttachment != null)
+			{
+				numAttached++;
+
+				static float MoveEasing(float x)
+				{
+					float c4 = (2f * MathF.PI) / 3;
+					return x <= 0f ? 0f : x >= 1 ? 1f : (MathF.Pow(2, -5f * x) * MathF.Sin(((x * 10f) - 0.75f) * c4) + 1);
+				}
+				static float LiftEasing(float x)
+				{
+					return 1f - MathF.Pow(1f - x, 3f);
+				}
+				
+				float anim = limb.PlacementAnimation = MathUtils.StepTowards(limb.PlacementAnimation, 1f, TimeSystem.LogicDeltaTime / 2.5f);
+				float liftAnim = MathUtils.Clamp01(anim * 8);
+				float liftEffect = LiftEasing(MathUtils.Clamp01(liftAnim <= 0.5f ? (liftAnim * 2f) : ((1f - liftAnim) * 2f)));
+				var liftPos = new Vector2(limb.IK.TargetWanted.X, visualLimbPos.Y);
+				var usedTarget = Vector2.Lerp(limb.IK.TargetWanted, visualLimbPos, liftEffect * 0.5f);
+				limb.IK.TargetCurrent = Vector2.Lerp(limb.IK.TargetCurrent, usedTarget, MoveEasing(anim));
+
+				const float soundRange = 16f;
+				if (!Main.dedServ && !playedSounds && limb.IK.TargetCurrent.Distance(limb.IK.TargetWanted) <= soundRange && !limb.PlayedSound)
+				{
+					// SoundEngine.PlaySound(ctx.Footsteps.Data.StepSound!.Value with { Volume = 0.1f, Pitch = 0.5f }, limb.TargetWanted);
+					SoundEngine.PlaySound(position: limb.IK.TargetWanted, style: new($"{nameof(PathOfTerraria)}/Assets/Sounds/HitEffects/FleshHit", 3)
+					{
+						MaxInstances = 10,
+						Volume = 0.1f,
+						Pitch = 0.0f,
+						PitchVariance = 0.2f,
+					});
+					SoundEngine.PlaySound(position: limb.IK.TargetWanted, style: new($"{nameof(PathOfTerraria)}/Assets/Sounds/HitEffects/BoneHit", 3)
+					{
+						MaxInstances = 10,
+						Volume = 0.2f,
+						Pitch = -0.1f,
+						PitchVariance = 0.3f,
+					});
+					SoundEngine.PlaySound(position: limb.IK.TargetWanted, style: new($"{nameof(PathOfTerraria)}/Assets/Sounds/Footsteps/MonsterStomp", 3)
+					{
+						MaxInstances = 10,
+						Volume = 0.08f,
+						Pitch = -0.1f,
+						PitchVariance = 0.3f,
+					});
+					Main.instance.CameraModifiers.Add(new PunchCameraModifier(limb.IK.TargetWanted, new Vector2(0f, -1f), 1f, 4f, 15, 1000f, $"Footstep{limbIndex}"));
+					limb.PlayedSound = true;
+					playedSounds = true;
+				}
+
+				// Compute angle.
+				Vector2 point = limb.IK.TargetCurrent;
+				averageDir += point.DirectionFrom(visualBodyCenter);
+				// DebugUtils.DrawInWorld(sb => sb.DrawString(FontAssets.MouseText.Value, "o", point - Main.screenPosition, Color.Orange));
+			}
+		}
+
+		averageAngle = (averageDir / numAttached).ToRotation();
+		averageAngle = !float.IsNaN(averageAngle) ? averageAngle : 0f;
+
+		if (advanceOrder)
+		{
+			limbMovement.NextIndex = MathUtils.Modulo(limbMovement.NextIndex + NPC.spriteDirection, limbs.Length);
+		}
+	}
+
+	private bool PickLimbTarget(in Context ctx, ref Limb limb, [MaybeNullWhen(false)] out Point16 result)
+	{
+		// Pick a direction to use for dot products.
+		// With some bias towards the bottom.
+		Vector2 movDir = (NPC.velocity + new Vector2(0f, 0.5f)).SafeNormalize(Vector2.UnitY);
+		
+		Vector2 startPos = limb.IK.GetPosition(NPC.Center, rotation: bodyAngleCurrent, xDir: NPC.spriteDirection);
+		Vector2Int startTile = startPos.ToTileCoordinates();
+		float placeRange = limb.IK.Length * 0.97f;
+		int tileRange = (int)MathF.Floor(placeRange / TileUtils.TileSizeInPixels);
+
+		int x1 = Math.Max(startTile.X - tileRange, 1);
+		int y1 = Math.Max(startTile.Y - tileRange, 1);
+		int x2 = Math.Min(startTile.X + tileRange, Main.maxTilesX - 2);
+		int y2 = Math.Min(startTile.Y + tileRange, Main.maxTilesY - 2);
+		(float bestScore, Point16 bestTile) = (float.NegativeInfinity, default);
+		for (int x = x1; x <= x2; x++)
+		{
+			for (int y = y1; y <= y2; y++)
+			{
+				var tilePos = new Point16(x, y);
+				var tile = (Tile)Main.tile[tilePos];
+				if (!tile.HasTile || (!Main.tileSolid[tile.TileType] && !Main.tileSolidTop[tile.TileType]))
+				{
+					continue;
+				}
+
+				var worldPos = (Vector2)tilePos.ToWorldCoordinates();
+				var diffFromCenter = (Vector2)(worldPos - ctx.Center);
+				float distFromLimb = (float)(worldPos.Distance(startPos));
+
+				// Short-circuit if this is too far.
+				if (distFromLimb >= placeRange) { continue; }
+				
+				var dirFromCenter = (Vector2)(diffFromCenter.SafeNormalize(Vector2.UnitY));
+
+				// Compute score for this tile.
+				
+				// The further from the NPC center, the better.
+				float distScore = distFromLimb;
+
+				// The more directionally aligned with the movement direction, the better.
+				float dirDot = Vector2.Dot(dirFromCenter, movDir);
+				float dirScore = dirDot + 1.25f;
+
+				float score = distScore * dirScore;
+				if (score > bestScore)
+				{
+					// Penalties are computed last.
+
+					// Penalize using a tile that another limb is already grabbing.
+					float sharePenalty = limbs.Any(l => l.TileAttachment == tilePos) ? 0.1f : 1f;
+					score *= sharePenalty;
+	
+					// Penalize using a tile that another limb is already grabbing.
+					bool tileSurrounded = true
+						&& WorldUtilities.SolidTile(x + 0, y - 1)
+						&& WorldUtilities.SolidTile(x + 0, y + 1)
+						&& WorldUtilities.SolidTile(x - 1, y + 0)
+						&& WorldUtilities.SolidTile(x + 1, y + 0);
+					float surroundPenalty = tileSurrounded ? 0.1f : 1f;
+					score *= surroundPenalty;
+
+					if (score > bestScore)
+					{
+						(bestScore, bestTile) = (score, tilePos);
+					}
+				}
+			}
+		}
+
+		if (bestScore >= 0f)
+		{
+			result = bestTile;
+			return true;
+		}
+
+		result = default;
+		return false;
 	}
 
 	private SpriteAnimation? PickAnimation(in Context ctx)
 	{
-		const float MinWalkSpeed = 0.5f;
-
 		Vector2 vel = NPC.position - NPC.oldPosition;
 
 		return ctx.Animations.Current switch
 		{
-			_ when ctx.Attacking.Active => animAttack,
-			// _ when ctx.Teleports.Active => ctx.Teleports.Data.Progress <= ctx.Teleports.Data.Reappear.Start ? animVanish with { Speed = 6f } : animAppear,
-			_ when vel.Y < 0f => animJump,
-			_ when vel.Y > 0f => animFall,
-			_ when vel.Y == 0f && Math.Abs(vel.X) >= MinWalkSpeed => animWalk with { Speed = vel.X * animWalk.Speed * 4f * NPC.spriteDirection },
-			_ when vel.Y == 0f && Math.Abs(vel.X) <= MinWalkSpeed => animIdle,
-			_ => null,
+			_ => animIdle,
 		};
 	}
 
@@ -365,93 +654,32 @@ internal sealed class InfernalBoss : ModNPC
 
 		ctx.Animations.Advance();
 		ctx.Animations.Set(PickAnimation(in ctx));
-
-#if DEBUG
-		if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.N)) { SetupLimbs(); }
-#endif
-		
-		NPC.gfxOffY = MathF.Sin((float)Main.timeForVisualEffects / 10f) * 10f;
-
-		// Update limbs.
-		const int ikUpdateRate = 1;
-		bool anyInRange = false;
-		if (Main.GameUpdateCount % ikUpdateRate == 0)
-		{
-			int limbIndex = -1;
-			foreach (ref IKLimb limb in limbs.AsSpan())
-			{
-				limbIndex++;
-				limb.Resolve(NPC.Center + new Vector2(0f, NPC.gfxOffY), out InverseKinematics.Info info, in ikCfg);
-
-				if (!info.TargetInRange)
-				{
-					Vector2 limbStart = NPC.Center + limb.Offset;
-					Vector2Int tilePos = (limbStart + (new Vector2(NPC.direction * NPC.width * 0.4f, 32))).ToTileCoordinates();
-					int yOffset = 0, yStop = 10;
-					for (; tilePos.Y < Main.maxTilesY && yOffset < yStop; tilePos.Y++, yOffset++)
-					{
-						Tile tile = Main.tile[tilePos.X, tilePos.Y];
-						if (tile.HasTile && (Main.tileSolid[tile.TileType] || Main.tileSolidTop[tile.TileType]))
-						{
-							break;
-						}
-					}
-
-					if (yOffset != yStop)
-					{
-						limb.TargetWanted = ((Point16)tilePos).ToWorldCoordinates(autoAddY: -8f);
-					}
-				}
-				else
-				{
-					anyInRange = true;
-				}
-
-				float oldDistance = limb.TargetCurrent.Distance(limb.TargetWanted);
-				limb.TargetCurrent = Vector2.Lerp(limb.TargetCurrent, limb.TargetWanted, 0.3f);
-				float newDistance = limb.TargetCurrent.Distance(limb.TargetWanted);
-
-				const float soundRange = 8f;
-				if (!Main.dedServ && newDistance <= soundRange && oldDistance > soundRange)
-				{
-					// SoundEngine.PlaySound(ctx.Footsteps.Data.StepSound!.Value with { Volume = 0.1f, Pitch = 0.5f }, limb.TargetWanted);
-					SoundEngine.PlaySound(position: limb.TargetWanted, style: new($"{nameof(PathOfTerraria)}/Assets/Sounds/HitEffects/FleshHit", 3)
-					{
-						MaxInstances = 5,
-						Volume = 0.1f,
-						PitchVariance = 0.2f,
-						// SoundLimitBehavior = SoundLimitBehavior.IgnoreNew,
-					});
-				}
-			}
-		}
-
-		NPC.aiStyle = -1; //anyInRange ? NPCAIStyleID.DemonEye : -1;
-		NPC.noGravity = NPC.aiStyle != -1;
 	}
 
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
-		NPC.spriteDirection = 1;
+		Context ctx = new(NPC);
 
 		helmetTexture ??= ModContent.Request<Texture2D>($"{Texture}_Helmet", AssetRequestMode.ImmediateLoad);
 
-		Context ctx = new(NPC);
-		ctx.Animations.Render(TextureAssets.Npc[Type].Value, NPC, screenPos, drawColor);
-		RenderArms(screenPos);
+		Texture2D bodyTexture = TextureAssets.Npc[Type].Value;
+		ctx.Animations.Render(bodyTexture, NPC, screenPos, drawColor); //, origin: bodyTexture.Size() * new Vector2(0.5f, 0.75f));
+		RenderArms(screenPos, drawColor);
 		// ctx.Animations.Render(helmetTexture.Value, NPC, screenPos, drawColor);
 		return false;
 	}
 
-	private void RenderArms(Vector2 screenPos)
+	private void RenderArms(Vector2 screenPos, Color drawColor)
 	{
 		armsTexture ??= ModContent.Request<Texture2D>($"{Texture}_Limbs", AssetRequestMode.ImmediateLoad);
 
-		foreach (ref IKLimb limb in limbs.AsSpan())
+		foreach (ref Limb limb in limbs.AsSpan())
 		{
-			for (int j = 0; j < limb.Segments.Length; j++)
+			for (int j = 0; j < limb.IK.Segments.Length; j++)
 			{
-				DrawData drawData = limb.GetDrawParams(armsTexture.Value, j, screenPos);
+				DrawData drawData = limb.IK.GetDrawParams(armsTexture.Value, j, screenPos, NPC.spriteDirection);
+				drawData.color = drawData.color.MultiplyRGBA(drawColor);
+				// drawData.color = Lighting.GetColor((drawData.position + Main.screenPosition).ToTileCoordinates());
 				Main.EntitySpriteDraw(drawData);
 			}
 
