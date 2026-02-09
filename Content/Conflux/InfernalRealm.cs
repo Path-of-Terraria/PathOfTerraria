@@ -23,7 +23,7 @@ internal class InfernalRealm : BossDomainSubworld, IOverrideBiome
 
 	public override int Width => 768;
 	public override int Height => 768;
-	public override (int time, bool isDay) ForceTime => ((int)(Main.dayLength * 0.75f), true);
+	public override (int time, bool isDay) ForceTime => ((int)(Main.dayLength * 0.96), true);
 
 	public override List<GenPass> Tasks =>
 	[
@@ -68,6 +68,7 @@ internal class InfernalRealm : BossDomainSubworld, IOverrideBiome
 		Main.cloudAlpha = 0f;
 		Main.cloudBGAlpha = 0f;
 		Main.bgStyle = 15;
+		Main.bloodMoon = true;
 	}
 
 	private void GenTerrain(GenerationProgress progress, GameConfiguration configuration)
