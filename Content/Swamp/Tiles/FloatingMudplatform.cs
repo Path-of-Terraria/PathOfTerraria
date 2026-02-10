@@ -3,7 +3,7 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.Tiles.Maps.Swamp;
+namespace PathOfTerraria.Content.Swamp.Tiles;
 
 internal class FloatingMudplatform : ModProjectile, ISolidTopProjectile
 {

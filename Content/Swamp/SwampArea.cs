@@ -8,8 +8,7 @@ using PathOfTerraria.Common.World.Passes;
 using PathOfTerraria.Common.World.Utilities;
 using PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
 using PathOfTerraria.Content.Swamp.NPCs;
-using PathOfTerraria.Content.Tiles.Maps.Swamp;
-using PathOfTerraria.Content.Walls;
+using PathOfTerraria.Content.Swamp.Tiles;
 using PathOfTerraria.Utilities;
 using System.Collections.Generic;
 using System.Linq;
@@ -141,9 +140,11 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 		GrowTrees();
 		GrowDeepMoss(progress);
 		GrowLilyPads(progress);
-        SwampArenaGeneration.Generate(progress, configuration);
 
-        for (int i = 2; i < Main.maxTilesX - 2; ++i)
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Arena");
+		SwampArenaGeneration.Generate(progress, configuration);
+
+		for (int i = 2; i < Main.maxTilesX - 2; ++i)
 		{
 			int topY = FloorY - 10 - (int)(Math.Abs(noise.GetNoise(i, 10000)) * 10);
 
@@ -151,7 +152,8 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 			{
 				Tile tile = Main.tile[i, j];
 
-				if (!tile.HasTile || !WorldUtilities.SolidOrActuatedTile(tile) || SkipActuationLocations.Contains(new Point16(i, j)))
+				if (!tile.HasTile || !WorldUtilities.SolidOrActuatedTile(tile) || SkipActuationLocations.Contains(new Point16(i, j)) || (!LeftSpawn && i < SwampArenaGeneration.ArenaWidth) 
+					|| (LeftSpawn && i > Main.maxTilesX - SwampArenaGeneration.ArenaWidth))
 				{
 					continue;
 				}
@@ -165,6 +167,22 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 
 				tile.IsActuated = actuate;
 			}
+		}
+
+		for (int i = 2; i < Main.maxTilesX - 2; ++i)
+		{
+			for (int j = 2; j < Main.maxTilesY - 2; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+
+				if (j > WaterY)
+				{
+					tile.LiquidAmount = (byte)(j == WaterY + 1 ? 150 : 255);
+					tile.LiquidType = LiquidID.Water;
+				}
+			}
+
+			progress.Set(i / (float)Main.maxTilesX);
 		}
 
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Clouds");
@@ -244,8 +262,9 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 			{
 				Tile tile = Main.tile[i, j];
 				bool touchingAir = WorldGen.TileIsExposedToAir(i, j);
+				bool inArenaLocation = (!LeftSpawn && i < SwampArenaGeneration.ArenaWidth) || (LeftSpawn && i > Main.maxTilesX - SwampArenaGeneration.ArenaWidth);
 
-				if (!Random.NextBool(3) && touchingAir && (Main.tile[i, j - 1].LiquidAmount <= 0 || tile.TileType != ModContent.TileType<SwampGrass>()))
+				if (!Random.NextBool(3) && (!inArenaLocation || j < FloorY) && touchingAir && (Main.tile[i, j - 1].LiquidAmount <= 0 || tile.TileType != ModContent.TileType<SwampGrass>()))
 				{
 					Tile.SmoothSlope(i, j, false);
 				}
@@ -287,9 +306,14 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 					{
 						int height = (int)(cloudNoise.GetNoise(i * 3, j) * 260) + 2 + Random.Next(5);
 
-						if (tile.TileType == ModContent.TileType<DeepMoss>())
+						if (!inArenaLocation && tile.TileType == ModContent.TileType<DeepMoss>())
 						{
 							height /= 2;
+						}
+						else if (inArenaLocation)
+						{
+							height = 80;
+							height += (int)(cloudNoise.GetNoise(i * 3, j) * 70);
 						}
 
 						for (int v = 1; v < height; ++v)
@@ -305,14 +329,28 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 								frame = 1;
 							}
 
-							SwampWeed.Place(i, j - v, frame);
+							if (inArenaLocation)
+							{
+								IKelpTile.Place(i, j - v, frame, Random.NextBool(260) ? ModContent.TileType<SwampWeedLight>() : ModContent.TileType<SwampWeed>());
+							}
+							else
+							{
+								IKelpTile.Place<SwampWeed>(i, j - v, frame);
+							}
 						}
 					}
 				}
-				
-				if (MossyChance(i) && WorldUtilities.SolidTile(i, j) && tile.TileType == ModContent.TileType<PurpleClouds>() && (Random.NextBool(70) || WorldGen.TileIsExposedToAir(i, j)))
+
+				bool isClouds = tile.TileType == ModContent.TileType<PurpleClouds>();
+
+				if (MossyChance(i) && WorldUtilities.SolidTile(i, j) && (isClouds || tile.TileType == ModContent.TileType<DeepMoss>())
+					&& (Random.NextBool(70) || WorldGen.TileIsExposedToAir(i, j)))
 				{
-					tile.TileType = (ushort)ModContent.TileType<MossyPurpleClouds>();
+					if (isClouds)
+					{
+						tile.TileType = (ushort)ModContent.TileType<MossyPurpleClouds>();
+					}
+
 					tile.WallType = WallID.None;
 				}
 			}
@@ -370,22 +408,6 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 					}
 				}
 			}
-		}
-
-		for (int i = 2; i < Main.maxTilesX - 2; ++i)
-		{
-			for (int j = 2; j < Main.maxTilesY - 2; ++j)
-			{
-				Tile tile = Main.tile[i, j];
-
-				if (j > WaterY)
-				{
-					tile.LiquidAmount = (byte)(j == WaterY + 1 ? 150 : 255);
-					tile.LiquidType = LiquidID.Water;
-				}
-			}
-
-			progress.Set(i / (float)Main.maxTilesX);
 		}
 	}
 

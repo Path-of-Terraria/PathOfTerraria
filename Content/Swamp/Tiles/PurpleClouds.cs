@@ -1,9 +1,9 @@
 ﻿using PathOfTerraria.Common.Tiles;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.Tiles.Maps.Swamp;
+namespace PathOfTerraria.Content.Swamp.Tiles;
 
-internal class MossyPurpleClouds : ModTile, IAutoloadTileItem
+internal class PurpleClouds : ModTile, IAutoloadTileItem
 {
 	public override void SetStaticDefaults()
 	{
@@ -15,7 +15,7 @@ internal class MossyPurpleClouds : ModTile, IAutoloadTileItem
 		TileID.Sets.BlockMergesWithMergeAllBlock[Type] = true;
 		TileID.Sets.DrawsWalls[Type] = true;
 
-		AddMapEntry(new Color(26, 63, 31));
+		AddMapEntry(new Color(126, 108, 216));
 
 		DustType = DustID.PurpleMoss;
 	}

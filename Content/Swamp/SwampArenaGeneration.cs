@@ -1,7 +1,10 @@
 ﻿using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Utilities;
-using PathOfTerraria.Content.Tiles.Maps.Swamp;
-using PathOfTerraria.Content.Walls;
+using PathOfTerraria.Content.Swamp.Tiles;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.WorldBuilding;
@@ -14,15 +17,19 @@ namespace PathOfTerraria.Content.Swamp;
 internal static class SwampArenaGeneration
 {
 	public const int ArenaWidth = 600;
+	public const int HalfWidth = ArenaWidth / 2;
+
+	public static Point16[] TraverseWalls { get; private set; }
+	public static Point16[] TraverseNodes { get; private set; }
 
 	public static void Generate(GenerationProgress progress, GameConfiguration configuration)
 	{
 		const int ShapeSize = 150;
 
-		int x = SwampArea.LeftSpawn ? Main.maxTilesX - 300 : 300;
+		int x = SwampArea.LeftSpawn ? Main.maxTilesX - HalfWidth : HalfWidth;
 		int y = SwampArea.FloorY - 10;
 
-		GenerateClouds();
+		GenerateClouds(out FastNoiseLite noise);
 
 		ShapeData data = new();
 		WorldUtils.Gen(new Point(x, y), new Shapes.Circle(ShapeSize), new Actions.Clear().Output(data));
@@ -31,20 +38,184 @@ internal static class SwampArenaGeneration
 		{
 			float factor = SwampArea.Random.NextFloat(0.15f, 0.75f);
 			float halfSize = ShapeSize * factor;
-			var offset = (SwampArea.Random.NextVector2CircularEdge(halfSize, halfSize) * 1.6f).ToPoint16();
+			var offset = (SwampArea.Random.NextVector2CircularEdge(halfSize, halfSize) * 1.6f).ToPoint();
+
+			if (offset.Y > 0)
+			{
+				offset.Y = (int)(offset.Y * 0.6f);
+			}
+
 			WorldUtils.Gen(new Point(x, y), new Shapes.Circle((int)((1 - factor) * ShapeSize)), Actions.Chain(new Modifiers.Offset(offset.X, offset.Y), new Actions.Clear().Output(data)));
+
+			progress.Set(i / 34f);
 		}
 
 		WorldUtils.Gen(new Point(x, y), new ModShapes.InnerOutline(data, true), Actions.Chain(new Modifiers.Expand(1), new Modifiers.Dither(0.2f),
 			new Modifiers.Blotches(3, 0.3f), new Actions.Clear()));
+
+		SetupTraverse(x, y, noise);
+		BuildTraverse(noise, progress);
+		Decorate(x, y);
 	}
 
-	private static void GenerateClouds()
+	private static void Decorate(int x, int y)
+	{
+		int minX = x;
+		int maxX = x;
+		int minY = SwampArea.FloorY;
+
+		while (!Main.tile[minX, minY].HasTile)
+		{
+			minX--;
+		}
+
+		while (!Main.tile[maxX, minY].HasTile)
+		{
+			maxX++;
+		}
+
+		int midX = (minX + maxX) / 2;
+		float halfWidth = (maxX - minX) / 2f;
+
+		for (int i = minX; i < maxX; ++i)
+		{
+			int j = SwampArea.FloorY;
+
+			while (!Main.tile[i, j].HasTile)
+			{
+				j++;
+			}
+
+			int depth = (int)MathHelper.Lerp(2, 12, 1 - Math.Abs(midX - i) / halfWidth);
+
+			for (int k = j; k < j + depth; ++k)
+			{
+				Tile tile = Main.tile[i, k];
+
+				if (!tile.HasTile)
+				{
+					break;
+				}
+
+				tile.TileType = (ushort)ModContent.TileType<DeepMoss>();
+			}
+		}
+	}
+
+	private static void BuildTraverse(FastNoiseLite noise, GenerationProgress progress)
+	{
+		HashSet<Point16> spawnPositions = [];
+
+		foreach (Point16 start in TraverseWalls)
+		{
+			foreach (Point16 end in TraverseWalls)
+			{
+				if (start == end)
+				{
+					continue;
+				}
+
+				IEnumerable<Vector2> points = Tunnel.GeneratePoints([start.ToVector2(), SwampArea.Random.Next(TraverseNodes).ToVector2(), end.ToVector2()], 8, 3, 0).Select(x => x / 4f);
+
+				foreach (Vector2 point in points)
+				{
+					spawnPositions.Add(point.ToPoint16());
+				}
+			}
+		}
+
+		HashSet<Point16> realPoints = [];
+
+		foreach (Point16 position in spawnPositions)
+		{
+			float angle = SwampArea.Random.NextFloat(MathHelper.TwoPi);
+			Vector2 realPos = position.ToVector2() * 4;
+
+			if (!SwampArea.Random.NextBool(3))
+			{
+				float width = SwampArea.Random.NextFloat(9, 16);
+				GenPlacement.GenerateLeaf(realPos, width, width * SwampArea.Random.NextFloat(1.2f, 1.8f), angle, (x, y, angle) => realPoints.Add(new(x, y)), true);
+			}
+			else
+			{
+				GenPlacement.GenOval(realPos, 30, SwampArea.Random.NextFloat(MathHelper.TwoPi), (x, y) => realPoints.Add(new(x, y)), (x, y) => noise.GetNoise(x * 3, y * 3) * 8);
+			}
+		}
+
+		List<Point16> pointsToUse = [.. realPoints];
+		int count = 0;
+
+		foreach (Point16 point in CollectionsMarshal.AsSpan(pointsToUse))
+		{
+			if (Main.tile[point].WallType == WallID.None)
+			{
+				GenPlacement.FastPlaceWall(point.X, point.Y, ModContent.WallType<DeepMossWall>());
+			}
+
+			progress.Set(count++ / (float)pointsToUse.Count);
+		}
+	}
+
+	private static void SetupTraverse(int x, int y, FastNoiseLite noise)
+	{
+		const int WallPointsCount = 7;
+		const int OpenPointsCount = 4;
+
+		List<Point16> workingPoints = [];
+		Vector2 entranceDirection = SwampArea.LeftSpawn ? new Vector2(1.5f, 0) : new Vector2(-1.5f, 0);
+		List<Vector2> workingDirections = [entranceDirection];
+
+		for (int i = 0; i < WallPointsCount; ++i)
+		{
+			Vector2 pos = new(x, y);
+			Vector2 dir;
+
+			do
+			{
+				dir = SwampArea.Random.NextVector2CircularEdge(1.5f, 1.5f);
+			} while (workingDirections.Any(x => Vector2.DistanceSquared(dir, x) < 0.5f));
+
+			while (!Collision.SolidCollision(pos.ToWorldCoordinates(), 32, 32))
+			{
+				pos += dir;
+			}
+
+			workingPoints.Add(pos.ToPoint16());
+			workingDirections.Add(dir);
+
+			WorldGen.TileRunner((int)pos.X, (int)pos.Y, 36, 160, ModContent.TileType<DeepMoss>(), false, dir.X * 3, dir.Y * 3);
+		}
+
+		TraverseWalls = [.. workingPoints];
+		workingPoints.Clear();
+
+		Vector2 middleAnchor = new(x, SwampArea.FloorY - 4);
+
+		for (int i = 0; i < OpenPointsCount; ++i)
+		{
+			Vector2 position = i == 0 ? middleAnchor : middleAnchor + new Vector2(0, -140 * SwampArea.Random.NextFloat(0.7f, 1f)).RotatedByRandom(MathHelper.PiOver2);
+			position.X = MathHelper.Clamp(position.X, 60, Main.maxTilesX - 60);
+
+			if (i > 0 && (Collision.SolidCollision(position * 16 - new Vector2(-100), 200, 200) || workingPoints.Any(x => x.ToVector2().DistanceSQ(position) < 110 * 110)))
+			{
+				i--;
+				continue;
+			}
+
+			workingPoints.Add(position.ToPoint16());
+
+			GenPlacement.GenOval(position, 80, SwampArea.Random.NextFloat(MathHelper.TwoPi), ModContent.WallType<PurpleCloudWall>(), (x, y) => noise.GetNoise(x * 3, y * 3) * 8, true);
+		}
+
+		TraverseNodes = [.. workingPoints];
+	}
+
+	private static void GenerateClouds(out FastNoiseLite noise)
 	{
 		int minX = SwampArea.LeftSpawn ? Main.maxTilesX - ArenaWidth : 4;
 		int maxX = SwampArea.LeftSpawn ? Main.maxTilesX - 4 : ArenaWidth;
 
-		FastNoiseLite noise = new(SwampArea.Random.Next());
+		noise = new(SwampArea.Random.Next());
 		noise.SetNoiseType(FastNoiseLite.NoiseType.Cellular);
 		noise.SetFrequency(0.02f);
 		noise.SetDomainWarpAmp(77);
@@ -67,9 +238,9 @@ internal static class SwampArenaGeneration
 				GenPlacement.FastPlaceTile(i, j, ModContent.TileType<PurpleClouds>());
 			}
 
-            x = minX + GetNoiseOffset(noise, 0, j + 16000, false);
+            x = minX + GetNoiseOffset(noise, 16000, j, false);
 
-            for (int i = (int)MathF.Max(x - 15, 4); i < MathF.Min(maxX + GetNoiseOffset(noise, maxX, j + 16000, true) + 15, Main.maxTilesX - 4); ++i)
+            for (int i = (int)MathF.Max(x - 15, 4); i < MathF.Min(maxX + GetNoiseOffset(noise, maxX + 16000, j, true) + 15, Main.maxTilesX - 4); ++i)
             {
                 GenPlacement.FastPlaceWall(i, j, ModContent.WallType<PurpleCloudWall>());
             }
@@ -94,7 +265,7 @@ internal static class SwampArenaGeneration
 				continue;
 			}
 			
-			for (int y = j - 15; y <= j; ++y)
+			for (int y = j - 18; y <= j; ++y)
 			{
 				Tile tile = Main.tile[i, y];
 
@@ -124,6 +295,24 @@ internal static class SwampArenaGeneration
 		float x = i;
 		float y = j;
         noise.DomainWarp(ref x, ref y);
-        return (int)(noise.GetNoise(x, y) * 15);
+		int offset = (int)(noise.GetNoise(x, y) * 15);
+
+		const float Divisor = 4f;
+		const int Total = 300;
+		const float RealTotal = Total / Divisor;
+
+		if (y < Total)
+		{
+			if (leftSpawn)
+			{
+				offset -= (int)MathF.Pow(RealTotal - (y / Divisor), 1.2f);
+			}
+			else
+			{
+				offset += (int)MathF.Pow(RealTotal - (y / Divisor), 1.2f);
+			}
+		}
+
+		return offset;
 	}
 }
