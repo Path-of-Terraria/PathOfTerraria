@@ -8,6 +8,7 @@ using PathOfTerraria.Common.World.Passes;
 using PathOfTerraria.Common.World.Utilities;
 using PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
 using PathOfTerraria.Content.Swamp.NPCs;
+using PathOfTerraria.Content.Swamp.NPCs.SwampBoss;
 using PathOfTerraria.Content.Swamp.Tiles;
 using PathOfTerraria.Utilities;
 using System.Collections.Generic;
@@ -351,11 +352,62 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 						tile.TileType = (ushort)ModContent.TileType<MossyPurpleClouds>();
 					}
 
-					tile.WallType = WallID.None;
+					if (WorldUtilities.TileExposedToAirWalls(i, j))
+					{
+						tile.WallType = WallID.None;
+					}
 				}
 			}
 
 			progress.Set(i / (float)Main.maxTilesX);
+		}
+
+		int x = LeftSpawn ? Main.maxTilesX - SwampArenaGeneration.HalfWidth : SwampArenaGeneration.HalfWidth;
+		int y = FloorY - 10;
+
+		for (int i = x - SwampArenaGeneration.HalfWidth; i < x + SwampArenaGeneration.HalfWidth; ++i)
+		{
+			for (int j = y - SwampArenaGeneration.HalfWidth; j < y + SwampArenaGeneration.HalfWidth; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+
+				if (tile.WallType != WallID.None && tile.WallType != ModContent.WallType<PurpleCloudWall>() && !tile.HasTile && Random.NextBool(260) && tile.LiquidAmount <= 0)
+				{
+					WorldGen.PlaceTile(i, j, ModContent.TileType<SwampWallflower>(), true, false, -1, Random.Next(3));
+				}
+
+				if (tile.HasTile && (tile.TileType == ModContent.TileType<MossyPurpleClouds>() || tile.TileType == ModContent.TileType<DeepMoss>()) && (tile.TopSlope || tile.Slope == SlopeType.Solid))
+				{
+					int height = 16 + (int)(cloudNoise.GetNoise(i * 4, j) * 20);
+
+					if (Random.NextBool(22))
+					{
+						height += (int)Math.Abs(cloudNoise.GetNoise(i * 4, j) * 50) + 10;
+					}
+
+					for (int k = j + 1; k < j + height; ++k)
+					{
+						Tile vine = Main.tile[i, k];
+
+						if (vine.HasTile)
+						{
+							break;
+						}
+
+						WorldGen.PlaceTile(i, k, ModContent.TileType<Mossvine>(), true);
+						vine.IsActuated = false;
+
+						if (k - j < 6)
+						{
+							vine.TileFrameNumber = 1;
+						}
+						else
+						{
+							vine.TileFrameNumber = 0;
+						}
+					}
+				}
+			}
 		}
 
 		for (int i = 0; i < 150; ++i)
@@ -662,13 +714,47 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 		if (!spawnedTemporaryContent && Main.ActivePlayers.GetEnumerator().MoveNext())
 		{
 			PlaceEncounters();
-
-			if (Main.netMode != NetmodeID.MultiplayerClient)
-			{
-				SpawnGenEntities();
-			}
+			SpawnGenEntities();
+			SpawnArenaEntities();
 
 			spawnedTemporaryContent = true;
+
+			int x = LeftSpawn ? Main.maxTilesX - SwampArenaGeneration.HalfWidth : SwampArenaGeneration.HalfWidth;
+			int y = FloorY - 10;
+
+			for (int i = 0; i < 3; ++i)
+			{
+				NPC.NewNPC(new EntitySource_WorldGen(), x * 16, y * 16, ModContent.NPCType<Mossmother>(), 0, 0, 1);
+			}
+		}
+	}
+
+	private static void SpawnArenaEntities()
+	{
+		List<float> xPositions = [];
+
+		for (int i = 0; i < 8; ++i)
+		{
+			Vector2 pos;
+			Range range = SwampArenaGeneration.WidthAtWaterHeight;
+
+			do
+			{
+				pos = new Vector2(Random.Next(range.Start.Value * 16, range.End.Value * 16), Random.Next(FloorY * 16 - 200, FloorY * 16 + 200));
+			} while (Collision.SolidCollision(pos - new Vector2(50, 0), 200, 60) || !Collision.WetCollision(pos, 100, 20) || Collision.WetCollision(pos - new Vector2(0, 30), 100, 20)
+				|| xPositions.Any(x => Math.Abs(x - pos.X) < 200));
+
+			if (i >= 2)
+			{
+				int type = Random.NextBool() ? ModContent.ProjectileType<FloatingMudplatform>() : ModContent.ProjectileType<BrittleFloatingMudplatform>();
+				Projectile.NewProjectile(new EntitySource_WorldGen(), pos, Vector2.Zero, type, 0, 0, Main.myPlayer);
+			}
+			else
+			{
+				NPC.NewNPC(new EntitySource_WorldGen(), (int)pos.X, (int)pos.Y, ModContent.NPCType<SwampCroc>(), 0, 0, 1);
+			}
+
+			xPositions.Add(pos.X);
 		}
 	}
 
@@ -686,10 +772,9 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 			} while (Collision.SolidCollision(pos - new Vector2(50, 0), 200, 60) || !Collision.WetCollision(pos, 100, 20) || Collision.WetCollision(pos - new Vector2(0, 30), 100, 20)
 				|| xPositions.Any(x => Math.Abs(x - pos.X) < 120));
 
-			int type = Random.NextBool() ? ModContent.ProjectileType<FloatingMudplatform>() : ModContent.ProjectileType<BrittleFloatingMudplatform>();
-
 			if (i >= 5)
 			{
+				int type = Random.NextBool() ? ModContent.ProjectileType<FloatingMudplatform>() : ModContent.ProjectileType<BrittleFloatingMudplatform>();
 				Projectile.NewProjectile(new EntitySource_WorldGen(), pos, Vector2.Zero, type, 0, 0, Main.myPlayer);
 			}
 			else

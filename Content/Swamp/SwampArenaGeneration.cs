@@ -21,6 +21,7 @@ internal static class SwampArenaGeneration
 
 	public static Point16[] TraverseWalls { get; private set; }
 	public static Point16[] TraverseNodes { get; private set; }
+	public static Range WidthAtWaterHeight { get; private set; }
 
 	public static void Generate(GenerationProgress progress, GameConfiguration configuration)
 	{
@@ -30,7 +31,14 @@ internal static class SwampArenaGeneration
 		int y = SwampArea.FloorY - 10;
 
 		GenerateClouds(out FastNoiseLite noise);
+		Carve(progress, ShapeSize, x, y);
+		SetupTraverse(x, y, noise, out Point16 center);
+		BuildTraverse(noise, progress);
+		Decorate(x, y, center);
+	}
 
+	private static void Carve(GenerationProgress progress, int ShapeSize, int x, int y)
+	{
 		ShapeData data = new();
 		WorldUtils.Gen(new Point(x, y), new Shapes.Circle(ShapeSize), new Actions.Clear().Output(data));
 
@@ -52,13 +60,9 @@ internal static class SwampArenaGeneration
 
 		WorldUtils.Gen(new Point(x, y), new ModShapes.InnerOutline(data, true), Actions.Chain(new Modifiers.Expand(1), new Modifiers.Dither(0.2f),
 			new Modifiers.Blotches(3, 0.3f), new Actions.Clear()));
-
-		SetupTraverse(x, y, noise);
-		BuildTraverse(noise, progress);
-		Decorate(x, y);
 	}
 
-	private static void Decorate(int x, int y)
+	private static void Decorate(int x, int y, Point16 center)
 	{
 		int minX = x;
 		int maxX = x;
@@ -76,6 +80,8 @@ internal static class SwampArenaGeneration
 
 		int midX = (minX + maxX) / 2;
 		float halfWidth = (maxX - minX) / 2f;
+
+		WidthAtWaterHeight = minX..maxX;
 
 		for (int i = minX; i < maxX; ++i)
 		{
@@ -98,6 +104,23 @@ internal static class SwampArenaGeneration
 				}
 
 				tile.TileType = (ushort)ModContent.TileType<DeepMoss>();
+			}
+		}
+
+		const int Width = 50;
+
+		center = new(center.X, center.Y + 16);
+		FastNoiseLite noise = new(SwampArea.Random.Next());
+
+		for (int i = center.X - Width; i < center.X + Width; ++i)
+		{
+			float distanceFromCenter = (int)Math.Abs(i - center.X) / (float)Width;
+			int up = (int)MathHelper.Lerp(1, noise.GetNoise(i * 3, 0) * 6 + 8, 1 - distanceFromCenter);
+			int down = (int)MathHelper.Lerp(0, noise.GetNoise(i * 3, 0) * 8 + 18, MathF.Sqrt(1 - distanceFromCenter));
+
+			for (int j = center.Y - up; j < center.Y + down; ++j)
+			{
+				GenPlacement.FastPlaceTile(i, j, ModContent.TileType<DeepMoss>());
 			}
 		}
 	}
@@ -125,6 +148,7 @@ internal static class SwampArenaGeneration
 		}
 
 		HashSet<Point16> realPoints = [];
+		int count = 0;
 
 		foreach (Point16 position in spawnPositions)
 		{
@@ -134,16 +158,18 @@ internal static class SwampArenaGeneration
 			if (!SwampArea.Random.NextBool(3))
 			{
 				float width = SwampArea.Random.NextFloat(9, 16);
-				GenPlacement.GenerateLeaf(realPos, width, width * SwampArea.Random.NextFloat(1.2f, 1.8f), angle, (x, y, angle) => realPoints.Add(new(x, y)), true);
+				GenPlacement.GenerateLeaf(realPos, width, width * SwampArea.Random.NextFloat(1.2f, 1.8f), angle, (x, y, angle) => realPoints.Add(new(x, y)));
 			}
 			else
 			{
 				GenPlacement.GenOval(realPos, 30, SwampArea.Random.NextFloat(MathHelper.TwoPi), (x, y) => realPoints.Add(new(x, y)), (x, y) => noise.GetNoise(x * 3, y * 3) * 8);
 			}
+
+			progress.Set(count++ / (float)spawnPositions.Count);
 		}
 
 		List<Point16> pointsToUse = [.. realPoints];
-		int count = 0;
+		count = 0;
 
 		foreach (Point16 point in CollectionsMarshal.AsSpan(pointsToUse))
 		{
@@ -156,7 +182,7 @@ internal static class SwampArenaGeneration
 		}
 	}
 
-	private static void SetupTraverse(int x, int y, FastNoiseLite noise)
+	private static void SetupTraverse(int x, int y, FastNoiseLite noise, out Point16 centerPosition)
 	{
 		const int WallPointsCount = 7;
 		const int OpenPointsCount = 4;
@@ -188,16 +214,18 @@ internal static class SwampArenaGeneration
 
 		TraverseWalls = [.. workingPoints];
 		workingPoints.Clear();
-
-		Vector2 middleAnchor = new(x, SwampArea.FloorY - 4);
+		centerPosition = new(x, SwampArea.FloorY - 4);
+		var center = centerPosition.ToVector2();
+		int repeats = 0;
 
 		for (int i = 0; i < OpenPointsCount; ++i)
 		{
-			Vector2 position = i == 0 ? middleAnchor : middleAnchor + new Vector2(0, -140 * SwampArea.Random.NextFloat(0.7f, 1f)).RotatedByRandom(MathHelper.PiOver2);
+			Vector2 position = i == 0 ? center : center + new Vector2(0, (-120 - repeats * 0.01f) * SwampArea.Random.NextFloat(0.7f, 1f)).RotatedByRandom(MathHelper.PiOver2);
 			position.X = MathHelper.Clamp(position.X, 60, Main.maxTilesX - 60);
 
 			if (i > 0 && (Collision.SolidCollision(position * 16 - new Vector2(-100), 200, 200) || workingPoints.Any(x => x.ToVector2().DistanceSQ(position) < 110 * 110)))
 			{
+				repeats++;
 				i--;
 				continue;
 			}
@@ -274,7 +302,8 @@ internal static class SwampArenaGeneration
 					tile.HasTile = false;
 				}
 
-				tile.WallType = (ushort)ModContent.WallType<PurpleCloudWall>();
+				tile.WallType = (ushort)(SwampArea.Random.NextFloat() < Utils.GetLerpValue(j - 10, j - 6, y, true) ? ModContent.WallType<DeepMossWall>() 
+					: ModContent.WallType<PurpleCloudWall>());
 
 				if (y == j && Main.tile[i, y + 1].HasTile)
 				{

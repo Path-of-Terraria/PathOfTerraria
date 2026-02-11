@@ -8,6 +8,7 @@ using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.Dusts;
 using PathOfTerraria.Content.Gores;
+using SubworldLibrary;
 using System.IO;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -141,7 +142,7 @@ internal class GiantEel : ModNPC
 	public override void SetDefaults()
 	{
 		NPC.aiStyle = -1;
-		NPC.lifeMax = 150000;
+		NPC.lifeMax = 150_000;
 		NPC.defense = 100;
 		NPC.damage = 50;
 		NPC.width = 50;
@@ -208,7 +209,9 @@ internal class GiantEel : ModNPC
 			Vector2 targetDirection = NPC.DirectionTo(new Vector2(targetPlayer.Center.X, MathF.Sin(Timer * 0.008f) * (30 * 16) + 180 * 16)) * new Vector2(2.5f, 1);
 			NPC.velocity = Vector2.SmoothStep(NPC.velocity, targetDirection * 8, 0.05f) + new Vector2(MathF.Sin(Timer * 0.04f) * 0.25f, 0);
 
-			if (targetPlayer.DistanceSQ(NPC.Center) < aggro * aggro)
+			bool inArenaLocation = IsInArena();
+
+			if (targetPlayer.DistanceSQ(NPC.Center) < aggro * aggro && !inArenaLocation)
 			{
 				State = States.Chase;
 				Timer = 0;
@@ -261,7 +264,7 @@ internal class GiantEel : ModNPC
 				}
 			}
 
-			if (targetPlayer.dead || !targetPlayer.active)
+			if (targetPlayer.dead || !targetPlayer.active || IsInArena())
 			{
 				State = States.Flee;
 				MiscTimer = 0;
@@ -278,6 +281,13 @@ internal class GiantEel : ModNPC
 				State = States.Roaming;
 			}
 		}
+	}
+
+	private bool IsInArena()
+	{
+		bool left = SwampArea.LeftSpawn;
+		return SubworldSystem.Current is SwampArea
+			&& (!left && NPC.Center.X / 16f < SwampArenaGeneration.ArenaWidth) || (left && NPC.Center.X / 16f > Main.maxTilesX - SwampArenaGeneration.ArenaWidth);
 	}
 
 	public override void OnHitPlayer(Player target, Player.HurtInfo hurtInfo)
