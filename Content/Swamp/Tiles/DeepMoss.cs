@@ -1,10 +1,10 @@
 ﻿using PathOfTerraria.Common.Systems.MiscUtilities;
+using PathOfTerraria.Content.Dusts;
 using ReLogic.Content;
-using Terraria.ID;
 
-namespace PathOfTerraria.Content.Tiles.Maps.Desert;
+namespace PathOfTerraria.Content.Swamp.Tiles;
 
-internal class SandstoneBrickBlocker : ModTile, IBlockerTile
+internal class DeepMossBlocker : ModTile, IBlockerTile
 {
 	public static Asset<Texture2D> GlowTexture = null;
 
@@ -14,17 +14,15 @@ internal class SandstoneBrickBlocker : ModTile, IBlockerTile
 		Main.tileBlockLight[Type] = true;
 		Main.tileBrick[Type] = true;
 
-		Main.tileMerge[Type][TileID.ObsidianBrick] = true;
-		Main.tileMerge[TileID.ObsidianBrick][Type] = true;
+		AddMapEntry(new Color(175, 56, 76));
 
-		AddMapEntry(new Color(138, 90, 10));
+		DustType = ModContent.DustType<DarkMossDust>();
 
-		DustType = DustID.Obsidian;
 		GlowTexture ??= ModContent.Request<Texture2D>(Texture + "_Glow");
 	}
 
 	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 	{
-		BlockerSystem.DrawGlow(i, j, Type, spriteBatch, GlowTexture.Value, Color.Red);
+		BlockerSystem.DrawGlow(i, j, Type, spriteBatch, GlowTexture.Value, Color.Orange);
 	}
 }

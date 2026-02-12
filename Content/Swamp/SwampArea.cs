@@ -40,6 +40,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 	internal static List<Vector2> EncounterLocations = [];
 	internal static HashSet<Point16> SkipActuationLocations = [];
 	internal static bool LeftSpawn = false;
+	internal static List<Point16> BlockerPositions = [];
 	
 	private static bool spawnedTemporaryContent = false;
 
@@ -61,6 +62,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 		EncounterLocations.Clear();
 		LeftSpawn = Random.NextBool(2);
 		SkipActuationLocations.Clear();
+		BlockerPositions.Clear();
 
 		Main.spawnTileX = LeftSpawn ? 70 : Main.maxTilesX - 70;
 		Main.spawnTileY = FloorY - 6;
@@ -191,6 +193,14 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 
         progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Growing");
 		CleanUpAndDetail(progress, cloudNoise);
+
+		foreach (Point16 pos in BlockerPositions)
+		{
+			Tile tile = Main.tile[pos];
+			tile.HasTile = true;
+			tile.TileType = (ushort)ModContent.TileType<DeepMossBlocker>();
+			tile.IsActuated = false;
+		}
 	}
 
 	private static FastNoiseLite GenerateClouds(GenerationProgress progress)

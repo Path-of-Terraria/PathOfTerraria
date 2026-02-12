@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Tiles;
+using PathOfTerraria.Content.Dusts;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -19,7 +20,7 @@ internal class SwampMoss : ModTile, IAutoloadTileItem
 
 		AddMapEntry(new Color(56, 66, 66));
 
-		DustType = DustID.Lead;
+		DustType = DustID.GrassBlades;
 		HitSound = SoundID.Tink;
 	}
 
@@ -49,4 +50,12 @@ internal class SwampMoss : ModTile, IAutoloadTileItem
 	}
 }
 
-internal class DeepMoss : SwampMoss, IAutoloadTileItem { }
+internal class DeepMoss : SwampMoss, IAutoloadTileItem
+{
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		DustType = ModContent.DustType<DarkMossDust>();
+	}
+}

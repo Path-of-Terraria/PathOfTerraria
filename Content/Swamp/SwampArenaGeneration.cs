@@ -188,8 +188,7 @@ internal static class SwampArenaGeneration
 		const int OpenPointsCount = 4;
 
 		List<Point16> workingPoints = [];
-		Vector2 entranceDirection = SwampArea.LeftSpawn ? new Vector2(1.5f, 0) : new Vector2(-1.5f, 0);
-		List<Vector2> workingDirections = [entranceDirection];
+		List<Vector2> workingDirections = [];
 
 		for (int i = 0; i < WallPointsCount; ++i)
 		{
@@ -198,7 +197,7 @@ internal static class SwampArenaGeneration
 
 			do
 			{
-				dir = SwampArea.Random.NextVector2CircularEdge(1.5f, 1.5f);
+				dir = (!SwampArea.LeftSpawn ? new Vector2(-1.5f, 0) : new Vector2(1.5f, 0)).RotatedByRandom(MathHelper.Pi * 0.85f);
 			} while (workingDirections.Any(x => Vector2.DistanceSquared(dir, x) < 0.5f));
 
 			while (!Collision.SolidCollision(pos.ToWorldCoordinates(), 32, 32))
@@ -309,6 +308,10 @@ internal static class SwampArenaGeneration
 				{
 					tile.HasTile = true;
 					tile.TileType = (ushort)ModContent.TileType<SwampGrass>();
+				}
+				else if (i is < ArenaWidth - 53 and > ArenaWidth - 58 || (i > Main.maxTilesX - ArenaWidth + 53 && i < Main.maxTilesX - ArenaWidth + 58))
+				{
+					SwampArea.BlockerPositions.Add(new Point16(i, y));
 				}
 			}
         }
