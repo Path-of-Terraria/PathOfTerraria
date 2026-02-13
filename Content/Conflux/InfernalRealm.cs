@@ -15,11 +15,7 @@ internal class InfernalRealm : BossDomainSubworld, IOverrideBiome
 {
 	private static Point16 arenaCenter;
 	
-	public FightTracker FightTracker = new([ModContent.NPCType<InfernalBoss>()])
-	{
-		ResetOnVanish = true,
-		HaltTimeOnVanish = 60 * 10,
-	};
+	public FightTracker FightTracker;
 
 	public override int Width => 768;
 	public override int Height => 768;
@@ -35,7 +31,11 @@ internal class InfernalRealm : BossDomainSubworld, IOverrideBiome
 	public override void OnEnter()
 	{
 		base.OnEnter();
-		FightTracker.Reset();
+		FightTracker = new([ModContent.NPCType<InfernalBoss>()])
+		{
+			ResetOnVanish = true,
+			HaltTimeOnVanish = 60 * 10,
+		};
 	}
 
 	public override void Update()

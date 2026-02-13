@@ -1,6 +1,8 @@
 ﻿#pragma warning disable CS9124 // Parameter is captured into the state of the enclosing type and its value is also used to initialize a field, property, or event.
 
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains;
 
@@ -19,9 +21,9 @@ public enum FightState
 /// Keeps track of whether a fight's boss or other enemies have been spawned, defeated, or else.
 /// </summary>
 /// <param name="npcTypes">The type IDs making up the fight's enemy or enemies.</param>
-public struct FightTracker(int[] npcTypes)
+public struct FightTracker
 {
-	public int[] NpcTypes { get; } = npcTypes;
+	public int[] NpcTypes { get; }
 
 	/// <summary> If true, the fight's start will not be signaled automatically when any tracked enemy is detected in the world. </summary>
 	public bool ManualStart { get; init; }
@@ -35,6 +37,12 @@ public struct FightTracker(int[] npcTypes)
 	public bool Completed { get; private set; }
 	public uint StartKillCount { get; private set; }
 	public uint HaltTime { get; private set; }
+
+	public FightTracker(int[] npcTypes)
+	{
+		NpcTypes = npcTypes;
+		Debug.Assert(npcTypes.All(id => id > 0));
+	}
 
 	public void Reset()
 	{
@@ -115,7 +123,7 @@ public struct FightTracker(int[] npcTypes)
 
 	private readonly bool AnyNPCs()
 	{
-		foreach (int type in npcTypes)
+		foreach (int type in NpcTypes)
 		{
 			foreach (NPC activeNpc in Main.ActiveNPCs)
 			{
