@@ -3,14 +3,20 @@ namespace PathOfTerraria.Core.IK;
 /// <summary> Implementation and utilities for simple 2D IK position resolution. </summary>
 internal static class InverseKinematics
 {
+    public struct Segment(float length, float restingAngle = 0f)
+    {
+        public float Length = length;
+        public float RestingAngle = restingAngle;
+    }
+    
     public ref struct Context()
     {
         public required Vector2 Target;
         public required Vector2 Origin;
         public required Span<Vector2> Results;
-        public required ReadOnlySpan<float> Segments;
+        public required ReadOnlySpan<Segment> Segments;
         public required float TotalLength;
-        public float RestingAngle = 0f;
+        public bool FlipHorizontally = false;
     }
 
     public struct Config()
@@ -25,6 +31,18 @@ internal static class InverseKinematics
     public struct Info()
     {
         public bool TargetInRange;
+    }
+
+    public static void Reset(in Context ctx)
+    {
+        ctx.Results[0] = ctx.Origin;
+        for (int j = 1; j < ctx.Results.Length; j++)
+        {
+			float baseAngle = ctx.Segments[j - 1].RestingAngle;
+			float usedAngle = ctx.FlipHorizontally ? MathHelper.Pi - baseAngle : baseAngle;
+            Vector2 usedDirection = usedAngle.ToRotationVector2();
+            ctx.Results[j] = ctx.Results[j - 1] + (usedDirection * ctx.Segments[j - 1].Length);
+        }
     }
 
     public static void Resolve(out Info info, in Config cfg, in Context ctx)
@@ -42,7 +60,7 @@ internal static class InverseKinematics
             for (int j = 0; j < ctx.Results.Length; j++)
             {
                 ctx.Results[j] = nextPos;
-                if (j != ctx.Segments.Length) { nextPos += dir * (ctx.Segments[j]); }
+                if (j != ctx.Segments.Length) { nextPos += dir * (ctx.Segments[j].Length); }
             }
 
             info.TargetInRange = false;
@@ -52,11 +70,7 @@ internal static class InverseKinematics
         info.TargetInRange = true;
 
         // Reset positions.
-        Vector2 restingDir = ctx.RestingAngle.ToRotationVector2();
-        for (int j = 0; j < ctx.Results.Length; j++)
-        {
-            ctx.Results[j] = j != 0 ? (ctx.Results[j - 1] + (restingDir * ctx.Segments[j - 1])) : ctx.Origin;
-        }
+        Reset(in ctx);
 
         // Run IK iterations.
         for (int it = 0; it < cfg.NumIterations; it++)
@@ -65,13 +79,13 @@ internal static class InverseKinematics
             ctx.Results[^1] = ctx.Target;
             for (int j = ctx.Results.Length - 2; j > 0; j--)
             {
-                ctx.Results[j] = ctx.Results[j + 1] + (ctx.Results[j + 1].DirectionTo(ctx.Results[j])) * ctx.Segments[j];
+                ctx.Results[j] = ctx.Results[j + 1] + (ctx.Results[j + 1].DirectionTo(ctx.Results[j])) * ctx.Segments[j].Length;
             }
 
             // Start-to-End pass.
             for (int j = 1; j < ctx.Results.Length; j++)
             {
-                ctx.Results[j] = ctx.Results[j - 1] + (ctx.Results[j - 1].DirectionTo(ctx.Results[j])) * ctx.Segments[j - 1];
+                ctx.Results[j] = ctx.Results[j - 1] + (ctx.Results[j - 1].DirectionTo(ctx.Results[j])) * ctx.Segments[j - 1].Length;
             }
 
             // Short-circuit if this point is close enough.

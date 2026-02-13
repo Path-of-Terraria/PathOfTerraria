@@ -94,11 +94,7 @@ internal sealed class NPCAnimations : NPCComponent
 			return;
 		}
 
-		int frameIndex = animation.Frames != null ? animation.Frames[CurrentFrame % animation.Frames.Length] : 0;
-		byte x = (byte)(frameIndex % BaseFrame.ColumnCount);
-		byte y = (byte)(frameIndex / BaseFrame.ColumnCount);
-		SpriteFrame frameRect = BaseFrame.With(columnToUse: x, rowToUse: y);
-		npc.frame = frameRect.GetSourceRectangle(texture);
+		npc.frame = CalculateFrame(BaseFrame, texture);
 	}
 
 	public override bool PreDraw(NPC npc, SpriteBatch sb, Vector2 screenPos, Color drawColor)
@@ -110,25 +106,36 @@ internal sealed class NPCAnimations : NPCComponent
 			FindFrame(npc, 0);
 		}
 
-		Render(TextureAssets.Npc[npc.type].Value, npc, screenPos, drawColor);
-
-		return false;
-	}
-
-	// Renders the NPC using the proper source rectangle.
-	public void Render(Texture2D texture, NPC npc, Vector2 screenPos, Color drawColor, Vector2? origin = null)
-	{
-		origin ??= (npc.frame.Size() * 0.5f) - (SpriteOffset * new Vector2(npc.spriteDirection, 1f));
-		
-		Vector2 position = npc.Center + new Vector2(0f, npc.gfxOffY) - screenPos;
-		Color alphaColor = Color.White.MultiplyRGBA(new Color(Vector4.One * ((byte.MaxValue - npc.alpha) / (float)byte.MaxValue)));
-		if (IgnoreAlpha) { alphaColor = Color.White; }
-		Main.EntitySpriteDraw(texture, position, npc.frame, drawColor.MultiplyRGBA(alphaColor), npc.rotation, origin.Value, npc.scale, npc.spriteDirection >= 0 ? (SpriteEffects)1 : 0, 0f);
+		Render(npc, TextureAssets.Npc[npc.type].Value, npc.frame, screenPos, drawColor);
 
 		string glowmaskPath = $"{npc.ModNPC?.Texture}_Glowmask";
 		if (ModContent.HasAsset(glowmaskPath) && ModContent.Request<Texture2D>(glowmaskPath) is { IsLoaded: true, Value: { } glowmask })
 		{
-			Main.EntitySpriteDraw(glowmask, position, npc.frame, alphaColor, npc.rotation, npc.frame.Size() * 0.5f, npc.scale, npc.spriteDirection >= 0 ? (SpriteEffects)1 : 0, 0f);
+			Render(npc, glowmask, npc.frame, screenPos, Color.White);
 		}
+
+		return false;
+	}
+
+	public Rectangle CalculateFrame(SpriteFrame baseFrame, Texture2D texture)
+	{
+		int frameIndex = animation.Frames != null ? animation.Frames[CurrentFrame % animation.Frames.Length] : 0;
+		byte x = (byte)(frameIndex % baseFrame.ColumnCount);
+		byte y = (byte)(frameIndex / baseFrame.ColumnCount);
+		SpriteFrame frameRect = baseFrame.With(columnToUse: x, rowToUse: y);
+		Rectangle result = frameRect.GetSourceRectangle(texture);
+		return result;
+	}
+
+	// Renders the NPC using the proper source rectangle.
+	public void Render(NPC npc, Texture2D texture, Rectangle frame, Vector2 screenPos, Color drawColor, Vector2? center = null, Vector2? origin = null, float? rotation = null)
+	{
+		Vector2 usedCenter = center ?? (npc.Center + new Vector2(0f, npc.gfxOffY));
+		Vector2 usedOrigin = origin ?? (frame.Size() * 0.5f) - (SpriteOffset * new Vector2(npc.spriteDirection, 1f));
+		float usedRotation = rotation ?? npc.rotation;
+		
+		Vector2 position = usedCenter - screenPos;
+		Color alphaColor = IgnoreAlpha ? Color.White : Color.White.MultiplyRGBA(new Color(Vector4.One * ((byte.MaxValue - npc.alpha) / (float)byte.MaxValue)));
+		Main.EntitySpriteDraw(texture, position, frame, drawColor.MultiplyRGBA(alphaColor), usedRotation, usedOrigin, npc.scale, npc.spriteDirection >= 0 ? (SpriteEffects)1 : 0, 0f);
 	}
 }
