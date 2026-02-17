@@ -284,3 +284,8 @@ MosquitoTrappedDebuff: {
 	// DisplayName: Squeezed
 	// Description: Losing life
 }
+
+ToxicSmogDebuff: {
+	// DisplayName: Toxic Smog Debuff
+	// Description: Mods.PathOfTerraria.Buffs.ToxicSmogDebuff.Description
+}

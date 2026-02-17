@@ -14,7 +14,7 @@ internal class DeepMossBlocker : ModTile, IBlockerTile
 		Main.tileBlockLight[Type] = true;
 		Main.tileBrick[Type] = true;
 
-		AddMapEntry(new Color(175, 56, 76));
+		AddMapEntry(new Color(52, 114, 73));
 
 		DustType = ModContent.DustType<DarkMossDust>();
 

@@ -1,7 +1,6 @@
-﻿using ReLogic.Content;
+﻿using PathOfTerraria.Content.Buffs;
+using ReLogic.Content;
 using SubworldLibrary;
-using System.Collections.Generic;
-using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
@@ -10,32 +9,70 @@ namespace PathOfTerraria.Content.Swamp.NPCs.SwampBoss;
 
 internal class PoisonShaderFunctionality : ModSystem
 {
+	public class PoisonFunctionalityPlayer : ModPlayer
+	{
+		public override void PreUpdate()
+		{
+			const float Range = Mossmother.PosionAuraRadiusSize;
+			const float RangeSq = Range * Range;
+
+			bool hasPoison = false;
+
+			foreach (NPC npc in Main.ActiveNPCs)
+			{
+				if (npc.ModNPC is Mossmother mother)
+				{
+					Vector2 pos = npc.oldPos[Mossmother.TrailingIndex - 1];
+
+					if (mother.State == Mossmother.BehaviorState.GasCrawl)
+					{
+						hasPoison = true;
+
+						if (pos.DistanceSQ(Player.Center) < RangeSq)
+						{
+							return;
+						}
+					}
+				}
+			}
+
+			if (hasPoison)
+			{
+				Player.AddBuff(ModContent.BuffType<ToxicSmogDebuff>(), 2);
+			}
+		}
+	}
+
 	private const string EffectKey = "PathOfTerraria:Poison";
 
-	internal bool PoisonActive = false;
+	internal static bool PoisonActive => Intensity > 0;
 
-	internal static float Intensity { get; private set; }
+	internal static float Intensity { get; set; }
 
 	public override void Load()
 	{
 		Asset<Effect> filterShader = Mod.Assets.Request<Effect>("Assets/Effects/PurpleSmog");
 		Filters.Scene[EffectKey] = new Filter(new ScreenShaderData(filterShader, "Pass0"), EffectPriority.VeryHigh);
+
+		On_Main.RenderWater += GetWaterTarget;
+	}
+
+	private void GetWaterTarget(On_Main.orig_RenderWater orig, Main self)
+	{
+		orig(self);
+	
+		Filters.Scene[EffectKey].GetShader().UseImage(Main.waterTarget, 1);
 	}
 
 	public override void PreUpdateEntities()
 	{
-		if (Main.mouseRight && Main.mouseMiddle && Main.mouseMiddleRelease)
+		if (Main.netMode != NetmodeID.Server && SubworldSystem.Current is SwampArea) // This all needs to happen client-side!
 		{
-			PoisonActive = true;
-		}
-
-		if (Main.netMode != NetmodeID.Server)// && SubworldSystem.Current is SwampArea) // This all needs to happen client-side!
-		{
-			Intensity = MathHelper.Lerp(Intensity, PoisonActive ? 0.4f : 0, 0.1f);
-
 			if (Intensity > 0 && !Filters.Scene[EffectKey].Active)
 			{
+				Intensity = 0.02f;
 				Filters.Scene.Activate(EffectKey);
+				Filters.Scene[EffectKey].GetShader().Shader.Parameters["auraPixelSize"].SetValue(Mossmother.PosionAuraRadiusSize);
 			}
 			else if (Intensity <= 0.01f && Filters.Scene[EffectKey].Active)
 			{
@@ -43,34 +80,62 @@ internal class PoisonShaderFunctionality : ModSystem
 				Filters.Scene[EffectKey].Deactivate();
 			}
 
+			CheckPoisonSmog();
+
 			if (Filters.Scene[EffectKey].Active)
 			{
-				Filters.Scene[EffectKey].GetShader().UseProgress(Main.GameUpdateCount * 0.002f);
-				Vector2 direction = Main.screenPosition / Main.ScreenSize.ToVector2();
-				direction.X %= 1;
-				direction.Y %= 1;
-				Filters.Scene[EffectKey].GetShader().UseDirection(direction);
-				Filters.Scene[EffectKey].GetShader().UseImage(ModContent.Request<Texture2D>("PathOfTerraria/Assets/Misc/PerlinNoise"));
-				Filters.Scene[EffectKey].GetShader().UseIntensity(Intensity);
+				UpdateEffect();
+			}
+		}
+	}
 
-				int mothers = 0;
-				Main.NewText((Main.MouseWorld - Main.screenPosition) / Main.ScreenSize.ToVector2());
-				Main.NewText(((Main.MouseWorld - Main.screenPosition) / Main.ScreenSize.ToVector2()).Distance(new Vector2(0.5f)));
+	private static void CheckPoisonSmog()
+	{
+		int mothers = 0; // Debug
+		var positions = new Vector2[6] { -Vector2.One, -Vector2.One, -Vector2.One, -Vector2.One, -Vector2.One, -Vector2.One };
+		bool shouldShowPoison = false;
+		Vector2 mouseDebugPos = Main.MouseScreen / Main.ScreenSize.ToVector2();
 
-				foreach (NPC npc in Main.ActiveNPCs)
+		foreach (NPC npc in Main.ActiveNPCs)
+		{
+			if (npc.ModNPC is Mossmother mother)
+			{
+				Vector2 scale = (npc.oldPos[Mossmother.TrailingIndex - 1] + npc.Size / 2f - Main.screenPosition) / Main.ScreenSize.ToVector2();
+				positions[mothers] = scale;
+
+				if (mother.State == Mossmother.BehaviorState.GasCrawl)
 				{
-					if (npc.ModNPC is Mossmother)
-					{
-						Vector2 scale = (Main.MouseWorld - Main.screenPosition) / Main.ScreenSize.ToVector2();// (npc.Center - Main.screenPosition) / Main.ScreenSize.ToVector2();
-						Filters.Scene[EffectKey].GetShader().UseImageScale(scale, mothers);
-						
-						if (mothers++ >= 3)
-						{
-							break;
-						}
-					}
+					shouldShowPoison = true;
+				}
+
+				if (mothers++ >= 3)
+				{
+					break;
 				}
 			}
 		}
+
+		Filters.Scene[EffectKey].GetShader().Shader.Parameters["bossPositions"].SetValue(positions);
+
+		if (!shouldShowPoison)
+		{
+			Intensity = MathF.Max(0, Intensity - 0.001f);
+		}
+		else
+		{
+			Intensity = MathHelper.Lerp(Intensity, 0.4f, 0.004f);
+		}
+	}
+
+	private static void UpdateEffect()
+	{
+		Filters.Scene[EffectKey].GetShader().UseProgress(Main.GameUpdateCount * 0.002f);
+		Vector2 direction = Main.screenPosition / Main.ScreenSize.ToVector2();
+		direction.X %= 1;
+		direction.Y %= 1;
+		Filters.Scene[EffectKey].GetShader().UseDirection(direction);
+		Filters.Scene[EffectKey].GetShader().UseImage(ModContent.Request<Texture2D>("PathOfTerraria/Assets/Misc/PerlinNoise"));
+		Filters.Scene[EffectKey].GetShader().UseIntensity(Intensity);
+		Filters.Scene[EffectKey].GetShader().Shader.Parameters["useWater"].SetValue(NPC.CountNPCS(ModContent.NPCType<Mossmother>()) <= 1);
 	}
 }
