@@ -19,25 +19,25 @@ internal static class SwampArenaGeneration
 	public const int ArenaWidth = 600;
 	public const int HalfWidth = ArenaWidth / 2;
 
+	private const int ShapeSize = 95;
+
 	public static Point16[] TraverseWalls { get; private set; }
 	public static Point16[] TraverseNodes { get; private set; }
 	public static Range WidthAtWaterHeight { get; private set; }
 
 	public static void Generate(GenerationProgress progress, GameConfiguration configuration)
 	{
-		const int ShapeSize = 150;
-
 		int x = SwampArea.LeftSpawn ? Main.maxTilesX - HalfWidth : HalfWidth;
 		int y = SwampArea.FloorY - 10;
 
 		GenerateClouds(out FastNoiseLite noise);
-		Carve(progress, ShapeSize, x, y);
+		Carve(progress, x, y);
 		SetupTraverse(x, y, noise, out Point16 center);
 		BuildTraverse(noise, progress);
 		Decorate(x, y, center);
 	}
 
-	private static void Carve(GenerationProgress progress, int ShapeSize, int x, int y)
+	private static void Carve(GenerationProgress progress, int x, int y)
 	{
 		ShapeData data = new();
 		WorldUtils.Gen(new Point(x, y), new Shapes.Circle(ShapeSize), new Actions.Clear().Output(data));
@@ -219,10 +219,10 @@ internal static class SwampArenaGeneration
 
 		for (int i = 0; i < OpenPointsCount; ++i)
 		{
-			Vector2 position = i == 0 ? center : center + new Vector2(0, (-120 - repeats * 0.01f) * SwampArea.Random.NextFloat(0.7f, 1f)).RotatedByRandom(MathHelper.PiOver2);
+			Vector2 position = i == 0 ? center : center + new Vector2(0, (-100 - repeats * 0.01f) * SwampArea.Random.NextFloat(0.7f, 1f)).RotatedByRandom(MathHelper.PiOver2);
 			position.X = MathHelper.Clamp(position.X, 60, Main.maxTilesX - 60);
 
-			if (i > 0 && (Collision.SolidCollision(position * 16 - new Vector2(-100), 200, 200) || workingPoints.Any(x => x.ToVector2().DistanceSQ(position) < 110 * 110)))
+			if (i > 0 && (Collision.SolidCollision(position * 16 - new Vector2(-100), 200, 200) || workingPoints.Any(x => x.ToVector2().DistanceSQ(position) < 95 * 95)))
 			{
 				repeats++;
 				i--;

@@ -30,15 +30,16 @@ internal partial class Mossmother : ModNPC
 	private ref float Timer => ref NPC.ai[1];
 	private ref float MiscNumber => ref NPC.ai[2];
 
-	private ref float LastWallNodeSelected => ref NPC.localAI[0];
+	private ref float LastWallNodeSelected => ref NPC.ai[3];
 	
 	private bool ReadyForGas
 	{
-		get => NPC.localAI[1] == 1;
-		set => NPC.localAI[1] = value ? 1 : 0;
+		get => NPC.localAI[0] == 1;
+		set => NPC.localAI[0] = value ? 1 : 0;
 	}
 
-	private ref float TimesWallCrawled => ref NPC.localAI[2];
+	private ref float TimesWallCrawled => ref NPC.localAI[1];
+	private ref float MiscTwo => ref NPC.localAI[2];
 
 	private Vector2[] movementSpline = [];
 
@@ -64,7 +65,7 @@ internal partial class Mossmother : ModNPC
 	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 	{
 		NPC.damage = ModeUtils.ByMode(60, 75, 100, 150);
-		NPC.lifeMax = 80_000;
+		NPC.lifeMax = 40_000;
 	}
 
 	public override bool CheckActive()

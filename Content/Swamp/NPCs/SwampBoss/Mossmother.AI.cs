@@ -52,6 +52,22 @@ internal partial class Mossmother
 		}
 		else if (State == BehaviorState.MoveToWall)
 		{
+			ref float spawnAddsTimer = ref MiscTwo;
+
+			if (spawnAddsTimer > 0)
+			{
+				spawnAddsTimer--;
+
+				if (spawnAddsTimer > 50 && spawnAddsTimer % 30 == 29)
+				{
+					int index = Main.rand.Next(2, SplineCountMax - 4);
+					Vector2 pos = Vector2.Lerp(movementSpline[index], movementSpline[index + 1], Main.rand.NextFloat(0.2f, 0.8f));
+					NPC.NewNPC(NPC.GetSource_FromThis(), (int)pos.X, (int)pos.Y, ModContent.NPCType<Mossling>(), NPC.whoAmI + 3);
+				}
+
+				return;
+			}
+
 			ref float splineSlot = ref MiscNumber;
 			Vector2 nextSpline = movementSpline[(int)splineSlot];
 			NPC.velocity = Vector2.SmoothStep(NPC.velocity, NPC.SafeDirectionTo(nextSpline) * 22, 0.16f);
@@ -76,53 +92,7 @@ internal partial class Mossmother
 		}
 		else if (State == BehaviorState.IdleInWall)
 		{
-			NPC.velocity *= 0.90f;
-			NPC.rotation = Utils.AngleLerp(NPC.rotation, MiscNumber + MathHelper.PiOver2, 0.02f);
-
-			if (Timer == 240)
-			{
-				if (ReadyForGas)
-				{
-					bool allReady = true;
-
-					foreach (NPC npc in Main.ActiveNPCs)
-					{
-						if (npc.ModNPC is Mossmother mother && !mother.ReadyForGas)
-						{
-							allReady = false;
-							break;
-						}
-					}
-
-					if (!allReady)
-					{
-						SetState(BehaviorState.MoveToWall);
-					}
-				}
-				else
-				{
-					SetState(BehaviorState.MoveToWall);
-				}
-			}
-			else if (Timer > 240)
-			{
-				bool allReady = true;
-
-				foreach (NPC npc in Main.ActiveNPCs)
-				{
-					if (npc.whoAmI != NPC.whoAmI && npc.ModNPC is Mossmother mother && ((mother.State == BehaviorState.IdleInWall && mother.Timer < 240) && mother.State != BehaviorState.GasCrawl))
-					{
-						allReady = false;
-						break;
-					}
-				}
-
-				if (allReady)
-				{
-					PoisonShaderFunctionality.Intensity = 0.02f;
-					SetState(BehaviorState.GasCrawl);
-				}
-			}
+			IdleInWall();
 		}
 		else if (State == BehaviorState.GasCrawl)
 		{
@@ -189,6 +159,57 @@ internal partial class Mossmother
 		}
 	}
 
+	private void IdleInWall()
+	{
+		NPC.velocity *= 0.90f;
+		NPC.rotation = Utils.AngleLerp(NPC.rotation, MiscNumber + MathHelper.PiOver2, 0.02f);
+
+		if (Timer == 240)
+		{
+			if (ReadyForGas)
+			{
+				bool allReady = true;
+
+				foreach (NPC npc in Main.ActiveNPCs)
+				{
+					if (npc.ModNPC is Mossmother mother && !mother.ReadyForGas)
+					{
+						allReady = false;
+						break;
+					}
+				}
+
+				if (!allReady)
+				{
+					SetState(BehaviorState.MoveToWall);
+				}
+			}
+			else
+			{
+				SetState(BehaviorState.MoveToWall);
+			}
+		}
+		else if (Timer > 240)
+		{
+			bool allReady = true;
+
+			foreach (NPC npc in Main.ActiveNPCs)
+			{
+				if (npc.whoAmI != NPC.whoAmI && npc.ModNPC is Mossmother mother && ((mother.State == BehaviorState.IdleInWall && mother.Timer < 240) && mother.State != BehaviorState.GasCrawl))
+				{
+					allReady = false;
+					break;
+				}
+			}
+
+			if (allReady)
+			{
+				PoisonShaderFunctionality.Intensity = 0.02f;
+				SetState(BehaviorState.GasCrawl);
+			}
+		}
+	}
+
 	public void SetState(BehaviorState state)
 	{
 		Timer = 0;
@@ -206,6 +227,11 @@ internal partial class Mossmother
 			if (State is BehaviorState.MoveToWall or BehaviorState.Desperation)
 			{
 				BuildSplineForMovement(State == BehaviorState.Desperation);
+			}
+
+			if (State == BehaviorState.MoveToWall)
+			{
+				MiscTwo = Main.rand.NextBool(1) ? 130 : 0;
 			}
 		}
 	}
@@ -255,7 +281,7 @@ internal partial class Mossmother
 	public override void SendExtraAI(BinaryWriter writer)
 	{
 		writer.Write(ReadyForGas);
-		writer.Write((Half)LastWallNodeSelected);
+		writer.Write((Half)MiscTwo);
 		writer.Write((byte)movementSpline.Length);
 
 		foreach (Vector2 position in movementSpline)
@@ -268,7 +294,7 @@ internal partial class Mossmother
 	public override void ReceiveExtraAI(BinaryReader reader)
 	{
 		ReadyForGas = reader.ReadBoolean();
-		LastWallNodeSelected = (float)reader.ReadHalf();
+		MiscTwo = (float)reader.ReadHalf();
 		byte length = reader.ReadByte();
 		movementSpline = new Vector2[length];
 

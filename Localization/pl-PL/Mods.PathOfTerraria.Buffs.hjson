@@ -273,3 +273,8 @@ ToxicSmogDebuff: {
 	// DisplayName: Toxic Smog
 	// Description: Losing life quicker and quicker
 }
+
+ToxicSmogImmunityBuff: {
+	// DisplayName: Toxic Smog Immunity Buff
+	// Description: Mods.PathOfTerraria.Buffs.ToxicSmogImmunityBuff.Description
+}

@@ -1019,3 +1019,8 @@ Mudsquit: {
 // FallenShaman.DisplayName: Fallen Shaman
 // Shambling.DisplayName: Shambling
 // Mossmother.DisplayName: Mossmother
+
+Mossling: {
+	// DisplayName: Mossling
+	// Entry: ""
+}

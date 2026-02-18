@@ -725,13 +725,6 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 			Main.npc[npc].netUpdate = true;
 		}
 
-		if (!spawnedPortal && !NPC.AnyNPCs(ModContent.NPCType<Mossmother>()))
-		{
-			spawnedPortal = true;
-
-
-		}
-
 		if (!spawnedTemporaryContent && Main.ActivePlayers.GetEnumerator().MoveNext())
 		{
 			PlaceEncounters();
@@ -782,7 +775,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 	{
 		List<float> xPositions = [];
 
-		for (int i = 0; i < 8; ++i)
+		for (int i = 0; i < 5; ++i)
 		{
 			Vector2 pos;
 			Range range = SwampArenaGeneration.WidthAtWaterHeight;

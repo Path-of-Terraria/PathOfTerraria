@@ -1,17 +1,19 @@
-﻿using Terraria.DataStructures;
+﻿using PathOfTerraria.Common.Systems.ModPlayers.LivesSystem;
+using PathOfTerraria.Content.Swamp.NPCs.SwampBoss;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Buffs;
 
 internal class ToxicSmogDebuff : ModBuff
 {
-	internal class ToxicSmogPlayer : ModPlayer 
+	internal class ToxicSmogPlayer : ModPlayer, IPreDomainRespawnPlayer
 	{
 		internal int TimeToxic = 0;
 
 		public override void ResetEffects()
 		{
-			if (!Player.HasBuff<ToxicSmogDebuff>())
+			if (!Player.HasBuff<ToxicSmogDebuff>() || Player.HasBuff<ToxicSmogImmunityBuff>())
 			{
 				TimeToxic = 0;
 			}
@@ -26,13 +28,21 @@ internal class ToxicSmogDebuff : ModBuff
 			if (Player.HasBuff<ToxicSmogDebuff>())
 			{
 				Player.lifeRegen = Math.Min(0, Player.lifeRegen);
-				Player.lifeRegen -= TimeToxic / 8;
+				Player.lifeRegen -= TimeToxic / 6;
 			}
 		}
 
 		public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource)
 		{
 			TimeToxic = 0;
+		}
+
+		public void OnDomainRespawn()
+		{
+			if (PoisonShaderFunctionality.Intensity > 0.1f)
+			{
+				Player.AddBuff(ModContent.BuffType<ToxicSmogImmunityBuff>(), 10 * 60);
+			}
 		}
 	}
 

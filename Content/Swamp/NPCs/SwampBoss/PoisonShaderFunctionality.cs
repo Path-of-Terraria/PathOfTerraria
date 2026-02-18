@@ -44,12 +44,20 @@ internal class PoisonShaderFunctionality : ModSystem
 				if (npc.ModNPC is Mossmother mother)
 				{
 					Vector2 pos = npc.oldPos[Mossmother.TrailingIndex - 1];
+					bool nearBoss = pos.DistanceSQ(Player.Center) < RangeSq;
 
 					if (mother.State == Mossmother.BehaviorState.GasCrawl)
 					{
 						hasPoison = true;
 
-						if (pos.DistanceSQ(Player.Center) < RangeSq)
+						if (nearBoss)
+						{
+							return false;
+						}
+					}
+					else if (mother.State == Mossmother.BehaviorState.IdleInWall)
+					{
+						if (nearBoss)
 						{
 							return false;
 						}
