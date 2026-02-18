@@ -5,6 +5,7 @@ using System.IO;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Swamp.NPCs.SwampBoss;
+
 internal partial class Mossmother
 {
 	public override void AI()
@@ -164,24 +165,91 @@ internal partial class Mossmother
 		}
 		else if (State == BehaviorState.Desperation)
 		{
-			SetState(BehaviorState.GasCrawl);
+			ref float splineSlot = ref MiscNumber;
+			Vector2 nextSpline = movementSpline[(int)splineSlot];
+			NPC.velocity = Vector2.SmoothStep(NPC.velocity, NPC.SafeDirectionTo(nextSpline) * 22, 0.16f);
+			NPC.rotation = Utils.AngleLerp(NPC.rotation, NPC.velocity.ToRotation() - MathHelper.PiOver2, 0.6f);
+
+			if (NPC.DistanceSQ(nextSpline) < 60 * 60)
+			{
+				splineSlot++;
+
+				if (splineSlot >= movementSpline.Length)
+				{
+					SetState(BehaviorState.IdleInWall);
+					MiscNumber = movementSpline[^2].AngleTo(movementSpline[^1]);
+					TimesWallCrawled++;
+
+					if (!Main.rand.NextBool((int)TimesWallCrawled))
+					{
+						ReadyForGas = true;
+					}
+				}
+			}
 		}
 	}
 
-	private void BuildSplineForMovement()
+	public void SetState(BehaviorState state)
+	{
+		Timer = 0;
+		MiscNumber = 0;
+		State = state;
+		NPC.netUpdate = true;
+
+		if (NPC.CountNPCS(Type) == 1)
+		{
+			State = BehaviorState.Desperation;
+		}
+
+		if (Main.netMode != NetmodeID.MultiplayerClient)
+		{
+			if (State is BehaviorState.MoveToWall or BehaviorState.Desperation)
+			{
+				BuildSplineForMovement(State == BehaviorState.Desperation);
+			}
+		}
+	}
+
+	private void BuildSplineForMovement(bool desperation)
 	{
 		int endIndex;
 
 		do
 		{
 			endIndex = Main.rand.Next(SwampArenaGeneration.TraverseWalls.Length);
-		} while (endIndex == LastWallNodeSelected);
+		} while (endIndex == LastWallNodeSelected || AnyOtherBossHasTargetNode(endIndex) || (desperation && SwampArenaGeneration.TraverseWalls[endIndex].Y <= SwampArea.WaterY));
 
 		Vector2 end = SwampArenaGeneration.TraverseWalls[endIndex].ToWorldCoordinates();
 		Vector2 node = Main.rand.Next(SwampArenaGeneration.TraverseNodes).ToWorldCoordinates();
+		
+		if (desperation)
+		{
+			node = new Vector2(SwampArea.ArenaMiddleX + Main.rand.Next(-60, 60), Main.rand.Next(SwampArea.WaterY, SwampArea.WaterY + 40)) * 16;
+		}
+
 		LastWallNodeSelected = endIndex;
 
 		movementSpline = Spline.InterpolateXY([NPC.Center, node, end], SplineCountMax);
+	}
+
+	/// <summary>
+	/// Used to stop the mossmothers from having the exact same path and overlapping, causing confusion.
+	/// </summary>
+	/// <param name="endIndex"></param>
+	/// <returns></returns>
+	private bool AnyOtherBossHasTargetNode(int endIndex)
+	{
+		for (int i = 0; i < NPC.whoAmI; ++i)
+		{
+			NPC npc = Main.npc[i];
+
+			if (npc.active && npc.ModNPC is Mossmother { State: BehaviorState.MoveToWall } mother && mother.LastWallNodeSelected == endIndex)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public override void SendExtraAI(BinaryWriter writer)

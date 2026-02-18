@@ -1,7 +1,5 @@
-﻿using PathOfTerraria.Common;
-using PathOfTerraria.Common.Subworlds;
-using PathOfTerraria.Common.World.Generation;
-using System.IO;
+﻿using PathOfTerraria.Common.NPCs;
+using PathOfTerraria.Content.Projectiles.Utility;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Swamp.NPCs.SwampBoss;
@@ -60,11 +58,23 @@ internal partial class Mossmother : ModNPC
 		NPC.noTileCollide = true;
 		NPC.boss = true;
 		NPC.knockBackResist = 0f;
+		NPC.damage = 1;
+	}
+
+	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
+	{
+		NPC.damage = ModeUtils.ByMode(60, 75, 100, 150);
+		NPC.lifeMax = 80_000;
 	}
 
 	public override bool CheckActive()
 	{
 		return false;
+	}
+
+	public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+	{
+		return State == BehaviorState.Desperation;
 	}
 
 	public override bool? CanBeHitByProjectile(Projectile projectile)
@@ -87,21 +97,14 @@ internal partial class Mossmother : ModNPC
 		rotation = NPC.rotation;
 	}
 
-	public void SetState(BehaviorState state)
+	public override void OnKill()
 	{
-		Timer = 0;
-		MiscNumber = 0;
-		State = state;
-		NPC.netUpdate = true;
-
-		if (State == BehaviorState.MoveToWall && Main.netMode != NetmodeID.MultiplayerClient)
+		if (NPC.CountNPCS(Type) > 1)
 		{
-			BuildSplineForMovement();
+			return;
 		}
 
-		//if (NPC.CountNPCS(Type) == 1)
-		//{
-		//	State = BehaviorState.Desperation;
-		//}
+		Vector2 pos = new Vector2(SwampArea.ArenaMiddleX * 16, (SwampArea.FloorY - 20) * 16);
+		Projectile.NewProjectile(Terraria.Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 	}
 }

@@ -270,6 +270,6 @@ MosquitoTrappedDebuff: {
 }
 
 ToxicSmogDebuff: {
-	// DisplayName: Toxic Smog Debuff
-	// Description: Mods.PathOfTerraria.Buffs.ToxicSmogDebuff.Description
+	// DisplayName: Toxic Smog
+	// Description: Losing life quicker and quicker
 }

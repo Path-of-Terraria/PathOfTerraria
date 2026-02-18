@@ -17,7 +17,28 @@ internal class PoisonShaderFunctionality : ModSystem
 			const float RangeSq = Range * Range;
 
 			bool hasPoison = false;
+			bool desperation = false;
 
+			if (!HasPoison(RangeSq, ref hasPoison, ref desperation))
+			{
+				return;
+			}
+
+			if (hasPoison && (!desperation || !Collision.WetCollision(Player.position, Player.width, 10)))
+			{
+				Player.AddBuff(ModContent.BuffType<ToxicSmogDebuff>(), 2);
+
+				if (desperation)
+				{
+					ref int toxic = ref Player.GetModPlayer<ToxicSmogDebuff.ToxicSmogPlayer>().TimeToxic;
+					toxic = Math.Max(600, toxic);
+					Player.breath -= 3;
+				}
+			}
+		}
+
+		private bool HasPoison(float RangeSq, ref bool hasPoison, ref bool desperation)
+		{
 			foreach (NPC npc in Main.ActiveNPCs)
 			{
 				if (npc.ModNPC is Mossmother mother)
@@ -30,16 +51,18 @@ internal class PoisonShaderFunctionality : ModSystem
 
 						if (pos.DistanceSQ(Player.Center) < RangeSq)
 						{
-							return;
+							return false;
 						}
+					}
+					else if (mother.State == Mossmother.BehaviorState.Desperation)
+					{
+						desperation = true;
+						hasPoison = true;
 					}
 				}
 			}
 
-			if (hasPoison)
-			{
-				Player.AddBuff(ModContent.BuffType<ToxicSmogDebuff>(), 2);
-			}
+			return true;
 		}
 	}
 
@@ -66,7 +89,7 @@ internal class PoisonShaderFunctionality : ModSystem
 
 	public override void PreUpdateEntities()
 	{
-		if (Main.netMode != NetmodeID.Server && SubworldSystem.Current is SwampArea) // This all needs to happen client-side!
+		if (Main.netMode != NetmodeID.Server && (SubworldSystem.Current is SwampArea || Intensity > 0)) // This all needs to happen client-side!
 		{
 			if (Intensity > 0 && !Filters.Scene[EffectKey].Active)
 			{

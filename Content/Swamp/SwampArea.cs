@@ -35,13 +35,16 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 	public const float MossNoiseThreshold = -0.4f;
 
 	public static UnifiedRandom Random => Main.rand;
+	public static int ArenaMiddleX => LeftSpawn ? Main.maxTilesX - SwampArenaGeneration.HalfWidth : SwampArenaGeneration.HalfWidth;
 
 	internal static Dictionary<int, int>? HeightMapping = null;
 	internal static List<Vector2> EncounterLocations = [];
 	internal static HashSet<Point16> SkipActuationLocations = [];
 	internal static bool LeftSpawn = false;
 	internal static List<Point16> BlockerPositions = [];
-	
+
+	private static bool spawnedPortal = false;
+	private static bool setBossSpawn = false;
 	private static bool spawnedTemporaryContent = false;
 
 	public override int Width => 3000 + 200 * Main.rand.Next(3);
@@ -58,6 +61,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 		Main.worldSurface = WaterY + 10;
 		Main.rockLayer = WaterY + 40;
 
+		setBossSpawn = false;
 		spawnedTemporaryContent = false;
 		EncounterLocations.Clear();
 		LeftSpawn = Random.NextBool(2);
@@ -721,6 +725,13 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 			Main.npc[npc].netUpdate = true;
 		}
 
+		if (!spawnedPortal && !NPC.AnyNPCs(ModContent.NPCType<Mossmother>()))
+		{
+			spawnedPortal = true;
+
+
+		}
+
 		if (!spawnedTemporaryContent && Main.ActivePlayers.GetEnumerator().MoveNext())
 		{
 			PlaceEncounters();
@@ -729,12 +740,40 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 
 			spawnedTemporaryContent = true;
 
-			int x = LeftSpawn ? Main.maxTilesX - SwampArenaGeneration.HalfWidth : SwampArenaGeneration.HalfWidth;
 			int y = FloorY - 10;
 
 			for (int i = 0; i < 3; ++i)
 			{
-				NPC.NewNPC(new EntitySource_WorldGen(), x * 16, y * 16, ModContent.NPCType<Mossmother>(), 0, 0, 1);
+				NPC.NewNPC(new EntitySource_WorldGen(), ArenaMiddleX * 16, y * 16, ModContent.NPCType<Mossmother>(), 0, 0, 1);
+			}
+		}
+
+		if (!setBossSpawn)
+		{
+			bool canSetSpawn = false;
+
+			foreach (NPC npc in Main.ActiveNPCs)
+			{
+				if (npc.ModNPC is Mossmother { State: Mossmother.BehaviorState.SpawnAnimation })
+				{
+					canSetSpawn = true;
+					break;
+				}
+			}
+
+			if (canSetSpawn)
+			{
+				int y = FloorY - 10;
+
+				Main.spawnTileX = ArenaMiddleX;
+				Main.spawnTileY = y;
+
+				setBossSpawn = true;
+
+				if (Main.netMode == NetmodeID.Server)
+				{
+					NetMessage.SendData(MessageID.WorldData, -1, -1, null);
+				}
 			}
 		}
 	}
