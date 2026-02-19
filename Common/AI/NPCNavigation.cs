@@ -456,7 +456,7 @@ internal sealed class NPCNavigation : NPCComponent
 				}
 			}
 
-			result.FallThroughPlatforms = edge.To.Y > edge.From.Y || (edge.From.Y * TileUtils.TileSizeInPixels) > npc.Bottom.Y;
+			result.FallThroughPlatforms = edge.To.Y >= edge.From.Y && (edge.From.Y * TileUtils.TileSizeInPixels) > npc.Bottom.Y;
 
 			break;
 		}
