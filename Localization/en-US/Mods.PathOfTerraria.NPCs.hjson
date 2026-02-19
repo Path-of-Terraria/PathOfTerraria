@@ -1018,9 +1018,13 @@ Mudsquit: {
 CryoStalker.DisplayName: Cryo Stalker
 FallenShaman.DisplayName: Fallen Shaman
 Shambling.DisplayName: Shambling
-Mossmother.DisplayName: Mossmother
+
+Mossmother: {
+	DisplayName: Younger Caracarcoss
+	Entry: A relatively young, but strong, apex predator of the mossy, spore-fueled Swamp. The larger, older Caracarcosses have never been seen...or have been for only a short time.
+}
 
 Mossling: {
 	DisplayName: Mossling
-	Entry: ""
+	Entry: A small, docile, delicious morsel. Grows into the larger {$Mossmother.DisplayName} over years and years...if they're lucky.
 }

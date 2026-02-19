@@ -8,19 +8,21 @@ namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 /// </summary>
 internal class RequestCheckSectionHandler : Handler
 {
-	public static void Send(Vector2 position)
+	public static void Send(Vector2 position, int fluff = 1)
 	{
 		ModPacket packet = Networking.GetPacket<RequestCheckSectionHandler>();
 		packet.Write(position.X);
 		packet.Write(position.Y);
+		packet.Write((byte)fluff);
 		packet.Send();
 	}
 
 	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
 		Vector2 pos = reader.ReadVector2();
+		byte fluff = reader.ReadByte();
 
-		RemoteClient.CheckSection(sender, pos);
+		RemoteClient.CheckSection(sender, pos, fluff);
 		NetMessage.SendData(MessageID.TeleportEntity, -1, -1, null, 0, sender, pos.X, pos.Y, 2, 1);
 	}
 }

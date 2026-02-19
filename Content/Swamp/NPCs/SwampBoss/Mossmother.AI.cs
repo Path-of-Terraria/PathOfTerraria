@@ -39,8 +39,6 @@ internal partial class Mossmother
 					NPC.netUpdate = true;
 				}
 
-				ReadyForGas = true;
-
 				SetState(BehaviorState.SpawnAnimation);
 			}
 		}
@@ -58,7 +56,7 @@ internal partial class Mossmother
 			{
 				spawnAddsTimer--;
 
-				if (spawnAddsTimer > 50 && spawnAddsTimer % 30 == 29)
+				if (Main.netMode != NetmodeID.MultiplayerClient && spawnAddsTimer > 50 && spawnAddsTimer % 30 == 29)
 				{
 					int index = Main.rand.Next(2, SplineCountMax - 4);
 					Vector2 pos = Vector2.Lerp(movementSpline[index], movementSpline[index + 1], Main.rand.NextFloat(0.2f, 0.8f));
@@ -70,7 +68,7 @@ internal partial class Mossmother
 
 			ref float splineSlot = ref MiscNumber;
 			Vector2 nextSpline = movementSpline[(int)splineSlot];
-			NPC.velocity = Vector2.SmoothStep(NPC.velocity, NPC.SafeDirectionTo(nextSpline) * 22, 0.16f);
+			NPC.velocity = Vector2.SmoothStep(NPC.velocity, NPC.SafeDirectionTo(nextSpline) * 18, 0.16f);
 			NPC.rotation = Utils.AngleLerp(NPC.rotation, NPC.velocity.ToRotation() - MathHelper.PiOver2, 0.6f);
 
 			if (NPC.DistanceSQ(nextSpline) < 60 * 60)

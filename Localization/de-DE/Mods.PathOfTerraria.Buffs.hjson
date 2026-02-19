@@ -283,6 +283,6 @@ ToxicSmogDebuff: {
 }
 
 ToxicSmogImmunityBuff: {
-	// DisplayName: Toxic Smog Immunity Buff
-	// Description: Mods.PathOfTerraria.Buffs.ToxicSmogImmunityBuff.Description
+	// DisplayName: Revival Immunity
+	// Description: Short term immunity to Toxic Smog
 }

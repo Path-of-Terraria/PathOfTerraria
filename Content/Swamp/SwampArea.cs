@@ -43,7 +43,6 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 	internal static bool LeftSpawn = false;
 	internal static List<Point16> BlockerPositions = [];
 
-	private static bool spawnedPortal = false;
 	private static bool setBossSpawn = false;
 	private static bool spawnedTemporaryContent = false;
 
@@ -327,7 +326,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 						}
 						else if (inArenaLocation)
 						{
-							height = 80;
+							height = 60;
 							height += (int)(cloudNoise.GetNoise(i * 3, j) * 70);
 						}
 

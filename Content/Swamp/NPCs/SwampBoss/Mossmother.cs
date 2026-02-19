@@ -1,5 +1,7 @@
-﻿using PathOfTerraria.Common.NPCs;
+﻿using NPCUtils;
+using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Content.Projectiles.Utility;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Swamp.NPCs.SwampBoss;
@@ -47,6 +49,8 @@ internal partial class Mossmother : ModNPC
 	{
 		NPCID.Sets.TrailCacheLength[Type] = TrailingIndex;
 		NPCID.Sets.TrailingMode[Type] = 1;
+
+		NPCID.Sets.NPCBestiaryDrawOffset[Type] = new NPCID.Sets.NPCBestiaryDrawModifiers() { PortraitPositionYOverride = -50, PortraitPositionXOverride = 4 };
 	}
 
 	public override void SetDefaults()
@@ -68,9 +72,22 @@ internal partial class Mossmother : ModNPC
 		NPC.lifeMax = 40_000;
 	}
 
+	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+	{
+		bestiaryEntry.AddInfo(this, "");
+	}
+
 	public override bool CheckActive()
 	{
 		return false;
+	}
+
+	public override void ModifyIncomingHit(ref NPC.HitModifiers modifiers)
+	{
+		if (State == BehaviorState.MoveToWall)
+		{
+			modifiers.FinalDamage -= 0.4f;
+		}
 	}
 
 	public override bool CanHitPlayer(Player target, ref int cooldownSlot)

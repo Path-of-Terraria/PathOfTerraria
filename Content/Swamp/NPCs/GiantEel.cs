@@ -1,16 +1,20 @@
-﻿using NPCUtils;
+﻿using Microsoft.Xna.Framework.Graphics;
+using NPCUtils;
 using PathOfTerraria.Common.AI;
+using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.NPCs.Worms;
 using PathOfTerraria.Common.Systems.MobSystem;
+using PathOfTerraria.Common.Systems.Synchronization;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.Dusts;
 using PathOfTerraria.Content.Gores;
 using SubworldLibrary;
 using System.IO;
-using Terraria.DataStructures;
+using Terraria;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
@@ -38,6 +42,7 @@ internal class GiantEel : ModNPC
 			NPC.HitSound = SoundID.NPCHit34;
 			NPC.DeathSound = SoundID.NPCHit53;
 			NPC.defense = 100;
+			NPC.netAlways = true;
 		}
 
 		public override bool CheckActive()
@@ -101,6 +106,30 @@ internal class GiantEel : ModNPC
 		}
 	}
 
+	internal class SyncEelRetreat : Handler
+	{
+		public static void Send(int npcWho)
+		{
+			if (Main.netMode == NetmodeID.Server)
+			{
+				return;
+			}
+
+			ModPacket packet = Networking.GetPacket<SyncEelRetreat>();
+			packet.Write((byte)npcWho);
+			packet.Send();
+		}
+
+		internal override void Receive(BinaryReader reader, byte sender)
+		{
+			if (Main.npc[reader.ReadByte()].ModNPC is GiantEel eel)
+			{
+				eel.State = States.Flee;
+				eel.MiscTimer = 0;
+			}
+		}
+	}
+
 	private enum States
 	{
 		Roaming = 0,
@@ -137,6 +166,7 @@ internal class GiantEel : ModNPC
 	public override void SetStaticDefaults()
 	{
 		ArpgNPC.NoAffixesSet.Add(Type);
+		SkipSectionCheckNPC.SkipSectionCheck.Add(Type);
 	}
 
 	public override void SetDefaults()
@@ -150,6 +180,7 @@ internal class GiantEel : ModNPC
 		NPC.knockBackResist = 0f;
 		NPC.noGravity = true;
 		NPC.noTileCollide = true;
+		NPC.netAlways = true;
 
 		NPC.HitSound = new($"{nameof(PathOfTerraria)}/Assets/Sounds/HitEffects/FleshHit", 3) { MaxInstances = 5, Volume = 0.4f };
 		NPC.DeathSound = SoundID.NPCDeath23 with { Pitch = +0.1f, PitchVariance = 0.15f, Identifier = $"{Name}Death" };
@@ -183,7 +214,7 @@ internal class GiantEel : ModNPC
 
 	public override void AI()
 	{
-		if (!_spawnedSegments)
+		if (!_spawnedSegments && Main.netMode != NetmodeID.MultiplayerClient)
 		{
 			WormSegment.SpawnWhole<GiantEelBody, GiantEelTail>(NPC.GetSource_FromAI(), NPC, 42, 16);
 			_spawnedSegments = true;
@@ -294,8 +325,15 @@ internal class GiantEel : ModNPC
 	{
 		if (target.statLife - hurtInfo.Damage <= 0)
 		{
-			State = States.Flee;
-			MiscTimer = 0;
+			if (Main.netMode == NetmodeID.SinglePlayer)
+			{
+				State = States.Flee;
+				MiscTimer = 0;
+			}
+			else
+			{
+				SyncEelRetreat.Send(NPC.whoAmI);
+			}
 		}
 	}
 

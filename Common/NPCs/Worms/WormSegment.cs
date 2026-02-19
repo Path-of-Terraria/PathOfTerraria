@@ -41,6 +41,11 @@ internal abstract class WormSegment : ModNPC
 			{
 				parent.realLife = spawner.whoAmI;
 			}
+
+			if (Main.netMode == NetmodeID.Server)
+			{
+				NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npc);
+			}
 		}
 
 		return npc;
