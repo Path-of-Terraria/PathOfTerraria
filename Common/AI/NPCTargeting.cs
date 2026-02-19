@@ -28,7 +28,9 @@ internal sealed class NPCTargeting : NPCComponent
 
 		if (!npc.HasValidTarget || ctx.ForceReset)
 		{
+			(int logicDir, int spriteDir) = (npc.direction, npc.spriteDirection);
 			Terraria.Utilities.NPCUtils.TargetClosestCommon(npc, faceTarget: false);
+			(npc.direction, npc.spriteDirection) = (logicDir, spriteDir);
 		}
 	}
 
