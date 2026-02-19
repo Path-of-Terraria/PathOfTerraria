@@ -177,6 +177,7 @@ internal sealed class FallenShaman : ModNPC
 		NPC.width = 20;
 		NPC.height = 44;
 		NPC.knockBackResist = 0.0f;
+		NPC.lavaImmune = true;
 
 		NPC.HitSound = new($"{nameof(PathOfTerraria)}/Assets/Sounds/HitEffects/FleshHit", 3) { Volume = 0.4f, Pitch = -0.5f, MaxInstances = 5 };
 		NPC.DeathSound = SoundID.NPCDeath23 with { Pitch = -0.85f, PitchVariance = 0.15f, Identifier = "FallenShamanDeath" };
