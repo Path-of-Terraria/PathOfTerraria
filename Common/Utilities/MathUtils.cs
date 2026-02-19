@@ -5,6 +5,17 @@ namespace PathOfTerraria.Common.Utilities;
 
 public static class MathUtils
 {
+	/// <summary> Short-hand for '(Sin(value) + 1) / 2'. </summary>
+	public static float Sin01(float value)
+	{
+		return (MathF.Sin(value) + 1) / 2;
+	}
+	/// <summary> Short-hand for 'Sin(value) * 2 - 1'. </summary>
+	public static double Sin01(double value)
+	{
+		return (Math.Sin(value) + 1) / 2;
+	}
+
 	/// <summary> Short-hand for Clamp(value, 0, 1). </summary>
 	public static float Clamp01(float value)
 	{

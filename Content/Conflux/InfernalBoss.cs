@@ -27,6 +27,14 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.Conflux;
 
+internal sealed class InfernalBossBar : ModBossBar
+{
+	public override bool PreDraw(SpriteBatch spriteBatch, NPC npc, ref BossBarDrawParams drawParams)
+	{
+		return true;
+	}
+}
+
 internal sealed class InfernalBoss : ModNPC
 {
 	[Flags]
@@ -107,7 +115,7 @@ internal sealed class InfernalBoss : ModNPC
 	}
 	public override void SetDefaults()
 	{
-		NPCID.Sets.ShouldBeCountedAsBoss[Type] = true;
+		NPC.BossBar = ModContent.GetInstance<InfernalBossBar>();
 		NPC.aiStyle = -1;
 		NPC.lifeMax = 1 << 17;
 		NPC.defense = 35;
@@ -832,6 +840,17 @@ internal sealed class InfernalBoss : ModNPC
 			}
 #endif
 		}
+	}
+
+	// Hide 'name: life/lifeMax' mousetext.
+	public override bool PreHoverInteract(bool mouseIntersects)
+	{
+		return false;
+	}
+	// Hide in-world healthbar.
+	public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
+	{
+		return false;
 	}
 }
 
