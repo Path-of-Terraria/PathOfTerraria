@@ -19,8 +19,8 @@ internal class InfernalRealm : BossDomainSubworld, IOverrideBiome
 
 	public override int Width => 768;
 	public override int Height => 768;
-	// public override (int time, bool isDay) ForceTime => ((int)(Main.dayLength * 0.96), true);
-	public override (int time, bool isDay) ForceTime => ((int)(Main.nightLength * 0.5), false);
+	public override (int time, bool isDay) ForceTime => ((int)(Main.dayLength * 0.92), true);
+	// public override (int time, bool isDay) ForceTime => ((int)(Main.nightLength * 0.5), false);
 
 	public override List<GenPass> Tasks =>
 	[
@@ -51,7 +51,7 @@ internal class InfernalRealm : BossDomainSubworld, IOverrideBiome
 		else if (state == FightState.JustCompleted)
 		{
 			IEntitySource src = Entity.GetSource_NaturalSpawn();
-			Vector2 spawnPos = new Point16(Main.maxTilesX, Main.maxTilesY).ToWorldCoordinates() * 0.5f;
+			Vector2 spawnPos = arenaCenter.ToWorldCoordinates();
 			Projectile.NewProjectile(src, spawnPos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0);
 		}
 	}
@@ -76,15 +76,14 @@ internal class InfernalRealm : BossDomainSubworld, IOverrideBiome
 	{
 		int lavaLevel = (int)(Height / 3 * 2);
 
-		arenaCenter = new(Main.maxTilesX / 2, Main.maxTilesY / 2);
-		Main.spawnTileX = arenaCenter.X - 90;
-		Main.spawnTileY = arenaCenter.Y - 10;
+		arenaCenter = new(Main.maxTilesX / 2 + 40, Main.maxTilesY / 2 + 90);
+		(Main.spawnTileX, Main.spawnTileY) = (arenaCenter.X - 90, arenaCenter.Y + 0);
 		Main.worldSurface = lavaLevel;
 		Main.rockLayer = lavaLevel - 4;
 
 		const string Arena = "Assets/Structures/Infernal/Arena";
 		Point16 structSize = StructureTools.GetSize(Arena);
-		Point16 structPos = StructureTools.PlaceByOrigin(Arena, arenaCenter, new Vector2(0.5f, 0.4f));
+		Point16 structPos = StructureTools.PlaceByOrigin(Arena, arenaCenter, new Vector2(0.48f, 0.55f));
 
 		for (int x = 0; x < Main.maxTilesX; x++)
 		{
