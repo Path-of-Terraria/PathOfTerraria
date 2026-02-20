@@ -197,7 +197,7 @@ internal static class SwampArenaGeneration
 
 			do
 			{
-				dir = (!SwampArea.LeftSpawn ? new Vector2(-1.5f, 0) : new Vector2(1.5f, 0)).RotatedByRandom(MathHelper.Pi * 0.85f);
+				dir = (!SwampArea.LeftSpawn ? new Vector2(-1.5f, 0) : new Vector2(1.5f, 0)).RotatedBy((i < 4 ? 1 : -1) * SwampArea.Random.NextFloat(MathHelper.Pi * 0.85f));
 			} while (workingDirections.Any(x => Vector2.DistanceSquared(dir, x) < 0.5f));
 
 			while (!Collision.SolidCollision(pos.ToWorldCoordinates(), 32, 32))
@@ -231,7 +231,8 @@ internal static class SwampArenaGeneration
 
 			workingPoints.Add(position.ToPoint16());
 
-			GenPlacement.GenOval(position, 80, SwampArea.Random.NextFloat(MathHelper.TwoPi), ModContent.WallType<PurpleCloudWall>(), (x, y) => noise.GetNoise(x * 3, y * 3) * 8, true);
+			float angle = SwampArea.Random.NextFloat(MathHelper.TwoPi);
+			GenPlacement.GenOval(position, 80, angle, ModContent.WallType<PerforatedDeepMossWall>(), (x, y) => noise.GetNoise(x * 3, y * 3) * 8, true);
 		}
 
 		TraverseNodes = [.. workingPoints];

@@ -43,7 +43,7 @@ internal partial class Mossmother : ModNPC
 	private ref float TimesWallCrawled => ref NPC.localAI[1];
 	private ref float MiscTwo => ref NPC.localAI[2];
 
-	private Vector2[] movementSpline = [];
+	private Vector2[] movementSpline = new Vector2[30];
 
 	public override void SetStaticDefaults()
 	{
@@ -64,6 +64,12 @@ internal partial class Mossmother : ModNPC
 		NPC.boss = true;
 		NPC.knockBackResist = 0f;
 		NPC.damage = 1;
+		NPC.hide = true;
+	}
+
+	public override void DrawBehind(int index)
+	{
+		Main.instance.DrawCacheNPCsBehindNonSolidTiles.Add(index);
 	}
 
 	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
@@ -122,7 +128,7 @@ internal partial class Mossmother : ModNPC
 			return;
 		}
 
-		Vector2 pos = new Vector2(SwampArea.ArenaMiddleX * 16, (SwampArea.FloorY - 20) * 16);
+		Vector2 pos = new(SwampArea.ArenaMiddleX * 16, (SwampArea.FloorY - 20) * 16);
 		Projectile.NewProjectile(Terraria.Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 	}
 }

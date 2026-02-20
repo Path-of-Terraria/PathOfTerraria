@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Projectiles;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -36,7 +37,17 @@ internal class FloatingMudplatform : ModProjectile, ISolidTopProjectile
 
 	public override void AI()
 	{
+		Point16 topLeft = Projectile.TopLeft.ToTileCoordinates16();
+		Point16 botRight = Projectile.BottomRight.ToTileCoordinates16();
 		Projectile.timeLeft++;
+
+		// Stop the projectile from updating if the section is unloaded
+		// Otherwise, it'll either fall out of the world (desyncing) or break (desyncing)
+		if (Main.sectionManager is null || !Main.sectionManager.TilesLoaded(topLeft.X, topLeft.Y, botRight.X, botRight.Y)) 
+		{
+			Projectile.position -= Projectile.velocity;
+			return;
+		}
 
 		if (Collision.WetCollision(Projectile.Left - new Vector2(0, 4), Projectile.width, 8))
 		{

@@ -58,8 +58,14 @@ internal partial class Mossmother
 
 				if (Main.netMode != NetmodeID.MultiplayerClient && spawnAddsTimer > 50 && spawnAddsTimer % 30 == 29)
 				{
-					int index = Main.rand.Next(2, SplineCountMax - 4);
-					Vector2 pos = Vector2.Lerp(movementSpline[index], movementSpline[index + 1], Main.rand.NextFloat(0.2f, 0.8f));
+					Vector2 pos;
+
+					do 
+					{
+						int index = Main.rand.Next(2, SplineCountMax - 4);
+						pos = Vector2.Lerp(movementSpline[index], movementSpline[index + 1], Main.rand.NextFloat(0.2f, 0.8f));
+					} while (Collision.SolidCollision(pos - new Vector2(50), 100, 100));
+
 					NPC.NewNPC(NPC.GetSource_FromThis(), (int)pos.X, (int)pos.Y, ModContent.NPCType<Mossling>(), NPC.whoAmI + 3);
 				}
 
@@ -67,6 +73,21 @@ internal partial class Mossmother
 			}
 
 			ref float splineSlot = ref MiscNumber;
+
+			if (splineSlot >= movementSpline.Length && movementSpline.Length > 0)
+			{
+				SetState(BehaviorState.IdleInWall);
+				MiscNumber = movementSpline[^2].AngleTo(movementSpline[^1]);
+				TimesWallCrawled++;
+
+				if (!Main.rand.NextBool((int)TimesWallCrawled))
+				{
+					ReadyForGas = true;
+				}
+
+				return;
+			}
+
 			Vector2 nextSpline = movementSpline[(int)splineSlot];
 			NPC.velocity = Vector2.SmoothStep(NPC.velocity, NPC.SafeDirectionTo(nextSpline) * 18, 0.16f);
 			NPC.rotation = Utils.AngleLerp(NPC.rotation, NPC.velocity.ToRotation() - MathHelper.PiOver2, 0.6f);
@@ -74,18 +95,6 @@ internal partial class Mossmother
 			if (NPC.DistanceSQ(nextSpline) < 60 * 60)
 			{
 				splineSlot++;
-
-				if (splineSlot >= movementSpline.Length)
-				{
-					SetState(BehaviorState.IdleInWall);
-					MiscNumber = movementSpline[^2].AngleTo(movementSpline[^1]);
-					TimesWallCrawled++;
-
-					if (!Main.rand.NextBool((int)TimesWallCrawled))
-					{
-						ReadyForGas = true;
-					}
-				}
 			}
 		}
 		else if (State == BehaviorState.IdleInWall)

@@ -363,6 +363,8 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 					if (isClouds)
 					{
 						tile.TileType = (ushort)ModContent.TileType<MossyPurpleClouds>();
+
+						TryGrowMossvine(i, j, cloudNoise);
 					}
 
 					if (WorldUtilities.TileExposedToAirWalls(i, j))
@@ -384,41 +386,11 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 			{
 				Tile tile = Main.tile[i, j];
 
-				if (tile.WallType != WallID.None && tile.WallType != ModContent.WallType<PurpleCloudWall>() && !tile.HasTile && Random.NextBool(260) && tile.LiquidAmount <= 0)
+				if (tile.WallType != WallID.None && tile.WallType != ModContent.WallType<PurpleCloudWall>() && !tile.HasTile && Random.NextBool(175) && tile.LiquidAmount <= 0)
 				{
-					WorldGen.PlaceTile(i, j, ModContent.TileType<SwampWallflower>(), true, false, -1, Random.Next(3));
-				}
-
-				if (tile.HasTile && (tile.TileType == ModContent.TileType<MossyPurpleClouds>() || tile.TileType == ModContent.TileType<DeepMoss>()) && (tile.TopSlope || tile.Slope == SlopeType.Solid))
-				{
-					int height = 16 + (int)(cloudNoise.GetNoise(i * 4, j) * 20);
-
-					if (Random.NextBool(22))
-					{
-						height += (int)Math.Abs(cloudNoise.GetNoise(i * 4, j) * 50) + 10;
-					}
-
-					for (int k = j + 1; k < j + height; ++k)
-					{
-						Tile vine = Main.tile[i, k];
-
-						if (vine.HasTile)
-						{
-							break;
-						}
-
-						WorldGen.PlaceTile(i, k, ModContent.TileType<Mossvine>(), true);
-						vine.IsActuated = false;
-
-						if (k - j < 6)
-						{
-							vine.TileFrameNumber = 1;
-						}
-						else
-						{
-							vine.TileFrameNumber = 0;
-						}
-					}
+					tile.WallType = (ushort)ModContent.WallType<PerforatedDeepMossWall>();
+					RecursiveExpandPerforation(i, j);
+					RecursiveExpandPerforation(i, j);
 				}
 			}
 		}
@@ -472,6 +444,65 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 						}
 					}
 				}
+			}
+		}
+	}
+
+	private static void RecursiveExpandPerforation(int i, int j)
+	{
+		Point16 pos = Random.Next(8) switch
+		{
+			0 => new Point16(i, j - 1),
+			1 => new Point16(i, j + 1),
+			2 => new Point16(i + 1, j),
+			3 => new Point16(i - 1, j),
+			4 => new Point16(i + 1, j + 1),
+			5 => new Point16(i + 1, j - 1),
+			6 => new Point16(i - 1, j + 1),
+			_ => new Point16(i - 1, j - 1),
+		};
+
+		Tile tile = Main.tile[pos.X, pos.Y];
+		
+		if (tile.WallType != WallID.None && tile.WallType != ModContent.WallType<PurpleCloudWall>())
+		{
+			tile.WallType = (ushort)ModContent.WallType<PerforatedDeepMossWall>();
+
+			if (!WorldGen.genRand.NextBool(80))
+			{
+				RecursiveExpandPerforation(pos.X, pos.Y);
+			}
+		}
+	}
+
+	private static void TryGrowMossvine(int i, int j, FastNoiseLite cloudNoise)
+	{
+		int height = 16 + (int)(cloudNoise.GetNoise(i * 4, j) * 20);
+
+		if (Random.NextBool(22))
+		{
+			height += (int)Math.Abs(cloudNoise.GetNoise(i * 4, j) * 50) + 10;
+		}
+
+		for (int k = j + 1; k < j + height; ++k)
+		{
+			Tile vine = Main.tile[i, k];
+
+			if (vine.HasTile)
+			{
+				break;
+			}
+
+			WorldGen.PlaceTile(i, k, ModContent.TileType<Mossvine>(), true);
+			vine.IsActuated = false;
+
+			if (k - j < 6)
+			{
+				vine.TileFrameNumber = 1;
+			}
+			else
+			{
+				vine.TileFrameNumber = 0;
 			}
 		}
 	}
@@ -787,8 +818,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 
 			if (i >= 2)
 			{
-				int type = Random.NextBool() ? ModContent.ProjectileType<FloatingMudplatform>() : ModContent.ProjectileType<BrittleFloatingMudplatform>();
-				Projectile.NewProjectile(new EntitySource_WorldGen(), pos, Vector2.Zero, type, 0, 0, Main.myPlayer);
+				Projectile.NewProjectile(new EntitySource_WorldGen(), pos, Vector2.Zero, ModContent.ProjectileType<BrittleFloatingMudplatform>(), 0, 0, Main.myPlayer);
 			}
 			else
 			{
@@ -810,7 +840,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 			do
 			{
 				pos = new Vector2(Random.Next(SwampArenaGeneration.ArenaWidth * 16, (Main.maxTilesX - SwampArenaGeneration.ArenaWidth) * 16), Random.Next(FloorY * 16 - 200, FloorY * 16 + 200));
-			} while (Collision.SolidCollision(pos - new Vector2(50, 0), 200, 60) || !Collision.WetCollision(pos, 100, 20) || Collision.WetCollision(pos - new Vector2(0, 30), 100, 20)
+			} while (Collision.SolidCollision(pos - new Vector2(100, 0), 300, 60) || !Collision.WetCollision(pos, 100, 20) || Collision.WetCollision(pos - new Vector2(0, 30), 100, 20)
 				|| xPositions.Any(x => Math.Abs(x - pos.X) < 120));
 
 			if (i >= 5)

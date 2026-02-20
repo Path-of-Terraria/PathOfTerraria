@@ -73,6 +73,27 @@ internal class GiantEel : ModNPC
 			SpamDust(NPC, NPC.position - NPC.oldPosition);
 		}
 
+		public override void OnHitPlayer(Player target, Player.HurtInfo hurtInfo)
+		{
+			if (target.statLife - hurtInfo.Damage <= 0)
+			{
+				if (Main.netMode == NetmodeID.SinglePlayer)
+				{
+					NPC parent = GetHead();
+
+					if (parent.ModNPC is GiantEel eel)
+					{
+						eel.State = States.Flee;
+						eel.MiscTimer = 0;
+					}
+				}
+				else
+				{
+					SyncEelRetreat.Send(GetHead().whoAmI);
+				}
+			}
+		}
+
 		public override void HitEffect(NPC.HitInfo hit)
 		{
 			if (Main.dedServ)
@@ -126,6 +147,7 @@ internal class GiantEel : ModNPC
 			{
 				eel.State = States.Flee;
 				eel.MiscTimer = 0;
+				eel.NPC.netUpdate = true;
 			}
 		}
 	}
@@ -266,6 +288,11 @@ internal class GiantEel : ModNPC
 			}
 			else
 			{
+				if (SplineIndex >= _spline.Length)
+				{
+					return;
+				}
+				 
 				Vector2 destination = _spline[(int)SplineIndex];
 				NPC.velocity = Vector2.SmoothStep(NPC.velocity, NPC.DirectionTo(destination) * 20, 0.2f);
 
