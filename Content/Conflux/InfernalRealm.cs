@@ -3,6 +3,7 @@ using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.Projectiles.Utility;
+using PathOfTerraria.Core.Camera;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
@@ -53,6 +54,19 @@ internal class InfernalRealm : BossDomainSubworld, IOverrideBiome
 			IEntitySource src = Entity.GetSource_NaturalSpawn();
 			Vector2 spawnPos = arenaCenter.ToWorldCoordinates();
 			Projectile.NewProjectile(src, spawnPos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0);
+		}
+		
+		if (state is not FightState.InProgress)
+		{
+			// Bias the camera towards the center of the arena.
+			CameraCurios.Create(new()
+			{
+				Identifier = nameof(InfernalRealm),
+				Weight = 0.33f,
+				LengthInSeconds = 1f,
+				Position = arenaCenter.ToWorldCoordinates() + new Vector2(0, -800),
+				Range = new(Min: 100, Max: 1400, Exponent: 1.2f),
+			});
 		}
 	}
 
