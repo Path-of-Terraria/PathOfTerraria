@@ -63,6 +63,12 @@ internal sealed class InfernalBoss : ModNPC
 	public enum Flag : byte
 	{
 	}
+	private enum AttackType
+	{
+		None,
+		Slash,
+		Stab,
+	}
 	private readonly struct Context(NPC npc)
 	{
 		public Vector2 Center { get; } = npc.Center;
@@ -104,6 +110,7 @@ internal sealed class InfernalBoss : ModNPC
 	private SlotId flightSound;
 	private Limb[] limbs = [];
 	private (int NextIndex, float Cooldown) limbMovement = (0, 0f);
+	private AttackType attackType;
 
 	public override void Load()
 	{
@@ -130,7 +137,7 @@ internal sealed class InfernalBoss : ModNPC
 		NPC.BossBar = ModContent.GetInstance<InfernalBossBar>();
 		NPC.aiStyle = -1;
 		NPC.lifeMax = 125000;
-		NPC.defense = 150;
+		NPC.defense = 90;
 		NPC.damage = 100;
 		NPC.width = 125;
 		NPC.height = 125;
@@ -162,14 +169,15 @@ internal sealed class InfernalBoss : ModNPC
 		NPC.TryEnableComponent<NPCTargeting>();
 		NPC.TryEnableComponent<NPCAttacking>(e =>
 		{
-			e.Data.LengthInTicks = 120;
-			e.Data.CooldownLength = 60;
+			e.Data.LengthInTicks = 100;
+			e.Data.CooldownLength = 30;
 			e.Data.NoGravityLength = 0;
 			e.Data.InitiationRange = new(450, 192);
+			e.Data.AimLag = ((new(0.0f), new(0.3f)), (0f, 0.99f));
 			// e.Data.InitiationRange = new(1024, 512);
-			e.Data.Dash = (60, 80, new(9f, 1f));
-			e.Data.Damage = (60, 80, DamageInstance.EnemyAttackFilterWithInfighting);
-			e.Data.Hitbox = (new(350, 350), new(+290, +0), new(+0, +0));
+			e.Data.Dash = (50, 65, new(9f, 1f));
+			e.Data.Damage = (50, 65, DamageInstance.EnemyAttackFilterWithInfighting);
+			e.Data.Hitbox = (new(350, 350), new(+290, +100), new(+0, +0));
 			e.Data.Movement = (0.0f, 0.80f, 0.95f);
 
 			if (!Main.dedServ)
@@ -269,6 +277,7 @@ internal sealed class InfernalBoss : ModNPC
 		ctx.Targeting.ManualUpdate(new(NPC));
 		ResetOffsets(in ctx);
 		CustomBehavior(in ctx);
+		InitiateAttacks(in ctx);
 		// ctx.Teleports.ManualUpdate(new(NPC));
 		ctx.Attacking.ManualUpdate(new(NPC));
 		ctx.Movement.ManualUpdate(new(NPC));
@@ -291,7 +300,7 @@ internal sealed class InfernalBoss : ModNPC
 
 		// Reset overrides.
 		ctx.Movement.Data.TargetOverride = null;
-		ctx.Attacking.Data.ManualInitiation = false;
+		ctx.Attacking.Data.ManualInitiation = true;
 
 		UpdateBlade(in ctx);
 		UpdateLimbs(in ctx, out int numAttached, out float averageAngle);
@@ -366,7 +375,7 @@ internal sealed class InfernalBoss : ModNPC
 		headAngle.Current = MathUtils.LerpRadians(headAngle.Current, headAngle.Target, 2.5f * TimeSystem.LogicDeltaTime);
 		// headAngle.Current = bodyAngle.Current;
 
-		if (Main.GameUpdateCount % 200 == 0)
+		if (Main.GameUpdateCount % 200 == 0 && false)
 		{
 			int type = Main.rand.NextFloat() switch
 			{
@@ -380,8 +389,10 @@ internal sealed class InfernalBoss : ModNPC
 		}
 
 		// Shoot projectiles during non-respawn attacks.
-		for (int i = 0; i < (atkActive ? 7 : 0); i++)
+		// for (int i = 0; i < (attackType is AttackType.Stab && atkActive && ctx.Attacking.Data.Progress is > 25 and < 50 ? 2 : 0); i++)
+		for (int i = 0; i < (attackType is AttackType.Stab && (!atkActive || ctx.Attacking.Data.Progress < 10) ? 3 : 0); i++)
 		{
+			continue;
 			if (atkProg == 1)
 			{
 				// SoundEngine.PlaySound(new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/FallenShamanAttack")
@@ -392,21 +403,26 @@ internal sealed class InfernalBoss : ModNPC
 				// }, ctx.Center);
 			}
 
-			if (atkProg != atkBase + (i * 0)) { continue; }
+			// if (atkProg != atkBase + (i * 0)) { continue; }
+
+			Vector2 position = Blade.Position + Blade.Rotation.ToRotationVector2() * 350f + Main.rand.NextVector2Circular(40, 40);
+
+			if (Main.GameUpdateCount % 5 != 0) { continue; }
+			if (Vector2.Dot(Blade.Rotation.ToRotationVector2(), position.DirectionTo(ctx.Targeting.GetTargetCenter(NPC))) < 0.5f) { continue; }
 
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
-				int projType = ModContent.ProjectileType<FallenShamanRocket>();
+				// int projType = ModContent.ProjectileType<FallenShamanRocket>();
+				int projType = ProjectileID.FlamesTrap;
 				int projDamage = ModeUtils.ProjectileDamage(NPC.damage);
-				Vector2 position = Blade.Position;
-				float projAngle = ctx.Attacking.Data.Angle + (MathHelper.Pi * 0.05f * (i - 3.5f) * NPC.direction);
+				float projAngle = Blade.Rotation + (MathHelper.Pi * 0.05f * (i - 1) * NPC.direction);
 				Vector2 projVel = projAngle.ToRotationVector2() * 10f;
 				Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), position, projVel, projType, projDamage, 1f);
 			}
 
 			if (!Main.dedServ && i < 3)
 			{
-				// SoundEngine.PlaySound(SoundID.Item92 with { Volume = 0.70f, MaxInstances = 5, Pitch = -0.1f, PitchVariance = 0.5f }, ctx.Center);
+				SoundEngine.PlaySound(SoundID.Item92 with { Volume = 0.70f, MaxInstances = 5, Pitch = -0.9f, PitchVariance = 0.5f }, ctx.Center);
 			}
 		}
 
@@ -427,6 +443,37 @@ internal sealed class InfernalBoss : ModNPC
 			float volume = flightVolume = MathUtils.StepTowards(MathHelper.Lerp(flightVolume, target, halfStep), target, halfStep);
 			float pitch = Math.Clamp(-0.9f + (speed * 0.1f), -0.9f, 0.2f);
 			SoundUtils.UpdateLoopingSound(ref flightSound, ctx.Center, volume, pitch, loopSound, _ => Main.npc[NPC.whoAmI] is { active: true } n && n == NPC);
+		}
+	}
+
+	private void InitiateAttacks(in Context ctx)
+	{
+		if (!NPC.HasValidTarget) { return; }
+		if (ctx.Attacking.Active) { return; }
+		
+		Vector2 targetCenter = ctx.Targeting.GetTargetCenter(NPC);
+		float distance = targetCenter.Distance(ctx.Center);
+		
+		// Slash.
+		if (distance < 400f)
+		{
+			attackType = AttackType.Slash;
+			ctx.Attacking.Data.AimLag = ((new(0.0f), new(0.25f)), (0f, 0.99f));
+			
+			if (ctx.Attacking.TryStarting(new(NPC)))
+			{
+				ctx.Attacking.Data.Hitbox = (new(350, 350), new(+280, +280), new(+0, +0));
+			}
+
+			return;
+		}
+
+		attackType = AttackType.Stab;
+		ctx.Attacking.Data.AimLag = ((new(0.0f), new(0.05f)), (0f, 0.99f));
+
+		if (distance < 1000f && ctx.Attacking.TryStarting(new(NPC)))
+		{
+			ctx.Attacking.Data.Hitbox = (new(200, 200), new(+500, +500), new(+0, +0));
 		}
 	}
 
@@ -737,11 +784,11 @@ internal sealed class InfernalBoss : ModNPC
 				{
 					(playedSounds, limb.PlayedSound) = (true, true);
 
-					Main.instance.CameraModifiers.Add(new PunchCameraModifier(limb.IK.TargetWanted, new Vector2(0f, -1f), 1f, 4f, 15, 1000f, $"Footstep{limbIndex}"));
+					Main.instance.CameraModifiers.Add(new PunchCameraModifier(limb.IK.TargetWanted, new Vector2(0, -2), 1f, 4f, 15, 1000f, $"Footstep{limbIndex}"));
 					SoundEngine.PlaySound(position: limb.IK.TargetWanted, style: new($"{nameof(PathOfTerraria)}/Assets/Sounds/Footsteps/FleshyStomp", 3)
 					{
 						MaxInstances = 10,
-						Volume = 0.15f,
+						Volume = 0.35f,
 						PitchVariance = 0.2f,
 					});
 				}
@@ -879,6 +926,13 @@ internal sealed class InfernalBoss : ModNPC
 			new(0.80f, new(Pos: new(+112, -000), Angle: MathHelper.TwoPi * 1.15f)),
 			new(0.90f, new(Pos: new(+112, -016), Angle: MathHelper.TwoPi * 1.13f)),
 		]);
+		var stabAnimation = new Gradient<BladeAnimKey>
+		([
+			new(0.00f, new(Pos: new(-096, +008), Angle: MathHelper.TwoPi * 0.00f)),
+			new(0.30f, new(Pos: new(+096, -128), Angle: MathHelper.TwoPi * 0.00f)),
+			new(0.80f, new(Pos: new(+236, -000), Angle: MathHelper.TwoPi * 0.00f)),
+			new(0.90f, new(Pos: new(+220, -016), Angle: MathHelper.TwoPi * 0.00f)),
+		]);
 
 		static float AnimEasing(float x)
 		{
@@ -895,16 +949,25 @@ internal sealed class InfernalBoss : ModNPC
 
 		if (ctx.Attacking.Active)
 		{
+			Gradient<BladeAnimKey> animation = attackType switch
+			{
+				AttackType.Stab => stabAnimation,
+				_ => slashAnimation,
+			};
+			bool mirror = NPC.spriteDirection < 0;
 			float prevAnimProgress = AnimEasing(MathUtils.Clamp01((atk.Progress + 0) / (float)atk.LengthInTicks));
 			float currAnimProgress = AnimEasing(MathUtils.Clamp01((atk.Progress + 1) / (float)atk.LengthInTicks));
-			BladeAnimKey sample = slashAnimation.GetValue(currAnimProgress);
+			BladeAnimKey sample = animation.GetValue(currAnimProgress);
 
-			bool mirror = NPC.spriteDirection < 0;
+			// Position.
 			posChange = Utils.Remap(currAnimProgress, 0.00f, 0.10f, 0.01f, 1.00f);
-			rotChange = Utils.Remap(currAnimProgress, 0.00f, 0.10f, 0.01f, 1.00f);
-			targetPosition = ctx.Center + (sample.Pos * new Vector2(mirror ? -1f : 1f, 1f));
-			targetRotation = mirror ? (MathHelper.Pi - sample.Angle) : sample.Angle;
+			targetPosition = ctx.Center + (sample.Pos.RotatedBy(ctx.Attacking.Data.Angle));
 			maxDistance = 192;
+			// Angle.
+			rotChange = Utils.Remap(currAnimProgress, 0.00f, 0.10f, 0.01f, 1.00f);
+			targetRotation = sample.Angle;
+			targetRotation = mirror ? (MathHelper.Pi - targetRotation) : targetRotation;
+			targetRotation += mirror ? (ctx.Attacking.Data.Angle - MathHelper.Pi) : ctx.Attacking.Data.Angle;
 
 			if (!Main.dedServ && prevAnimProgress < 0.2f && currAnimProgress >= 0.2f)
 			{
@@ -917,8 +980,15 @@ internal sealed class InfernalBoss : ModNPC
 			targetPosition = ctx.Center + new Vector2(0, -64);
 			posChange = 0.08f;
 
-			targetRotation = (MathHelper.PiOver2 + (MathHelper.TwoPi * 0.13f * NPC.spriteDirection));
-			rotChange = 0.04f;
+			if (attackType is AttackType.Stab)
+			{
+				targetRotation = ctx.Targeting.GetTargetCenter(NPC).AngleFrom(ctx.Center);
+			}
+			else
+			{
+				targetRotation = (MathHelper.PiOver2 + (MathHelper.TwoPi * 0.13f * NPC.spriteDirection));
+			}
+			rotChange = 0.09f;
 			maxDistance = 192;
 		}
 

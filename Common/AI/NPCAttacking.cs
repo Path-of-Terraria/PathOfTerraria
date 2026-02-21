@@ -1,4 +1,5 @@
 ﻿// #define NEVER_ATTACK
+// #define DRAW_GIZMOS
 
 using System.IO;
 using PathOfTerraria.Common.NPCs.Components;
@@ -101,9 +102,16 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 	{
 		if (!Enabled) { return; }
 
-		if (DealingDamage && Data.SlashTexture is { IsLoaded: true, Value: { } texture })
+		if (DealingDamage)
 		{
-			DrawSlash(new(npc), sb, texture, screenPos, drawColor);
+			if (Data.SlashTexture is { IsLoaded: true, Value: { } texture })
+			{
+				DrawSlash(new(npc), sb, texture, screenPos, drawColor);
+			}
+
+#if DRAW_GIZMOS
+			DebugUtils.DrawRectInWorld(GetDamageArea(new(npc)).Aabb, DealingDamage ? Color.Red : Color.Chocolate);
+#endif
 		}
 	}
 
