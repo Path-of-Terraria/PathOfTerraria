@@ -4,6 +4,7 @@ using SubworldLibrary;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
+using Terraria.UI;
 
 namespace PathOfTerraria.Content.Swamp.NPCs.SwampBoss;
 
@@ -80,6 +81,9 @@ internal class PoisonShaderFunctionality : ModSystem
 
 	internal static float Intensity { get; set; }
 
+	private static bool _desperationPhase = false;
+	private static float _waterOpacity = 1f;
+
 	public override void Load()
 	{
 		Asset<Effect> filterShader = Mod.Assets.Request<Effect>("Assets/Effects/PurpleSmog");
@@ -127,16 +131,26 @@ internal class PoisonShaderFunctionality : ModSystem
 		bool shouldShowPoison = false;
 		Vector2 mouseDebugPos = Main.MouseScreen / Main.ScreenSize.ToVector2();
 
+		_desperationPhase = false;
+		bool noNpc = true;
+
 		foreach (NPC npc in Main.ActiveNPCs)
 		{
 			if (npc.ModNPC is Mossmother mother)
 			{
+				noNpc = false;
+
 				Vector2 scale = (npc.oldPos[Mossmother.TrailingIndex - 1] + npc.Size / 2f - Main.screenPosition) / Main.ScreenSize.ToVector2();
 				positions[mothers] = scale;
 
 				if (mother.State == Mossmother.BehaviorState.GasCrawl)
 				{
 					shouldShowPoison = true;
+				}
+				else if (mother.State == Mossmother.BehaviorState.Desperation)
+				{
+					shouldShowPoison = true;
+					_desperationPhase = true;
 				}
 
 				if (mothers++ >= 3)
@@ -146,6 +160,13 @@ internal class PoisonShaderFunctionality : ModSystem
 			}
 		}
 
+		if (noNpc)
+		{
+			_desperationPhase = true;
+		}
+
+		_waterOpacity = MathHelper.Lerp(_waterOpacity, _desperationPhase ? 0 : 1, 0.02f);
+
 		Filters.Scene[EffectKey].GetShader().Shader.Parameters["bossPositions"].SetValue(positions);
 
 		if (!shouldShowPoison)
@@ -154,7 +175,7 @@ internal class PoisonShaderFunctionality : ModSystem
 		}
 		else
 		{
-			Intensity = MathHelper.Lerp(Intensity, 0.4f, 0.004f);
+			Intensity = MathHelper.Lerp(Intensity, _desperationPhase ? 0.7f : 0.4f, 0.004f);
 		}
 	}
 
@@ -167,6 +188,10 @@ internal class PoisonShaderFunctionality : ModSystem
 		Filters.Scene[EffectKey].GetShader().UseDirection(direction);
 		Filters.Scene[EffectKey].GetShader().UseImage(ModContent.Request<Texture2D>("PathOfTerraria/Assets/Misc/PerlinNoise"));
 		Filters.Scene[EffectKey].GetShader().UseIntensity(Intensity);
-		Filters.Scene[EffectKey].GetShader().Shader.Parameters["useWater"].SetValue(NPC.CountNPCS(ModContent.NPCType<Mossmother>()) <= 1);
+
+		float waterHeight = _desperationPhase ? Utils.GetLerpValue(Main.screenPosition.Y / 16f, Main.screenPosition.Y / 16f + Main.screenHeight / 16f, SwampArea.WaterY - 1, true) : 1;
+		Filters.Scene[EffectKey].GetShader().Shader.Parameters["waterHeight"].SetValue(waterHeight);
+		Filters.Scene[EffectKey].GetShader().Shader.Parameters["waterOpacity"].SetValue(_waterOpacity);
+		Filters.Scene[EffectKey].GetShader().Shader.Parameters["hasWater"].SetValue(_desperationPhase);
 	}
 }

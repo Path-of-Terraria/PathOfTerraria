@@ -10,8 +10,8 @@ internal class SwampSystem : ModSystem
 	{
 		if (SubworldSystem.Current is SwampArea)
 		{
-			tileColor = new Color(140, 170, 180);
-			backgroundColor = new Color(140, 170, 180);
+			tileColor = new Color(50, 70, 75);
+			backgroundColor = new Color(100, 130, 135);
 		}
 	}
 

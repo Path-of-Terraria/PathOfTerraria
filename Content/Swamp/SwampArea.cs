@@ -363,14 +363,19 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 					if (isClouds)
 					{
 						tile.TileType = (ushort)ModContent.TileType<MossyPurpleClouds>();
-
-						TryGrowMossvine(i, j, cloudNoise);
 					}
+
+					TryGrowMossvine(i, j, cloudNoise);
 
 					if (WorldUtilities.TileExposedToAirWalls(i, j))
 					{
 						tile.WallType = WallID.None;
 					}
+				}
+
+				if (tile.WallType == ModContent.WallType<DeepMossWall>() && WorldGen.genRand.NextBool(500))
+				{
+					WorldGen.PlaceObject(i, j, ModContent.TileType<SwampWallflower>(), true, Random.Next(3));
 				}
 			}
 
@@ -868,7 +873,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 
 	public void OverrideBiome()
 	{
-		Main.bgStyle = 0;
-		Main.curMusic = MusicID.OverworldDay;
+		//Main.bgStyle = 0;
+		//Main.curMusic = MusicID.OverworldDay;
 	}
 }

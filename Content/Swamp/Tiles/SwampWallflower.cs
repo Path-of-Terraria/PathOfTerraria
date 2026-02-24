@@ -33,7 +33,7 @@ internal class SwampWallflower : ModTile
 
 	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 	{
-		float mul = MathF.Sin(i + j + Main.GameUpdateCount * 0.05f) * 0.25f + 1f;
+		float mul = MathF.Sin(i + j + Main.GameUpdateCount * 0.02f) * 0.1f + 0.5f;
 		(r, g, b) = (1f * mul, 0.85f * mul, 0.85f * mul);
 	}
 

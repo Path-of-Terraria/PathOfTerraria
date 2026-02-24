@@ -999,7 +999,7 @@ SwampCroc: {
 
 GiantEel: {
 	// DisplayName: Mammoth Moss-Eel
-	// Entry: What happens when you combine large, territorial and overgrown? This! It is extremely aggressive and unbelievably strong. It's best to walk- well, run away.
+	// Entry: What happens when you combine large, territorial and overgrown? This! It is extremely aggressive and unbelievably strong. It's best to walk- well, run away. It doesn't like getting wet.
 }
 
 // GiantEelBody.DisplayName: "{$GiantEel.DisplayName}"
@@ -1021,10 +1021,10 @@ Mudsquit: {
 
 Mossmother: {
 	// DisplayName: Younger Caracarcoss
-	// Entry: A relatively young, but strong, apex predator of the mossy, spore-fueled Swamp. The larger, older Caracarcosses have never been seen...or have been for only a short time.
+	// Entry: A relatively young - but strong - apex predator of the mossy, spore-fueled Swamp. The larger, older Caracarcosses have never been seen...or have been for only a short time.
 }
 
 Mossling: {
 	// DisplayName: Mossling
-	// Entry: A small, docile, delicious morsel. Grows into the larger {$Mossmother.DisplayName} over years and years...if they're lucky.
+	// Entry: A small, docile, delicious morsel. Grows into the larger {$Mossmother.DisplayName} over years and years...if they're lucky. Very, very few are lucky.
 }

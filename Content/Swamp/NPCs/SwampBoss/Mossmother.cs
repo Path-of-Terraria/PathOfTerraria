@@ -1,6 +1,9 @@
 ﻿using NPCUtils;
 using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Content.Projectiles.Utility;
+using PathOfTerraria.Utilities;
+using System.Collections.Generic;
+using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
@@ -17,6 +20,7 @@ internal partial class Mossmother : ModNPC
 		IdleInWall,
 		GasCrawl,
 		Desperation,
+		PreDesperation,
 	}
 
 	public BehaviorState State
@@ -64,12 +68,6 @@ internal partial class Mossmother : ModNPC
 		NPC.boss = true;
 		NPC.knockBackResist = 0f;
 		NPC.damage = 1;
-		NPC.hide = true;
-	}
-
-	public override void DrawBehind(int index)
-	{
-		Main.instance.DrawCacheNPCsBehindNonSolidTiles.Add(index);
 	}
 
 	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
@@ -130,5 +128,22 @@ internal partial class Mossmother : ModNPC
 
 		Vector2 pos = new(SwampArea.ArenaMiddleX * 16, (SwampArea.FloorY - 20) * 16);
 		Projectile.NewProjectile(Terraria.Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
+	}
+
+	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+	{
+		Texture2D tex = TextureAssets.Npc[Type].Value;
+		Rectangle frame = NPC.frame with { Width = 302 };
+		
+		spriteBatch.Draw(tex, NPC.Center - screenPos, frame, drawColor, NPC.rotation, frame.Size() / 2f, 1f, SpriteEffects.None, 0);
+		spriteBatch.Draw(tex, NPC.Center - screenPos, frame with { X = 302 }, Color.White, NPC.rotation, frame.Size() / 2f, 1f, SpriteEffects.None, 0);
+
+		return false;
+	}
+
+	public override void ModifyHoverBoundingBox(ref Rectangle boundingBox)
+	{
+		boundingBox.Width /= 2;
+		boundingBox.X += boundingBox.Width / 2;
 	}
 }

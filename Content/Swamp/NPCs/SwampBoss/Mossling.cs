@@ -3,8 +3,8 @@ using PathOfTerraria.Common.AI;
 using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
-using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Content.Gores;
+using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
@@ -95,17 +95,9 @@ internal class Mossling : ModNPC
 		bestiaryEntry.AddInfo(this, "");
 	}
 
-	public override void FindFrame(int frameHeight)
-	{
-		//Context ctx = new(NPC);
-		//ctx.Animations.Advance();
-		//ctx.Animations.Set(PickAnimation(in ctx));
-	}
-
 	public override void AI()
 	{
 		Context ctx = new(NPC);
-		Lighting.AddLight(NPC.position, new Vector3(0.9f, 0.75f, 0.95f));
 
 		if (Math.Abs(NPC.velocity.X) > 0.01f)
 		{
@@ -123,7 +115,41 @@ internal class Mossling : ModNPC
 
 		if (State == States.Idle)
 		{
+			NPC.velocity *= 0.8f;
+
+			if (Timer == 60)
+			{
+				NPC.velocity = Main.rand.NextVector2CircularEdge(1, 1);
+			}
 		}
+	}
+
+	public override void OnKill()
+	{
+		Vector2 velocity = new Vector2(Main.rand.NextFloat(2, 3), 0).RotatedByRandom(MathHelper.Pi);
+		int damage = ModeUtils.ProjectileDamage(80);
+
+		for (int i = 0; i < 3; ++i)
+		{
+			Projectile.NewProjectile(NPC.GetSource_Death(), NPC.Center, velocity.RotatedByRandom(0.6f), ModContent.ProjectileType<MosslingPoison>(), damage, 1, Main.myPlayer);
+			velocity = velocity.RotatedBy(MathHelper.TwoPi / 3f);
+		}
+	}
+
+	public override bool? CanBeHitByProjectile(Projectile projectile)
+	{
+		return false;
+	}
+
+	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+	{
+		Texture2D tex = TextureAssets.Npc[Type].Value;
+		Rectangle frame = NPC.frame with { Width = 40 };
+
+		spriteBatch.Draw(tex, NPC.Center - screenPos, frame, drawColor);
+		spriteBatch.Draw(tex, NPC.Center - screenPos, frame with { X = 40 }, Color.White);
+
+		return false;
 	}
 
 	// Placeholder for animations

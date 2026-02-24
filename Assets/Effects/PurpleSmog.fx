@@ -24,7 +24,9 @@ float4 uSourceRect;
 float2 uZoom;
 
 float2 bossPositions[6] = { float2(0, 0), float2(0, 0), float2(0, 0), float2(0, 0), float2(0, 0), float2(0, 0) };
-bool useWater = false;
+float waterHeight = 1;
+float waterOpacity = 1;
+bool hasWater = false;
 
 // Dithering, thanks Mirsario
 float brightness(float3 color)
@@ -79,17 +81,17 @@ float4 FilterMyShader(float2 coords : TEXCOORD0) : COLOR0
 {
 	//coords = round(coords * uScreenResolution * 0.5) / (0.5 * uScreenResolution);
 	
-	coords = round(coords / uZoom * uScreenResolution * 0.5) / (0.5 * uScreenResolution);
-	coords -= lerp(float2(0, 0), float2(0.25, 0.25), sqrt(1 - uZoom)); // Tries to adjust shader effects to "zoom" properly, doesn't work atm
 	float4 color = tex2D(uImage0, coords);
 	
-	//if (useWater)//  && tex2D(uImage1, coords).a > 0)
-	//{
-	//	color *= tex2D(uImage1, coords);
-	//}
-	
+	coords = round(coords / uZoom * uScreenResolution * 0.5) / (0.5 * uScreenResolution);
+	coords -= lerp(float2(0, 0), float2(0.25, 0.25), sqrt(1 - uZoom)); // Tries to adjust shader effects to "zoom" properly, doesn't work atm
 	float reduction = min(min(evenScreenDistance(coords, 0), evenScreenDistance(coords, 1)), evenScreenDistance(coords, 2));
 	float range = auraPixelSize / uScreenResolution.x;
+	
+	if (hasWater)
+	{
+		range = 0;
+	}
 	
 	if (reduction < range)
 	{
@@ -98,7 +100,19 @@ float4 FilterMyShader(float2 coords : TEXCOORD0) : COLOR0
 	
 	float effect = uIntensity;
 	
-	if (reduction < range * 1.2f)
+	if (coords.y > waterHeight) // Fade out (water check)
+	{
+		float off = (coords.y - waterHeight);
+		effect *= lerp(1 - off / 0.05f, 0, waterOpacity);
+		effect = max(0, effect);
+		
+		if (off > 0.05f)
+		{
+			return color;
+		}
+	}
+	
+	if (reduction < range * 1.2f) // Fade out (distance check)
 	{
 		effect *= (reduction - range) / (range * 1.2f - range);
 	}
@@ -114,7 +128,7 @@ float4 FilterMyShader(float2 coords : TEXCOORD0) : COLOR0
 	
 	return color;
 	
-	// Dithering/quantization pass
+	// Dithering/quantization pass (Doesn't work properly)
 	//float value = clamp(brightness(color), 0.0, 1.0);
 	//float valuesPerChannel = 10; //VALUES_PER_CHANNEL;
 	

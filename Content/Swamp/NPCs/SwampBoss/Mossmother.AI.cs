@@ -1,8 +1,10 @@
 ﻿using PathOfTerraria.Common;
+using PathOfTerraria.Common.Encounters;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.World.Generation;
 using System.IO;
 using Terraria.ID;
+using Terraria.ModLoader.Config;
 
 namespace PathOfTerraria.Content.Swamp.NPCs.SwampBoss;
 
@@ -12,9 +14,11 @@ internal partial class Mossmother
 	{
 		Timer++;
 
+		//Lighting.AddLight(NPC.Center, Color.Yellow.ToVector3());
+
 		if (Collision.SolidCollision(NPC.position, NPC.width, NPC.height))
 		{
-			NPC.position -= NPC.velocity * 0.5f;
+			NPC.position -= NPC.velocity * 0.55f;
 		}
 
 		if (State == BehaviorState.Huddled)
@@ -46,6 +50,7 @@ internal partial class Mossmother
 		{
 			NPC.GetGlobalNPC<ArenaEnemyNPC>().Arena = true;
 			NPC.dontTakeDamage = false;
+
 			SetState(BehaviorState.MoveToWall);
 		}
 		else if (State == BehaviorState.MoveToWall)
@@ -103,6 +108,8 @@ internal partial class Mossmother
 		}
 		else if (State == BehaviorState.GasCrawl)
 		{
+			SpawnVenomDust();
+
 			ref float splineSlot = ref MiscNumber;
 
 			if (splineSlot >= movementSpline.Length)
@@ -132,7 +139,7 @@ internal partial class Mossmother
 			}
 
 			Vector2 nextSpline = movementSpline[(int)splineSlot];
-			NPC.velocity = Vector2.SmoothStep(NPC.velocity, NPC.SafeDirectionTo(nextSpline) * 5, 0.16f);
+			NPC.velocity = Vector2.SmoothStep(NPC.velocity, NPC.SafeDirectionTo(nextSpline) * 8, 0.16f);
 			NPC.rotation = Utils.AngleLerp(NPC.rotation, NPC.velocity.ToRotation() - MathHelper.PiOver2, 0.6f);
 
 			if (NPC.DistanceSQ(nextSpline) < 20 * 20)
@@ -147,13 +154,29 @@ internal partial class Mossmother
 			NPC.velocity = Vector2.SmoothStep(NPC.velocity, NPC.SafeDirectionTo(nextSpline) * 22, 0.16f);
 			NPC.rotation = Utils.AngleLerp(NPC.rotation, NPC.velocity.ToRotation() - MathHelper.PiOver2, 0.6f);
 
+			if (!Main.rand.NextBool(3))
+			{
+				SpawnVenomDust();
+			}
+
 			if (NPC.DistanceSQ(nextSpline) < 60 * 60)
 			{
 				splineSlot++;
 
+				if ((int)splineSlot == (int)(movementSpline.Length * 0.75f) && !Collision.SolidCollision(NPC.Center - new Vector2(60), 120, 120))
+				{
+					EnemySpawning.TrySpawningEnemy(NPC.GetSource_FromAI(), new EnemySpawn()
+					{
+						Effect = EnemySpawnEffect.Teleport,
+						NpcType = new NPCDefinition(ModContent.NPCType<Mudsquit>()),
+						SpawnPlacement = null,
+						SpawnPosition = NPC.Center,
+					}, out _);
+				}
+
 				if (splineSlot >= movementSpline.Length)
 				{
-					SetState(BehaviorState.IdleInWall);
+					SetState(BehaviorState.Desperation);
 					MiscNumber = movementSpline[^2].AngleTo(movementSpline[^1]);
 					TimesWallCrawled++;
 
@@ -164,12 +187,33 @@ internal partial class Mossmother
 				}
 			}
 		}
+		else if (State == BehaviorState.PreDesperation)
+		{
+			NPC.dontTakeDamage = true;
+			NPC.velocity *= 0.95f;
+
+			for (int i = 0; i < 3; ++i)
+			{
+				SpawnVenomDust();
+			}
+			
+			if (Timer > 360)
+			{
+				NPC.dontTakeDamage = false;
+				SetState(BehaviorState.Desperation);
+			}
+		}
 	}
 
 	private void IdleInWall()
 	{
 		NPC.velocity *= 0.90f;
 		NPC.rotation = Utils.AngleLerp(NPC.rotation, MiscNumber + MathHelper.PiOver2, 0.02f);
+
+		if (ReadyForGas)
+		{
+			SpawnVenomDust();
+		}
 
 		if (Timer == 240)
 		{
@@ -217,6 +261,15 @@ internal partial class Mossmother
 		}
 	}
 
+	private void SpawnVenomDust()
+	{
+		Vector2 angle = (Main.rand.NextBool() ? new Vector2(42, 110) : new Vector2(-58, 110)).RotatedBy(NPC.rotation);
+		byte opacity = (byte)(byte.MaxValue * PoisonShaderFunctionality.Intensity);
+		Vector2 velocity = angle.SafeNormalize(Vector2.Zero).RotatedByRandom(0.4f) * Main.rand.NextFloat(5, 12);
+		var dust = Dust.NewDustPerfect(NPC.Center + angle, DustID.Venom, velocity, opacity, default, Main.rand.NextFloat(2, 3));
+		dust.noGravity = true;
+	}
+
 	public void SetState(BehaviorState state)
 	{
 		Timer = 0;
@@ -224,16 +277,16 @@ internal partial class Mossmother
 		State = state;
 		NPC.netUpdate = true;
 
-		if (NPC.CountNPCS(Type) == 1)
+		if (NPC.CountNPCS(Type) == 1 && state != BehaviorState.Desperation)
 		{
-			State = BehaviorState.Desperation;
+			State = BehaviorState.PreDesperation;
 		}
 
 		if (Main.netMode != NetmodeID.MultiplayerClient)
 		{
-			if (State is BehaviorState.MoveToWall or BehaviorState.Desperation)
+			if (State is BehaviorState.MoveToWall or BehaviorState.PreDesperation or BehaviorState.Desperation)
 			{
-				BuildSplineForMovement(State == BehaviorState.Desperation);
+				BuildSplineForMovement(State != BehaviorState.MoveToWall);
 			}
 
 			if (State == BehaviorState.MoveToWall)
