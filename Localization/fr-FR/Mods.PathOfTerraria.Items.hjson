@@ -1451,6 +1451,11 @@ BerylRing: {
 	// Tooltip: ""
 }
 
+IncarnationOfIncineration: {
+	// DisplayName: Incarnation of Incineration
+	// Tooltip: ""
+}
+
 FireDiamondRing: {
 	// DisplayName: Fire Diamond Ring
 	// Tooltip: ""

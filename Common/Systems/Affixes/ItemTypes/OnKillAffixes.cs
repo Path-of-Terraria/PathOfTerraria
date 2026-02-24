@@ -1,3 +1,4 @@
+using System;
 using PathOfTerraria.Content.Buffs.ElementalBuffs;
 using Terraria.ID;
 
@@ -24,6 +25,73 @@ internal class HealOnKillingBurningEnemiesAffix : ItemAffix
 				owner.Heal((int)(value * 2));
 			}
 		}
+	}
+}
+
+internal class IgniteSpreadAffix : ItemAffix
+{
+	private sealed class IgniteSpreadAffixGlobalNpc : GlobalNPC
+	{
+		public override void OnKill(NPC npc)
+		{
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				return; //TODO: Figure this out later
+			}
+
+			if (!npc.TryGetGlobalNPC(out IgnitedNPC ignited) || ignited.Stacks.Count == 0)
+			{
+				return;
+			}
+
+			Player player = Main.player[npc.lastInteraction];
+			if (player is not { active: true })
+			{
+				return;
+			}
+
+			float spreadTiles = player.GetModPlayer<AffixPlayer>().StrengthOf<IgniteSpreadAffix>();
+			if (spreadTiles <= 0f)
+			{
+				return;
+			}
+
+			IgnitedStack sourceStack = ignited.Stacks[0];
+			if (sourceStack.BaseDamage <= 0 || sourceStack.Time <= 0)
+			{
+				return;
+			}
+
+			float spreadRadius = spreadTiles * 16f;
+			float spreadRadiusSq = spreadRadius * spreadRadius;
+			int spreadTime = Math.Max(1, sourceStack.Time - 1);
+			int baseDamage = sourceStack.BaseDamage;
+
+			foreach (NPC other in Main.ActiveNPCs)
+			{
+				if (other.whoAmI == npc.whoAmI || !other.CanBeChasedBy())
+				{
+					continue;
+				}
+
+				if (other.DistanceSQ(npc.Center) > spreadRadiusSq)
+				{
+					continue;
+				}
+
+				IgnitedDebuff.ApplyTo(npc, other, baseDamage, spreadTime);
+
+				if (other.TryGetGlobalNPC(out IgnitedNPC otherIgnited))
+				{
+					otherIgnited.LastTickCount = ignited.LastTickCount;
+				}
+			}
+		}
+	}
+
+	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
+	{
+		return base.CreateDefaultTooltip(player, item) with { Value = (int)Math.Round(Value) };
 	}
 }
 

@@ -30,6 +30,7 @@ ChanceToApplyPoisonItemAffix.Description: "{1}{0}% de chances d'appliquer Empois
 BuffPoisonedHitsAffix.Description: "{1}{0}% dégâts infligés aux ennemis empoisonnés"
 MovementSpeedAffix.Description: "{1}{0}% de vitesse de déplacement"
 HealOnKillingBurningEnemiesAffix.Description: "{1}{0} de point de vie gagnée en tuant un ennemi brûlé"
+// IgniteSpreadAffix.Description: Ignite spreads to enemies within {0} tiles on kill
 IncreasedAttackSpeedAffix.Description: "{1}{0}% de vitesse d'attaque"
 AddedAttackSpeedAffix.Description: "{1}{0}% d'augmentation de la vitesse d'attaque"
 AddedDamageAffix.Description: "{1}{0} de dégats fixe"
@@ -102,3 +103,4 @@ LightningResistItemAffix.Description: "{1}{0} de résistance à la foudre"
 // MapFireConversionAffix.Description: "{1}{0}% of enemy damage converted to fire"
 // MapColdConversionAffix.Description: "{1}{0}% of enemy damage converted to cold"
 // MapLightningConversionAffix.Description: "{1}{0}% of enemy damage converted to lightning"
+// ChanceToApplyIgnitedGearAffix.Description: "{1}{0} to stat"

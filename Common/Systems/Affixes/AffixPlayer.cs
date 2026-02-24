@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
 namespace PathOfTerraria.Common.Systems.Affixes;
 
@@ -31,5 +32,10 @@ internal class AffixPlayer : ModPlayer
 	public float StrengthOf(string name)
 	{
 		return AffixStrengthByFullName.TryGetValue(name, out float value) ? value : 0;
+	}
+
+	private static bool TargetWasKilled(NPC target, NPC.HitInfo hit)
+	{
+		return target.life <= 0 || target.life - hit.Damage <= 0;
 	}
 }

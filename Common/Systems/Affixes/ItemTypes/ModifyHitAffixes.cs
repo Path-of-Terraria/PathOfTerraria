@@ -28,11 +28,11 @@ internal class IncreasedKnockbackItemAffix : ItemAffix
 	}
 }
 	
-internal class ChanceToApplyOnFireGearAffix : ItemAffix
+internal class ChanceToApplyIgnitedGearAffix : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		modifier.Buffer.Add(BuffID.OnFire, Duration, Value * 0.01f);
+		modifier.Buffer.Add(ModContent.BuffType<IgnitedDebuff>(), Duration, Value * 0.01f);
 	}
 }
 	

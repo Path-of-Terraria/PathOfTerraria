@@ -57,6 +57,37 @@
 		]
 	},
 	{
+		"affixType": "IgniteSpreadAffix",
+		"equipTypes": "Weapon",
+		"influences": "None",
+		"tiers": [
+			{
+				"minValue": 4,
+				"maxValue": 6,
+				"minimumLevel": 20,
+				"weight": 1
+			},
+			{
+				"minValue": 7,
+				"maxValue": 9,
+				"minimumLevel": 40,
+				"weight": 1
+			},
+			{
+				"minValue": 10,
+				"maxValue": 12,
+				"minimumLevel": 60,
+				"weight": 1
+			},
+			{
+				"minValue": 13,
+				"maxValue": 15,
+				"minimumLevel": 80,
+				"weight": 1
+			}
+		]
+	},
+	{
 		"affixType": "LifeOnKillAffix",
 		"equipTypes": "Weapon",
 		"influences": "None",

@@ -38,7 +38,7 @@ internal class MoltenDangpa : LeadDangpa
 	public override List<ItemAffix> GenerateAffixes()
 	{
 		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<IncreasedDamageAffix>(15, 25);
-		var attackSpeedAffix = (ItemAffix)Affix.CreateAffix<ChanceToApplyOnFireGearAffix>(0.05f, 0.1f);
+		var attackSpeedAffix = (ItemAffix)Affix.CreateAffix<ChanceToApplyIgnitedGearAffix>(0.05f, 0.1f);
 		var healKillBurnAffix = (ItemAffix)Affix.CreateAffix<HealOnKillingBurningEnemiesAffix>(1f, 4f);
 		var moltenShellAffix = (ItemAffix)Affix.CreateAffix<MoltenShellAffix>(1);
 		return [addedDamageAffix, attackSpeedAffix, healKillBurnAffix, moltenShellAffix];
