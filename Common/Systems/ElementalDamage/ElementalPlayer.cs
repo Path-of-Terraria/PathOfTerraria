@@ -289,7 +289,7 @@ public class ElementalPlayer : ModPlayer
 
 		if (elementalDamageDone > 0 && ElementalDamage.CanDebuff(elementType, target, attacker, container, chance))
 		{
-			ElementalDamage.ApplyBuff(elementType, attacker, target, elementalDamageDone);
+			ElementalDamage.ApplyBuff(elementType, attacker, target, elementalDamageDone, container.IsCrit);
 
 			if (DebugMessages)
 			{
