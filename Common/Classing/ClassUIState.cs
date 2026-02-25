@@ -34,7 +34,16 @@ internal class ClassUIState(Action resetAction, Player player) : UIState
 		{
 			x.SetDimensions(default, default, (0, PanelWidth), (0, StandardPanelHeight));
 			x.HAlign = 0.5f;
-			x.VAlign = 0.5f;
+			x.VAlign = 0f;
+
+			if (Main.gameMenu) // When in the menu, position under the logo, otherwise position under the tutorial UI
+			{
+				x.Top = StyleDimension.FromPixelsAndPercent(-170, 0.5f);
+			}
+			else
+			{
+				x.Top = StyleDimension.FromPixelsAndPercent(-120, 0.5f);
+			}
 		});
 
 		BuildPage(StarterClass.Melee, panel);
