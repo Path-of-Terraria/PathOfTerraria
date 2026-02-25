@@ -66,12 +66,14 @@ internal class Mossling : ModNPC
 	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[Type] = 1;
+
+		NPCID.Sets.CountsAsCritter[Type] = true; // CritterUICollectionInfoProvider requires this for some reason
 	}
 
 	public override void SetDefaults()
 	{
 		NPC.aiStyle = -1;
-		NPC.lifeMax = 20;
+		NPC.lifeMax = 5;
 		NPC.friendly = true;
 		NPC.width = 42;
 		NPC.height = 20;
@@ -112,6 +114,11 @@ internal class Mossling : ModNPC
 		});
 	}
 
+	public override bool CheckActive()
+	{
+		return false;
+	}
+
 	public override void OnSpawn(IEntitySource source)
 	{
 		SpawnPoisonMossVFX(NPC.Center);
@@ -130,6 +137,7 @@ internal class Mossling : ModNPC
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
 	{
 		bestiaryEntry.AddInfo(this, "");
+		bestiaryEntry.UIInfoProvider = new CritterUICollectionInfoProvider(ContentSamples.NpcBestiaryCreditIdsByNpcNetIds[Type]);
 	}
 
 	public override void AI()
@@ -147,7 +155,10 @@ internal class Mossling : ModNPC
 		}
 
 		Timer++;
+
 		NPC.TargetClosest();
+		NPC.rotation = NPC.velocity.ToRotation() - MathHelper.PiOver2;
+
 		Player target = Main.player[NPC.target];
 
 		if (State == States.Idle)
@@ -205,8 +216,8 @@ internal class Mossling : ModNPC
 		Texture2D tex = TextureAssets.Npc[Type].Value;
 		Rectangle frame = NPC.frame with { Width = 40 };
 
-		spriteBatch.Draw(tex, NPC.Center - screenPos, frame, drawColor);
-		spriteBatch.Draw(tex, NPC.Center - screenPos, frame with { X = 40 }, Color.White);
+		spriteBatch.Draw(tex, NPC.Center - screenPos, frame, drawColor, NPC.rotation, frame.Size() / 2f, 1f, SpriteEffects.None, 0);
+		spriteBatch.Draw(tex, NPC.Center - screenPos, frame with { X = 40 }, Color.White, NPC.rotation, frame.Size() / 2f, 1f, SpriteEffects.None, 0);
 
 		return false;
 	}

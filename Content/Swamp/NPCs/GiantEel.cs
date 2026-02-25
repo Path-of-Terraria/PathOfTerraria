@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using NPCUtils;
+﻿using NPCUtils;
 using PathOfTerraria.Common.AI;
 using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
@@ -7,14 +6,13 @@ using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.NPCs.Worms;
 using PathOfTerraria.Common.Systems.MobSystem;
 using PathOfTerraria.Common.Systems.Synchronization;
-using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.Buffs;
+using PathOfTerraria.Content.Buffs.ElementalBuffs;
 using PathOfTerraria.Content.Dusts;
 using PathOfTerraria.Content.Gores;
 using SubworldLibrary;
 using System.IO;
-using Terraria;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
@@ -41,8 +39,13 @@ internal class GiantEel : ModNPC
 			NPC.damage = 60;
 			NPC.HitSound = SoundID.NPCHit34;
 			NPC.DeathSound = SoundID.NPCHit53;
-			NPC.defense = 100;
+			NPC.defense = 800;
 			NPC.netAlways = true;
+		}
+
+		public override void ModifyIncomingHit(ref NPC.HitModifiers modifiers)
+		{
+			modifiers.FinalDamage *= 0.9f;
 		}
 
 		public override bool CheckActive()
@@ -160,6 +163,8 @@ internal class GiantEel : ModNPC
 		Flee,
 	}
 
+	const int SplineLength = 6;
+
 	private States State
 	{
 		get => (States)NPC.ai[0];
@@ -174,7 +179,7 @@ internal class GiantEel : ModNPC
 	private ref float MiscTimer => ref NPC.localAI[2];
 
 	private bool _spawnedSegments = false;
-	private Vector2[] _spline = [];
+	private Vector2[] _spline = [Vector2.Zero, Vector2.Zero, Vector2.Zero, Vector2.Zero, Vector2.Zero, Vector2.Zero];
 
 	public override void Load()
 	{
@@ -195,7 +200,7 @@ internal class GiantEel : ModNPC
 	{
 		NPC.aiStyle = -1;
 		NPC.lifeMax = 150_000;
-		NPC.defense = 100;
+		NPC.defense = 800;
 		NPC.damage = 50;
 		NPC.width = 50;
 		NPC.height = 50;
@@ -234,6 +239,11 @@ internal class GiantEel : ModNPC
 		bestiaryEntry.AddInfo(this, "");
 	}
 
+	public override void ModifyIncomingHit(ref NPC.HitModifiers modifiers)
+	{
+		modifiers.FinalDamage *= 0.9f;
+	}
+
 	public override void AI()
 	{
 		if (!_spawnedSegments && Main.netMode != NetmodeID.MultiplayerClient)
@@ -258,7 +268,7 @@ internal class GiantEel : ModNPC
 
 		if (State == States.Roaming)
 		{
-			float aggro = Utils.Remap(targetPlayer.Center.Y / 16f, 40, SwampArea.FloorY, 3000, 1200, true) * (targetPlayer.HasBuff<SwampAlgaeBuff>() ? 1.3333f : 1);
+			float aggro = targetPlayer.HasBuff<SwampAlgaeBuff>() ? 4000 : 3000;//Utils.Remap(targetPlayer.Center.Y / 16f, 40, SwampArea.FloorY, 3000, 1200, true) * (targetPlayer.HasBuff<SwampAlgaeBuff>() ? 1.3333f : 1);
 			Vector2 targetDirection = NPC.DirectionTo(new Vector2(targetPlayer.Center.X, MathF.Sin(Timer * 0.008f) * (30 * 16) + 180 * 16)) * new Vector2(2.5f, 1);
 			NPC.velocity = Vector2.SmoothStep(NPC.velocity, targetDirection * 8, 0.05f) + new Vector2(MathF.Sin(Timer * 0.04f) * 0.25f, 0);
 
@@ -268,6 +278,7 @@ internal class GiantEel : ModNPC
 			{
 				State = States.Chase;
 				Timer = 0;
+				NPC.netUpdate = true;
 			}
 		}
 		else if (State == States.Chase)
@@ -282,7 +293,7 @@ internal class GiantEel : ModNPC
 					MiscTimer = 1;
 
 					Vector2 reverseDirection = destination.DirectionFrom(NPC.Center);
-					_spline = Spline.InterpolateXY([NPC.Center, destination + reverseDirection * 650, destination - reverseDirection * 300 - new Vector2(0, 800)], 6);
+					_spline = Spline.InterpolateXY([NPC.Center, destination + reverseDirection * 650, destination - reverseDirection * 300 - new Vector2(0, 800)], SplineLength);
 					NPC.netUpdate = true;
 				}
 			}
@@ -397,9 +408,7 @@ internal class GiantEel : ModNPC
 
 	public override void SendExtraAI(BinaryWriter writer)
 	{
-		writer.Write((byte)_spline.Length);
-
-		for (int i = 0; i < _spline.Length; i++)
+		for (int i = 0; i < SplineLength; i++)
 		{
 			writer.WriteVector2(_spline[i]);
 		}
@@ -407,11 +416,7 @@ internal class GiantEel : ModNPC
 
 	public override void ReceiveExtraAI(BinaryReader reader)
 	{
-		byte count = reader.ReadByte();
-
-		_spline = new Vector2[count];
-		
-		for (int i = 0; i < count; ++i)
+		for (int i = 0; i < SplineLength; ++i)
 		{
 			_spline[i] = reader.ReadVector2();
 		}
