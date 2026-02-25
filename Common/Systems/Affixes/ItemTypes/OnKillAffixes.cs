@@ -1,4 +1,5 @@
 using System;
+using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Content.Buffs.ElementalBuffs;
 using Terraria.ID;
 
@@ -30,13 +31,13 @@ internal class HealOnKillingBurningEnemiesAffix : ItemAffix
 
 internal class IgniteSpreadAffix : ItemAffix
 {
-	private sealed class IgniteSpreadAffixGlobalNpc : GlobalNPC
+	private sealed class IgniteSpreadAffixGlobalNpc : GlobalNPC, IPostHurtGlobalNPC
 	{
-		public override void OnKill(NPC npc)
+		public void PostHurt(IPostHurtGlobalNPC.DamageSources sources, NPC npc, in NPC.HitInfo hit, int damageDone) // Note this only runs on clients; will need syncing
 		{
-			if (Main.netMode == NetmodeID.MultiplayerClient)
+			if (npc.life > 0) // Only runs on death
 			{
-				return; //TODO: Figure this out later
+				return;
 			}
 
 			if (!npc.TryGetGlobalNPC(out IgnitedNPC ignited) || ignited.Stacks.Count == 0)
