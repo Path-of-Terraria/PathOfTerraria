@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems.ElementalDamage;
+using PathOfTerraria.Content.Buffs.ElementalBuffs;
 
 namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
@@ -161,5 +162,13 @@ internal class ExtraColdDamage : ItemAffix
 		float bonus = player.GetWeaponDamage(item) * (Value / 100f);
 
 		damage = damage.AddModifiers((int)Math.Round(bonus), null);
+	}
+}
+
+internal class IgniteChanceAffix : ItemAffix
+{
+	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+	{
+		player.GetModPlayer<IgnitedPlayer>().AddedIgniteChance += Value;
 	}
 }
