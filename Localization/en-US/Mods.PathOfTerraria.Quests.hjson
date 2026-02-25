@@ -132,6 +132,11 @@ Quest: {
 		Boss: Defeat the Queen Slime
 		IlluminantSlimes: Defeat ({0}/{1}) Illuminant Slimes
 		TalkToGarrick: Return to Garrick
+		GarrickStart: You've felt the ground change, haven't you?
+		GarrickSuccess: And so swiftly? You humble me. 
+		TalkGarrick2: Mods.PathOfTerraria.Quests.Quest.QueenSlimeQuest.TalkGarrick2
+		TalkToGarrick2: Mods.PathOfTerraria.Quests.Quest.QueenSlimeQuest.TalkToGarrick2
+		TalkGarrick3: Mods.PathOfTerraria.Quests.Quest.QueenSlimeQuest.TalkGarrick3
 	}
 
 	TwinsQuest: {

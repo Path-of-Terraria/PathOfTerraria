@@ -132,6 +132,10 @@ Quest: {
 		// Boss: Defeat the Queen Slime
 		// IlluminantSlimes: Defeat ({0}/{1}) Illuminant Slimes
 		// TalkToGarrick: Return to Garrick
+		// TalkGarrick2: Mods.PathOfTerraria.Quests.Quest.QueenSlimeQuest.TalkGarrick2
+		// TalkToGarrick2: Mods.PathOfTerraria.Quests.Quest.QueenSlimeQuest.TalkToGarrick2
+		// TalkGarrick3: Mods.PathOfTerraria.Quests.Quest.QueenSlimeQuest.TalkGarrick3
+		// GarrickSuccess: Mods.PathOfTerraria.Quests.Quest.QueenSlimeQuest.GarrickSuccess
 	}
 
 	TwinsQuest: {

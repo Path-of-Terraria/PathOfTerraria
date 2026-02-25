@@ -31,22 +31,20 @@ internal class QueenSlimeQuest() : Quest
 	{
 		return
 		[
-			new InteractWithNPC("Start", NPCQuestGiver, this.GetLocalization("TalkToGarrick"), 
-				Language.GetText("Mods.PathOfTerraria.NPCs.GarrickNPC.Dialogue.QueenSlime1")),
+			new InteractWithNPC("Start", NPCQuestGiver, this.GetLocalization("TalkToGarrick"), this.GetLocalization("GarrickStart")),
 			
 			new ParallelQuestStep("Branch", [
 				new CollectCount("Item", ItemID.SoulofLight, 5),
 				new KillCount("Kill", NPCID.IlluminantSlime, 10, this.GetLocalization("IlluminantSlimes"))
-			], Language.GetText("Mods.PathOfTerraria.NPCs.GarrickNPC.Dialogue.QueenSlime1")),
+			], this.GetLocalization("TalkGarrick2")),
 
-			new InteractWithNPC("Talk", NPCQuestGiver, this.GetLocalization("TalkToGarrick"), 
-				Language.GetText("Mods.PathOfTerraria.NPCs.GarrickNPC.Dialogue.QueenSlime2"),
+			new InteractWithNPC("Talk", NPCQuestGiver, this.GetLocalization("TalkToGarrick2"), this.GetLocalization("TalkGarrick3"),
 				onSuccess: _ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<QueenSlimeMap>())),
 
 			new ConditionCheck("Domain", _ => SubworldSystem.Current is QueenSlimeDomain, 1, this.GetLocalization("EnterDomain")),
 			new ConditionCheck("Boss", _ => BossTracker.DownedInDomain<QueenSlimeDomain>(NPCID.QueenSlimeBoss), 1, this.GetLocalization("Boss")),
 			
-			new InteractWithNPC("Finish", NPCQuestGiver, this.GetLocalization("TalkToGarrick"), Language.GetText("Mods.PathOfTerraria.NPCs.GarrickNPC.Dialogue.QueenSlime3"), 
+			new InteractWithNPC("Finish", NPCQuestGiver, this.GetLocalization("TalkGarrick3"), this.GetLocalization("GarrickSuccess"), 
 				[new GiveItem(1, ModContent.ItemType<RoyalJellyCore>())], true),
 		];
 	}
