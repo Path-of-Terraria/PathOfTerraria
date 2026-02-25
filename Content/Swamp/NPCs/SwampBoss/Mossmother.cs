@@ -1,8 +1,6 @@
 ﻿using NPCUtils;
 using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Content.Projectiles.Utility;
-using PathOfTerraria.Utilities;
-using System.Collections.Generic;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;

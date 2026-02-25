@@ -1,7 +1,9 @@
 ﻿using PathOfTerraria.Common;
 using PathOfTerraria.Common.Encounters;
 using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Common.World.Generation;
+using PathOfTerraria.Content.Dusts;
 using System.IO;
 using Terraria.ID;
 using Terraria.ModLoader.Config;
@@ -13,8 +15,6 @@ internal partial class Mossmother
 	public override void AI()
 	{
 		Timer++;
-
-		//Lighting.AddLight(NPC.Center, Color.Yellow.ToVector3());
 
 		if (Collision.SolidCollision(NPC.position, NPC.width, NPC.height))
 		{
@@ -71,7 +71,7 @@ internal partial class Mossmother
 						pos = Vector2.Lerp(movementSpline[index], movementSpline[index + 1], Main.rand.NextFloat(0.2f, 0.8f));
 					} while (Collision.SolidCollision(pos - new Vector2(50), 100, 100));
 
-					NPC.NewNPC(NPC.GetSource_FromThis(), (int)pos.X, (int)pos.Y, ModContent.NPCType<Mossling>(), NPC.whoAmI + 3);
+					NPC.NewNPC(NPC.GetSource_FromThis(), (int)pos.X, (int)pos.Y, ModContent.NPCType<Mossling>(), NPC.whoAmI + 3, 0, 0, NPC.whoAmI);
 				}
 
 				return;
@@ -108,48 +108,15 @@ internal partial class Mossmother
 		}
 		else if (State == BehaviorState.GasCrawl)
 		{
-			SpawnVenomDust();
-
-			ref float splineSlot = ref MiscNumber;
-
-			if (splineSlot >= movementSpline.Length)
+			if (!GasCrawlBehavior())
 			{
-				NPC.velocity *= 0.90f;
-
-				bool canMoveAlongNow = true;
-
-				foreach (NPC npc in Main.ActiveNPCs)
-				{
-					if (npc.ModNPC is Mossmother { MiscNumber: < SplineCountMax, State: BehaviorState.GasCrawl })
-					{
-						canMoveAlongNow = false;
-						break;
-					}
-				}
-
-				if (canMoveAlongNow)
-				{
-					SetState(BehaviorState.IdleInWall);
-					ReadyForGas = false;
-					MiscNumber = movementSpline[^2].AngleTo(movementSpline[^1]);
-					TimesWallCrawled = 0;
-				}
-
 				return;
-			}
-
-			Vector2 nextSpline = movementSpline[(int)splineSlot];
-			NPC.velocity = Vector2.SmoothStep(NPC.velocity, NPC.SafeDirectionTo(nextSpline) * 8, 0.16f);
-			NPC.rotation = Utils.AngleLerp(NPC.rotation, NPC.velocity.ToRotation() - MathHelper.PiOver2, 0.6f);
-
-			if (NPC.DistanceSQ(nextSpline) < 20 * 20)
-			{
-				splineSlot++;
 			}
 		}
 		else if (State == BehaviorState.Desperation)
 		{
 			ref float splineSlot = ref MiscNumber;
+
 			Vector2 nextSpline = movementSpline[(int)splineSlot];
 			NPC.velocity = Vector2.SmoothStep(NPC.velocity, NPC.SafeDirectionTo(nextSpline) * 22, 0.16f);
 			NPC.rotation = Utils.AngleLerp(NPC.rotation, NPC.velocity.ToRotation() - MathHelper.PiOver2, 0.6f);
@@ -203,6 +170,50 @@ internal partial class Mossmother
 				SetState(BehaviorState.Desperation);
 			}
 		}
+	}
+
+	private bool GasCrawlBehavior()
+	{
+		SpawnVenomDust();
+
+		ref float splineSlot = ref MiscNumber;
+
+		if (splineSlot >= movementSpline.Length)
+		{
+			NPC.velocity *= 0.90f;
+
+			bool canMoveAlongNow = true;
+
+			foreach (NPC npc in Main.ActiveNPCs)
+			{
+				if (npc.ModNPC is Mossmother { MiscNumber: < SplineCountMax, State: BehaviorState.GasCrawl })
+				{
+					canMoveAlongNow = false;
+					break;
+				}
+			}
+
+			if (canMoveAlongNow)
+			{
+				SetState(BehaviorState.IdleInWall);
+				ReadyForGas = false;
+				MiscNumber = movementSpline[^2].AngleTo(movementSpline[^1]);
+				TimesWallCrawled = 0;
+			}
+
+			return false;
+		}
+
+		Vector2 nextSpline = movementSpline[(int)splineSlot];
+		NPC.velocity = Vector2.SmoothStep(NPC.velocity, NPC.SafeDirectionTo(nextSpline) * 8, 0.16f);
+		NPC.rotation = Utils.AngleLerp(NPC.rotation, NPC.velocity.ToRotation() - MathHelper.PiOver2, 0.6f);
+
+		if (NPC.DistanceSQ(nextSpline) < 20 * 20)
+		{
+			splineSlot++;
+		}
+
+		return true;
 	}
 
 	private void IdleInWall()
@@ -266,7 +277,8 @@ internal partial class Mossmother
 		Vector2 angle = (Main.rand.NextBool() ? new Vector2(42, 110) : new Vector2(-58, 110)).RotatedBy(NPC.rotation);
 		byte opacity = (byte)(byte.MaxValue * PoisonShaderFunctionality.Intensity);
 		Vector2 velocity = angle.SafeNormalize(Vector2.Zero).RotatedByRandom(0.4f) * Main.rand.NextFloat(5, 12);
-		var dust = Dust.NewDustPerfect(NPC.Center + angle, DustID.Venom, velocity, opacity, default, Main.rand.NextFloat(2, 3));
+		int type = Main.rand.NextBool(3) ? ModContent.DustType<BrightVenomDust>() : DustID.Venom;
+		var dust = Dust.NewDustPerfect(NPC.Center + angle, type, velocity, opacity, default, Main.rand.NextFloat(2, 3));
 		dust.noGravity = true;
 	}
 

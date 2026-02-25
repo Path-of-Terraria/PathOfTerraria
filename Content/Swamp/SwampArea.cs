@@ -373,7 +373,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 					}
 				}
 
-				if (tile.WallType == ModContent.WallType<DeepMossWall>() && WorldGen.genRand.NextBool(500))
+				if (tile.WallType == ModContent.WallType<DeepMossWall>() && WorldGen.genRand.NextBool(500) && !tile.HasTile && tile.LiquidAmount <= 155)
 				{
 					WorldGen.PlaceObject(i, j, ModContent.TileType<SwampWallflower>(), true, Random.Next(3));
 				}

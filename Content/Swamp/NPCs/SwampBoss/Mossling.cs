@@ -3,7 +3,10 @@ using PathOfTerraria.Common.AI;
 using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
+using PathOfTerraria.Content.Dusts;
 using PathOfTerraria.Content.Gores;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
@@ -35,6 +38,30 @@ internal class Mossling : ModNPC
 	}
 
 	private ref float Timer => ref NPC.ai[1];
+	private int ParentNpcWho => (int)NPC.ai[2];
+
+	private NPC Parent => Main.npc[ParentNpcWho];
+
+	internal static void SpawnPoisonMossVFX(Vector2 pos)
+	{
+		for (int i = 0; i < 12; ++i)
+		{
+			int dust;
+
+			if (Main.rand.NextBool(3))
+			{
+				dust = Dust.NewDust(pos - new Vector2(12), 24, 24, ModContent.DustType<DarkMossDust>());
+			}
+			else
+			{
+				int type = Main.rand.NextBool(3) ? ModContent.DustType<BrightVenomDust>() : DustID.Venom;
+				dust = Dust.NewDust(pos - new Vector2(12), 24, 24, type, 0, 0, Scale: Main.rand.NextFloat(2, 3));
+				Main.dust[dust].noGravity = true;
+			}
+
+			Main.dust[dust].velocity *= 3;
+		}
+	}
 
 	public override void SetStaticDefaults()
 	{
@@ -85,6 +112,16 @@ internal class Mossling : ModNPC
 		});
 	}
 
+	public override void OnSpawn(IEntitySource source)
+	{
+		SpawnPoisonMossVFX(NPC.Center);
+
+		if (Main.dedServ)
+		{
+			SendSpawnVFXModule.Send(NPC.Center, SendSpawnVFXModule.VFXType.SpawnPoisonMoss);
+		}
+	}
+
 	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 	{
 		NPC.damage = ModeUtils.ByMode(5, 10, 20, 33);
@@ -115,12 +152,32 @@ internal class Mossling : ModNPC
 
 		if (State == States.Idle)
 		{
-			NPC.velocity *= 0.8f;
+			NPC.velocity *= 0.9f;
 
 			if (Timer == 60)
 			{
-				NPC.velocity = Main.rand.NextVector2CircularEdge(1, 1);
+				NPC.velocity = Main.rand.NextVector2CircularEdge(2, 2);
+				Timer = 0;
 			}
+		}
+
+		if (!Parent.active || Parent.type != ModContent.NPCType<Mossmother>())
+		{
+			NPC.active = false;
+
+			Item.NewItem(NPC.GetSource_Death(), NPC.Hitbox, ItemID.Heart);
+
+			for (int i = 0; i < 8; ++i)
+			{
+				Dust.NewDust(NPC.position, NPC.width, NPC.height, ModContent.DustType<DarkMossDust>());
+			}
+		}
+
+		if (Main.rand.NextBool(14))
+		{
+			int type = Main.rand.NextBool(3) ? ModContent.DustType<BrightVenomDust>() : DustID.Venom;
+			int dust = Dust.NewDust(NPC.position, NPC.width, NPC.height, type, NPC.velocity.X, NPC.velocity.Y, Scale: Main.rand.NextFloat(2, 3));
+			Main.dust[dust].noGravity = true;
 		}
 	}
 
@@ -134,6 +191,8 @@ internal class Mossling : ModNPC
 			Projectile.NewProjectile(NPC.GetSource_Death(), NPC.Center, velocity.RotatedByRandom(0.6f), ModContent.ProjectileType<MosslingPoison>(), damage, 1, Main.myPlayer);
 			velocity = velocity.RotatedBy(MathHelper.TwoPi / 3f);
 		}
+
+		SpawnPoisonMossVFX(NPC.Center);
 	}
 
 	public override bool? CanBeHitByProjectile(Projectile projectile)

@@ -16,7 +16,7 @@ internal class SwampAlgaeBuff : ModBuff
 	{
 		player.buffTime[buffIndex] = 2;
 		player.ignoreWater = true;
-		player.breathEffectiveness += 5;
+		player.breathEffectiveness += 3;
 		
 		if (player.wet)
 		{

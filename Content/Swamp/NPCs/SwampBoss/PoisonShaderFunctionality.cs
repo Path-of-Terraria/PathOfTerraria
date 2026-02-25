@@ -4,7 +4,6 @@ using SubworldLibrary;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
-using Terraria.UI;
 
 namespace PathOfTerraria.Content.Swamp.NPCs.SwampBoss;
 
@@ -171,7 +170,7 @@ internal class PoisonShaderFunctionality : ModSystem
 
 		if (!shouldShowPoison)
 		{
-			Intensity = MathF.Max(0, Intensity - 0.001f);
+			Intensity = MathF.Max(0, Intensity - 0.003f);
 		}
 		else
 		{
