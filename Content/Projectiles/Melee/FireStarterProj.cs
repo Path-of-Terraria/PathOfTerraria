@@ -44,7 +44,8 @@ internal class FireStarterProjectile : ModProjectile
 
 		if (!Main.rand.NextBool(3)) // Spawn dust
 		{
-			Vector2 dustPos = Vector2.Lerp(Projectile.Center, GetProjectileTip(), Main.rand.NextFloat());
+			Vector2 tip = GetProjectileTip();
+			var dustPos = Vector2.Lerp(Projectile.Center, tip, Main.rand.NextFloat());
 			Dust.NewDust(dustPos, 1, 1, DustID.Torch);
 		}
 	}
@@ -63,13 +64,15 @@ internal class FireStarterProjectile : ModProjectile
 	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 	{
 		// Makes the hitbox much more accurate to the swung sword, and stops us from needing to position the hitbox alongside the sprite properly
-		return Collision.CheckAABBvLineCollision(targetHitbox.Location.ToVector2(), targetHitbox.Size(), Projectile.Center, GetProjectileTip());
+		return Collision.CheckAABBvLineCollision(targetHitbox.Location.ToVector2(), targetHitbox.Size(), Owner.Center, GetProjectileTip());
 	}
 
 	private Vector2 GetProjectileTip()
 	{
-		// Note that the PiOver2 adjusts since the swing rotation is slightly off compared to the sprite, since the 
-		return Projectile.Center + (GetCurrentSwingRotation() - MathHelper.PiOver4).ToRotationVector2() * 70;
+		const float Distance = 74;
+
+		Vector2 offset = Projectile.Center + (GetCurrentSwingRotation() - MathHelper.PiOver4).ToRotationVector2() * new Vector2(Distance * Owner.direction, Distance);
+		return offset;
 	}
 
 	public override bool PreDraw(ref Color lightColor)
