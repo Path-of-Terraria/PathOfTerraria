@@ -79,7 +79,7 @@ internal class RavencrestSubworld : MappingWorld
 		StructureTools.PlaceByOrigin("Assets/Structures/Worlds/Ravencrest_Structure", new Point16(40, 80), Vector2.Zero);
 
 		RavencrestSystem.SpawnNativeNpcs(NPCSpawnTimeframe.WorldGen);
-
+		
 		Main.hardMode = false;
 	}
 
