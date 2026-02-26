@@ -2,7 +2,6 @@
 using PathOfTerraria.Common.Subworlds.Passes;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems;
-using PathOfTerraria.Common.Systems.VanillaModifications;
 using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.NPCs.Town;
@@ -19,7 +18,7 @@ namespace PathOfTerraria.Common.Subworlds;
 
 internal class RavencrestSubworld : MappingWorld
 {
-	public override int Width => 1010;
+	public override int Width => 900;
 	public override int Height => 340;
 	public override bool ShouldSave => true;
 	public override int[] WhitelistedMiningTiles => [TileID.Tombstones];
@@ -74,10 +73,10 @@ internal class RavencrestSubworld : MappingWorld
 
 	private void SpawnWorld(GenerationProgress progress, GameConfiguration configuration)
 	{
-		Main.spawnTileX = 398;
-		Main.spawnTileY = 141;
+		Main.spawnTileX = 316;
+		Main.spawnTileY = 156;
 
-		StructureTools.PlaceByOrigin("Assets/Structures/Worlds/Ravencrest_Structure", new Point16(40, 22), Vector2.Zero);
+		StructureTools.PlaceByOrigin("Assets/Structures/Worlds/Ravencrest_Structure", new Point16(40, 80), Vector2.Zero);
 
 		RavencrestSystem.SpawnNativeNpcs(NPCSpawnTimeframe.WorldGen);
 

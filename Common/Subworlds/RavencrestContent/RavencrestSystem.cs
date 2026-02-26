@@ -40,31 +40,31 @@ public class RavencrestSystem : ModSystem
 		Structures.Add("Lodge", new ImprovableStructure(2)
 		{
 			StructurePath = "Assets/Structures/RavencrestBuildings/Lodge_",
-			Position = new Point(259, 95),
+			Position = new Point(173, 110),
 		});
 
 		Structures.Add("Forge", new ImprovableStructure(2)
 		{
 			StructurePath = "Assets/Structures/RavencrestBuildings/Forge_",
-			Position = new Point(195, 109)
+			Position = new Point(110, 124)
 		});
 
 		Structures.Add("Burrow", new ImprovableStructure(2)
 		{
 			StructurePath = "Assets/Structures/RavencrestBuildings/Burrow_",
-			Position = new Point(800, 129)
+			Position = new Point(650, 148)
 		});
     
 		Structures.Add("Observatory", new ImprovableStructure(2)
 		{
 			StructurePath = "Assets/Structures/RavencrestBuildings/Observatory_",
-			Position = new Point(107, 122)
+			Position = new Point(71, 110)
 		});
 
 		Structures.Add("Library", new ImprovableStructure(2)
 		{
 			StructurePath = "Assets/Structures/RavencrestBuildings/Library_",
-			Position = new Point(604, 94)
+			Position = new Point(454, 113)
 		});
 
 		MiscOverlayUI.DrawOverlay += DrawDistantMorvenDialogue;
