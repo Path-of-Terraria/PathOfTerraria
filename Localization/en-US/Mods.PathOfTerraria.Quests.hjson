@@ -132,11 +132,10 @@ Quest: {
 		Boss: Defeat the Queen Slime
 		IlluminantSlimes: Defeat ({0}/{1}) Illuminant Slimes
 		TalkToGarrick: Return to Garrick
-		GarrickStart: You've felt the ground change, haven't you?
-		GarrickSuccess: And so swiftly? You humble me. 
+		GarrickStart: You've felt the ground change, haven't you? Hm. I fear the King wasn't the first of my slimy tribulations. Could I ask you for a small journey? The new shimmering, joyous land...I think I know what hides in it. Hunt me some of the bizarre souls it keeps, and slay some of the slimes for good measure.
+		GarrickSuccess: And so swiftly? You humble me. It makes me think it's almost easy to do, hm? Well, that's another notch in your successes. The Queen is felled, and this core proves it. I've much thinking to do.
+		TalkGarrick3: Yes, it's the royal jelly that I feared so. Ah...I have her map. I have had it for a while now, but I cannot bring the courage to go. Perhaps the King's scarred me more than I thought. Take it, and slay her for me. Please.
 		TalkGarrick2: Mods.PathOfTerraria.Quests.Quest.QueenSlimeQuest.TalkGarrick2
-		TalkToGarrick2: Mods.PathOfTerraria.Quests.Quest.QueenSlimeQuest.TalkToGarrick2
-		TalkGarrick3: Mods.PathOfTerraria.Quests.Quest.QueenSlimeQuest.TalkGarrick3
 	}
 
 	TwinsQuest: {

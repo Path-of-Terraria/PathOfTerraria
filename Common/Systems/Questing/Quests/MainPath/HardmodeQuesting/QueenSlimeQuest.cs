@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Common.Subworlds;
-using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
@@ -10,7 +9,6 @@ using System.Collections.Generic;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using PathOfTerraria.Content.Items.Quest;
 using Terraria.ID;
-using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 
@@ -38,7 +36,7 @@ internal class QueenSlimeQuest() : Quest
 				new KillCount("Kill", NPCID.IlluminantSlime, 10, this.GetLocalization("IlluminantSlimes"))
 			], this.GetLocalization("TalkGarrick2")),
 
-			new InteractWithNPC("Talk", NPCQuestGiver, this.GetLocalization("TalkToGarrick2"), this.GetLocalization("TalkGarrick3"),
+			new InteractWithNPC("Talk", NPCQuestGiver, this.GetLocalization("GarrickStart"), this.GetLocalization("TalkGarrick3"),
 				onSuccess: _ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<QueenSlimeMap>())),
 
 			new ConditionCheck("Domain", _ => SubworldSystem.Current is QueenSlimeDomain, 1, this.GetLocalization("EnterDomain")),

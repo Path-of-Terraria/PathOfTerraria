@@ -49,7 +49,7 @@ internal class TwinsQuest() : Quest
 				new KillCount("Wraith", NPCID.Wraith, 3, this.GetLocalization("Wraiths")),
 				new KillCount("Armor", NPCID.PossessedArmor, 3, this.GetLocalization("PossessedArmors")),
 				new KillCount("Eye", NPCID.WanderingEye, 3, this.GetLocalization("WanderingEyes")),
-			], this.GetLocalization("CollectFragments")),
+			], Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerTwinsDialogue1")),
 
 			new ActionStep((_, _) =>
 			{
