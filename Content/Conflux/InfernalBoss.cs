@@ -78,7 +78,6 @@ internal sealed class InfernalBoss : ModNPC
 		public NPCAttacking Attacking { get; } = npc.GetGlobalNPC<NPCAttacking>();
 		public NPCAnimations Animations { get; } = npc.GetGlobalNPC<NPCAnimations>();
 		public NPCFootsteps Footsteps { get; } = npc.GetGlobalNPC<NPCFootsteps>();
-		// public NPCTeleports Teleports { get; } = npc.GetGlobalNPC<NPCTeleports>();
 	}
 
 	private static readonly InverseKinematics.Config ikCfg = new()
@@ -91,10 +90,8 @@ internal sealed class InfernalBoss : ModNPC
 	private static Asset<Texture2D>? robeTexture;
 	private static Asset<Texture2D>? bladeBaseTexture;
 	private static Asset<Texture2D>? bladeGlowTexture;
-	[ThreadStatic]
-	private static bool inCachedDraw;
+	private static Asset<Effect>? bladeShader;
 
-	// public ref float FlightCounter => ref NPC.ai[3];
 	public ref Flag Flags => ref Unsafe.As<float, Flag>(ref NPC.ai[3]);
 	public ref float Counter => ref NPC.ai[2];
 
@@ -103,7 +100,6 @@ internal sealed class InfernalBoss : ModNPC
 	/// <summary> World-relative body angle. </summary>
 	private (float Target, float Current) bodyAngle;
 	/// <summary> Body-relative head angle. </summary>
-	/// headAngle.Target = 0f;
 	private (float Target, float Current) headAngle;
 	private float movementAnimation;
 	private float flightVolume;
@@ -111,16 +107,6 @@ internal sealed class InfernalBoss : ModNPC
 	private Limb[] limbs = [];
 	private (int NextIndex, float Cooldown) limbMovement = (0, 0f);
 	private AttackType attackType;
-
-	public override void Load()
-	{
-		On_Main.DrawCachedNPCs += (orig, self, list, behind) =>
-		{
-			inCachedDraw = true;
-			orig(self, list, behind);
-			inCachedDraw = false;
-		};
-	}
 
 	public override void SetStaticDefaults()
 	{
@@ -170,7 +156,7 @@ internal sealed class InfernalBoss : ModNPC
 		NPC.TryEnableComponent<NPCAttacking>(e =>
 		{
 			e.Data.LengthInTicks = 100;
-			e.Data.CooldownLength = 30;
+			e.Data.CooldownLength = 10;
 			e.Data.NoGravityLength = 0;
 			e.Data.InitiationRange = new(450, 192);
 			e.Data.AimLag = ((new(0.0f), new(0.3f)), (0f, 0.99f));
@@ -450,16 +436,16 @@ internal sealed class InfernalBoss : ModNPC
 	{
 		if (!NPC.HasValidTarget) { return; }
 		if (ctx.Attacking.Active) { return; }
-		
+
 		Vector2 targetCenter = ctx.Targeting.GetTargetCenter(NPC);
 		float distance = targetCenter.Distance(ctx.Center);
-		
+
 		// Slash.
 		if (distance < 400f)
 		{
 			attackType = AttackType.Slash;
 			ctx.Attacking.Data.AimLag = ((new(0.0f), new(0.25f)), (0f, 0.99f));
-			
+
 			if (ctx.Attacking.TryStarting(new(NPC)))
 			{
 				ctx.Attacking.Data.Hitbox = (new(350, 350), new(+280, +280), new(+0, +0));
@@ -471,7 +457,7 @@ internal sealed class InfernalBoss : ModNPC
 		attackType = AttackType.Stab;
 		ctx.Attacking.Data.AimLag = ((new(0.0f), new(0.05f)), (0f, 0.99f));
 
-		if (distance < 1000f && ctx.Attacking.TryStarting(new(NPC)))
+		if (distance < 600f && ctx.Attacking.TryStarting(new(NPC)))
 		{
 			ctx.Attacking.Data.Hitbox = (new(200, 200), new(+500, +500), new(+0, +0));
 		}
@@ -949,6 +935,7 @@ internal sealed class InfernalBoss : ModNPC
 
 		if (ctx.Attacking.Active)
 		{
+			// Swing/Stab animation.
 			Gradient<BladeAnimKey> animation = attackType switch
 			{
 				AttackType.Stab => stabAnimation,
@@ -977,28 +964,25 @@ internal sealed class InfernalBoss : ModNPC
 		}
 		else
 		{
+			// Idle position.
 			targetPosition = ctx.Center + new Vector2(0, -64);
 			posChange = 0.08f;
 
-			if (attackType is AttackType.Stab)
-			{
-				targetRotation = ctx.Targeting.GetTargetCenter(NPC).AngleFrom(ctx.Center);
-			}
-			else
-			{
-				targetRotation = (MathHelper.PiOver2 + (MathHelper.TwoPi * 0.13f * NPC.spriteDirection));
-			}
+			targetRotation = (MathHelper.PiOver2 + (MathHelper.TwoPi * 0.13f * NPC.spriteDirection));
 			rotChange = 0.09f;
 			maxDistance = 192;
 		}
 
+		// Apply transformation.
 		Blade.Rotation = MathUtils.LerpRadians(Blade.Rotation, targetRotation, rotChange);
 		Blade.Position = Vector2.Lerp(Blade.Position, targetPosition, posChange);
+		// Clip blade position if it's too far away.
 		if (targetPosition.Distance(Blade.Position) > maxDistance)
 		{
 			Blade.Position = targetPosition + (targetPosition.DirectionTo(Blade.Position) * maxDistance);
 		}
 
+		// Tile collision effects.
 		Vector2 forward = Blade.Rotation.ToRotationVector2();
 		Vector2 sideways = forward.RotatedBy(MathHelper.PiOver2);
 		bool skipDusts = false;
@@ -1098,19 +1082,8 @@ internal sealed class InfernalBoss : ModNPC
 		ctx.Animations.Set(PickAnimation(in ctx));
 	}
 
-	public override void DrawBehind(int index)
-	{
-		Main.instance.DrawCacheNPCsBehindNonSolidTiles.Add(index);
-	}
-
 	public override bool PreDraw(SpriteBatch sb, Vector2 screenPos, Color drawColor)
 	{
-		if (inCachedDraw)
-		{
-			RenderBlade(sb, screenPos);
-			return false;
-		}
-
 		Context ctx = new(NPC);
 
 		helmetTexture ??= ModContent.Request<Texture2D>($"{Texture}_Helmet", AssetRequestMode.ImmediateLoad);
@@ -1132,27 +1105,74 @@ internal sealed class InfernalBoss : ModNPC
 		ctx.Animations.Render(NPC, robeTexture.Value, robeTexture.Value.Frame(), screenPos, drawColor, center: bCenter, origin: rOrigin, rotation: bAngle);
 		ctx.Animations.Render(NPC, helmetTexture.Value, helmetTexture.Value.Frame(), screenPos, drawColor, center: hCenter, origin: hOrigin, rotation: hAngle);
 
+		RenderBlade(sb, screenPos);
+
 		// Draw the front arms.
 		RenderArms(layerSign: +1, screenPos, drawColor);
 
 		return false;
 	}
+
 	private void RenderBlade(SpriteBatch sb, Vector2 screenPos)
 	{
 		Context ctx = new(NPC);
+		SpriteBatchArgs sbArgs = sb.GetArguments();
 
+		Vector2 bladeOrigin = new(146, 86); // Approximate hilt center.
+		Color bladeColor = Lighting.GetColor(ctx.Center.ToTileCoordinates()); // Sample at body for less self-lighting.
 		bladeBaseTexture ??= ModContent.Request<Texture2D>($"{Texture}_Blade", AssetRequestMode.ImmediateLoad);
 		bladeGlowTexture ??= ModContent.Request<Texture2D>($"{Texture}_Blade_Glow", AssetRequestMode.ImmediateLoad);
 
-		// Draw the blade.
-		Vector2 bladeOrigin = new(146, 86); // Approximate hilt center.
-		Color bladeColor = Lighting.GetColor(ctx.Center.ToTileCoordinates()); // Sample at body for less self-lighting.
-		sb.Draw(bladeBaseTexture.Value, Blade.Position - screenPos, null, bladeColor, Blade.Rotation, bladeOrigin, 1f, 0, 0);
 		sb.End();
-		sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer);
-		sb.Draw(bladeGlowTexture.Value, Blade.Position - screenPos, null, Color.White, Blade.Rotation, bladeOrigin, 1f, 0, 0);
-		sb.End();
-		sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer);
+		RenderBladeInner(screenPos, bladeBaseTexture.Value, bladeGlowTexture.Value, bladeOrigin, bladeColor);
+		sb.Begin(in sbArgs);
+	}
+	private static readonly short[] QuadTriangles = [0, 2, 3, 0, 1, 2];
+	private void RenderBladeInner(Vector2 screenPos, Texture2D diffuse, Texture2D glowmask, Vector2 origin, Color color)
+	{
+		// This method may be painful to see, but the SpriteBatch became of no use the moment
+		// a custom shader was introduced, leading to infuriatingly nonsensical matrix issues,
+		// so instead we do all rendering manually here.
+
+		Vector2 maskExtensionOffset = Main.sceneTilePos - Main.screenPosition;
+		Vector2 maskTargetSize = Main.instance.tileTarget.Size();
+		Matrix viewMatrix = Main.GameViewMatrix.NormalizedTransformationmatrix;
+		Matrix worldMatrix =
+		(
+			Matrix.CreateTranslation(-origin.X, -origin.Y, 0)
+			* Matrix.CreateRotationZ(Blade.Rotation)
+			* Matrix.CreateTranslation(Blade.Position.X - screenPos.X, Blade.Position.Y - screenPos.Y, 0f)
+		);
+
+		using var vertices = new RentedArray<VertexPositionColorTexture>(4);
+		Rectangle bounds = diffuse.Bounds;
+		var pos = new Vector4(bounds.Left, bounds.Top, bounds.Right, bounds.Bottom);
+		var uv0 = new Vector4(0f, 0f, 1f, 1f);
+		vertices[0] = new(new(pos.X, pos.Y, 0f), color, new(uv0.X, uv0.Y));
+		vertices[1] = new(new(pos.Z, pos.Y, 0f), color, new(uv0.Z, uv0.Y));
+		vertices[2] = new(new(pos.Z, pos.W, 0f), color, new(uv0.Z, uv0.W));
+		vertices[3] = new(new(pos.X, pos.W, 0f), color, new(uv0.X, uv0.W));
+
+		GraphicsDevice gfx = Main.instance.GraphicsDevice;
+		Effect effect = (bladeShader ??= ModContent.Request<Effect>($"{PoTMod.ModName}/Assets/Effects/PyralisBlade", AssetRequestMode.ImmediateLoad)).Value;
+		effect.Parameters["Texture"].SetValue(diffuse);
+		effect.Parameters["Glowmask"].SetValue(glowmask);
+		effect.Parameters["Tiles"].SetValue(Main.instance.tileTarget);
+		effect.Parameters["Black"].SetValue(Main.instance.blackTarget);
+		effect.Parameters["MaskSize"].SetValue(maskTargetSize);
+		effect.Parameters["MaskOffset"].SetValue(maskExtensionOffset);
+		effect.Parameters["ScreenPosition"].SetValue(Main.screenPosition);
+		effect.Parameters["World"].SetValue(worldMatrix);
+		effect.Parameters["View"].SetValue(viewMatrix);
+		gfx.BlendState = BlendState.AlphaBlend;
+		gfx.DepthStencilState = DepthStencilState.None;
+		gfx.RasterizerState = Main.Rasterizer;
+
+		foreach (EffectPass pass in effect.CurrentTechnique.Passes)
+		{
+			pass.Apply();
+			gfx.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertices.Array, 0, vertices.Length, QuadTriangles, 0, QuadTriangles.Length / 3);
+		}
 	}
 
 	private void RenderArms(int? layerSign, Vector2 screenPos, Color drawColor)
