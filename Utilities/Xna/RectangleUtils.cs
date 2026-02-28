@@ -7,4 +7,8 @@ internal static class RectangleUtils
 		self.Inflate(x, y);
 		return self;
 	}
+	public static Rectangle WithOffset(this Rectangle self, int x, int y)
+	{
+		return self with { X = self.X + x, Y = self.Y + y };
+	}
 }
