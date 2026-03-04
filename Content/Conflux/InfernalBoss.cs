@@ -6,7 +6,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using PathOfTerraria.Common.AI;
-using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Utilities;
@@ -20,6 +19,7 @@ using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
 using ReLogic.Content;
 using ReLogic.Utilities;
+using SubworldLibrary;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.CameraModifiers;
@@ -45,19 +45,23 @@ internal sealed class InfernalBoss : ModNPC
 		None = 0,
 		Walking = 1 << 0,
 		Wielding = 1 << 1,
+		EntityGrabbing = 1 << 2,
 	}
 	public record struct Limb()
 	{
 		public required IKLimb IK;
 		public required string TexturePath;
 		public required LimbRole Role;
+		public Vector2 StartPosition;
+		public Vector2 TargetPosition;
 		public Asset<Texture2D>? TextureCache;
+		public EntityRef EntityAttachment;
 		public Point16? TileAttachment;
 		public Vector2? BladeAttachment;
 		public float Layer;
-		public float PlacementAnimation;
+		public (int Stage, float Progress) Animation;
 		public bool PlayedSound;
-		public bool MovingFromTile;
+		public bool LiftInAnimation;
 	}
 
 	public enum Flag : byte
@@ -67,11 +71,13 @@ internal sealed class InfernalBoss : ModNPC
 	{
 		None,
 		Slash,
+		Reverse,
 		Stab,
 	}
 	private readonly struct Context(NPC npc)
 	{
 		public Vector2 Center { get; } = npc.Center;
+		public Vector2 TargetCenter { get; } = npc.GetGlobalNPC<NPCTargeting>().GetTargetCenter(npc);
 		public NPCMovement Movement { get; } = npc.GetGlobalNPC<NPCMovement>();
 		public NPCNavigation Navigation { get; } = npc.GetGlobalNPC<NPCNavigation>();
 		public NPCTargeting Targeting { get; } = npc.GetGlobalNPC<NPCTargeting>();
@@ -102,11 +108,14 @@ internal sealed class InfernalBoss : ModNPC
 	/// <summary> Body-relative head angle. </summary>
 	private (float Target, float Current) headAngle;
 	private float movementAnimation;
-	private float flightVolume;
-	private SlotId flightSound;
+	private AttackType attackType;
 	private Limb[] limbs = [];
 	private (int NextIndex, float Cooldown) limbMovement = (0, 0f);
-	private AttackType attackType;
+	private (SlotId Handle, float Intensity) movementSound;
+	private (SlotId Handle, float Intensity) bladeBurnSound;
+	private ushort grabCooldown;
+	private ushort spawnCooldown;
+	private float strafingAngle;
 
 	public override void SetStaticDefaults()
 	{
@@ -124,13 +133,13 @@ internal sealed class InfernalBoss : ModNPC
 		NPC.aiStyle = -1;
 		NPC.lifeMax = 125000;
 		NPC.defense = 90;
-		NPC.damage = 100;
+		NPC.damage = 80;
 		NPC.width = 125;
 		NPC.height = 125;
 		NPC.knockBackResist = 0.0f;
 		NPC.boss = true;
 		NPC.lavaImmune = true;
-		Music = MusicID.Boss4;
+		Music = MusicID.OtherworldlyBoss1;
 
 		NPC.HitSound = new($"{nameof(PathOfTerraria)}/Assets/Sounds/HitEffects/FleshHit", 3) { Volume = 0.4f, Pitch = -0.5f, MaxInstances = 5 };
 		NPC.DeathSound = SoundID.NPCDeath23 with { Pitch = -0.85f, PitchVariance = 0.15f, Identifier = $"{Name}Death" };
@@ -155,8 +164,8 @@ internal sealed class InfernalBoss : ModNPC
 		NPC.TryEnableComponent<NPCTargeting>();
 		NPC.TryEnableComponent<NPCAttacking>(e =>
 		{
-			e.Data.LengthInTicks = 100;
-			e.Data.CooldownLength = 10;
+			e.Data.LengthInTicks = 95;
+			e.Data.CooldownLength = 00;
 			e.Data.NoGravityLength = 0;
 			e.Data.InitiationRange = new(450, 192);
 			e.Data.AimLag = ((new(0.0f), new(0.3f)), (0f, 0.99f));
@@ -252,17 +261,28 @@ internal sealed class InfernalBoss : ModNPC
 
 	public override void AI()
 	{
-		Music = MusicID.OtherworldlyBoss1;
 		Context ctx = new(NPC);
 
 #if IK_PREVIEW
 		NPC.Center = Main.MouseWorld;
 #endif
 
+		// Reset overrides.
+		ctx.Movement.Data.TargetOverride = null;
+		ctx.Attacking.Data.ManualInitiation = true;
+
 		// Invoke behaviors.
 		ctx.Targeting.ManualUpdate(new(NPC));
 		ResetOffsets(in ctx);
-		CustomBehavior(in ctx);
+		SpawnMinions(in ctx);
+		UpdateBlade(in ctx);
+		LimbWielding(in ctx);
+		LimbGrabbing(in ctx);
+		LimbMovement(in ctx);
+		LimbFlailing(in ctx);
+		BodyMovement(in ctx);
+		UpdateBodyAngles(in ctx);
+		UpdateLimbs(in ctx);
 		InitiateAttacks(in ctx);
 		// ctx.Teleports.ManualUpdate(new(NPC));
 		ctx.Attacking.ManualUpdate(new(NPC));
@@ -277,38 +297,45 @@ internal sealed class InfernalBoss : ModNPC
 #endif
 	}
 
-	private void CustomBehavior(in Context ctx)
+	private void BodyMovement(in Context ctx)
 	{
-		bool atkActive = ctx.Attacking.Active;
-		int atkProg = ctx.Attacking.Data.Progress;
-		int atkBase = ctx.Attacking.Data.Damage.Start - 5;
-		Vector2 targetCenter = ctx.Targeting.GetTargetCenter(NPC);
-
-		// Reset overrides.
-		ctx.Movement.Data.TargetOverride = null;
-		ctx.Attacking.Data.ManualInitiation = true;
-
-		UpdateBlade(in ctx);
-		UpdateLimbs(in ctx, out int numAttached, out float averageAngle);
-
-		// Movement.
+		int numAttached = limbs.Count(l => l.TileAttachment != null);
 		int numWalkingLimbs = limbs.Count(l => l.Role.HasFlag(LimbRole.Walking));
-		bool isClimbing = numAttached >= Math.Max(1, numWalkingLimbs / 2);
-		NPC.aiStyle = -1;
+		bool isClimbing = numAttached >= Math.Max(1, numWalkingLimbs / 2) || NPC.lavaWet;
 		NPC.noGravity = isClimbing;
 
-		if (isClimbing && NPC.HasValidTarget)
+		if (isClimbing)
 		{
+			bool hasTarget = NPC.HasValidTarget;
 			NPCAimedTarget target = NPC.GetTargetData(ignorePlayerTankPets: true);
 			Vector2 targetPos = target.Center;
-			Vector2 walkPos = targetPos; // + new Vector2(-192, 0);
+			Vector2 walkPos = targetPos;
+
+			// Go to the center of the arena if lacking a target in the infernal realm.
+			if (!hasTarget)
+			{
+				bool inNativeArena = SubworldSystem.IsActive<InfernalRealm>();
+				targetPos = inNativeArena ? InfernalRealm.ArenaCenter.ToWorldCoordinates() : ctx.Center;
+			}
 
 			// Stand up, but only if that doesn't prevent the creature from getting into tight spaces.
-			Vector2Int sizeInTiles = (NPC.Size * new Vector2(1f, 2.5f)).ToTileCoordinates();
-			if (TileUtils.TryFitRectangleIntoTilemap(walkPos.ToTileCoordinates(), sizeInTiles, out Vector2Int adjustedPoint))
+			// Vector2Int sizeInTiles = (NPC.Size * new Vector2(1f, 2.5f)).ToTileCoordinates();
+			// if (hasTarget && TileUtils.TryFitRectangleIntoTilemap(walkPos.ToTileCoordinates(), sizeInTiles, out Vector2Int adjustedPoint))
+			// {
+			// 	walkPos = (adjustedPoint + (sizeInTiles * 0.5f)).ToWorldCoordinates();
+			// }
+
+			// Keep some distance away from the target and also rotate around it.
+			const float approachDistance = 290;
+			if (hasTarget)
 			{
-				walkPos = (adjustedPoint + (sizeInTiles * 0.5f)).ToWorldCoordinates();
+				walkPos += strafingAngle.ToRotationVector2() * approachDistance * new Vector2(1.0f, 0.5f);
+				strafingAngle += -0.2f * MathHelper.TwoPi * TimeSystem.LogicDeltaTime;
 			}
+			// if (hasTarget && walkPos.Distance(ctx.Center) is float dist and < approachDistance)
+			// {
+			// 	walkPos = ctx.Center + (ctx.Center.DirectionTo(walkPos) * (dist - approachDistance));
+			// }
 
 			float acceleration = ctx.Movement.Data.Acceleration * TimeSystem.LogicDeltaTime;
 			Vector2 targetDir = ctx.Center.DirectionTo(targetPos);
@@ -316,17 +343,27 @@ internal sealed class InfernalBoss : ModNPC
 
 			if (ctx.Attacking.Active)
 			{
-				acceleration *= 0.3f;
+				acceleration *= 0.65f;
 				ctx.Attacking.Data.Dash.Velocity = new(20f, 10f);
+			}
+			else
+			{
+				acceleration *= 0.9f;
 			}
 
 			// Slight upwards bias.
-			walkDir = (walkDir + new Vector2(0f, -0.04f)).SafeNormalize(Vector2.UnitY);
+			// walkDir = (walkDir + new Vector2(0f, -0.04f)).SafeNormalize(Vector2.UnitY);
 
-			NPC.velocity = MovementUtils.DirAccel(NPC.velocity, walkDir, ctx.Movement.Data.MaxSpeed, acceleration);
+			NPC.velocity = MovementUtils.DirAccelQ(NPC.velocity, walkDir, ctx.Movement.Data.MaxSpeed, acceleration);
+			
+			float speedCap = ctx.Movement.Data.MaxSpeed * 1.1f;
+			if (NPC.velocity.Length() > speedCap)
+			{
+				NPC.velocity = NPC.velocity.SafeNormalize(Vector2.UnitX) * speedCap;
+			}
 
 			// Do not change the direction if the target is close or if an attack is ongoing.
-			if (!ctx.Attacking.Active && Math.Abs(targetPos.X - ctx.Center.X) > 48)
+			if (hasTarget && !ctx.Attacking.Active && Math.Abs(targetPos.X - ctx.Center.X) > 100)
 			{
 				NPC.direction = targetDir.X >= 0f ? 1 : -1;
 			}
@@ -337,10 +374,31 @@ internal sealed class InfernalBoss : ModNPC
 				FallThroughPlatforms = true,
 			};
 		}
+	}
+
+	private void UpdateBodyAngles(in Context ctx)
+	{
+		int numAttached = 0;
+		Vector2 averageDir = default;
+		Vector2 logicalBodyCenter = NPC.Center;
+		Vector2 visualBodyCenter = logicalBodyCenter + new Vector2(0f, NPC.gfxOffY);
+
+		// Compute ground normal.
+		foreach (ref Limb limb in limbs.AsSpan())
+		{
+			if (limb.TileAttachment != null)
+			{
+				numAttached++;
+				averageDir += limb.TargetPosition.DirectionFrom(visualBodyCenter);
+			}
+		}
+		// Compute average angle.
+		float averageAngle = (averageDir / numAttached).ToRotation();
+		averageAngle = !float.IsNaN(averageAngle) ? averageAngle : 0f;
 
 		// Update body rotation. Rotate towards zero faster than from it.
 		float limbNormal = averageAngle - MathHelper.PiOver2;
-		bodyAngle.Target = limbNormal * 0.50f;
+		bodyAngle.Target = limbNormal * 0.30f;
 		bool anglingBodyTowardsZero = MathF.Abs(bodyAngle.Target) < MathF.Abs(bodyAngle.Current);
 		bodyAngle.Current = MathUtils.LerpRadians(bodyAngle.Current, bodyAngle.Target, (anglingBodyTowardsZero ? 2.10f : 0.80f) * TimeSystem.LogicDeltaTime);
 		NPC.rotation = bodyAngle.Current;
@@ -350,86 +408,15 @@ internal sealed class InfernalBoss : ModNPC
 
 		// Update head rotation. Body-relative.
 		const float HeadAngleMul = 0.5f;
-		bool targetInFront = ((ctx.Center.X - targetCenter.X) >= 0 ? 1 : -1) != NPC.spriteDirection;
+		bool targetInFront = ((ctx.Center.X - ctx.TargetCenter.X) >= 0 ? 1 : -1) != NPC.spriteDirection;
 		bool isFlipped = NPC.spriteDirection < 0;
 		float flip01 = isFlipped ? 1f : 0f;
 		headAngle.Target = 0f;
-		headAngle.Target = NPC.HasValidTarget && targetInFront ? targetCenter.AngleFrom(ctx.Center) : flip01 * MathHelper.Pi;
+		headAngle.Target = NPC.HasValidTarget && targetInFront ? ctx.TargetCenter.AngleFrom(ctx.Center) : flip01 * MathHelper.Pi;
 		headAngle.Target += NPC.HasValidTarget && !targetInFront ? (MathHelper.PiOver4 * NPC.spriteDirection) : 0f;
 		headAngle.Target += (flip01 * MathHelper.Pi);
 		headAngle.Target = MathUtils.LerpRadians(headAngle.Target, 0f, 1f - HeadAngleMul);
 		headAngle.Current = MathUtils.LerpRadians(headAngle.Current, headAngle.Target, 2.5f * TimeSystem.LogicDeltaTime);
-		// headAngle.Current = bodyAngle.Current;
-
-		if (Main.GameUpdateCount % 200 == 0 && false)
-		{
-			int type = Main.rand.NextFloat() switch
-			{
-				< 0.05f => ModContent.NPCType<FallenShaman>(),
-				< 0.10f => ModContent.NPCType<FallenTyrant>(),
-				< 0.4f => ModContent.NPCType<FallenSchemer>(),
-				_ => ModContent.NPCType<FallenSavage>(),
-			};
-			NPC.NewNPC(NPC.GetSource_FromThis(), (int)ctx.Center.X, (int)ctx.Center.Y, type);
-			SoundEngine.PlaySound(SoundID.Zombie102 with { Pitch = -0.5f }, ctx.Center);
-		}
-
-		// Shoot projectiles during non-respawn attacks.
-		// for (int i = 0; i < (attackType is AttackType.Stab && atkActive && ctx.Attacking.Data.Progress is > 25 and < 50 ? 2 : 0); i++)
-		for (int i = 0; i < (attackType is AttackType.Stab && (!atkActive || ctx.Attacking.Data.Progress < 10) ? 3 : 0); i++)
-		{
-			continue;
-			if (atkProg == 1)
-			{
-				// SoundEngine.PlaySound(new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/FallenShamanAttack")
-				// {
-				// 	MaxInstances = 2,
-				// 	Volume = 0.5f,
-				// 	PitchVariance = 0.15f,
-				// }, ctx.Center);
-			}
-
-			// if (atkProg != atkBase + (i * 0)) { continue; }
-
-			Vector2 position = Blade.Position + Blade.Rotation.ToRotationVector2() * 350f + Main.rand.NextVector2Circular(40, 40);
-
-			if (Main.GameUpdateCount % 5 != 0) { continue; }
-			if (Vector2.Dot(Blade.Rotation.ToRotationVector2(), position.DirectionTo(ctx.Targeting.GetTargetCenter(NPC))) < 0.5f) { continue; }
-
-			if (Main.netMode != NetmodeID.MultiplayerClient)
-			{
-				// int projType = ModContent.ProjectileType<FallenShamanRocket>();
-				int projType = ProjectileID.FlamesTrap;
-				int projDamage = ModeUtils.ProjectileDamage(NPC.damage);
-				float projAngle = Blade.Rotation + (MathHelper.Pi * 0.05f * (i - 1) * NPC.direction);
-				Vector2 projVel = projAngle.ToRotationVector2() * 10f;
-				Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), position, projVel, projType, projDamage, 1f);
-			}
-
-			if (!Main.dedServ && i < 3)
-			{
-				SoundEngine.PlaySound(SoundID.Item92 with { Volume = 0.70f, MaxInstances = 5, Pitch = -0.9f, PitchVariance = 0.5f }, ctx.Center);
-			}
-		}
-
-		// Effects.
-		if (!Main.dedServ)
-		{
-			// Lighting.AddLight(NPC.Top, Color.Red.ToVector3() * 0.1f);
-
-			var loopSound = new SoundStyle($"{nameof(PathOfTerraria)}/Assets/Sounds/Gore/FleshLoopChaotic")
-			{
-				Volume = 0.1f,
-				IsLooped = true,
-				PauseBehavior = PauseBehavior.PauseWithGame,
-			};
-			float speed = NPC.velocity.Length();
-			float halfStep = 1f * TimeSystem.LogicDeltaTime;
-			float target = 1f;
-			float volume = flightVolume = MathUtils.StepTowards(MathHelper.Lerp(flightVolume, target, halfStep), target, halfStep);
-			float pitch = Math.Clamp(-0.9f + (speed * 0.1f), -0.9f, 0.2f);
-			SoundUtils.UpdateLoopingSound(ref flightSound, ctx.Center, volume, pitch, loopSound, _ => Main.npc[NPC.whoAmI] is { active: true } n && n == NPC);
-		}
 	}
 
 	private void InitiateAttacks(in Context ctx)
@@ -437,29 +424,76 @@ internal sealed class InfernalBoss : ModNPC
 		if (!NPC.HasValidTarget) { return; }
 		if (ctx.Attacking.Active) { return; }
 
+		// Do not start attacks when holding some entity.
+		if (limbs.Any(l => l.EntityAttachment.IsValid)) { return; }
+
 		Vector2 targetCenter = ctx.Targeting.GetTargetCenter(NPC);
 		float distance = targetCenter.Distance(ctx.Center);
-
-		// Slash.
-		if (distance < 400f)
+		AttackType nextAttackType = attackType switch
 		{
-			attackType = AttackType.Slash;
-			ctx.Attacking.Data.AimLag = ((new(0.0f), new(0.25f)), (0f, 0.99f));
+			AttackType.Slash => AttackType.Reverse,
+			AttackType.Reverse => AttackType.Stab,
+			_ => AttackType.Slash
+		};
+		float attackRange = nextAttackType switch
+		{
+			AttackType.Stab => 610,
+			_ => 400,
+		};
 
-			if (ctx.Attacking.TryStarting(new(NPC)))
+		if (distance < attackRange && ctx.Attacking.TryStarting(new(NPC)))
+		{
+			attackType = nextAttackType;
+
+			if (attackType != AttackType.Stab)
 			{
+				ctx.Attacking.Data.AimLag = ((new(0.0f), new(0.25f)), (0f, 0.99f));
 				ctx.Attacking.Data.Hitbox = (new(350, 350), new(+280, +280), new(+0, +0));
 			}
+			else
+			{
+				ctx.Attacking.Data.AimLag = ((new(0.0f), new(0.05f)), (0f, 0.99f));
+				ctx.Attacking.Data.Hitbox = (new(200, 200), new(+500, +500), new(+0, +0));
+			}
+		}
+	}
 
+	private void SpawnMinions(in Context ctx)
+	{
+		if (spawnCooldown > 0)
+		{
+			spawnCooldown--;
 			return;
 		}
 
-		attackType = AttackType.Stab;
-		ctx.Attacking.Data.AimLag = ((new(0.0f), new(0.05f)), (0f, 0.99f));
+		if (Main.netMode == NetmodeID.MultiplayerClient) { return; }
+		// if (!ctx.Attacking.Active) { return; }
 
-		if (distance < 600f && ctx.Attacking.TryStarting(new(NPC)))
+		int numSavages = 0, numSchemers = 0, numTyrants = 0, numShamans = 0;
+		foreach (NPC npc in Main.ActiveNPCs)
 		{
-			ctx.Attacking.Data.Hitbox = (new(200, 200), new(+500, +500), new(+0, +0));
+			if (npc.type == ModContent.NPCType<FallenSavage>()) { numSavages++; }
+			else if (npc.type == ModContent.NPCType<FallenSchemer>()) { numSchemers++; }
+			else if (npc.type == ModContent.NPCType<FallenTyrant>()) { numTyrants++; }
+			else if (npc.type == ModContent.NPCType<FallenShaman>()) { numShamans++; }
+		}
+
+		int type = 0;
+		for (int i = 1; i <= 1; i++)
+		{
+			if (numSavages < i * 1.5f) { type = ModContent.NPCType<FallenSavage>(); break; }
+			else if (numSchemers < i) { type = ModContent.NPCType<FallenSchemer>(); break; }
+			else if (numTyrants < i) { type = ModContent.NPCType<FallenTyrant>(); break; }
+			else if (numShamans < i * 0.9f) { type = ModContent.NPCType<FallenShaman>(); break; }
+		}
+
+		if (type > 0)
+		{
+			NPC npc = NPC.NewNPCDirect(NPC.GetSource_FromThis(), (int)ctx.Center.X, (int)ctx.Center.Y, type);
+			npc.velocity = ctx.Attacking.Direction * 15f;
+			SoundEngine.PlaySound(SoundID.Zombie102 with { Pitch = -0.9f }, ctx.Center);
+
+			spawnCooldown = 300;
 		}
 	}
 
@@ -475,28 +509,106 @@ internal sealed class InfernalBoss : ModNPC
 	}
 	private void UpdateEffects(in Context ctx)
 	{
-		if (!Main.dedServ)
+		if (Main.dedServ) { return; }
+
+		// Bias the camera towards the boss.
+		CameraCurios.Create(new()
 		{
-			// Bias the camera towards the boss.
-			CameraCurios.Create(new()
+			Identifier = nameof(InfernalBoss),
+			Weight = 0.2f,
+			LengthInSeconds = 1f,
+			Position = ctx.Center,
+			Range = new(Min: 1024, Max: 2000, Exponent: 2.0f),
+		});
+
+		// Blade tile collision effects.
+		Vector2 forward = Blade.Rotation.ToRotationVector2();
+		Vector2 sideways = forward.RotatedBy(MathHelper.PiOver2);
+		bool slicingGround = false;
+		int numTilesSlicing = 0;
+		for (float extent = 80; extent < 400; extent += 32)
+		{
+			bool sliced = false;
+			for (float offset = -32; offset <= 32; offset += 32)
 			{
-				Identifier = nameof(InfernalBoss),
-				Weight = 0.2f,
-				LengthInSeconds = 1f,
-				Position = ctx.Center,
-				Range = new(Min: 1024, Max: 2000, Exponent: 2.0f),
-			});
+				Vector2 point = Blade.Position + (forward * extent) + (sideways * offset);
+				Point16 tilePoint = point.ToTileCoordinates16();
+				int x = tilePoint.X;
+				int y = tilePoint.Y;
+
+				if (x < 1 || y < 1 || x >= Main.maxTilesX - 1 || y >= Main.maxTilesY - 1) { continue; }
+
+				point = tilePoint.ToWorldCoordinates(8, 0);
+
+				if (!WorldUtilities.SolidTile(x, y))
+				{
+					Lighting.AddLight(point, Color.Orange.ToVector3());
+					continue;
+				}
+
+				numTilesSlicing++;
+
+				if (!slicingGround)
+				{
+					bool tileSurrounded = true
+						&& WorldUtilities.SolidTile(x + 0, y - 1)
+						&& WorldUtilities.SolidTile(x + 0, y + 1)
+						&& WorldUtilities.SolidTile(x - 1, y + 0)
+						&& WorldUtilities.SolidTile(x + 1, y + 0);
+
+					if (!tileSurrounded)
+					{
+						Dust.NewDustPerfect(point, DustID.Torch, Scale: 2f, Alpha: 128);
+						sliced = true;
+					}
+				}
+			}
+
+			if (sliced)
+			{
+				slicingGround = true;
+			}
+		}
+
+		// Movement sound.
+		{
+			var loopSound = new SoundStyle($"{nameof(PathOfTerraria)}/Assets/Sounds/Gore/FleshLoopChaotic") { Volume = 0.1f, IsLooped = true, PauseBehavior = PauseBehavior.PauseWithGame };
+			float halfStep = 1f * TimeSystem.LogicDeltaTime;
+			float target = MathUtils.Clamp01(NPC.velocity.Length() * 0.1f);
+			float intensity = movementSound.Intensity = MathUtils.StepTowards(MathHelper.Lerp(movementSound.Intensity, target, halfStep), target, halfStep);
+			float volume = MathHelper.Lerp(0.75f, 1.00f, intensity);
+			float pitch = MathHelper.Lerp(-0.9f, +0.2f, intensity);
+			SoundUtils.UpdateLoopingSound(ref movementSound.Handle, ctx.Center, volume, pitch, loopSound, _ => Main.npc[NPC.whoAmI] is { active: true } n && n == NPC);
+		}
+
+		// Blade ground collision sound.
+		{
+			// Calculate distance to any part of the blade.
+			float minDistance = float.PositiveInfinity;
+			for (int i = 0; i <= 400; i += 100)
+			{
+				Vector2 bladeEnd = Blade.Position + Blade.Rotation.ToRotationVector2() * 400f;
+				minDistance = MathF.Min(minDistance, MathF.Min(bladeEnd.Distance(CameraSystem.ScreenCenter), bladeEnd.Distance(Main.LocalPlayer.Center)));
+			}
+
+			var loopSound = new SoundStyle($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/PyralisBladeBurn") { Volume = 0.95f, IsLooped = true, PauseBehavior = PauseBehavior.PauseWithGame };
+			float halfStep = 8 * TimeSystem.LogicDeltaTime;
+			float distanceTarget = MathF.Pow(MathUtils.DistancePower(minDistance, 64, 1024), 2.3f);
+			float slicingTarget = MathUtils.Clamp01(numTilesSlicing / 10f) * 0.5f;
+			float target = MathF.Max(distanceTarget, slicingTarget);
+			float intensity = bladeBurnSound.Intensity = MathUtils.StepTowards(MathHelper.Lerp(bladeBurnSound.Intensity, target, halfStep), target, halfStep);
+			float volume = MathHelper.Lerp(0.01f, 1f, intensity);
+			float pitch = slicingGround ? +0.5f : +0.0f;
+			SoundUtils.UpdateLoopingSound(ref bladeBurnSound.Handle, ctx.Center, volume, pitch, loopSound, _ => Main.npc[NPC.whoAmI] is { active: true } n && n == NPC);
 		}
 	}
 
 	private void SetupLimbs(in Context ctx)
 	{
 		_ = ctx;
-
-		// Vector2 baseOffset = new(-10, 65);
 		var limbFraming = new SpriteFrame(4, 1) { PaddingX = 0, PaddingY = 0 };
 
-		// When looking right...
+		// When facing right...
 		limbs =
 		[
 			// Front right limb.
@@ -514,7 +626,7 @@ internal sealed class InfernalBoss : ModNPC
 			// Front left limb.
 			new Limb()
 			{
-				Role = LimbRole.Walking,
+				Role = LimbRole.Walking | LimbRole.EntityGrabbing,
 				TexturePath = $"{Texture}_BackArm1",
 				Layer = -1,
 				IK = new()
@@ -600,7 +712,7 @@ internal sealed class InfernalBoss : ModNPC
 			// Center wield.
 			new Limb()
 			{
-				Role = LimbRole.Wielding,
+				Role = LimbRole.Wielding, // | LimbRole.EntityGrabbing,
 				TexturePath = $"{Texture}_FrontArm3",
 				Layer = +2,
 				IK = new()
@@ -642,15 +754,272 @@ internal sealed class InfernalBoss : ModNPC
 		// Default and calculated data.
 		foreach (ref Limb limb in limbs.AsSpan())
 		{
-			limb.IK.TargetCurrent = NPC.Center;
-			limb.IK.TargetWanted = NPC.Center;
+			limb.IK.Target = NPC.Center;
+			limb.TargetPosition = NPC.Center;
 		}
 
 		// Set the first walking limb.
 		limbMovement.NextIndex = Math.Max(0, Array.FindIndex(limbs, l => l.Role.HasFlag(LimbRole.Walking)));
 	}
 
-	private void UpdateLimbs(in Context ctx, out int numAttached, out float averageAngle)
+	private void LimbMovement(in Context ctx)
+	{
+		_ = ctx;
+		Vector2 logicalBodyCenter = ctx.Center;
+		Vector2 visualBodyCenter = logicalBodyCenter + new Vector2(0f, NPC.gfxOffY);
+
+		// Cooldown is reduced by the current speed.
+		float moveSpeed = NPC.velocity.Length();
+		float coolSpeed = MathF.Max(1f, moveSpeed);
+		limbMovement.Cooldown = MathUtils.StepTowards(limbMovement.Cooldown, 0f, coolSpeed * TimeSystem.LogicDeltaTime);
+		limbMovement.NextIndex = Math.Clamp(limbMovement.NextIndex, 0, limbs.Length - 1);
+
+		int limbIndex = -1;
+		bool placeAll = limbs.All(l => l.TileAttachment == null);
+		bool playedSounds = false;
+		bool advanceOrder = false;
+		foreach (ref Limb limb in limbs.AsSpan())
+		{
+			limbIndex++;
+
+			if (!limb.Role.HasFlag(LimbRole.Walking)) { continue; }
+
+			float sqrLength = limb.IK.SqrLength;
+			bool grabTerrain = placeAll || (limbMovement.Cooldown <= 0f && limbIndex == limbMovement.NextIndex);
+			bool holdingSomethingElse = limb.EntityAttachment.IsValid || limb.BladeAttachment != null;
+			Vector2 visualLimbPos = limb.IK.GetPosition(visualBodyCenter, rotation: bodyAngle.Current, xDir: NPC.spriteDirection);
+			Vector2 logicalLimbPos = limb.IK.GetPosition(logicalBodyCenter, rotation: bodyAngle.Current, xDir: NPC.spriteDirection);
+
+			advanceOrder |= grabTerrain;
+
+			// If already attached (to a tile), advance order if needed.
+			if (!holdingSomethingElse && limb.TileAttachment?.ToWorldCoordinates() is { } attach && (attach.DistanceSQ(logicalLimbPos) <= sqrLength || attach.DistanceSQ(visualLimbPos) <= sqrLength))
+			{
+				limb.TargetPosition = attach;
+			}
+			// Otherwise, if walking, find a terrain point to grab.
+			else if (!holdingSomethingElse && grabTerrain && PickTileTarget(in ctx, ref limb, out Point16 tilePos))
+			{
+				limbMovement.Cooldown = (moveSpeed / limbs.Length) / 3f;
+				limb.Animation = default;
+				limb.PlayedSound = false;
+				limb.LiftInAnimation = limb.TileAttachment != null;
+				limb.TileAttachment = tilePos;
+				limb.BladeAttachment = null;
+				limb.StartPosition = limb.IK.Target;
+				limb.TargetPosition = ((Point16)tilePos).ToWorldCoordinates();
+			}
+			// Release attachment if all else fails.
+			else
+			{
+				if (limb.TileAttachment != null)
+				{
+					limb.TileAttachment = null;
+					limb.LiftInAnimation = false;
+					limb.Animation = default;
+					limb.StartPosition = limb.IK.Target;
+				}
+				continue;
+			}
+
+			float animSpeed = MathHelper.Lerp(MathUtils.Clamp01(limb.StartPosition.Distance(limb.TargetPosition) / 300f), 2.0f, 0.5f);
+			limb.Animation.Progress = MathUtils.StepTowards(limb.Animation.Progress, 1f, animSpeed * TimeSystem.LogicDeltaTime);
+
+			const float soundRange = 16f;
+			if (!Main.dedServ && limb.TileAttachment != null && !playedSounds && limb.IK.Target.Distance(limb.TargetPosition) <= soundRange && !limb.PlayedSound)
+			{
+				(playedSounds, limb.PlayedSound) = (true, true);
+
+				Main.instance.CameraModifiers.Add(new PunchCameraModifier(limb.TargetPosition, new Vector2(0, -2), 1f, 4f, 15, 1000f, $"Footstep{limbIndex}"));
+				SoundEngine.PlaySound(position: limb.TargetPosition, style: new($"{nameof(PathOfTerraria)}/Assets/Sounds/Footsteps/FleshyStomp", 3)
+				{
+					MaxInstances = 10,
+					Volume = 0.35f,
+					PitchVariance = 0.2f,
+				});
+			}
+		}
+
+		// Enqueue the next walking limb.
+		if (advanceOrder)
+		{
+			ref int index = ref limbMovement.NextIndex;
+			int startIndex = index;
+			do { index = MathUtils.Modulo(index + NPC.spriteDirection, limbs.Length); }
+			while (index != startIndex && !limbs[index].Role.HasFlag(LimbRole.Walking));
+		}
+	}
+	private void LimbWielding(in Context ctx)
+	{
+		// Reset blade hold points.
+		foreach (ref Limb limb in limbs.AsSpan())
+		{
+			limb.BladeAttachment = null;
+		}
+
+		foreach (ref Limb limb in limbs.AsSpan())
+		{
+			if (limb.EntityAttachment.IsValid) { continue; }
+			if (!limb.Role.HasFlag(LimbRole.Wielding)) { continue; }
+
+			// If wielding, find a blade point to grab.
+			if (!PickBladePoint(in ctx, ref limb, out (Vector2 Local, Vector2 Global) bladePoint)) { continue; }
+
+			limb.LiftInAnimation = false;
+			limb.TileAttachment = null;
+			limb.BladeAttachment = bladePoint.Local;
+			limb.Animation.Progress = MathUtils.StepTowards(limb.Animation.Progress, 1f, 3f * TimeSystem.LogicDeltaTime);
+			limb.TargetPosition = bladePoint.Global;
+		}
+	}
+	private void LimbGrabbing(in Context ctx)
+	{
+		_ = ctx;
+
+		if (grabCooldown > 0)
+		{
+			grabCooldown--;
+		}
+
+		Vector2 logicalBodyCenter = ctx.Center;
+
+		foreach (ref Limb limb in limbs.AsSpan())
+		{
+			if (!limb.Role.HasFlag(LimbRole.EntityGrabbing)) { continue; }
+
+			float npcGrabRange = limb.IK.Length * 0.95f;
+			float playerGrabRange = limb.IK.Length * 0.5f;
+			float sqrNpcGrabRange = npcGrabRange * npcGrabRange;
+			float sqrPlayerGrabRange = playerGrabRange * playerGrabRange;
+			Vector2 logicalLimbPos = limb.IK.GetPosition(logicalBodyCenter, rotation: bodyAngle.Current, xDir: NPC.spriteDirection);
+
+			// If already holding something.
+			if (limb.EntityAttachment.Entity is { } grabEntity)
+			{
+			}
+			else
+			{
+				if (grabCooldown > 0)
+				{
+					continue;
+				}
+				
+				// Find closest entity to grab.
+
+				foreach (Player player in Main.ActivePlayers)
+				{
+					// continue;
+					if (player.DistanceSQ(logicalLimbPos) > sqrPlayerGrabRange) { continue; }
+					if (limbs.Any(l => l.EntityAttachment.Player == player)) { continue; }
+
+					limb.EntityAttachment = (EntityRef)player;
+
+					continue;
+				}
+				foreach (NPC npc in Main.ActiveNPCs)
+				{
+					if (npc == NPC) { continue; }
+					if (npc.immortal || NPCID.Sets.ImmuneToAllBuffs[npc.type]) { continue; }
+					if (npc.DistanceSQ(logicalLimbPos) > sqrNpcGrabRange) { continue; }
+					if (limbs.Any(l => l.EntityAttachment.NPC == npc)) { continue; }
+
+					limb.EntityAttachment = (EntityRef)npc;
+
+					continue;
+				}
+
+				if (!limb.EntityAttachment.IsValid) { continue; }
+
+				grabEntity = limb.EntityAttachment.Entity!;
+				limb.TileAttachment = null;
+				limb.BladeAttachment = null;
+				limb.LiftInAnimation = false;
+				limb.Animation = default;
+				limb.StartPosition = limb.IK.Target;
+				limb.TargetPosition = grabEntity.Center;
+				grabCooldown = 180;
+			}
+
+			// Advance animation stages.
+			if (limb.Animation.Progress >= 1f)
+			{
+				limb.Animation.Stage++;
+				limb.Animation.Progress = 0f;
+				limb.StartPosition = limb.IK.Target;
+			}
+
+			Vector2 throwDirection = (ctx.TargetCenter - grabEntity.Center).SafeNormalize(Vector2.UnitX * NPC.direction);
+			
+			// Stage 0 - Grab.
+			if (limb.Animation.Stage == 0)
+			{
+				limb.TargetPosition = grabEntity.Center;
+				limb.Animation.Progress = MathUtils.StepTowards(limb.Animation.Progress, 1f, 2.5f * TimeSystem.LogicDeltaTime);
+			}
+			// Stage 1 - Hold.
+			else if (limb.Animation.Stage == 1)
+			{
+				limb.TargetPosition = logicalLimbPos + ((Vector2.UnitX * NPC.direction).RotatedBy(MathHelper.Pi * +0.2f * NPC.direction) * limb.IK.Length * +0.25f);
+				limb.Animation.Progress = MathUtils.StepTowards(limb.Animation.Progress, 1f, 1.5f * TimeSystem.LogicDeltaTime);
+				Lighting.AddLight(limb.IK.Target, Vector3.One);
+			}
+			// Stage 2 - Throw.
+			else if (limb.Animation.Stage == 2)
+			{
+				limb.TargetPosition = logicalLimbPos + (throwDirection * limb.IK.Length);
+				limb.Animation.Progress = MathUtils.StepTowards(limb.Animation.Progress, 1f, 4.5f * TimeSystem.LogicDeltaTime);
+			}
+
+			// Release.
+			if (limb.Animation is { Stage: 2, Progress: >= 0.25f } or { Stage: >= 3 })
+			{
+				limb.Animation = default;
+				limb.EntityAttachment = default;
+				limb.StartPosition = limb.IK.Target;
+				
+				grabEntity.velocity = throwDirection * 30f;
+
+				SoundEngine.PlaySound(SoundID.AbigailCry, ctx.Center);
+
+				if (grabEntity == Main.LocalPlayer)
+				{
+					var punch = new PunchCameraModifier(limb.TargetPosition, throwDirection.RotatedBy(MathHelper.PiOver2), 6, 3f, 90, 1000f, "PlayerThrow");
+					Main.instance.CameraModifiers.Add(punch);
+				}
+			}
+
+			if (limb.Animation.Stage is >= 1 and <= 2)
+			{
+				grabEntity.Center = limb.IK.Target + new Vector2(grabEntity.width * 0.5f * NPC.direction, -grabEntity.height * 0.25f);
+			}
+		}
+	}
+	private void LimbFlailing(in Context ctx)
+	{
+		_ = ctx;
+		Vector2 logicalBodyCenter = NPC.Center;
+		Vector2 visualBodyCenter = logicalBodyCenter + new Vector2(0f, NPC.gfxOffY);
+
+		foreach (ref Limb limb in limbs.AsSpan())
+		{
+			if (limb.TileAttachment != null) { continue; }
+			if (limb.BladeAttachment != null) { continue; }
+			if (limb.EntityAttachment.IsValid) { continue; }
+
+			Vector2 visualLimbPos = limb.IK.GetPosition(visualBodyCenter, rotation: bodyAngle.Current, xDir: NPC.spriteDirection);
+			var flailTarget = Vector2.Lerp(visualLimbPos + new Vector2(0f, 128f), NPC.GetTargetData().Center, 0.1f);
+
+			if (limb.Role.HasFlag(LimbRole.Wielding))
+			{
+				flailTarget = Vector2.Lerp(visualLimbPos + new Vector2(0, -64), NPC.GetTargetData().Center, 0.1f);
+			}
+
+			limb.Animation.Progress = MathUtils.StepTowards(limb.Animation.Progress, 1f, 1f * TimeSystem.LogicDeltaTime);
+			limb.TargetPosition = flailTarget;
+		}
+	}
+
+	private void UpdateLimbs(in Context ctx)
 	{
 #if DEBUG && true
 		if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.N)) { SetupLimbs(in ctx); }
@@ -659,27 +1028,8 @@ internal sealed class InfernalBoss : ModNPC
 		Vector2 logicalBodyCenter = NPC.Center;
 		Vector2 visualBodyCenter = logicalBodyCenter + new Vector2(0f, NPC.gfxOffY);
 
-		// DebugUtils.DrawInWorld(sb => sb.DrawString(FontAssets.MouseText.Value, "X", visualBodyCenter - Main.screenPosition, Color.Cyan));
-
-		numAttached = 0;
-
-		// Cooldown is reduced by the current speed.
-		float moveSpeed = NPC.velocity.Length();
-		float coolSpeed = MathF.Max(1f, moveSpeed);
-		limbMovement.Cooldown = MathUtils.StepTowards(limbMovement.Cooldown, 0f, coolSpeed * TimeSystem.LogicDeltaTime);
-		limbMovement.NextIndex = Math.Clamp(limbMovement.NextIndex, 0, limbs.Length - 1);
-
-		// Reset blade hold points.
-		foreach (ref Limb limb in limbs.AsSpan())
-		{
-			limb.BladeAttachment = null;
-		}
-
 		int limbIndex = -1;
 		bool placeAll = limbs.All(l => l.TileAttachment == null);
-		bool advanceOrder = false;
-		bool playedSounds = false;
-		Vector2 averageDir = default;
 		foreach (ref Limb limb in limbs.AsSpan())
 		{
 			limbIndex++;
@@ -700,104 +1050,31 @@ internal sealed class InfernalBoss : ModNPC
 			});
 #endif
 
-			// If already attached (to a tile).
-			if (limb.TileAttachment?.ToWorldCoordinates() is { } attach && (attach.DistanceSQ(logicalLimbPos) <= sqrLength || attach.DistanceSQ(visualLimbPos) <= sqrLength))
+			// Shift the current target point.
+			float anim = limb.Animation.Progress;
+			float liftAnim = limb.LiftInAnimation ? MathUtils.Clamp01(anim * 8) : 0f;
+			float liftEffect = LiftEasing(MathUtils.Clamp01(liftAnim <= 0.5f ? (liftAnim * 2f) : ((1f - liftAnim) * 2f)));
+			var liftPos = new Vector2(limb.TargetPosition.X, visualLimbPos.Y);
+			var usedTarget = Vector2.Lerp(limb.TargetPosition, visualLimbPos, liftEffect * 0.2f);
+			limb.IK.Target = Vector2.Lerp(limb.StartPosition, usedTarget, MoveEasing(anim));
+
+			static float MoveEasing(float x)
 			{
-				// Advance order if up next in walking.
-				advanceOrder |= grabTerrain;
-				limb.IK.TargetWanted = attach;
+				return x >= 1f ? 1 : 1 - MathF.Pow(2, -10 * x);
+				// float c1 = 1.70158f;
+				// float c2 = c1 * 1.525f;
+
+				// return x < 0.5f
+				//   ? (MathF.Pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2)) / 2
+				//   : (MathF.Pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2;
+				// return x;
+				// float c4 = (2f * MathF.PI) / 3;
+				// return x <= 0f ? 0f : x >= 1 ? 1f : (MathF.Pow(2, -5f * x) * MathF.Sin(((x * 10f) - 0.75f) * c4) + 1);
 			}
-			// Otherwise, if walking, find a terrain point to grab.
-			else if (grabTerrain && PickTileTarget(in ctx, ref limb, out Point16 tilePos))
+			static float LiftEasing(float x)
 			{
-				advanceOrder |= grabTerrain;
-				limbMovement.Cooldown = (moveSpeed / limbs.Length) / 3f;
-				limb.PlacementAnimation = 0f;
-				limb.PlayedSound = false;
-				limb.TileAttachment = tilePos;
-				limb.BladeAttachment = null;
-				limb.IK.TargetWanted = ((Point16)tilePos).ToWorldCoordinates();
-				limb.MovingFromTile = true; //limb.TileAttachment != null;
+				return 1f - MathF.Pow(1f - x, 3f);
 			}
-			// Otherwise, if wielding, find a blade point to grab.
-			else if (grabBlade && PickBladePoint(in ctx, ref limb, out (Vector2 Local, Vector2 Global) bladePoint))
-			{
-				limb.PlayedSound = false;
-				limb.MovingFromTile = false;
-				limb.TileAttachment = null;
-				limb.BladeAttachment = bladePoint.Local;
-				limb.IK.TargetWanted = bladePoint.Global;
-				limb.PlacementAnimation = MathUtils.StepTowards(limb.PlacementAnimation, 1f, 3f * TimeSystem.LogicDeltaTime);
-				// DebugUtils.DrawStringInWorld("X", bladePoint.Global, Color.Cyan);
-			}
-			// If all else fails - flail.
-			else
-			{
-				var flailTarget = Vector2.Lerp(visualLimbPos + new Vector2(0f, 128f), NPC.GetTargetData().Center, 0.1f);
-
-				if (limb.Role.HasFlag(LimbRole.Wielding))
-				{
-					flailTarget = Vector2.Lerp(visualLimbPos + new Vector2(0, -64), NPC.GetTargetData().Center, 0.1f);
-				}
-
-				limb.TileAttachment = null;
-				limb.BladeAttachment = null;
-				limb.PlacementAnimation = 0f;
-				limb.IK.TargetCurrent = Vector2.Lerp(limb.IK.TargetCurrent, flailTarget, 0.2f);
-			}
-
-			if (limb.TileAttachment != null || limb.BladeAttachment != null)
-			{
-				static float MoveEasing(float x)
-				{
-					float c4 = (2f * MathF.PI) / 3;
-					return x <= 0f ? 0f : x >= 1 ? 1f : (MathF.Pow(2, -5f * x) * MathF.Sin(((x * 10f) - 0.75f) * c4) + 1);
-				}
-				static float LiftEasing(float x)
-				{
-					return 1f - MathF.Pow(1f - x, 3f);
-				}
-
-				float anim = limb.PlacementAnimation = MathUtils.StepTowards(limb.PlacementAnimation, 1f, TimeSystem.LogicDeltaTime / 2.5f);
-				float liftAnim = limb.MovingFromTile ? MathUtils.Clamp01(anim * 8) : 0f;
-				float liftEffect = LiftEasing(MathUtils.Clamp01(liftAnim <= 0.5f ? (liftAnim * 2f) : ((1f - liftAnim) * 2f)));
-				var liftPos = new Vector2(limb.IK.TargetWanted.X, visualLimbPos.Y);
-				var usedTarget = Vector2.Lerp(limb.IK.TargetWanted, visualLimbPos, liftEffect * 0.2f);
-				limb.IK.TargetCurrent = Vector2.Lerp(limb.IK.TargetCurrent, usedTarget, MoveEasing(anim));
-
-				const float soundRange = 16f;
-				if (!Main.dedServ && limb.TileAttachment != null && !playedSounds && limb.IK.TargetCurrent.Distance(limb.IK.TargetWanted) <= soundRange && !limb.PlayedSound)
-				{
-					(playedSounds, limb.PlayedSound) = (true, true);
-
-					Main.instance.CameraModifiers.Add(new PunchCameraModifier(limb.IK.TargetWanted, new Vector2(0, -2), 1f, 4f, 15, 1000f, $"Footstep{limbIndex}"));
-					SoundEngine.PlaySound(position: limb.IK.TargetWanted, style: new($"{nameof(PathOfTerraria)}/Assets/Sounds/Footsteps/FleshyStomp", 3)
-					{
-						MaxInstances = 10,
-						Volume = 0.35f,
-						PitchVariance = 0.2f,
-					});
-				}
-			}
-
-			// Compute ground normal.
-			if (limb.TileAttachment != null && limb.Role.HasFlag(LimbRole.Walking))
-			{
-				numAttached++;
-				averageDir += limb.IK.TargetCurrent.DirectionFrom(visualBodyCenter);
-			}
-		}
-
-		averageAngle = (averageDir / numAttached).ToRotation();
-		averageAngle = !float.IsNaN(averageAngle) ? averageAngle : 0f;
-
-		if (advanceOrder)
-		{
-			// Enqueue the next walking limb.
-			ref int index = ref limbMovement.NextIndex;
-			int startIndex = index;
-			do { index = MathUtils.Modulo(index + NPC.spriteDirection, limbs.Length); }
-			while (index != startIndex && !limbs[index].Role.HasFlag(LimbRole.Walking));
 		}
 	}
 
@@ -806,7 +1083,7 @@ internal sealed class InfernalBoss : ModNPC
 	{
 		// Pick a direction to use for dot products.
 		// With some bias towards the bottom.
-		Vector2 movDir = (NPC.velocity + new Vector2(0f, 0.5f)).SafeNormalize(Vector2.UnitY);
+		Vector2 movDir = (NPC.velocity + new Vector2(0f, 0.6f)).SafeNormalize(Vector2.UnitY);
 
 		Vector2 startPos = limb.IK.GetPosition(NPC.Center, rotation: bodyAngle.Current, xDir: NPC.spriteDirection);
 		Vector2Int startTile = startPos.ToTileCoordinates();
@@ -912,6 +1189,13 @@ internal sealed class InfernalBoss : ModNPC
 			new(0.80f, new(Pos: new(+112, -000), Angle: MathHelper.TwoPi * 1.15f)),
 			new(0.90f, new(Pos: new(+112, -016), Angle: MathHelper.TwoPi * 1.13f)),
 		]);
+		var reverseAnimation = new Gradient<BladeAnimKey>
+		([
+			new(0.00f, new(Pos: new(-096, +008), Angle: MathHelper.TwoPi * -0.25f)),
+			new(0.30f, new(Pos: new(+096, -128), Angle: MathHelper.TwoPi * -0.55f)),
+			new(0.80f, new(Pos: new(+112, -000), Angle: MathHelper.TwoPi * -1.15f)),
+			new(0.90f, new(Pos: new(+112, -016), Angle: MathHelper.TwoPi * -1.13f)),
+		]);
 		var stabAnimation = new Gradient<BladeAnimKey>
 		([
 			new(0.00f, new(Pos: new(-096, +008), Angle: MathHelper.TwoPi * 0.00f)),
@@ -935,10 +1219,11 @@ internal sealed class InfernalBoss : ModNPC
 
 		if (ctx.Attacking.Active)
 		{
-			// Swing/Stab animation.
+			// Attack animations.
 			Gradient<BladeAnimKey> animation = attackType switch
 			{
 				AttackType.Stab => stabAnimation,
+				AttackType.Reverse => reverseAnimation,
 				_ => slashAnimation,
 			};
 			bool mirror = NPC.spriteDirection < 0;
@@ -964,7 +1249,7 @@ internal sealed class InfernalBoss : ModNPC
 		}
 		else
 		{
-			// Idle position.
+			// Idle animations.
 			targetPosition = ctx.Center + new Vector2(0, -64);
 			posChange = 0.08f;
 
@@ -980,50 +1265,6 @@ internal sealed class InfernalBoss : ModNPC
 		if (targetPosition.Distance(Blade.Position) > maxDistance)
 		{
 			Blade.Position = targetPosition + (targetPosition.DirectionTo(Blade.Position) * maxDistance);
-		}
-
-		// Tile collision effects.
-		Vector2 forward = Blade.Rotation.ToRotationVector2();
-		Vector2 sideways = forward.RotatedBy(MathHelper.PiOver2);
-		bool skipDusts = false;
-		for (float extent = 80; extent < 400; extent += 32)
-		{
-			bool sliced = false;
-			for (float offset = -32; offset <= 32; offset += 32)
-			{
-				Vector2 point = Blade.Position + (forward * extent) + (sideways * offset);
-				Point16 tilePoint = point.ToTileCoordinates16();
-				int x = tilePoint.X;
-				int y = tilePoint.Y;
-
-				if (x < 1 || y < 1 || x >= Main.maxTilesX - 1 || y >= Main.maxTilesY - 1) { continue; }
-
-				point = tilePoint.ToWorldCoordinates(8, 0);
-
-				if (!WorldUtilities.SolidTile(x, y))
-				{
-					Lighting.AddLight(point, Color.Orange.ToVector3());
-				}
-				else if (!skipDusts)
-				{
-					bool tileSurrounded = true
-						&& WorldUtilities.SolidTile(x + 0, y - 1)
-						&& WorldUtilities.SolidTile(x + 0, y + 1)
-						&& WorldUtilities.SolidTile(x - 1, y + 0)
-						&& WorldUtilities.SolidTile(x + 1, y + 0);
-
-					if (!tileSurrounded)
-					{
-						Dust.NewDustPerfect(point, DustID.Torch, Scale: 2f, Alpha: 128);
-						sliced = true;
-					}
-				}
-			}
-
-			if (sliced)
-			{
-				skipDusts = true;
-			}
 		}
 	}
 	private static IEnumerable<Vector2> GetBladeGrabPoints()

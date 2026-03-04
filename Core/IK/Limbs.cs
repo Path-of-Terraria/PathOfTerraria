@@ -59,9 +59,9 @@ internal record struct IKLimb()
 	/// <summary> Whether to horizontally flip this limb's rendering. </summary>
 	public bool IsFlipped = false;
 
-	public Vector2 TargetCurrent { get; set; }
-	public Vector2 TargetWanted { get; set; }
+	public Vector2 Target { get; set; }
 
+	public float SqrLength => Length * length;
 	private float length;
 	public float Length
 	{
@@ -86,12 +86,14 @@ internal record struct IKLimb()
 	//     if (immediate) { TargetCurrent = target; }
 	// }
 
+	/// <summary> Calculates the limb's body-relative origin point for the given body angle and directions. </summary>
 	public readonly Vector2 GetOffset(float rotation = 0f, int xDir = 1, int yDir = 1)
 	{
 		var result = new Vector2(Offset.X * xDir, Offset.Y * yDir);
 		if (rotation != 0f) { result = result.RotatedBy(rotation); }
 		return result;
 	}
+	/// <summary> Calculates the limb's origin point for the given body transformation. </summary>
 	public readonly Vector2 GetPosition(Vector2 bodyCenter, float rotation = 0f, int xDir = 1, int yDir = 1)
 	{
 		return bodyCenter + GetOffset(rotation, xDir, yDir);
@@ -107,7 +109,7 @@ internal record struct IKLimb()
 
 		InverseKinematics.Reset(new()
 		{
-			Target = TargetCurrent,
+			Target = Target,
 			Origin = ctx.Center,
 			Results = Results,
 			Segments = segments,
@@ -126,7 +128,7 @@ internal record struct IKLimb()
 
 		InverseKinematics.Resolve(out info, in cfg, new()
 		{
-			Target = TargetCurrent,
+			Target = Target,
 			Origin = ctx.Center,
 			Results = Results,
 			Segments = segments,

@@ -14,8 +14,8 @@ namespace PathOfTerraria.Content.Conflux;
 
 internal class InfernalRealm : BossDomainSubworld, IOverrideBiome
 {
-	private static Point16 arenaCenter;
-	
+	public static Point16 ArenaCenter { get; private set; }
+
 	public FightTracker FightTracker;
 
 	public override int Width => 768;
@@ -46,13 +46,13 @@ internal class InfernalRealm : BossDomainSubworld, IOverrideBiome
 		if (state == FightState.NotStarted)
 		{
 			// Spawn the boss.
-			Point16 spawnPos = arenaCenter.ToWorldCoordinates().ToPoint16();
+			Point16 spawnPos = ArenaCenter.ToWorldCoordinates().ToPoint16();
 			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), spawnPos.X, spawnPos.Y, ModContent.NPCType<InfernalBoss>());
 		}
 		else if (state == FightState.JustCompleted)
 		{
 			IEntitySource src = Entity.GetSource_NaturalSpawn();
-			Vector2 spawnPos = arenaCenter.ToWorldCoordinates();
+			Vector2 spawnPos = ArenaCenter.ToWorldCoordinates();
 			Projectile.NewProjectile(src, spawnPos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0);
 		}
 		
@@ -64,7 +64,7 @@ internal class InfernalRealm : BossDomainSubworld, IOverrideBiome
 				Identifier = nameof(InfernalRealm),
 				Weight = 0.33f,
 				LengthInSeconds = 1f,
-				Position = arenaCenter.ToWorldCoordinates() + new Vector2(0, -800),
+				Position = ArenaCenter.ToWorldCoordinates() + new Vector2(0, -800),
 				Range = new(Min: 100, Max: 1400, Exponent: 1.2f),
 			});
 		}
@@ -90,14 +90,14 @@ internal class InfernalRealm : BossDomainSubworld, IOverrideBiome
 	{
 		int lavaLevel = (int)(Height / 3 * 2);
 
-		arenaCenter = new(Main.maxTilesX / 2 + 40, Main.maxTilesY / 2 + 90);
-		(Main.spawnTileX, Main.spawnTileY) = (arenaCenter.X - 90, arenaCenter.Y + 0);
+		ArenaCenter = new(Main.maxTilesX / 2 + 40, Main.maxTilesY / 2 + 90);
+		(Main.spawnTileX, Main.spawnTileY) = (ArenaCenter.X - 90, ArenaCenter.Y + 0);
 		Main.worldSurface = lavaLevel;
 		Main.rockLayer = lavaLevel - 4;
 
 		const string Arena = "Assets/Structures/Infernal/Arena";
 		Point16 structSize = StructureTools.GetSize(Arena);
-		Point16 structPos = StructureTools.PlaceByOrigin(Arena, arenaCenter, new Vector2(0.48f, 0.55f));
+		Point16 structPos = StructureTools.PlaceByOrigin(Arena, ArenaCenter, new Vector2(0.48f, 0.55f));
 
 		for (int x = 0; x < Main.maxTilesX; x++)
 		{
