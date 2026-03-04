@@ -4,7 +4,13 @@ using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Core.Camera;
+using PathOfTerraria.Core.Lighting;
+using PathOfTerraria.Utilities.Xna;
+using ReLogic.Content;
+using ReLogic.Graphics;
+using SubworldLibrary;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
@@ -55,7 +61,7 @@ internal class InfernalRealm : BossDomainSubworld, IOverrideBiome
 			Vector2 spawnPos = ArenaCenter.ToWorldCoordinates();
 			Projectile.NewProjectile(src, spawnPos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0);
 		}
-		
+
 		if (state is not FightState.InProgress)
 		{
 			// Bias the camera towards the center of the arena.
@@ -111,5 +117,45 @@ internal class InfernalRealm : BossDomainSubworld, IOverrideBiome
 				}
 			}
 		}
+	}
+}
+
+internal sealed class InfernalRealmRendering : ModSystem
+{
+	public override void Load()
+	{
+		On_Main.DoDraw_WallsAndBlacks += (orig, self) =>
+		{
+			orig(self);
+			RenderObjects();
+		};
+	}
+	
+	public void RenderObjects()
+	{
+		if (!SubworldSystem.IsActive<InfernalRealm>()) { return; }
+		
+		SpriteBatch sb = Main.spriteBatch;
+
+		if (ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/Conflux/InfernalThrone") is not { IsLoaded: true, Value: { } throneTexture })
+		{
+			return;
+		}
+		
+		SpriteBatchArgs sbArgs = sb.GetArguments();
+		sb.End();
+
+		// Render the arena.
+
+		Vector2 thronePos = InfernalRealm.ArenaCenter.ToWorldCoordinates() + new Vector2(-64, +24);
+		Vector2 throneOrigin = throneTexture.Size() * new Vector2(0.5f, 1.0f);
+
+		Matrix matrix = Main.GameViewMatrix.NormalizedTransformationmatrix;
+		Effect effect = LitShaders.LitSprite(in matrix);
+		sb.Begin(sbArgs with { SortMode = SpriteSortMode.Deferred, BlendState = BlendState.AlphaBlend, Effect = effect, Matrix = matrix });
+		sb.Draw(throneTexture, thronePos - Main.screenPosition, null, Color.White, 0f, throneOrigin, 1f, 0, 0);
+		sb.End();
+
+		sb.Begin(sbArgs);
 	}
 }

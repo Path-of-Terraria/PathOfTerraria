@@ -7,26 +7,18 @@ float4x4 View;
 float2 MaskSize;
 float2 MaskOffset;
 float2 ScreenPosition;
+float2 ScreenResolution;
+
 texture2D Texture;
-sampler TextureSampler : register(s0) = sampler_state
-{
-	Texture = (Texture);
-};
 texture2D Glowmask;
-sampler GlowmaskSampler : register(s1) = sampler_state
-{
-	Texture = (Glowmask);
-};
 texture2D Tiles; 
-sampler TilesSampler : register(s2) = sampler_state
-{
-	Texture = (Tiles);
-};
+texture2D Light; 
 texture2D Black; 
-sampler BlackSampler : register(s3) = sampler_state
-{
-	Texture = (Black);
-};
+sampler TextureSampler : register(s0) = sampler_state { Texture = (Texture); };
+sampler GlowmaskSampler : register(s1) = sampler_state { Texture = (Glowmask); };
+sampler LightSampler : register(s2) = sampler_state { Texture = (Light); };
+sampler TilesSampler : register(s3) = sampler_state { Texture = (Tiles); };
+sampler BlackSampler : register(s4) = sampler_state { Texture = (Black); };
 
 struct VertexIn
 {
@@ -37,8 +29,9 @@ struct VertexIn
 struct VertexOut
 {
     float4 Color : COLOR0;
-	float2 Uv0 : TEXCOORD0;
-	float2 Uv1 : TEXCOORD1;
+	float2 UvTexture : TEXCOORD0;
+	float2 UvLight : TEXCOORD1;
+	float2 UvTiles : TEXCOORD2;
     float4 Position : SV_POSITION;
 };
 
@@ -48,24 +41,26 @@ VertexOut SpriteVertexShader(in VertexIn input)
 
     VertexOut output = (VertexOut)0;
     output.Position = mul(worldPos, View);
-    output.Uv0 = input.Uv;
-    output.Uv1 = (worldPos.xy - MaskOffset) / MaskSize;
+    output.UvTexture = input.Uv;
+    output.UvLight = worldPos.xy / ScreenResolution;
+    output.UvTiles = (worldPos.xy - MaskOffset) / MaskSize;
     output.Color = input.Color;
     return output;
 }
 float4 SpritePixelShader(VertexOut input) : SV_TARGET0
 {
-	float4 diffuse = tex2D(TextureSampler, input.Uv0) * input.Color;
-	float4 glow = tex2D(GlowmaskSampler, input.Uv0);
-	float4 tiles = tex2D(TilesSampler, input.Uv1);
-	float4 black = tex2D(BlackSampler, input.Uv1);
+	float4 glow = tex2D(GlowmaskSampler, input.UvTexture);
+	float4 tiles = tex2D(TilesSampler, input.UvTiles);
+	float4 black = tex2D(BlackSampler, input.UvTiles);
     if (tiles.a > 0.1 || black.a > 0.1)
     {
         // Red tint underground.
-        return glow * float4(0.09, 0.03, 0.00, 0.09);
+        return glow * float4(0.09, 0.03, 0.00, 0.09) * input.Color;
     }
 
-	return diffuse + glow;
+	float4 albedo = tex2D(TextureSampler, input.UvTexture);
+    float4 light = tex2D(LightSampler, input.UvLight);
+	return ((albedo * light) + glow) * input.Color;
 }
 
 technique SpriteBatch

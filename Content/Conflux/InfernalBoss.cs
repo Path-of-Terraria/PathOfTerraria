@@ -13,6 +13,7 @@ using PathOfTerraria.Common.World.Utilities;
 using PathOfTerraria.Content.Gores;
 using PathOfTerraria.Core.Camera;
 using PathOfTerraria.Core.IK;
+using PathOfTerraria.Core.Lighting;
 using PathOfTerraria.Core.Time;
 using PathOfTerraria.Utilities;
 using PathOfTerraria.Utilities.Terraria;
@@ -1331,6 +1332,10 @@ internal sealed class InfernalBoss : ModNPC
 		bodyTexture ??= ModContent.Request<Texture2D>($"{Texture}_Body", AssetRequestMode.ImmediateLoad);
 		robeTexture ??= ModContent.Request<Texture2D>($"{Texture}_Robe", AssetRequestMode.ImmediateLoad);
 
+		SpriteBatchArgs sbArgs = sb.GetArguments();
+		// sb.End();
+		// sb.Begin(sbArgs with { Effect = LitShaders.LitSprite(sbArgs.Matrix) });
+
 		// Draw the back arms.
 		RenderArms(layerSign: -1, screenPos, drawColor);
 
@@ -1351,6 +1356,9 @@ internal sealed class InfernalBoss : ModNPC
 		// Draw the front arms.
 		RenderArms(layerSign: +1, screenPos, drawColor);
 
+		// sb.End();
+		// sb.Begin(sbArgs);
+
 		return false;
 	}
 
@@ -1360,16 +1368,16 @@ internal sealed class InfernalBoss : ModNPC
 		SpriteBatchArgs sbArgs = sb.GetArguments();
 
 		Vector2 bladeOrigin = new(146, 86); // Approximate hilt center.
-		Color bladeColor = Lighting.GetColor(ctx.Center.ToTileCoordinates()); // Sample at body for less self-lighting.
+		// Color bladeColor = Lighting.GetColor(ctx.Center.ToTileCoordinates()); // Sample at body for less self-lighting.
 		bladeBaseTexture ??= ModContent.Request<Texture2D>($"{Texture}_Blade", AssetRequestMode.ImmediateLoad);
 		bladeGlowTexture ??= ModContent.Request<Texture2D>($"{Texture}_Blade_Glow", AssetRequestMode.ImmediateLoad);
 
 		sb.End();
-		RenderBladeInner(screenPos, bladeBaseTexture.Value, bladeGlowTexture.Value, bladeOrigin, bladeColor);
+		RenderBladeInner(screenPos, bladeBaseTexture.Value, bladeGlowTexture.Value, bladeOrigin);
 		sb.Begin(in sbArgs);
 	}
 	private static readonly short[] QuadTriangles = [0, 2, 3, 0, 1, 2];
-	private void RenderBladeInner(Vector2 screenPos, Texture2D diffuse, Texture2D glowmask, Vector2 origin, Color color)
+	private void RenderBladeInner(Vector2 screenPos, Texture2D diffuse, Texture2D glowmask, Vector2 origin)
 	{
 		// This method may be painful to see, but the SpriteBatch became of no use the moment
 		// a custom shader was introduced, leading to infuriatingly nonsensical matrix issues,
@@ -1389,20 +1397,22 @@ internal sealed class InfernalBoss : ModNPC
 		Rectangle bounds = diffuse.Bounds;
 		var pos = new Vector4(bounds.Left, bounds.Top, bounds.Right, bounds.Bottom);
 		var uv0 = new Vector4(0f, 0f, 1f, 1f);
-		vertices[0] = new(new(pos.X, pos.Y, 0f), color, new(uv0.X, uv0.Y));
-		vertices[1] = new(new(pos.Z, pos.Y, 0f), color, new(uv0.Z, uv0.Y));
-		vertices[2] = new(new(pos.Z, pos.W, 0f), color, new(uv0.Z, uv0.W));
-		vertices[3] = new(new(pos.X, pos.W, 0f), color, new(uv0.X, uv0.W));
+		vertices[0] = new(new(pos.X, pos.Y, 0f), Color.White, new(uv0.X, uv0.Y));
+		vertices[1] = new(new(pos.Z, pos.Y, 0f), Color.White, new(uv0.Z, uv0.Y));
+		vertices[2] = new(new(pos.Z, pos.W, 0f), Color.White, new(uv0.Z, uv0.W));
+		vertices[3] = new(new(pos.X, pos.W, 0f), Color.White, new(uv0.X, uv0.W));
 
 		GraphicsDevice gfx = Main.instance.GraphicsDevice;
 		Effect effect = (bladeShader ??= ModContent.Request<Effect>($"{PoTMod.ModName}/Assets/Effects/PyralisBlade", AssetRequestMode.ImmediateLoad)).Value;
 		effect.Parameters["Texture"].SetValue(diffuse);
 		effect.Parameters["Glowmask"].SetValue(glowmask);
+		effect.Parameters["Light"].SetValue(LightingBuffer.GetOrWhite());
 		effect.Parameters["Tiles"].SetValue(Main.instance.tileTarget);
 		effect.Parameters["Black"].SetValue(Main.instance.blackTarget);
 		effect.Parameters["MaskSize"].SetValue(maskTargetSize);
 		effect.Parameters["MaskOffset"].SetValue(maskExtensionOffset);
 		effect.Parameters["ScreenPosition"].SetValue(Main.screenPosition);
+		effect.Parameters["ScreenResolution"].SetValue(Main.ScreenSize.ToVector2());
 		effect.Parameters["World"].SetValue(worldMatrix);
 		effect.Parameters["View"].SetValue(viewMatrix);
 		gfx.BlendState = BlendState.AlphaBlend;
@@ -1432,7 +1442,8 @@ internal sealed class InfernalBoss : ModNPC
 				DrawData drawData = limb.IK.GetDrawParams(limbTexture, j, screenPos, NPC.spriteDirection);
 				drawData.color = drawData.color.MultiplyRGBA(drawColor);
 				// drawData.color = Lighting.GetColor((drawData.position + Main.screenPosition).ToTileCoordinates());
-				Main.EntitySpriteDraw(drawData);
+				drawData.Draw(Main.spriteBatch);
+				//Main.EntitySpriteDraw(drawData);
 			}
 
 #if DEBUG && false
