@@ -319,24 +319,31 @@ internal sealed class InfernalBoss : ModNPC
 				targetPos = inNativeArena ? InfernalRealm.ArenaCenter.ToWorldCoordinates() : ctx.Center;
 			}
 
-			// Stand up, but only if that doesn't prevent the creature from getting into tight spaces.
-			// Vector2Int sizeInTiles = (NPC.Size * new Vector2(1f, 2.5f)).ToTileCoordinates();
-			// if (hasTarget && TileUtils.TryFitRectangleIntoTilemap(walkPos.ToTileCoordinates(), sizeInTiles, out Vector2Int adjustedPoint))
-			// {
-			// 	walkPos = (adjustedPoint + (sizeInTiles * 0.5f)).ToWorldCoordinates();
-			// }
-
 			// Keep some distance away from the target and also rotate around it.
 			const float approachDistance = 290;
 			if (hasTarget)
 			{
-				walkPos += strafingAngle.ToRotationVector2() * approachDistance * new Vector2(1.0f, 0.5f);
+				Vector2 shiftPos = walkPos + strafingAngle.ToRotationVector2() * approachDistance * new Vector2(1.0f, 0.5f);
+				var shiftStart = Vector2Int.Clamp(ctx.Center.ToTileCoordinates(), default, new(Main.maxTilesX - 1, Main.maxTilesY - 1));
+				var shiftEnd = Vector2Int.Clamp(shiftPos.ToTileCoordinates(), default, new(Main.maxTilesX - 1, Main.maxTilesY - 1));
+				foreach (Vector2Int point in new GeometryUtils.BresenhamLine(shiftStart, shiftEnd))
+				{
+					if (Main.tile[point] is { HasTile: true } t && Main.tileSolid[t.TileType] && !Main.tileSolidTop[t.TileType])
+					{
+						shiftPos = ((Point)point).ToWorldCoordinates();
+						break;
+					}
+				}
+				walkPos = shiftPos;
 				strafingAngle += -0.2f * MathHelper.TwoPi * TimeSystem.LogicDeltaTime;
 			}
-			// if (hasTarget && walkPos.Distance(ctx.Center) is float dist and < approachDistance)
-			// {
-			// 	walkPos = ctx.Center + (ctx.Center.DirectionTo(walkPos) * (dist - approachDistance));
-			// }
+
+			// Stand up, but only if that doesn't prevent the creature from getting into tight spaces.
+			Vector2Int sizeInTiles = (NPC.Size * new Vector2(0.9f, 2.2f)).ToTileCoordinates();
+			if (hasTarget && TileUtils.TryFitRectangleIntoTilemap(walkPos.ToTileCoordinates() - new Point(0, 1), sizeInTiles, out Vector2Int adjustedPoint))
+			{
+				walkPos = (adjustedPoint + (sizeInTiles * 0.5f)).ToWorldCoordinates();
+			}
 
 			float acceleration = ctx.Movement.Data.Acceleration * TimeSystem.LogicDeltaTime;
 			Vector2 targetDir = ctx.Center.DirectionTo(targetPos);
@@ -356,7 +363,7 @@ internal sealed class InfernalBoss : ModNPC
 			// walkDir = (walkDir + new Vector2(0f, -0.04f)).SafeNormalize(Vector2.UnitY);
 
 			NPC.velocity = MovementUtils.DirAccelQ(NPC.velocity, walkDir, ctx.Movement.Data.MaxSpeed, acceleration);
-			
+
 			float speedCap = ctx.Movement.Data.MaxSpeed * 1.1f;
 			if (NPC.velocity.Length() > speedCap)
 			{
@@ -373,6 +380,14 @@ internal sealed class InfernalBoss : ModNPC
 			ctx.Movement.Data.InputOverride = new()
 			{
 				FallThroughPlatforms = true,
+			};
+		}
+		else
+		{
+			// Prevent navigation-driven movement, disallow going through platforms.
+			ctx.Movement.Data.InputOverride = new()
+			{
+				FallThroughPlatforms = false,
 			};
 		}
 	}
@@ -394,11 +409,11 @@ internal sealed class InfernalBoss : ModNPC
 			}
 		}
 		// Compute average angle.
-		float averageAngle = (averageDir / numAttached).ToRotation();
+		float averageAngle = numAttached == 0 ? 0f : ((averageDir / numAttached).ToRotation());
 		averageAngle = !float.IsNaN(averageAngle) ? averageAngle : 0f;
 
 		// Update body rotation. Rotate towards zero faster than from it.
-		float limbNormal = averageAngle - MathHelper.PiOver2;
+		float limbNormal = averageAngle; // - MathHelper.PiOver2;
 		bodyAngle.Target = limbNormal * 0.30f;
 		bool anglingBodyTowardsZero = MathF.Abs(bodyAngle.Target) < MathF.Abs(bodyAngle.Current);
 		bodyAngle.Current = MathUtils.LerpRadians(bodyAngle.Current, bodyAngle.Target, (anglingBodyTowardsZero ? 2.10f : 0.80f) * TimeSystem.LogicDeltaTime);
@@ -770,8 +785,9 @@ internal sealed class InfernalBoss : ModNPC
 		Vector2 visualBodyCenter = logicalBodyCenter + new Vector2(0f, NPC.gfxOffY);
 
 		// Cooldown is reduced by the current speed.
+		int numMovementLimbs = limbs.Count(l => l.Role.HasFlag(LimbRole.Walking));
 		float moveSpeed = NPC.velocity.Length();
-		float coolSpeed = MathF.Max(1f, moveSpeed);
+		float coolSpeed = MathF.Max(1f, moveSpeed * 2f);
 		limbMovement.Cooldown = MathUtils.StepTowards(limbMovement.Cooldown, 0f, coolSpeed * TimeSystem.LogicDeltaTime);
 		limbMovement.NextIndex = Math.Clamp(limbMovement.NextIndex, 0, limbs.Length - 1);
 
@@ -801,9 +817,9 @@ internal sealed class InfernalBoss : ModNPC
 			// Otherwise, if walking, find a terrain point to grab.
 			else if (!holdingSomethingElse && grabTerrain && PickTileTarget(in ctx, ref limb, out Point16 tilePos))
 			{
-				limbMovement.Cooldown = (moveSpeed / limbs.Length) / 3f;
 				limb.Animation = default;
 				limb.PlayedSound = false;
+				limbMovement.Cooldown = (moveSpeed / numMovementLimbs);
 				limb.LiftInAnimation = limb.TileAttachment != null;
 				limb.TileAttachment = tilePos;
 				limb.BladeAttachment = null;
@@ -823,7 +839,7 @@ internal sealed class InfernalBoss : ModNPC
 				continue;
 			}
 
-			float animSpeed = MathHelper.Lerp(MathUtils.Clamp01(limb.StartPosition.Distance(limb.TargetPosition) / 300f), 2.0f, 0.5f);
+			float animSpeed = MathHelper.Lerp(MathUtils.Clamp01(limb.StartPosition.Distance(limb.TargetPosition) / 400), 1.5f, 1.4f);
 			limb.Animation.Progress = MathUtils.StepTowards(limb.Animation.Progress, 1f, animSpeed * TimeSystem.LogicDeltaTime);
 
 			const float soundRange = 16f;
