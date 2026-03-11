@@ -23,6 +23,7 @@ using ReLogic.Utilities;
 using SubworldLibrary;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 
@@ -59,6 +60,7 @@ internal sealed class InfernalBoss : ModNPC
 		public EntityRef EntityAttachment;
 		public Point16? TileAttachment;
 		public Vector2? BladeAttachment;
+		public bool IsGibbed;
 		public float Layer;
 		public (int Stage, float Progress) Animation;
 		public bool PlayedSound;
@@ -128,6 +130,9 @@ internal sealed class InfernalBoss : ModNPC
 	private ushort grabCooldown;
 	private ushort spawnCooldown;
 	private float strafingAngle;
+	private int lifeOld;
+
+	public int Phase => NPC.life <= NPC.lifeMax / 2 ? 1 : 0;
 
 	public override void SetStaticDefaults()
 	{
@@ -143,7 +148,7 @@ internal sealed class InfernalBoss : ModNPC
 	{
 		NPC.BossBar = ModContent.GetInstance<InfernalBossBar>();
 		NPC.aiStyle = -1;
-		NPC.lifeMax = 125000;
+		NPC.lifeMax = 75000;
 		NPC.defense = 90;
 		NPC.damage = 80;
 		NPC.width = 125;
@@ -295,6 +300,7 @@ internal sealed class InfernalBoss : ModNPC
 		BodyMovement(in ctx);
 		UpdateBodyAngles(in ctx);
 		UpdateLimbs(in ctx);
+		GibLimbs(in ctx);
 		InitiateAttacks(in ctx);
 		// ctx.Teleports.ManualUpdate(new(NPC));
 		ctx.Attacking.ManualUpdate(new(NPC));
@@ -312,7 +318,7 @@ internal sealed class InfernalBoss : ModNPC
 	private void BodyMovement(in Context ctx)
 	{
 		int numAttached = limbs.Count(l => l.TileAttachment != null);
-		int numWalkingLimbs = limbs.Count(l => l.Role.HasFlag(LimbRole.Walking));
+		int numWalkingLimbs = limbs.Count(l => l.Role.HasFlag(LimbRole.Walking) && !l.IsGibbed);
 		bool isClimbing = numAttached >= Math.Max(1, numWalkingLimbs / 2) || NPC.lavaWet;
 		NPC.noGravity = isClimbing;
 
@@ -330,9 +336,9 @@ internal sealed class InfernalBoss : ModNPC
 				targetPos = inNativeArena ? InfernalRealm.ArenaCenter.ToWorldCoordinates() : ctx.Center;
 			}
 
-			// Keep some distance away from the target and also rotate around it.
+			// In phase I, when using the sword, keep some distance away from the target and also rotate around it.
 			const float approachDistance = 290;
-			if (hasTarget)
+			if (Phase == 0 && hasTarget)
 			{
 				Vector2 shiftPos = walkPos + strafingAngle.ToRotationVector2() * approachDistance * new Vector2(1.0f, 0.5f);
 				var shiftStart = Vector2Int.Clamp(ctx.Center.ToTileCoordinates(), default, new(Main.maxTilesX - 1, Main.maxTilesY - 1));
@@ -365,7 +371,7 @@ internal sealed class InfernalBoss : ModNPC
 				acceleration *= 0.65f;
 				ctx.Attacking.Data.Dash.Velocity = new(20f, 10f);
 			}
-			else
+			else if (Phase == 0)
 			{
 				acceleration *= 0.9f;
 			}
@@ -424,7 +430,7 @@ internal sealed class InfernalBoss : ModNPC
 		averageAngle = !float.IsNaN(averageAngle) ? averageAngle : 0f;
 
 		// Update body rotation. Rotate towards zero faster than from it.
-		float limbNormal = averageAngle; // - MathHelper.PiOver2;
+		float limbNormal = averageAngle;
 		bodyAngle.Target = limbNormal * 0.30f;
 		bool anglingBodyTowardsZero = MathF.Abs(bodyAngle.Target) < MathF.Abs(bodyAngle.Current);
 		bodyAngle.Current = MathUtils.LerpRadians(bodyAngle.Current, bodyAngle.Target, (anglingBodyTowardsZero ? 2.10f : 0.80f) * TimeSystem.LogicDeltaTime);
@@ -448,6 +454,7 @@ internal sealed class InfernalBoss : ModNPC
 
 	private void InitiateAttacks(in Context ctx)
 	{
+		if (Phase != 0) { return; }
 		if (!NPC.HasValidTarget) { return; }
 		if (ctx.Attacking.Active) { return; }
 
@@ -494,7 +501,7 @@ internal sealed class InfernalBoss : ModNPC
 		}
 
 		if (Main.netMode == NetmodeID.MultiplayerClient) { return; }
-		// if (!ctx.Attacking.Active) { return; }
+		// if (ctx.Attacking.Active) { return; }
 
 		// Find the limb to use for grabbing.
 		if (Array.FindIndex(limbs, l => l.Role.HasFlag(LimbRole.EntityGrabbing) && !l.EntityAttachment.IsValid) is int limbIndex && limbIndex < 0) { return; }
@@ -561,6 +568,22 @@ internal sealed class InfernalBoss : ModNPC
 			Range = new(Min: 1024, Max: 2000, Exponent: 2.0f),
 		});
 
+		// Movement sound.
+		{
+			var loopSound = new SoundStyle($"{nameof(PathOfTerraria)}/Assets/Sounds/Gore/FleshLoopChaotic") { Volume = 0.1f, IsLooped = true, PauseBehavior = PauseBehavior.PauseWithGame };
+			float halfStep = 1f * TimeSystem.LogicDeltaTime;
+			float target = MathUtils.Clamp01(NPC.velocity.Length() * 0.1f);
+			float intensity = movementSound.Intensity = MathUtils.StepTowards(MathHelper.Lerp(movementSound.Intensity, target, halfStep), target, halfStep);
+			float volume = MathHelper.Lerp(0.75f, 1.00f, intensity);
+			float pitch = MathHelper.Lerp(-0.9f, +0.2f, intensity);
+			SoundUtils.UpdateLoopingSound(ref movementSound.Handle, ctx.Center, volume, pitch, loopSound, _ => Main.npc[NPC.whoAmI] is { active: true } n && n == NPC);
+		}
+	}
+
+	private void UpdateBladeEffects(in Context ctx)
+	{
+		if (Main.dedServ) { return; }
+		
 		// Blade tile collision effects.
 		Vector2 forward = Blade.Rotation.ToRotationVector2();
 		Vector2 sideways = forward.RotatedBy(MathHelper.PiOver2);
@@ -610,17 +633,6 @@ internal sealed class InfernalBoss : ModNPC
 			}
 		}
 
-		// Movement sound.
-		{
-			var loopSound = new SoundStyle($"{nameof(PathOfTerraria)}/Assets/Sounds/Gore/FleshLoopChaotic") { Volume = 0.1f, IsLooped = true, PauseBehavior = PauseBehavior.PauseWithGame };
-			float halfStep = 1f * TimeSystem.LogicDeltaTime;
-			float target = MathUtils.Clamp01(NPC.velocity.Length() * 0.1f);
-			float intensity = movementSound.Intensity = MathUtils.StepTowards(MathHelper.Lerp(movementSound.Intensity, target, halfStep), target, halfStep);
-			float volume = MathHelper.Lerp(0.75f, 1.00f, intensity);
-			float pitch = MathHelper.Lerp(-0.9f, +0.2f, intensity);
-			SoundUtils.UpdateLoopingSound(ref movementSound.Handle, ctx.Center, volume, pitch, loopSound, _ => Main.npc[NPC.whoAmI] is { active: true } n && n == NPC);
-		}
-
 		// Blade ground collision sound.
 		{
 			// Calculate distance to any part of the blade.
@@ -646,7 +658,9 @@ internal sealed class InfernalBoss : ModNPC
 	private void SetupLimbs(in Context ctx)
 	{
 		_ = ctx;
-		var limbFraming = new SpriteFrame(4, 1) { PaddingX = 0, PaddingY = 0 };
+		var baseFraming = new SpriteFrame(4, 1) { PaddingX = 0, PaddingY = 0 };
+		var gibbableFraming = new SpriteFrame(4, 2) { PaddingX = 0, PaddingY = 0 };
+		_ = baseFraming;
 
 		// When facing right...
 		limbs =
@@ -655,24 +669,26 @@ internal sealed class InfernalBoss : ModNPC
 			new Limb()
 			{
 				Role = LimbRole.Walking,
+				// Role = LimbRole.None,
 				TexturePath = $"{Texture}_FrontArm1",
 				Layer = +5,
 				IK = new()
 				{
 					Offset = new Vector2(-28, +7),
-					Segments = IKSegment.GenerateFromPoints(limbFraming, [ new(20, 12), new(40, 34), new(80, 80), new(87, 152), new(87, 183) ]),
+					Segments = IKSegment.GenerateFromPoints(gibbableFraming, [ new(20, 12), new(40, 34), new(80, 80), new(87, 152), new(87, 183) ]),
 				},
 			},
 			// Front left limb.
 			new Limb()
 			{
 				Role = LimbRole.Walking | LimbRole.EntityGrabbing,
+				// Role = LimbRole.EntityGrabbing,
 				TexturePath = $"{Texture}_BackArm1",
 				Layer = -1,
 				IK = new()
 				{
 					Offset = new Vector2(+84, -1),
-					Segments = IKSegment.GenerateFromPoints(limbFraming, [ new(114, 18), new(100, 44), new(58, 98), new(24, 142), new(2, 176) ]),
+					Segments = IKSegment.GenerateFromPoints(gibbableFraming, [ new(114, 18), new(100, 44), new(58, 98), new(24, 142), new(2, 176) ]),
 				},
 			},
 			// Middle right limb.
@@ -684,7 +700,7 @@ internal sealed class InfernalBoss : ModNPC
 				IK = new()
 				{
 					Offset = new Vector2(-48, +29),
-					Segments = IKSegment.GenerateFromPoints(limbFraming, [ new(6, 62), new(36, 32), new(88, 6), new(142, 32), new(169, 32) ]),
+					Segments = IKSegment.GenerateFromPoints(gibbableFraming, [ new(6, 62), new(36, 32), new(88, 6), new(142, 32), new(169, 32) ]),
 				},
 			},
 			// Middle left limb.
@@ -696,7 +712,7 @@ internal sealed class InfernalBoss : ModNPC
 				IK = new()
 				{
 					Offset = new Vector2(+69, -17),
-					Segments = IKSegment.GenerateFromPoints(limbFraming, [ new(58, 10), new(56, 34), new(48, 98), new(26, 182), new(26, 203) ]),
+					Segments = IKSegment.GenerateFromPoints(gibbableFraming, [ new(58, 10), new(56, 34), new(48, 98), new(26, 182), new(26, 203) ]),
 				},
 			},
 			// Back right limb.
@@ -708,7 +724,7 @@ internal sealed class InfernalBoss : ModNPC
 				IK = new()
 				{
 					Offset = new Vector2(-69, +25),
-					Segments = IKSegment.GenerateFromPoints(limbFraming, [ new(6, 12), new(26, 24), new(100, 76), new(136, 138), new(136, 157) ]),
+					Segments = IKSegment.GenerateFromPoints(gibbableFraming, [ new(6, 12), new(26, 24), new(100, 76), new(136, 138), new(136, 157) ]),
 				},
 			},
 			// Hanging leg 1.
@@ -721,7 +737,7 @@ internal sealed class InfernalBoss : ModNPC
 				IK = new()
 				{
 					Offset = new Vector2(-7, +43),
-					Segments = IKSegment.GenerateFromPoints(limbFraming, [ new(68, 10), new(52, 20), new(34, 52), new(22, 130), new(22, 143) ]),
+					Segments = IKSegment.GenerateFromPoints(gibbableFraming, [ new(68, 10), new(52, 20), new(34, 52), new(22, 130), new(22, 143) ]),
 				},
 			},
 			// Hanging leg 2.
@@ -734,7 +750,7 @@ internal sealed class InfernalBoss : ModNPC
 				IK = new()
 				{
 					Offset = new Vector2(-51, +31),
-					Segments = IKSegment.GenerateFromPoints(limbFraming, [ new(24, 10), new(20, 22), new(12, 62), new(34, 142), new(34, 155) ]),
+					Segments = IKSegment.GenerateFromPoints(gibbableFraming, [ new(24, 10), new(20, 22), new(12, 62), new(34, 142), new(34, 155) ]),
 				},
 			},
 			// Lowest wield.
@@ -746,7 +762,7 @@ internal sealed class InfernalBoss : ModNPC
 				IK = new()
 				{
 					Offset = new Vector2(-12, -5),
-					Segments = IKSegment.GenerateFromPoints(limbFraming, [ new(10, 110), new(34, 94), new(98, 40), new(48, 24), new(22, 10) ]),
+					Segments = IKSegment.GenerateFromPoints(gibbableFraming, [ new(10, 110), new(34, 94), new(98, 40), new(48, 24), new(22, 10) ]),
 				},
 			},
 			// Center wield.
@@ -758,7 +774,7 @@ internal sealed class InfernalBoss : ModNPC
 				IK = new()
 				{
 					Offset = new Vector2(-6, -25),
-					Segments = IKSegment.GenerateFromPoints(limbFraming, [ new(28, 152), new(16, 136), new(12, 72), new(36, 26), new(36, 6) ]),
+					Segments = IKSegment.GenerateFromPoints(gibbableFraming, [ new(28, 152), new(16, 136), new(12, 72), new(36, 26), new(36, 6) ]),
 				},
 			},
 			// Highest wield.
@@ -770,7 +786,7 @@ internal sealed class InfernalBoss : ModNPC
 				IK = new()
 				{
 					Offset = new Vector2(+66, -27),
-					Segments = IKSegment.GenerateFromPoints(limbFraming, [ new(28, 190), new(30, 162), new(12, 82), new(100, 14), new(122, 14) ]),
+					Segments = IKSegment.GenerateFromPoints(gibbableFraming, [ new(28, 190), new(30, 162), new(12, 82), new(100, 14), new(122, 14) ]),
 				},
 			},
 			/*
@@ -827,7 +843,7 @@ internal sealed class InfernalBoss : ModNPC
 
 			float sqrLength = limb.IK.SqrLength;
 			bool grabTerrain = placeAll || (limbMovement.Cooldown <= 0f && limbIndex == limbMovement.NextIndex);
-			bool isBusy = limb.EntityAttachment.IsValid || limb.BladeAttachment != null;
+			bool isBusy = limb.IsGibbed || limb.EntityAttachment.IsValid || limb.BladeAttachment != null;
 			Vector2 visualLimbPos = limb.IK.GetPosition(visualBodyCenter, rotation: bodyAngle.Current, xDir: NPC.spriteDirection);
 			Vector2 logicalLimbPos = limb.IK.GetPosition(logicalBodyCenter, rotation: bodyAngle.Current, xDir: NPC.spriteDirection);
 
@@ -889,6 +905,11 @@ internal sealed class InfernalBoss : ModNPC
 			limb.BladeAttachment = null;
 		}
 
+		if (Phase != 0)
+		{
+			return;
+		}
+
 		foreach (ref Limb limb in limbs.AsSpan())
 		{
 			if (limb.EntityAttachment.IsValid) { continue; }
@@ -917,6 +938,7 @@ internal sealed class InfernalBoss : ModNPC
 
 		foreach (ref Limb limb in limbs.AsSpan())
 		{
+			if (limb.IsGibbed) { continue; }
 			if (!limb.Role.HasFlag(LimbRole.EntityGrabbing)) { continue; }
 
 			float npcGrabRange = limb.IK.Length * 1.05f;
@@ -1054,9 +1076,12 @@ internal sealed class InfernalBoss : ModNPC
 
 		foreach (ref Limb limb in limbs.AsSpan())
 		{
-			if (limb.TileAttachment != null) { continue; }
-			if (limb.BladeAttachment != null) { continue; }
-			if (limb.EntityAttachment.IsValid) { continue; }
+			if (!limb.IsGibbed)
+			{
+				if (limb.TileAttachment != null) { continue; }
+				if (limb.BladeAttachment != null) { continue; }
+				if (limb.EntityAttachment.IsValid) { continue; }
+			}
 
 			Vector2 visualLimbPos = limb.IK.GetPosition(visualBodyCenter, rotation: bodyAngle.Current, xDir: NPC.spriteDirection);
 			var flailTarget = Vector2.Lerp(visualLimbPos + new Vector2(0f, 128f), NPC.GetTargetData().Center, 0.1f);
@@ -1130,12 +1155,69 @@ internal sealed class InfernalBoss : ModNPC
 		}
 	}
 
+	private void GibLimbs(in Context ctx)
+	{
+		int lifeNew = NPC.life;
+		float factorNew = MathUtils.Clamp01(NPC.life / MathF.Max(1, NPC.lifeMax));
+		float factorOld = MathUtils.Clamp01(lifeOld / MathF.Max(1, NPC.lifeMax));
+
+		bool CanGibLimb(int i)
+		{
+			return !limbs[i].IsGibbed && limbs[i].IK.Segments[0].Frame.RowCount > 1 && (i != limbs.Length - 1 || Phase == 1) && i != 1 && i != 4;
+		}
+
+		int divisions = 20;
+		if (lifeNew < lifeOld && (int)MathF.Ceiling(factorNew * divisions) < (int)MathF.Ceiling(factorOld * divisions))
+		{
+			if (Enumerable.Range(0, limbs.Length).Where(CanGibLimb).ToArray() is { Length: > 0 } gibbables)
+			{
+				int gibIndex = gibbables[Main.rand.Next(gibbables.Length)];
+				ref Limb limb = ref limbs[gibIndex];
+				Vector2 logicalBodyCenter = ctx.Center;
+				Vector2 limbPos = limb.IK.GetPosition(logicalBodyCenter, rotation: bodyAngle.Current, xDir: NPC.spriteDirection);
+
+				limb.ResetState();
+				limb.IsGibbed = true;
+				foreach (ref IKSegment segment in limb.IK.Segments.AsSpan())
+				{
+					segment.Frame.CurrentRow = 1;
+				}
+
+				SoundEngine.PlaySound(position: ctx.Center, style: new($"{nameof(PathOfTerraria)}/Assets/Sounds/Gore/SuperSplatter")
+				{
+					Volume = 0.9f,
+					MaxInstances = 3,
+					PitchVariance = 0.2f,
+				});
+
+				for (int i = 0; i < 200; i++)
+				{
+					Vector2 pos = limbPos + Main.rand.NextVector2Circular(32, 32);
+					Vector2 vel = Main.rand.NextVector2Circular(25, 25);
+					float scale = 1f + (Main.rand.NextFloat() * Main.rand.NextFloat());
+					Dust.NewDustPerfect(pos, DustID.Blood, vel, Scale: scale);
+				}
+
+				for (int i = 0; i < 10; i++)
+				{
+					Vector2 pos = limbPos + Main.rand.NextVector2Circular(64, 64);
+					Vector2 vel = Main.rand.NextVector2Circular(10, 10);
+					Gore.NewGorePerfect(NPC.GetSource_FromThis(), pos, vel, ModContent.GoreType<BloodSplatLarge>());
+					Gore.NewGorePerfect(NPC.GetSource_FromThis(), pos, vel, ModContent.GoreType<BloodSplatMedium>());
+					Gore.NewGorePerfect(NPC.GetSource_FromThis(), pos, vel, 135);
+				}
+			}
+		}
+
+		lifeOld = NPC.life;
+	}
+
 	/// <summary> Finds a tile for a limb to grab during walking or climbing. </summary>
 	private bool PickTileTarget(in Context ctx, ref Limb limb, [MaybeNullWhen(false)] out Point16 result)
 	{
 		// Pick a direction to use for dot products.
 		// With some bias towards the bottom.
-		Vector2 movDir = (NPC.velocity + new Vector2(0f, 0.6f)).SafeNormalize(Vector2.UnitY);
+		Vector2 movDir = (NPC.velocity * new Vector2(1.5f, 1.0f) + new Vector2(0f, 3.5f)).SafeNormalize(Vector2.UnitY);
 
 		Vector2 startPos = limb.IK.GetPosition(NPC.Center, rotation: bodyAngle.Current, xDir: NPC.spriteDirection);
 		Vector2Int startTile = startPos.ToTileCoordinates();
@@ -1234,6 +1316,11 @@ internal sealed class InfernalBoss : ModNPC
 	}
 	private void UpdateBlade(in Context ctx)
 	{
+		if (Phase != 0)
+		{
+			return;
+		}
+		
 		var slashAnimation = new Gradient<BladeAnimKey>
 		([
 			new(0.00f, new(Pos: new(-096, +008), Angle: MathHelper.TwoPi * 0.25f)),
@@ -1379,6 +1466,11 @@ internal sealed class InfernalBoss : ModNPC
 	{
 		Context ctx = new(NPC);
 
+		if (NPC.IsABestiaryIconDummy && limbs.Length == 0)
+		{
+			SetupLimbs(in ctx);
+		}
+
 		helmetTexture ??= ModContent.Request<Texture2D>($"{Texture}_Helmet", AssetRequestMode.ImmediateLoad);
 		bodyTexture ??= ModContent.Request<Texture2D>($"{Texture}_Body", AssetRequestMode.ImmediateLoad);
 		robeTexture ??= ModContent.Request<Texture2D>($"{Texture}_Robe", AssetRequestMode.ImmediateLoad);
@@ -1399,10 +1491,13 @@ internal sealed class InfernalBoss : ModNPC
 		Vector2 bCenter = ctx.Center;
 		Vector2 hCenter = ctx.Center + new Vector2(48 * NPC.spriteDirection, -8).RotatedBy(bAngle);
 		ctx.Animations.Render(NPC, bodyTexture.Value, bodyTexture.Value.Frame(), screenPos, drawColor, center: bCenter, origin: bOrigin, rotation: bAngle);
-		ctx.Animations.Render(NPC, robeTexture.Value, robeTexture.Value.Frame(), screenPos, drawColor, center: bCenter, origin: rOrigin, rotation: bAngle);
-		ctx.Animations.Render(NPC, helmetTexture.Value, helmetTexture.Value.Frame(), screenPos, drawColor, center: hCenter, origin: hOrigin, rotation: hAngle);
+		if (Phase == 0)
+		{
+			ctx.Animations.Render(NPC, robeTexture.Value, robeTexture.Value.Frame(), screenPos, drawColor, center: bCenter, origin: rOrigin, rotation: bAngle);
+			ctx.Animations.Render(NPC, helmetTexture.Value, helmetTexture.Value.Frame(), screenPos, drawColor, center: hCenter, origin: hOrigin, rotation: hAngle);
 
-		RenderBlade(sb, screenPos);
+			RenderBlade(sb, screenPos);
+		}
 
 		// Draw the front arms.
 		RenderArms(layerSign: +1, screenPos, drawColor);
@@ -1415,11 +1510,13 @@ internal sealed class InfernalBoss : ModNPC
 
 	private void RenderBlade(SpriteBatch sb, Vector2 screenPos)
 	{
+		if (NPC.IsABestiaryIconDummy) { return; }
+		
 		Context ctx = new(NPC);
 		SpriteBatchArgs sbArgs = sb.GetArguments();
 
 		Vector2 bladeOrigin = new(146, 86); // Approximate hilt center.
-		// Color bladeColor = Lighting.GetColor(ctx.Center.ToTileCoordinates()); // Sample at body for less self-lighting.
+											// Color bladeColor = Lighting.GetColor(ctx.Center.ToTileCoordinates()); // Sample at body for less self-lighting.
 		bladeBaseTexture ??= ModContent.Request<Texture2D>($"{Texture}_Blade", AssetRequestMode.ImmediateLoad);
 		bladeGlowTexture ??= ModContent.Request<Texture2D>($"{Texture}_Blade_Glow", AssetRequestMode.ImmediateLoad);
 
