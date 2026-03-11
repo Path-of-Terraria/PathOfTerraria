@@ -33,9 +33,132 @@ namespace PathOfTerraria.Content.Conflux;
 
 internal sealed class InfernalBossBar : ModBossBar
 {
-	public override bool PreDraw(SpriteBatch spriteBatch, NPC npc, ref BossBarDrawParams drawParams)
+	public override bool PreDraw(SpriteBatch spriteBatch, NPC npc, ref BossBarDrawParams drawParams) { return true; }
+}
+
+/// <summary> Non-moving flames that block areas for a bit of time. </summary>
+internal sealed class InfernalFlames : ModProjectile
+{
+	private ref float Progress => ref Projectile.ai[0];
+	private Vector2 StartPos
 	{
-		return true;
+		get => new(Projectile.localAI[1], Projectile.localAI[2]);
+		set => (Projectile.localAI[1], Projectile.localAI[2]) = (value.X, value.Y);
+	}
+	private Vector2 TargetPos
+	{
+		get => new(Projectile.ai[1], Projectile.ai[2]);
+		set => (Projectile.ai[1], Projectile.ai[2]) = (value.X, value.Y);
+	}
+
+	public override string Texture => $"Terraria/Images/Projectile_{ProjectileID.Flames}";
+
+	public override void SetStaticDefaults()
+	{
+		Main.projFrames[Type] = 7;
+	}
+	public override void SetDefaults()
+	{
+		Projectile.aiStyle = -1;
+		Projectile.damage = 50;
+		Projectile.Size = new(32);
+		Projectile.timeLeft = 300;
+		Projectile.hostile = true;
+		Projectile.friendly = false;
+		Projectile.aiStyle = -1;
+		Projectile.usesLocalNPCImmunity = true;
+		Projectile.localNPCHitCooldown = -1;
+	}
+
+	public override void AI()
+	{
+		if (StartPos == default)
+		{
+			StartPos = Projectile.Center;
+		}
+
+		if (Progress >= 1f)
+		{
+			Projectile.Kill();
+			return;
+		}
+
+		if (TargetPos != default)
+		{
+			float step = MathUtils.Clamp01(Progress / 0.05f);
+			step = 1f - MathF.Pow(1f - step, 2f);
+			Projectile.Center = Vector2.Lerp(StartPos, TargetPos, step);
+		}
+
+		Projectile.scale = Utils.Remap(Progress, 0.0f, 0.1f, 0.25f, 1.00f);
+		Projectile.velocity *= 0.99f;
+
+		int frameCount = Main.projFrames[Type];
+		Progress += TimeSystem.LogicDeltaTime / 8f;
+		Projectile.frame = (int)MathF.Floor(Progress / frameCount);
+
+		Projectile.rotation = Progress * 40f * MathHelper.TwoPi * (Projectile.whoAmI % 2 == 0 ? 1 : -1);
+		float radSnap = MathHelper.ToRadians(5f);
+		Projectile.rotation = MathF.Floor(Projectile.rotation * radSnap) / radSnap;
+
+		Lighting.AddLight(Projectile.Center, Color.OrangeRed.ToVector3() * (0.3f + 1f - Progress));
+	}
+
+	public override bool? CanDamage()
+	{
+		return Progress >= 0.06f && Progress <= 0.90f;
+	}
+
+	public override void OnHitPlayer(Player target, Player.HurtInfo info)
+	{
+		target.AddBuff(BuffID.OnFire, 180);
+	}
+	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+	{
+		target.AddBuff(BuffID.OnFire, 180);
+	}
+
+	private static readonly Color[] layerColors =
+	[
+		new(255, 80, 20, 200),
+		new(255, 255, 20, 070),
+		new(255, 80, 20, 100),
+		new(80, 80, 80, 100),
+	];
+	public override bool PreDraw(ref Color lightColor)
+	{
+		// [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "DrawProj_Flamethrower")]
+		// static extern void DrawFlame(Main? main, Projectile p);
+		// DrawFlame(null, Projectile);
+
+		int numLayers = layerColors.Length;
+		int numFrames = Main.projFrames[Projectile.type];
+		int numLayeredFrames = numFrames + numLayers;
+
+		Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
+		Vector2 worldPos = Projectile.Center.ToPoint().ToVector2();
+		Vector2 screenPos = worldPos - Main.screenPosition;
+
+		const float animMul = 8f;
+		int baseFrame = (int)Utils.Remap(Progress, 0f, 1f, 0, numLayeredFrames * animMul);
+		// Loop/wrap up until a certain point.
+		if (baseFrame >= numFrames)
+		{
+			int loopEnd = (int)(numLayeredFrames * (animMul - 1));
+			baseFrame = baseFrame < loopEnd ? (2 + (baseFrame % 4) * 1) : (baseFrame - loopEnd + 2);
+		}
+
+		for (int i = 0; i < numLayers; i++)
+		{
+			int frame = baseFrame - i;
+			if (frame < 0 || frame >= numFrames) { continue; }
+
+			Color color = layerColors[i];
+			Rectangle srcRect = texture.Frame(verticalFrames: numFrames, frameY: frame);
+			Main.EntitySpriteDraw(texture, screenPos, srcRect, color, Projectile.rotation, srcRect.Size() * 0.5f, Projectile.scale, 0, 0f);
+		}
+
+		return false;
 	}
 }
 
@@ -133,6 +256,7 @@ internal sealed class InfernalBoss : ModNPC
 	private ushort spawnCooldown;
 	private float strafingAngle;
 	private int lifeOld;
+	private readonly HashSet<Point16> flamePoints = [];
 
 	public int Phase => NPC.life <= NPC.lifeMax / 2 ? 1 : 0;
 
@@ -295,6 +419,7 @@ internal sealed class InfernalBoss : ModNPC
 		ResetOffsets(in ctx);
 		SpawnMinions(in ctx);
 		UpdateBlade(in ctx);
+		SpreadBladeFlames(in ctx);
 		LimbWielding(in ctx);
 		LimbGrabbing(in ctx);
 		LimbMovement(in ctx);
@@ -309,6 +434,7 @@ internal sealed class InfernalBoss : ModNPC
 		ctx.Movement.ManualUpdate(new(NPC));
 
 		UpdateEffects(in ctx);
+		BladeEffects(in ctx);
 		ResetOffsets(in ctx);
 
 #if IK_PREVIEW
@@ -582,24 +708,26 @@ internal sealed class InfernalBoss : ModNPC
 		}
 	}
 
-	private void UpdateBladeEffects(in Context ctx)
+	private void BladeEffects(in Context ctx)
 	{
 		if (Main.dedServ) { return; }
-		
+		if (Phase != 0) { return; }
+
 		// Blade tile collision effects.
 		Vector2 forward = Blade.Rotation.ToRotationVector2();
 		Vector2 sideways = forward.RotatedBy(MathHelper.PiOver2);
-		bool slicingGround = false;
-		int numTilesSlicing = 0;
-		for (float extent = 80; extent < 400; extent += 32)
+		bool sufficientlyDeepInGround = false;
+		int numLevelsSliced = 0;
+		const float start = 80;
+		const float end = 400;
+		for (float extent = start; extent < end; extent += 32)
 		{
-			bool sliced = false;
+			bool slicedAtThisLevel = false;
 			for (float offset = -32; offset <= 32; offset += 32)
 			{
 				Vector2 point = Blade.Position + (forward * extent) + (sideways * offset);
 				Point16 tilePoint = point.ToTileCoordinates16();
-				int x = tilePoint.X;
-				int y = tilePoint.Y;
+				(int x, int y) = (tilePoint.X, tilePoint.Y);
 
 				if (x < 1 || y < 1 || x >= Main.maxTilesX - 1 || y >= Main.maxTilesY - 1) { continue; }
 
@@ -607,31 +735,20 @@ internal sealed class InfernalBoss : ModNPC
 
 				if (!WorldUtilities.SolidTile(x, y))
 				{
+					// Illuminate free spaces.
 					Lighting.AddLight(point, Color.Orange.ToVector3());
 					continue;
 				}
 
-				numTilesSlicing++;
-
-				if (!slicingGround)
-				{
-					bool tileSurrounded = true
-						&& WorldUtilities.SolidTile(x + 0, y - 1)
-						&& WorldUtilities.SolidTile(x + 0, y + 1)
-						&& WorldUtilities.SolidTile(x - 1, y + 0)
-						&& WorldUtilities.SolidTile(x + 1, y + 0);
-
-					if (!tileSurrounded)
-					{
-						Dust.NewDustPerfect(point, DustID.Torch, Scale: 2f, Alpha: 128);
-						sliced = true;
-					}
-				}
+				if (!IsTileSuitableForFlames(x, y)) { continue; }
+				
+				Dust.NewDustPerfect(point, DustID.Torch, Scale: 2f, Alpha: 128);
+				slicedAtThisLevel = true;
 			}
 
-			if (sliced)
+			if (slicedAtThisLevel && ++numLevelsSliced > 3)
 			{
-				slicingGround = true;
+				sufficientlyDeepInGround = true;
 			}
 		}
 
@@ -648,13 +765,70 @@ internal sealed class InfernalBoss : ModNPC
 			var loopSound = new SoundStyle($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/PyralisBladeBurn") { Volume = 0.95f, IsLooped = true, PauseBehavior = PauseBehavior.PauseWithGame };
 			float halfStep = 8 * TimeSystem.LogicDeltaTime;
 			float distanceTarget = MathF.Pow(MathUtils.DistancePower(minDistance, 64, 1024), 2.3f);
-			float slicingTarget = MathUtils.Clamp01(numTilesSlicing / 10f) * 0.5f;
+			float slicingTarget = MathUtils.Clamp01(numLevelsSliced / 3f) * 0.5f;
 			float target = MathF.Max(distanceTarget, slicingTarget);
 			float intensity = bladeBurnSound.Intensity = MathUtils.StepTowards(MathHelper.Lerp(bladeBurnSound.Intensity, target, halfStep), target, halfStep);
 			float volume = MathHelper.Lerp(0.01f, 1f, intensity);
-			float pitch = slicingGround ? +0.5f : +0.0f;
+			float pitch = sufficientlyDeepInGround ? +0.5f : +0.0f;
 			SoundUtils.UpdateLoopingSound(ref bladeBurnSound.Handle, ctx.Center, volume, pitch, loopSound, _ => Main.npc[NPC.whoAmI] is { active: true } n && n == NPC);
 		}
+	}
+	private void SpreadBladeFlames(in Context ctx)
+	{
+		if (Main.netMode == NetmodeID.MultiplayerClient) { return; }
+		if (Phase != 0) { return; }
+
+		if (!ctx.Attacking.DealingDamage)
+		{
+			flamePoints.Clear();
+			return;
+		}
+
+		Vector2 forward = Blade.Rotation.ToRotationVector2();
+		Vector2 sideways = forward.RotatedBy(MathHelper.PiOver2);
+		(float Start, float End, float Step) extents = attackType != AttackType.Stab ? (300, 900, 32) : (200, 1100, 32);
+		(float Start, float End, float Step) offsets = attackType != AttackType.Stab ? (-32, +32, 32) : (-64, +64, 32);
+
+		for (float extent = extents.Start; extent < extents.End; extent += extents.Step)
+		{
+			for (float offset = offsets.Start; offset <= offsets.End; offset += offsets.Step)
+			{
+				Vector2 point = Blade.Position + (forward * extent) + (sideways * offset);
+				Point16 tilePoint = point.ToTileCoordinates16();
+				(int x, int y) = (tilePoint.X, tilePoint.Y);
+
+				if (x < 1 || y < 1 || x >= Main.maxTilesX - 1 || y >= Main.maxTilesY - 1) { continue; }
+				if (!WorldUtilities.SolidTile(x, y)) { continue; }
+				if (!IsTileSuitableForFlames(x, y)) { continue; }
+				if (!flamePoints.Add(tilePoint)) { continue; }
+
+				point = tilePoint.ToWorldCoordinates(8, 0);
+
+				int projType = ModContent.ProjectileType<InfernalFlames>();
+				Vector2 projPos = Blade.Position;
+				Vector2 projVel = default;
+				float ai0 = Main.rand.NextFloat(0.00f, 0.05f);
+				var proj = Projectile.NewProjectileDirect(null, projPos, projVel, projType, 30, 0f, ai0: ai0, ai1: point.X, ai2: point.Y);
+				proj.friendly = false;
+				proj.hostile = true;
+				proj.timeLeft = 3000;
+			}
+		}
+	}
+	/// <summary> Accesses neighbouring tiles, valid inputs are [1..maxTiles - 2]. </summary>
+	private static bool IsTileSuitableForFlames(int x, int y)
+	{
+		Tile uTile = Main.tile[x + 0, y - 1];
+		Tile dTile = Main.tile[x + 0, y + 1];
+		Tile lTile = Main.tile[x - 1, y + 0];
+		Tile rTile = Main.tile[x + 1, y + 0];
+		bool uFull = (WorldUtilities.SolidTile(uTile) | uTile.LiquidAmount != 0);
+		bool dFull = (WorldUtilities.SolidTile(dTile) | dTile.LiquidAmount != 0);
+		bool lFull = (WorldUtilities.SolidTile(lTile) | lTile.LiquidAmount != 0);
+		bool rFull = (WorldUtilities.SolidTile(rTile) | rTile.LiquidAmount != 0);
+		bool tileSurrounded = uFull & dFull & lFull & rFull;
+		bool tileOrphaned = !uFull & !dFull & !lFull & !rFull;
+		return !tileSurrounded & !tileOrphaned;
 	}
 
 	private void SetupLimbs(in Context ctx)
