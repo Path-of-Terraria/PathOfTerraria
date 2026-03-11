@@ -152,7 +152,7 @@ internal sealed class InfernalBoss : ModNPC
 		NPC.aiStyle = -1;
 		NPC.lifeMax = 75000;
 		NPC.defense = 90;
-		NPC.damage = 80;
+		NPC.damage = 50;
 		NPC.width = 125;
 		NPC.height = 125;
 		NPC.knockBackResist = 0.0f;
@@ -190,7 +190,7 @@ internal sealed class InfernalBoss : ModNPC
 			e.Data.AimLag = ((new(0.0f), new(0.3f)), (0f, 0.99f));
 			// e.Data.InitiationRange = new(1024, 512);
 			e.Data.Dash = (50, 65, new(9f, 1f));
-			e.Data.Damage = (50, 65, DamageInstance.EnemyAttackFilterWithInfighting);
+			e.Data.Damage = (45, 60, DamageInstance.EnemyAttackFilterWithInfighting);
 			e.Data.Hitbox = (new(350, 350), new(+290, +100), new(+0, +0));
 			e.Data.Movement = (0.0f, 0.80f, 0.95f);
 
@@ -483,12 +483,12 @@ internal sealed class InfernalBoss : ModNPC
 
 			if (attackType != AttackType.Stab)
 			{
-				ctx.Attacking.Data.AimLag = ((new(0.0f), new(0.25f)), (0f, 0.99f));
+				ctx.Attacking.Data.AimLag = ((new(0.01f), new(0.27f)), (0f, 0.95f));
 				ctx.Attacking.Data.Hitbox = (new(350, 350), new(+280, +280), new(+0, +0));
 			}
 			else
 			{
-				ctx.Attacking.Data.AimLag = ((new(0.0f), new(0.05f)), (0f, 0.99f));
+				ctx.Attacking.Data.AimLag = ((new(0.01f), new(0.06f)), (0f, 0.95f));
 				ctx.Attacking.Data.Hitbox = (new(200, 200), new(+500, +500), new(+0, +0));
 			}
 		}
@@ -523,7 +523,7 @@ internal sealed class InfernalBoss : ModNPC
 		{
 			if (numSavages < i * 1.5f) { type = ModContent.NPCType<FallenSavage>(); break; }
 			else if (numSchemers < i) { type = ModContent.NPCType<FallenSchemer>(); break; }
-			else if (numTyrants < i) { type = ModContent.NPCType<FallenTyrant>(); break; }
+			// else if (numTyrants < i) { type = ModContent.NPCType<FallenTyrant>(); break; }
 			else if (numShamans < i * 0.9f) { type = ModContent.NPCType<FallenShaman>(); break; }
 		}
 
