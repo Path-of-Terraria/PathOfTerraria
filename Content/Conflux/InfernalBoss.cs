@@ -99,6 +99,7 @@ internal sealed class InfernalBoss : ModNPC
 		public NPCAnimations Animations { get; } = npc.GetGlobalNPC<NPCAnimations>();
 		public NPCFootsteps Footsteps { get; } = npc.GetGlobalNPC<NPCFootsteps>();
 	}
+	public record struct BladeTransform(Vector2 Position, float Rotation);
 
 	private static readonly InverseKinematics.Config ikCfg = new()
 	{
@@ -115,7 +116,8 @@ internal sealed class InfernalBoss : ModNPC
 	public ref Flag Flags => ref Unsafe.As<float, Flag>(ref NPC.ai[3]);
 	public ref float Counter => ref NPC.ai[2];
 
-	public (Vector2 Position, float Rotation) Blade;
+	public ref BladeTransform Blade => ref BladeHistory[0];
+	public BladeTransform[] BladeHistory = new BladeTransform[10];
 
 	/// <summary> World-relative body angle. </summary>
 	private (float Target, float Current) bodyAngle;
@@ -1320,7 +1322,10 @@ internal sealed class InfernalBoss : ModNPC
 		{
 			return;
 		}
-		
+
+		// Store historical information.
+		Array.Copy(BladeHistory, 0, BladeHistory, 1, BladeHistory.Length - 1);
+
 		var slashAnimation = new Gradient<BladeAnimKey>
 		([
 			new(0.00f, new(Pos: new(-096, +008), Angle: MathHelper.TwoPi * 0.25f)),
@@ -1511,12 +1516,11 @@ internal sealed class InfernalBoss : ModNPC
 	private void RenderBlade(SpriteBatch sb, Vector2 screenPos)
 	{
 		if (NPC.IsABestiaryIconDummy) { return; }
-		
+
 		Context ctx = new(NPC);
 		SpriteBatchArgs sbArgs = sb.GetArguments();
 
 		Vector2 bladeOrigin = new(146, 86); // Approximate hilt center.
-											// Color bladeColor = Lighting.GetColor(ctx.Center.ToTileCoordinates()); // Sample at body for less self-lighting.
 		bladeBaseTexture ??= ModContent.Request<Texture2D>($"{Texture}_Blade", AssetRequestMode.ImmediateLoad);
 		bladeGlowTexture ??= ModContent.Request<Texture2D>($"{Texture}_Blade_Glow", AssetRequestMode.ImmediateLoad);
 
@@ -1527,32 +1531,22 @@ internal sealed class InfernalBoss : ModNPC
 	private static readonly short[] QuadTriangles = [0, 2, 3, 0, 1, 2];
 	private void RenderBladeInner(Vector2 screenPos, Texture2D diffuse, Texture2D glowmask, Vector2 origin)
 	{
-		// This method may be painful to see, but the SpriteBatch became of no use the moment
-		// a custom shader was introduced, leading to infuriatingly nonsensical matrix issues,
-		// so instead we do all rendering manually here.
+		if (BladeHistory.Length == 0)
+		{
+			return;
+		}
 
 		Vector2 maskExtensionOffset = Main.sceneTilePos - Main.screenPosition;
 		Vector2 maskTargetSize = Main.instance.tileTarget.Size();
 		Matrix viewMatrix = Main.GameViewMatrix.NormalizedTransformationmatrix;
-		Matrix worldMatrix =
-		(
-			Matrix.CreateTranslation(-origin.X, -origin.Y, 0)
-			* Matrix.CreateRotationZ(Blade.Rotation)
-			* Matrix.CreateTranslation(Blade.Position.X - screenPos.X, Blade.Position.Y - screenPos.Y, 0f)
-		);
 
 		using var vertices = new RentedArray<VertexPositionColorTexture>(4);
 		Rectangle bounds = diffuse.Bounds;
 		var pos = new Vector4(bounds.Left, bounds.Top, bounds.Right, bounds.Bottom);
 		var uv0 = new Vector4(0f, 0f, 1f, 1f);
-		vertices[0] = new(new(pos.X, pos.Y, 0f), Color.White, new(uv0.X, uv0.Y));
-		vertices[1] = new(new(pos.Z, pos.Y, 0f), Color.White, new(uv0.Z, uv0.Y));
-		vertices[2] = new(new(pos.Z, pos.W, 0f), Color.White, new(uv0.Z, uv0.W));
-		vertices[3] = new(new(pos.X, pos.W, 0f), Color.White, new(uv0.X, uv0.W));
 
 		GraphicsDevice gfx = Main.instance.GraphicsDevice;
 		Effect effect = (bladeShader ??= ModContent.Request<Effect>($"{PoTMod.ModName}/Assets/Effects/PyralisBlade", AssetRequestMode.ImmediateLoad)).Value;
-		effect.Parameters["Texture"].SetValue(diffuse);
 		effect.Parameters["Glowmask"].SetValue(glowmask);
 		effect.Parameters["Light"].SetValue(LightingBuffer.GetOrWhite());
 		effect.Parameters["Tiles"].SetValue(Main.instance.tileTarget);
@@ -1561,16 +1555,49 @@ internal sealed class InfernalBoss : ModNPC
 		effect.Parameters["MaskOffset"].SetValue(maskExtensionOffset);
 		effect.Parameters["ScreenPosition"].SetValue(Main.screenPosition);
 		effect.Parameters["ScreenResolution"].SetValue(Main.ScreenSize.ToVector2());
-		effect.Parameters["World"].SetValue(worldMatrix);
 		effect.Parameters["View"].SetValue(viewMatrix);
 		gfx.BlendState = BlendState.AlphaBlend;
 		gfx.DepthStencilState = DepthStencilState.None;
 		gfx.RasterizerState = Main.Rasterizer;
 
-		foreach (EffectPass pass in effect.CurrentTechnique.Passes)
+		Texture2D nothing = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/Empty", AssetRequestMode.ImmediateLoad).Value;
+
+		//TODO: Could be made faster. Does it matter?
+		int numLayers = 40;
+		int numFrames = 5;
+		float layersPerFrame = numLayers / (float)numFrames;
+		for (int i = numLayers - 1; i >= 0; i--)
 		{
-			pass.Apply();
-			gfx.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertices.Array, 0, vertices.Length, QuadTriangles, 0, QuadTriangles.Length / 3);
+			// Use different frames, as well as interpolate between them.
+			float globalStep = i / (float)(numLayers - 1);
+			int thisFrame = (int)(i / layersPerFrame);
+			int nextFrame = thisFrame + 1;
+			float frameStep = i % layersPerFrame;
+			BladeTransform thisTransform = BladeHistory[thisFrame];
+			BladeTransform nextTransform = BladeHistory[nextFrame];
+			float angle = MathUtils.LerpRadians(thisTransform.Rotation, nextTransform.Rotation, frameStep);
+			var worldPos = Vector2.Lerp(thisTransform.Position, nextTransform.Position, frameStep);
+
+			Color col = i == 0 ? Color.White : new(Vector4.One * 0.05f);
+			vertices[0] = new(new(pos.X, pos.Y, 0f), col, new(uv0.X, uv0.Y));
+			vertices[1] = new(new(pos.Z, pos.Y, 0f), col, new(uv0.Z, uv0.Y));
+			vertices[2] = new(new(pos.Z, pos.W, 0f), col, new(uv0.Z, uv0.W));
+			vertices[3] = new(new(pos.X, pos.W, 0f), col, new(uv0.X, uv0.W));
+
+			effect.Parameters["Texture"].SetValue(i == 0 ? diffuse : nothing);
+			Matrix worldMatrix =
+			(
+				Matrix.CreateTranslation(-origin.X, -origin.Y, 0)
+				* Matrix.CreateRotationZ(angle)
+				* Matrix.CreateTranslation(worldPos.X - screenPos.X, worldPos.Y - screenPos.Y, 0f)
+			);
+			effect.Parameters["World"].SetValue(worldMatrix);
+
+			foreach (EffectPass pass in effect.CurrentTechnique.Passes)
+			{
+				pass.Apply();
+				gfx.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertices.Array, 0, vertices.Length, QuadTriangles, 0, QuadTriangles.Length / 3);
+			}
 		}
 	}
 
