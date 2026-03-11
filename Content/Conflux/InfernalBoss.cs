@@ -1246,6 +1246,22 @@ internal sealed class InfernalBoss : ModNPC
 				limb.TargetPosition = logicalLimbPos + (throwDirection * limb.IK.Length);
 				limb.Animation.Progress = MathUtils.StepTowards(limb.Animation.Progress, 1f, 4.5f * TimeSystem.LogicDeltaTime);
 			}
+			
+			// Adjust target points during hold & throw, so that they do not put anyone into a solid wall.
+			if (limb.Animation.Stage is >= 1 and <= 2)
+			{
+				Point basePoint = limb.TargetPosition.ToTileCoordinates();
+				Vector2 size = grabEntity.Size + new Vector2(32, 32);
+				Point sizeInTiles = grabEntity.Size.ToTileCoordinates();
+				if (TileUtils.TryFitRectangleIntoTilemap(basePoint, sizeInTiles, out Vector2Int adjustedPoint))
+				{
+					limb.TargetPosition = ((Point)adjustedPoint).ToWorldCoordinates(0, 0) + (size * 0.5f);
+				}
+				else
+				{
+					limb.TargetPosition = ctx.Center;
+				}
+			}
 
 			// Release.
 			if (limb.Animation is { Stage: 2, Progress: >= 0.25f } or { Stage: >= 3 })
@@ -1268,6 +1284,7 @@ internal sealed class InfernalBoss : ModNPC
 				}
 			}
 
+			// Move entity into hand.
 			if (limb.Animation.Stage is >= 1 and <= 2)
 			{
 				grabEntity.Center = limb.IK.Target + new Vector2(grabEntity.width * 0.5f * NPC.direction, -grabEntity.height * 0.25f);
