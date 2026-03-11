@@ -936,6 +936,10 @@ internal sealed class InfernalBoss : ModNPC
 			grabCooldown--;
 		}
 
+		// Can grab slightly before the attack is considered over.
+		const int postDmgWindow = 15;
+		bool canGrab = grabCooldown <= 0 && (!ctx.Attacking.Active || ctx.Attacking.Data.Progress > ctx.Attacking.Data.Damage.End + postDmgWindow);
+
 		Vector2 logicalBodyCenter = ctx.Center;
 
 		foreach (ref Limb limb in limbs.AsSpan())
@@ -943,8 +947,9 @@ internal sealed class InfernalBoss : ModNPC
 			if (limb.IsGibbed) { continue; }
 			if (!limb.Role.HasFlag(LimbRole.EntityGrabbing)) { continue; }
 
+			const float postInitiationRangeBonus = 16;
 			float npcGrabRange = limb.IK.Length * 1.05f;
-			float playerGrabRange = limb.IK.Length * 0.65f;
+			float playerGrabRange = limb.IK.Length * 0.78f;
 			float sqrNpcGrabRange = npcGrabRange * npcGrabRange;
 			float sqrPlayerGrabRange = playerGrabRange * playerGrabRange;
 			Vector2 logicalLimbPos = limb.IK.GetPosition(logicalBodyCenter, rotation: bodyAngle.Current, xDir: NPC.spriteDirection);
@@ -955,7 +960,7 @@ internal sealed class InfernalBoss : ModNPC
 			}
 			else
 			{
-				if (grabCooldown > 0)
+				if (!canGrab)
 				{
 					continue;
 				}
@@ -1000,6 +1005,17 @@ internal sealed class InfernalBoss : ModNPC
 					PitchVariance = 0.125f,
 					Volume = 1.0f,
 				});
+
+				// Play a special cue when grabbing the local player.
+				if (!Main.dedServ && grabEntity == Main.LocalPlayer)
+				{
+					SoundEngine.PlaySound(position: ctx.Center, style: new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/PyralisGrabCue", 3)
+					{
+						MaxInstances = 3,
+						PitchVariance = 0.05f,
+						Volume = 0.6f,
+					});
+				}
 			}
 
 			// Advance animation stages.
@@ -1018,7 +1034,7 @@ internal sealed class InfernalBoss : ModNPC
 			if (limb.Animation.Stage == 0)
 			{
 				limb.TargetPosition = grabEntity.Center;
-				limb.Animation.Progress = MathUtils.StepTowards(limb.Animation.Progress, 1f, 2.5f * TimeSystem.LogicDeltaTime);
+				limb.Animation.Progress = MathUtils.StepTowards(limb.Animation.Progress, 1f, 2.0f * TimeSystem.LogicDeltaTime);
 			}
 			// Stage 1 - Hold.
 			else if (limb.Animation.Stage == 1)
@@ -1027,7 +1043,7 @@ internal sealed class InfernalBoss : ModNPC
 				// Unless this is a non-friendly NPC.
 				if (progressed
 				&& grabEntity is not NPC { friendly: false }
-				&& grabEntity.DistanceSQ(logicalLimbPos) > (grabEntity is Player ? sqrPlayerGrabRange : sqrNpcGrabRange))
+				&& grabEntity.Distance(logicalLimbPos) > (postInitiationRangeBonus + (grabEntity is Player ? playerGrabRange : npcGrabRange)))
 				{
 					limb.ResetState();
 					continue;
@@ -1035,7 +1051,9 @@ internal sealed class InfernalBoss : ModNPC
 
 				limb.TargetPosition = logicalLimbPos + ((Vector2.UnitX * NPC.direction).RotatedBy(MathHelper.Pi * +0.2f * NPC.direction) * limb.IK.Length * +0.25f);
 				limb.Animation.Progress = MathUtils.StepTowards(limb.Animation.Progress, 1f, 1.5f * TimeSystem.LogicDeltaTime);
-				Lighting.AddLight(limb.IK.Target, Vector3.One);
+
+				// Red glow.
+				Lighting.AddLight(limb.IK.Target, new Vector3(1.0f, 0.2f, 0.0f));
 			}
 			// Stage 2 - Throw.
 			else if (limb.Animation.Stage == 2)
@@ -1050,7 +1068,8 @@ internal sealed class InfernalBoss : ModNPC
 				limb.ResetState();
 				grabEntity.velocity = throwDirection * 30f;
 
-				SoundEngine.PlaySound(position: ctx.Center, style: new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/PyralisThrow", 2)
+				Vector2? sndPos = grabEntity != Main.LocalPlayer ? ctx.Center : null;
+				SoundEngine.PlaySound(position: sndPos, style: new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/PyralisThrow", 2)
 				{
 					MaxInstances = 3,
 					PitchVariance = 0.125f,
