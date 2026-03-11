@@ -254,6 +254,7 @@ internal sealed class InfernalBoss : ModNPC
 	private (SlotId Handle, float Intensity) bladeBurnSound;
 	private ushort grabCooldown;
 	private ushort spawnCooldown;
+	private ushort voluntaryAttackCounter;
 	private float strafingAngle;
 	private int lifeOld;
 	private readonly HashSet<Point16> flamePoints = [];
@@ -603,9 +604,15 @@ internal sealed class InfernalBoss : ModNPC
 			_ => 400,
 		};
 
-		if (distance < attackRange && ctx.Attacking.TryStarting(new(NPC)))
+		// An attack will be triggered regardless of range if enough time passes without cathing up.
+		// This is done to spread flames in order to interfere with the player's escape.
+		const int voluntaryAttackRate = (int)(60 * 1.1f);
+		bool inRange = distance < attackRange;
+		bool ignoreRange = voluntaryAttackCounter > voluntaryAttackRate;
+		if ((inRange || ignoreRange) && ctx.Attacking.TryStarting(new(NPC)))
 		{
 			attackType = nextAttackType;
+			voluntaryAttackCounter = 0;
 
 			if (attackType != AttackType.Stab)
 			{
@@ -617,6 +624,10 @@ internal sealed class InfernalBoss : ModNPC
 				ctx.Attacking.Data.AimLag = ((new(0.01f), new(0.06f)), (0f, 0.95f));
 				ctx.Attacking.Data.Hitbox = (new(200, 200), new(+500, +500), new(+0, +0));
 			}
+		}
+		else
+		{
+			voluntaryAttackCounter = (ushort)Math.Min(voluntaryAttackCounter + 1, ushort.MaxValue - 2);
 		}
 	}
 
