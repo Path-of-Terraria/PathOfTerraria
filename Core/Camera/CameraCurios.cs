@@ -135,7 +135,7 @@ internal sealed class CameraCurios : ModSystem
 		foreach (ref readonly CameraCurioInstance curio in CollectionsMarshal.AsSpan(curios))
 		{
 			Vector2 targetOffset = curio.Position - baseCameraPoint;
-			float intensity = curio.Intensity;
+			float intensity = Easings.QuadInOut(curio.Intensity);
 
 			if (curio.Style.Range.HasValue)
 			{
