@@ -66,8 +66,9 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 	public static Counter<uint> AllowDamage;
 
 	public int Sign => Direction.X >= 0f ? 1 : -1;
-	public bool Active => Data.Progress >= 0;
-	public bool DealingDamage => Data.Progress >= 0 && Data.Progress >= Data.Damage.Start && Data.Progress < Data.Damage.End;
+	public ref short Progress => ref Data.Progress;
+	public bool Active => Progress >= 0;
+	public bool DealingDamage => Progress >= 0 && Progress >= Data.Damage.Start && Progress < Data.Damage.End;
 	public Vector2 Direction
 	{
 		get => Data.Angle.ToRotationVector2();
