@@ -18,7 +18,7 @@ internal class AltWhipHook : ILoadable
 			Projectile.GetWhipSettings(proj, out float timeToFlyOut, out int segments, out float rangeMult);
 
 			float baseFactor = projectile.Timer / timeToFlyOut;
-			float factor = Math.Abs(Easings.EaseCubicInOut.Ease(baseFactor) * 2f);
+			float factor = Math.Abs(Easings.CubicInOut(baseFactor) * 2f);
 			float rotationFactor = (factor - 0.5f) * MathHelper.TwoPi;
 			bool flip = false;
 
