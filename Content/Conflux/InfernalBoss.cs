@@ -66,8 +66,8 @@ internal sealed class InfernalFlames : ModProjectile
 	{
 		Projectile.aiStyle = -1;
 		Projectile.damage = 50;
-		Projectile.Size = new(32);
-		Projectile.timeLeft = 300;
+		Projectile.Size = new(48);
+		Projectile.timeLeft = 60 * 10;
 		Projectile.hostile = true;
 		Projectile.friendly = false;
 		Projectile.aiStyle = -1;
@@ -106,7 +106,12 @@ internal sealed class InfernalFlames : ModProjectile
 		float radSnap = MathHelper.ToRadians(5f);
 		Projectile.rotation = MathF.Floor(Projectile.rotation * radSnap) / radSnap;
 
-		Lighting.AddLight(Projectile.Center, Color.OrangeRed.ToVector3() * (0.3f + 1f - Progress));
+		if (!Main.dedServ)
+		{
+			float lightIntensity = Utils.Remap(Progress, 0.0f, 0.1f, 0.3f, 1.0f) - Utils.Remap(Progress, 0.85f, 1.0f, 0.0f, 1.0f);
+			Vector3 lightColor = new Vector3(1.0f, 0.7f, 0.2f) * lightIntensity * 2f;
+			Lighting.AddLight(Projectile.Center, lightColor);
+		}
 	}
 
 	public override bool? CanDamage()
@@ -1009,7 +1014,7 @@ internal sealed class InfernalBoss : ModNPC
 				if (!WorldUtilities.SolidTile(x, y))
 				{
 					// Illuminate free spaces.
-					Lighting.AddLight(point, Color.Orange.ToVector3());
+					Lighting.AddLight(point, Color.Orange.ToVector3() * 3f);
 					continue;
 				}
 
@@ -1545,6 +1550,7 @@ internal sealed class InfernalBoss : ModNPC
 			{
 				// Red glow during grab, purple flash during throw.
 				Vector3 color = limb.Animation.Stage != 2 ? new Vector3(1.0f, 0.2f, 0.0f) : new Vector3(1.0f, 0.2f, 1.0f);
+				color *= 2f;
 				Lighting.AddLight(limb.IK.Target, color);
 			}
 			
