@@ -62,7 +62,7 @@ internal class InfernalRealm : BossDomainSubworld, IOverrideBiome
 			Projectile.NewProjectile(src, spawnPos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0);
 		}
 
-		if (state is not FightState.InProgress)
+		if (state is not FightState.InProgress && !FightTracker.AnyNPCs())
 		{
 			// Bias the camera towards the center of the arena.
 			CameraCurios.Create(new()

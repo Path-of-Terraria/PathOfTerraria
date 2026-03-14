@@ -121,7 +121,7 @@ public struct FightTracker
 		return LocalKillCountTracking.Get(NpcTypes);
 	}
 
-	private readonly bool AnyNPCs()
+	public readonly bool AnyNPCs()
 	{
 		foreach (int type in NpcTypes)
 		{
