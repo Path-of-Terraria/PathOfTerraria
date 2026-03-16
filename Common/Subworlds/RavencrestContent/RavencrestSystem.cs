@@ -8,8 +8,10 @@ using PathOfTerraria.Common.Systems.StructureImprovementSystem;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Common.Systems.VanillaModifications;
 using PathOfTerraria.Common.UI;
+using PathOfTerraria.Common.UI.Misc;
 using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.Tiles.BossDomain;
+using PathOfTerraria.Core.UI;
 using ReLogic.Graphics;
 using SubworldLibrary;
 using Terraria.Chat;
@@ -24,16 +26,21 @@ namespace PathOfTerraria.Common.Subworlds.RavencrestContent;
 
 public class RavencrestSystem : ModSystem
 {
+	public const int RavencrestVersion = 1;
+
 	/// <summary> Extra NPCs that do not spawn here by default. </summary>
 	public readonly HashSet<string> HasOverworldNPC = [];
 
 	internal static readonly Dictionary<string, ImprovableStructure> Structures = [];
+	internal static readonly Dictionary<string, Point16> StaticStructureLocations = [];
 
 	public bool SpawnedRaven = false;
 	public bool SpawnedScout = false;
 	public Point16 EntrancePosition;
 	public bool OneTimeCheckDone = false;
 	public Point16? SpawnedMorvenPos = null;
+
+	internal int CurrentRavencrestVersion = RavencrestVersion;
 
 	public override void Load()
 	{
@@ -65,6 +72,12 @@ public class RavencrestSystem : ModSystem
 		{
 			StructurePath = "Assets/Structures/RavencrestBuildings/Library_",
 			Position = new Point(454, 113)
+		});
+
+		Structures.Add("Workshop", new ImprovableStructure(1)
+		{
+			StructurePath = "Assets/Structures/RavencrestBuildings/Workshop_",
+			Position = new Point(234, 103)
 		});
 
 		MiscOverlayUI.DrawOverlay += DrawDistantMorvenDialogue;
@@ -114,6 +127,21 @@ public class RavencrestSystem : ModSystem
 				}
 
 				ModContent.GetInstance<BoCDomainSystem>().OneTimeCheck();
+			}
+			
+			if (Main.netMode == NetmodeID.SinglePlayer && CurrentRavencrestVersion != RavencrestVersion && SubworldSystem.Current is RavencrestSubworld)
+			{
+				const string Identifier = "Migrate Ravencrest";
+
+				if (!UIManager.Has(Identifier))
+				{
+					UIManager.Register(Identifier, "Vanilla: Mouse Text", new MigrateRavencrestUI());
+				}
+				else
+				{
+					UIManager.TryDisable(Identifier);
+					UIManager.TryEnable(Identifier);
+				}
 			}
 
 			TavernManager.OneTimeCheck();
@@ -378,6 +406,8 @@ public class RavencrestSystem : ModSystem
 		{
 			tag.Add("overworldNPC" + npcNum++, npc);
 		}
+
+		tag.Add("ravencrestVersion", CurrentRavencrestVersion);
 	}
 
 	public override void ClearWorld()
@@ -385,6 +415,7 @@ public class RavencrestSystem : ModSystem
 		HasOverworldNPC.Clear();
 		OneTimeCheckDone = false;
 		SpawnedMorvenPos = null;
+		CurrentRavencrestVersion = 0;
 
 		foreach (KeyValuePair<string, ImprovableStructure> item in Structures)
 		{
