@@ -48,7 +48,7 @@ dotnet_remove_unnecessary_suppression_exclusions = none
 
 # New line preferences
 dotnet_style_allow_multiple_blank_lines_experimental = false:warning
-dotnet_style_allow_statement_immediately_after_block_experimental = false:warning
+dotnet_style_allow_statement_immediately_after_block_experimental = false:none
 
 #### C# Coding Conventions ####
 
@@ -126,7 +126,7 @@ csharp_new_line_between_query_expression_clauses = true
 csharp_indent_block_contents = true
 csharp_indent_braces = false
 csharp_indent_case_contents = true
-csharp_indent_case_contents_when_block = true
+csharp_indent_case_contents_when_block = false
 csharp_indent_labels = false
 csharp_indent_switch_labels = true
 
@@ -244,3 +244,9 @@ dotnet_diagnostic.IDE0047.severity = none
 
 # IDE0004: Remove Unnecessary Cast
 dotnet_diagnostic.IDE0004.severity = none
+
+# IDE0305: Simplify collection initialization
+dotnet_diagnostic.IDE0305.severity = none
+
+# IDE0053: Use expression body for lambda expression
+dotnet_diagnostic.IDE0053.severity = none

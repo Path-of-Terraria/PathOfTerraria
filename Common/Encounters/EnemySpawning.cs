@@ -4,6 +4,7 @@ using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using PathOfTerraria.Common.Systems.Synchronization;
+using PathOfTerraria.Content.Conflux;
 using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
 using Terraria.Audio;
@@ -11,12 +12,17 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader.Config;
 
+#nullable enable
+
 namespace PathOfTerraria.Common.Encounters;
 
 internal enum EnemySpawnEffect
 {
 	None,
 	Teleport,
+	GlacialRift,
+	InfernalRift,
+	CelestialRift
 }
 
 /// <summary> An enemy spawn description. </summary>
@@ -67,6 +73,9 @@ internal record struct SpawnPlacement()
 	/// <summary> How many dynamic placement attempts to perform before giving up. High values may affect performance. </summary>
 	[Range(1, 1024), Increment(1), DefaultValue(10)]
 	public int MaxSearchAttempts { get; set; } = 10;
+	/// <summary> Predicate for declaring custom placement requirements. Cannot be serialized. </summary>
+	[JsonIgnore]
+	public Func<Point16, bool>? CustomPredicate;
 
 	/// <summary> Guesses defaults to use for a given NPC sample. Not always ideal. </summary>
 	public SpawnPlacement WithDefaults(int npcType)
@@ -122,7 +131,7 @@ internal static class EnemySpawning
 	/// <br/> Can fail if spawn logic gives up on picking a viable position.
 	/// <br/> Will fail if there are too many enemies in the world.
 	/// </summary>
-	public static bool TrySpawningEnemy(IEntitySource source, in EnemySpawn spawn, [NotNullWhen(true)] out NPC npc)
+	public static bool TrySpawningEnemy(IEntitySource source, in EnemySpawn spawn, [NotNullWhen(true)] out NPC? npc)
 	{
 		if (Main.netMode == NetmodeID.MultiplayerClient)
 		{
@@ -136,7 +145,7 @@ internal static class EnemySpawning
 
 		if (spawn.SpawnPosition is not { } spawnPosition)
 		{
-			if (!TryFindingSpawnPosition(spawn.SpawnPlacement!.Value, out spawnPosition))
+			if (!TryFindingSpawnPosition(out spawnPosition, spawn.SpawnPlacement!.Value))
 			{
 				npc = default;
 				return false;
@@ -175,12 +184,87 @@ internal static class EnemySpawning
 				Dust.NewDustDirect(npc.position, npc.width, npc.height, DustID.WitherLightning);
 			}
 		}
+		if (effect is EnemySpawnEffect.GlacialRift or EnemySpawnEffect.InfernalRift or EnemySpawnEffect.CelestialRift)
+		{
+			(Projectile? rift, float closestSqrDst) = (null, float.PositiveInfinity);
+
+			foreach (Projectile projectile in Main.ActiveProjectiles)
+			{
+				if (projectile.ModProjectile is ConfluxRift projRift && projRift.Activated)
+				{
+					if (projectile.DistanceSQ(position) is float sqrDst && sqrDst > closestSqrDst) { continue; }
+					(rift, closestSqrDst) = (projRift.Projectile, sqrDst);
+				};
+			}
+
+			SoundEngine.PlaySound(position: position, style: new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/RiftEnemySpawn")
+			{
+				Volume = 0.37f,
+				MaxInstances = 3,
+				PitchVariance = 0.2f,
+			});
+
+			if (rift != null)
+			{
+				int dustID = 173;
+				float dustVelocity = 0;
+				float dustDensity = 1;
+				float dustScale = 1;
+
+				switch (effect)
+				{
+					case EnemySpawnEffect.CelestialRift:
+						dustID = 173;
+						dustVelocity = 0.2f;
+						dustDensity = 32;
+						dustScale = 1.5f;
+
+						for (int i = 0; i < 10; i++)
+						{
+							Dust.NewDustDirect(npc.position, npc.width, npc.height, DustID.WitherLightning);
+						}
+						break;
+					case EnemySpawnEffect.GlacialRift:
+						dustID = 185;
+						dustVelocity = 0.3f;
+						dustDensity = 32;
+						dustScale = 1.5f;
+
+						for (int i = 0; i < 10; i++)
+						{
+							Dust.NewDustDirect(npc.position, npc.width, npc.height, 226);
+						}
+						break;
+					case EnemySpawnEffect.InfernalRift:
+						dustID = 127;
+						dustVelocity = 0.5f;
+						dustDensity = 32;
+						dustScale = 1.65f;
+
+						for (int i = 0; i < 20; i++)
+						{
+							Dust.NewDustDirect(npc.position, npc.width, npc.height, 174);
+						}
+						break;
+				}
+
+				Vector2 lineStart = rift.Center + Main.rand.NextVector2Circular(32f, 32f);
+
+				for (float i = 0, step = dustDensity * dustDensity; i < closestSqrDst; i += step)
+				{
+					var dustPos = Vector2.Lerp(lineStart, position, i / closestSqrDst);
+					dustPos += Main.rand.NextVector2Circular(5f, 5f);
+
+					Dust.NewDustPerfect(dustPos, dustID, Vector2.One.RotatedByRandom(6.28) * dustVelocity, 0, default, dustScale).noGravity = true;
+				}
+			}
+		}
 	}
 
 	/// <summary>
 	/// Attempts to pick a suitable spawn position with the given <see cref="SpawnPlacement"/> options.
 	/// </summary>
-	public static bool TryFindingSpawnPosition(in SpawnPlacement spawn, out Vector2 spawnPosition)
+	public static bool TryFindingSpawnPosition(out Vector2 spawnPosition, in SpawnPlacement spawn)
 	{
 		if (spawn.Area == default)
 		{
@@ -294,6 +378,12 @@ internal static class EnemySpawning
 				{
 					continue;
 				}
+			}
+
+			// Run custom checks. Before the most expensive one.
+			if (spawn.CustomPredicate?.Invoke(new(x, y)) == false)
+			{
+				continue;
 			}
 
 			// As the last check, perform an optional floodfill loop to see if we can reach the encounter's center.

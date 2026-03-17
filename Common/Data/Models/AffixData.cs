@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using PathOfTerraria.Common.Enums;
 
@@ -33,60 +35,61 @@ public class ItemAffixData
 	public (int MinInclusive, int MaxInclusive) GetPossibleTierRange(int level)
 	{
 		var eligibleTiers = Tiers.Where(t => t.MinimumLevel <= level).ToList();
-		
+
 		return (0, eligibleTiers.Count - 1);
 	}
 
 	public TierData GetAppropriateTierData(int level, out int tierIndex)
-    {
-        var eligibleTiers = Tiers.Where(t => t.MinimumLevel <= level).ToList();
+	{
+		var eligibleTiers = Tiers.Where(t => t.MinimumLevel <= level).ToList();
 
 		tierIndex = 0;
 
-        if (eligibleTiers.Count == 0)
-        {
-            return null;
-        }
-
-        float totalWeight = eligibleTiers.Sum(t => t.Weight);
-
-        float randomWeight = (float) Main.rand.NextDouble() * totalWeight;
-        float cumulativeWeight = 0;
-
-        foreach (TierData tier in eligibleTiers)
-        {
-            cumulativeWeight += tier.Weight;
-
-            if (randomWeight <= cumulativeWeight)
-            {
-				tierIndex = eligibleTiers.IndexOf(tier);
-                return tier;
-            }
-        }
-
-		tierIndex = eligibleTiers.Count - 1;
-        return eligibleTiers.Last(); //Just in case we don't return a tier?
-    }
-
-	public ItemType GetEquipTypes()
-	{
-		string[] split = EquipTypes.Split(' ');
-		ItemType types = ItemType.None;
-
-		foreach (string item in split)
+		if (eligibleTiers.Count == 0)
 		{
-			if (Enum.TryParse(item, out ItemType type))
+			return null;
+		}
+
+		float totalWeight = eligibleTiers.Sum(t => t.Weight);
+
+		float randomWeight = (float)Main.rand.NextDouble() * totalWeight;
+		float cumulativeWeight = 0;
+
+		foreach (TierData tier in eligibleTiers)
+		{
+			cumulativeWeight += tier.Weight;
+
+			if (randomWeight <= cumulativeWeight)
 			{
-				types |= type;
-			}
-			else
-			{
-				Console.WriteLine($"Affix attempted to load nonexisting {item} ItemType enumeration. Types: " + EquipTypes);
-				Console.WriteLine(Environment.StackTrace);
+				tierIndex = eligibleTiers.IndexOf(tier);
+				return tier;
 			}
 		}
 
-		return types;
+		tierIndex = eligibleTiers.Count - 1;
+		return eligibleTiers.Last(); //Just in case we don't return a tier?
+	}
+
+	public ItemType GetEquipTypes()
+	{
+		ItemType result = 0;
+
+		foreach (string item in EquipTypes.Split(' '))
+		{
+			bool? negate = item.StartsWith('-') ? true : (item.StartsWith('+') ? false : null);
+			ReadOnlySpan<char> chars = item.AsSpan(negate.HasValue ? 1 : 0);
+			if (Enum.TryParse(chars, out ItemType type))
+			{
+				result = negate != true ? (result | type) : (result &= ~type);
+				continue;
+			}
+
+			string msg = $"Affix attempted to load non-existing '{item}' ItemType enumeration. Types: {EquipTypes}\n{Environment.StackTrace}";
+			PoTMod.Instance.Logger.Error(msg);
+			Debug.Fail(msg);
+		}
+
+		return result;
 	}
 
 	public Influence GetInfluences()

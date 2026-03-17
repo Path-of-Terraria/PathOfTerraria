@@ -9,7 +9,7 @@
 	<!-- General -->
 	<PropertyGroup>
 		<AssemblyName>PathOfTerraria</AssemblyName>
-		<LangVersion>latest</LangVersion>
+		<LangVersion>12.0</LangVersion>
 		<TargetFramework>net8.0</TargetFramework>
 		<Platforms>AnyCPU;x64</Platforms>
 		<Configurations>Debug;Release;Staging</Configurations>
@@ -39,6 +39,7 @@
 		<Reference Include="SubworldLibrary" HintPath="lib\SubworldLibrary.dll" />
 		<Reference Include="NPCUtils" HintPath="lib\NPCUtils.dll" />
 		<Reference Include="HousingAPI" HintPath="lib\HousingAPI.dll" />
+		<Reference Include="Wayfarer" HintPath="lib\Wayfarer.dll" />
 	</ItemGroup>
 
 	<!-- Content -->
@@ -47,6 +48,8 @@
 		<EmbeddedResource Remove="BuildTools\**" />
 		
 		<Folder Include="Common\Data\VanillaItemData\" />
+		
+		<Folder Include="Content\NPCs\Mapping\Swamp\" />
 	</ItemGroup>
 
 	<!-- Altered build target, utilizing the BuildCommand variable. -->

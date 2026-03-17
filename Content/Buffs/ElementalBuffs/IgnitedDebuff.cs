@@ -3,6 +3,7 @@ using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 
@@ -10,21 +11,41 @@ namespace PathOfTerraria.Content.Buffs.ElementalBuffs;
 
 internal class IgnitedDebuff : ModBuff
 {
-	public static void ApplyTo(NPC npc, int hitDamage, int time = 4 * 60, bool fromNet = false)
+	public const int DefaultTickRate = 60;
+
+	/// <summary>
+	/// Applies this buff to a given entity (Player or NPC). If victim is an <see cref="NPC"/>, attacker is a <see cref="Player"/>. NPCs cannot apply this buff to other NPCs at this time.
+	/// </summary>
+	public static void ApplyTo(Entity attacker, Entity victim, int hitDamage, int time = 4 * 60, bool fromNet = false)
 	{
-		if (Main.netMode == NetmodeID.MultiplayerClient && !fromNet)
+		if (victim is NPC npc)
 		{
-			AddIgnitedStackHandler.Send(npc, hitDamage, time);
+			if (Main.netMode == NetmodeID.MultiplayerClient && !fromNet)
+			{
+				AddIgnitedStackHandler.Send(npc, hitDamage, time);
+			}
+
+			IgnitedNPC ignited = npc.GetGlobalNPC<IgnitedNPC>();
+			ignited.Stacks.Add(new IgnitedStack(time + 1, hitDamage));
+			ignited.Stacks = [.. ignited.Stacks.OrderByDescending(x => x.BaseDamage)];
+			ignited.LastTickCount = attacker is Player player ? player.GetModPlayer<IgnitedPlayer>().IgniteDuration.ApplyTo(DefaultTickRate) : DefaultTickRate;
+
+			if (ignited.Stacks[0].BaseDamage == hitDamage)
+			{
+				npc.AddBuff(ModContent.BuffType<IgnitedDebuff>(), time);
+			}
 		}
-
-		// TODO: Add time duration modifier(s)
-		IgnitedNPC ignited = npc.GetGlobalNPC<IgnitedNPC>();
-		ignited.Stacks.Add(new IgnitedNPC.IgnitedStack(time + 1, hitDamage));
-		ignited.Stacks = [.. ignited.Stacks.OrderByDescending(x => x.BaseDamage)];
-
-		if (ignited.Stacks[0].BaseDamage == hitDamage)
+		else if (victim is Player player)
 		{
-			npc.AddBuff(ModContent.BuffType<IgnitedDebuff>(), time);
+			// Todo: test multiplayer
+			IgnitedPlayer ignited = player.GetModPlayer<IgnitedPlayer>();
+			ignited.Stacks.Add(new IgnitedStack(time + 1, hitDamage));
+			ignited.Stacks = [.. ignited.Stacks.OrderByDescending(x => x.BaseDamage)];
+
+			if (ignited.Stacks[0].BaseDamage == hitDamage)
+			{
+				player.AddBuff(ModContent.BuffType<IgnitedDebuff>(), time);
+			}
 		}
 	}
 
@@ -55,20 +76,46 @@ internal class IgnitedDebuff : ModBuff
 			}
 		}
 	}
+
+	public override void Update(Player player, ref int buffIndex)
+	{
+		if (!player.TryGetModPlayer(out IgnitedPlayer ignited))
+		{
+			return;
+		}
+
+		if (ignited.Stacks.Count == 0)
+		{
+			player.DelBuff(buffIndex);
+			buffIndex--;
+		}
+		else
+		{
+			player.buffTime[buffIndex] = Math.Max(player.buffTime[buffIndex], 2);
+
+			if (Main.rand.NextBool(Math.Max(15 - (int)MathF.Sqrt(ignited.Stacks[0].BaseDamage / 30) + 1, 1)))
+			{
+				Dust.NewDust(player.position, player.width, player.height, DustID.Torch, Scale: Main.rand.NextFloat(1.5f, 2.5f));
+			}
+		}
+	}
+}
+
+public class IgnitedStack(int time, int baseDamage)
+{
+	public int Time = time;
+	public int BaseDamage = baseDamage;
 }
 
 internal class IgnitedNPC : GlobalNPC
 {
-	public class IgnitedStack(int time, int baseDamage)
-	{
-		public int Time = time;
-		public int BaseDamage = baseDamage;
-	}
-
 	public override bool InstancePerEntity => true;
 
 	public List<IgnitedStack> Stacks = [];
 	public float ElapsedDoT = 0;
+	public float LastTickCount = 60;
+
+	private int _timer = 0;
 
 	public override bool PreAI(NPC npc)
 	{
@@ -78,9 +125,11 @@ internal class IgnitedNPC : GlobalNPC
 			int halfDamage = baseDamage / 2;
 			ElapsedDoT += baseDamage / 60f;
 
-			if (ElapsedDoT > halfDamage)
+			if (++_timer > LastTickCount)
 			{
-				DoTFunctionality.ApplyDoT(npc, halfDamage, ref ElapsedDoT);
+				DoTFunctionality.ApplyDoT(npc, (int)ElapsedDoT, ref ElapsedDoT);
+
+				_timer = 0;
 			}
 
 			Stacks[0].Time--;
@@ -119,6 +168,37 @@ internal class IgnitedNPC : GlobalNPC
 			}
 		
 			Stacks = [.. Stacks.OrderByDescending(x => x.BaseDamage)];
+		}
+	}
+}
+
+public class IgnitedPlayer : ModPlayer
+{
+	public StatModifier IgniteDuration = new();
+	public List<IgnitedStack> Stacks = [];
+
+	public override void ResetEffects()
+	{
+		IgniteDuration = new();
+	}
+
+	public override void UpdateBadLifeRegen()
+	{
+		if (Stacks.Count == 0) 
+		{
+			return;
+		}
+
+		Player.lifeRegen = Math.Min(Player.lifeRegen, 0);
+		Player.lifeRegenTime = 0;
+		Player.lifeRegen -= Stacks[0].BaseDamage;
+
+		Stacks[0].Time--;
+
+		if (Stacks[0].Time <= 0)
+		{
+			Player.ClearBuff(ModContent.BuffType<IgnitedDebuff>());
+			Stacks.Clear();
 		}
 	}
 }

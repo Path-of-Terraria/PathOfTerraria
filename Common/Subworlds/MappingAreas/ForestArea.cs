@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Common.ItemDropping;
-using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.World;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Generation.Tools;
@@ -17,7 +16,7 @@ using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds.MappingAreas;
 
-internal class ForestArea : MappingWorld, IOverrideBiome
+internal class ForestArea : MappingWorld, IOverrideBiome, IExplorationWorld
 {
 	private enum StructureKind : byte
 	{
@@ -431,7 +430,7 @@ internal class ForestArea : MappingWorld, IOverrideBiome
 
 		FastNoiseLite noise = new();
 		noise.SetFrequency(0.015f);
-		Ellipse.GenOval(new Vector2(i, j), size, WorldGen.genRand.NextFloat(MathHelper.Pi) + MathHelper.PiOver2, isWall, type, noise);
+		GenPlacement.GenOval(new Vector2(i, j), size, WorldGen.genRand.NextFloat(MathHelper.Pi) + MathHelper.PiOver2, type, (x, y) => noise.GetNoise(x, y) * 10, isWall);
 		return true;
 	}
 
@@ -526,7 +525,7 @@ internal class ForestArea : MappingWorld, IOverrideBiome
 		{
 			bool isWall = WorldGen.genRand.NextBool();
 			int type = isWall ? WallID.LivingLeaf : TileID.LeafBlock;
-			Ellipse.GenOval(pos.ToVector2(), WorldGen.genRand.NextFloat(10, 50), WorldGen.genRand.NextFloat(MathHelper.TwoPi), isWall, type, noise);
+			GenPlacement.GenOval(pos.ToVector2(), WorldGen.genRand.NextFloat(10, 50), WorldGen.genRand.NextFloat(MathHelper.TwoPi), type, (x, y) => noise.GetNoise(x, y) * 10, isWall);
 		}
 	}
 

@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Utilities;
 
@@ -6,6 +8,13 @@ namespace PathOfTerraria.Common.World.Generation;
 
 internal static class GenPlacement
 {
+	public enum Replaceability : byte
+	{
+		None,
+		All,
+		Cuttable,
+	}
+
 	public const int MossMarker = -1;
 
 	/// <summary>
@@ -180,5 +189,142 @@ internal static class GenPlacement
 				}
 			}
 		}
+	}
+
+	/// <summary>
+	/// Places a perfect circle of tiles.
+	/// </summary>
+	/// <param name="pos">Center of the circle.</param>
+	/// <param name="size">Radius of the circle.</param>
+	public static void TileCircle(Vector2 pos, float size, int type, bool noReplace = false)
+	{
+		for (int i = (int)(pos.X - size); i < (int)pos.X + size; ++i)
+		{
+			for (int j = (int)(pos.Y - size); j < (int)pos.Y + size; ++j)
+			{
+				if (Vector2.DistanceSquared(pos, new Vector2(i, j)) < size * size)
+				{
+					Tile tile = Main.tile[i, j];
+
+					if (!noReplace && tile.HasTile)
+					{
+						continue;
+					}
+
+					tile.TileType = (ushort)type;
+					tile.HasTile = true;
+				}
+			}
+		}
+	}
+
+	/// <summary>
+	/// Places a perfect circle of tiles.
+	/// </summary>
+	/// <param name="pos">Center of the circle.</param>
+	/// <param name="size">Radius of the circle.</param>
+	public static void TileCircle(Vector2 pos, float size, Action<int, int> action, Replaceability replacing = Replaceability.All)
+	{
+		for (int i = (int)(pos.X - size); i < (int)pos.X + size; ++i)
+		{
+			for (int j = (int)(pos.Y - size); j < (int)pos.Y + size; ++j)
+			{
+				if (Vector2.DistanceSquared(pos, new Vector2(i, j)) < size * size)
+				{
+					Tile tile = Main.tile[i, j];
+
+					if ((replacing == Replaceability.None && tile.HasTile) || (replacing == Replaceability.Cuttable && tile.HasTile && !Main.tileCut[tile.TileType]))
+					{
+						continue;
+					}
+
+					action(i, j);
+				}
+			}
+		}
+	}
+
+	public static void GenerateLeaf(Vector2 pos, float width, float length, float angle, Action<int, int, float> place, bool replace = true)
+	{
+		angle -= MathHelper.PiOver2;
+		Vector2[] left = Tunnel.GenerateBezier([pos, pos + (angle + MathHelper.PiOver2).ToRotationVector2() * width, pos + new Vector2(length, 0).RotatedBy(angle)], 1, 0);
+		Vector2[] right = Tunnel.GenerateBezier([pos, pos + (angle - MathHelper.PiOver2).ToRotationVector2() * width, pos + new Vector2(length, 0).RotatedBy(angle)], 1, 0);
+		Vector2[] all = [.. left, .. right];
+
+		Dictionary<int, int> minXForY = [];
+		Dictionary<int, int> maxXForY = [];
+			 
+		foreach (Vector2 position in all)
+		{
+			var newPos = position.ToPoint();
+			Tile tile = Main.tile[newPos];
+
+			if (!minXForY.TryGetValue(newPos.Y, out int min) || newPos.X < min)
+			{
+				minXForY.TryAdd(newPos.Y, newPos.X);
+				minXForY[newPos.Y] = newPos.X;
+			}
+
+			if (!maxXForY.TryGetValue(newPos.Y, out int max) || newPos.X > max)
+			{
+				maxXForY.TryAdd(newPos.Y, newPos.X);
+				maxXForY[newPos.Y] = newPos.X;
+			}
+		}
+
+		foreach (int y in minXForY.Keys)
+		{
+			for (int x = minXForY[y]; x < maxXForY[y]; ++x)
+			{
+				Tile tile = Main.tile[x, y];
+
+				if (replace || !tile.HasTile)
+				{
+					place(x, y, new Vector2(x, y).AngleFrom(pos));
+				}
+			}
+		}
+	}
+
+	/// <summary>
+	/// Generates an ovoid shape. Returns the list of tile positions generated.
+	/// </summary>
+	public static List<Point16> GenOval(Vector2 origin, float size, float angle, Action<int, int> fillAction, Func<int, int, float> offsetAction)
+	{
+		var otherEnd = (origin + new Vector2(size, size / 2)).ToPoint16();
+		float ySize = size / WorldGen.genRand.NextFloat(2, 3);
+		return Ellipse.Fill(fillAction, origin.ToPoint16(), size, ySize, angle - MathHelper.PiOver2, offsetAction);
+	}
+
+	public static List<Point16> GenOval(Vector2 origin, float size, float angle, int id, Func<int, int, float> offsetAction, bool isWall = false)
+	{
+		return GenOval(origin, size, angle, (x, y) => 
+		{
+			if (isWall)
+			{
+				FastPlaceWall(x, y, id);
+			}
+			else
+			{
+				FastPlaceTile(x, y, id);
+			}
+		}, offsetAction);
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static Tile FastPlaceTile(int x, int y, int type)
+	{
+		Tile tile = Main.tile[x, y];
+		tile.TileType = (ushort)type;
+		tile.HasTile = true;
+		return tile;
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static Tile FastPlaceWall(int x, int y, int type)
+	{
+		Tile tile = Main.tile[x, y];
+		tile.WallType = (ushort)type;
+		return tile;
 	}
 }

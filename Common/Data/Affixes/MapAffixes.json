@@ -112,5 +112,86 @@
 				"strength": 16
 			}
 		]
+	},
+	{
+		"affixType": "MapFireConversionAffix",
+		"equipTypes": "Map",
+		"tiers": [
+			{
+				"minValue": 15,
+				"maxValue": 22,
+				"minimumLevel": 45,
+				"weight": 1,
+				"strength": 18
+			},
+			{
+				"minValue": 23,
+				"maxValue": 28,
+				"minimumLevel": 65,
+				"weight": 1,
+				"strength": 22
+			},
+			{
+				"minValue": 29,
+				"maxValue": 37,
+				"minimumLevel": 85,
+				"weight": 1,
+				"strength": 26
+			}
+		]
+	},
+	{
+		"affixType": "MapColdConversionAffix",
+		"equipTypes": "Map",
+		"tiers": [
+			{
+				"minValue": 15,
+				"maxValue": 22,
+				"minimumLevel": 45,
+				"weight": 1,
+				"strength": 18
+			},
+			{
+				"minValue": 23,
+				"maxValue": 28,
+				"minimumLevel": 65,
+				"weight": 1,
+				"strength": 22
+			},
+			{
+				"minValue": 29,
+				"maxValue": 37,
+				"minimumLevel": 85,
+				"weight": 1,
+				"strength": 26
+			}
+		]
+	},
+	{
+		"affixType": "MapLightningConversionAffix",
+		"equipTypes": "Map",
+		"tiers": [
+			{
+				"minValue": 15,
+				"maxValue": 22,
+				"minimumLevel": 45,
+				"weight": 1,
+				"strength": 18
+			},
+			{
+				"minValue": 23,
+				"maxValue": 28,
+				"minimumLevel": 65,
+				"weight": 1,
+				"strength": 22
+			},
+			{
+				"minValue": 29,
+				"maxValue": 37,
+				"minimumLevel": 85,
+				"weight": 1,
+				"strength": 26
+			}
+		]
 	}
 ]

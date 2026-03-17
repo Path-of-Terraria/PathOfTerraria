@@ -154,3 +154,10 @@ RavencrestSubworld: {
 	// Mining: "{$DefaultMining}"
 	// Placing: "{$DefaultPlacing}"
 }
+
+SwampArea: {
+	// DisplayName: Mossbound Swamp
+	// Description: Jump on floating objects, swim under vicious insects and explore overgrown treetops to challenge the Swamp Boss.
+	// Mining: "{$DefaultMining}"
+	// Placing: "{$DefaultPlacing}"
+}

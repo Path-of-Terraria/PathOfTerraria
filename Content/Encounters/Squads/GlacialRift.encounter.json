@@ -1,0 +1,32 @@
+{
+	"Identifier": "GlacialRift",
+	"ActivationOrigin": [ 34152.984, 3931 ],
+	"ActivationRange": 512.0,
+	"SpawnArea": [ 2102, 229, 64, 32 ],
+	"SpawnOrigin": [ 2134, 245 ],
+	"Waves": [
+		{
+			"Spawns": [
+				{
+					"NpcType": "PathOfTerraria/Shambling",
+					"SpawnPlacement": {
+						"OnGround": true
+					}
+				},
+				{
+					"NpcType": "PathOfTerraria/CryoStalker",
+					"SpawnPlacement": {
+						"OnGround": false
+					}
+				},
+				{
+					"NpcType": "PathOfTerraria/Abominable",
+					"SpawnPlacement": {
+						"OnGround": true
+					}
+				}
+			]
+		}
+	],
+	"Music": "Terraria/None"
+}

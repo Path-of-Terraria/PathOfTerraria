@@ -12,10 +12,8 @@ using Terraria.Enums;
 using Terraria.Localization;
 using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.Projectiles.Utility;
-using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Encounters;
 using PathOfTerraria.Utilities.Terraria;
-using PathOfTerraria.Utilities.Xna;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 
@@ -235,7 +233,7 @@ public class EyeDomain : BossDomainSubworld
 
 		for (int i = 0; i < 12; i++)
 		{
-			if (!EnemySpawning.TryFindingSpawnPosition(in placement, out Vector2 position))
+			if (!EnemySpawning.TryFindingSpawnPosition(out Vector2 position, in placement))
 			{
 				break;
 			}

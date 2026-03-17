@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using PathOfTerraria.Common.NPCs.Components;
+using Terraria.GameContent;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.NPCs.Effects;
@@ -12,33 +13,27 @@ namespace PathOfTerraria.Common.NPCs.Effects;
 [Autoload(Side = ModSide.Client)]
 public sealed class NPCHitEffects : NPCComponent
 {
-	public readonly struct GoreSpawnParameters
+	public struct GoreSpawnParameters
 	{
-		/// <summary>
-		///     The type of gore to spawn.
-		/// </summary>
+		/// <summary> The type of gore to spawn. </summary>
 		public readonly int Type;
-
-		/// <summary>
-		///     The minimum amount of gore to spawn.
-		/// </summary>
-		public readonly int MinAmount;
-
-		/// <summary>
-		///     The maximum amount of gore to spawn.
-		/// </summary>
-		public readonly int MaxAmount;
-
-		/// <summary>
-		///     An optional predicate to determine whether the dust should spawn or not.
-		/// </summary>
+		/// <summary> The random amount of gore to spawn. </summary>
+		public readonly (int Min, int Max) Amount;
+		/// <summary> An optional predicate to determine whether the dust should spawn or not. </summary>
 		public readonly Func<NPC, bool>? Predicate;
+		/// <summary> The position values to use for spawning gores. </summary>
+		public (Vector2 HitboxFactor, Vector2 Flat, Vector2 Random) Position = (new(1f, 1f), new(0f, 0f), new(0f, 0f));
+		/// <summary> The velocity values to use for spawning gores. </summary>
+		public (Vector2 InheritFactor, Vector2 Flat, Vector2 Random) Velocity = (new(1f, 1f), new(0f, 0f), new(1f, 1f));
+		/// <summary> Allows for flipping the <see cref="Position"/>'s Flat value according to the NPC's direction; 
+		/// if true, flips when direction is -1, if false, flips when direction is 1, otherwise, doesn't flip.</summary>
+		public bool? FlipWithDirection = null;
+		public bool NoCentering = false;
 
 		public GoreSpawnParameters(int type, int minAmount, int maxAmount, Func<NPC, bool>? predicate = null)
 		{
 			Type = type;
-			MinAmount = minAmount;
-			MaxAmount = maxAmount;
+			Amount = (minAmount, maxAmount);
 			Predicate = predicate;
 		}
 
@@ -168,7 +163,7 @@ public sealed class NPCHitEffects : NPCComponent
 
 	public override void HitEffect(NPC npc, NPC.HitInfo hit)
 	{
-		if (!Enabled || Main.netMode == NetmodeID.Server)
+		if (!Enabled || Main.dedServ)
 		{
 			return;
 		}
@@ -188,12 +183,13 @@ public sealed class NPCHitEffects : NPCComponent
 		{
 			bool canSpawn = pool.Predicate?.Invoke(npc) ?? true;
 
-			if (pool.MinAmount <= 0 || !canSpawn)
+			if (pool.Amount.Min <= 0 || !canSpawn)
 			{
 				continue;
 			}
 
-			int amount = Main.rand.Next(pool.MinAmount, pool.MaxAmount);
+			int amount = Main.rand.Next(pool.Amount.Min, pool.Amount.Max);
+			Vector2 npcSize = npc.Size;
 
 			for (int i = 0; i < amount; i++)
 			{
@@ -202,7 +198,38 @@ public sealed class NPCHitEffects : NPCComponent
 					continue;
 				}
 
-				Gore.NewGore(npc.GetSource_Death(), npc.position, npc.velocity, pool.Type);
+				Vector2 pos = npc.position;
+        
+				// Add hitbox factor.
+				pos += pool.Position.HitboxFactor * new Vector2(Main.rand.NextFloat(), Main.rand.NextFloat()) * npcSize;
+
+				if (!pool.NoCentering)
+				{
+					// If hitbox factor is below 1, move towards center.
+					pos += npcSize * 0.5f * (Vector2.One - pool.Position.HitboxFactor);
+				}
+        
+				// Add flat.
+				Vector2 flat = pool.Position.Flat;
+
+				if ((pool.FlipWithDirection is true && npc.direction == -1) || (pool.FlipWithDirection == false && npc.direction == 1))
+				{
+					flat = npcSize - flat;
+				}
+				
+				pos += flat;
+				// Add circular random.
+				pos += Main.rand.NextVector2Circular(pool.Position.Random.X, pool.Position.Random.Y) * 0.5f;
+
+				// Inherit, add flat, add circular random.
+				Vector2 vel = default;
+				vel += npc.velocity * pool.Velocity.InheritFactor;
+				vel += pool.Velocity.Flat;
+				vel += Main.rand.NextVector2Circular(pool.Velocity.Random.X, pool.Velocity.Random.Y) * 0.5f;
+
+				var gore = Gore.NewGoreDirect(npc.GetSource_Death(), pos, vel, pool.Type);
+
+				gore.position -= gore.Frame.GetSourceRectangle(TextureAssets.Gore[gore.type].Value).Size() * 0.5f;
 			}
 		}
 

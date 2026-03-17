@@ -14,7 +14,7 @@ internal class Overload : SkillAugment
 
 	public override void AugmentEffects(ref SkillBuff buff)
 	{
-		buff.ManaCost *= ManaMult;
+		buff.CostModifier *= ManaMult;
 		buff.Damage *= DamageMult;
 	}
 }

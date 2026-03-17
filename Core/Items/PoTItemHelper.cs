@@ -7,6 +7,7 @@ using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Data;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Utilities;
 using SubworldLibrary;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
@@ -106,7 +107,7 @@ public static class PoTItemHelper
 	    PoTInstanceItemData data = item.GetInstanceData();
 	    foreach (ItemAffix affix in data.Affixes)
 	    {
-	        affix.Value = AffixRegistry.GetRandomAffixValue(affix, GetItemLevel.Invoke(item));
+	        affix.Value = AffixRegistry.GetRandomAffixValue(affix, item, GetItemLevel.Invoke(item));
 	    }
 	}
 
@@ -123,7 +124,8 @@ public static class PoTItemHelper
 			return;
 		}
 
-		ItemAffixData chosenAffix = AffixRegistry.GetRandomAffixDataByItemType(data.ItemType, excludedAffixes: data.Affixes.Select(a => a.GetData()));
+		IEnumerable<ItemAffixData> exclusions = data.Affixes.SelectExcept(null, a => a.TryGetData(item));
+		ItemAffixData chosenAffix = AffixRegistry.GetRandomAffixDataByItemType(data.ItemType, excludedAffixes: exclusions);
 		if (chosenAffix is null)
 		{
 			return;
@@ -135,7 +137,7 @@ public static class PoTItemHelper
 			return;
 		}
 
-		affix.Value = AffixRegistry.GetRandomAffixValue(affix, GetItemLevel.Invoke(item));
+		affix.Value = AffixRegistry.GetRandomAffixValue(affix, item, GetItemLevel.Invoke(item));
 		if (affix.Value == 0)
 		{
 			return; //If the affix has no value, don't add it. This usually happens when there's no TierData associated with the given item

@@ -66,15 +66,13 @@ public class Nova : Skill
 	{
 		Level = level;
 		Cooldown = MaxCooldown = (15 - Level) * 60;
-		ManaCost = 20 + 5 * Level;
+		ResourceCost = 20 + 5 * Level;
 		Duration = 0;
 		WeaponType = ItemType.Magic;
 	}
 
-	public override void UseSkill(Player player)
+	protected override void InternalUseSkill(Player player)
 	{
-		base.UseSkill(player);
-
 		int damage = GetTotalDamage(player.HeldItem.damage * (2 + 0.5f * Level));
 		var source = new EntitySource_UseSkill(player, this);
 		NovaType type = GetNovaType(this);
@@ -122,15 +120,15 @@ public class Nova : Skill
 
 			if (Tree.Specialization is LightningNova)
 			{
-				container[ElementType.Lightning].DamageModifier.AddModifiers(0, 1);
+				container[ElementType.Lightning].DamageModifier = container[ElementType.Lightning].DamageModifier.AddModifiers(0, 1);
 			}
 			else if (Tree.Specialization is FireNova)
             {
-                container[ElementType.Fire].DamageModifier.AddModifiers(0, 1);
+				container[ElementType.Fire].DamageModifier = container[ElementType.Fire].DamageModifier.AddModifiers(0, 1);
             }
 			else if (Tree.Specialization is IceNova)
             {
-                container[ElementType.Cold].DamageModifier.AddModifiers(0, 1);
+				container[ElementType.Cold].DamageModifier = container[ElementType.Cold].DamageModifier.AddModifiers(0, 1);
             }
         }
 	}
@@ -239,7 +237,7 @@ public class Nova : Skill
 
 		private void SpamFireDust()
 		{
-			for (int i = 0; i < 2; ++i)
+			for (int i = 0; i < 6; ++i)
 			{
 				Vector2 offset = Main.rand.NextVector2CircularEdge(Spread, Spread);
 				Vector2 pos = Projectile.Center + offset;

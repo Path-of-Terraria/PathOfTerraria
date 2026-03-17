@@ -526,5 +526,185 @@
 				"weight": 1
 			}
 		]
+	},
+	{
+		"affixType": "ExtraFireDamage",
+		"equipTypes": "Magic -Staff",
+		"tiers": [
+			{
+				"minValue": 2,
+				"maxValue": 4,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 5,
+				"maxValue": 7,
+				"minimumLevel": 23,
+				"weight": 1
+			},
+			{
+				"minValue": 8,
+				"maxValue": 10,
+				"minimumLevel": 41,
+				"weight": 1
+			},
+			{
+				"minValue": 11,
+				"maxValue": 14,
+				"minimumLevel": 56,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "ExtraLightningDamage",
+		"equipTypes": "Magic -Staff",
+		"tiers": [
+			{
+				"minValue": 2,
+				"maxValue": 4,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 5,
+				"maxValue": 7,
+				"minimumLevel": 23,
+				"weight": 1
+			},
+			{
+				"minValue": 8,
+				"maxValue": 10,
+				"minimumLevel": 41,
+				"weight": 1
+			},
+			{
+				"minValue": 11,
+				"maxValue": 14,
+				"minimumLevel": 56,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "ExtraColdDamage",
+		"equipTypes": "Magic -Staff",
+		"tiers": [
+			{
+				"minValue": 2,
+				"maxValue": 4,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 5,
+				"maxValue": 7,
+				"minimumLevel": 23,
+				"weight": 1
+			},
+			{
+				"minValue": 8,
+				"maxValue": 10,
+				"minimumLevel": 41,
+				"weight": 1
+			},
+			{
+				"minValue": 11,
+				"maxValue": 14,
+				"minimumLevel": 56,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "ExtraFireDamage",
+		"equipTypes": "Staff",
+		"tiers": [
+			{
+				"minValue": 4,
+				"maxValue": 6,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 6,
+				"maxValue": 10,
+				"minimumLevel": 23,
+				"weight": 1
+			},
+			{
+				"minValue": 11,
+				"maxValue": 15,
+				"minimumLevel": 41,
+				"weight": 1
+			},
+			{
+				"minValue": 16,
+				"maxValue": 20,
+				"minimumLevel": 56,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "ExtraLightningDamage",
+		"equipTypes": "Staff",
+		"tiers": [
+			{
+				"minValue": 4,
+				"maxValue": 6,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 6,
+				"maxValue": 10,
+				"minimumLevel": 23,
+				"weight": 1
+			},
+			{
+				"minValue": 11,
+				"maxValue": 15,
+				"minimumLevel": 41,
+				"weight": 1
+			},
+			{
+				"minValue": 16,
+				"maxValue": 20,
+				"minimumLevel": 56,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "ExtraColdDamage",
+		"equipTypes": "Staff",
+		"tiers": [
+			{
+				"minValue": 4,
+				"maxValue": 6,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 6,
+				"maxValue": 10,
+				"minimumLevel": 23,
+				"weight": 1
+			},
+			{
+				"minValue": 11,
+				"maxValue": 15,
+				"minimumLevel": 41,
+				"weight": 1
+			},
+			{
+				"minValue": 16,
+				"maxValue": 20,
+				"minimumLevel": 56,
+				"weight": 1
+			}
+		]
 	}
 ]

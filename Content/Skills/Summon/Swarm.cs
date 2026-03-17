@@ -4,7 +4,7 @@ using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Systems.ElementalDamage;
-using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.ModPlayers.SkillPlayers;
 using PathOfTerraria.Common.World.Utilities;
 using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.Buffs.ElementalBuffs;
@@ -55,7 +55,7 @@ public class Swarm : Skill
 	{
 		Level = level;
 		Cooldown = MaxCooldown = 2 * 60;
-		ManaCost = 10 - Level * 3;
+		ResourceCost = 10 - Level * 3;
 		Duration = SentryNPC.DefaultSentryDuration;
 		WeaponType = ItemType.Summoner;
 	}									
@@ -68,7 +68,7 @@ public class Swarm : Skill
 			return false;
 		}
 
-		if (Tree.Specialization is not LocustBrood && Collision.SolidCollision(GetTarget(player) - new Vector2(12, 12), 24, 24))
+		if (player.HasSkillSpecialization<Swarm, LocustBrood>() && Collision.SolidCollision(GetTarget(player) - new Vector2(12, 12), 24, 24))
 		{
 			failReason = new SkillFailure(SkillFailReason.Other, "Blocked");
 			return false;
@@ -77,13 +77,11 @@ public class Swarm : Skill
 		return base.CanUseSkill(player, ref failReason, justChecking);
 	}
 
-	public override void UseSkill(Player player)
+	protected override void InternalUseSkill(Player player)
 	{
-		base.UseSkill(player);
-
 		Vector2 pos = GetTarget(player);
 
-		if (Tree.Specialization is LocustBrood)
+		if (player.HasSkillSpecialization<Swarm, LocustBrood>())
 		{
 			SpawnBrood(player);
 		}
@@ -92,7 +90,7 @@ public class Swarm : Skill
 			int type = ModContent.ProjectileType<LocustSpawnCircle>();
 			int damage = (int)player.GetDamage(DamageClass.Summon).ApplyTo(10 * Level);
 
-			if (Tree.Specialization is AntlionSwarm)
+			if (player.HasSkillSpecialization<Swarm, AntlionSwarm>())
 			{
 			    damage = (int)player.GetDamage(DamageClass.Summon).ApplyTo(6 * Level);
 			    
@@ -152,7 +150,7 @@ public class Swarm : Skill
 			Tile cur = Main.tile[point];
 			Tile above = Main.tile[point.X, point.Y - 1];
 
-			if ((WorldUtils.SolidTile(cur) || TileID.Sets.Platforms[cur.TileType]) && !WorldUtils.SolidTile(above))
+			if ((WorldUtilities.SolidTile(cur) || TileID.Sets.Platforms[cur.TileType]) && !WorldUtilities.SolidTile(above))
 			{
 				points.Add(point);
 			}
@@ -180,6 +178,8 @@ public class Swarm : Skill
 
 		private ref float Duration => ref Projectile.ai[0];
 		private ref float TimeLeft => ref Projectile.ai[1];
+
+		private Player Owner => Main.player[Projectile.owner];
 
 		public override void SetDefaults()
 		{
@@ -224,14 +224,14 @@ public class Swarm : Skill
 			{
 				int type = ModContent.ProjectileType<AntlionSummon>();
 
-				if (Skill.Tree.Specialization is AntlionSwarm)
+				if (Owner.HasSkillSpecialization<Swarm, AntlionSwarm>())
 				{
 					type = ModContent.ProjectileType<AntlionSwarmerSummon>();
 				}
 
 				var src = new EntitySource_UseSkill(Main.player[Projectile.owner], Skill);
 				int proj = Projectile.NewProjectile(src, Projectile.Center, new Vector2(0, -1), type, Projectile.damage, 0, Projectile.owner, 0, 0, Duration);
-				Main.projectile[proj].localAI[1] = Skill.Tree.Specialization is GlacialAntlions ? 1 : 0;
+				Main.projectile[proj].localAI[1] = Owner.HasSkillSpecialization<Swarm, GlacialAntlions>() ? 1 : 0;
 			}
 		}
 
@@ -609,13 +609,13 @@ public class Swarm : Skill
 
 			if (plr.HasTreePassive<PestSwarmTree, ViciousBites>())
 			{
-				BleedDebuff.Apply(plr, target, 5 * 60, damageDone);
+				BleedDebuff.Apply(plr, target, damageDone);
 			}
 
 			if (plr.HasTreePassive<PestSwarmTree, OverheatingBugs>())
 			{
 				float mod = 1 + plr.GetPassiveStrength<PestSwarmTree, SuperheatedBugs>() * 0.15f;
-				IgnitedDebuff.ApplyTo(target, (int)(damageDone / 4f * mod));
+				IgnitedDebuff.ApplyTo(plr, target, (int)(damageDone / 4f * mod));
 			}
 
 			if (plr.HasTreePassive<PestSwarmTree, CarapaceCracker>())

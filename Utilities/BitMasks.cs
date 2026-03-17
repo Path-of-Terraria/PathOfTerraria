@@ -50,6 +50,7 @@ internal struct BitMask<T>(T value) where T : unmanaged, IUnsignedNumber<T>, IBi
 	[MethodImpl(InlineFlags)] public readonly bool Get(int index) => !T.IsZero(Value & T.One << index);
 	[MethodImpl(InlineFlags)] public void Set(int index) => Value |= T.One << index;
 	[MethodImpl(InlineFlags)] public void Unset(int index) => Value &= ~(T.One << index);
+	[MethodImpl(InlineFlags)] public void SetTo(int index, bool value) => Value = (value ? (Value | T.One << index) : (Value & ~(T.One << index)));
 
 	[MethodImpl(InlineFlags)] public readonly int PopCount() => PopCount(Value);
 	[MethodImpl(InlineFlags)] public readonly int LeadingZeroCount() => LeadingZeroCount(Value);

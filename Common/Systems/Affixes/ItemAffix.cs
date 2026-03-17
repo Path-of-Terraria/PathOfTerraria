@@ -1,4 +1,6 @@
-﻿using PathOfTerraria.Common.Data;
+﻿using System.Collections.Generic;
+using System.Linq;
+using PathOfTerraria.Common.Data;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Core.Items;
@@ -10,9 +12,6 @@ namespace PathOfTerraria.Common.Systems.Affixes;
 
 public abstract class ItemAffix : Affix
 {
-	public Influence RequiredInfluence => GetData()?.GetInfluences() ?? Influence.None;
-	public ItemType PossibleTypes => GetData()?.GetEquipTypes() ?? ItemType.None;
-
 	public virtual void ApplyAffix(Player player, EntityModifier modifier, Item item) { }
 
 	/// <summary>
@@ -21,17 +20,18 @@ public abstract class ItemAffix : Affix
 	/// </summary>
 	public virtual void ApplyTooltips(Player player, Item item, AffixTooltips handler)
 	{
-		handler.AddOrModify(GetType(), CreateDefaultTooltip(player, item));
+		PoTInstanceItemData instanceData = item.GetInstanceData();
+		handler.AddOrModify(GetType(), CreateDefaultTooltip(player, instanceData.ItemType, instanceData.RealLevel));
+	}
+	/// <inheritdoc cref="ApplyTooltips(Player, Item, AffixTooltips)"/>
+	public virtual void ApplyTooltips(Player player, ItemType itemType, int itemLevel, AffixTooltips handler)
+	{
+		handler.AddOrModify(GetType(), CreateDefaultTooltip(player, itemType, itemLevel));
 	}
 
-	public virtual void ApplyTooltips(Player player, int itemLevel, AffixTooltips handler)
+	protected virtual AffixTooltipLine CreateDefaultTooltip(Player player, ItemType itemType, int itemLevel)
 	{
-		handler.AddOrModify(GetType(), CreateDefaultTooltip(player, itemLevel));
-	}
-
-	protected virtual AffixTooltipLine CreateDefaultTooltip(Player player, int itemLevel)
-	{
-		ItemAffixData? data = GetData();
+		ItemAffixData? data = TryGetData(itemType);
 
 		if (data is null) // Data can be null if the affix doesn't exist in the json data. This skips the checks below.
 		{
@@ -46,6 +46,7 @@ public abstract class ItemAffix : Affix
 			};
 		}
 
+		// PoTInstanceItemData itemData = item.GetInstanceData();
 		ItemAffixData.TierData tierData = data.Tiers[Tier];
 		
 		(int tierMin, int tierMax) = data.GetPossibleTierRange(itemLevel);
@@ -64,16 +65,32 @@ public abstract class ItemAffix : Affix
 	protected virtual AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
 	{
 		int level = GetItemLevel.Invoke(item);
-		return CreateDefaultTooltip(player, level);
+		return CreateDefaultTooltip(player, item);
 	}
 
-	/// <summary>
-	/// Retrieves the affix data for the current <see cref="ItemAffix"/> instance.
-	/// </summary>
-	/// <returns></returns>
-	public ItemAffixData? GetData()
+	/// <inheritdoc cref="AffixRegistry.GetItemData(Type)"/>
+	public IEnumerable<ItemAffixData> GetData() { return AffixRegistry.GetItemData(GetType()); }
+	/// <inheritdoc cref="AffixRegistry.GetItemData(Type, Item)"/>
+	public ItemAffixData GetData(Item item) { return AffixRegistry.GetItemData(GetType(), item); }
+	/// <inheritdoc cref="AffixRegistry.GetItemData(Type, ItemType)"/>
+	public ItemAffixData GetData(ItemType exactItemType) { return AffixRegistry.GetItemData(GetType(), exactItemType); }
+
+	/// <inheritdoc cref="AffixRegistry.TryGetItemData(Type)"/>
+	public IEnumerable<ItemAffixData>? TryGetData() { return AffixRegistry.TryGetItemData(GetType()); }
+	/// <inheritdoc cref="AffixRegistry.TryGetItemData(Type, Item)"/>
+	public ItemAffixData? TryGetData(Item item) { return AffixRegistry.TryGetItemData(GetType(), item); }
+	/// <inheritdoc cref="AffixRegistry.TryGetItemData(Type, ItemType)"/>
+	public ItemAffixData? TryGetData(ItemType exactItemType) { return AffixRegistry.TryGetItemData(GetType(), exactItemType); }
+
+	public Influence GetRequiredInfluence(Item item)
 	{
-		return AffixRegistry.TryGetAffixData(GetType());
+		const Influence Default = Influence.None;
+		return TryGetData(item)?.GetInfluences() ?? Default;
+	}
+	public ItemType GetPossibleTypes()
+	{
+		const ItemType Default = ItemType.None;
+		return TryGetData()?.Aggregate(Default, (current, data) => current | data.GetEquipTypes()) ?? Default;
 	}
 
 	internal override void CreateLocalization()

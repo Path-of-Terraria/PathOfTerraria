@@ -302,9 +302,9 @@ internal class AffixHandler : ILoadable
 	public static List<ItemAffix> GetAffixes(Item item)
 	{
 		return _itemAffixes
-			.Where(proto => proto.RequiredInfluence == Influence.None ||
-			                proto.RequiredInfluence == item.GetInstanceData().Influence)
-			.Where(proto => (item.GetInstanceData().ItemType & proto.PossibleTypes) == item.GetInstanceData().ItemType)
+			.Where(proto => proto.GetRequiredInfluence(item) == Influence.None ||
+			                proto.GetRequiredInfluence(item) == item.GetInstanceData().Influence)
+			.Where(proto => (item.GetInstanceData().ItemType & proto.GetPossibleTypes()) == item.GetInstanceData().ItemType)
 			.ToList();
 	}
 

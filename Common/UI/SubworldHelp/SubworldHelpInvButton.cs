@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
@@ -78,7 +79,7 @@ public class SubworldHelpInvButton : SmartUiState
 
 			foreach (MapAffix affix in MappingWorld.Affixes)
 			{
-				affix.ApplyTooltips(Main.LocalPlayer, MappingWorld.AreaLevel, tooltips);
+				affix.ApplyTooltips(Main.LocalPlayer, ItemType.Map, MappingWorld.AreaLevel, tooltips);
 				totalStrength += affix.Strength;
 			}
 

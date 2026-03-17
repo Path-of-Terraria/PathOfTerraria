@@ -2,7 +2,7 @@
 using PathOfTerraria.Common.ItemDropping;
 using PathOfTerraria.Common.NPCs.ConditionalDropping;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
-using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.ModPlayers.SkillPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
 using PathOfTerraria.Content.Items.Gear.Weapons.Staff;
@@ -37,6 +37,7 @@ internal class WizardStartQuest : Quest
 				RavencrestSystem.UpgradeBuilding("Library");
 				return true;
 			}),
+			new KillCount("KillScout", ModContent.NPCType<TownScoutNPC>(), 1, this.GetLocalization("KillScout")),
 			new InteractWithNPC("Start", ModContent.NPCType<WizardNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.Quest"),
 				Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.Quest2"),
 			[

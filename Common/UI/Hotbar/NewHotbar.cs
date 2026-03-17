@@ -1,6 +1,7 @@
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.ModPlayers.SkillPlayers;
 using PathOfTerraria.Common.UI.SkillSelect;
 using PathOfTerraria.Common.UI.SkillsTree;
 using PathOfTerraria.Core.Items;
@@ -408,8 +409,10 @@ public sealed class NewHotbar : SmartUiState
 		}
 
 		List<SkillTooltip> tooltips = [];
-		string manaPostfix = Main.LocalPlayer.statManaMax2 <= skill.TotalManaCost ? "NotEnoughMana" : "ManaLine";
-		SkillTooltip manaCost = new("Mana", Language.GetText("Mods.PathOfTerraria.Skills." + manaPostfix).WithFormatArgs(skill.TotalManaCost).Value, 2);
+
+		string resourcePostfix = GetResourceLine(skill, Main.LocalPlayer); //Main.LocalPlayer.statManaMax2 <= skill.TotalResourceCost ? "NotEnoughMana" : "ManaLine";
+
+		SkillTooltip manaCost = new("Resource", Language.GetText("Mods.PathOfTerraria.Skills." + resourcePostfix).WithFormatArgs(skill.TotalResourceCost).Value, 2);
 
 		if (skill.WeaponType != ItemID.None)
 		{
@@ -494,6 +497,20 @@ public sealed class NewHotbar : SmartUiState
 			VisibilityTimeInTicks = 0,
 			Stability = 1,
 		});
+	}
+
+	private static string GetResourceLine(Skill skill, Player player)
+	{
+		return skill.Functionality.Cost switch
+		{
+			SkillCost.ManaReserve => "ManaReserve",
+			SkillCost.HealthReserve => "HealthReserve",
+			SkillCost.ManaDrainPerSecond => player.statManaMax2 <= skill.TotalResourceCost ? "NotEnoughMana" : "ManaDrain",
+			SkillCost.LifeDrainPerSecond => player.statLifeMax2 <= skill.TotalResourceCost ? "NotEnoughLife" : "LifeDrain",
+			SkillCost.ManaUse => player.statManaMax2 <= skill.TotalResourceCost ? "NotEnoughMana" : "ManaLine",
+			SkillCost.HealthUse => player.statLifeMax2 <= skill.TotalResourceCost ? "NotEnoughLife" : "LifeLine",
+			_ => "NoCost"
+		};
 	}
 
 	private static string GetDisplayTags(SkillTags tags, bool shifting)

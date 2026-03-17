@@ -291,6 +291,8 @@ VirtualBag: {
 	// Description: Holds all your gear! This will be cleared outside of the domain.
 	// RightClick: (Right click to add to your inventory)
 	// Review: Review your items (Closing this will exit the subworld)
+	// Conflux: Conflux
+	// ConfluxTooltip: Conflux gained from this domain
 }
 
 CurrencyPouch: {
@@ -358,6 +360,9 @@ MapDevice: {
 	// ActivatePortal: Open Portal
 	// DeactivatePortal: Close Portal
 	// AlreadyInUse: This map device is already in use!
+	// InjectResource: Inject Resource
+	// EjectResource: Eject Resource
+	// NotEnoughResources: Not Enough Resources
 }
 
 MigrateRavencrest: {

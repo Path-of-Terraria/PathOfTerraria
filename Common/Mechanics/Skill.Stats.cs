@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Common.Systems.ModPlayers;
+﻿using PathOfTerraria.Common.Systems.ModPlayers.SkillPlayers;
 using PathOfTerraria.Common.Systems.Skills;
 using System.Linq;
 
@@ -10,10 +10,11 @@ public abstract partial class Skill
 
 	/// <summary> The final cooldown of this skill affected by modifications. </summary>
 	public int TotalCooldown => (int)Stats.Cooldown.ApplyTo(MaxCooldown);
-	/// <summary> The final mana cost of this skill affected by modifications. </summary>
-	public int TotalManaCost => (int)Stats.ManaCost.ApplyTo(ManaCost);
+	/// <summary> The final resource cost of this skill affected by modifications. </summary>
+	public int TotalResourceCost => (int)Stats.CostModifier.ApplyTo(ResourceCost);
 	/// <summary> The final duration of this skill affected by modifications. </summary>
 	public int TotalDuration => (int)Stats.Duration.ApplyTo(Duration);
+
 	/// <summary> Shorthand for applying to <see cref="SkillBuff.Damage"/>. </summary>
 	public int GetTotalDamage(float apply)
 	{

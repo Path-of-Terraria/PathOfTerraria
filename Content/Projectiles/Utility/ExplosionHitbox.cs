@@ -4,9 +4,27 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.Projectiles.Utility;
 
+public readonly record struct ExplosionSpawnInfo(bool Friendly = true, float Knockback = 8f, Vector2? Velocity = null, int BuffType = 0, int BuffLength = 0, bool CanSpawnProjectile = true)
+{
+	/// <summary>
+	/// Spawns a hostile projectile, only on the singleplayer or server.
+	/// </summary>
+	public static readonly ExplosionSpawnInfo HostileSpawn = new(false, CanSpawnProjectile: Main.netMode != NetmodeID.MultiplayerClient);
+
+	internal static readonly ExplosionSpawnInfo FriendlySpawn = new(true);
+
+	/// <summary>
+	/// Spawns a friendly projectile, only on the owner.
+	/// </summary>
+	public static ExplosionSpawnInfo PlayerOwned(int owner)
+	{
+		return FriendlySpawn with { CanSpawnProjectile = owner == Main.myPlayer };
+	}
+}
+
 /// <summary>
 /// Defines a generic "explosion" class with variable <see cref="Width"/> and <see cref="Height"/> - ai[0] and ai[1], 
-/// alongside <see cref="BuffId"/> + <see cref="BuffLength"/> (localAI[2] and [3]) for flexibility.
+/// alongside <see cref="BuffId"/> + <see cref="BuffLength"/> (localAI[0] and [1]) for flexibility.
 /// </summary>
 internal class ExplosionHitbox : ModProjectile
 {
@@ -20,11 +38,12 @@ internal class ExplosionHitbox : ModProjectile
 	/// Note that this will loop <paramref name="TorchDustCount"/> / 2 times, since the loop has two dust spawns in it.
 	/// </param>
 	/// <param name="Sfx">Whether the sfx should play.</param>
-	/// <param name="GoreRange"></param>
-	/// <param name="SmokeDustType"></param>
-	/// <param name="TorchDustType"></param>
+	/// <param name="GoreRange">Range of Gore ids to use.</param>
 	public readonly record struct VFXPackage(int GoreCount = 4, int SmokeDustCount = 20, int TorchDustCount = 10, bool Sfx = true, float Volume = 1f, Range? GoreRange = null,
-		int SmokeDustType = DustID.Smoke, int TorchDustType = DustID.Torch);
+		int SmokeDustType = DustID.Smoke, int TorchDustType = DustID.Torch, float DustVelocityModifier = 1f)
+	{
+		public static readonly VFXPackage None = new(0, 0, 0, false, 0, null, 0, 0, 0);
+	}
 
 	public override string Texture => UseBaseTexture ? (GetType().Namespace + "." + Name).Replace('.', '/') : "Terraria/Images/NPC_0";
 
@@ -68,7 +87,7 @@ internal class ExplosionHitbox : ModProjectile
 	/// Copies vanilla's bomb/grenade explosion VFX with some modifyability.
 	/// </summary>
 	/// <param name="entity">Enity that's spawning the VFX.</param>
-	public static void VFX(Entity entity, VFXPackage? package = null)
+	public static void VFX(Entity entity, in VFXPackage? package = null)
 	{
 		VFXPackage value = package ?? new VFXPackage(4);
 
@@ -81,7 +100,7 @@ internal class ExplosionHitbox : ModProjectile
 		{
 			int dust = Dust.NewDust(entity.position, entity.width, entity.height, value.SmokeDustType, 0f, 0f, 100, default, 1.5f);
 			Dust newDust = Main.dust[dust];
-			newDust.velocity *= 1.4f;
+			newDust.velocity *= 1.4f * value.DustVelocityModifier;
 		}
 		
 		for (int i = 0; i < value.TorchDustCount / 2; i++)
@@ -89,11 +108,11 @@ internal class ExplosionHitbox : ModProjectile
 			int dust = Dust.NewDust(entity.position, entity.width, entity.height, value.TorchDustType, 0f, 0f, 100, default, 2.5f);
 			Dust newDust = Main.dust[dust];
 			newDust.noGravity = true;
-			newDust.velocity *= 5f;
+			newDust.velocity *= 5f * value.DustVelocityModifier;
 
 			dust = Dust.NewDust(entity.position, entity.width, entity.height, value.TorchDustType, 0f, 0f, 100, default, 1.5f);
 			newDust = Main.dust[dust];
-			newDust.velocity *= 3f;
+			newDust.velocity *= 3f * value.DustVelocityModifier;
 		}
 
 		if (Main.dedServ)
@@ -121,11 +140,24 @@ internal class ExplosionHitbox : ModProjectile
 		}
 	}
 
-	public static int QuickSpawn(IEntitySource source, Entity sourceEntity, Vector2 velocity, int damage, int owner, Vector2 size, VFXPackage? package = null, bool friendly = true, 
-		float knockback = 8f)
+	/// <summary>
+	/// Quickly and easily spawns a <see cref="ExplosionHitbox"/> and also calls <see cref="VFXPackage"/> for visuals.<br/>
+	/// Use <paramref name="info"/>'s <see cref="ExplosionSpawnInfo.CanSpawnProjectile"/> to spawn the projectile only on the owner - 
+	/// ideally, either using <see cref="ExplosionSpawnInfo.HostileSpawn"/> or <see cref="ExplosionSpawnInfo.PlayerOwned(int)"/>.
+	/// </summary>
+	public static int QuickSpawn(IEntitySource source, Entity sourceEntity, int damage, int owner, Vector2 size, in ExplosionSpawnInfo info, in VFXPackage? package = null)
 	{
-		int type = friendly ? ModContent.ProjectileType<ExplosionHitboxFriendly>() : ModContent.ProjectileType<ExplosionHitbox>();
-		int proj = Projectile.NewProjectile(source, sourceEntity.Center, velocity, type, damage, knockback, owner, size.X, size.Y);
+		int proj = -1;
+
+		if (info.CanSpawnProjectile)
+		{
+			int type = info.Friendly ? ModContent.ProjectileType<ExplosionHitboxFriendly>() : ModContent.ProjectileType<ExplosionHitbox>();
+			proj = Projectile.NewProjectile(source, sourceEntity.Center, info.Velocity ?? Vector2.Zero, type, damage, info.Knockback, owner, size.X, size.Y);
+			Projectile projectile = Main.projectile[proj];
+			projectile.localAI[0] = info.BuffType;
+			projectile.localAI[1] = info.BuffLength;
+		}
+
 		VFX(sourceEntity, package);
 		return proj;
 	}

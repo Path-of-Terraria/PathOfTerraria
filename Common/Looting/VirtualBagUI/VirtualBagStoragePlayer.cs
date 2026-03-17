@@ -11,6 +11,7 @@ using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.UI;
 using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.Mapping;
 
 namespace PathOfTerraria.Common.Looting.VirtualBagUI;
 
@@ -29,6 +30,7 @@ internal class VirtualBagStoragePlayer : ModPlayer
 	public List<Item> Storage = [];
 	public bool UsesVirtualBag = true;
 	public bool ConfirmedExit = false;
+	public Dictionary<int, int> ConfluxResourcesCache = [];
 
 	private static bool IsVirtualBagActiveContext()
 	{
@@ -95,7 +97,13 @@ internal class VirtualBagStoragePlayer : ModPlayer
 			UIManager.TryDisable(VirtualBagUIState.Identifier);
 		}
 
+		ConfluxResourcesCache.Clear();
 		Storage.Clear();
+
+		foreach (MapResource resource in MapResources.Resources)
+		{
+			ConfluxResourcesCache.Add(resource.AssociatedItem, resource.Value);
+		}
 	}
 
 	private void OverrideRightClickForVirtualBag(On_ItemSlot.orig_RightClick_ItemArray_int_int orig, Item[] inv,

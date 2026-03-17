@@ -23,6 +23,9 @@ namespace PathOfTerraria.Common.Subworlds;
 /// </summary>
 public abstract class MappingWorld : Subworld
 {
+	/// <summary> How many times this subworld type has been started on this client or server. </summary>
+	public uint TimesEntered { get; private set; }
+
 	public override int Width => 1000;
 	public override int Height => 1000;
 
@@ -93,13 +96,18 @@ public abstract class MappingWorld : Subworld
 	{
 		SubworldName = Language.GetOrRegister("Mods.PathOfTerraria.Subworlds." + GetType().Name + ".DisplayName", () => GetType().Name);
 		SubworldDescription = Language.GetOrRegister("Mods.PathOfTerraria.Subworlds." + GetType().Name + ".Description", () => GetType().Name);
-		SubworldMining = Language.GetOrRegister("Mods.PathOfTerraria.Subworlds." + GetType().Name + ".Mining", () => "\"{$DefaultMining}\"");
-		SubworldPlacing = Language.GetOrRegister("Mods.PathOfTerraria.Subworlds." + GetType().Name + ".Placing", () => "\"{$DefaultPlacing}\"");
+		SubworldMining = Language.GetOrRegister("Mods.PathOfTerraria.Subworlds." + GetType().Name + ".Mining", () => "{$DefaultMining}");
+		SubworldPlacing = Language.GetOrRegister("Mods.PathOfTerraria.Subworlds." + GetType().Name + ".Placing", () => "{$DefaultPlacing}");
 
 		if (!Main.dedServ)
 		{
 			LoadLoadingScreens();
 		}
+	}
+
+	public override void OnEnter()
+	{
+		TimesEntered++;
 	}
 
 	private void LoadLoadingScreens()
@@ -131,6 +139,7 @@ public abstract class MappingWorld : Subworld
 #pragma warning restore IDE0060 // Remove unused parameter
 	{
 		WorldGenerator.CurrentGenerationProgress = progress;
+		progress.CurrentPassWeight = 1;
 		Main.ActiveWorldFileData.SetSeedToRandom();
 		GenVars.structures = new();
 		WorldGen._genRandSeed = Main.rand.Next();

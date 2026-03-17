@@ -6,37 +6,37 @@
 
 IncreasedMeleeDamagePassive: {
 	Name: Increased Melee Damage
-	Tooltip: Increases your melee damage by {0}% per level
+	Tooltip: Increases your melee damage by {0}%
 }
 
 IncreasedRangedDamagePassive: {
 	Name: Increased Ranged Damage
-	Tooltip: Increases your ranged damage by {0}% per level
+	Tooltip: Increases your ranged damage by {0}%
 }
 
 IncreasedMagicDamagePassive: {
 	Name: Increased Magic Damage
-	Tooltip: Increases your magic damage by {0}% per level
+	Tooltip: Increases your magic damage by {0}%
 }
 
 AddedLifePassive: {
 	Name: Added Life
-	Tooltip: Increases your maximum life by {0} per level
+	Tooltip: Increases your maximum life by {0}
 }
 
 AddedManaPassive: {
 	Name: Added Mana
-	Tooltip: Increases your maximum mana by {0} per level
+	Tooltip: Increases your maximum mana by {0}
 }
 
 LongRangePassive: {
 	Name: Increased Damage Against Distant Enemies
-	Tooltip: Increases your damage against distant enemies by {0}% per level
+	Tooltip: Increases your damage against distant enemies by {0}%
 }
 
 CloseRangePassive: {
 	Name: Increased Damage Against Nearby Enemies
-	Tooltip: Increases your damage against nearby enemies by 10% per level
+	Tooltip: Increases your damage against nearby enemies by 10%
 }
 
 ChanceToBleedPassive: {
@@ -46,12 +46,12 @@ ChanceToBleedPassive: {
 
 DamageReductionPassive: {
 	Name: Added Damage Reduction
-	Tooltip: Gain {0}% damage reduction per level.
+	Tooltip: Gain {0}% damage reduction
 }
 
 DamageReflectionPassive: {
 	Name: Added Damage Reflection
-	Tooltip: Reflect {0} more damage to enemies that deal contact damage per level.
+	Tooltip: Reflect {0} more damage to enemies that deal contact damage
 }
 
 StartPassive: {
@@ -61,12 +61,12 @@ StartPassive: {
 
 IncreasedSummonDamagePassive: {
 	Name: Increased Summon Damage
-	Tooltip: Increases all summon damage by {0}% per level
+	Tooltip: Increases all summon damage by {0}%
 }
 
 IncreasedSentryDamagePassive: {
 	Name: Increased Sentry Damage
-	Tooltip: Increases your sentries' damage by {0}% per level
+	Tooltip: Increases your sentries' damage by {0}%
 }
 
 JewelSocket: {
@@ -76,32 +76,32 @@ JewelSocket: {
 
 LifeRegenPassive: {
 	Name: Added Life Regeneration
-	Tooltip: Increase life regeneration by {0} per level
+	Tooltip: Increase life regeneration by {0}
 }
 
 DecreasedManaCostPassive: {
 	Name: Reduced Mana Cost
-	Tooltip: Decreases mana cost by {0}% per level
+	Tooltip: Decreases mana cost by {0}%
 }
 
 AddedCriticalStrikeChance: {
 	Name: Added Critical Strike Chance
-	Tooltip: Adds {0}% flat critical strike chance per level
+	Tooltip: Adds {0}% flat critical strike chance
 }
 
 IncreasedCriticalStrikeChance: {
 	Name: Increased Critical Strike Chance
-	Tooltip: Adds {0}% increased critical strike chance per level
+	Tooltip: Adds {0}% increased critical strike chance
 }
 
 IncreasedCriticalStrikeMultiplier: {
 	Name: Increased Critical Strike Multiplier
-	Tooltip: Adds {0}% critical strike multiplier per level
+	Tooltip: Adds {0}% critical strike multiplier
 }
 
 ArmorPenetrationPassive: {
 	Name: Increased Armor Penetration
-	Tooltip: Adds {0}% more armor penetration per level
+	Tooltip: Adds {0}% more armor penetration
 }
 
 AnchorPassive: {
@@ -116,52 +116,52 @@ StrongerChillPassive: {
 
 ShockChancePassive: {
 	Name: Added Shock Chance
-	Tooltip: Adds an additional 5% chance to afflict an enemy with Shock per level.
+	Tooltip: Adds an additional 5% chance to afflict an enemy with Shock
 }
 
 IncreasedMinionDamagePassive: {
 	Name: Increased Minion Damage
-	Tooltip: Increases your minions' damage by {0}% per level
+	Tooltip: Increases your minions' damage by {0}%
 }
 
 AddedAggressionPassive: {
 	Name: Added Aggression
-	Tooltip: Adds an additional point of aggro per level.
+	Tooltip: Adds an additional point of aggro
 }
 
 GlancingBlowsPassive: {
 	Name: Glancing Blows
-	Tooltip: Blocking a strike deals 50% damage, but max block chance is increased to 50% and block cooldown is reduced to 1 second.
+	Tooltip: Blocking a strike deals 50% damage, but max block chance is increased to 50% and block cooldown is reduced to 1 second
 }
 
 IncreasedBlockChancePassive: {
 	Name: Increased Block Chance
-	Tooltip: +10% chance to block an attack per level.
+	Tooltip: +10% chance to block an attack
 }
 
 AddedIntelligencePassive: {
 	Name: Added Intelligence
-	Tooltip: Adds +{0} points to intelligence per level.
+	Tooltip: Adds +{0} points to intelligence
 }
 
 AddedStrengthPassive: {
 	Name: Added Strength
-	Tooltip: Adds +{0} points to strength per level.
+	Tooltip: Adds +{0} points to strength
 }
 
 AddedDexterityPassive: {
 	Name: Added Dexterity
-	Tooltip: Adds +{0} points to dexterity per level.
+	Tooltip: Adds +{0} points to dexterity
 }
 
 IncreasedPotionRecoveryPassive: {
 	Name: Increased Potion Recovery
-	Tooltip: Adds +{0}% additional healing from Healing Potions per level.
+	Tooltip: Adds +{0}% additional healing from Healing Potions
 }
 
 IncreasedMoveSpeedPassive: {
 	Name: Increased Movement Speed
-	Tooltip: +{0}% increased movement speed per level.
+	Tooltip: +{0}% increased movement speed
 }
 
 IncreasedJumpHeight: {
@@ -326,7 +326,7 @@ WhipReachMastery: {
 
 ReducedSkillCooldownPassive: {
 	Name: Reduced Skill Cooldown
-	Tooltip: +{0}% reduced skill cooldown per level
+	Tooltip: +{0}% reduced skill cooldown
 }
 
 AddedFireDamageConversionPassive: {
@@ -566,7 +566,7 @@ LifeRegenRatePassive: {
 
 LifeRegenCountPassive: {
 	Name: Increased Life Regeneration Strength
-	Tooltip: +{0}% life regenerated per second
+	Tooltip: +{0} life regenerated per second
 }
 
 LifeOnKillPassive: {
@@ -782,4 +782,369 @@ ProlongingSkillMastery: {
 SurplusVitalityMastery: {
 	Name: Surplus Vitality
 	Tooltip: Using a skill gives [mechanic/shift:Nearby] players {0}% of their max health as overhealth
+}
+
+PseudoicarianMastery: {
+	Name: Pseudoicarian
+	Tooltip: +{0}% jump height and permanent Featherfall
+}
+
+HermesBoonMastery: {
+	Name: Hermes Boon
+	Tooltip: When out of combat, gain {0}% movement speed and increase jump speed massively
+}
+
+FasterPlacementPassive: {
+	Name: Faster Placement
+	Tooltip: Objects are placed {0}% faster
+}
+
+ExtendedTileRangePassive: {
+	Name: Extended Tile Reach
+	Tooltip: Objects can be placed up to {0} tiles further away
+}
+
+JourneymanMastery: {
+	Name: Journeyman
+	Tooltip: Mining is {0}% faster and strong tiles are easier to break when directly below you
+}
+
+MasterBuilderMastery: {
+	Name: Master Builder
+	Tooltip: When stationary, gain {0} tile range and {1}% tile placement speed
+}
+
+BloodroundMastery: {
+	Name: Bloodrounds
+	Tooltip: Killing a bleeding or burning enemy adds a 50% chance to not consume ammo
+}
+
+BouncingAmmoMastery: {
+	Name: Bouncing Ammo
+	Tooltip: Ammo-based projectiles bounce off of enemies once
+}
+
+TracerShotsMastery: {
+	Name: Tracing Shots
+	Tooltip: Ammo shot speed is {0}% higher, hit enemies are identified for {1} seconds
+}
+
+HairTriggerMastery: {
+	Name: Hair Trigger
+	Tooltip: Gain {0}% ranged attack speed but reduce accuracy
+}
+
+ExplosiveSlugsMastery: {
+	Name: Explosive Slugs
+	Tooltip: Critical strikes with bullets explode, dealing {0}% of base damage
+}
+
+AdvantageShotMastery: {
+	Name: Advantage Shot
+	Tooltip: Standing still for {0} seconds grants {1}% increased ranged damage
+}
+
+IgnitingProjectilesPassive: {
+	Name: Chance for Projectiles to Ignite
+	Tooltip: +{0}% chance for projectiles to deal Ignite
+}
+
+ChanceForAdditionalProjectilePassive: {
+	Name: Chance for Additional Projectile
+	Tooltip: +{0}% chance for an additional projectile to be fired
+}
+
+PoisonedRangedAttacksPassive: {
+	Name: Chance for Ranged Poison
+	Tooltip: +{0}% chance for a Ranged projectile to inflict a stack of Poison
+}
+
+LongerPoisonPassive: {
+	Name: Longer Poison
+	Tooltip: Poison stacks last {0}% longer
+}
+
+StrongerPoisonPassive: {
+	Name: Stronger Poison
+	Tooltip: Poison deals {0}% more damage
+}
+
+FasterPoisonTickPassive: {
+	Name: Faster Acting Poison
+	Tooltip: Poison tick rate is {0}% faster
+}
+
+ContagionBurstMastery: {
+	Name: Contagion Burst
+	Tooltip: Enemies killed spread {0}% of their Poison stacks to [mechanic/shift:Nearby] enemies
+}
+
+CorrosiveTouchMastery: {
+	Name: Corrosive Touch
+	Tooltip: Every {0} hits on a poisoned enemy will 'pop' one of the stacks, instantly applying all damage it would deal
+}
+
+LethalDoseMastery: {
+	Name: Lethal Dose
+	Tooltip: Enemies hit by you take {0}% more damage per poison stack (max {1}%)
+}
+
+QuickExplosionsPassive: {
+	Name: Quicker Explosives
+	Tooltip: Explosives explode {0}% faster
+}
+
+StrongerExplosivesPassive: {
+	Name: Stronger Explosives
+	Tooltip: Explosives deal {0}% more damage
+}
+
+BlastProtectionPassive: {
+	Name: Blast Protection
+	Tooltip: You take no self-damage from your own explosives
+}
+
+ExplosiveKnockbackPassive: {
+	Name: Higher Explosive Knockback
+	Tooltip: Explosives deal {0}% more knockback
+}
+
+BiggerExplosivesPassive: {
+	Name: Bigger Explosions
+	Tooltip: Explosives are {0}% larger
+}
+
+DemolitionsExpertMastery: {
+	Name: Demolitions Expert
+	Tooltip: Explosions are {0}% larger and deal {1}% more damage
+}
+
+ShrapnelStormMastery: {
+	Name: Shrapnel Storm
+	Tooltip: Explosives burst into shrapnel, which deal {0}% damage per shard
+}
+
+BlastChainMastery: {
+	Name: Blast Chain
+	Tooltip: Killing an enemy with an explosion will blow up the enemy for {0}% damage
+}
+
+ReturningProjectilesMastery: {
+	Name: Returning Bullets
+	Tooltip: Bullets return to their spawn location after {0} seconds
+}
+
+MarksmanMastery: {
+	Name: Marksman
+	Tooltip: Close enemies can be Marked. Marked enemies deal {0}% of the damage they take to [mechanic/shift:Nearby] enemies
+}
+
+FatBulletsMastery: {
+	Name: Fat Bullets
+	Tooltip: Ranged projectiles are {0}% stronger and bigger, but have damage and speed falloff quickly
+}
+
+StillDamagePassive: {
+	Name: Damage Increased when Stationary
+	Tooltip: Standing still increases all damage by {0}%
+}
+
+MeleeSizePassive: {
+	Name: Increased Melee Size
+	Tooltip: +{0}% increased melee weapon size
+}
+
+TitanicImpactMastery: {
+	Name: Titanic Impact
+	Tooltip: "{0}% chance for melee strikes to deal massive knockback and {1}% increased damage"
+}
+
+FatalFocusMastery: {
+	Name: Fatal Focus
+	Tooltip: +{0}% critical strike damage, but -{1}% critical strike chance
+}
+
+WideSwingsMastery: {
+	Name: Wide Swings
+	Tooltip: Critical hits with melee strikes increases melee weapon size by {0}% (max {1} stacks)
+}
+
+RangerMeleeChanceToBleedPassive: {
+	Name: Ranged/Melee Chance to Bleed
+	Tooltip: +{0}% chance for ranged or melee hits to inflict Bleeding
+}
+
+BleedEffectivenessPassive: {
+	Name: Increased Bleed Damage
+	Tooltip: +{0}% bleed damage
+}
+
+BleedTimePassive: {
+	Name: Increased Bleed Time
+	Tooltip: +{0}% bleed time
+}
+
+BleedTickPassive: {
+	Name: Faster Bleed Ticks
+	Tooltip: +{0}% faster bleed ticks
+}
+
+HemorrhageMastery: {
+	Name: Hemorrhage
+	Tooltip: Double your max bleed stacks
+}
+
+ExsanguinateMastery: {
+	Name: Exsanguination
+	Tooltip: Killing a bleeding enemy will deal {0}% of the enemy's remaining bleed damage in an area
+}
+
+BloodbenderMastery: {
+	Name: Bloodbender
+	Tooltip: Critting a bleeding enemy siphons {0}% of the damage done, scaling with bleed stacks
+}
+
+HealOnKillPassive: {
+	Name: Chance to Heal on Kill
+	Tooltip: "{1}% chance to heal for {0} health on killing any enemy"
+}
+
+BloodRushMastery: {
+	Name: Blood Rush
+	Tooltip: "{0}% chance to [mechanic/shift:Siphon] {1}% of your max health on kill"
+}
+
+HeartAndMindMastery: {
+	Name: Heart and Mind
+	Tooltip: "{0}% of life regeneration is added to mana regeneration"
+}
+
+PainTransferenceMastery: {
+	Name: Pain Transference
+	Tooltip: "{0}% of life regeneration or life healed is dealt as damage to [mechanic/shift:Nearby] enemies"
+}
+
+PuppeteerMastery: {
+	Name: Puppeteer
+	Tooltip: Hitting an enemy with a yoyo will tie it to the yoyo, pulling it towards your yoyo and taking {0}% damage any time you deal damage to anything
+}
+
+TranslucentTricksMastery: {
+	Name: Translucent Tricks
+	Tooltip: Yoyo damage and speed is increased by {0}%, yoyos can go through tiles
+}
+
+SpoolbreakerMastery: {
+	Name: Spoolbreaker
+	Tooltip: Hitting an enemy with a yoyo will make the yoyo grow, until it explodes, dealing {0}% damage
+}
+
+FriendlyDefensePassive: {
+	Name: Friendly Defense Increase
+	Tooltip: +{0} defense, +{1} defense for nearby allied players
+}
+
+IncreasedEnemyAggressionPassive: {
+	Name: Increased Enemy Aggression
+	Tooltip: Aggro is increased by {0}
+}
+
+UndyingGraspMastery: {
+	Name: Undying Grasp
+	Tooltip: Heal {0}% of the damage done after {1} seconds
+}
+
+WillingSacrificeMastery: {
+	Name: Willing Sacrifice
+	Tooltip: Gain {1} defense and knockback immunity, take {0}% of closeby allied player's damage for them
+}
+
+ReprisalMastery: {
+	Name: Reprisal
+	Tooltip: ""
+}
+
+ImmolationStrideMastery: {
+	Name: Immolation Stride
+	Tooltip: Unused.
+}
+
+ShortFuseMastery: {
+	Name: Short Fuse
+	Tooltip: Unused.
+}
+
+AddRagePassive: {
+	Name: Add Rage
+	Tooltip: Gain {0} {^0:stack;stacks} of rage per enemy hit, which fades quickly if not refreshed
+}
+
+AddMaxRagePassive: {
+	Name: Add Max Rage
+	Tooltip: Max rage is increased by {0}
+}
+
+AddRageCritPassive: {
+	Name: Rage Critical Strike Chance
+	Tooltip: Gain {0}% critical strike chance per rage stack
+}
+
+SlowRageDecayPassive: {
+	Name: Slower Rage Decay
+	Tooltip: Rage hold time increased by {0}%
+}
+
+RageResistancePassive: {
+	Name: Raging Resistance
+	Tooltip: When at one or more rage stacks, gain {0}% damage reduction
+}
+
+BurningRageMastery: {
+	Name: Burning Rage
+	Tooltip: Gain {0}% max health per rage stack. Gain 100% fire type damage conversion at max rage
+}
+
+FuriousSiphonMastery: {
+	Name: Furious Siphon
+	Tooltip: When at max rage, [mechanic/shift:Siphon] 1% of melee or ranged damage
+}
+
+RagingSpeedMastery: {
+	Name: Raging Speed
+	Tooltip: Gain {0}% attack speed per rage stack. At max rage, gain a {1}% chance for hits to apply twice
+}
+
+RockAndStoneMastery: {
+	Name: Rock and Stone
+	Tooltip: Every {0} blocks broken, gain a buff that increases mining speed by {1}% for {2} seconds
+}
+
+FasterMiningPassive: {
+	Name: Faster Mining
+	Tooltip: +{0}% increased mining speed
+}
+
+SpelunkyMastery: {
+	Name: Spelunky
+	Tooltip: Permanent Spelunker and Mining buffs
+}
+
+CheaperShopsPassive: {
+	Name: Cheaper Shops
+	Tooltip: Buy prices are {0}% lower
+}
+
+ValuableSalesPassive: {
+	Name: Increased Sell Value
+	Tooltip: Sell prices are {0}% higher
+}
+
+ExtraStockMastery: {
+	Name: Extra Stock
+	Tooltip: Reroll the Traveling Merchant's stock once per visit
+}
+
+MoneySpeedMastery: {
+	Name: MoneySpeedMastery
+	Tooltip: ""
 }

@@ -2,6 +2,7 @@
 using System.Linq;
 using PathOfTerraria.Common.Encounters;
 using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.Subworlds.MappingAreas;
 using PathOfTerraria.Content.Conflux;
 using PathOfTerraria.Core.Time;
 using PathOfTerraria.Utilities.Terraria;
@@ -15,6 +16,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.UI;
 using Terraria.UI.Chat;
+using Terraria.Utilities;
 
 #nullable enable
 
@@ -59,7 +61,9 @@ internal sealed class ConfluxRifts : ModSystem
 
 		foreach (Projectile projectile in Main.ActiveProjectiles)
 		{
-			if (projectile.ModProjectile is not ConfluxRift { Activated: true } rift) { continue; }
+			if (projectile.ModProjectile is not ConfluxRift { } rift) { continue; }
+			
+			if (!rift.CountsAsActiveBattle()) { continue; }
 
 			float sqrDistance = projectile.DistanceSQ(playerCenter);
 			if (sqrDistance < minSqrDistance)
@@ -88,12 +92,13 @@ internal sealed class ConfluxRifts : ModSystem
 	public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
 	{
 		progressBarLayer ??= new LegacyGameInterfaceLayer($"{nameof(PathOfTerraria)}/ConfluxRiftProgress", DrawProgressBar, InterfaceScaleType.UI);
+		progressBarLayer.Active = true;
 		layers.Insert(Math.Max(0, layers.FindIndex(l => l.Name.Equals("Vanilla: Mouse Text")) - 1), progressBarLayer);
 	}
 
 	public static bool ShouldRiftsSpawnInWorld(Subworld world)
 	{
-		return world is MappingWorld and not RavencrestSubworld;
+		return world is MappingWorld and IExplorationWorld and not RavencrestSubworld;
 	}
 
 	/// <summary> Attempts to spawn conflux rifts, returns the amount created. </summary>
@@ -114,21 +119,21 @@ internal sealed class ConfluxRifts : ModSystem
 			MinDistanceFromEnemies = 0f,
 			MinDistanceFromPlayers = 2048f,
 			MaxSearchAttempts = 4096,
+			SkippedLiquids = LiquidMask.All
 		};
 
-		int targetRifts = MappingWorld.MapTier switch
-		{
-			>= 8 => 3,
-			>= 4 => 2,
-			_ => 1,
-		};
+		WeightedRandom<int> targetRiftPool = new();
+		targetRiftPool.Add(3, 0.1f + (MathF.Pow(MappingWorld.MapTier - 1.0f, 2.50f) * 0.3f));
+		targetRiftPool.Add(2, 0.3f + (MathF.Pow(MappingWorld.MapTier - 1.0f, 2.05f) * 0.6f));
+		targetRiftPool.Add(1, 0.7f);
 
+		int targetRifts = targetRiftPool.Get();
 		IEntitySource? source = Entity.GetSource_None();
 		var rifts = new List<Projectile>(capacity: targetRifts);
 
 		for (int i = 0; i < targetRifts; i++)
 		{
-			if (!EnemySpawning.TryFindingSpawnPosition(in placement, out Vector2 position))
+			if (!EnemySpawning.TryFindingSpawnPosition(out Vector2 position, in placement))
 			{
 				break;
 			}
@@ -140,8 +145,14 @@ internal sealed class ConfluxRifts : ModSystem
 
 			position.Y += 5 * TileUtils.PixelSizeInUnits;
 
-			var kind = (ConfluxRiftKind)(i % ((int)ConfluxRiftKind.Count));
-			var rift = Projectile.NewProjectileDirect(source, position, Vector2.Zero, ModContent.ProjectileType<ConfluxRift>(), 0, 0f, ai0: (float)kind);
+			int type = (i % ((int)ConfluxRiftKind.Count)) switch
+			{
+				0 => ModContent.ProjectileType<GlacialRift>(),
+				1 => ModContent.ProjectileType<InfernalRift>(),
+				2 => ModContent.ProjectileType<CelestialRift>(),
+				_ => throw new NotImplementedException(),
+			};
+			var rift = Projectile.NewProjectileDirect(source, position, Vector2.Zero, type, 0, 0f);
 
 			rifts.Add(rift);
 		}
@@ -162,6 +173,7 @@ internal sealed class ConfluxRifts : ModSystem
 		progressBarOutline ??= ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/Conflux/StabilityOutline");
 
 		if (progressBarTexture is not { IsLoaded: true, Value: { } uiTexture }) { return true; }
+
 		if (progressBarOutline is not { IsLoaded: true, Value: { } uiOutline }) { return true; }
 
 		float uiPulse = progressBarPulse * progressBarPulse;
@@ -203,7 +215,7 @@ internal sealed class ConfluxRifts : ModSystem
 		Rectangle uiHoverArea = new Rectangle((int)uiCenter.X, (int)uiCenter.Y, 0, 0).Inflated((int)(srcRect.Width * 0.4f), (int)(srcRect.Height * 0.4f));
 		if (uiHoverArea.Contains(Main.MouseScreen.ToPoint()))
 		{
-			Main.instance.MouseText(Language.GetTextValue("Mods.PathOfTerraria.Misc.RiftStability"));
+			Main.instance.MouseText(Language.GetTextValue("Mods.PathOfTerraria.Misc.Rifts.Stability"));
 		}
 
 		return true;

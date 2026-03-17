@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Common.ItemDropping;
-using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.NPCs.Mapping.Desert;
@@ -20,7 +19,7 @@ using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds.MappingAreas;
 
-internal class DesertArea : MappingWorld, IOverrideBiome
+internal class DesertArea : MappingWorld, IOverrideBiome, IExplorationWorld
 {
 	public const int FloorY = 400;
 	private const int MapHeight = 800;

@@ -1,5 +1,6 @@
-﻿using SubworldLibrary;
-using System.IO;
+﻿using System.IO;
+using System.Runtime.CompilerServices;
+using SubworldLibrary;
 
 namespace PathOfTerraria.Common.Systems.Synchronization;
 
@@ -33,6 +34,19 @@ internal static class Networking
 		ModPacket packet = PoTMod.Instance.GetPacket(capacity);
 		packet.Write(messageId);
 		return packet;
+	}
+
+	/// <summary> Marks packet as finished and returns its buffer. </summary>
+	internal static byte[] GetFinalPacketBuffer(ModPacket packet)
+	{
+		[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "buf")]
+		extern static ref byte[] Buffer(ModPacket packet);
+
+		[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "Finish")]
+		extern static void Finish(ModPacket packet);
+
+		Finish(packet);
+		return Buffer(packet);
 	}
 
 	/// <summary>

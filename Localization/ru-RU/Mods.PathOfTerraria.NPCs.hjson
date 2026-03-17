@@ -975,3 +975,35 @@ AzarielNPC: {
 	// Entry: Todo:
 	// Census.SpawnCondition: Conditions unknown
 }
+
+// Abominable.DisplayName: Abominable
+// FallenSchemer.DisplayName: Fallen Schemer
+// FallenSavage.DisplayName: Fallen Savage
+// FallenTyrant.DisplayName: Fallen Tyrant
+
+SwampCroc: {
+	// DisplayName: Crocolog
+	// Entry: These sneaky reptiles have evolved to mimic the logs sometimes found floating in their swamp. Their skin is like sandpaper, but the sand part is small blades instead.
+}
+
+GiantEel: {
+	// DisplayName: Mammoth Moss-Eel
+	// Entry: What happens when you combine large, territorial and overgrown? This! It is extremely aggressive and unbelievably strong. It's best to walk- well, run away.
+}
+
+// GiantEelBody.DisplayName: "{$GiantEel.DisplayName}"
+// GiantEelTail.DisplayName: "{$GiantEel.DisplayName}"
+
+DragonFly: {
+	// DisplayName: Dragonfollow
+	// Entry: The nature of the Swamp made the Dragonfollow evolve in a particular manner. Its job is to bring up prey for the Mammoth Moss-Eel to eat, and then the Dragonfollow can enjoy the scraps.
+}
+
+Mudsquit: {
+	// DisplayName: Mudsquit
+	// Entry: A simple, classic, home- grown fish-that-explodes- when-full. That's right! If it has even the barest taste of your blood, it will explode violently. Why? Well, it explodes its friends too! Hope that helps.
+}
+
+// CryoStalker.DisplayName: Cryo Stalker
+// FallenShaman.DisplayName: Fallen Shaman
+// Shambling.DisplayName: Shambling

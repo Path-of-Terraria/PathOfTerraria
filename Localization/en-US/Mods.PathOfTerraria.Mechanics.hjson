@@ -133,3 +133,8 @@ MovementSpeed: {
 	Tag: Movement Speed
 	Description: How quickly an entity moves.
 }
+
+Siphon: {
+	Tag: Siphon
+	Description: Healing on damage - lifesteal.
+}

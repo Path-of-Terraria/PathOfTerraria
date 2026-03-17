@@ -2,6 +2,10 @@
 // LevelLine: (Level {0}/{1})
 // ManaLine: Costs {0} mana
 // NotEnoughMana: Costs [c/FF6666:{0} mana]
+// LifeLine: Costs {0} life
+// NotEnoughLife: Costs [c/FF6666:{0} life]
+// ManaDrain: Costs {0} mana per second
+// LifeDrain: Costs {0} life per second
 // NoWeaponLine: No weapon required
 // NoKeybindLine: No keybind detected
 // DurationLine: Lasts {0} seconds
@@ -17,6 +21,9 @@
 // ShowTags: (Shift to show tag names)
 // NoTree: (This skill has no tree)
 // OpenTree: Middle click to open tree
+// NoCost: "[c/999999:(Skill is free to use)]"
+// ManaReserve: Reserves {0}% max mana
+// HealthReserve: Reserves {0}% max health
 
 Tags: {
 	// None: None

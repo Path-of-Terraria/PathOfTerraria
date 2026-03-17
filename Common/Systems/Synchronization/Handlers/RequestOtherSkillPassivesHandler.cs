@@ -17,17 +17,11 @@ internal class RequestOtherSkillPassivesHandler : Handler
 	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
 		ModPacket packet = Networking.GetPacket(Id);
-		packet.Write(sender);
 		packet.Send(-1, sender);
 	}
 
 	internal override void ClientReceive(BinaryReader reader, byte sender)
 	{
-		byte target = reader.ReadByte();
-
-		if (Main.myPlayer == target)
-		{
-			Main.LocalPlayer.GetModPlayer<SkillTreePlayer>().SyncAllPassives();
-		}
+		Main.LocalPlayer.GetModPlayer<SkillTreePlayer>().SyncAllPassives();
 	}
 }

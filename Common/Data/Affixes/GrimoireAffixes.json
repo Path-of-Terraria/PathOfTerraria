@@ -1,7 +1,7 @@
 ﻿[
 	{
 		"affixType": "ChanceToApplyPoisonItemAffix",
-		"equipTypes": "Weapon Grimoire",
+		"equipTypes": "Grimoire",
 		"influences": "None",
 		"tiers": [
 			{
@@ -32,7 +32,7 @@
 	},
 	{
 		"affixType": "HealOnKillingBurningEnemiesAffix",
-		"equipTypes": "Weapon Grimoire",
+		"equipTypes": "Grimoire",
 		"tiers": [
 			{
 				"minValue": 1,
@@ -92,7 +92,7 @@
 	},
 	{
 		"affixType": "IncreasedDamageAffix",
-		"equipTypes": "Weapon Grimoire",
+		"equipTypes": "Grimoire",
 		"tiers": [
 			{
 				"minValue": 1,

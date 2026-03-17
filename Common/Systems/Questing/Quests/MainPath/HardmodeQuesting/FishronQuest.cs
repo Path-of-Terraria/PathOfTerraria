@@ -1,20 +1,33 @@
-﻿using PathOfTerraria.Common.Subworlds;
+﻿using System.Collections.Generic;
+using PathOfTerraria.Common.Encounters;
 using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
-using PathOfTerraria.Content.NPCs.Town;
-using SubworldLibrary;
-using System.Collections.Generic;
+using PathOfTerraria.Common.World.Utilities;
+using PathOfTerraria.Content.Conflux;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
+using PathOfTerraria.Content.NPCs.Town;
+using PathOfTerraria.Utilities.Terraria;
+using PathOfTerraria.Utilities.Xna;
+using SubworldLibrary;
 using Terraria.ID;
 using Terraria.Localization;
+
+#nullable enable
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 
 internal class FishronQuest() : Quest
 {
+	public static int GetRiftSide()
+	{
+		// Opposite of Calamity Mod's sulphur sea placement, which is always same as the dungeon's.
+		bool sulphurSeaIsAtLeftSide = Main.dungeonX < Main.maxTilesX / 2;
+		return sulphurSeaIsAtLeftSide ? +1 : -1;
+	}
+
 	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct2;
 	public override int NPCQuestGiver => ModContent.NPCType<FishermanNPC>();
 
@@ -63,9 +76,95 @@ internal class FishronQuest() : Quest
 		return "Overworld";
 	}
 
-	public override bool Available()
+	protected override bool InternalAvailable()
 	{
 		Quest golemQuest = GetLocalPlayerInstance<GolemQuest>();
 		return golemQuest.Completed && NPC.downedGolemBoss;
+	}
+}
+
+// Simply spawns and despawns the rift.
+file sealed class FishronQuestSystem : ModSystem
+{
+	public override void PreUpdateWorld()
+	{
+		if (SubworldSystem.Current is not null) { return; }
+		
+		int riftType = ModContent.ProjectileType<UnderwaterRift>();
+		bool riftShouldExist = false;
+		foreach (Player player in Main.ActivePlayers)
+		{
+			if (Quest.PlayerHasQuest<FishronQuest>(player.whoAmI))
+			{
+				riftShouldExist = true;
+				break;
+			}
+		}
+
+		Projectile? existingRift = null;
+		foreach (Projectile projectile in Main.ActiveProjectiles)
+		{
+			if (projectile.type == riftType)
+			{
+				existingRift = projectile;
+				break;
+			}
+		}
+
+		bool riftExists = existingRift != null;
+		if (riftExists != riftShouldExist)
+		{
+			if (riftShouldExist)
+			{
+				SpawnRift();
+			}
+			else
+			{
+				existingRift!.active = false;
+				existingRift.netUpdate = true;
+			}
+		}
+	}
+
+	private static void SpawnRift()
+	{
+		int riftDir = FishronQuest.GetRiftSide();
+		bool leftSide = riftDir == -1;
+		int xFarthest = (int)((leftSide ? Main.leftWorld : Main.rightWorld) / TileUtils.TileSizeInPixels) - (96 * riftDir);
+		int xClosest = xFarthest - (32 * riftDir);
+
+		for (int i = 0; i < 50; i++)
+		{
+			int xBase = Main.rand.Next(leftSide ? xFarthest : xClosest, leftSide ? xClosest : xFarthest);
+			int yBase = (int)(Main.maxTilesY * 0.35f / 16f);
+			int yLimit = yBase + 400;
+
+			for (; yBase < yLimit && yBase < Main.maxTilesY; yBase++)
+			{
+				if (WorldUtilities.SolidTile(xBase, yBase))
+				{
+					break;
+				}
+			}
+
+			if (yBase == yLimit) { continue; }
+
+			Rectangle furtherSearchRect = new Rectangle(xBase, yBase, 0, 0).Inflated(32, 32);
+
+			if (EnemySpawning.TryFindingSpawnPosition(out Vector2 spawnPoint, new()
+			{
+				Area = furtherSearchRect,
+				CollisionSize = new Point(4, 12).ToWorldCoordinates().ToPoint(),
+				OnGround = true,
+				MinDistanceFromEnemies = 0f,
+				MinDistanceFromPlayers = 1500f,
+				MaxSearchAttempts = 16,
+			}))
+			{
+				Vector2 position = spawnPoint + new Vector2(0f, -64f);
+				Projectile.NewProjectile(null, position, default, ModContent.ProjectileType<UnderwaterRift>(), 0, 0f);
+				break;
+			}
+		}
 	}
 }

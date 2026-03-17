@@ -63,7 +63,7 @@ internal class KingSlimeQuest : Quest
 		];
 	}
 
-	public override bool Available()
+	protected override bool InternalAvailable()
 	{
 		Quest[] checks = 
 		[

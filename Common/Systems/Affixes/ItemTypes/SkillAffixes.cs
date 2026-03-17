@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.ModPlayers.SkillPlayers;
 using PathOfTerraria.Content.Items.Gear.Weapons.Javelins;
 using PathOfTerraria.Content.Skills.Melee;
 using PathOfTerraria.Content.Skills.Ranged;

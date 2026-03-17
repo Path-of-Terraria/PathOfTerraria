@@ -189,4 +189,47 @@ FlameSentryFireball.DisplayName: "{$ProjectileName.CultistBossFireBall}"
 // HealingOrb.DisplayName: Healing Orb
 // ReviveEffect.DisplayName: Revive Effect
 // OverhealPulseAura.DisplayName: Overheal Pulse Aura
+// ExplosiveShard.DisplayName: Explosive Shard
 // RagingSpirit.DisplayName: Raging Spirit
+// StickyFlame.DisplayName: Sticky Flame
+// FrostfireMeteorProjectile.DisplayName: Frostfire Meteor
+// BlastIcicleSmall.DisplayName: Blast Icicle
+// ColdAura.DisplayName: Cold Aura
+
+ShadowflamePyreProjectile: {
+	// DisplayName: Shadowflame Pyre
+
+	DeathReason: {
+		// 0: "{0} burned to shadow."
+		// 1: "{0} was engulfed by the flames."
+		// 2: "{0} disappeared into embers and shade."
+	}
+}
+
+// PrismaticOrbProjectile.DisplayName: Prismatic Orb Projectile
+// PrismaticOrbExplosion.DisplayName: Prismatic Orb Explosion
+// FleaBellMinion.DisplayName: Flea Bell Minion
+// SimulacraEcho.DisplayName: Simulacra Echo
+// SimulacraMirror.DisplayName: Simulacra Mirror
+// OuroborosPoisonGas.DisplayName: Ouroboros Poison Gas
+// OuroborosProjectile.DisplayName: Ouroboros Projectile
+// CelestialRift.DisplayName: Celestial Rift
+// GlacialRift.DisplayName: Glacial Rift
+// InfernalRift.DisplayName: Infernal Rift
+
+UnderwaterRift: {
+	// DisplayName: Mysterious Rift
+
+	DeathReason: {
+		// 0: "{0} has become one with the void."
+		// 1: "{0} ventured beyond reality."
+		// 2: "{0} was not accepted by the other world."
+	}
+}
+
+// SlashAoE.DisplayName: Slash AoE
+// FloatingMudplatform.DisplayName: Floating Mudplatform
+// BrittleFloatingMudplatform.DisplayName: Brittle Floating Mudplatform
+// CryoStalkerIcicle.DisplayName: Cryo Stalker Icicle
+// FallenShamanRocket.DisplayName: Fallen Shaman Rocket
+// FallenSoul.DisplayName: Fallen Soul

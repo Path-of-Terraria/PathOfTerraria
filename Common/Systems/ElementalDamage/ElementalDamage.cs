@@ -1,12 +1,15 @@
 ﻿using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.NPCCritFunctionality;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.Buffs.ElementalBuffs;
 using PathOfTerraria.Content.Passives;
 using System.IO;
-using Terraria;
+using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.ElementalDamage;
+
+#nullable enable
 
 /// <summary>
 /// Controls a single damage element, such as Fire.
@@ -109,29 +112,43 @@ public readonly struct ElementalDamage
 		};
 	}
 
-	public static void ApplyBuff(ElementType elementType, Player player, Entity entity, int elementalDamageDealt)
+	public static void ApplyBuff(ElementType elementType, Entity attacker, Entity entity, int elementalDamageDealt)
 	{
 		switch (elementType)
 		{
-			case ElementType.Fire when entity is NPC burningNPC:
-				IgnitedDebuff.ApplyTo(burningNPC, (int)(elementalDamageDealt * 0.9f));
+			case ElementType.Fire:
+				IgnitedDebuff.ApplyTo(attacker, entity, (int)(elementalDamageDealt * 0.9f));
 				break;
 
-			case ElementType.Cold when entity is NPC frozenNPC:
-				float baseEffectiveness = 3.6f * (elementalDamageDealt / (float)frozenNPC.lifeMax);
-				float duration = player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.FreezeEffectiveness.ApplyTo(baseEffectiveness);
+			case ElementType.Cold:
 
-				if (duration > 0.3f)
+				if (entity is NPC frozenNPC)
 				{
-					frozenNPC.AddBuff(GetBuffType(elementType), (int)(duration * 60));
-					frozenNPC.GetGlobalNPC<FreezeNPC>().Frozen = true;
-					FreezeNPC.ConvertFrozenGore(frozenNPC);
+					float baseEffectiveness = 3.6f * (elementalDamageDealt / (float)frozenNPC.lifeMax);
+					float duration = attacker is Player p ? p.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.FreezeEffectiveness.ApplyTo(baseEffectiveness) : baseEffectiveness;
+
+					if (duration > 0.3f)
+					{
+						frozenNPC.AddBuff(GetBuffType(elementType), (int)(duration * 60));
+						frozenNPC.GetGlobalNPC<FreezeNPC>().Frozen = true;
+						FreezeNPC.ConvertFrozenGore(frozenNPC);
+					}
+				}
+				else if (entity is Player frozenPlayer)
+				{
+					float baseEffectiveness = 3.6f * (elementalDamageDealt / (float)frozenPlayer.statLifeMax2);
+					float duration = attacker is Player p ? p.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.FreezeEffectiveness.ApplyTo(baseEffectiveness) : baseEffectiveness;
+
+					if (duration > 0.3f)
+					{
+						frozenPlayer.AddBuff(BuffID.Frozen, (int)(duration * 60));
+					}
 				}
 
 				break;
 
-			case ElementType.Lightning when entity is NPC shockedNPC:
-				ShockDebuff.Apply(player, shockedNPC, elementalDamageDealt);
+			case ElementType.Lightning:
+				ShockDebuff.Apply(attacker, entity, elementalDamageDealt);
 
 				break;
 
@@ -158,16 +175,40 @@ public readonly struct ElementalDamage
 	/// <param name="info"></param>
 	/// <param name="defaultPercent"></param>
 	/// <returns></returns>
-	internal static bool CanDebuff(ElementType type, Entity entity, Player player, NPC.HitInfo info, float defaultPercent)
+	internal static bool CanDebuff(ElementType type, Entity victim, Entity attacker, HitInfoContainer info, float defaultPercent)
 	{
-		return type switch
+		if (attacker is Player player)
 		{
-			ElementType.Fire => info.Crit,
-			ElementType.Cold => entity is NPC { boss: false } && info.Crit,
-			ElementType.Chaos => false,
-			ElementType.Lightning => info.Crit || defaultPercent + player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<ShockChancePassive>() / 100f > Main.rand.NextFloat(),
-			_ => defaultPercent > Main.rand.NextFloat(),
-		};
+			NPC.HitInfo hit = info.NPCHurt!.Value;
+
+			return type switch
+			{
+				ElementType.Fire => hit.Crit,
+				ElementType.Cold => victim is NPC { boss: false } && hit.Crit,
+				ElementType.Chaos => false,
+				ElementType.Lightning => hit.Crit || defaultPercent + player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<ShockChancePassive>() / 100f > Main.rand.NextFloat(),
+				_ => defaultPercent > Main.rand.NextFloat(),
+			};
+		}
+		else if (info.PlayerHurt is { } hurt)
+		{
+			bool isCrit = CriticalStrikeNPC.CurrentlyCritting;
+
+			return type switch
+			{
+				ElementType.Fire => isCrit,
+				ElementType.Cold => isCrit,
+				ElementType.Chaos => false,
+				ElementType.Lightning => isCrit || defaultPercent > Main.rand.NextFloat(),
+				_ => defaultPercent > Main.rand.NextFloat(),
+			};
+		}
+
+#if DEBUG
+		Main.NewText("ElementalDamage.CanDebuff: Unsure how this happened. Tell Gabe this appeared.");
+#endif
+
+		return false;
 	}
 
 	/// <summary> 

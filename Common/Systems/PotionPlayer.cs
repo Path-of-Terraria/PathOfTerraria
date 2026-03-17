@@ -140,16 +140,3 @@ internal class PotionPlayer : ModPlayer
 		ManaDelay = 300;
 	}
 }
-
-internal class PotionGlobal : GlobalItem
-{
-	public override bool AppliesToEntity(Item entity, bool lateInstantiation)
-	{
-		return entity.healLife > 0 || entity.healMana > 0;
-	}
-
-	public override bool? UseItem(Item item, Player player)
-	{
-		return null;
-	}
-}

@@ -30,7 +30,7 @@ internal class EoWQuest : Quest
 	{
 		return
 		[
-			new InteractWithNPC("Start", ModContent.NPCType<MorvenNPC>(), this.GetLocalization("BlacksmithInput"), this.GetLocalization("MorvenDialogue")),
+			new InteractWithNPC("Start", ModContent.NPCType<MorvenNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.EoWDialogue"), Language.GetText("MorvenDialogue")),
 			new ConditionCheck("Raven", (_) => SubworldSystem.Current is RavencrestSubworld && NPC.AnyNPCs(ModContent.NPCType<MorvenNPC>()), 1, this.GetLocalization("MorvenRaven")),
 			new InteractWithNPC("MorvenAboveground", ModContent.NPCType<MorvenNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.MorvenNPC.Dialogue.Aboveground"),
 			    Language.GetText("Mods.PathOfTerraria.NPCs.MorvenNPC.Dialogue.InRavencrest")),
@@ -60,7 +60,7 @@ internal class EoWQuest : Quest
 		];
 	}
 
-	public override bool Available()
+	protected override bool InternalAvailable()
 	{
 		return NPC.downedBoss1 && !WorldGen.crimson;
 	}
