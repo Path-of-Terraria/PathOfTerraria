@@ -131,7 +131,7 @@ public class RavencrestSystem : ModSystem
 			
 			if (Main.netMode == NetmodeID.SinglePlayer && CurrentRavencrestVersion != RavencrestVersion && SubworldSystem.Current is RavencrestSubworld)
 			{
-				const string Identifier = "Migrate Ravencrest";
+				const string Identifier = MigrateRavencrestUI.Identifier;
 
 				if (!UIManager.Has(Identifier))
 				{
@@ -382,6 +382,8 @@ public class RavencrestSystem : ModSystem
 		{
 			HasOverworldNPC.Add(tag.GetString("overworldNPC" + i));
 		}
+
+		CurrentRavencrestVersion = tag.GetByte("ravenVer");
 	}
 
 	public override void SaveWorldData(TagCompound tag)
@@ -407,7 +409,7 @@ public class RavencrestSystem : ModSystem
 			tag.Add("overworldNPC" + npcNum++, npc);
 		}
 
-		tag.Add("ravencrestVersion", CurrentRavencrestVersion);
+		tag.Add("ravenVer", (byte)CurrentRavencrestVersion);
 	}
 
 	public override void ClearWorld()

@@ -383,3 +383,11 @@ MapDevice: {
 	// DeactivatePortal: Close Portal
 	// AlreadyInUse: This map device is already in use!
 }
+
+MigrateRavencrest: {
+	// Yes: Yes
+	// No: No
+	// Question: Ravencrest is outdated, and may have issues. Do you want to update your save?
+	// Note: (It may take a minute)
+	// Title: Migrate Ravencrest?
+}
