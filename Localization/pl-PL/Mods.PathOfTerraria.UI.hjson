@@ -364,3 +364,11 @@ MapDevice: {
 	// EjectResource: Eject Resource
 	// NotEnoughResources: Not Enough Resources
 }
+
+MigrateRavencrest: {
+	// Yes: Yes
+	// No: No
+	// Question: Ravencrest is outdated, and may have issues. Do you want to update your save?
+	// Note: (It may take a minute)
+	// Title: Migrate Ravencrest?
+}
