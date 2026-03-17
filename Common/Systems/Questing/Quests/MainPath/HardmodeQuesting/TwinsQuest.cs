@@ -11,6 +11,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using PathOfTerraria.Content.Items.Quest;
 using PathOfTerraria.Common.NPCs.ConditionalDropping;
+using PathOfTerraria.Common.Subworlds;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 
