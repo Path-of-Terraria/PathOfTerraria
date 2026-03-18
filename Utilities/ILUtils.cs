@@ -46,7 +46,7 @@ internal static class ILUtils
 	}
 
 	/// <summary>
-	/// Creates an IL edit "detour" that, in two parts, works the same as a standard detour but doesn't bloat the call stack. 
+	/// Creates an IL edit "detour" that, in two parts, works almost the same as a standard detour but doesn't bloat the call stack. 
 	/// </summary>
 	public static void EmitILDetour<T>(MethodInfo hook, T? before, T? after) where T : Delegate
 	{

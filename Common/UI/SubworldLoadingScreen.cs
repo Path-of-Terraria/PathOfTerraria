@@ -38,7 +38,10 @@ internal static class SubworldLoadingScreen
 		{
 			DrawStringCentered(Language.GetTextValue("Mods.PathOfTerraria.Subworlds.Entering"), Color.LightGray, new Vector2(0, -360), 0.4f, true);
 			DrawStringCentered(mappingWorld.SubworldName.Value, Color.White, new Vector2(0, -310), 1.1f, true);
-			DrawStringCentered(mappingWorld.SubworldDescription.Value, Color.White, new Vector2(0, -250), 0.5f, true);
+
+			string desc = mappingWorld.SubworldDescription.Value;
+			mappingWorld.ModifyLoadScreenDescripton(ref desc);
+			DrawStringCentered(desc, Color.White, new Vector2(0, -250), 0.5f, true);
 		}
 		else
 		{
