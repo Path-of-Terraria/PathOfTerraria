@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Core.UI;
 using SubworldLibrary;
 using System.Collections.Generic;
@@ -106,6 +107,7 @@ internal class MigrateRavencrestUI : UIState
 	{
 		MigrateRavencrestSystem.ResetRavencrest = true;
 		SubworldSystem.Exit();
+		ModContent.GetInstance<RavencrestSystem>().CurrentRavencrestVersion = RavencrestSystem.RavencrestVersion;
 	}
 
 	public override void OnDeactivate()

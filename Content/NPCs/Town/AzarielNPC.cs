@@ -19,8 +19,7 @@ namespace PathOfTerraria.Content.NPCs.Town;
 [AutoloadHead]
 public class AzarielNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnInRavencrestNPC
 {
-	Point16 ISpawnInRavencrestNPC.TileSpawn =>
-		(RavencrestSystem.Structures["Library"].Position + new Point(55, 45)).ToPoint16();
+	Point16 ISpawnInRavencrestNPC.TileSpawn => RavencrestSystem.StaticStructureLocations["Chamber"];
 
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
 

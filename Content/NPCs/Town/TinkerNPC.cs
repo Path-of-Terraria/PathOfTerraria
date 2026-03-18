@@ -20,7 +20,7 @@ namespace PathOfTerraria.Content.NPCs.Town;
 public class TinkerNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnInRavencrestNPC
 {
 	Point16 ISpawnInRavencrestNPC.TileSpawn =>
-		(RavencrestSystem.Structures["Burrow"].Position + new Point(20, 20)).ToPoint16();
+		(RavencrestSystem.Structures["Workshop"].Position + new Point(30, 38)).ToPoint16();
 
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
 

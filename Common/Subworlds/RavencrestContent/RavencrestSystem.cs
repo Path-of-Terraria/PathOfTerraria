@@ -79,6 +79,8 @@ public class RavencrestSystem : ModSystem
 			Position = new Point(234, 103)
 		});
 
+		StaticStructureLocations.Add("Chamber", new Point16(652, 224));
+
 		MiscOverlayUI.DrawOverlay += DrawDistantMorvenDialogue;
 	}
 
@@ -141,6 +143,7 @@ public class RavencrestSystem : ModSystem
 					UIManager.TryDisable(Identifier);
 					UIManager.TryEnable(Identifier);
 				}
+
 			}
 
 			TavernManager.OneTimeCheck();
