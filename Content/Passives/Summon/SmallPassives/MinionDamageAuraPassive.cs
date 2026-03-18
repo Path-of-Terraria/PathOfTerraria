@@ -1,4 +1,5 @@
 using PathOfTerraria.Common.Config;
+using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Content.Buffs;
 using ReLogic.Content;
@@ -16,10 +17,14 @@ internal class MinionDamageAuraPassive : Passive
 			Aura = ModContent.Request<Texture2D>("PathOfTerraria/Assets/Misc/VFX/MinionDamageAura");
 		}
 
+		public override bool AppliesToEntity(Projectile entity, bool lateInstantiation)
+		{
+			return entity.minion && !CustomProjectileSets.MultisegmentMinionProjectiles[entity.type];
+		}
+
 		public override bool PreAI(Projectile proj)
 		{
-			if (!proj.TryGetOwner(out Player owner) || !owner.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<MinionDamageAuraPassive>(out float value)
-				|| !proj.minion)
+			if (!proj.TryGetOwner(out Player owner) || !owner.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<MinionDamageAuraPassive>(out float value) || !AppliesToEntity(proj, true))
 			{
 				return true;
 			}
@@ -38,8 +43,8 @@ internal class MinionDamageAuraPassive : Passive
 
 		public override bool PreDraw(Projectile proj, ref Color lightColor)
 		{
-			if (!proj.TryGetOwner(out Player owner) || !owner.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<MinionDamageAuraPassive>(out float value) || !proj.minion
-				|| !ModContent.GetInstance<GameplayConfig>().NearbyAuras)
+			if (!proj.TryGetOwner(out Player owner) || !owner.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<MinionDamageAuraPassive>(out float value) 
+				|| !ModContent.GetInstance<GameplayConfig>().NearbyAuras || !AppliesToEntity(proj, true))
 			{
 				return true;
 			}

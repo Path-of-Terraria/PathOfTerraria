@@ -15,9 +15,6 @@ internal class ForceNoDespawning : GlobalNPC
 	{
 		ILUtils.EmitILDetour(typeof(Main).GetMethod("Update", BindingFlags.NonPublic | BindingFlags.Instance), SetPlayersAlive, null);
 		ILUtils.EmitILDetour(typeof(NPC).GetMethod("UpdateNPC"), CacheLife, ForceSetNPCAlive);
-		
-		//On_Main.Update += EarlyUnsetPlayerFlag;
-		//On_NPC.UpdateNPC += StopDespawnsByForce;
 	}
 
 	public static void CacheLife(NPC self, int i)
@@ -51,39 +48,6 @@ internal class ForceNoDespawning : GlobalNPC
 				AnyPlayerIsAlive = true;
 				break;
 			}
-		}
-	}
-
-	//private void EarlyUnsetPlayerFlag(On_Main.orig_Update orig, Main self, GameTime gameTime)
-	//{
-	//	AnyPlayerIsAlive = false;
-
-	//	foreach (Player player in Main.ActivePlayers)
-	//	{
-	//		if (!player.dead && !player.ghost)
-	//		{
-	//			AnyPlayerIsAlive = true;
-	//			break;
-	//		}
-	//	}
-
-	//	orig(self, gameTime);
-	//}
-
-	private void StopDespawnsByForce(On_NPC.orig_UpdateNPC orig, NPC self, int i)
-	{
-		int life = self.life;
-
-		orig(self, i);
-
-		// Aggressively stop despawning by forcing bosses that have health and were active to continue to be active, if we're in a boss domain and any player is alive
-		// Note - excludes many multi-segment or nonstandard NPCs, which caused a crazy bug that spammed exp and item drops infinitely
-		if ((self.boss || NPCID.Sets.ShouldBeCountedAsBoss[self.type]) && SubworldSystem.Current is BossDomainSubworld && !self.active && life > 0 && AnyPlayerIsAlive
-			&& !(self.type is NPCID.EaterofWorldsHead or NPCID.EaterofWorldsTail or NPCID.MoonLordCore or NPCID.MoonLordFreeEye or NPCID.MoonLordHead or NPCID.MoonLordHand 
-			or NPCID.LunarTowerVortex or NPCID.LunarTowerStardust or NPCID.LunarTowerSolar or NPCID.LunarTowerNebula))
-		{
-			self.active = true;
-			self.life = life;
 		}
 	}
 
