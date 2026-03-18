@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
@@ -38,7 +39,11 @@ internal class TinkerIntroQuest() : Quest
 					new GiveItem(1, ItemID.Teleporter),
 				], true), 
 			
-			//TODO Add the construction of her workshop here.
+			new ActionStep((_, _) => 
+			{
+				RavencrestSystem.UpgradeBuilding("Workshop");
+				return true;
+			}),
 			
 			new InteractWithNPC("Finish", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerIntroDialogue2"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerIntroDialogue2")),

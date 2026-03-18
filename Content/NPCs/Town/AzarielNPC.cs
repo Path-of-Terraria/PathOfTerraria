@@ -46,7 +46,7 @@ public class AzarielNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnI
 		NPC.CloneDefaults(NPCID.ArmsDealer);
 		NPC.townNPC = true;
 		NPC.friendly = true;
-		NPC.aiStyle = 7;
+		NPC.aiStyle = NPCAIStyleID.Passive;
 		NPC.defense = 30;
 		NPC.lifeMax = 250;
 		NPC.HitSound = SoundID.NPCHit1;
@@ -113,7 +113,6 @@ public class AzarielNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnI
 		{
 			button2 = hasAvailableQuest ? Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest") : "";
 		}
-
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
