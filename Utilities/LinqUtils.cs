@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Numerics;
 
 namespace PathOfTerraria.Utilities;
 
@@ -10,7 +9,7 @@ internal static class LinqUtils
 		foreach (TSource value in values)
 		{
 			TResult result = selector(value);
-			if (!result.Equals(exception)) { yield return result; }
+			if (result != null && !result.Equals(exception)) { yield return result; }
 		}
 	}
 }

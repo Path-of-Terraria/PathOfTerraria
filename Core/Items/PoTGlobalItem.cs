@@ -44,7 +44,7 @@ public sealed partial class PoTGlobalItem : GlobalItem
 		bool anyValidTrait = entity.damage > 0 || entity.defense > 0 || entity.accessory || entity.headSlot > 0 || entity.bodySlot > 0 || 
 			entity.legSlot > 0 || entity.ModItem is IPoTGlobalItem;
 
-		return anyValidTrait && !entity.vanity;
+		return anyValidTrait && !entity.vanity && !entity.IsACoin;
 	}
 	
 	public override void OnCreated(Item item, ItemCreationContext context)

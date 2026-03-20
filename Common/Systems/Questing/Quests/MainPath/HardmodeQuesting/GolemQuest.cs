@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Common.Subworlds;
-using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
@@ -31,26 +30,25 @@ internal class GolemQuest() : Quest
 	{
 		return
 		[
-			new ParallelQuestStep("Start", [
-				new InteractWithNPC("GiveCells", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.GolemDialogue1"), 
-					Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.GolemDialogue1"),
-					[
-						new GiveItem(2, ItemID.LihzahrdPowerCell),
-					]),
-				new KillCount("Kill", npc => npc.netID == NPCID.Lihzahrd || npc.netID == NPCID.LihzahrdCrawler, 10, this.GetLocalization("Lihzards"))
-			], Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.GolemDialogue1")),
+			new InteractWithNPC("GiveCells", NPCQuestGiver, LocalizedText.Empty, 
+				Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Golem.0"),
+				[
+					new GiveItem(2, ItemID.LihzahrdPowerCell),
+				]),
+
+			new KillCount("Kill", npc => npc.netID == NPCID.Lihzahrd || npc.netID == NPCID.LihzahrdCrawler, 10, this.GetLocalization("Lihzards")),
 
 			// TODO: REMOVE LATER for -> After step 1, Thrain will give you an item to use on the Altar in the temple. This will summon the Golem domain portal in the temple. 
-			new InteractWithNPC("Talk", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.GolemDialogue2"), 
-				Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.GolemDialogue2"),
+			new InteractWithNPC("Talk", NPCQuestGiver, this.GetLocalization("Lihzards"), 
+				Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Golem.1"),
 				onSuccess: _ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<GolemMap>())),
 			
 			new ConditionCheck("Domain", _ => SubworldSystem.Current is GolemDomain, 1, this.GetLocalization("EnterDomain")),
 			
 			new ConditionCheck("Boss", _ => BossTracker.DownedInDomain<GolemDomain>(NPCID.Golem), 1, this.GetLocalization("Boss")),
 	
-			new InteractWithNPC("Finish", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.GolemDialogue3"), 
-				Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.GolemDialogue3"))
+			new InteractWithNPC("Finish", NPCQuestGiver, this.GetLocalization("Boss"), 
+				Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Golem.2"))
 		];
 	}
 

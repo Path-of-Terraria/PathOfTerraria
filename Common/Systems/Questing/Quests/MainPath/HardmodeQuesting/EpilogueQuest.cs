@@ -22,6 +22,11 @@ internal class EpilogueQuest() : Quest
 		new ActionRewards((p, v) => p.GetModPlayer<ExpModPlayer>().Exp += 100000, "100000 experience"),
 	];
 
+	public override bool IsLoadingEnabled(Mod mod)
+	{
+		return false;
+	}
+
 	public override List<QuestStep> SetSteps()
 	{
 		return

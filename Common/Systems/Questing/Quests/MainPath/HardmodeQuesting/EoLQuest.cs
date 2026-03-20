@@ -31,19 +31,19 @@ internal class EoLQuest() : Quest
 	{
 		return
 		[
-			// TODO: Change this to be new prismatic fragment item 
+			// TODO: Change this to be new prismatic fragment item obtained from surface Hallow enemies spawning from the Prismatic Rift rift
 			new CollectCount("Start", ItemID.CrystalBullet, 10),
 		
-			new InteractWithNPC("Talk", NPCQuestGiver,Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.WizardEmpressDialogue2"),
-				Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.WizardEmpressDialogue2"),
+			new InteractWithNPC("Talk", NPCQuestGiver, LocalizedText.Empty,
+				Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.EoL.0"),
 				onSuccess: _ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<EoLMap>())),
 			// TODO: Remove the above map giving later
 			
-			// TODO: Make rose colored glasses item.
-			new ParallelQuestStep("Branch", [
-				new CollectCount("Glasses", ItemID.IronHelmet, 1),
-				new ConditionCheck("Equip", _ => Main.LocalPlayer.armor[0].type == ItemID.IronHelmet, 1, this.GetLocalization("EquipGlasses"))
-			], this.GetLocalization("EquipGlasses")),
+			// TODO: Make rose colored glasses item, which is then used in this step instead
+			//new ParallelQuestStep("Branch", [
+			//	new CollectCount("Glasses", ItemID.IronHelmet, 1),
+			//	new ConditionCheck("Equip", _ => Main.LocalPlayer.armor[0].type == ItemID.IronHelmet, 1, this.GetLocalization("EquipGlasses"))
+			//], this.GetLocalization("EquipGlasses")),
 		
 			// Explore the Hallow
 			new ConditionCheck("Explore", _ => Main.LocalPlayer.ZoneHallow, 1, this.GetLocalization("ExploreHallow")),
@@ -53,8 +53,8 @@ internal class EoLQuest() : Quest
 		
 			new ConditionCheck("Boss", _ => BossTracker.DownedInDomain<EmpressDomain>(NPCID.HallowBoss), 1, this.GetLocalization("Boss")),
 		
-			new InteractWithNPC("Finish", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.WizardEmpressDialogue3"), 
-				Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.WizardEmpressDialogue3"))
+			new InteractWithNPC("Finish", NPCQuestGiver, this.GetLocalization("Boss"), 
+				Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.EoL.1"))
 		];
 	}
 

@@ -68,7 +68,10 @@ internal class TwinsQuest() : Quest
 				new ConditionCheck("Spazmatism", _ => BossTracker.DownedInDomain<TwinsDomain>(NPCID.Spazmatism), 1, this.GetLocalization("Boss2")),
 			], this.GetLocalization("EnterDomain")),
 	
-			new InteractWithNPC("Finish", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerTwinsDialogue3"), this.GetLocalization("EnterDomain"))
+			new InteractWithNPC("Finish", NPCQuestGiver, this.GetLocalization("Boss1"), Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerTwinsDialogue3"))
+			{
+				CountsAsCompletedOnMarker = true
+			}
 		];
 	}
 

@@ -13,6 +13,12 @@ BlacksmithNPC: {
 		Quest2: Fantastique ! Je vais réparer l'ancienne forge aussi vite que possible. Tiens, prends cette épée. C'est un prototype que j'ai fabriqué juste avant l'attaque. J'aimerais que tu la testes sur quelques zombies ; ces saletés sont vraiment pénibles à combattre. Si tu veux bien, j'aimerais aussi avoir un peu plus de matériaux. Je pense qu'on pourra alors vraiment remettre l'enclume de fer sur pied !
 		Quest3: Cela me fait presque venir les larmes aux yeux. La forge de fer est presque prête à fonctionner ! Voici une leçon que j'ai tirée de mon expérience au combat : parfois, il faut savoir se lâcher. Mais soyez prudent ! Et revenez quand vous le souhaitez, vous m'avez été d'une grande aide !
 		OldManDialogue: Bonjour, voyageur !... Que dites-vous ? Un homme m'a parlé de vous ? Hum... Je me souviens d'un homme vêtu d'une cape rouge qui est venu ici... il y a quelque temps. Je ne sais plus exactement quand, mais ça fait un moment. Il est venu demander des choses bien précises... un livre maléfique, deux bougies et une barre maléfique. Il a parlé de jeter de la poudre maléfique sur un livre... mais... c'est tout ce que je peux dire. Je ne sais pas trop de quoi il parlait.
+
+		Golem: {
+			// 0: Excellent work! These are weird smiths, but nothing I can't figure out with a bit of hard work and sweat. Clear out the temple for a bit, I've heard it quite infested by vicious animals. I'll have a solution sorted...eventually. Hopefully before lunch!
+			// 1: Aha! I've procured a simple map. I'm no glyphsmith, but I've been around. They had inscribed some info on the inside of each cell - while the cells are no longer functional, they point to an "origin" of some kind. Take it, and find the beast behind it. I know it's to give great reward. If all goes well, we may enjoy a grand feast after!
+			// 2: You surpass me! Well, who's to complain? I'll see if I can scrounge up a feast deserving for such a feat. This will do wonders for my smithing, thank you!
+		}
 	}
 
 	BubbleDialogue: {
@@ -149,11 +155,17 @@ GarrickNPC: {
 		2: Attention à votre tête. C'est un bon conseil en général, mais particulièrement dans le domaine du roi.
 		3: Forgez votre lame aussi puissante que possible. Couper à travers la boue est plus difficile qu'il n'y paraît.
 		Quest: Tu l'as peut-être remarqué, je n'ai pas passé le meilleur moment de ma vie. J'ai essayé de renverser le roi et j'ai failli tout perdre. C'est toi qui as restauré Ravencrest, n'est-ce pas ? Je voudrais te demander de tuer le roi Slime pour moi. Je te récompenserai généreusement. Prends cette carte, je l'ai dessinée pendant mon long voyage de retour. Bonne chance !
-		// QuestResponse: Perfect! Here’s the Map Device as promised. I once faced the King and nearly lost everything. You restored Ravencrest, so now I ask you: slay the King Slime for me. You’ll be well rewarded. Take this map and use it with the device.
+		// QuestResponse: Perfect! Here's the Map Device as promised. I once faced the King and nearly lost everything. You restored Ravencrest, so now I ask you: slay the King Slime for me. You'll be well rewarded. Take this map and use it with the device.
 		EoCQuestLine: Oh, l'Œil, dites-vous ? Formidable. Je me souviens qu'Eldric en a parlé, mais il l'a certainement sous-estimé. Tenez, on m'a chargé de garder ceci. Le moment est venu de l'utiliser.
 		TradeLunarLiquid: Ah, je me suis entraîné pour ça. Mais attention, ce n'est pas une aventure à prendre à la légère.
 		CantTradeLiquid: Oh, tu as perdu le liquide ? Il me faudra quelques éclats lunaires pour le refaire, j'en ai bien peur. Reviens me voir avec au moins 5 éclats.
 		GetKingMapAgain: Ah, tu n'as pas réussi ? Tu as perdu la carte ou quoi ? Quoi qu'il en soit, tu es là. Tu as de la chance que j'emporte toujours mon matériel de cartographie avec moi... au cas où.
+
+		QueenSlime: {
+			// 0: Do you feel it, explorer? The land itself has shifted, and something unnatural radiates from the creatures in that new glowing area. I need you to gather this energy. Bring it back to me so we can understand what power we're truly dealing with.
+			// 1: It's just as I feared... You can keep the souls, I know exactly who my new target is. The King's corruption was only the beginning. An even greater slime stirs, the Queen Slime. Venture into the glistening caverns with this map and bring me the Royal Jelly Core. Only then can we hope to stop her reign.
+			// 2: This is it then...leave this with me. I will destroy it once and for all, and finally put an end to this corrupt slime royalty. Thank you, adventurer, I can finally rest.
+		}
 	}
 
 	BubbleDialogue: {
@@ -212,6 +224,11 @@ WizardNPC: {
 		Quest: Hum. Vous avez vu les dégâts partout. Hélas ! Mes pouvoirs ne peuvent pas reconstituer le monde. Je suis bien trop occupé par... mes... projets. Oui ! Hélas, j'ai quelque chose de plus urgent à faire. Un gobelin voleur a pris l'un de mes grimoires. Aussi puissant soit-il, il doit être maîtrisé par un sorcier puissant. Je soupçonne qu'ils sont en train de parcourir le grimoire pour en découvrir les secrets... alors dépêchez-vous de le rapporter ! Je vous accorderai des pouvoirs au-delà de l'imagination. Je serai ici, à ranger les livres sur les étagères un par un grâce à la puissance de la magie.
 		Quest2: Ah ah ! Merci beaucoup. Ta gentillesse sera largement récompensée ! Mes pouvoirs te pousseront toujours vers l'avant. Tiens, prends une parcelle de mon pouvoir ; une Nova n'est qu'une partie de ma force ! Quant à la bibliothèque... ma force renouvelée, elle sera réparée à ton retour ! Des livres organisés comme tu n'en as jamais vu ! Contemple-la et pleure... bientôt !
 		// GiveQSQuest: Hm? Ah, yes. You've got some adventures, haven't you? I cannot simply place you in success - you must find it for yourself! Yes! That's a good reason. Here's a small quest to find your progress. You will be lead all over the world, and perhaps reach even a modicum of my power!
+
+		EoL: {
+			// 0: Curious crystals...yes. Their power rivals most - not mine - and belies a world most cannot see - NOT including myself. I see into all realms, [plrclass/l:l]. I simply choose not to act on it. Huzzah! You must find more of this mysterious rift, and I may reign it in enough to find its cause.
+			// 1: Hmm...the Empress of Light, so you say? An old rival of mine. Not on my caliber, of course. She'd marvel at the explo- spells I can cast! Regardless, thank you. I almost though I'd have to...use my substantial and unending power for once. Not that I don't use it.
+		}
 	}
 
 	BubbleDialogue: {
@@ -578,6 +595,12 @@ MorganaNPC: {
 		QueenBeeQuest: Ah ! Vous êtes de retour ! Mes ruses sont efficaces, n'est-ce pas ? Oui ! J'ai une question à vous poser ! Elle peut paraître étrange, mais elle est normale pour quelqu'un comme moi ! Oui ! Je me suis souvenu d'une période plus... naturelle de ma vie, et j'aimerais retrouver une partie de cette âme. Pourrais-je vous demander de me rapporter des dards de frelons de la jungle ? Pourrais-je ? Pourrais-je ? Vous recevrez une belle récompense si vous le faites.
 		GotStingers: C'est merveilleux ! Oui... tiens. Prends ce petit morceau. Il t'aidera à invoquer un adorable petit démon de ton grimoire. Cruel, mais gentil ! Hélas, j'ai encore une chose à te demander. Une créature des plus répugnantes réside dans la jungle, une reine des abeilles. Pourrais-tu la tuer ? Elle cherche à m'importuner, et je souhaite sa mort ! Une autre récompense t'attend ! Plonge ton nouvel ami frelon dans du miel si tu souhaites te battre
 		QueenBeeKilled: Pourquoi, tu reviens ? Déjà ? Tu es plutôt fort, n'est-ce pas ! Ah oui, c'est vrai. Oui ! Tu l'es ! Très bien. Merci beaucoup pour cette corvée. Je n'ai pas grand-chose à t'offrir, mais tu dois le prendre. Prends-le ! Bahaha ! Adieu !
+
+		Plantera: {
+			// 0: Hmmm...! Most curious. I feel the raucous aroma of a giant plant-killer-yet-plant rise from the depths of the subterranean jungle! Yes! She has grown! Ahaha...what a treasure. Her rise brought up blooms long-forgotten by this land, but not by others - bring their flesh to me, [plrclass/l:l]. And some spores too. Ohoho...!
+			// 1: Hm, hm, hm. Yes! Such is Her growth, Her splendor. Thank you for the boons, [plrclass/l,1:l]! But - you must fight Her! Plantera has risen! I need to study the vicious plant, for it bears...peculiarities beyond reknown. Go, go!
+			// 2: What a treacherous boon, obtained by a strong adventurer! Oh, this'll serve us all well, I'm sure...thank you, kind fellow. I must...toil over my labors. Perhaps I can give you a boon in due time, in return. Yes! I shall, I shall!
+		}
 	}
 
 	Entry: Excentrique mais d'une puissance trompeuse, Morgana apporte beaucoup à Ravencrest. Certes, elle peut parfois être difficile à comprendre, et certains pourraient dire qu'elle est souvent rebutante, mais elle est douée dans ce qu'elle fait. Que fait-elle ?... Elle continue.
@@ -874,14 +897,14 @@ TinkerNPC: {
 		// TinkerIntroDialogue1: Ah! You there! I'm Pyra Cogwright, arcane engineer and enthusiast of things that go clank, whirr, and occasionally explode! I've been tracking some unusual mechanical disturbances, and they've led me straight to this place. I'm setting up my workshop here in Ravencrest, but I'll need materials to stabilize my equipment. Could you fetch some for me? It'll be worth your while!
 		// TinkerIntroDialogue2: Perfect! Just what I needed, adventurer! With these supplies, I can finally get my workshop humming properly. Now I can channel all this strange energy into my instruments and see what we're really dealing with... Come back to me once I'm done constructing this hut, I won't be long!
 		// TinkerTwinsDialogue1: ...Astounding...these readings are truly fascinating! Two signatures, bound together, both mimicking the Eye of Cthulhu... but forged of gears, flame, and steel. They aren't natural, but recreation. Machines built to replace what was once torn from the Great Old One himself. Retinazer and Spazmatism... the Twins. Their energy flares brightest under the moonlight, feeding on the night. To pinpoint their exact domain, I'll need fragments of lunar essence. Bring them here, and we can lock onto their signal.
-		// TinkerTwinsDialogue2: Excellent! These lunar fragments resonate perfectly with their signal, the interference is so strong it nearly fried my instruments! I've calibrated the teleporter to their rough location. When you're ready, use it to enter their domain. But be warned, adventurer... the Twins are not mere machines. They're the Great Old One's legacy reforged, relentless and merciless. Slay them and return to me. If you fail, simply use the teleporter when you're ready once again.
-		// TinkerTwinsDialogue3: Well done! TODO: The rest of the dialogue here.
+		// TinkerTwinsDialogue2: Excellent! These lunar fragments resonate perfectly with their signal, the interference is so strong it nearly fried my instruments! I've calibrated the teleporter to their rough location. When you're ready, use it to enter their domain. But be warned, adventurer... the Twins are complex machines. They're an attempt to make machines beyond myth. Slay them and return to me. If you fail, simply use the teleporter when you're ready once again.
+		// TinkerTwinsDialogue3: Well done! I wonder what craftmanship managed those beasts. Good news - I've got a heading. Take a breather, and prepare for more mechanical mayhem soon.
 		// TinkerDestroyerDialogue1: Just when I thought my instruments might finally cool down, they've picked up a new signal... something colossal beneath the earth. The signal pulses like a thousand interlocking engines moving in unison. A serpentine construct of impossible length. If my theory holds, this must be the replacement for the Eater of Worlds itself! To study its energy patterns, I'll need samples of cursed flame and proof you've faced its smaller kin. Think you can handle that?
-		// TinkerDestroyerDialogue2: Marvelous! These cursed flames burn with both corruption and raw machinery, it's exactly the resonance I expected. My calibrations confirm it: the Destroyer lurks below, a writhing coil of steel and mandible. I've tuned the teleporter to lock onto its massive signal. Use it when you're ready, but tread carefully, adventurer... this machine is less a beast and more a weapon, designed only to annihilate.
-		// TinkerDestroyerDialogue3: Unbelievable... you've done it! The Destroyer lies in ruin, its endless gears finally silent. To think, a monstrosity of such size and precision could exist at all. It's almost beautiful, in a terrifying way! With it gone, the very earth feels lighter. Still... if the Great Old One's eye and worm have both been reforged, I dread what else may be lurking, waiting to awaken.
+		// TinkerDestroyerDialogue2: Marvelous! These cursed flames burn with both corruption and raw machinery, it's exactly the resonance I expected. My calibrations confirm it: the Destroyer far away, a writhing coil of steel and mandible. I've tuned the teleporter to lock onto its massive signal. Use it when you're ready, but tread carefully, adventurer... this machine is less a beast and more a weapon, designed only to annihilate.
+		// TinkerDestroyerDialogue3: Unbelievable... you've done it! The Destroyer lies in ruin, its endless gears finally silent. To think, a monstrosity of such size and precision could exist at all. It's almost beautiful, in a terrifying way! With it gone, the very earth feels lighter. Still... if the eye and worm have both been reforged...there's only one signal left on the radar.
 		// TinkerSkeletronPrimeDialogue1: Adventurer, my instruments are once again spiking with a new signal, one even darker than before. It is radiating from the old dungeon, where Skeletron once kept his vigil. The signature is thick with both necrotic and mechanical energy. Whoever forged the Twins and the Destroyer has not stopped. They have rebuilt the dungeon's guardian itself into something far worse. I will need souls steeped in shadow, a good supply of bones, and any mechanical scraps from the dungeon you can find to finish my calibrations.
 		// TinkerSkeletronPrimeDialogue2: Yes, these materials are perfect! The readings are clear now. The creature waiting below is Skeletron Prime, a reconstruction of the cursed guardian, enhanced with gears, cannons, and blades. It is more machine than bone now. The teleporter is ready whenever you are, but be prepared. This will surely be your toughest battle yet.
-		// TinkerSkeletronPrimeDialogue3: Well done! TODO: The rest of the dialogue here.
+		// TinkerSkeletronPrimeDialogue3: Oh! The readings go silent. Well done, this means one of two things: my job is finished, or I have to make a new scanner...go! I've got to get to work on this new machine.
 	}
 
 	BubbleDialogue: {
@@ -912,26 +935,26 @@ FishermanNPC: {
 	// DisplayName: Marlin
 
 	Dialogue: {
-		// Common0: Nets torn again... sea’s been restless lately.
-		// Common1: Folks say the ocean is endless. I say it just hides what it doesn’t want you to see.
-		// Common2: Bait, rod, and patience. That’s all a fisherman needs. Well... maybe a sharp knife too.
+		// Common0: Nets torn again... sea's been restless lately.
+		// Common1: Folks say the ocean is endless. I say it just hides what it doesn't want you to see.
+		// Common2: Bait, rod, and patience. That's all a fisherman needs. Well... maybe a sharp knife too.
 		// Common3: You ever hear a fish scream? ...No? Good. Best keep it that way.
-		// FishermanFishronDialogue1: Ahoy stranger... The name's Marlin. I can feel that the ocean’s restless tonight. I’ve seen her moods, but this one’s different. Something’s hunting, deep below. If you want to see it with your own eyes, prove to me you can handle the sea first. Bring me the rarest fish you can hook, and a few scraps of the ocean’s bed. Let’s see if you’ve got the stomach for what’s coming.
-		// FishermanFishronDialogue2: So you saw it, didn’t you? That tear in the seabed... the Rift. Never thought I’d live to see the ocean split open like a wound. The water around it stinks of death, and every fish you dragged up feels like it was trying to escape. Whatever waits inside that dark hollow, it’s no natural beast. If my hunch is right, the Rift’s calling for one thing... the reclusive Truffle Worm. Bring me one, adventurer, and we’ll have our answer.
-		// FishermanFishronDialogue3: You’ve got the worm... by the tides... I don’t envy you for holding that thing, it writhes like it knows where it’s headed. The ocean’s Rift is hungry, and this bait is the key. Cast it into the Rift’s maw, and what stirs will come for you. Duke Fishron, the abyssal tyrant... he’ll rise to defend his throne. Steel yourself, adventurer. This is no fishing trip. It’s a reckoning.
-		// FishermanFishronDialogue4: You went in... and somehow lived to tell the tale. I can scarcely believe it. The Rift shook with fury when you fought him. I felt it from the shore. And then, silence. The Duke’s reign is broken, if only for now. Still, the Rift remains... a scar at the ocean’s floor, watching and waiting. You’ve proven stronger than this tide, adventurer, but never forget, the sea always takes back what it’s owed.
+		// FishermanFishronDialogue1: Ahoy stranger... The name's Marlin. I can feel that the ocean's restless tonight. I've seen her moods, but this one's different. Something's hunting, deep below. If you want to see it with your own eyes, prove to me you can handle the sea first. Bring me the rarest fish you can hook, and a few scraps of the ocean's bed. Let's see if you've got the stomach for what's coming.
+		// FishermanFishronDialogue2: So you saw it, didn't you? That tear in the seabed... the Rift. Never thought I'd live to see the ocean split open like a wound. The water around it stinks of death, and every fish you dragged up feels like it was trying to escape. Whatever waits inside that dark hollow, it's no natural beast. If my hunch is right, the Rift's calling for one thing... the reclusive Truffle Worm. Bring me one, adventurer, and we'll have our answer.
+		// FishermanFishronDialogue3: You've got the worm... by the tides... I don't envy you for holding that thing, it writhes like it knows where it's headed. The ocean's Rift is hungry, and this bait is the key. Cast it into the Rift's maw, and what stirs will come for you. Duke Fishron, the abyssal tyrant... he'll rise to defend his throne. Steel yourself, adventurer. This is no fishing trip. It's a reckoning.
+		// FishermanFishronDialogue4: You went in... and somehow lived to tell the tale. I can scarcely believe it. The Rift shook with fury when you fought him. I felt it from the shore. And then, silence. The Duke's reign is broken, if only for now. Still, the Rift remains... a scar at the ocean's floor, watching and waiting. You've proven stronger than this tide, adventurer, but never forget, the sea always takes back what it's owed.
 	}
 
 	BubbleDialogue: {
 		Day: {
 			// 0: Sea breeze keeps me steady. Better than ale, most days.
-			// 1: Sunlight on water... almost makes you forget what’s beneath.
+			// 1: Sunlight on water... almost makes you forget what's beneath.
 			// 2: Rod in hand, line in the tide. Feels like home.
 		}
 
 		Night: {
-			// 0: Ocean sings at night. Sometimes it’s a lullaby... sometimes a warning.
-			// 1: Stars above, waves below. I’m caught between two beauties.
+			// 0: Ocean sings at night. Sometimes it's a lullaby... sometimes a warning.
+			// 1: Stars above, waves below. I'm caught between two beauties.
 			// 2: Careful near the docks... not all eyes watching you belong to men.
 		}
 
@@ -954,13 +977,13 @@ AzarielNPC: {
 		// Common1: Why do you place trust in one who once served darkness? I question it myself.
 		// Common2: This mask... it hides what I've become, but never what I've done.
 		// Common3: The shadows whisper of my past failures. I pray my future holds redemption.
-		// CultistMoonlordDialogue1: Hah... so, you’ve survived the recent Rifts that have opened... I can sense it. My name is Azariel, I once served a higher cause, mortal... a cause that nearly destroyed all life. As I’m sure you know by now, The Ancient One is coming. I realized that my inane devotion to the false being was bringing upon ruin, when I naively once thought it would blossom into fresh creation. I need your help adventurer, to stop this madness once and for all.
+		// CultistMoonlordDialogue1: Hah... so, you've survived the recent Rifts that have opened... I can sense it. My name is Azariel, I once served a higher cause, mortal... a cause that nearly destroyed all life. As I'm sure you know by now, The Ancient One is coming. I realized that my inane devotion to the false being was bringing upon ruin, when I naively once thought it would blossom into fresh creation. I need your help adventurer, to stop this madness once and for all.
 		// CultistMoonlordDialogue2: I know of the corruption that has cursed these lands, I also know of it to be the source of much of this world's power. Collect for me the Sigils of these corruptions, so we can begin the ritual to summon the Great Old One, but with these Sigils, he will be in a weakened state. I have faith that this will be enough for us to destroy him once and for all.
-		// CultistMoonlordDialogue3: So... these are the sigils. You’ve done well, stranger. Yet I must ask... Why place your trust in me? We are little more than acquaintances, and I, a former servant of the very darkness we seek to oppose. Perhaps you see something in me that I cannot... or perhaps fate binds our paths. No matter. With these sigils, the ritual can begin. Steel yourself, Adventurer, when I begin, they will surely come for us. Only together can we stand against what approaches.
-		// CultistMoonlordDialogue4: How foolish of me to think that wielding the world’s corruption would be a good idea... Regardless, It is done, and my former master lies defeated. For that, I thank you, stranger. You’ve accomplished what I could not. And yet... the struggle is far from over. In their dying breath, he summoned the Celestial Pillars, anchors of the Ancient One's power. They now fester within your world, corrupting it with his essence. You must return, adventurer, and destroy the Pillars before their influence consumes everything.
-		// CultistMoonlordDialogue5: Do you feel that?! The world itself... it’s pulsing, writhing! The air is tearing apart, and the veil is breaking faster than I ever could have imagined.This is the end of all things, unless we stop him here! I will follow you through the portal, lead the way, stranger!
-		// EpilogueDialogue1: It’s over... or so it seems. But it is clear that the rifts were not the Moon Lord’s doing. No corpse should vanish like that. Something... or someone, is causing these rifts. Whatever truth lies beyond them, we will uncover it. But I must now give you this, stranger. It’s a map that I obtained this while serving the Cult, though I never understood it’s purpose. Now... I see them for what they are. Keys. Portals. Invitations. Use this on your map device, but be prepared.
-		// EpilogueDialogue2: So... you’ve returned. And not empty-handed. Tell me, did you see it too? The elemental Rifts within the map... they bled with power not of this world, yet shaped to resemble our own elements - Fire, frost, and lightning. These are no mere accidents of nature. I fear this was only the first step, stranger. This “Riftmaker” clearly seeks to test us.  And we must be ready. Explore more of these maps, uncover the truth behind who this mysterious entity is.
+		// CultistMoonlordDialogue3: So... these are the sigils. You've done well, stranger. Yet I must ask... Why place your trust in me? We are little more than acquaintances, and I, a former servant of the very darkness we seek to oppose. Perhaps you see something in me that I cannot... or perhaps fate binds our paths. No matter. With these sigils, the ritual can begin. Steel yourself, Adventurer, when I begin, they will surely come for us. Only together can we stand against what approaches.
+		// CultistMoonlordDialogue4: How foolish of me to think that wielding the world's corruption would be a good idea... Regardless, It is done, and my former master lies defeated. For that, I thank you, stranger. You've accomplished what I could not. And yet... the struggle is far from over. In their dying breath, he summoned the Celestial Pillars, anchors of the Ancient One's power. They now fester within your world, corrupting it with his essence. You must return, adventurer, and destroy the Pillars before their influence consumes everything.
+		// CultistMoonlordDialogue5: Do you feel that?! The world itself... it's pulsing, writhing! The air is tearing apart, and the veil is breaking faster than I ever could have imagined.This is the end of all things, unless we stop him here! I will follow you through the portal, lead the way, stranger!
+		// EpilogueDialogue1: It's over... or so it seems. But it is clear that the rifts were not the Moon Lord's doing. No corpse should vanish like that. Something... or someone, is causing these rifts. Whatever truth lies beyond them, we will uncover it. But I must now give you this, stranger. It's a map that I obtained this while serving the Cult, though I never understood it's purpose. Now... I see them for what they are. Keys. Portals. Invitations. Use this on your map device, but be prepared.
+		// EpilogueDialogue2: So... you've returned. And not empty-handed. Tell me, did you see it too? The elemental Rifts within the map... they bled with power not of this world, yet shaped to resemble our own elements - Fire, frost, and lightning. These are no mere accidents of nature. I fear this was only the first step, stranger. This “Riftmaker” clearly seeks to test us.  And we must be ready. Explore more of these maps, uncover the truth behind who this mysterious entity is.
 	}
 
 	BubbleDialogue: {
@@ -971,7 +994,7 @@ AzarielNPC: {
 		}
 
 		Night: {
-			// 0: Ocean sings at night. Sometimes it’s a lullaby... sometimes a warning.
+			// 0: Ocean sings at night. Sometimes it's a lullaby... sometimes a warning.
 			// 1: Under these stars, I once performed rituals of unspeakable evil.
 			// 2: Night reminds me of what I was. Dawn reminds me of what I could become.
 		}

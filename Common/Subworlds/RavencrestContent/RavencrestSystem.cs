@@ -80,6 +80,7 @@ public class RavencrestSystem : ModSystem
 		});
 
 		StaticStructureLocations.Add("Chamber", new Point16(652, 224));
+		StaticStructureLocations.Add("Port", new Point16(761, 163));
 
 		MiscOverlayUI.DrawOverlay += DrawDistantMorvenDialogue;
 	}

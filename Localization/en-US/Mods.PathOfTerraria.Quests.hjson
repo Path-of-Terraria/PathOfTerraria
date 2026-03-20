@@ -157,7 +157,7 @@ Quest: {
 		Description: ""
 		EnterDomain: Enter the Destroyer's domain
 		Boss: Defeat the Destroyer
-		WorldFeeders: Defeat ({0}/{1}) World Feeders
+		Clingers: Defeat ({0}/{1}) Clingers
 		CollectCursedFlame: Collect ({0}/{1}) Cursed Flames
 	}
 
