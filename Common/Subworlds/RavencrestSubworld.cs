@@ -76,8 +76,8 @@ internal class RavencrestSubworld : MappingWorld
 		Main.spawnTileX = 316;
 		Main.spawnTileY = 156;
 
+		ModContent.GetInstance<RavencrestSystem>().CurrentRavencrestVersion = RavencrestSystem.RavencrestVersion;
 		StructureTools.PlaceByOrigin("Assets/Structures/Worlds/Ravencrest_Structure", new Point16(40, 80), Vector2.Zero);
-
 		RavencrestSystem.SpawnNativeNpcs(NPCSpawnTimeframe.WorldGen);
 		
 		Main.hardMode = false;
