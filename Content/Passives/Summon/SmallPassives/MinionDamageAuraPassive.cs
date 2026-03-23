@@ -24,7 +24,7 @@ internal class MinionDamageAuraPassive : Passive
 
 		public override bool PreAI(Projectile proj)
 		{
-			if (!proj.TryGetOwner(out Player owner) || !owner.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<MinionDamageAuraPassive>(out float value) || !AppliesToEntity(proj, true))
+			if (!proj.TryGetOwner(out Player owner) || !owner.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<MinionDamageAuraPassive>(out float value))
 			{
 				return true;
 			}
@@ -44,7 +44,7 @@ internal class MinionDamageAuraPassive : Passive
 		public override bool PreDraw(Projectile proj, ref Color lightColor)
 		{
 			if (!proj.TryGetOwner(out Player owner) || !owner.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<MinionDamageAuraPassive>(out float value) 
-				|| !ModContent.GetInstance<GameplayConfig>().NearbyAuras || !AppliesToEntity(proj, true))
+				|| !ModContent.GetInstance<GameplayConfig>().NearbyAuras)
 			{
 				return true;
 			}
