@@ -1,22 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.BoCDomain;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
+using PathOfTerraria.Common.UI.SubworldHelp;
+using PathOfTerraria.Common.World.Generation;
+using PathOfTerraria.Content.NPCs.Town;
+using PathOfTerraria.Content.Projectiles.Utility;
+using PathOfTerraria.Content.Tiles.BossDomain;
+using SubworldLibrary;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria.DataStructures;
+using Terraria.Enums;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
+using Terraria.Localization;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
-using PathOfTerraria.Common.World.Generation;
-using SubworldLibrary;
-using Terraria.Enums;
-using Terraria.Localization;
-using PathOfTerraria.Common.World;
-using System.Linq;
-using PathOfTerraria.Content.Tiles.BossDomain;
-using PathOfTerraria.Content.Projectiles.Utility;
-using PathOfTerraria.Content.NPCs.Town;
-using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.BoCDomain;
-using PathOfTerraria.Common.Systems.BossTrackingSystems;
-using System.Diagnostics;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 
@@ -52,6 +51,14 @@ public class BrainDomain : BossDomainSubworld
 		base.ReadCopiedMainWorldData();
 
 		ModContent.GetInstance<BoCDomainSystem>().HasLloyd = SubworldSystem.ReadCopiedWorldData<bool>("hasLloyd");
+	}
+
+	public override void ModifyHelpTooltips(List<DrawableTooltipLine> lines, Vector2 scale)
+	{
+		if (lines.FindIndex(x => x.Name == "Desc") is { } index and not -1)
+		{
+			SubworldHelpInvButton.AddLine(lines, "Extra", Language.GetTextValue("Mods.PathOfTerraria.Subworlds.BrainDomain.Extra"), scale, null, index + 1);
+		}
 	}
 
 	private void SpawnDecor(GenerationProgress progress, GameConfiguration configuration)
