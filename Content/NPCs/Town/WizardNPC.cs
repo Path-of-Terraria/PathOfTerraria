@@ -141,12 +141,12 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 	
 	private static Quest DetermineNewestQuest()
 	{
-		if (QuestUnlockManager.CanStartQuest<WizardStartQuest>())
+		if (QuestUnlockManager.CanStartQuest<WizardStartQuest>() || Quest.GetLocalPlayerInstance<WizardStartQuest>().Active)
 		{
 			return Quest.GetLocalPlayerInstance<WizardStartQuest>();
 		}
 
-		if (QuestUnlockManager.CanStartQuest<EoLQuest>())
+		if (QuestUnlockManager.CanStartQuest<EoLQuest>() || Quest.GetLocalPlayerInstance<EoLQuest>().Active)
 		{
 			return Quest.GetLocalPlayerInstance<EoLQuest>();
 		}
@@ -181,7 +181,7 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<WizardStartQuest>();
 				break;
 			case EoLQuest:
-				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.WizardEmpressDialogue1");
+				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.EoL.0");
 				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<EoLQuest>();
 				break;
 		}

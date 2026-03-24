@@ -170,7 +170,7 @@ public class TinkerNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnIn
 
 	public bool CanSpawn(NPCSpawnTimeframe timeframe, bool alreadyExists)
 	{
-		return Main.hardMode && (timeframe is NPCSpawnTimeframe.WorldGen or NPCSpawnTimeframe.NaturalSpawn && !alreadyExists);
+		return Main.hardMode && (timeframe is NPCSpawnTimeframe.WorldLoad or NPCSpawnTimeframe.NaturalSpawn && !alreadyExists);
 	}
 
 	public bool HasQuestMarker(out Quest quest)

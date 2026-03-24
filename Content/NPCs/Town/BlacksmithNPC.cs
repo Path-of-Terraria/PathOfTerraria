@@ -130,16 +130,15 @@ public class BlacksmithNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOv
 	
 	private static Quest DetermineNewestQuest()
 	{
-		
-		if (QuestUnlockManager.CanStartQuest<BlacksmithStartQuest>())
+		if (QuestUnlockManager.CanStartQuest<BlacksmithStartQuest>() || Quest.GetLocalPlayerInstance<BlacksmithStartQuest>().Active)
 		{
 			return Quest.GetLocalPlayerInstance<BlacksmithStartQuest>();
 		}
-		if (QuestUnlockManager.CanStartQuest<EoWQuest>())
+		if (QuestUnlockManager.CanStartQuest<EoWQuest>() || Quest.GetLocalPlayerInstance<EoWQuest>().Active)
 		{
 			return Quest.GetLocalPlayerInstance<EoWQuest>();
 		}
-		if (QuestUnlockManager.CanStartQuest<GolemQuest>())
+		if (QuestUnlockManager.CanStartQuest<GolemQuest>() || Quest.GetLocalPlayerInstance<GolemQuest>().Active)
 		{
 			return Quest.GetLocalPlayerInstance<GolemQuest>();
 		}
@@ -178,7 +177,7 @@ public class BlacksmithNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOv
 				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<EoWQuest>();
 				break;
 			case GolemQuest:
-				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.GolemDialogue1");
+				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Golem.0");
 				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<GolemQuest>();
 				break;
 		}
