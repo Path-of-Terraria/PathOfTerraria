@@ -1018,4 +1018,11 @@ Mudsquit: {
 // CryoStalker.DisplayName: Cryo Stalker
 // FallenShaman.DisplayName: Fallen Shaman
 // Shambling.DisplayName: Shambling
-// InfernalBoss.DisplayName: Pyralis The Fallen
+
+InfernalBoss: {
+	// DisplayName: Pyralis The Fallen
+	// OverlayTitle1: Pyralis
+	// OverlayTitle2: Pyralis
+	// OverlaySubTitle1: The Fallen
+	// OverlaySubTitle2: The Cursed
+}
