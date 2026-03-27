@@ -96,7 +96,7 @@ internal sealed class FallenSavage : ModNPC
 
 			if (!Main.dedServ)
 			{
-				e.Data.SlashTexture = ModContent.Request<Texture2D>($"{Texture}_Slash");
+				e.Data.Slash = (ModContent.Request<Texture2D>($"{Texture}_Slash"), Vector2.One, Color.White);
 				e.Data.Sounds =
 				[
 					(13, SoundID.Item71 with { Volume = 0.6f, Pitch = -0.80f, PitchVariance = 0.15f, MaxInstances = 3 }),

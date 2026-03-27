@@ -34,7 +34,7 @@ internal sealed class AttackingData()
 	public (Point16 Size, Vector2 Extent, Vector2 Offset) Hitbox = (new(56, 56), new(24f, 32f), new(+12f, +2f));
 	public ((Vector2 Min, Vector2 Max) Value, (float Min, float Max) Charge) AimLag = ((new(0.0f), new(0.2f)), (0f, 0.99f));
 	public (ushort Tick, SoundStyle Style)[] Sounds = [(0, SoundID.Item71)];
-	public Asset<Texture2D>? SlashTexture;
+	public (Asset<Texture2D> Texture, Vector2? Scale, Color Color)? Slash;
 
 	// State
 	public float Angle;
@@ -105,9 +105,9 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 
 		if (DealingDamage)
 		{
-			if (Data.SlashTexture is { IsLoaded: true, Value: { } texture })
+			if (Data.Slash is { Texture: { IsLoaded: true, Value: { } } } slash)
 			{
-				DrawSlash(new(npc), sb, texture, screenPos, drawColor);
+				DrawSlash(new(npc), sb, slash.Texture.Value, screenPos, drawColor, slash.Color, slash.Scale);
 			}
 
 #if DRAW_GIZMOS
@@ -272,21 +272,20 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 		return (center, aabb);
 	}
 
-	public void DrawSlash(in Context ctx, SpriteBatch sb, Texture2D texture, Vector2 screenPos, Color lightColor)
+	public void DrawSlash(in Context ctx, SpriteBatch sb, Texture2D texture, Vector2 screenPos, Color lightColor, Color slashColor, Vector2? scale)
 	{
 		// First column is the diffuse, second is the glowmask.
 		var baseFrame = new SpriteFrame(2, (byte)(texture.Height / (texture.Width / 2))) { PaddingX = 0, PaddingY = 0 };
 		byte frameIndex = (byte)Math.Min((baseFrame.RowCount - 1), Math.Floor((Data.Progress - Data.Damage.Start) / (float)(Data.Damage.End - Data.Damage.Start) * baseFrame.RowCount));
 		baseFrame = baseFrame.With(0, Sign > 0 ? frameIndex : (byte)((baseFrame.RowCount - 1) - frameIndex));
 
-		Vector2 center = GetDamageArea(in ctx).Center;
+		(Vector2 center, Rectangle aabb) = GetDamageArea(in ctx);
 		Rectangle srcRect = baseFrame.GetSourceRectangle(texture);
-		Rectangle dstRect = new((int)(center.X), (int)(center.Y), srcRect.Width, srcRect.Height);
-		dstRect.X -= (int)screenPos.X;
-		dstRect.Y -= (int)screenPos.Y;
 		Vector2 origin = srcRect.Size() * 0.5f;
+		Vector2 usedScale = scale ?? (aabb.Size() / srcRect.Size());
+		Vector2 position = center - screenPos;
 
-		sb.Draw(texture, dstRect, srcRect, lightColor, Data.Angle, origin, 0, 0f);
-		sb.Draw(texture, dstRect, srcRect with { X = srcRect.Width }, Color.White, Data.Angle, origin, 0, 0f);
+		sb.Draw(texture, position, srcRect, lightColor.MultiplyRGBA(slashColor), Data.Angle, origin, usedScale, 0, 0f);
+		sb.Draw(texture, position, srcRect with { X = srcRect.Width }, slashColor, Data.Angle, origin, usedScale, 0, 0f);
 	}
 }
