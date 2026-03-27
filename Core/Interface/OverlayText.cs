@@ -49,6 +49,13 @@ internal sealed class OverlayText : ModSystem
 		interfaceLayer.Active = true;
 		layers.Add(interfaceLayer);
 	}
+	public override void PostUpdateDusts()
+	{
+		foreach (ref var instance in CollectionsMarshal.AsSpan(activeLines))
+		{
+			Update(ref instance);
+		}
+	}
 
 	public static void Create(in OverlayTextLine description)
 	{
@@ -72,8 +79,6 @@ internal sealed class OverlayText : ModSystem
 
 		foreach (ref var instance in CollectionsMarshal.AsSpan(activeLines))
 		{
-			Update(ref instance);
-
 			ref readonly var style = ref instance.Style;
 			float progress = MathUtils.Clamp01((time - instance.StartTime) / (instance.EndTime - instance.StartTime));
 
