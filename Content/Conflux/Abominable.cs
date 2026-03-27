@@ -82,7 +82,7 @@ internal sealed class Abominable : ModNPC
 			e.Data.CooldownLength = 96;
 			e.Data.NoGravityLength = 15;
 			e.Data.InitiationRange = new(215f, 400f);
-			e.Data.Dash = (39, 54, new(30f, 12f));
+			e.Data.Dash = (39, 40, new(30f, 12f));
 			e.Data.Damage = (39, 54, DamageInstance.EnemyAttackFilterWithInfighting);
 			e.Data.Hitbox = (new(112, 112), new(48f, 32f), new(12f, 2f));
 			e.Data.Movement = (0.4f, 0.84f, 0.90f);

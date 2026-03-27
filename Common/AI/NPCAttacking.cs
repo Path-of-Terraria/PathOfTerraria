@@ -202,9 +202,6 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 			}
 			else if (Data.Progress == Data.Damage.Start)
 			{
-				// Dash.
-				ctx.NPC.velocity = Direction * Data.Dash.Velocity;
-
 				// Prepare damage.
 				Data.Attack = new DamageInstance(Data.Attack)
 				{
@@ -219,7 +216,13 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 					ExcludedEntity = npc,
 				};
 			}
-			else
+
+			if (Data.Progress == Data.Dash.Start)
+			{
+				// Dash.
+				ctx.NPC.velocity = Direction * Data.Dash.Velocity;
+			}
+			else if (Data.Progress >= Data.Dash.End)
 			{
 				// Slow down.
 				npc.velocity.X *= npc.velocity.Y == 0f ? Data.Movement.GroundFriction : Data.Movement.AirFriction;
