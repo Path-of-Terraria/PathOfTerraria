@@ -27,7 +27,7 @@ internal static class SpriteBatchUtils
 	public extern static ref readonly DepthStencilState GetDepthStencilState(this SpriteBatch sb);
 	[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "rasterizerState")]
 	public extern static ref readonly RasterizerState GetRasterizerState(this SpriteBatch sb);
-	[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "spriteEffect")]
+	[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "customEffect")]
 	public extern static ref readonly Effect? GetEffect(this SpriteBatch sb);
 	[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "transformMatrix")]
 	public extern static ref readonly Matrix GetMatrix(this SpriteBatch sb);
