@@ -6,6 +6,7 @@ using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.DisableBuilding;
 using PathOfTerraria.Common.UI;
+using PathOfTerraria.Common.UI.SubworldHelp;
 using ReLogic.Content;
 using SubworldLibrary;
 using Terraria.ID;
@@ -242,6 +243,31 @@ public abstract class MappingWorld : Subworld
 	public override void DrawMenu(GameTime gameTime)
 	{
 		SubworldLoadingScreen.DrawLoading(this);
+	}
+
+	public virtual void ModifyLoadScreenDescripton(ref string input)
+	{
+	}
+
+	/// <summary>
+	/// Allows dynamic modification of the tooltips displayed in the Subworld Help UI element under the inventory.<br/>
+	/// Valid names for finding indexes are:<br/>
+	/// <b>Info</b> - "Info" header<br/>
+	/// <b>Name</b> - Name of the domain<br/>
+	/// <b>Desc</b> - Description of the domain<br/>
+	/// <b>Mining</b> - Mining blocklist<br/>
+	/// <b>Placing</b> - Placing blocklist<br/>
+	/// <b>Tier</b> - Only appears if this is a high enough level to have a tier (level 45+). Displays the map's current tier<br/><br/>
+	/// The following only appear when the map have affixes<br/>
+	/// <b>AffixHeading</b> - Affix header<br/>
+	/// <b>MapAffix0..N</b> - Affix information for the given slot<br/>
+	/// <b>ModifierStrength</b> - "Map Strength" modifier, which is the value used for calculating benefits<br/>
+	/// <b>ExpMod</b> - Experience modifier<br/>
+	/// <b>RateMod</b> - Drop rate modifier<br/>
+	/// <b>RarityMod</b> - Drop rarity modifier<br/>
+	/// </summary>
+	public virtual void ModifyHelpTooltips(List<DrawableTooltipLine> lines, Vector2 scale)
+	{
 	}
 
 	internal static int ModifyExperience(int experience)

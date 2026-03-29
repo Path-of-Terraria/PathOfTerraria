@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Mechanics;
@@ -18,9 +17,13 @@ internal class PassiveLoader : ILoadable
 	public void Unload() { }
 }
 
+[Autoload(false)] // Loading is handled in LoadPassives a bit below
 public abstract class Passive : Allocatable, ILoadable
 {
 	public static Dictionary<string, Type> Passives = [];
+
+	internal static Dictionary<string, int> PassiveNameToId = [];
+	internal static int MaxId { get; private set; }
 
 	/// <summary> If true, this passive will be given a special UI element that allows players to choose only one of its children. </summary>
 	public bool IsChoiceNode { get; set; }
@@ -29,9 +32,16 @@ public abstract class Passive : Allocatable, ILoadable
 	/// This is used to map the JSON data to the correct passive. This is also what's used to grab the texture of this passive.
 	/// </summary>
 	public override string Name => GetType().Name;
-	
-	// This is used to create a reference to the created passive for connections
+
+	/// <summary>
+	/// This is used to create a reference to the created passive for connections in JSON.
+	/// </summary>
 	public int ReferenceId;
+
+	/// <summary>
+	/// Runtime ID assigned for lookup tables.
+	/// </summary>
+	public int ID;
 
 	public override string TexturePath => $"{PoTMod.ModName}/Assets/Passives/" + Name;
 	/// <summary>
@@ -60,8 +70,10 @@ public abstract class Passive : Allocatable, ILoadable
 	public static void LoadPassives()
 	{
 		Mod mod = PoTMod.Instance;
+		int id = 0;
 
 		Passives.Clear();
+		PassiveNameToId.Clear();
 
 		foreach (Type type in AssemblyManager.GetLoadableTypes(mod.Code))
 		{
@@ -71,6 +83,7 @@ public abstract class Passive : Allocatable, ILoadable
 			}
 
 			var instance = (Passive)Activator.CreateInstance(type);
+			instance.ID = id++;
 			mod.AddContent(instance);
 
 			// Automatically registers the given keys for each instance loaded, and sets Name to the class's name and Description to empty if they do not exist.
@@ -78,7 +91,10 @@ public abstract class Passive : Allocatable, ILoadable
 			Language.GetOrRegister("Mods.PathOfTerraria.Passives." + instance.Name + ".Tooltip", () => "");
 
 			Passives.Add(instance.Name, type);
+			PassiveNameToId.Add(instance.Name, instance.ID);
 		}
+
+		MaxId = id - 1;
 	}
 
 	public static Passive GetPassiveFromData(PassiveData data)
@@ -88,7 +104,7 @@ public abstract class Passive : Allocatable, ILoadable
 			return null;
 		}
 
-		var p = (Passive) Activator.CreateInstance(value);
+		var p = (Passive)Activator.CreateInstance(value);
 
 		if (p is null)
 		{

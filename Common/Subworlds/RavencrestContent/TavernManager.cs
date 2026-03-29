@@ -13,11 +13,13 @@ namespace PathOfTerraria.Common.Subworlds.RavencrestContent;
 
 internal class TavernManager : ModSystem
 {
-	public const int SeatY = 154;
+	public const int SeatY = 156;
+
+	public static Point FirstSeat = new(392, SeatY);
 
 	public static readonly List<string> TavernNPCFullNames = [];
 
-	private static readonly Point16[] Seats = [new Point16(505, SeatY), new Point16(509, SeatY), new Point16(511, SeatY), new Point16(515, SeatY)];
+	private static readonly Point16[] Seats = [new Point16(FirstSeat.X, SeatY), new Point16(FirstSeat.X + 4, SeatY), new Point16(FirstSeat.X + 8, SeatY), new Point16(FirstSeat.X + 12, SeatY)];
 
 	public override void PostSetupContent()
 	{

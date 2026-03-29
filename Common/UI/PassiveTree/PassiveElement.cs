@@ -1,7 +1,8 @@
-﻿using PathOfTerraria.Common.Mechanics;
+﻿using PathOfTerraria.Common.Looting.VirtualBagUI;
+using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
-using PathOfTerraria.Common.UI.Guide;
 using PathOfTerraria.Content.Passives;
+using PathOfTerraria.Content.Passives.Misc;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.UI;
@@ -41,12 +42,7 @@ internal class PassiveElement : AllocatableElement
 	protected override void Allocate(Allocatable passive, int usedCost)
 	{
 		base.Allocate(passive, usedCost);
-
-		Player p = Main.LocalPlayer;
-
-		p.GetModPlayer<PassiveTreePlayer>().Points -= usedCost;
-		p.GetModPlayer<PassiveTreePlayer>().SaveData([]); // Instantly save the result because _saveData is needed whenever the element reloads
-		p.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.AllocatedPassive);
+		Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().AllocatePassive((Passive)passive);
 	}
 
 	public override void SafeRightClick(UIMouseEvent evt)
@@ -61,12 +57,7 @@ internal class PassiveElement : AllocatableElement
 	{
 		base.Deallocate(passive, usedCost);
 
-		Player p = Main.LocalPlayer;
-
-		p.GetModPlayer<PassiveTreePlayer>().Points += usedCost;
-		p.GetModPlayer<PassiveTreePlayer>().SaveData([]); // Instantly save the result because _saveData is needed whenever the element reloads
-		p.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.DeallocatedPassive);
-		
+		Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().DeallocatePassive(Passive, usedCost);
 		SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath);
 	}
 }
