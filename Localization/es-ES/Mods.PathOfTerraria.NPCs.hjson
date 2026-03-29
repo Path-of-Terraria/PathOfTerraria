@@ -1025,4 +1025,6 @@ InfernalBoss: {
 	// OverlayTitle2: Pyralis
 	// OverlaySubTitle1: The Fallen
 	// OverlaySubTitle2: The Cursed
+	// OverlayDefeatedTitle: Pyralis
+	// OverlayDefeatedSubTitle: Slain
 }

@@ -85,6 +85,8 @@ internal sealed class NPCTeleports : NPCComponent<TeleportData>
 		public NPCAimedTarget Target = npc.GetTargetData(false);
 		//TODO: Create an action counter/tracking/interaction system to remove this type of coupling.
 		public NPCAttacking? Attacking = npc.TryGetGlobalNPC(out NPCAttacking c) ? c : null;
+
+		public bool IsBusy;
 	}
 	public struct Result()
 	{
@@ -169,6 +171,7 @@ internal sealed class NPCTeleports : NPCComponent<TeleportData>
 	{
 		if (Main.netMode == NetmodeID.MultiplayerClient) { return false; }
 		if (Active) { return false; }
+		if (ctx.IsBusy) { return false; }
 		if (!bypassCooldowns && (ctx.Attacking?.Active == true || Data.Cooldown.Value > 0)) { return false; }
 		if (!TryPickPosition(in ctx)) { return false; }
 

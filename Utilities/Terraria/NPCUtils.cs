@@ -16,4 +16,19 @@ public static class NPCUtil
 
 		return null;
 	}
+
+	public static void KillAllWithType(ReadOnlySpan<int> types)
+	{
+		foreach (int type in types)
+		{
+			foreach (NPC npc in Main.ActiveNPCs)
+			{
+				if (npc.type == type)
+				{
+					try { npc.StrikeInstantKill(); }
+					catch { }
+				}
+			}
+		}
+	}
 }
