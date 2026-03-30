@@ -66,16 +66,17 @@ internal sealed class InfernalBossBar : ModBossBar
 	}
 }
 
-/// <summary> Non-moving flames that block areas for a bit of time. </summary>
+/// <summary> Location-bound flames that block areas for a bit of time. </summary>
 internal sealed class InfernalFlames : ModProjectile
 {
-	private ref float Progress => ref Projectile.ai[0];
-	private Vector2 StartPos
+	public ref float Progress => ref Projectile.ai[0];
+
+	public Vector2 StartPos
 	{
 		get => new(Projectile.localAI[1], Projectile.localAI[2]);
 		set => (Projectile.localAI[1], Projectile.localAI[2]) = (value.X, value.Y);
 	}
-	private Vector2 TargetPos
+	public Vector2 TargetPos
 	{
 		get => new(Projectile.ai[1], Projectile.ai[2]);
 		set => (Projectile.ai[1], Projectile.ai[2]) = (value.X, value.Y);
@@ -95,23 +96,27 @@ internal sealed class InfernalFlames : ModProjectile
 		Projectile.timeLeft = 60 * 10;
 		Projectile.hostile = true;
 		Projectile.friendly = false;
+		Projectile.tileCollide = true;
 		Projectile.aiStyle = -1;
 		Projectile.usesLocalNPCImmunity = true;
 		Projectile.localNPCHitCooldown = -1;
 	}
 
+	public override bool OnTileCollide(Vector2 oldVelocity)
+	{
+		Projectile.velocity = default;
+		return false;
+	}
+
 	public override void AI()
 	{
-		if (StartPos == default)
-		{
-			StartPos = Projectile.Center;
-		}
-
 		if (Progress >= 1f)
 		{
 			Projectile.Kill();
 			return;
 		}
+
+		if (StartPos == default) { StartPos = Projectile.Center; }
 
 		if (TargetPos != default)
 		{
@@ -121,7 +126,7 @@ internal sealed class InfernalFlames : ModProjectile
 		}
 
 		Projectile.scale = Utils.Remap(Progress, 0.0f, 0.1f, 0.25f, 1.00f);
-		Projectile.velocity *= 0.99f;
+		Projectile.velocity *= 0.98f;
 
 		int frameCount = Main.projFrames[Type];
 		Progress += TimeSystem.LogicDeltaTime / 8f;
@@ -250,7 +255,7 @@ internal sealed class InfernalBoss : ModNPC
 		public readonly bool IsRenderedUseless => GibLevel > 2;
 		public readonly bool IsTotallyGone => GibLevel >= IK.Segments.Length;
 
-		public Limb Copy()
+		public readonly Limb Copy()
 		{
 			Limb copy = this;
 			copy.IK.Segments = copy.IK.Segments.ToArray();
@@ -291,9 +296,11 @@ internal sealed class InfernalBoss : ModNPC
 	private enum AttackType
 	{
 		None,
-		Slash,
-		Reverse,
-		Stab,
+		BladeSlash,
+		BladeReverse,
+		BladeStab,
+		Ravage,
+		Enflame,
 	}
 	private readonly struct Context(NPC npc)
 	{
@@ -338,6 +345,7 @@ internal sealed class InfernalBoss : ModNPC
 	private ushort grabCooldown;
 	private ushort spawnCooldown;
 	private ushort voluntaryAttackCounter;
+	private ushort enflameAttackCounter;
 	/// <summary> The initiated attack type. Controls blade animation. </summary>
 	private AttackType attackType;
 	private Limb[] limbs = [];
@@ -400,7 +408,7 @@ internal sealed class InfernalBoss : ModNPC
 		NPC.lavaImmune = true;
 
 		NPC.HitSound = new($"{nameof(PathOfTerraria)}/Assets/Sounds/HitEffects/FleshHit", 3) { Volume = 0.85f, Pitch = -0.25f, PitchVariance = 0.3f, MaxInstances = 5 };
-		NPC.DeathSound = SoundID.NPCDeath23 with { Pitch = -0.85f, PitchVariance = 0.15f, Identifier = $"{Name}Death" };
+		NPC.DeathSound = new($"{nameof(PathOfTerraria)}/Assets/Sounds/HitEffects/PainedScreechSplatter", 3) { Volume = 1.00f, Pitch = -0.25f, Identifier = $"{Name}Death" };
 
 		NPC.TryEnableComponent<NPCMovement>(e =>
 		{
@@ -415,14 +423,8 @@ internal sealed class InfernalBoss : ModNPC
 		NPC.TryEnableComponent<NPCTargeting>();
 		NPC.TryEnableComponent<NPCAttacking>(e =>
 		{
-			e.Data.LengthInTicks = 95;
-			e.Data.CooldownLength = 00;
+			e.Data.ManualInitiation = true;
 			e.Data.NoGravityLength = 0;
-			e.Data.AimLag = ((new(0.0f), new(0.3f)), (0f, 0.99f));
-			e.Data.Dash = (50, 55, new(9f, 1f));
-			e.Data.Damage = (45, 60, DamageInstance.EnemyAttackFilterWithInfighting);
-			e.Data.Hitbox = (new(350, 350), new(+290, +100), new(+0, +0));
-			e.Data.Movement = (0.0f, 0.80f, 0.95f);
 		});
 		NPC.TryEnableComponent<NPCTeleports>(e =>
 		{
@@ -470,18 +472,6 @@ internal sealed class InfernalBoss : ModNPC
 			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 1));
 			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatLarge)}", 1));
 
-			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatSmall)}", 15, NPCHitEffects.OnDeath));
-			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 10, NPCHitEffects.OnDeath));
-			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatLarge)}", 5, NPCHitEffects.OnDeath));
-			// c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreHead", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+00, -16), new(3, 3)) });
-			// c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreChest", 1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+00, +00), new(3, 3)) });
-			// c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreLeg", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+16, -16), new(3, 3)) });
-			// c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreLeg", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+16, +16), new(3, 3)) });
-			// c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreStaff1", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(-16, -32), new(3, 3)) });
-			// c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreStaff2", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+00, -16), new(3, 3)) });
-			// c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreStaff3", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+16, +00), new(3, 3)) });
-			// c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreCloth1", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+16, +00), new(3, 3)) });
-			// c.AddGore(new($"{PoTMod.ModName}/{Name}_GoreCloth2", +1, NPCHitEffects.OnDeath) { Position = (new(0, 0), new(+16, +00), new(3, 3)) });
 			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatSmall)}", 15, NPCHitEffects.OnDeath));
 			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatMedium)}", 10, NPCHitEffects.OnDeath));
 			c.AddGore(new($"{PoTMod.ModName}/{nameof(BloodSplatLarge)}", 5, NPCHitEffects.OnDeath));
@@ -533,7 +523,6 @@ internal sealed class InfernalBoss : ModNPC
 
 		// Reset overrides.
 		ctx.Movement.Data.TargetOverride = null;
-		ctx.Attacking.Data.ManualInitiation = true;
 
 		globalCounter++;
 		movementAnimation += MathF.Min(10f, NPC.velocity.Length());
@@ -542,11 +531,16 @@ internal sealed class InfernalBoss : ModNPC
 		ctx.Targeting.ManualUpdate(new(NPC));
 		PhaseLogic(in ctx);
 		CutsceneLogic(in ctx);
+
+		// Short-circuit if the death cutscene just ended.
+		if (!NPC.active) { return; }
+
 		IdentityLogic(in ctx);
 		ResetOffsets(in ctx);
 		SpawnMinions(in ctx);
 		UpdateBlade(in ctx);
-		SpreadBladeFlames(in ctx);
+		ShootFireballs(in ctx);
+		SpreadTileFlames(in ctx);
 		LimbWielding(in ctx);
 		LimbGrabbing(in ctx);
 		LimbMovement(in ctx);
@@ -585,56 +579,19 @@ internal sealed class InfernalBoss : ModNPC
 			ctx.Movement.Data.Acceleration = 3.6f;
 			ctx.Voice.Data.PainSound = (9, SoundID.NPCHit56 with { Pitch = 0f, PitchVariance = 0.5f, Identifier = $"{Name}Hit" });
 			ctx.Teleports.Data.MaxCooldown = 300;
-			ctx.Attacking.Data.ManualInitiation = true;
-			ctx.Attacking.Data.Dash.Velocity = new(20f, 15f);
-			ctx.Attacking.Data.Damage.Filter = DamageInstance.EnemyAttackFilterWithInfighting;
-
-			if (!Main.dedServ)
-			{
-				ctx.Attacking.Data.Slash = null;
-				ctx.Attacking.Data.Sounds =
-				[
-					(24, new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/PyralisBlade", 3) { MaxInstances = 3, Volume = 2.0f, Pitch = -0.1f, PitchVariance = 0.0f }),
-					(25, new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/PyralisBlade", 3) { MaxInstances = 3, Volume = 2.0f, Pitch = -0.1f, PitchVariance = 0.0f }),
-				];
-			}
 		}
 		else if (Phase == PhaseType.Abomination)
 		{
 			ctx.Voice.Data.PainSound = (ChanceX: 5, Style: new($"{nameof(PathOfTerraria)}/Assets/Sounds/HitEffects/PainedScreech", 3)
 			{
 				SoundLimitBehavior = SoundLimitBehavior.IgnoreNew,
-				Pitch = -0.2f,
+				Pitch = -0.4f,
 				PitchVariance = 0.2f,
 				Identifier = $"{Name}Hit"
 			});
 			ctx.Movement.Data.MaxSpeed = 17.8f;
 			ctx.Movement.Data.Acceleration = 3.9f;
 			ctx.Teleports.Data.MaxCooldown = 240;
-			ctx.Attacking.Data.ManualInitiation = CutsceneActive;
-#if FRIENDLY
-			ctx.Attacking.Data.ManualInitiation = true;
-#endif
-			ctx.Attacking.Data.Hitbox = (new(340, 340), new(48, 48), new(0, 0));
-			ctx.Attacking.Data.AimLag = ((new(0.0f), new(0.15f)), (0f, 0.99f));
-			ctx.Attacking.Data.Damage = (25, 33, DamageInstance.EnemyAttackFilter);
-			ctx.Attacking.Data.Dash = (5, 20, new(25, 20));
-			ctx.Attacking.Data.LengthInTicks = 40;
-			ctx.Attacking.Data.CooldownLength = 20;
-			ctx.Attacking.Data.InitiationRange = new(350, 250);
-
-			if (!Main.dedServ)
-			{
-				ctx.Attacking.Data.Sounds =
-				[
-					(15, new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/PyralisBlade", 3) { MaxInstances = 3, Volume = 1.5f, Pitch = +0.5f, PitchVariance = 0.2f }),
-					(0, new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/PyralisThrow", 3) { MaxInstances = 3, Volume = 0.9f, Pitch = -0.3f, PitchVariance = 0.2f }),
-				];
-				ctx.Attacking.Data.Slash = (ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/Misc/Slash"), null, Color.IndianRed);
-
-				// Faint glow.
-				Lighting.AddLight(ctx.Center, new Vector3(1.0f, 0.2f, 0.8f) * 0.5f);
-			}
 		}
 
 		// Start intro.
@@ -662,6 +619,12 @@ internal sealed class InfernalBoss : ModNPC
 			Phase = PhaseType.Abomination;
 			Cutscene = new(CutsceneType.Transformation, 0, 600);
 			NPC.life = (int)(NPC.lifeMax * SecondPhaseHealthFactor);
+		}
+
+		// Faint glow in the second phase.
+		if (!Main.dedServ && Phase is PhaseType.Abomination)
+		{
+			Lighting.AddLight(ctx.Center, new Vector3(1.0f, 0.2f, 0.8f) * 0.5f);
 		}
 	}
 	private void IdentityLogic(in Context ctx)
@@ -784,8 +747,9 @@ internal sealed class InfernalBoss : ModNPC
 				// Grow new limbs!
 				SetupLimbs(in ctx);
 
-				// Prevent immediate teleportation.
+				// Prevent immediate teleportation & flame attacks.
 				ctx.Teleports.Data.Cooldown.Set(180);
+				enflameAttackCounter = 0;
 
 				OverlayText.Create(new OverlayTextLine
 				{
@@ -814,7 +778,7 @@ internal sealed class InfernalBoss : ModNPC
 					ShakeEffect = (15f, Vector2.One * 3f),
 				});
 
-				SoundEngine.PlaySound(position: ctx.Center, style: new($"{nameof(PathOfTerraria)}/Assets/Sounds/Gore/SuperSplatter")
+				SoundEngine.PlaySound(position: ctx.Center, style: new($"{nameof(PathOfTerraria)}/Assets/Sounds/Gore/SuperSplatter1")
 				{
 					Volume = 0.9f,
 					MaxInstances = 3,
@@ -855,10 +819,24 @@ internal sealed class InfernalBoss : ModNPC
 				// Kill minions.
 				NPCUtil.KillAllWithType(minionTypes);
 
+				// Mark all limbs as gibbable.
+				foreach (ref Limb limb in limbs.AsSpan())
+				{
+					limb.CanBeGibbed = true;
+					limb.MinPhaseToGib = 0;
+				}
+
 				if (!Main.dedServ)
 				{
 					// Stop music immediately.
 					Main.musicFade[Main.curMusic] = 0f;
+
+					// Play death audio.
+					SoundEngine.PlaySound(position: ctx.Center, style: new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/PyralisDeath")
+					{
+						Volume = 1.20f,
+						PauseBehavior = PauseBehavior.PauseWithGame,
+					});
 
 					CameraCurios.Create(new()
 					{
@@ -878,6 +856,7 @@ internal sealed class InfernalBoss : ModNPC
 				SoundEngine.PlaySound(style: new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/PyralisTransition3")
 				{
 					Volume = 0.85f,
+					PauseBehavior = PauseBehavior.PauseWithGame,
 				});
 			}
 			else if (justEnded)
@@ -932,7 +911,7 @@ internal sealed class InfernalBoss : ModNPC
 					ShakeEffect = (10f, Vector2.One * 3f),
 				});
 
-				SoundEngine.PlaySound(position: ctx.Center, style: new($"{nameof(PathOfTerraria)}/Assets/Sounds/Gore/SuperSplatter")
+				SoundEngine.PlaySound(position: ctx.Center, style: new($"{nameof(PathOfTerraria)}/Assets/Sounds/Gore/SuperSplatter1")
 				{
 					Volume = 0.9f,
 					MaxInstances = 3,
@@ -976,7 +955,7 @@ internal sealed class InfernalBoss : ModNPC
 	{
 		if (Cutscene.Type != CutsceneType.Death || Cutscene.Counter != Cutscene.Length)
 		{
-			if (Cutscene.Type != CutsceneType.Death) { Cutscene = new(CutsceneType.Death, 0, 300); }
+			if (Cutscene.Type != CutsceneType.Death) { Cutscene = new(CutsceneType.Death, 0, 240); }
 			Phase = PhaseType.Abomination;
 			NPC.dontTakeDamage = true;
 			NPC.life = 1;
@@ -996,7 +975,7 @@ internal sealed class InfernalBoss : ModNPC
 		// NPC.noGravity = isClimbing;
 		NPC.noGravity = false;
 
-		bool hasTarget = NPC.HasValidTarget && (Phase > 0 && !CutsceneActive);
+		bool hasTarget = NPC.HasValidTarget && Phase != PhaseType.Idle;
 		NPCAimedTarget target = NPC.GetTargetData(ignorePlayerTankPets: true);
 		Vector2 targetPos = target.Center;
 		Vector2 walkPos = targetPos;
@@ -1045,13 +1024,15 @@ internal sealed class InfernalBoss : ModNPC
 		Vector2 walkDir = ctx.Center.SafeDirection(walkPos, Vector2.UnitY);
 
 		// Slow down during attacks.
-		if (ctx.Attacking.Active)
+		if (ctx.Attacking.Active && attackType is not AttackType.Enflame and not AttackType.Ravage)
 		{
 			float effectFactor = 1f - MathF.Pow(MathUtils.Clamp01(ctx.Attacking.Progress / (float)ctx.Attacking.Data.LengthInTicks), 3f);
 			maxSpeed *= MathHelper.Lerp(1f, 0.90f, effectFactor);
 			acceleration *= MathHelper.Lerp(1f, 1.00f, effectFactor);
 		}
-		else if (Phase == PhaseType.Abomination)
+		
+		// Speed up in second phase.
+		if (Phase == PhaseType.Abomination)
 		{
 			acceleration *= 1.1f;
 			maxSpeed *= 1.1f;
@@ -1106,7 +1087,7 @@ internal sealed class InfernalBoss : ModNPC
 			{
 				const int CooldownPeriod = 60;
 				ctx.Teleports.Data.Cooldown.SetIfGreater(CooldownPeriod);
-				ctx.Attacking.Data.Cooldown.SetIfGreater(CooldownPeriod);
+				// ctx.Attacking.Data.Cooldown.SetIfGreater(CooldownPeriod);
 			}
 		}
 
@@ -1220,53 +1201,188 @@ internal sealed class InfernalBoss : ModNPC
 #if FRIENDLY
 		return;
 #endif
+		bool swingingDuringIntro = Cutscene.Type == CutsceneType.Intro && Cutscene.Counter > (Cutscene.Length - 60);
+
 		if (Phase == PhaseType.Idle) { return; }
-		if (Phase == PhaseType.Abomination) { return; }
-		if (Cutscene.Type == CutsceneType.Intro && Cutscene.Counter < (Cutscene.Length - 60)) { return; }
-		if (!NPC.HasValidTarget) { return; }
+		if (Cutscene.Type != CutsceneType.None && !swingingDuringIntro) { return; }
+		if (!NPC.HasValidTarget && !swingingDuringIntro) { return; }
+
+		enflameAttackCounter++;
+
 		if (ctx.Attacking.Active) { return; }
 
-		// Do not start attacks when holding some entity.
-		if (limbs.Any(l => l.EntityAttachment.IsValid)) { return; }
+		// Do not start attacks when holding a player.
+		if (limbs.Any(l => l.EntityAttachment.Player != null)) { return; }
 
 		Vector2 targetCenter = ctx.Targeting.GetTargetCenter(NPC);
 		float distance = targetCenter.Distance(ctx.Center);
 		AttackType nextAttackType = attackType switch
 		{
-			AttackType.Slash => AttackType.Reverse,
-			AttackType.Reverse => AttackType.Stab,
-			_ => AttackType.Slash
+			AttackType.BladeSlash when Phase is PhaseType.Bladewielder => AttackType.BladeReverse,
+			AttackType.BladeReverse when Phase is PhaseType.Bladewielder => AttackType.BladeStab,
+			_ when Phase is PhaseType.Bladewielder => AttackType.BladeSlash,
+			_ when Phase is PhaseType.Abomination => AttackType.Ravage,
+			_ => AttackType.None,
 		};
 		float attackRange = nextAttackType switch
 		{
-			AttackType.Stab => 550, //610
-			_ => 350, //400
+			AttackType.BladeStab => 550,
+			AttackType.BladeSlash or AttackType.BladeReverse => 350,
+			AttackType.Ravage => 300,
+			_ => 0,
 		};
 
 		// An attack will be triggered regardless of range if enough time passes without cathing up.
 		// This is done to spread flames in order to interfere with the player's escape.
 		const int voluntaryAttackRate = (int)(60 * 1.1f);
 		bool inRange = distance < attackRange;
-		bool ignoreRange = voluntaryAttackCounter > voluntaryAttackRate;
-		if ((inRange || ignoreRange) && ctx.Attacking.TryStarting(new(NPC)))
+		bool voluntaryAttack = Phase is PhaseType.Bladewielder && voluntaryAttackCounter > voluntaryAttackRate;
+		bool ignoreRange = voluntaryAttack || !swingingDuringIntro;
+
+		// Occassional flame bursts.
+		int enflameAttackRate = (int)(60 * (Phase is PhaseType.Bladewielder ? 12 : 6));
+		if (enflameAttackCounter > enflameAttackRate)
+		{
+			nextAttackType = AttackType.Enflame;
+			ignoreRange = true;
+		}
+
+		if (nextAttackType != AttackType.None && (inRange || ignoreRange) && ctx.Attacking.TryStarting(new(NPC)))
 		{
 			attackType = nextAttackType;
 			voluntaryAttackCounter = 0;
 
-			if (attackType != AttackType.Stab)
+			// Reset dynamic data.
+			ctx.Attacking.Data.Hitbox = default;
+			ctx.Attacking.Data.Damage = default;
+			ctx.Attacking.Data.Dash = default;
+			ctx.Attacking.Data.Slash = null;
+			ctx.Attacking.Data.Sounds = [];
+			// Configure dynamic data.
+			if (attackType is AttackType.BladeSlash or AttackType.BladeReverse or AttackType.BladeStab)
 			{
-				ctx.Attacking.Data.AimLag = ((new(0.01f), new(0.27f)), (0f, 0.95f));
-				ctx.Attacking.Data.Hitbox = (new(350, 350), new(+280, +280), new(+0, +0));
+				ctx.Attacking.Data.LengthInTicks = 95;
+				ctx.Attacking.Data.CooldownLength = 0;
+				ctx.Attacking.Data.AimLag = ((new(0.0f), new(0.3f)), (0f, 0.99f));
+				ctx.Attacking.Data.Hitbox = (new(350, 350), new(+290, +100), new(+0, +0));
+				ctx.Attacking.Data.Damage = (45, 60, DamageInstance.EnemyAttackFilterWithInfighting);
+				ctx.Attacking.Data.Dash = (50, 55, new(20, 15));
+				ctx.Attacking.Data.Movement = (0.0f, 0.80f, 0.95f);
+				
+				if (!Main.dedServ)
+				{
+					ctx.Attacking.Data.Sounds =
+					[
+						(24, new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/PyralisBlade", 3) { MaxInstances = 3, Volume = 2.0f, Pitch = -0.1f, PitchVariance = 0.0f }),
+						(25, new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/PyralisBlade", 3) { MaxInstances = 3, Volume = 2.0f, Pitch = -0.1f, PitchVariance = 0.0f }),
+					];
+				}
+
+				if (attackType is AttackType.BladeStab)
+				{
+					ctx.Attacking.Data.AimLag = ((new(0.01f), new(0.06f)), (0f, 0.95f));
+					ctx.Attacking.Data.Hitbox = (new(200, 200), new(+500, +500), new(+0, +0));
+				}
+				else
+				{
+					ctx.Attacking.Data.AimLag = ((new(0.01f), new(0.27f)), (0f, 0.95f));
+					ctx.Attacking.Data.Hitbox = (new(350, 350), new(+280, +280), new(+0, +0));
+				}
 			}
-			else
+			else if (attackType is AttackType.Ravage)
 			{
-				ctx.Attacking.Data.AimLag = ((new(0.01f), new(0.06f)), (0f, 0.95f));
-				ctx.Attacking.Data.Hitbox = (new(200, 200), new(+500, +500), new(+0, +0));
+				ctx.Attacking.Data.LengthInTicks = 40;
+				ctx.Attacking.Data.CooldownLength = 20;
+				ctx.Attacking.Data.AimLag = ((new(0.0f), new(0.15f)), (0f, 0.99f));
+				ctx.Attacking.Data.Hitbox = (new(340, 340), new(48, 48), new(0, 0));
+				ctx.Attacking.Data.Damage = (25, 33, DamageInstance.EnemyAttackFilter);
+				ctx.Attacking.Data.Dash = (5, 20, new(29, 24));
+				ctx.Attacking.Data.Movement = (0.0f, 0.80f, 0.95f);
+
+				if (!Main.dedServ)
+				{
+					ctx.Attacking.Data.Slash = (ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/Misc/Slash"), null, Color.IndianRed);
+					ctx.Attacking.Data.Sounds =
+					[
+						(15, new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/PyralisBlade", 3) { MaxInstances = 3, Volume = 1.5f, Pitch = +0.5f, PitchVariance = 0.2f }),
+						(0, new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/PyralisThrow", 3) { MaxInstances = 3, Volume = 0.9f, Pitch = -0.3f, PitchVariance = 0.2f }),
+					];
+				}
+			}
+			else if (attackType is AttackType.Enflame)
+			{
+				enflameAttackCounter = 0;
+				ctx.Attacking.Data.LengthInTicks = 130;
+				ctx.Attacking.Data.CooldownLength = 30;
+				ctx.Attacking.Data.Damage = (75, 75, (EntityKind)0);
+				ctx.Attacking.Data.Movement = (0.0f, 0.90f, 0.90f);
+
+				if (!Main.dedServ)
+				{
+					bool poweredUp = Phase is PhaseType.Abomination;
+					var style = new SoundStyle($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/PyralisEnflame", 3) { Volume = 2.00f, PitchVariance = 0.1f, MaxInstances = 3 };
+					ctx.Attacking.Data.Sounds =
+					[
+						(0, style),
+						(poweredUp ? (ushort)15 : ushort.MaxValue, style),
+						(poweredUp ? (ushort)30 : ushort.MaxValue, style),
+					];
+				}
+			}
+
+			if (swingingDuringIntro)
+			{
+				ctx.Attacking.Data.Hitbox = default;
 			}
 		}
-		else
+		else if (Phase is PhaseType.Bladewielder)
 		{
 			voluntaryAttackCounter = (ushort)Math.Min(voluntaryAttackCounter + 1, ushort.MaxValue - 2);
+		}
+	}
+
+	private void ShootFireballs(in Context ctx)
+	{
+		if (Phase is PhaseType.Idle) { return; }
+		if (CutsceneActive) { return; }
+		if (!ctx.Attacking.Active) { return; }
+		if (attackType != AttackType.Enflame) { return; }
+
+		if (!Main.dedServ)
+		{
+			float midTick = MathHelper.Lerp(ctx.Attacking.Data.Damage.Start, ctx.Attacking.Data.Damage.End, 0.1f);
+			float intensity = MathF.Pow(MathUtils.DistancePower(MathF.Abs(ctx.Attacking.Progress - midTick), 0, 60), 2f);
+			Lighting.AddLight(ctx.Center, Color.Orange.ToVector3() * 3f * intensity);
+		}
+
+		if (Main.netMode == NetmodeID.MultiplayerClient) { return; }
+
+		float progressFactor = ctx.Attacking.Progress / (float)ctx.Attacking.Data.LengthInTicks;
+		var source = (IEntitySource)NPC.GetSource_FromThis();
+		
+		int tickBase = ctx.Attacking.Data.Damage.Start;
+		bool poweredUp = Phase is PhaseType.Abomination;
+		int numInstances = poweredUp ? 3 : 1;
+		int numProjectiles = poweredUp ? 12 : 16;
+		for (int instance = 0; instance < numInstances; instance++)
+		{
+			if (ctx.Attacking.Progress != tickBase + (instance * 15)) { continue; }
+
+			float instanceFactor = instance / (float)(numInstances - 1);
+			float baseAngle = instance * MathHelper.PiOver4;
+			float baseSpeed = MathHelper.Lerp(10, 15, 1f - instanceFactor);
+
+			for (int i = 0; i < numProjectiles; i++)
+			{
+				float iFactor = i / (float)numProjectiles;
+				int tick = (int)(ctx.Attacking.Data.LengthInTicks * iFactor);
+			
+				var projPos = (Vector2)ctx.Center;
+				float projSpeed = (float)(baseSpeed + Main.rand.NextFloat(0, 10));
+				var projVel = (Vector2)((baseAngle + (iFactor * MathHelper.TwoPi)).ToRotationVector2() * projSpeed);
+				int projType = ModContent.ProjectileType<InfernalFlames>();
+				Projectile.NewProjectileDirect(source, projPos, projVel, projType, 1, 1f);
+			}
 		}
 	}
 
@@ -1365,9 +1481,10 @@ internal sealed class InfernalBoss : ModNPC
 
 		// Movement sound.
 		{
+			bool isDying = Cutscene.Type == CutsceneType.Death;
 			var loopSound = new SoundStyle($"{nameof(PathOfTerraria)}/Assets/Sounds/Gore/FleshLoopChaotic") { Volume = 0.1f, IsLooped = true, PauseBehavior = PauseBehavior.PauseWithGame };
 			float halfStep = 1f * TimeSystem.LogicDeltaTime;
-			float target = MathUtils.Clamp01(NPC.velocity.Length() * 0.1f);
+			float target = isDying ? 0 : MathUtils.Clamp01(NPC.velocity.Length() * 0.1f);
 			float intensity = movementSound.Intensity = MathUtils.StepTowards(MathHelper.Lerp(movementSound.Intensity, target, halfStep), target, halfStep);
 			float volume = MathHelper.Lerp(0.75f, 1.00f, intensity);
 			float pitch = MathHelper.Lerp(-0.9f, +0.2f, intensity);
@@ -1442,7 +1559,8 @@ internal sealed class InfernalBoss : ModNPC
 			SoundUtils.UpdateLoopingSound(ref bladeBurnSound.Handle, ctx.Center, volume, pitch, loopSound, _ => Main.npc[NPC.whoAmI] is { active: true } n && n == NPC);
 		}
 	}
-	private void SpreadBladeFlames(in Context ctx)
+
+	private void SpreadTileFlames(in Context ctx)
 	{
 #if NO_FLAMES
 		return;
@@ -1450,7 +1568,7 @@ internal sealed class InfernalBoss : ModNPC
 
 		if (Main.netMode == NetmodeID.MultiplayerClient) { return; }
 		if (Phase is PhaseType.Idle || CutsceneActive) { return; }
-		// if (Phase is PhaseType.Abomination) { return; }
+		if (Phase is PhaseType.Abomination) { return; }
 
 		if (ctx.Attacking.DealingDamage == (Phase is PhaseType.Abomination))
 		{
@@ -1468,8 +1586,8 @@ internal sealed class InfernalBoss : ModNPC
 
 		Vector2 forward = angle.ToRotationVector2();
 		Vector2 sideways = forward.RotatedBy(MathHelper.PiOver2);
-		(float Start, float End, float Step) extents = attackType != AttackType.Stab ? (300, 900, 32) : (200, 1100, 32);
-		(float Start, float End, float Step) offsets = attackType != AttackType.Stab ? (-32, +32, 32) : (-64, +64, 32);
+		(float Start, float End, float Step) extents = attackType != AttackType.BladeStab ? (300, 900, 32) : (200, 1100, 32);
+		(float Start, float End, float Step) offsets = attackType != AttackType.BladeStab ? (-32, +32, 32) : (-64, +64, 32);
 		if (Phase is PhaseType.Abomination)
 		{
 			extents = (300, 500, 32);
@@ -2255,6 +2373,7 @@ internal sealed class InfernalBoss : ModNPC
 		int divisions = 40 * (Phase == PhaseType.Abomination ? 1 : 1);
 		bool gibFromDamage = lifeNew < lifeOld && (int)MathF.Ceiling(factorNew * divisions) < (int)MathF.Ceiling(factorOld * divisions);
 		bool gibDuringDeath = Cutscene.Type == CutsceneType.Death && (Cutscene.Counter % 15 == 0 || Cutscene.Counter % 21 == 0);
+		float volumeFactor = gibDuringDeath ? 0.5f : 1.0f;
 
 		if (gibFromDamage || gibDuringDeath)
 		{
@@ -2268,12 +2387,25 @@ internal sealed class InfernalBoss : ModNPC
 				limb.ResetState();
 				limb.SetGibbed(limb.GibLevel + 1);
 
-				SoundEngine.PlaySound(position: ctx.Center, style: new($"{nameof(PathOfTerraria)}/Assets/Sounds/Gore/SuperSplatter")
+				if (Main.rand.NextBool(3))
 				{
-					Volume = 0.62f,
-					MaxInstances = 5,
-					PitchVariance = 0.5f,
-				});
+					SoundEngine.PlaySound(position: ctx.Center, style: new($"{nameof(PathOfTerraria)}/Assets/Sounds/Gore/SuperSplatter1")
+					{
+						Volume = 0.62f * volumeFactor,
+						MaxInstances = 5,
+						PitchVariance = 0.5f,
+					});
+				}
+				else
+				{
+					SoundEngine.PlaySound(position: ctx.Center, style: new($"{nameof(PathOfTerraria)}/Assets/Sounds/Gore/MediumSplatter", 2)
+					{
+						Volume = 0.85f * volumeFactor,
+						MaxInstances = 5,
+						Pitch = -0.2f,
+						PitchVariance = 0.4f,
+					});
+				}
 
 				for (int i = 0; i < 200; i++)
 				{
@@ -2460,13 +2592,13 @@ internal sealed class InfernalBoss : ModNPC
 		float targetRotation;
 		Vector2 targetPosition;
 
-		if (ctx.Attacking.Active)
+		if (ctx.Attacking.Active && attackType is AttackType.BladeSlash or AttackType.BladeReverse or AttackType.BladeStab)
 		{
 			// Attack animations.
 			Gradient<BladeAnimKey> animation = attackType switch
 			{
-				AttackType.Stab => stabAnimation,
-				AttackType.Reverse => reverseAnimation,
+				AttackType.BladeStab => stabAnimation,
+				AttackType.BladeReverse => reverseAnimation,
 				_ => slashAnimation,
 			};
 			bool mirror = NPC.spriteDirection < 0;
@@ -2562,8 +2694,9 @@ internal sealed class InfernalBoss : ModNPC
 
 	public override void FindFrame(int frameHeight)
 	{
-		Context ctx = new(NPC);
+		if (!NPC.active) { return; }
 
+		Context ctx = new(NPC);
 		ctx.Animations.Advance();
 		ctx.Animations.Set(PickAnimation(in ctx));
 	}

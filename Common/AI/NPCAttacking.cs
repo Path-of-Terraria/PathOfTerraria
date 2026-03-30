@@ -5,6 +5,7 @@ using System.IO;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Utilities;
+using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
 using ReLogic.Content;
 using Terraria.Audio;
@@ -181,9 +182,14 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 			// Play sounds.
 			if (!Main.dedServ)
 			{
+				NPCTracker? tracker = null;
 				foreach ((ushort tick, SoundStyle style) in Data.Sounds)
 				{
-					if (Data.Progress == tick) { SoundEngine.PlaySound(style, ctx.Center); }
+					if (Data.Progress == tick)
+					{
+						tracker ??= new(npc);
+						SoundEngine.PlaySound(style, ctx.Center, tracker.AudioCallback);
+					}
 				}
 			}
 
