@@ -8,6 +8,7 @@ using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI;
 using PathOfTerraria.Core.UI.SmartUI;
 using PathOfTerraria.Utilities;
+using PathOfTerraria.Utilities.Terraria;
 using ReLogic.Content;
 using ReLogic.Graphics;
 using System.Collections.Generic;
@@ -683,14 +684,14 @@ public sealed class NewHotbar : SmartUiState
 
 	private static bool TryGetKeybindName(ModKeybind key, bool trim, [NotNullWhen(true)] out string result)
 	{
-		string name = key.GetAssignedKeys().FirstOrDefault();
 		result = null;
 
-		if (string.IsNullOrEmpty(name))
+		// Acquire assigned keys in safe manner to prevent occasional errors that may occur when loading the game using the skipselect launch argument.
+		if (!key.TryGetAssignedKeys(out List<string> assignedKeys) || assignedKeys.FirstOrDefault() is not { } name || string.IsNullOrEmpty(name))
 		{
 			return false;
 		}
-
+		
 		// Remove 'D' from numerical keybinds. "D1" -> "1"
 		if (name[0] == 'D' && int.TryParse(name[1].ToString(), out _))
 		{
