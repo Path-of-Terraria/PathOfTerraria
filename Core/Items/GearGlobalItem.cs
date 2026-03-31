@@ -324,4 +324,15 @@ internal sealed partial class GearGlobalItem : GlobalItem, InsertAdditionalToolt
 		bool noSuffix = data.ItemType == ItemType.None && data.Rarity is ItemRarity.Magic or ItemRarity.Rare || !GearSuffixIdsByCategory.ContainsKey(category);
 		suffix = (sbyte)(noSuffix ? -1 : Main.rand.Next(GearSuffixIdsByCategory[category]));
 	}
+
+	public static bool IsPrefixValid(Item item, int id)
+	{
+		return GearLocalizationCategory.Invoke(item) is { } category
+		&& GearPrefixIdsByCategory.TryGetValue(category, out List<sbyte> list) && list.Contains((sbyte)id);
+	}
+	public static bool IsSuffixValid(Item item, int id)
+	{
+		return GearLocalizationCategory.Invoke(item) is { } category
+		&& GearSuffixIdsByCategory.TryGetValue(category, out List<sbyte> list) && list.Contains((sbyte)id);
+	}
 }
