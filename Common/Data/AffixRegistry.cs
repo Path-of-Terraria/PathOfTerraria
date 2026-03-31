@@ -80,6 +80,7 @@ public class AffixRegistry : ILoadable
 	/// <summary> Safely tries to acquire an affix item distribution entry specific to the provided arguments. </summary>
 	public static ItemAffixData? TryGetItemData(Type affixType, ItemType itemType)
 	{
+		if (itemType == 0) { return null; }
 		Debug.Assert(BitOperations.PopCount((ulong)itemType) == 1);
 		return ByAffixAndItemType.TryGetValue((affixType, itemType), out ItemAffixData? result) ? result : null;
 	}
