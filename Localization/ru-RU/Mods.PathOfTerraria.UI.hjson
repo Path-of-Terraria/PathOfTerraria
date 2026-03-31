@@ -13,6 +13,13 @@ Gear: {
 	}
 }
 
+Hotbar: {
+	RichTooltipsToggle: {
+		// On: Display Full Tooltips In Hotbar: On
+		// Off: Display Full Tooltips In Hotbar: Off
+	}
+}
+
 Slots: {
 	Head: Шлем
 	Body: Нагрудник
