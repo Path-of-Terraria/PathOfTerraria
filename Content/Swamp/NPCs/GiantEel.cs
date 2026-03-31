@@ -126,6 +126,7 @@ internal class GiantEel : ModNPC
 
 	public override void Load()
 	{
+		//if (Main.dedServ) { return; }
 		//GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, $"{Texture}_GoreBlade");
 		//GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreHead");
 		//GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreChest");
