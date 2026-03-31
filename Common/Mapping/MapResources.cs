@@ -74,20 +74,16 @@ internal sealed class MapResources : ModSystem
 			}
 			else if (Main.netMode == NetmodeID.Server)
 			{
-				SubworldSystem.SendToMainServer(PoTMod.Instance, Networking.GetFinalPacketBuffer(packet));
+				// Redirect 'needsSync' flag to the main server, or just set it right away.
+				if (SubworldSystem.Current == null) { needsSync = true; }
+				else { SubworldSystem.SendToMainServer(PoTMod.Instance, Networking.GetFinalPacketBuffer(packet)); }
 			}
 		}
 
 		internal override void ServerReceive(BinaryReader reader, byte sender)
 		{
-			if (SubworldSystem.Current == null)
-			{
-				needsSync = true;
-			}
-			else
-			{
-				Send();
-			}
+			if (SubworldSystem.Current == null) { needsSync = true; }
+			else { Send(); }
 		}
 	}
 

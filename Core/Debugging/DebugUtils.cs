@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using Terraria.GameContent;
 
 namespace PathOfTerraria.Core.Debugging;
@@ -15,6 +16,13 @@ public sealed class DebugUtils : ModSystem
 	public override void Unload()
 	{
 		Main.OnPostDraw -= PostDraw;
+	}
+
+	/// <summary> A debug message preprocessed behind the DEBUG condition. </summary>
+	[Conditional("DEBUG")]
+	public static void DebugLog(object str)
+	{
+		PoTMod.Instance.Logger.Debug(str);
 	}
 
 	public static void DrawInWorld(Action<SpriteBatch> action)
