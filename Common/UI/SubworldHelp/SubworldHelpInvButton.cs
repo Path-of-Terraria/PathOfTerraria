@@ -99,12 +99,22 @@ public class SubworldHelpInvButton : SmartUiState
 			AddLine(lines, "RarityMod", Language.GetTextValue("Mods.PathOfTerraria.UI.SubworldHelp.DropRarityBoost") + rarityModifier.ToString("#0.##") + "%", scale);
 		}
 
+		CurrentWorld.ModifyHelpTooltips(lines, scale);
 		return lines;
 	}
 
-	private static void AddLine(List<DrawableTooltipLine> lines, string name, string text, Vector2 scale, Color? color = null)
+	internal static void AddLine(List<DrawableTooltipLine> lines, string name, string text, Vector2 scale, Color? color = null, int index = -1)
 	{
-		lines.Add(new DrawableTooltipLine(new TooltipLine(PoTMod.Instance, name, text), lines.Count, 0, lines.Count * 24, color ?? Color.White) { BaseScale = scale });
+		var line = new DrawableTooltipLine(new TooltipLine(PoTMod.Instance, name, text), lines.Count, 0, lines.Count * 24, color ?? Color.White) { BaseScale = scale };
+
+		if (index == -1)
+		{
+			lines.Add(line);
+		}
+		else
+		{
+			lines.Insert(index, line);
+		}
 	}
 
 	public override void SafeClick(UIMouseEvent evt)
