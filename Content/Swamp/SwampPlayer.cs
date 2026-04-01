@@ -8,7 +8,10 @@ internal class SwampPlayer : ModPlayer, IPreDomainRespawnPlayer
 {
 	public void OnDomainRespawn()
 	{
-		Player.breath = Player.breathMax;
+		if (SubworldSystem.Current is SwampArea)
+		{
+			Player.breath = Player.breathMax;
+		}
 	}
 
 	public override void PostUpdateEquips()

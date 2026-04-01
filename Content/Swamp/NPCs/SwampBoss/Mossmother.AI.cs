@@ -1,7 +1,6 @@
 ﻿using PathOfTerraria.Common;
 using PathOfTerraria.Common.Encounters;
 using PathOfTerraria.Common.Subworlds;
-using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.Dusts;
 using System.IO;
@@ -21,7 +20,7 @@ internal partial class Mossmother
 			NPC.position -= NPC.velocity * 0.55f;
 		}
 
-		if (State == BehaviorState.Huddled)
+		if (State == BehaviorState.Huddled) // Do nothing until all players are nearby, at which point, start the fight
 		{
 			NPC.dontTakeDamage = true;
 			bool allNearby = true;
@@ -37,7 +36,7 @@ internal partial class Mossmother
 
 			if (allNearby)
 			{
-				if (Main.netMode != NetmodeID.MultiplayerClient)
+				if (Main.netMode != NetmodeID.MultiplayerClient) // Make sure the last wall node is set so the logic is consistent
 				{
 					LastWallNodeSelected = Main.rand.Next(SwampArenaGeneration.TraverseWalls.Length);
 					NPC.netUpdate = true;
@@ -46,15 +45,21 @@ internal partial class Mossmother
 				SetState(BehaviorState.SpawnAnimation);
 			}
 		}
-		else if (State == BehaviorState.SpawnAnimation)
+		else if (State == BehaviorState.SpawnAnimation) // Does nothing but skip directly to the fight, as there is no spawn animation atm
 		{
 			NPC.GetGlobalNPC<ArenaEnemyNPC>().Arena = true;
 			NPC.dontTakeDamage = false;
 
 			SetState(BehaviorState.MoveToWall);
 		}
-		else if (State == BehaviorState.MoveToWall)
+		else if (State == BehaviorState.MoveToWall) 
 		{
+			// Using a spline curve, traverse the arena's walls to go from a moss patch -> different moss patch, spawning small adds in the way
+			// When the boss collides with the adds, the adds explode violently into a triad of projectiles
+			// This is synchronized between all living Caracarcosses, so ideally none will move to the same single moss patch
+			// It also checks for if the boss should "gas crawl" randomly for variety
+
+			// Wait timer for spawning adds, so the adds appear relatively slowly without the boss moving
 			ref float spawnAddsTimer = ref MiscTwo;
 
 			if (spawnAddsTimer > 0)
@@ -77,6 +82,7 @@ internal partial class Mossmother
 				return;
 			}
 
+			// Spline index to traverse to
 			ref float splineSlot = ref MiscNumber;
 
 			if (splineSlot >= movementSpline.Length && movementSpline.Length > 0)
@@ -102,18 +108,18 @@ internal partial class Mossmother
 				splineSlot++;
 			}
 		}
-		else if (State == BehaviorState.IdleInWall)
+		else if (State == BehaviorState.IdleInWall) // Coordinate next movement, if going to MoveToWall, or telegraph poison smog w/ dust & do that if every other boss is prepared
 		{
 			IdleInWall();
 		}
-		else if (State == BehaviorState.GasCrawl)
+		else if (State == BehaviorState.GasCrawl) // Slowly move with the poison screen effect enabled, only safe areas being near the player, otherwise behave like a slow MoveToWall
 		{
 			if (!GasCrawlBehavior())
 			{
 				return;
 			}
 		}
-		else if (State == BehaviorState.Desperation)
+		else if (State == BehaviorState.Desperation) // Sped up MoveToWall but no pauses, poison effect enabled (only above water) until dead, spawn adds in occasionally
 		{
 			ref float splineSlot = ref MiscNumber;
 
@@ -154,7 +160,7 @@ internal partial class Mossmother
 				}
 			}
 		}
-		else if (State == BehaviorState.PreDesperation)
+		else if (State == BehaviorState.PreDesperation) // Slow down, don't take damage, spam dust, until desperation phase starts - allows players to move before the boss starts going
 		{
 			NPC.dontTakeDamage = true;
 			NPC.velocity *= 0.95f;
@@ -257,7 +263,7 @@ internal partial class Mossmother
 
 			foreach (NPC npc in Main.ActiveNPCs)
 			{
-				if (npc.whoAmI != NPC.whoAmI && npc.ModNPC is Mossmother mother && ((mother.State == BehaviorState.IdleInWall && mother.Timer < 240) && mother.State != BehaviorState.GasCrawl))
+				if (npc.whoAmI != NPC.whoAmI && npc.ModNPC is Mossmother mo && ((mo.State == BehaviorState.IdleInWall && mo.Timer < 240) && mo.State != BehaviorState.GasCrawl))
 				{
 					allReady = false;
 					break;
@@ -282,6 +288,9 @@ internal partial class Mossmother
 		dust.noGravity = true;
 	}
 
+	/// <summary>
+	/// Used to reset states between attacks.
+	/// </summary>
 	public void SetState(BehaviorState state)
 	{
 		Timer = 0;
@@ -308,6 +317,9 @@ internal partial class Mossmother
 		}
 	}
 
+	/// <summary>
+	/// Constructs the spline for the boss to traverse during various behavior states.
+	/// </summary>
 	private void BuildSplineForMovement(bool desperation)
 	{
 		int endIndex;
@@ -331,7 +343,7 @@ internal partial class Mossmother
 	}
 
 	/// <summary>
-	/// Used to stop the mossmothers from having the exact same path and overlapping, causing confusion.
+	/// Used to stop the mossmothers from having the exact same path and overlapping, causing visual confusion.
 	/// </summary>
 	/// <param name="endIndex"></param>
 	/// <returns></returns>
