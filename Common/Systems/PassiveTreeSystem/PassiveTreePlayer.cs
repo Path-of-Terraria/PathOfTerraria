@@ -1,13 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using PathOfTerraria.Common.Data;
+﻿using PathOfTerraria.Common.Data;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI;
+using PathOfTerraria.Common.UI.Guide;
 using PathOfTerraria.Content.Passives;
 using PathOfTerraria.Content.Passives.Misc;
 using PathOfTerraria.Core.UI.SmartUI;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.PassiveTreeSystem;
@@ -25,6 +26,7 @@ internal class PassiveTreePlayer : ModPlayer
 	/// </summary>
 	public int ExtraPoints;
 
+	public float[] StrengthByPassive = new float[Passive.MaxId];
 	public List<Passive> ActiveNodes = [];
 	public List<Edge<Allocatable>> Edges = [];
 
@@ -42,14 +44,30 @@ internal class PassiveTreePlayer : ModPlayer
 		ExpModPlayer expPlayer = Main.LocalPlayer.GetModPlayer<ExpModPlayer>();
 		Points = expPlayer.EffectiveLevel + ExtraPoints;
 
-		SetTree();
+		SetTree(false);
 	}
 
-	private void SetTree()
+	/// <summary>
+	/// Sets or updates the tree according to the player's information.
+	/// </summary>
+	private void SetTree(bool setStrengths)
 	{
 		foreach (Passive passive in ActiveNodes.Where(passive => passive != null))
 		{
+			int oldLevel = passive.Level;
 			passive.Level = _saveData.TryGet(passive.ReferenceId.ToString(), out int level) ? level : passive.Name == "AnchorPassive" ? 1 : 0;
+
+			if (setStrengths)
+			{
+				if (oldLevel < passive.Level)
+				{
+					AllocatePassive(passive, passive.Level - oldLevel, false);
+				}
+				else if (oldLevel > passive.Level)
+				{
+					DeallocatePassive(passive, oldLevel - passive.Level);
+				}
+			}
 
 			if (passive is JewelSocket jsPassive)
 			{
@@ -76,7 +94,9 @@ internal class PassiveTreePlayer : ModPlayer
 
 		data.ForEach(n =>
 		{
-			passives.Add(n.ReferenceId, Passive.GetPassiveFromData(n));
+			var passive = Passive.GetPassiveFromData(n);
+			passives.Add(n.ReferenceId, passive);
+
 			if (passives[n.ReferenceId] != null)
 			{
 				ActiveNodes.Add(passives[n.ReferenceId]);
@@ -131,14 +151,10 @@ internal class PassiveTreePlayer : ModPlayer
 				continue;
 			}
 
-			while (node.Level > 0)
+			if (node.Level > 0)
 			{
-				node.OnDeallocate(Player);
-
-				if (node is not MasteryPassive)
-				{
-					Points++;
-				}
+				Player.GetModPlayer<PassiveTreePlayer>().DeallocatePassive(node, node.Level, false);
+				node.Level = 0;
 			}
 		}
 
@@ -151,31 +167,21 @@ internal class PassiveTreePlayer : ModPlayer
 		ExtraPoints = tag.GetInt("extraPoints");
 
 		ResetNodes();
-		SetTree();
+		SetTree(true);
 	}
 
 	/// <summary>
-	/// Gets the total value of every node of a given type on the passive tree. This includes multiplying a node's value by its level, though level is almost always 1.
+	/// Gets the total value of every node of a given type on the passive tree.
 	/// </summary>
-	internal float GetCumulativeValue<T>()
+	internal float GetCumulativeValue<T>() where T : Passive
 	{
-		float value = 0f;
-
-		foreach (Passive passive in ActiveNodes)
-		{
-			if (passive is T && passive.Level > 0)
-			{
-				value += passive.Value * passive.Level;
-			}
-		}
-
-		return value;
+		return StrengthByPassive[ModContent.GetInstance<T>().ID];
 	}
 
 	/// <summary>
 	/// Same as <see cref="GetCumulativeValue{T}"/>, but returns false if <paramref name="value"/> is 0.
 	/// </summary>
-	internal bool TryGetCumulativeValue<T>(out float value)
+	internal bool TryGetCumulativeValue<T>(out float value) where T : Passive
 	{
 		value = GetCumulativeValue<T>();
 		return value > 0;
@@ -265,5 +271,55 @@ internal class PassiveTreePlayer : ModPlayer
 		}
 
 		return new(false, []);
+	}
+
+	internal void AllocatePassive(Passive passive, int strength = 1, bool save = true)
+	{
+		if (passive is MasteryPassive) // Hardcode for this, which doesn't work the same as any other passive
+		{
+			return;
+		}
+
+		Points--;
+		Player.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.AllocatedPassive);
+		int id = Passive.PassiveNameToId[passive.Name];
+		StrengthByPassive[id] += strength;
+
+		if (save)
+		{
+			SaveData([]); // Instantly save the result because _saveData is needed whenever the element reloads - same in DeallocatePassive
+		}
+	}
+
+	internal void DeallocatePassive(Passive passive, int usedCost, bool save = true)
+	{
+		if (passive is MasteryPassive)
+		{
+			passive.Level--;
+			return;
+		}
+
+		int id = Passive.PassiveNameToId[passive.Name];
+
+		Points += usedCost;
+		Player.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.DeallocatedPassive);
+
+		ref float str = ref StrengthByPassive[id];
+
+		if (str > 0)
+		{
+			str = Math.Max(0, str - usedCost);
+		}
+#if DEBUG
+		else
+		{
+			System.Diagnostics.Debug.Fail($"Deallocation ran on a passive with no allocation to begin with? {passive.Name}");
+		}
+#endif
+
+		if (save)
+		{
+			SaveData([]);
+		}
 	}
 }

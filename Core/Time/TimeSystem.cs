@@ -1,4 +1,7 @@
-﻿namespace PathOfTerraria.Core.Time;
+﻿using PathOfTerraria.Utilities;
+using System.Reflection;
+
+namespace PathOfTerraria.Core.Time;
 
 internal sealed class TimeSystem : ModSystem
 {
@@ -28,34 +31,33 @@ internal sealed class TimeSystem : ModSystem
 		// Hooking of potentially executing draw methods has to be done on the main thread.
 		Main.QueueMainThreadAction(static () =>
 		{
-			On_Main.DoUpdate += OnDoUpdate;
-			On_Main.DoDraw += OnDoDraw;
+			// Cache LogicTime before updating
+			ILUtils.EmitILDetour(typeof(Main).GetMethod("DoUpdate", BindingFlags.Instance | BindingFlags.NonPublic), (Main main, ref GameTime gameTime) =>
+			{
+				LogicTime = (float)gameTime.TotalGameTime.TotalSeconds;
+			}, null);
+
+			// Cache some drawing information before drawing
+			ILUtils.EmitILDetour(typeof(Main).GetMethod("DoDraw", BindingFlags.Instance | BindingFlags.NonPublic), (Main main, GameTime gameTime) => // Set render info
+			{
+				uint updateCount = Main.GameUpdateCount;
+
+				RenderOnlyFrame = updateCount == lastRenderUpdateCount;
+				lastRenderUpdateCount = updateCount;
+
+				RenderTime = (float)gameTime.TotalGameTime.TotalSeconds;
+				RenderDeltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+			}, 
+			(Main main, GameTime gameTime) => // and then unset flag
+			{
+				RenderOnlyFrame = false;
+			});
 		});
 	}
+
 	public override void Unload()
 	{
 		Main.OnTickForInternalCodeOnly -= OnTickForInternalCodeOnly;
-	}
-
-	private static void OnDoUpdate(On_Main.orig_DoUpdate orig, Main main, ref GameTime gameTime)
-	{
-		LogicTime = (float)gameTime.TotalGameTime.TotalSeconds;
-
-		orig(main, ref gameTime);
-	}
-	private static void OnDoDraw(On_Main.orig_DoDraw orig, Main main, GameTime gameTime)
-	{
-		uint updateCount = Main.GameUpdateCount;
-
-		RenderOnlyFrame = updateCount == lastRenderUpdateCount;
-		lastRenderUpdateCount = updateCount;
-
-		RenderTime = (float)gameTime.TotalGameTime.TotalSeconds;
-		RenderDeltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-		orig(main, gameTime);
-
-		RenderOnlyFrame = false;
 	}
 
 	private static void OnTickForInternalCodeOnly()

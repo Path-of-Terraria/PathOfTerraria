@@ -1,4 +1,6 @@
-﻿using SubworldLibrary;
+﻿using PathOfTerraria.Utilities;
+using SubworldLibrary;
+using System.Reflection;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.DeerDomain;
 
@@ -8,10 +10,15 @@ internal class DeerclopsDomainLightEdits : ModSystem
 
 	public override void Load()
 	{
+		ILUtils.EmitILDetour(typeof(Main).GetMethod("Update", BindingFlags.NonPublic | BindingFlags.Instance), (Main self, GameTime gameTime) =>
+		{
+			// Reset light multiplier before anything else updates so it doesn't mess up drawing later
+			LightMultiplier = 0;
+		}, null);
+
 		On_Lighting.AddLight_int_int_float_float_float += HijackAddLight;
 		On_Lighting.AddLight_int_int_int_float += HideTorchLight;
 		On_Player.ItemCheck += SoftenPlayerLight;
-		On_Main.Update += ResetLightMul;
 		On_Projectile.ProjLight += HideProjLight;
 		On_Dust.UpdateDust += HideDustLight;
 	}
@@ -38,12 +45,6 @@ internal class DeerclopsDomainLightEdits : ModSystem
 		LightMultiplier = 0f;
 		orig(self);
 		LightMultiplier = 0f;
-	}
-
-	private void ResetLightMul(On_Main.orig_Update orig, Main self, GameTime gameTime)
-	{
-		LightMultiplier = 0;
-		orig(self, gameTime);
 	}
 
 	private void SoftenPlayerLight(On_Player.orig_ItemCheck orig, Player self)
