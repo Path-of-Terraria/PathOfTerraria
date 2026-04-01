@@ -32,15 +32,9 @@ internal class CultistMoonlordQuest() : Quest
 		return
 		[
 			// TODO: Change this to be the 5 new sigils found in the respective biomes.
-			new ParallelQuestStep("Start", [
-				new CollectCount("Sigil1", ItemID.CelestialSigil, 1),
-				new CollectCount("Sigil2", ItemID.CelestialSigil, 1),
-				new CollectCount("Sigil3", ItemID.CelestialSigil, 1),
-				new CollectCount("Sigil4", ItemID.CelestialSigil, 1),
-				new CollectCount("Sigil4", ItemID.CelestialSigil, 1),
-			], this.GetLocalization("CollectSigils")),
+			new InteractWithNPC("Start", NPCQuestGiver, this.GetLocalization("ReadyToGo")),
 		
-			new InteractWithNPC("Talk", NPCQuestGiver,Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.CultistMoonlordDialogue3"),
+			new InteractWithNPC("Talk", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.CultistMoonlordDialogue3"),
 				Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.CultistMoonlordDialogue3"),
 			onSuccess: _ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<CultistMap>())),
 

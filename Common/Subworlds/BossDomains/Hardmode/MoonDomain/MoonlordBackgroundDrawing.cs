@@ -101,7 +101,7 @@ internal class MoonlordBackgroundDrawing : ModSystem
 			}
 			else if (y < MoonLordDomain.PlanetTop && !bossDead)
 			{
-				opacity = MathHelper.Lerp(Utils.GetLerpValue(MoonLordDomain.PlanetTop - 200, MoonLordDomain.PlanetTop, y, true), 1, 1 - MoonDomainSystem.EffectStrength);
+				opacity = MathHelper.Lerp(Utils.GetLerpValue(MoonLordDomain.PlanetTop - 200, MoonLordDomain.PlanetTop, y, true), 1, MoonDomainSystem.EffectStrength);
 				DrawingSpecialStars = opacity;
 			}
 			else if (y < MoonLordDomain.CloudTop)

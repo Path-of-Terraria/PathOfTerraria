@@ -213,6 +213,7 @@ Quest: {
 		// Boss2: Defeat Moon Lord
 		// EnterDomain: Mods.PathOfTerraria.Quests.Quest.CultistMoonlordQuest.EnterDomain
 		// Boss: Mods.PathOfTerraria.Quests.Quest.CultistMoonlordQuest.Boss
+		// ReadyToGo: Mods.PathOfTerraria.Quests.Quest.CultistMoonlordQuest.ReadyToGo
 	}
 
 	EpilogueQuest: {
