@@ -3,7 +3,7 @@ using PathOfTerraria.Content.Swamp;
 using SubworldLibrary;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.Tiles.Maps.Swamp;
+namespace PathOfTerraria.Content.Swamp.Tiles;
 
 internal class SwampPad : ModTile, ILilyPadTile
 {

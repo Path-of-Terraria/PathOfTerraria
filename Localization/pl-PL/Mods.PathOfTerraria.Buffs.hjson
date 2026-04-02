@@ -268,3 +268,13 @@ MosquitoTrappedDebuff: {
 	// DisplayName: Squeezed
 	// Description: Losing life
 }
+
+ToxicSmogDebuff: {
+	// DisplayName: Toxic Smog
+	// Description: Losing life quicker and quicker
+}
+
+ToxicSmogImmunityBuff: {
+	// DisplayName: Revival Immunity
+	// Description: Short term immunity to Toxic Smog
+}
