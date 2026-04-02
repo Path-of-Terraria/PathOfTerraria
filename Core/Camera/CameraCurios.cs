@@ -5,6 +5,7 @@ using PathOfTerraria.Core.Time;
 using PathOfTerraria.Utilities;
 using PathOfTerraria.Utilities.Xna;
 using PathOfTerraria.Common.Utilities;
+using System.Linq;
 
 #nullable enable
 
@@ -74,7 +75,6 @@ internal sealed class CameraCurios : ModSystem
 		{
 			float intensityTarget = curio.Active ? 1f : 0f;
 			float fadePeriod = curio.Active ? curio.Style.FadeInLength : curio.Style.FadeOutLength;
-			fadePeriod = 1f;
 			curio.Intensity = fadePeriod <= 0f ? intensityTarget : MathUtils.StepTowards(curio.Intensity, intensityTarget, (1f / fadePeriod) * deltaTime);
 
 			if (curio.Style.Callback?.Invoke() is { } newPosition) { curio.Position = newPosition; }
@@ -128,15 +128,16 @@ internal sealed class CameraCurios : ModSystem
 
 		if (CameraSystem.MustSkipCameraUpdate) { return; }
 
-		Vector2 baseCameraPoint = Main.LocalPlayer.Center; //CameraSystem.ScreenCenter;
-		var offset = new WeightedValue2D<float, float>((0, 0), (0, 0), (1, 1));
-		var zoom = new WeightedValue<float, float>(0, 0, 1);
+		Vector2 baseCameraPoint = Main.LocalPlayer.Center + new Vector2(0, Main.LocalPlayer.gfxOffY); //CameraSystem.ScreenCenter;
+		float maxWeight = curios.Count != 0 ? curios.Max(c => c.Style.Weight) : 1f;
+		var offset = new WeightedValue2D<float, float>((0, 0), (0, 0), (maxWeight, maxWeight));
+		var zoom = new WeightedValue<float, float>(0, 0, 1f);
 
 		foreach (ref readonly CameraCurioInstance curio in CollectionsMarshal.AsSpan(curios))
 		{
 			Vector2 targetOffset = curio.Position - baseCameraPoint;
 			float intensity = Easings.QuadInOut(curio.Intensity);
-
+			
 			if (curio.Style.Range.HasValue)
 			{
 				intensity *= curio.Style.Range.Value.DistanceFactor(curio.Position.Distance(baseCameraPoint));
@@ -158,8 +159,10 @@ internal sealed class CameraCurios : ModSystem
 
 		if (offset.X.TotalWeight > 0 || offset.Y.TotalWeight > 0)
 		{
-			(float x, float y) = offset.Total();
-			Main.screenPosition += new Vector2(x, y).ToPoint().ToVector2();
+			(float offX, float offY) = offset.Total();
+			Vector2 usedOffset = new(MathF.Ceiling(offX), MathF.Ceiling(offY));
+			Vector2 screenPosPlusOffset = (Main.screenPosition + usedOffset);
+			Main.screenPosition = screenPosPlusOffset;
 		}
 
 		lastCalculatedZoom = zoom;
