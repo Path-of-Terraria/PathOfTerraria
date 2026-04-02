@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
+using PathOfTerraria.Common.Systems.MapContent;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using ReLogic.Content;
@@ -11,7 +12,7 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Projectiles.Utility;
 
-internal class AzarielPortal : ModProjectile, ISaveProjectile, IRightClickableProjectile
+internal class AzarielPortal : ModProjectile, ISaveProjectile, IRightClickableProjectile, IMapIcon
 {
 	public enum Domain
 	{
@@ -26,11 +27,9 @@ internal class AzarielPortal : ModProjectile, ISaveProjectile, IRightClickablePr
 
 	private static Asset<Effect> PortalEffect = null;
 
-	private ref float Timer => ref Projectile.ai[0];
+	private Domain DomainTarget => (Domain)Projectile.ai[0];
 	private ref float Uses => ref Projectile.ai[1];
 	private ref float MaxUses => ref Projectile.ai[2];
-
-	private Domain DomainTarget => (Domain)Projectile.localAI[0];
 
 	public override void SetStaticDefaults()
 	{
@@ -50,8 +49,11 @@ internal class AzarielPortal : ModProjectile, ISaveProjectile, IRightClickablePr
 		Projectile.timeLeft = 2;
 		Projectile.tileCollide = false;
 		Projectile.Size = new Vector2(224, 224);
-		Projectile.Opacity = 0.5f;
+		Projectile.Opacity = 0f;
 		Projectile.netImportant = true;
+		Projectile.aiStyle = -1;
+
+		AIType = -1;
 	}
 
 	public override bool? CanDamage()
@@ -61,11 +63,28 @@ internal class AzarielPortal : ModProjectile, ISaveProjectile, IRightClickablePr
 
 	public override void AI()
 	{
+		Projectile.timeLeft++;
+
+		if (NPC.downedMoonlord)
+		{
+			Projectile.alpha += 3;
+
+			if (Projectile.Opacity < 0.02f)
+			{
+				Projectile.Kill();
+			}
+
+			return;
+		}
+		else if (NPC.downedAncientCultist)
+		{
+
+		}
+
 		Main.CurrentFrameFlags.HadAnActiveInteractibleProjectile = true;
 
-		Projectile.timeLeft++;
 		Projectile.rotation += 0.15f;
-		Projectile.Opacity = MathHelper.Lerp(Projectile.Opacity, 1f, 0.05f);
+		Projectile.Opacity = MathHelper.Lerp(Projectile.Opacity, 1f, 0.002f);
 		Projectile.velocity *= 0.96f;
 
 		if (MaxUses == 0)
@@ -81,14 +100,13 @@ internal class AzarielPortal : ModProjectile, ISaveProjectile, IRightClickablePr
 		Texture2D tex = TextureAssets.Projectile[Type].Value;
 		Vector2 position = Projectile.Center - Main.screenPosition;
 
-		Main.spriteBatch.Draw(tex, position, null, Color.White * (MathF.Sin(Main.GameUpdateCount * 0.03f) * 0.2f + 0.4f), Projectile.rotation, tex.Size() / 2f, 1.2f, SpriteEffects.None, 0);
-		Color backPortalColor = Color.White * (MathF.Sin(Main.GameUpdateCount * 0.03f + MathHelper.PiOver2) * 0.2f + 0.6f);
+		Color backFadedColor = Color.White * (MathF.Sin(Main.GameUpdateCount * 0.03f) * 0.2f + 0.4f) * Projectile.Opacity;
+		Main.spriteBatch.Draw(tex, position, null, backFadedColor, Projectile.rotation, tex.Size() / 2f, 1.2f, SpriteEffects.None, 0);
+		Color backPortalColor = Color.White * (MathF.Sin(Main.GameUpdateCount * 0.03f + MathHelper.PiOver2) * 0.2f + 0.6f) * Projectile.Opacity;
 		Main.spriteBatch.Draw(tex, position, null, backPortalColor, Projectile.rotation, tex.Size() / 2f, 1.1f, SpriteEffects.None, 0);
-		Main.spriteBatch.Draw(tex, position, null, Color.White, Projectile.rotation, tex.Size() / 2f, 1f, SpriteEffects.None, 0);
+		Main.spriteBatch.Draw(tex, position, null, Color.White * Projectile.Opacity, Projectile.rotation, tex.Size() / 2f, 1f, SpriteEffects.None, 0);
 
 		Main.spriteBatch.End();
-
-		Projectile.localAI[0] = Main.LocalPlayer.selectedItem % 2;
 
 		Vector2 scale = DomainTarget == Domain.Cultist ? new Vector2(0.1f, 0.8f) : new Vector2(0.1f, 0.3f);
 		Texture2D backTexture = (DomainTarget == Domain.Cultist ? CultistBack : MoonLordBack).Value;
@@ -99,10 +117,11 @@ internal class AzarielPortal : ModProjectile, ISaveProjectile, IRightClickablePr
 		effect.Parameters["scroll"].SetValue(new Vector2(Main.GameUpdateCount * 0.0008f, 0.22f));
 		effect.Parameters["mask"].SetValue(PortalMask.Value);
 		effect.Parameters["uvScale"].SetValue(scale);
+		effect.Parameters["opacity"].SetValue(Projectile.Opacity);
 		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, trans);
 
 		Vector2 innerPosition = Projectile.position - Main.screenPosition + weirdHardcodedOffset;
-		Main.spriteBatch.Draw(backTexture, innerPosition, null, Color.White, 0f, tex.Size() / 2f, tex.Size() / backTexture.Size(), SpriteEffects.None, 0);
+		Main.spriteBatch.Draw(backTexture, innerPosition, null, Color.White * Projectile.Opacity, 0f, tex.Size() / 2f, tex.Size() / backTexture.Size(), SpriteEffects.None, 0);
 
 		Main.spriteBatch.End();
 		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, trans);
@@ -113,12 +132,13 @@ internal class AzarielPortal : ModProjectile, ISaveProjectile, IRightClickablePr
 
 	public void SaveData(TagCompound tag)
 	{
+		tag.Add("target", (byte)DomainTarget);
 		tag.Add("uses", Uses);
 	}
 
 	public void LoadData(TagCompound tag, Projectile projectile)
 	{
-		projectile.ai[0] = 49;
+		projectile.ai[0] = tag.GetByte("target");
 		projectile.ai[1] = tag.GetFloat("uses");
 	}
 

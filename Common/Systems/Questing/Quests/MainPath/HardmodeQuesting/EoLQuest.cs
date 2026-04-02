@@ -54,7 +54,7 @@ internal class EoLQuest() : Quest
 			new ConditionCheck("Boss", _ => BossTracker.DownedInDomain<EmpressDomain>(NPCID.HallowBoss), 1, this.GetLocalization("Boss")),
 		
 			new InteractWithNPC("Finish", NPCQuestGiver, this.GetLocalization("Boss"), 
-				Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.EoL.1"))
+				Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.EoL.2"))
 		];
 	}
 

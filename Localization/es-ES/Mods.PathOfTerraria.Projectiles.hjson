@@ -241,9 +241,9 @@ UnderwaterRift: {
 }
 
 // SlashAoE.DisplayName: Slash AoE
-// FloatingMudplatform.DisplayName: Floating Mudplatform
-// BrittleFloatingMudplatform.DisplayName: Brittle Floating Mudplatform
+// FloatingMudplatform.DisplayName: Mudplatform
+// BrittleFloatingMudplatform.DisplayName: Mudplatform
 // CryoStalkerIcicle.DisplayName: Cryo Stalker Icicle
 // FallenShamanRocket.DisplayName: Fallen Shaman Rocket
 // FallenSoul.DisplayName: Fallen Soul
-// AzarielPortal.DisplayName: Azariel Portal
+// AzarielPortal.DisplayName: Stable Portal

@@ -214,6 +214,7 @@ Quest: {
 		EnterDomain: Mods.PathOfTerraria.Quests.Quest.CultistMoonlordQuest.EnterDomain
 		Boss: Mods.PathOfTerraria.Quests.Quest.CultistMoonlordQuest.Boss
 		ReadyToGo: Mods.PathOfTerraria.Quests.Quest.CultistMoonlordQuest.ReadyToGo
+		Prepare: Prepare yourself in the Overworld
 	}
 
 	EpilogueQuest: {

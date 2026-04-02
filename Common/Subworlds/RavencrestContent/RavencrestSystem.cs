@@ -30,7 +30,14 @@ public class RavencrestSystem : ModSystem
 	/// <summary> Extra NPCs that do not spawn here by default. </summary>
 	public readonly HashSet<string> HasOverworldNPC = [];
 
+	/// <summary>
+	/// Keys: Lodge (Hunter), Forge (Blacksmith), Burrow (Witch), Observatory (Eldric), Library (Wizard), Workshop (Tinkerer)
+	/// </summary>
 	internal static readonly Dictionary<string, ImprovableStructure> Structures = [];
+
+	/// <summary>
+	/// Keys: Chamber (Cultist), Port (Fisherman)
+	/// </summary>
 	internal static readonly Dictionary<string, Point16> StaticStructureLocations = [];
 
 	public bool SpawnedRaven = false;
