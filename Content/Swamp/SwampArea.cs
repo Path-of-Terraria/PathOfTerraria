@@ -657,6 +657,5 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 	public void OverrideBiome()
 	{
 		Main.bgStyle = 0;
-		Main.curMusic = MusicID.OverworldDay;
 	}
 }
