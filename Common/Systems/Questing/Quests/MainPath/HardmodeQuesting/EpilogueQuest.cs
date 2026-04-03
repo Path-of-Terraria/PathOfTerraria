@@ -4,11 +4,12 @@ using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
 using PathOfTerraria.Content.NPCs.Town;
-using SubworldLibrary;
 using System.Collections.Generic;
 using PathOfTerraria.Common.Subworlds;
 using Terraria.ID;
 using Terraria.Localization;
+using PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
+using PathOfTerraria.Content.NPCs.Mapping.Forest.GrovetenderBoss;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 
@@ -22,24 +23,13 @@ internal class EpilogueQuest() : Quest
 		new ActionRewards((p, v) => p.GetModPlayer<ExpModPlayer>().Exp += 100000, "100000 experience"),
 	];
 
-	public override bool IsLoadingEnabled(Mod mod)
-	{
-		return false;
-	}
-
 	public override List<QuestStep> SetSteps()
 	{
 		return
 		[
-			new ConditionCheck("Start", _ => 
-			{
-				MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
-				//TODO: This is done using the old system. Theres probably a better way to do this.
-				return tracker.CompletionsAtOrAboveTier(15) >= MappingDomainSystem.RequiredCompletionsPerTier;
-			}, 1, () => this.GetLocalization("Tiers").WithFormatArgs(
-				MathHelper.Clamp(ModContent.GetInstance<MappingDomainSystem>().Tracker.CompletionsAtOrAboveTier(15), 0, MappingDomainSystem.RequiredCompletionsPerTier),
-				MappingDomainSystem.RequiredCompletionsPerTier
-			)),
+			new ConditionCheck("Start", plr => BossTracker.TotalBossesDowned.Contains(ModContent.NPCType<SunDevourerNPC>()) 
+				|| BossTracker.TotalBossesDowned.Contains(ModContent.NPCType<Grovetender>()) || BossTracker.TotalBossesDowned.Contains(ModContent.NPCType<SunDevourerNPC>()), 0, 
+				this.GetLocalization("BeatABoss"), Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.Epilogue.0")),
 			
 			new InteractWithNPC("Talk", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.EpilogueDialoue2"),
 				Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.EpilogueDialogue2")),

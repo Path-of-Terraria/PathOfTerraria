@@ -1490,3 +1490,8 @@ SwampMossItem: {
 	// DisplayName: Swamp Moss
 	// Tooltip: ""
 }
+
+SwampMap: {
+	// DisplayName: Swamp Map
+	// Tooltip: ""
+}

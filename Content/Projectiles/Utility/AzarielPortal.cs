@@ -78,7 +78,7 @@ internal class AzarielPortal : ModProjectile, ISaveProjectile, IRightClickablePr
 		}
 		else if (NPC.downedAncientCultist)
 		{
-
+			Projectile.ai[0] = 1;
 		}
 
 		Main.CurrentFrameFlags.HadAnActiveInteractibleProjectile = true;

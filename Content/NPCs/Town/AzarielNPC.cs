@@ -8,6 +8,7 @@ using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 using PathOfTerraria.Common.Utilities.Extensions;
+using PathOfTerraria.Content.Items.Consumables.Maps.ExplorableMaps;
 using PathOfTerraria.Content.Projectiles.Utility;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -84,14 +85,16 @@ public class AzarielNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnI
 	
 	private static Quest DetermineNewestQuest()
 	{
-		if (QuestUnlockManager.CanStartQuest<CultistMoonlordQuest>())
+		if (QuestUnlockManager.CanStartQuest<CultistMoonlordQuest>() || Quest.GetLocalPlayerInstance<CultistMoonlordQuest>().Active)
 		{
 			return Quest.GetLocalPlayerInstance<CultistMoonlordQuest>();
 		}
-		//if (QuestUnlockManager.CanStartQuest<EpilogueQuest>())
-		//{
-		//	return Quest.GetLocalPlayerInstance<EpilogueQuest>();
-		//}
+
+		if (QuestUnlockManager.CanStartQuest<EpilogueQuest>() || Quest.GetLocalPlayerInstance<EpilogueQuest>().Active)
+		{
+			return Quest.GetLocalPlayerInstance<EpilogueQuest>();
+		}
+
 		return Quest.GetLocalPlayerInstance<CultistMoonlordQuest>(); //Shouldn't be possible, but just in case
 	}
 
@@ -99,12 +102,12 @@ public class AzarielNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnI
 	{
 		button = Language.GetTextValue("LegacyInterface.28"); // Shop
 
-		bool hasAvailableQuest = QuestUnlockManager.CanStartQuest<CultistMoonlordQuest>();
+		bool hasAvailableQuest = QuestUnlockManager.CanStartQuest<CultistMoonlordQuest>() || QuestUnlockManager.CanStartQuest<EpilogueQuest>();
 		//Also epilogue quest
 
 		Quest cultistQuest = Quest.GetLocalPlayerInstance<CultistMoonlordQuest>();
 
-		if (cultistQuest.Active && cultistQuest.CurrentStep >= 3)
+		if (cultistQuest.Active && cultistQuest.CurrentStep >= 3 && NoPortal())
 		{
 			button2 = "Portal";
 			return;
@@ -121,6 +124,19 @@ public class AzarielNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnI
 		//}
 	}
 
+	private static bool NoPortal()
+	{
+		foreach (Projectile projectile in Main.ActiveProjectiles)
+		{
+			if (projectile.ModProjectile is AzarielPortal)
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
 	{
 		if (firstButton)
@@ -128,6 +144,7 @@ public class AzarielNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnI
 			shopName = "Shop";
 			return;
 		}
+
 		//Next button to show part 2 of the dialogue
 		if (QuestUnlockManager.CanStartQuest<CultistMoonlordQuest>())
 		{
@@ -137,20 +154,26 @@ public class AzarielNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnI
 
 		Quest cultistQuest = Quest.GetLocalPlayerInstance<CultistMoonlordQuest>();
 
-		if (cultistQuest.Active && cultistQuest.CurrentStep >= 3)
+		if (cultistQuest.Active && cultistQuest.CurrentStep >= 3 && NoPortal())
 		{
 			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.Endgame.Retry");
 			Point16 pos = RavencrestSystem.StaticStructureLocations["Chamber"];
-			Projectile.NewProjectile(new EntitySource_Misc("Quest"), pos.ToWorldCoordinates(8, -136), Vector2.Zero, ModContent.ProjectileType<AzarielPortal>(), 1, 0, Main.myPlayer);
+			float domain = NPC.downedAncientCultist ? 1 : 0;
+			Projectile.NewProjectile(new EntitySource_Misc("Quest"), pos.ToWorldCoordinates(8, -136), Vector2.Zero, ModContent.ProjectileType<AzarielPortal>(), 0, 0, Main.myPlayer, domain);
 			return;
 		}
+		else if (QuestUnlockManager.CanStartQuest<EpilogueQuest>())
+		{
+			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.Epilogue.0");
+			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<EpilogueQuest>();
 
-		//else if (QuestUnlockManager.CanStartQuest<EpilogueQuest>())
-		//{
-		//	Main.npcChatText =
-		//		Language.GetTextValue("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.EpilogueDialogue1");
-		//	Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<EpilogueQuest>();
-		//}
+			Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, Main.rand.Next(3) switch 
+			{
+				0 => ModContent.ItemType<DesertMap>(),
+				1 => ModContent.ItemType<ForestMap>(),
+				_ => -1,
+			});
+		}
 	}
 
 	public override void AddShops()
