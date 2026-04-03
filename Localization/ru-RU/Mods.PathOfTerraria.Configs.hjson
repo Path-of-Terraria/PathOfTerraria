@@ -13,6 +13,11 @@ UIConfig: {
 	DisplayName: Конфигурация пользовательского интерфейса
 	Headers.UI: Заголовок пользовательского интерфейса
 
+	DisplayRichTooltipsInHotbar: {
+		// Label: Display Rich Tooltips In Hotbar
+		// Tooltip: If enabled, hovering over elements of the toolbar will display a full/rich tooltip, instead of just the name of the item or element.
+	}
+
 	PreventExpBarClicking: {
 		Label: Предотвратить нажатие на панель опыта
 		Tooltip: Если эта опция включена, вы не сможете нажать на панель опыта, чтобы открыть меню повышения уровня. Это будет возможно только с помощью горячей клавиши. Это полезно, если вы случайно откроете её, пытаясь нажать на другие элементы интерфейса.

@@ -1,20 +1,22 @@
+using PathOfTerraria.Common.Config;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.ModPlayers.SkillPlayers;
 using PathOfTerraria.Common.UI.SkillSelect;
-using PathOfTerraria.Common.UI.SkillsTree;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI;
 using PathOfTerraria.Core.UI.SmartUI;
+using PathOfTerraria.Utilities;
+using PathOfTerraria.Utilities.Terraria;
 using ReLogic.Content;
 using ReLogic.Graphics;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
-using Terraria.GameContent.RGB;
 using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.Localization;
@@ -22,6 +24,35 @@ using Terraria.UI;
 using Terraria.UI.Chat;
 
 namespace PathOfTerraria.Common.UI.Hotbar;
+
+/// <summary> Convenient toggle for rich hotbar tooltip display. </summary>
+public sealed class RichHotbarTooltipsToggle : BuilderToggle
+{
+	public static bool Value
+	{
+		get => ModContent.GetInstance<UIConfig>().DisplayRichTooltipsInHotbar;
+		set => ModContent.GetInstance<UIConfig>().DisplayRichTooltipsInHotbar = value;
+	}
+
+	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/UI/{nameof(RichHotbarTooltipsToggle)}";
+	public override string HoverTexture => $"{nameof(PathOfTerraria)}/Assets/UI/{nameof(RichHotbarTooltipsToggle)}";
+	public override Position OrderPosition => new Before(BlockSwap);
+
+	public override bool Active() { return true; }
+	public override bool OnLeftClick(ref SoundStyle? sound) { Value = !Value; return true; }
+	public override string DisplayValue() { return Mod.GetLocalization($"UI.Hotbar.RichTooltipsToggle.{(Value ? "On" : "Off")}").Value; }
+
+	public override bool Draw(SpriteBatch spriteBatch, ref BuilderToggleDrawParams drawParams)
+	{
+		drawParams.Frame = new SpriteFrame(2, 2).With((byte)(Value ? 1 : 0), 0).GetSourceRectangle(drawParams.Texture);
+		return true;
+	}
+	public override bool DrawHover(SpriteBatch spriteBatch, ref BuilderToggleDrawParams drawParams)
+	{
+		drawParams.Frame = new SpriteFrame(2, 2).With((byte)(Value ? 1 : 0), 1).GetSourceRectangle(drawParams.Texture);
+		return true;
+	}
+}
 
 public sealed class NewHotbar : SmartUiState
 {
@@ -297,13 +328,17 @@ public sealed class NewHotbar : SmartUiState
 		DrawSkill(spriteBatch, off, opacity, glow, 2);
 	}
 
-	private static void DrawSkill(SpriteBatch spriteBatch, float off, float opacity, Texture2D glow, int skillIndex)
+	internal static Rectangle GetSkillRect(int index, float offset)
 	{
 		// Texture width is hardcoded as the UI doesn't account for anything larger and anything smaller should be on a 50x50 canvas anyway.
 		const int TextureSize = 50;
-
+		var result = new Rectangle(268 + 52 * index, (int)(8 + offset) + TextureSize - 25, TextureSize, TextureSize);
+		return result;
+	}
+	private static void DrawSkill(SpriteBatch spriteBatch, float off, float opacity, Texture2D glow, int skillIndex)
+	{
 		SkillCombatPlayer skillCombatPlayer = Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>();
-		var skillRect = new Rectangle(268 + 52 * skillIndex, (int)(8 + off) + TextureSize - 25, TextureSize, TextureSize);
+		Rectangle skillRect = GetSkillRect(skillIndex, off);
 		bool hovering = skillRect.Contains(Main.MouseScreen.ToPoint());
 
 		if (Main.mouseLeft && Main.mouseLeftRelease && hovering)
@@ -375,8 +410,6 @@ public sealed class NewHotbar : SmartUiState
 
 		if (hovering)
 		{
-			DrawSkillHoverTooltips(skill, skillIndex);
-
 			if (Main.mouseRight && Main.mouseRightRelease)
 			{
 				skillCombatPlayer.HotbarSkills[skillIndex] = null;
@@ -397,6 +430,14 @@ public sealed class NewHotbar : SmartUiState
 	{
 		string level = Language.GetText("Mods.PathOfTerraria.Skills.LevelLine").WithFormatArgs(skill.Level, skill.MaxLevel).Value;
 		string title = skill.DisplayName.Value + " " + level;
+
+		if (skillIndex != null && !RichHotbarTooltipsToggle.Value
+		&& (!UIManager.TryGet(SkillSelectUI.Identifier, out UIManager.UIStateData data) || !data.Enabled))
+		{
+			Main.hoverItemName = title;
+			Main.rare = ItemRarityID.Orange;
+			return;
+		}
 
 		SkillFailure failure = default;
 		bool canUse = skill.CanUseSkill(Main.LocalPlayer, ref failure, true);
@@ -643,14 +684,14 @@ public sealed class NewHotbar : SmartUiState
 
 	private static bool TryGetKeybindName(ModKeybind key, bool trim, [NotNullWhen(true)] out string result)
 	{
-		string name = key.GetAssignedKeys().FirstOrDefault();
 		result = null;
 
-		if (string.IsNullOrEmpty(name))
+		// Acquire assigned keys in safe manner to prevent occasional errors that may occur when loading the game using the skipselect launch argument.
+		if (!key.TryGetAssignedKeys(out List<string> assignedKeys) || assignedKeys.FirstOrDefault() is not { } name || string.IsNullOrEmpty(name))
 		{
 			return false;
 		}
-
+		
 		// Remove 'D' from numerical keybinds. "D1" -> "1"
 		if (name[0] == 'D' && int.TryParse(name[1].ToString(), out _))
 		{
@@ -679,38 +720,42 @@ public class HijackHotbarClick : ModSystem
 
 	private void StopClickOnHotbar(On_Main.orig_GUIHotbarDrawInner orig, Main self)
 	{
-		bool hbLocked = Main.LocalPlayer.hbLocked; // Lock hotbar for the original method so we don't fight against vanilla
-
-		try
+		// Lock hotbar for the original method, so that we don't fight against vanilla.
+		using (var _ = ValueOverride.Create(ref Main.LocalPlayer.hbLocked, true))
 		{
-			Main.LocalPlayer.hbLocked = true;
 			orig(self);
-		}
-		finally
-		{
-			Main.LocalPlayer.hbLocked = hbLocked;
 		}
 
 		bool combatMode = NewHotbar.LocalCombatMode;
 
 		if (combatMode)
 		{
-			DrawPotionHotbarTooltips(hbLocked);
+			DrawPotionHotbarTooltips();
+			DrawSkillHotbarTooltips();
 		}
 
 		if (NewHotbar.Textures.TryGetValue("HotbarBack", out Asset<Texture2D> back))
 		{
-			DrawItemHotbarTooltips(hbLocked, combatMode, back.Value);
+			DrawItemHotbarTooltips(Main.LocalPlayer.hbLocked, combatMode, back.Value);
 		}
 	}
 
-	private static void DrawPotionHotbarTooltips(bool hbLocked)
+	private static void DrawSkillHotbarTooltips()
 	{
-		if (hbLocked)
+		if (Main.playerInventory) { return; }
+		
+		SkillCombatPlayer skillCombatPlayer = Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>();
+		for (int skillIndex = 0; skillIndex < 3; skillIndex++)
 		{
-			return;
+			Rectangle skillRect = NewHotbar.GetSkillRect(skillIndex, 0f);
+			if (skillCombatPlayer.HotbarSkills[skillIndex] is { } skill && skillRect.Contains(Main.MouseScreen.ToPoint()))
+			{
+				NewHotbar.DrawSkillHoverTooltips(skill, skillIndex);
+			}
 		}
-
+	}
+	private static void DrawPotionHotbarTooltips()
+	{
 		const int HotbarOffX = 20;
 		const int HotbarOffY = 20;
 		const int InnerHotbarOffX = 436;
@@ -723,7 +768,7 @@ public class HijackHotbarClick : ModSystem
 		int offX = RealHotbarOffX;
 		int offY = RealHotbarOffY;
 
-		for (int i = 0; i < 2; i++)
+		for (int i = 0; i < 3; i++)
 		{
 			var pos = new Rectangle(offX, offY, SlotSize, SlotSize);
 
@@ -740,15 +785,21 @@ public class HijackHotbarClick : ModSystem
 	{
 		string type = health ? "Health" : "Mana";
 		PotionPlayer potions = Main.LocalPlayer.GetModPlayer<PotionPlayer>();
+		string title = Language.GetTextValue($"Mods.PathOfTerraria.Misc.{type}PotionTooltip");
+		string subtitle =
+		(
+			Language.GetTextValue($"Mods.PathOfTerraria.Misc.Restores{type}Tooltip", health ? potions.HealPower : potions.ManaPower) + "\n"
+			+ Language.GetTextValue($"Mods.PathOfTerraria.Misc.CooldownTooltip", MathF.Round((health ? potions.HealDelay : potions.ManaDelay) / 60f, 2).ToString("0.00"))
+		);
 
-		Tooltip.Create(new TooltipDescription
+		if (!RichHotbarTooltipsToggle.Value)
 		{
-			Identifier = type,
-			SimpleTitle = Language.GetTextValue($"Mods.PathOfTerraria.Misc.{type}PotionTooltip"),
-			SimpleSubtitle = Language.GetTextValue($"Mods.PathOfTerraria.Misc.Restores{type}Tooltip", health ? potions.HealPower : potions.ManaPower)
-				+ "\n" + Language.GetTextValue($"Mods.PathOfTerraria.Misc.CooldownTooltip", MathF.Round((health ? potions.HealDelay : potions.ManaDelay) / 60f, 2).ToString("0.00")),
-			VisibilityTimeInTicks = 0,
-		});
+			Main.hoverItemName = title;
+			Main.rare = health ? ItemRarityID.Red : ItemRarityID.Blue;
+			return;
+		}
+
+		Tooltip.Create(new TooltipDescription { Identifier = type, SimpleTitle = title, SimpleSubtitle = subtitle, VisibilityTimeInTicks = 0 });
 	}
 
 	private static void DrawItemHotbarTooltips(bool hbLocked, bool combatMode, Texture2D back)
@@ -757,52 +808,46 @@ public class HijackHotbarClick : ModSystem
 		int start = combatMode ? 0 : 0;
 		int end = combatMode ? 1 : 9;
 
-		const int FirstSlot = 0;
 		const int NumLargeSlots = 2;
 		const int BaseXOffset = 20;
 		const int BaseYOffset = 30;
 		const int LargeToSmallXOffset = 6;
 		(int LargeXSize, int LargeYSize, int LargeXOffset) = (60, 60, 2);
 		(int SmallXSize, int SmallYSize, int SmallXOffset) = (back.Width, back.Height, 4);
+		bool fullTooltip = RichHotbarTooltipsToggle.Value;
 
-		if (!PlayerInput.IgnoreMouseInterface && !Main.LocalPlayer.channel && !Main.playerInventory && !hbLocked)
+		// When the hotbar is locked, still display tooltips, but in a partial manner.
+		if (!PlayerInput.IgnoreMouseInterface && !Main.LocalPlayer.channel && !Main.playerInventory)
 		{
 			for (int i = start; i <= end; i++) // This mimics how Terraria handles clicking on the slots by default. Almost entirely grabbed from the vanilla method this detours.
 			{
 				var pos = new Rectangle(
-					BaseXOffset + (Math.Min(i, NumLargeSlots) * (LargeXSize + LargeXOffset)) 
-					+ (i >= NumLargeSlots ? LargeToSmallXOffset : 0) 
+					BaseXOffset + (Math.Min(i, NumLargeSlots) * (LargeXSize + LargeXOffset))
+					+ (i >= NumLargeSlots ? LargeToSmallXOffset : 0)
 					+ (Math.Max(0, i - NumLargeSlots) * (SmallXSize + SmallXOffset)),
 					BaseYOffset,
 					i < NumLargeSlots ? LargeXSize : SmallXSize,
 					i < NumLargeSlots ? LargeYSize : SmallYSize
 				);
+				Item item = Main.LocalPlayer.inventory[i];
 
 				if (pos.Contains(Main.MouseScreen.ToPoint()))
 				{
-					bool fullTooltip = combatMode && i == FirstSlot;
-
 					Main.LocalPlayer.mouseInterface = true;
 					Main.LocalPlayer.cursorItemIconEnabled = false;
-					Main.rare = Main.LocalPlayer.inventory[i].rare;
+					Main.rare = item.rare;
 
-					if (fullTooltip)
-					{
-						Main.HoverItem = Main.LocalPlayer.inventory[FirstSlot].Clone();
-					}
-					else
-					{
-						Main.hoverItemName = Main.LocalPlayer.inventory[i].AffixName();
-					}
+					if (fullTooltip) { Main.HoverItem = item.Clone(); }
+					else { Main.hoverItemName = item.AffixName(); }
 
 					if (Main.mouseLeft && !hbLocked && !Main.blockMouse)
 					{
 						Main.LocalPlayer.changeItem = i;
 					}
 
-					if (!fullTooltip && Main.LocalPlayer.inventory[i].stack > 1)
+					if (!fullTooltip && item.stack > 1)
 					{
-						Main.hoverItemName = Main.hoverItemName + " (" + Main.LocalPlayer.inventory[i].stack + ")";
+						Main.hoverItemName = Main.hoverItemName + " (" + item.stack + ")";
 					}
 
 					break;

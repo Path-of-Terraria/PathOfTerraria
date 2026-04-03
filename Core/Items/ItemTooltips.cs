@@ -127,7 +127,7 @@ public sealed partial class ItemTooltips : GlobalItem
 		{
 			yOffset = 12;
 
-			if (Tooltip.CachedTooltip is not { } cache || Tooltip.SuppressDrawing)
+			if (Tooltip.RenderingTooltip is not { } cache || Tooltip.SuppressDrawing)
 			{
 				return Tooltip.SuppressDrawing;
 			}

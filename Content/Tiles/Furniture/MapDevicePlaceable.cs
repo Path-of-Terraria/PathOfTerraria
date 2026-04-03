@@ -454,6 +454,9 @@ internal class MapDeviceEntity : ModTileEntity
 			{
 				MapDeviceInteraction.Send(ID, MapDeviceInteraction.Kind.OpenInterface, toClient: playerId.Value);
 
+				// Unfortunately the inventory sync here could actually cause a duping glitch if someone with enough delay abuses it:
+				// MapDeviceSync.CorrectDesync(ID, netSender, MapDeviceSync.Flags.FullSync);
+
 				// Synchronize map resources just in case the world or the client have never received them.
 				MapResources.RequestMessage.Send();
 			}
@@ -676,15 +679,23 @@ internal class MapDeviceEntity : ModTileEntity
 			return false;
 		}
 
-		// Refuse if there is already a map or another injection.
-		if (StoredMap is { IsAir: false } || Injection.HasValue)
+		// Refuse if there is already a map present.
+		if (StoredMap is { IsAir: false } || Injection != null)
 		{
+			DebugUtils.DebugLog($"Cannot inject as a map or another injection is already present.");
+			MapDeviceSync.CorrectDesync(ID, netSender, MapDeviceSync.Flags.Injection | MapDeviceSync.Flags.Map);
 			return false;
 		}
 
 		// Refuse interaction if the resource ID is invalid or if there is not enough of it.
-		if (!MapResources.TryGet(resourceId, out MapResource resource) || resource.Value < resource.Cost)
+		if (!MapResources.TryGet(resourceId, out MapResource resource))
 		{
+			DebugUtils.DebugLog($"Invalid resource ID: {resourceId}");
+			return false;
+		}
+		if (resource.Value < resource.Cost)
+		{
+			DebugUtils.DebugLog($"Not enough of {ContentSamples.ItemsByType[resource.AssociatedItem].Name} resource, need {resource.Cost} but only got {resource.Value}.");
 			return false;
 		}
 
@@ -710,7 +721,7 @@ internal class MapDeviceEntity : ModTileEntity
 		// Broadcast the interaction.
 		if (Main.netMode == NetmodeID.Server)
 		{
-			MapDeviceInteraction.Send(ID, MapDeviceInteraction.Kind.InjectResource);
+			MapDeviceInteraction.Send(ID, MapDeviceInteraction.Kind.InjectResource, arg: resourceId);
 		}
 
 		return true;
@@ -730,6 +741,7 @@ internal class MapDeviceEntity : ModTileEntity
 		// Refuse if there is no injection.
 		if (Injection is not { } injection)
 		{
+			MapDeviceSync.CorrectDesync(ID, netSender, MapDeviceSync.Flags.Injection);
 			return false;
 		}
 
@@ -781,6 +793,8 @@ internal class MapDeviceInteraction : Handler
 
 	public static void Send(int entityId, Kind kind, int arg = 0, int toClient = -1, int ignoreClient = -1)
 	{
+		DebugUtils.DebugLog($"Sending interaction confirmation: {kind}");
+		
 		ModPacket packet = Networking.GetPacket<MapDeviceInteraction>();
 		packet.Write((int)entityId);
 		packet.Write((byte)kind);
@@ -794,6 +808,8 @@ internal class MapDeviceInteraction : Handler
 		var kind = (Kind)reader.ReadByte();
 		int arg = reader.Read7BitEncodedInt();
 
+		DebugUtils.DebugLog($"Interaction received: {kind}");
+
 		if (TileEntity.ByID.TryGetValue(entityId, out TileEntity? tileEntity) && tileEntity is MapDeviceEntity mapEntity)
 		{
 			switch (kind)
@@ -804,6 +820,7 @@ internal class MapDeviceInteraction : Handler
 				case Kind.ClosePortal: mapEntity.TryClosingPortal(netSender: sender); break;
 				case Kind.EnterPortal: mapEntity.TryEnteringPortal(netSender: sender); break;
 				case Kind.InjectResource: mapEntity.TryInjectingResource(resourceId: arg, netSender: sender); break;
+				case Kind.EjectResource: mapEntity.TryEjectingResource(netSender: sender); break;
 			}
 		}
 	}
@@ -821,7 +838,15 @@ internal class MapDeviceSync : Handler
 		FullSync = Status | Map | Storage | Injection,
 	}
 
-	public static void Send(int entityId, Flags flags, IEnumerable<int>? itemIndices, int toClient = -1, int ignoreClient = -1)
+	public static void CorrectDesync(int entityId, byte? toClient, Flags flags)
+	{
+		if (Main.netMode == NetmodeID.Server && toClient != null)
+		{
+			Send(entityId, flags, toClient: toClient.Value);
+		}
+	}
+
+	public static void Send(int entityId, Flags flags, IEnumerable<int>? itemIndices = null, int toClient = -1, int ignoreClient = -1)
 	{
 		if (!TileEntity.ByID.TryGetValue(entityId, out TileEntity? tileEntity) || tileEntity is not MapDeviceEntity device)
 		{

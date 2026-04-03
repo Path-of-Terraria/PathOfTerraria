@@ -67,7 +67,7 @@ public class Tooltip : SmartUiState
 		public ulong EndTime;
 	}
 
-	internal static TooltipCache? CachedTooltip = default;
+	internal static TooltipCache? RenderingTooltip = default;
 
 	/// <summary>
 	/// Suppresses drawing in PreDrawTooltip, as we need it to get information *before* actually drawing the tooltip. 
@@ -249,7 +249,7 @@ public class Tooltip : SmartUiState
 		cache.Position.X = Math.Max(0, Math.Min(cache.Position.X, Main.screenWidth - cache.OuterSize.X));
 		cache.Position.Y = Math.Max(0, Math.Min(cache.Position.Y, Main.screenHeight - cache.OuterSize.Y));
 
-		CachedTooltip = cache;
+		RenderingTooltip = cache;
 	}
 
 	private static void ResolveTooltipCollisions(Span<TooltipInstance> tooltips)
@@ -285,6 +285,9 @@ public class Tooltip : SmartUiState
 	/// <summary> Immediately draws the provided tooltip on the screen, using the provided cache. </summary>
 	public static void Render(in TooltipDescription args, in TooltipCache cache)
 	{
+		// Store currently rendering tooltip cache for external code to read if needed.
+		RenderingTooltip = cache;
+		
 		// Draw the background.
 		var bgDstRect = new Rectangle
 		{
