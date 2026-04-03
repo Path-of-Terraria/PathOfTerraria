@@ -218,8 +218,8 @@ Quest: {
 	}
 
 	EpilogueQuest: {
-		// Name: A New Dawn
+		// Name: Distant Travels
 		// Description: ""
-		// Tiers: Complete {1} Exploration Maps
+		// BeatABoss: Beat any Explorable Domain boss
 	}
 }

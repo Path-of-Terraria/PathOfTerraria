@@ -60,11 +60,6 @@ Wand: {
 	Tooltip: ""
 }
 
-LowTierMap: {
-	DisplayName: Низкоуровневая карта
-	Tooltip: ""
-}
-
 BodyArmor: {
 	DisplayName: Бронежилет
 	Tooltip: ""
@@ -107,11 +102,6 @@ Tassets: {
 
 Treads: {
 	DisplayName: Подошвы
-	Tooltip: ""
-}
-
-CaveMap: {
-	DisplayName: Карта пещеры
 	Tooltip: ""
 }
 
@@ -1498,5 +1488,14 @@ MossyPurpleCloudsItem: {
 
 SwampMap: {
 	// DisplayName: Swamp Map
+	/* Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of moss and wood'
+		''' */
+}
+
+CrystalVisors: {
+	// DisplayName: Crystal Visors
 	// Tooltip: ""
 }

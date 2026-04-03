@@ -3,8 +3,10 @@ using System.IO;
 using System.Reflection;
 using PathOfTerraria.Common.NPCs.GlobalNPCs;
 using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.Subworlds.MappingAreas;
 using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
+using PathOfTerraria.Content.Swamp.NPCs.SwampBoss;
 using SubworldLibrary;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
@@ -101,7 +103,7 @@ internal sealed class BossTracker : ModSystem
 		bool isBoss = ContentSamples.NpcsByNetId[self.netID].boss || NPCID.Sets.ShouldBeCountedAsBoss[self.type];
 		bool isPillar = self.type is NPCID.LunarTowerNebula or NPCID.LunarTowerSolar or NPCID.LunarTowerStardust or NPCID.LunarTowerVortex;
 
-		if (SubworldSystem.Current is BossDomainSubworld && isBoss && !isPillar)
+		if (SubworldSystem.Current is BossDomainSubworld or IExplorationWorld && isBoss && !isPillar)
 		{
 			// Spawns the Wall of Flesh's box around itself, which is overriden by this method
 			OnDeathNPC.OnDeathEffects(self);
@@ -144,6 +146,12 @@ internal sealed class BossTracker : ModSystem
 			}
 
 			return true;
+		}
+
+		// Only count as downed when there's 1 mossmother left
+		if (type == ModContent.NPCType<Mossmother>() && NPC.CountNPCS(ModContent.NPCType<Mossmother>()) > 1)
+		{
+			return false;
 		}
 
 		if (!isBoss)

@@ -1057,3 +1057,8 @@ Mossling: {
 	DisplayName: Mossling
 	Entry: A small, docile, delicious morsel. Grows into the larger {$Mossmother.DisplayName} over years and years...if they're lucky. Very, very few are lucky.
 }
+
+NostalgicShard: {
+	DisplayName: Nostalgic Shard
+	Entry: An odd, half-dimensional creature that, for some reason, cannot stand people. It's said make to make people reminisce in a way that is uncomfortable, somehow.
+}

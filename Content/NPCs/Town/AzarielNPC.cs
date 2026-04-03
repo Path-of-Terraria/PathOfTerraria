@@ -113,15 +113,7 @@ public class AzarielNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnI
 			return;
 		}
 
-		// Check if quest just started and player hasn't seen the initial dialogue yet
-		//if (cultistQuest.Active && cultistQuest.CurrentStep == 0 && !hasSeenInitialDialogue)
-		//{
-		//	// button2 = Language.GetTextValue("Mods.PathOfTerraria.NPCs.Next"); // Not sure what this is for? Even given the above comment
-		//}
-		//else
-		//{
-			button2 = hasAvailableQuest ? Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest") : "";
-		//}
+		button2 = hasAvailableQuest ? Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest") : "";
 	}
 
 	private static bool NoPortal()
@@ -171,7 +163,7 @@ public class AzarielNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnI
 			{
 				0 => ModContent.ItemType<DesertMap>(),
 				1 => ModContent.ItemType<ForestMap>(),
-				_ => -1,
+				_ => ModContent.ItemType<SwampMap>(),
 			});
 		}
 	}
