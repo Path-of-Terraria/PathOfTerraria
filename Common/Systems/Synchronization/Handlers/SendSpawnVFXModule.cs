@@ -1,6 +1,9 @@
+using PathOfTerraria.Content.Dusts;
 using PathOfTerraria.Content.Projectiles.Utility;
+using PathOfTerraria.Content.Swamp.NPCs.SwampBoss;
 using System.IO;
 using Terraria.Audio;
+using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
@@ -21,6 +24,11 @@ internal class SendSpawnVFXModule : Handler
 		/// Calls npc.HitEffect on the remote client. Takes an int instead of a Vector2.
 		/// </summary>
 		SpawnNPCGores,
+
+		/// <summary>
+		/// Creates a burst of moss and <see cref="DustID.Venom"/>/<see cref="BrightVenomDust"/> dust.
+		/// </summary>
+		SpawnPoisonMoss,
 	}
 
 	public static void SendNPCGores(NPC npc)
@@ -62,11 +70,7 @@ internal class SendSpawnVFXModule : Handler
 	{
 		var vfx = (VFXType)reader.ReadByte();
 
-		if (vfx != VFXType.SpawnNPCGores)
-		{
-			SpawnVFX(reader.ReadVector2(), vfx);
-		}
-		else
+		if (vfx == VFXType.SpawnNPCGores)
 		{
 			short npcWho = reader.ReadInt16();
 			NPC npc = Main.npc[npcWho];
@@ -81,6 +85,10 @@ internal class SendSpawnVFXModule : Handler
 
 			npc.active = false;
 		}
+		else
+		{
+			SpawnVFX(reader.ReadVector2(), vfx);
+		}
 	}
 
 	private static void SpawnVFX(Vector2 pos, VFXType vfx)
@@ -89,6 +97,10 @@ internal class SendSpawnVFXModule : Handler
 		{
 			case VFXType.ShimmerTeleport:
 				ExitPortal.SpawnShimmerTeleportVFX(pos);
+				break;
+
+			case VFXType.SpawnPoisonMoss:
+				Mossling.SpawnPoisonMossVFX(pos);
 				break;
 		}
 	}

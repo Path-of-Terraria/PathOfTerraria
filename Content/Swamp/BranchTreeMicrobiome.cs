@@ -1,7 +1,7 @@
 ﻿using PathOfTerraria.Common.ItemDropping;
 using PathOfTerraria.Common.Tiles;
 using PathOfTerraria.Common.World.Generation;
-using PathOfTerraria.Content.Tiles.Maps.Swamp;
+using PathOfTerraria.Content.Swamp.Tiles;
 using PathOfTerraria.Core.Items;
 using System.Collections.Generic;
 using System.Linq;

@@ -9,7 +9,11 @@ internal static class LinqUtils
 		foreach (TSource value in values)
 		{
 			TResult result = selector(value);
-			if (result != null && !result.Equals(exception)) { yield return result; }
+
+			if (result is not null && !result.Equals(exception)) 
+			{ 
+				yield return result; 
+			}
 		}
 	}
 }

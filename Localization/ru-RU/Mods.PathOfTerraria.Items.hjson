@@ -1491,6 +1491,11 @@ SwampMossItem: {
 	// Tooltip: ""
 }
 
+MossyPurpleCloudsItem: {
+	// DisplayName: Mossy Purple Clouds Item
+	// Tooltip: ""
+}
+
 SwampMap: {
 	// DisplayName: Swamp Map
 	// Tooltip: ""

@@ -13,7 +13,7 @@ internal class StrongerDebuffsPassive : Passive
 
 		private void ModifyDebuffDuration(On_NPC.orig_AddBuff orig, NPC self, int type, int time, bool quiet)
 		{
-			if (Main.debuff[type])
+			if (type >= 0 && type < Main.debuff.Length && Main.debuff[type])
 			{
 				float debuffStrength = 0;
 

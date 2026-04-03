@@ -16,6 +16,7 @@
 // Clouds: Exploring the sky
 // Space: Escaping the atmosphere
 // Scanning: Scanning terrain
+// Arena: Building dens
 
 EaterSign: {
 	// 0: "{0} was instantly devoured."

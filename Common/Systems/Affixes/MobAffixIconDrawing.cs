@@ -1,9 +1,15 @@
 ﻿using PathOfTerraria.Common.Systems.MobSystem;
 using PathOfTerraria.Content.Buffs.ElementalBuffs;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Terraria.GameInput;
 
 namespace PathOfTerraria.Common.Systems.Affixes;
+
+internal interface IPreDrawAffix
+{
+	bool PreDrawAffixes(Span<MobAffix> affixes);
+}
 
 internal class MobAffixIconDrawing : GlobalNPC
 {
@@ -17,7 +23,8 @@ internal class MobAffixIconDrawing : GlobalNPC
 		
 		List<MobAffix> affixes = npc.GetGlobalNPC<ArpgNPC>().Affixes;
 
-		if (affixes.Count == 0 || npc.GetGlobalNPC<FreezeNPC>().Frozen || npc.alpha == byte.MaxValue)
+		if (affixes.Count == 0 || npc.GetGlobalNPC<FreezeNPC>().Frozen || npc.alpha == byte.MaxValue || 
+			(npc.ModNPC is IPreDrawAffix preDrawAffix && !preDrawAffix.PreDrawAffixes(CollectionsMarshal.AsSpan(affixes))))
 		{
 			return;
 		}

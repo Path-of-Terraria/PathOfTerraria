@@ -13,6 +13,11 @@ UIConfig: {
 	DisplayName: Konfiguracja UI
 	Headers.UI: Nagłówek UI
 
+	DisplayRichTooltipsInHotbar: {
+		// Label: Display Rich Tooltips In Hotbar
+		// Tooltip: If enabled, hovering over elements of the toolbar will display a full/rich tooltip, instead of just the name of the item or element.
+	}
+
 	PreventExpBarClicking: {
 		Label: Zapobiegnij klikaniu paska ilości doświadczenia
 		Tooltip: Kiedy to jest włączenia to nie będziesz w stanie kliknąć paska ilości doświadczenia w celu otwarcia menu podniesienia poziomu, będzie można to zrobić jedynie przez wciśnięcie odpowiedniego klawisza. To jest przydatne w momencie gdy łapiesz się na otwieraniu tego menu, gdy starasz się kliknąć w inne elementy UI.

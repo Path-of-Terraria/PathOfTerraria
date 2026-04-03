@@ -21,6 +21,8 @@ internal class StopBuildingPlayer : ModPlayer
 		ItemID.DirtBomb, ItemID.DirtStickyBomb, ItemID.DryBomb, ItemID.MagicConch, ItemID.DemonConch, ItemID.ShellphoneOcean, ItemID.ShellphoneHell, ItemID.Clentaminator, 
 		ItemID.Clentaminator2];
 
+	public static Dictionary<int, float> NerfedDomainItems = new() { { ItemID.Zenith, 0.2f } };
+
 	/// <summary>
 	/// Stops the player from building if true. This is reset every frame.
 	/// </summary>
@@ -147,5 +149,16 @@ internal class StopBuildingPlayer : ModPlayer
 		}
 
 		return true;
+	}
+
+	public override void ModifyWeaponDamage(Item item, ref StatModifier damage)
+	{
+		// Only nerf in STAGING/RELEASE since the nerf doesn't matter dev-wise
+#if !DEBUG
+		if (NerfedDomainItems.TryGetValue(item.type, out float modifier) && LastStopBuilding)
+		{
+			damage *= modifier;
+		}
+#endif
 	}
 }

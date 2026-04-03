@@ -4,7 +4,7 @@ using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent.Metadata;
 
-namespace PathOfTerraria.Content.Tiles.Maps.Swamp;
+namespace PathOfTerraria.Content.Swamp.Tiles;
 
 internal class SwampPlants1x1 : ModTile
 {
