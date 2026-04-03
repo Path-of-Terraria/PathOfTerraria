@@ -516,7 +516,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		float sharedAnimation = (1f - MathF.Pow(1f - openingAnimation, 5f)) - (1f - MathF.Pow(1f - closingAnimation, 5f));
 
 		// Dim the background.
-		float dimmingAlpha = sharedAnimation * 0.75f;
+		float dimmingAlpha = sharedAnimation * (1f - (MapDeviceInterface.Entity?.OpeningAnimation ?? 1f)) * 0.6f;
 		Color dimmingColor = Color.Black.MultiplyRGBA(new Color(Vector4.One * dimmingAlpha));
 		sb.Draw(TextureAssets.BlackTile.Value, new Rectangle(-8, -8, Main.screenWidth + 16, Main.screenHeight + 16), dimmingColor);
 
