@@ -326,6 +326,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 
 	public WindowElement? Window { get; private set; }
 	public UIElement? ActionButton { get; private set; }
+	public UIButton<string>? ActionButtonInner { get; private set; }
 	public UIGrid? Storage { get; private set; }
 	public UIGrid? Inventory { get; private set; }
 	public UIElement? StoragePanel { get; private set; }
@@ -378,6 +379,8 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 	public override void SafeUpdate(GameTime gameTime)
 	{
 		// Shared animations.
+		bool isPortalActive = MapDeviceInterface.Entity?.PortalActive == true;
+		bool hasInjection = MapDeviceInterface.Entity?.Injection != null;
 		bool? isButtonAvailable = MapDeviceInterface.Entity != null ? IsButtonAvailable() : null;
 		(float oldOpening, float oldClosing) = (openingAnimation, closingAnimation);
 		openingAnimation = Math.Clamp(openingAnimation + ((MapDeviceInterface.Active ? +1f : +0f) / 20f), 0f, 1f);
@@ -432,11 +435,10 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		const int ButtonAnimationDelay = 4;
 		const int ButtonFrameOpen = 12;
 		const int ButtonFrameClosed = 0;
+		byte buttonTargetRow = (byte)(isButtonAvailable != false ? ButtonFrameOpen : ButtonFrameClosed);
 		if ((TimeSystem.UpdateCount % ButtonAnimationDelay) == 0 && MapDeviceInterface.Entity != null)
 		{
-			byte targetRow = (byte)(isButtonAvailable != false ? ButtonFrameOpen : ButtonFrameClosed);
-
-			if (buttonLockFrame.CurrentRow != targetRow)
+			if (buttonLockFrame.CurrentRow != buttonTargetRow)
 			{
 				// Play audio.
 				if (buttonLockFrame.CurrentRow == ButtonFrameOpen)
@@ -444,22 +446,32 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 					SoundEngine.PlaySound(new SoundStyle($"{nameof(PathOfTerraria)}/Assets/Sounds/MapDevice/Lock")
 					{
 						PitchVariance = 0.1f,
-						Volume = 0.7f,
+						Volume = 0.75f,
 					});
 				}
 				else if (buttonLockFrame.CurrentRow == ButtonFrameClosed)
 				{
+					ActionButtonInner?.SetText(Language.GetTextValue($"Mods.{nameof(PathOfTerraria)}.UI.MapDevice.{(isPortalActive ? "Deactivate" : "Activate")}Portal"));
 					SoundEngine.PlaySound(new SoundStyle($"{nameof(PathOfTerraria)}/Assets/Sounds/MapDevice/Unlock")
 					{
 						Pitch = 0.1f,
 						PitchVariance = 0.1f,
-						Volume = 0.85f,
+						Volume = 0.90f,
 					});
 				}
 
+				if (ActionButtonInner is { } text)
+				{
+					text.HoverText = isPortalActive
+					? $"[c/ff4455:{Language.GetTextValue($"Mods.{nameof(PathOfTerraria)}.UI.MapDevice.ClosePortal{(hasInjection ? "Resource" : "Map")}Warning")}]"
+					: "";
+				}
 				buttonLockFrame.CurrentRow = (byte)((buttonLockFrame.CurrentRow + 1) % buttonLockFrame.RowCount);
 			}
 		}
+
+		// Prevent button interaction during lock animations.
+		ActionButton!.IgnoresMouseInteraction = buttonLockFrame.CurrentRow != buttonTargetRow || buttonLockFrame.CurrentRow == ButtonFrameClosed;
 
 		// Animate inventory and storage elements.
 		if ((forceUpdateAnimation || oldOpening != openingAnimation || oldClosing != closingAnimation) && StoragePanel != null && InventoryPanel != null)
@@ -910,10 +922,9 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 			Vector2 size = buttonBackground.Size();
 			e.SetDimensions(x: (0.5f, -(int)(size.X * 0.5f)), y: (0.5f, +108), width: (0.0f, +size.X), height: (0f, +size.Y));
 
-			e.AddElement(new UIButton<string>(""), e =>
+			ActionButtonInner = e.AddElement(new UIButton<string>(""), e =>
 			{
 				e.SetDimensions(x: (0f, +0), y: (0f, +0), width: (1f, +0), height: (1f, +0));
-				e.AddComponent(new UIDynamicText(_ => Language.GetTextValue($"Mods.{nameof(PathOfTerraria)}.UI.MapDevice.{(entity.PortalActive ? "Deactivate" : "Activate")}Portal")));
 
 				e.DrawPanel = false;
 				e.OnLeftClick += OpenOrClosePortalClick;
@@ -1113,6 +1124,8 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 			{
 				state.SetActivationEffect(entity);
 				state.activationEffect.Frame = state.activationEffect.Frame.With(0, 0);
+				// Cycle the button lock - lock & unlock.
+				buttonLockFrame.CurrentRow = (byte)((buttonLockFrame.CurrentRow + 1) % buttonLockFrame.RowCount);
 			}
 		}
 		else
