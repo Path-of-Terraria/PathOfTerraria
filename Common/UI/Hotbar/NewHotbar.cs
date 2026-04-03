@@ -720,7 +720,6 @@ public class HijackHotbarClick : ModSystem
 
 	private void StopClickOnHotbar(On_Main.orig_GUIHotbarDrawInner orig, Main self)
 	{
-		bool hbLocked = Main.LocalPlayer.hbLocked;
 		// Lock hotbar for the original method, so that we don't fight against vanilla.
 		using (var _ = ValueOverride.Create(ref Main.LocalPlayer.hbLocked, true))
 		{
@@ -737,7 +736,7 @@ public class HijackHotbarClick : ModSystem
 
 		if (NewHotbar.Textures.TryGetValue("HotbarBack", out Asset<Texture2D> back))
 		{
-			DrawItemHotbarTooltips(hbLocked, combatMode, back.Value);
+			DrawItemHotbarTooltips(Main.LocalPlayer.hbLocked, combatMode, back.Value);
 		}
 	}
 

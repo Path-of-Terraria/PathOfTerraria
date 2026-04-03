@@ -4,7 +4,7 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.Tiles.Maps.Forest;
 
-internal class LivingWoodBlocker : ModTile
+internal class LivingWoodBlocker : ModTile, IBlockerTile
 {
 	public static Asset<Texture2D> GlowTexture = null;
 

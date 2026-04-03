@@ -244,6 +244,9 @@ internal static class GenPlacement
 		}
 	}
 
+	/// <summary>
+	/// Places a leaf-like shape. <paramref name="place"/>'s third parameter is the angle from origin.
+	/// </summary>
 	public static void GenerateLeaf(Vector2 pos, float width, float length, float angle, Action<int, int, float> place, bool replace = true)
 	{
 		angle -= MathHelper.PiOver2;

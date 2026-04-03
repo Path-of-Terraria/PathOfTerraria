@@ -519,6 +519,11 @@ public sealed partial class ItemTooltips : GlobalItem
 			AddNewTooltipLine(item, tooltips, new TooltipLine(Mod, "BuildBlocked", Localize("BuildBlocked")) { OverrideColor = new Color(220, 110, 110) });
 		}
 
+		if (StopBuildingPlayer.NerfedDomainItems.ContainsKey(item.type) && SubworldSystem.Current is MappingWorld)
+		{
+			AddNewTooltipLine(item, tooltips, new TooltipLine(Mod, "WeaponNerfed", Localize("WeaponNerfed")) { OverrideColor = new Color(255, 160, 160) });
+		}
+
 		if (StopBuildingProjectiles.ProjectileAliasingsByItemId.TryGetValue(item.type, out StopBuildingProjectiles.ProjectileAlias alias))
 		{
 			string text = Language.GetTextValue("Mods.PathOfTerraria.Gear.Tooltips.ShootBlocked", Lang.GetItemName(alias.AltItemId), alias.AltItemId);
@@ -532,7 +537,6 @@ public sealed partial class ItemTooltips : GlobalItem
 
 		// These don't need AddNewTooltipLine as they're vanilla tooltips
 		tooltips.AddRange(oldTooltips);
-		
 		
 		if (favoriteLine is not null)
 		{
@@ -617,7 +621,6 @@ public sealed partial class ItemTooltips : GlobalItem
 			priceLine.OverrideColor = Color.LightGray;
 			tooltips.Add(priceLine);
 		}
-
 	}
 
 	/// <summary>
