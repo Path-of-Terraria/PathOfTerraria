@@ -10,6 +10,7 @@ using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Content.Items.Placeable;
 using PathOfTerraria.Core.Audio;
+using PathOfTerraria.Core.Camera;
 using PathOfTerraria.Core.Time;
 using PathOfTerraria.Utilities;
 using PathOfTerraria.Utilities.Terraria;
@@ -20,6 +21,7 @@ using Terraria.Audio;
 using Terraria.Chat;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
@@ -29,28 +31,55 @@ using Terraria.ObjectData;
 
 namespace PathOfTerraria.Content.Tiles.Furniture;
 
-public class MapDevicePlaceable : ModTile
+[Obsolete($"Replaced by {nameof(MapDeviceTile)}", error: true)]
+public sealed class MapDevicePlaceable : MapDeviceTile
 {
-	public const int FullWidth = 18 * 5;
-	public const int FullHeight = 18 * 5;
+	protected override bool IsLegacy => true;
+	
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
 
+		// Override tile data with legacy parameters.
+		TileObjectData.newTile.CopyFrom(TileObjectData.Style3x4);
+		TileObjectData.newTile.Width = 5;
+		TileObjectData.newTile.Height = 5;
+		TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 16, 16];
+		TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(ModContent.GetInstance<MapDeviceEntity>().Hook_AfterPlacement, -1, 0, false);
+		TileObjectData.newTile.LavaDeath = false;
+		TileObjectData.newTile.DrawYOffset = 2;
+		TileObjectData.newTile.StyleHorizontal = true;
+		TileObjectData.newTile.RandomStyleRange = 3;
+		TileObjectData.newTile.AnchorBottom = new AnchorData(TileObjectData.newTile.AnchorBottom.type, TileObjectData.newTile.Width, 0);
+		TileObjectData.newTile.Origin = new(3, 4);
+		TileObjectData.addTile(Type);
+	}
+}
+
+public class MapDeviceTile : ModTile
+{
 	private static Asset<Texture2D>? _portalTex;
+	private static Asset<Texture2D>? _spikesTex;
+	private static Asset<Texture2D>? _backTex;
 
-	/// <summary> This is the portal that will appear above. </summary>
-	protected virtual string PortalTexturePath => $"{PoTMod.ModName}/Assets/Items/Placeable/Portal";
+	protected virtual bool IsLegacy => false;
+	protected virtual string PortalTexturePath => $"{Texture}_Portal";
+	protected virtual string SpikesTexturePath => $"{Texture}_Spikes";
+	protected virtual string BackTexturePath => $"{Texture}_Background";
 
-	public static Point16 GetTopLeft(int i, int j)
+	public Point16 GetTopLeft(int i, int j)
 	{
 		Tile tile = Main.tile[i, j];
-		i -= tile.TileFrameX % FullWidth / 18;
-		j -= tile.TileFrameY % FullHeight / 18;
+		var tileData = TileObjectData.GetTileData((int)Type, style: 0);
+		i -= (tile.TileFrameX % (tileData.Width * 18)) / 18;
+		j -= (tile.TileFrameY % (tileData.Height * 18)) / 18;
 
 		return new(i, j);
 	}
 
 	public static bool IsPointOnPortal(Point16 origin, Point16 point)
 	{
-		return point.Y <= origin.Y + 3;
+		return point.Y <= origin.Y + 2;
 	}
 
 	public override void SetStaticDefaults()
@@ -63,16 +92,17 @@ public class MapDevicePlaceable : ModTile
 		TileID.Sets.DisableSmartCursor[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style3x4);
-		TileObjectData.newTile.Width = 5;
-		TileObjectData.newTile.Height = 5;
-		TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 16, 16];
+		// Visually spans [13, 7], logically [11, 6].
+		TileObjectData.newTile.Width = 11; 
+		TileObjectData.newTile.Height = 6;
+		TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 16, 16, 18];
 		TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(ModContent.GetInstance<MapDeviceEntity>().Hook_AfterPlacement, -1, 0, false);
 		TileObjectData.newTile.LavaDeath = false;
 		TileObjectData.newTile.DrawYOffset = 2;
-		TileObjectData.newTile.StyleHorizontal = true;
-		TileObjectData.newTile.RandomStyleRange = 3;
+		TileObjectData.newTile.StyleHorizontal = false;
+		TileObjectData.newTile.RandomStyleRange = 0;
 		TileObjectData.newTile.AnchorBottom = new AnchorData(TileObjectData.newTile.AnchorBottom.type, TileObjectData.newTile.Width, 0);
-		TileObjectData.newTile.Origin = new(3, 4);
+		TileObjectData.newTile.Origin = new(6, 5);
 		TileObjectData.addTile(Type);
 
 		RegisterItemDrop(ModContent.ItemType<MapDevice>());
@@ -90,94 +120,149 @@ public class MapDevicePlaceable : ModTile
 		ModContent.GetInstance<MapDeviceEntity>().Kill(coords.X, coords.Y);
 	}
 
-	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
+	public override bool PreDraw(int i, int j, SpriteBatch sb)
 	{
 		Tile tile = Main.tile[i, j];
+		if (!TryGetEntity(i, j, out MapDeviceEntity? entity)) { return true; }
+		if (!Main.tile[entity.Position].HasTile) { return true; }
 
-		if (!TryGetEntity(i, j, out MapDeviceEntity? entity))
-		{
-			return;
-		}
-
+		var tileData = TileObjectData.GetTileData(tile);
 		Point16 tilePoint = entity.Position;
-		Vector2 worldPos = tilePoint.ToWorldCoordinates(40f, 64f);
+		Vector2 worldCenter = tilePoint.ToWorldCoordinates(tileData.Width * 16 * 0.5f, tileData.Height * 16 * 0.5f);
+		// This is lighting-mode specific, always include this if you draw tiles manually.
+		Vector2 screenPosition = Main.screenPosition - new Vector2(Main.drawToScreen ? 0 : Main.offScreenRange);
 
-		entity.UpdateAudio(worldPos);
+		// Only render on the top left tile.
+		if (new Point16(i, j) != tilePoint) { return true; }
 
-		if (tile.TileFrameX / 18 % 5 == 0 || tile.TileFrameY != 0)
+		if (!IsLegacy)
 		{
-			return;
+			DrawSpikes(sb, tilePoint, worldCenter, entity, screenPosition);
 		}
 
-		if (!entity.PortalActive)
+		return true;
+	}
+	public override void PostDraw(int i, int j, SpriteBatch sb)
+	{
+		Tile tile = Main.tile[i, j];
+		if (!TryGetEntity(i, j, out MapDeviceEntity? entity)) { return; }
+		if (!Main.tile[entity.Position].HasTile) { return; }
+
+		var tileData = TileObjectData.GetTileData(tile);
+		Point16 tilePoint = entity.Position;
+		Vector2 worldCenter = tilePoint.ToWorldCoordinates(tileData.Width * 16 * 0.5f, tileData.Height * 16 * 0.5f);
+		// This is lighting-mode specific, always include this if you draw tiles manually.
+		Vector2 screenPosition = Main.screenPosition - new Vector2(Main.drawToScreen ? 0 : Main.offScreenRange);
+
+		// Only render on the top left tile.
+		if (new Point16(i, j) != tilePoint) { return; }
+
+		entity.UpdateEffects(worldCenter);
+
+		if (entity.PortalActive)
 		{
-			return;
+			DrawPortal(sb, tilePoint, worldCenter, entity, screenPosition);
 		}
+	}
 
-		// This is lighting-mode specific, always include this if you draw tiles manually
-		var offScreen = new Vector2(Main.drawToScreen ? 0 : Main.offScreenRange);
+	private void DrawSpikes(SpriteBatch sb, Point16 tilePoint, Vector2 worldCenter, MapDeviceEntity entity, Vector2 screenPosition)
+	{
+		_ = (tilePoint, entity);
 
-		// Take the tile, check if it actually exists
-		tile = Main.tile[tilePoint];
+		float activationAnim = (1f - MathF.Pow(1f - entity.ActivationAnimation, 5.0f));
+		float openingAnim = (1f - MathF.Pow(1f - entity.OpeningAnimation, 8.0f));
+		float readyAnim = (1f - MathF.Pow(1f - entity.ReadyAnimation, 1.5f));
 
-		if (!tile.HasTile)
+		// Shake.
+		bool isActive = entity.InteractingPlayer != null || entity.PortalActive;
+		bool isReady = readyAnim >= 1f;
+		int shakeRate = entity.PortalActive ? 1 : (isReady && isActive ? 16 : 0);
+
+		Texture2D backTexture = AssetUtils.ImmediateValue(BackTexturePath, ref _backTex);
+		Texture2D spikesTexture = AssetUtils.ImmediateValue(SpikesTexturePath, ref _spikesTex);
+		var spikesFrame = new SpriteFrame(1, 5) { PaddingX = 0, PaddingY = 0 };
+		var spikesOffset = new Vector2(0, MathHelper.Lerp(6, 0, openingAnim) + MathHelper.Lerp(8, 2, MathF.Max(openingAnim, readyAnim * activationAnim)));
+		int excessOffset = Math.Max(0, (int)(spikesOffset.Y) + 6);
+		spikesOffset.Y += spikesFrame.GetSourceRectangle(spikesTexture).Height * 0.5f;
+
+		Vector2 baseOffset = new(0, 8);
+		Vector2 backPos = worldCenter + baseOffset - screenPosition;
+		Vector2 backOrigin = backTexture.Size() * 0.5f;
+		Color color = Lighting.GetColor(worldCenter.ToTileCoordinates());
+
+		sb.Draw(backTexture, backPos, null, color, 0, backTexture.Size() * 0.5f, 1f, 0, 0f);
+
+		for (int i = 0; i < spikesFrame.RowCount; i++)
 		{
-			return;
-		}
+			Vector2 spikeOffset = spikesOffset;
+			SpriteFrame spikeFrame = spikesFrame.With(0, (byte)i);
+			Rectangle srcRect = spikeFrame.GetSourceRectangle(spikesTexture);
+			srcRect.Height = Math.Max(1, srcRect.Height - excessOffset);
+			Vector2 spikeOrigin = srcRect.Size() * new Vector2(0.5f, 1.0f);
+			float spikeRotation = 0f;
 
-		// Start loading the texture and wait for it.
-		if ((_portalTex ??= ModContent.Request<Texture2D>(PortalTexturePath)) is not { IsLoaded: true, Value: { } texture })
-		{
-			return;
+			if (shakeRate != 0 && ((Main.GameUpdateCount + ((i * 389) >> 1)) / shakeRate) % 3 == 0)
+			{
+				int offInt = ((Main.GameUpdateCount + (i * 942)) / shakeRate) % 2 == 0 ? 1 : -1;
+				int rotInt = ((Main.GameUpdateCount + (i * 7589 << 1)) / shakeRate) % 7 == 0 ? 1 : -1;
+				spikeOffset += new Vector2(0, offInt * -1);
+				spikeRotation = rotInt * -0.015f * (openingAnim > 0f ? 1 : 0);
+			}
+			
+			Vector2 spikePos = worldCenter + baseOffset + spikeOffset - screenPosition;
+			
+			sb.Draw(spikesTexture, spikePos, srcRect, color, spikeRotation, spikeOrigin, 1f, 0, 0f);
 		}
-
-		Color baseColor = Color.White;
+	}
+	private void DrawPortal(SpriteBatch sb, Point16 tilePoint, Vector2 worldCenter, MapDeviceEntity entity, Vector2 screenPosition)
+	{
+		Texture2D portalTexture = AssetUtils.ImmediateValue(PortalTexturePath, ref _portalTex);
 		Texture2D? itemTex = null;
+		Color baseColor = entity.GetPortalColor();
 
-		if (entity.Injection is { } injection)
+		if (entity.StoredMap is { IsAir: false, type: int itemType })
 		{
-			MapResource resource = MapResources.Get(injection.Id);
-			baseColor = resource.AccentColor;
-		}
-		else if (entity.StoredMap is { IsAir: false, type: int itemType })
-		{
-			baseColor = ColorUtils.FromHexRgb(0x_0097ff);
 			itemTex = TextureAssets.Item[itemType].Value;
 		}
 
 		// Get the initial draw parameters
-		int frameY = tile.TileFrameX % 90 / FullWidth; // Picks the frame on the sheet based on the placeStyle of the item
-		Rectangle frame = texture.Frame(1, 1, 0, frameY);
+		Tile tile = Main.tile[tilePoint];
+		var tileData = TileObjectData.GetTileData(tile);
+		int frameY = tile.TileFrameX % 90 / tileData.CoordinateFullWidth; // Picks the frame on the sheet based on the placeStyle of the item
+		Rectangle frame = portalTexture.Frame(1, 1, 0, frameY);
 		Vector2 origin = frame.Size() / 2f;
 		Color color = Color.Lerp(Lighting.GetColor(tilePoint.X, tilePoint.Y), Color.White, 0.4f).MultiplyRGBA(baseColor);
-		bool direction = tile.TileFrameY / FullHeight != 0; // This is related to the alternate tile data we registered before
+		bool direction = tile.TileFrameY / tileData.CoordinateFullHeight != 0; // This is related to the alternate tile data we registered before
 		SpriteEffects effects = direction ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
 		// Some math magic to make it smoothly move up and down over time
 		float offset = MathF.Sin(Main.GlobalTimeWrappedHourly * MathHelper.TwoPi / 5f);
-		Vector2 drawPos = worldPos + offScreen - Main.screenPosition + new Vector2(0f, -36f) + new Vector2(0f, offset * 7f);
+		Vector2 drawPos = worldCenter - screenPosition + new Vector2(0f, -36f) + new Vector2(0f, offset * 7f);
 
 		// Draw the main texture
+		float baseScale = MathHelper.Lerp(0.1f, 2.0f, 1f - MathF.Pow(1f - entity.OpeningAnimation, 3f));
 		for (int k = 0; k < 3; ++k)
 		{
 			float rotation = Main.GlobalTimeWrappedHourly * 7f * (k % 2 == 0 ? -1 : 1);
-			Color drawColor = color * (1 - k * 0.2f);
-			spriteBatch.Draw(texture, drawPos, frame, drawColor with { A = 150 }, rotation, origin, 1.3f - k * 0.2f, effects, 0f);
+			Color drawColor = (color * (1 - (k * 0.2f)) * 0.7f) with { A = 112 };
+			sb.Draw(portalTexture, drawPos, frame, drawColor, rotation, origin, baseScale - k * 0.2f, effects, 0f);
 		}
 
 		if (itemTex != null)
 		{
-			spriteBatch.Draw(itemTex, drawPos, null, new Color(140, 230, 255) * 0.95f, 0f, itemTex.Size() / 2f, 0.75f, effects, 0f);
+			float itemStep = 1f - MathF.Pow(1f - entity.OpeningAnimation, 3f);
+			var itemPos = Vector2.Lerp(drawPos + new Vector2(0, 48), drawPos, itemStep);
+			sb.Draw(itemTex, itemPos, null, new Color(140, 230, 255) * 0.95f, 0f, itemTex.Size() / 2f, 0.75f, effects, 0f);
 		}
 
 		// Draw the periodic glow effect
-		float scale = (float)Math.Sin(Main.GlobalTimeWrappedHourly * MathHelper.TwoPi / 2f) * 0.3f + 0.7f;
+		float scale = baseScale + (float)Math.Sin(Main.GlobalTimeWrappedHourly * MathHelper.TwoPi / 2f) * 0.5f;
 		Color effectColor = color;
 		effectColor.A = 0;
 		effectColor *= 0.1f * scale;
 		for (float num5 = 0f; num5 < 1f; num5 += 355f / (678f * (float)Math.PI))
 		{
-			spriteBatch.Draw(texture, drawPos + (MathHelper.TwoPi * num5).ToRotationVector2() * (6f + offset * 2f), frame, effectColor, 0f, origin, 1f, effects, 0f);
+			sb.Draw(portalTexture, drawPos + (MathHelper.TwoPi * num5).ToRotationVector2() * (6f + offset * 2f), frame, effectColor, 0f, origin, 1f, effects, 0f);
 		}
 	}
 
@@ -221,7 +306,7 @@ public class MapDevicePlaceable : ModTile
 		}
 	}
 
-	private static bool TryGetEntity(int x, int y, [NotNullWhen(true)] out MapDeviceEntity? entity)
+	private bool TryGetEntity(int x, int y, [NotNullWhen(true)] out MapDeviceEntity? entity)
 	{
 		Point16 topLeft = GetTopLeft(x, y);
 
@@ -238,16 +323,26 @@ public class MapDevicePlaceable : ModTile
 
 internal class MapDeviceEntity : ModTileEntity
 {
-	private static SoundStyle PortalSound => new($"{nameof(PathOfTerraria)}/Assets/Sounds/MapDevice/PortalLoop")
+	private static SoundStyle PortalSound = new($"{nameof(PathOfTerraria)}/Assets/Sounds/MapDevice/PortalLoop")
 	{
 		Volume = 0.4f,
 		IsLooped = true,
+		PauseBehavior = PauseBehavior.PauseWithGame,
+	};
+	private static SoundStyle EngineSound => new($"{nameof(PathOfTerraria)}/Assets/Sounds/MapDevice/GearLoop")
+	{
+		Volume = 0.03f,
+		Pitch = -0.05f,
+		IsLooped = true,
+		PauseBehavior = PauseBehavior.PauseWithGame,
 	};
 
 	public static int StorageSize { get; } = 5 * 4;
 
 	private SlotId portalSoundHandle;
+	private SlotId engineSoundHandle;
 	private float portalSoundVolume;
+	private float engineSoundVolume;
 
 	public Item StoredMap { get; set; }
 	public Item[] Storage { get; set; }
@@ -256,6 +351,10 @@ internal class MapDeviceEntity : ModTileEntity
 	public int? InteractingPlayer { get; private set; }
 	/// <summary> Which map destination resource is currently injected into the device, and what quantity of it. </summary>
 	public (int Id, int Amount)? Injection { get; set; }
+	public float ActivationAnimation { get; set; }
+	public float OpeningAnimation { get; set; }
+	public float ReadyAnimation { get; set; }
+	public Vector2 ShakeOffset { get; set; }
 
 	public MapDeviceEntity()
 	{
@@ -266,7 +365,8 @@ internal class MapDeviceEntity : ModTileEntity
 
 	public override bool IsTileValidForEntity(int x, int y)
 	{
-		return Main.tile[x, y].HasTile && Main.tile[x, y].TileType == ModContent.TileType<MapDevicePlaceable>();
+		Tile tile = Main.tile[x, y];
+		return tile.HasTile && TileLoader.GetTile(tile.TileType) is MapDeviceTile;
 	}
 
 	public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction, int alternate)
@@ -304,16 +404,31 @@ internal class MapDeviceEntity : ModTileEntity
 
 	public override void Update()
 	{
-		// Close UI if player is dead, gone, or too far away.
+		// If the local player has the map device open.
 		if (InteractingPlayer.HasValue && Main.player[InteractingPlayer.Value] is { } player)
 		{
 			var tileData = TileObjectData.GetTileData(Main.tile[Position].TileType, 1);
-			var worldPos = Position.ToWorldCoordinates().ToPoint();
+			var worldPos = Position.ToWorldCoordinates(0, 0).ToPoint();
 			var tileRect = new Rectangle(worldPos.X, worldPos.Y, tileData.Width * TileUtils.TileSizeInPixels, tileData.Height * TileUtils.TileSizeInPixels);
+			Vector2 worldCenter = tileRect.Center();
+
+			// Close UI if player is dead, gone, or too far away.
 			Point checkPoint = tileRect.ClosestPointInRect(player.Center).ToTileCoordinates();
 			if (!player.active || player.dead || !player.IsInTileInteractionRange(checkPoint.X, checkPoint.Y, TileReachCheckSettings.Simple))
 			{
 				TryClosingInterface();
+				return;
+			}
+		}
+
+		Vector2 center = Position.ToWorldCoordinates();
+		foreach (Item item in Main.ActiveItems)
+		{
+			if (item.ModItem is Map map && item.velocity.LengthSquared() < 4f && item.WithinRange(center, 128f) && Array.FindIndex(Storage, s => s.IsAir) is >= 0 and int freeSlot)
+			{
+				SoundEngine.PlaySound(SoundID.Grab, item.Center);
+				Storage[freeSlot] = item.Clone();
+				item.active = false;
 			}
 		}
 	}
@@ -388,17 +503,66 @@ internal class MapDeviceEntity : ModTileEntity
 		MapDeviceSync.ReadInto(sender: byte.MaxValue, reader, this, out _);
 	}
 
-	public void UpdateAudio(Vector2 center)
+	public void UpdateEffects(Vector2 center)
 	{
-		float targetVolume = PortalActive ? new ExponentialRange(0f, 1024f, 2f).DistanceFactor(Main.LocalPlayer.Distance(center)) : 0f;
-		portalSoundVolume = MathUtils.StepTowards(portalSoundVolume, targetVolume, MathF.Max(0f, TimeSystem.RenderDeltaTime));
+		if (Main.dedServ) { return; }
+		
+		ActivationAnimation = MathUtils.StepTowards(ActivationAnimation, (InteractingPlayer.HasValue | PortalActive) ? 1 : 0, TimeSystem.RenderDeltaTime / 0.2f);
+		OpeningAnimation = MathUtils.StepTowards(OpeningAnimation, PortalActive ? 1 : 0, TimeSystem.RenderDeltaTime / 0.2f);
+		ReadyAnimation = MathUtils.StepTowards(ReadyAnimation, (PortalActive || TryOpeningPortal(evalMode: true)) ? 1 : 0, TimeSystem.RenderDeltaTime / 0.2f);
+		// OpeningAnimation = MathUtils.StepTowards(OpeningAnimation, (PortalActive || TryOpeningPortal(evalMode: true)) ? 1 : 0, TimeSystem.RenderDeltaTime / 0.2f);
 
-		SoundUtils.UpdateLoopingSound(ref portalSoundHandle, center, portalSoundVolume, null, PortalSound);
-		TileSoundTracker.Track(Position, new()
+		if (PortalActive)
 		{
-			Handle = portalSoundHandle,
-			EntityType = GetType(),
-		});
+			// Light.
+			Lighting.AddLight(center, GetPortalColor().ToVector3() * 1f * OpeningAnimation);
+
+			// Fade out music when nearby, for that sweet melodic ambience.
+			ref float musicVolume = ref Main.musicFade[Main.curMusic];
+			float distancePower = MathUtils.DistancePower(center.Distance(CameraSystem.ScreenCenter), 48, 256);
+			float musicEffect = MathF.Pow(MathUtils.Clamp01(distancePower * OpeningAnimation), 2f);
+			if (musicEffect > 0f)
+			{
+				float target = MathF.Min(musicVolume, MathHelper.Lerp(1f, 0.1f, musicEffect));
+				musicVolume = MathHelper.Lerp(musicVolume, target, 0.1f);
+			}
+		}
+		
+		// Maintain a camera curio as long as this interface is open by the local player.
+		if (InteractingPlayer.HasValue && Main.player[InteractingPlayer.Value] is { } player && player == Main.LocalPlayer)
+		{
+			CameraCurios.Create(new()
+			{
+				Identifier = nameof(MapDeviceInterface),
+				Weight = 9999f,
+				LengthInSeconds = 1f / 6f,
+				FadeInLength = 0.50f,
+				FadeOutLength = 0.50f,
+				Position = center + new Vector2(0, 16 + (MathF.Pow(ReadyAnimation, 2f) * +16) + (MathF.Pow(OpeningAnimation, 2f) * +8)),
+				Zoom = +1f,
+			});
+		}
+
+		// Audio.
+		{
+			float targetVolume = PortalActive ? new ExponentialRange(0, 1500, 2.5f).DistanceFactor(Main.LocalPlayer.Distance(center)) : 0f;
+			portalSoundVolume = MathUtils.StepTowards(portalSoundVolume, targetVolume, MathF.Max(0f, TimeSystem.RenderDeltaTime));
+			SoundUtils.UpdateLoopingSound(ref portalSoundHandle, center, portalSoundVolume, null, PortalSound);
+			TileSoundTracker.Track(Position, new() { Handle = portalSoundHandle, EntityType = GetType() });
+		}
+		{
+			float targetVolume = PortalActive ? new ExponentialRange(0, 1200, 2.5f).DistanceFactor(Main.LocalPlayer.Distance(center)) : 0f;
+			engineSoundVolume = MathUtils.StepTowards(engineSoundVolume, targetVolume, MathF.Max(0f, TimeSystem.RenderDeltaTime));
+			SoundUtils.UpdateLoopingSound(ref engineSoundHandle, center, engineSoundVolume, null, EngineSound);
+			TileSoundTracker.Track(Position, new() { Handle = engineSoundHandle, EntityType = GetType() });
+		}
+
+		ShakeOffset *= 0.0f;
+		if (PortalActive || (TryOpeningPortal(evalMode: true) && InteractingPlayer != null))
+		{
+			int rate = PortalActive ? 3 : 2;
+			if (Main.GameUpdateCount % rate == 0) { ShakeOffset = new Vector2(Main.rand.NextBool() ? 1 : -1, 0); }
+		}
 	}
 
 	/// <summary>
@@ -603,13 +767,16 @@ internal class MapDeviceEntity : ModTileEntity
 			MapDeviceInteraction.Send(ID, MapDeviceInteraction.Kind.OpenPortal);
 		}
 
+		// Effects.
 		if (!Main.dedServ)
 		{
-			//TODO: Replace.
-			SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Skills/BerserkStart")
+			Main.instance.CameraModifiers.Add(new PunchCameraModifier(Position.ToWorldCoordinates(), new Vector2(1, -4), 1f, 4.5f, 75, 300, "PortalOpening"));
+
+			SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/MapDevice/PortalOpen", 3)
 			{
-				Volume = 0.75f,
-				PitchVariance = 0.2f,
+				MaxInstances = 2,
+				Volume = 0.85f,
+				PitchVariance = 0.25f,
 			});
 		}
 
@@ -655,13 +822,16 @@ internal class MapDeviceEntity : ModTileEntity
 			MapDeviceInteraction.Send(ID, MapDeviceInteraction.Kind.ClosePortal);
 		}
 
+		// Effects.
 		if (!Main.dedServ)
 		{
-			//TODO: Replace.
-			SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Skills/BerserkEnd")
+			Main.instance.CameraModifiers.Add(new PunchCameraModifier(Position.ToWorldCoordinates(), new Vector2(1, -4), 1f, 2.5f, 45, 300, "PortalClosing"));
+	
+			SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/MapDevice/PortalClose", 2)
 			{
-				Volume = 0.75f,
-				PitchVariance = 0.2f,
+				MaxInstances = 2,
+				Volume = 0.80f,
+				PitchVariance = 0.25f,
 			});
 		}
 
@@ -682,7 +852,7 @@ internal class MapDeviceEntity : ModTileEntity
 		// Refuse if there is already a map present.
 		if (StoredMap is { IsAir: false } || Injection != null)
 		{
-			DebugUtils.DebugLog($"Cannot inject as a map or another injection is already present.");
+			if (!evalMode) { DebugUtils.DebugLog($"Cannot inject as a map or another injection is already present."); }
 			MapDeviceSync.CorrectDesync(ID, netSender, MapDeviceSync.Flags.Injection | MapDeviceSync.Flags.Map);
 			return false;
 		}
@@ -690,12 +860,12 @@ internal class MapDeviceEntity : ModTileEntity
 		// Refuse interaction if the resource ID is invalid or if there is not enough of it.
 		if (!MapResources.TryGet(resourceId, out MapResource resource))
 		{
-			DebugUtils.DebugLog($"Invalid resource ID: {resourceId}");
+			if (!evalMode) { DebugUtils.DebugLog($"Invalid resource ID: {resourceId}"); }
 			return false;
 		}
 		if (resource.Value < resource.Cost)
 		{
-			DebugUtils.DebugLog($"Not enough of {ContentSamples.ItemsByType[resource.AssociatedItem].Name} resource, need {resource.Cost} but only got {resource.Value}.");
+			if (!evalMode) { DebugUtils.DebugLog($"Not enough of {ContentSamples.ItemsByType[resource.AssociatedItem].Name} resource, need {resource.Cost} but only got {resource.Value}."); }
 			return false;
 		}
 
@@ -775,6 +945,20 @@ internal class MapDeviceEntity : ModTileEntity
 		}
 
 		return true;
+	}
+
+	public Color GetPortalColor()
+	{
+		if (Injection is { } injection)
+		{
+			return MapResources.Get(injection.Id).AccentColor;
+		}
+		else if (StoredMap is { IsAir: false, type: int itemType })
+		{
+			return ColorUtils.FromHexRgb(0x_0097ff);
+		}
+
+		return Color.Transparent;
 	}
 }
 
