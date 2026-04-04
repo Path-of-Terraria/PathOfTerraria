@@ -18,6 +18,13 @@ public sealed class DebugUtils : ModSystem
 		Main.OnPostDraw -= PostDraw;
 	}
 
+	/// <summary> A debug message preprocessed behind the DEBUG condition. </summary>
+	[Conditional("DEBUG")]
+	public static void DebugLog(object str)
+	{
+		PoTMod.Instance.Logger.Debug(str);
+	}
+
 	public static void DrawInWorld(Action<SpriteBatch> action)
 	{
 		worldDraws.Add(action);

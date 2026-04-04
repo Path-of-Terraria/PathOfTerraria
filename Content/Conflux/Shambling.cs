@@ -36,6 +36,7 @@ internal sealed class Shambling : ModNPC
 
 	public override void Load()
 	{
+		if (Main.dedServ) { return; }
 		GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreHead");
 		GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreChest");
 		GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreArm1");

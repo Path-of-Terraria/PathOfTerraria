@@ -16,6 +16,7 @@ Hole: Wykopywanie dziury
 Clouds: Eksploracja nieba
 // Space: Escaping the atmosphere
 Scanning: Skanowanie tereny
+// Arena: Building dens
 
 EaterSign: {
 	0: "{0} został natychmiast pożarty."

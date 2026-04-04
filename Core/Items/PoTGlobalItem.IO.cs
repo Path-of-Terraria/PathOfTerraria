@@ -51,7 +51,9 @@ partial class PoTGlobalItem : GlobalItem
 		data.Corrupted = tag.GetBool("corrupt");
 		data.Cloned = tag.GetBool("cloned");
 
-		data.NameAffix = new((sbyte)tag.GetShort("namePrefix"), (sbyte)tag.GetShort("nameSuffix"));
+		sbyte prefix = (sbyte)((tag.GetShort("namePrefix") is short p && GearGlobalItem.IsPrefixValid(item, p)) ? p : -1);
+		sbyte suffix = (sbyte)((tag.GetShort("nameSuffix") is short s && GearGlobalItem.IsPrefixValid(item, s)) ? s : -1);
+		data.NameAffix = new((sbyte)prefix, (sbyte)suffix);
 
 		data.Affixes.Clear();
 		IList<TagCompound> affixTags = tag.GetList<TagCompound>("affixes");
@@ -76,10 +78,10 @@ partial class PoTGlobalItem : GlobalItem
 		writer.Write((byte)data.Influence);
 		writer.Write((byte)data.ImplicitCount);
 
-		writer.Write(data.Corrupted);
-		writer.Write(data.Cloned);
-		writer.Write(data.NameAffix.Prefix);
-		writer.Write(data.NameAffix.Suffix);
+		writer.Write((bool)data.Corrupted);
+		writer.Write((bool)data.Cloned);
+		writer.Write((sbyte)data.NameAffix.Prefix);
+		writer.Write((sbyte)data.NameAffix.Suffix);
 		writer.Write((byte)data.RealLevel);
 
 		writer.Write((byte)data.Affixes.Count);

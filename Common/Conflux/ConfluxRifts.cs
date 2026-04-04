@@ -25,7 +25,7 @@ namespace PathOfTerraria.Common.Conflux;
 /// <summary> This system spawns rifts in domain worlds. </summary>
 internal sealed class ConfluxRifts : ModSystem
 {
-	private static bool checkedRifts;
+	private static bool spawnedRifts;
 	private static float progressBarAlpha;
 	private static float progressBarProgress;
 	private static float progressBarPulse;
@@ -35,19 +35,24 @@ internal sealed class ConfluxRifts : ModSystem
 
 	public override void ClearWorld()
 	{
-		checkedRifts = false;
+		spawnedRifts = false;
+	}
+
+	private static bool HasActivePlayers()
+	{
+		foreach (Player p in Main.ActivePlayers) { if (!p.dead) { return true; } } 
+		return false;
 	}
 
 	public override void PostUpdateWorld()
 	{
-		if (!checkedRifts)
+		if (!spawnedRifts && HasActivePlayers())
 		{
 			if (ShouldRiftsSpawnInWorld(SubworldSystem.Current))
 			{
 				SpawnRifts();
+				spawnedRifts = true;
 			}
-
-			checkedRifts = true;
 		}
 	}
 
@@ -152,10 +157,13 @@ internal sealed class ConfluxRifts : ModSystem
 				2 => ModContent.ProjectileType<CelestialRift>(),
 				_ => throw new NotImplementedException(),
 			};
-			var rift = Projectile.NewProjectileDirect(source, position, Vector2.Zero, type, 0, 0f);
 
+			var rift = Projectile.NewProjectileDirect(source, position, Vector2.Zero, type, 0, 0f);
+			DebugUtils.DebugLog($"Spawned rift at coordinates: [{position.X:0},{position.Y:0}].");
 			rifts.Add(rift);
 		}
+
+		DebugUtils.DebugLog($"Spawned {rifts.Count} rifts.");
 
 		return rifts.Count;
 	}

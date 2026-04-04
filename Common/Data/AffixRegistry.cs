@@ -41,6 +41,7 @@ public class AffixRegistry : ILoadable
 	public virtual void Unload() { }
 
 #nullable enable
+
 	/// <summary> Returns one or more affix item distributions entry specific to the provided arguments. Errors if none are found! </summary>
 	public static IEnumerable<ItemAffixData> GetItemData(Type affixType)
 	{
@@ -80,10 +81,10 @@ public class AffixRegistry : ILoadable
 	/// <summary> Safely tries to acquire an affix item distribution entry specific to the provided arguments. </summary>
 	public static ItemAffixData? TryGetItemData(Type affixType, ItemType itemType)
 	{
+		if (itemType == 0) { return null; }
 		Debug.Assert(BitOperations.PopCount((ulong)itemType) == 1);
 		return ByAffixAndItemType.TryGetValue((affixType, itemType), out ItemAffixData? result) ? result : null;
 	}
-#nullable disable
 
 	/// <summary>
 	/// Loads the JSON files from the paths.txt file and returns a map of the data.
@@ -108,7 +109,7 @@ public class AffixRegistry : ILoadable
 		{
 			using var jsonReader = new StreamReader(jsonStream);
 			string json = jsonReader.ReadToEnd();
-			ItemAffixData[] datas = JsonSerializer.Deserialize<ItemAffixData[]>(json, options);
+			ItemAffixData[] datas = JsonSerializer.Deserialize<ItemAffixData[]>(json, options)!;
 
 			if (datas is not { Length: > 0 }) { continue; }
 
@@ -116,7 +117,7 @@ public class AffixRegistry : ILoadable
 
 			foreach (ItemAffixData data in datas)
 			{
-				if (!typesByName.TryGetValue(data.AffixType, out Type affixType))
+				if (!typesByName.TryGetValue(data.AffixType, out Type? affixType))
 				{
 					PoTMod.Instance.Logger.Warn($"Affix of type {data.AffixType} not found.");
 					continue;
@@ -126,6 +127,8 @@ public class AffixRegistry : ILoadable
 			}
 		}
 	}
+
+#nullable disable
 
 	private static void AddAffixData(Type affixType, ItemAffixData data)
 	{
@@ -174,14 +177,19 @@ public class AffixRegistry : ILoadable
 		return affixInstance;
 	}
 
+#nullable enable
+
 	/// <summary>
 	/// Filters ItemAffixData dictionary by ItemType and selects a random affix.
 	/// </summary>
 	/// <param name="itemType">The ItemType to filter by.</param>
 	/// <returns>Random ItemAffixData entry matching the ItemType.</returns>
-	public static ItemAffixData GetRandomAffixDataByItemType(ItemType itemType, IEnumerable<ItemAffixData> excludedAffixes = null)
+	public static ItemAffixData? GetRandomAffixDataByItemType(ItemType itemType, IEnumerable<ItemAffixData>? excludedAffixes = null)
 	{
-		if (itemType == 0) { throw new ArgumentNullException(nameof(itemType)); }
+		if (itemType == 0) 
+		{
+			throw new ArgumentNullException(nameof(itemType));
+		}
 
 		IEnumerable<ItemAffixData> enumerable = AllItemData
 			.Where(affixData => (itemType & affixData.GetEquipTypes()) != ItemType.None);

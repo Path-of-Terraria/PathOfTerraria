@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.AI;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
+using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Content.Dusts;
 using PathOfTerraria.Content.Gores;
 using Terraria.DataStructures;
@@ -10,7 +11,7 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.Swamp.NPCs;
 
-internal class SwampCroc : ModNPC
+internal class SwampCroc : ModNPC, IPreDrawAffix
 {
 	private readonly struct Context(NPC npc)
 	{
@@ -58,10 +59,10 @@ internal class SwampCroc : ModNPC
 		NPC.damage = 50;
 		NPC.width = 142;
 		NPC.height = 42;
-		NPC.knockBackResist = 0.1f;
+		NPC.knockBackResist = 0f;
 		NPC.noGravity = true;
 		NPC.value = Item.buyPrice(0, 0, 35, 0);
-
+		
 		NPC.HitSound = new($"{nameof(PathOfTerraria)}/Assets/Sounds/HitEffects/FleshHit", 3) { MaxInstances = 5, Volume = 0.4f };
 		NPC.DeathSound = SoundID.NPCDeath23 with { Pitch = +0.1f, PitchVariance = 0.15f, Identifier = $"{Name}Death" };
 
@@ -119,6 +120,8 @@ internal class SwampCroc : ModNPC
 	{
 		Context ctx = new(NPC);
 		ctx.Targeting.ManualUpdate(new(NPC));
+
+		NPC.dontTakeDamage = State == States.Idle;
 
 		if (Math.Abs(NPC.velocity.X) > 0.01f)
 		{
@@ -199,5 +202,10 @@ internal class SwampCroc : ModNPC
 			_ when State == States.Wake => animWake,
 			_ => null,
 		};
+	}
+
+	public bool PreDrawAffixes(Span<MobAffix> affixes)
+	{
+		return State != States.Idle;
 	}
 }

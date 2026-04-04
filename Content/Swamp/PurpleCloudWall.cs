@@ -1,6 +1,6 @@
 ﻿using Terraria.ID;
 
-namespace PathOfTerraria.Content.Walls;
+namespace PathOfTerraria.Content.Swamp;
 
 public class PurpleCloudWall : ModWall
 {

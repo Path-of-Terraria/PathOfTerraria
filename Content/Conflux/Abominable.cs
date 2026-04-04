@@ -31,6 +31,7 @@ internal sealed class Abominable : ModNPC
 
 	public override void Load()
 	{
+		if (Main.dedServ) { return; }
 		GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreHead");
 		GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreClaw");
 		GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreLeg1");

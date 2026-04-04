@@ -16,6 +16,7 @@ Growing: Aggrandissement des terres
 Clouds: Exploration du ciel
 Space: Échapper à l'atmosphère
 Scanning: Scannage du terrain
+// Arena: Building dens
 
 EaterSign: {
 	0: "{0} a été instantanément dévoré."

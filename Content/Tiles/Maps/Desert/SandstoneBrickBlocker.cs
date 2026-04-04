@@ -4,7 +4,7 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.Tiles.Maps.Desert;
 
-internal class SandstoneBrickBlocker : ModTile
+internal class SandstoneBrickBlocker : ModTile, IBlockerTile
 {
 	public static Asset<Texture2D> GlowTexture = null;
 

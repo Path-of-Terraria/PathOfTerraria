@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Content.Swamp;
-using SubworldLibrary;
+﻿using SubworldLibrary;
 using Terraria.Graphics.Capture;
 
 namespace PathOfTerraria.Content.Swamp;
@@ -7,9 +6,9 @@ namespace PathOfTerraria.Content.Swamp;
 internal class SwampBiome : ModBiome
 {
     public override ModWaterStyle WaterStyle => ModContent.GetInstance<SwampWaterStyle>();
-    //public override ModSurfaceBackgroundStyle SurfaceBackgroundStyle => ModContent.Find<ModSurfaceBackgroundStyle>("Verdant/VerdantSurfaceBgStyle");
-    public override CaptureBiome.TileColorStyle TileColorStyle => CaptureBiome.TileColorStyle.Mushroom;
-    public override SceneEffectPriority Priority => SceneEffectPriority.BiomeMedium;
+	public override ModSurfaceBackgroundStyle SurfaceBackgroundStyle => ModContent.GetInstance<SwampBackground>();
+	public override CaptureBiome.TileColorStyle TileColorStyle => CaptureBiome.TileColorStyle.Mushroom;
+    public override SceneEffectPriority Priority => SceneEffectPriority.Environment;
 
 	public override int Music => -1;
     public override string BestiaryIcon => "PathOfTerraria/Assets/BiomeContent/SwampBiome_Icon";
