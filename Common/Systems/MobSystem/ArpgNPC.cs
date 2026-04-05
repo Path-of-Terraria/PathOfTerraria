@@ -12,10 +12,12 @@ using PathOfTerraria.Common.Systems.ElementalDamage;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Core.Hooks;
 using PathOfTerraria.Core.Items;
+using PathOfTerraria.Utilities.Terraria;
 using SubworldLibrary;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
+using Terraria.Utilities;
 
 namespace PathOfTerraria.Common.Systems.MobSystem;
 
@@ -272,6 +274,8 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 
 		if (!fromNet)
 		{
+			Affixes = [];
+			
 			if (MobRegistry.TryGetMobData(npc.type, out MobData mobData))
 			{
 				MobEntry entry = MobRegistry.SelectMobEntry(mobData.NetId);
@@ -287,12 +291,10 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 					}
 				}
 			}
-#if DEBUG
 			else
 			{
-				Main.NewText($"Failed to load MobData for NPC ID {npc.type} ({typeName})!", Color.Red);
+				DebugUtils.DebugLog($"MobData not found for NPC ID {npc.type} ({typeName})!");
 			}
-#endif
 		}
 
 		if (Rarity == ItemRarity.Normal || Rarity == ItemRarity.Unique)
@@ -300,16 +302,26 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 			return;
 		}
 
-		if (!fromNet)
+		if (!fromNet && Rarity is ItemRarity.Magic or ItemRarity.Rare)
 		{
-			List<MobAffix> possible = AffixHandler.GetMobAffixes(npc, Rarity);
+			WeightRand<MobAffix> possible = AffixHandler.GetMobAffixes(npc, Rarity);
 			int areaLevel = PoTMobHelper.GetAreaLevel();
 
-			Affixes = Rarity switch
+			// Prevent duplicates.
+			if (Affixes.Count != 0)
 			{
-				ItemRarity.Magic or ItemRarity.Rare => Affix.GenerateAffixes(possible, PoTMobHelper.GetAffixCount(Rarity, areaLevel)),
-				_ => []
-			};
+				foreach (MobAffix existing in Affixes)
+				{
+					Type eType = existing.GetType();
+					possible.Items.RemoveAll(p => p.Value.GetType() == eType);
+				}
+			}
+
+			int maxRolled = PoTMobHelper.GetAffixCount(Rarity, areaLevel) - Affixes.Count;
+			if (maxRolled > 0)
+			{
+				Affixes.AddRange(Affix.GenerateAffixes(in possible, maxRolled));
+			}
 		}
 
 		Affixes.ForEach(a => a.PreRarity(npc));
@@ -363,6 +375,16 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 		}
 
 		npc.scale *= entry.Scale ?? 1f;
+
+		// Apply guaranteed affixes.
+		if (entry.Affixes is { Count: > 0 } affixes)
+		{
+			foreach (MobEntryAffix entryAffix in affixes)
+			{
+				MobAffix affix = AffixHandler.MobAffixFromName(entryAffix.Name).Clone<MobAffix>();
+				Affixes.Add(affix);
+			}
+		}
 	}
 
 	private string SetName(NPC npc)
@@ -414,7 +436,7 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 	public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
 	{
 		Rarity = (ItemRarity)binaryReader.ReadByte();
-		
+
 		if (!Enum.GetValues<ItemRarity>().Contains(Rarity))
 		{
 			Mod.Logger.Warn($"Received invalid rarity byte: {(byte)Rarity}");

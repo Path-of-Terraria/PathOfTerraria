@@ -7,6 +7,11 @@ using Terraria.ModLoader.IO;
 using Terraria.ModLoader.Core;
 using Terraria;
 using System.Diagnostics;
+using PathOfTerraria.Common.Data;
+using PathOfTerraria.Common.Data.Models;
+using PathOfTerraria.Utilities.Terraria;
+using Terraria.Utilities;
+using PathOfTerraria.Content.NPCs.Mapping.Forest;
 
 namespace PathOfTerraria.Common.Systems.Affixes;
 
@@ -243,41 +248,33 @@ public abstract class Affix : ILocalizedModType
 	/// <summary>
 	/// Used to generate a list of random affixes
 	/// </summary>
-	/// <param name="inputList">The list of affixes to pick from</param>
+	/// <param name="weightRand">The list of affixes to pick from</param>
 	/// <param name="count"></param>
 	/// <returns></returns>
-	public static List<T> GenerateAffixes<T>(List<T> inputList, int count) where T : Affix
+	public static List<T> GenerateAffixes<T>(in WeightRand<T> weightRand, int count) where T : Affix
 	{
-		if (inputList.Count <= count)
+		int numInputs = weightRand.Items.Count;
+		if (numInputs <= count)
 		{
-			return inputList;
+			return weightRand.Items.Select(t => t.Value).ToList();
 		}
 
 #if DEBUG
 		// Assert that we have enough inputs to create enough affixes without duplicates.
-		Debug.Assert(inputList.Count >= count);
+		Debug.Assert(numInputs >= count);
 #endif
 
-		count = Math.Min(count, inputList.Count);
+		count = Math.Min(count, numInputs);
 
 		var resultList = new List<T>(count);
-		Span<bool> rolledIndices = stackalloc bool[inputList.Count];
 
 		while (resultList.Count < count)
 		{
-			int randomIndex = Main.rand.Next(0, inputList.Count);
+			T baseAffix = weightRand.PopValue();
+			T newAffix = baseAffix.Clone<T>();
+			newAffix.Roll();
 
-			if (rolledIndices[randomIndex])
-			{
-				continue;
-			}
-
-			rolledIndices[randomIndex] = true;
-			T newItemAffix = inputList[randomIndex].Clone<T>();
-			newItemAffix.Roll();
-
-			resultList.Add(newItemAffix);
-			inputList.RemoveAt(randomIndex);
+			resultList.Add(newAffix);
 		}
 
 		return resultList;
@@ -290,8 +287,9 @@ public abstract class Affix : ILocalizedModType
 
 internal class AffixHandler : ILoadable
 {
-	private static List<ItemAffix> _itemAffixes;
-	private static List<MobAffix> _mobAffixes;
+	private static readonly List<ItemAffix> _itemAffixes = [];
+	private static readonly List<MobAffix> _mobAffixes = [];
+	private static readonly Dictionary<string, MobAffix> _mobAffixesByName = [];
 
 	/// <summary>
 	/// Returns a list of gear affixes that are valid for the given type. Typically used to roll affixes.
@@ -317,7 +315,6 @@ internal class AffixHandler : ILoadable
 	{
 		return _itemAffixes[idx].GetType();
 	}
-
 	public static int IndexFromItemAffix(Affix affix)
 	{
 		ItemAffix a = _itemAffixes.First(a => affix.GetType() == a.GetType());
@@ -330,11 +327,14 @@ internal class AffixHandler : ILoadable
 		return _itemAffixes.IndexOf(a);
 	}
 
+	public static MobAffix MobAffixFromName(string name)
+	{
+		return _mobAffixesByName[name];
+	}
 	public static Type MobAffixTypeFromIndex(int idx)
 	{
 		return _mobAffixes[idx].GetType();
 	}
-
 	public static int IndexFromMobAffix(MobAffix affix)
 	{
 		MobAffix a = _mobAffixes.First(a => affix.GetType() == a.GetType());
@@ -347,19 +347,26 @@ internal class AffixHandler : ILoadable
 		return _mobAffixes.IndexOf(a);
 	}
 
-	/// <summary>
-	/// Returns a list of mob affixes that are valid for the given NPC and rarity.
-	/// </summary>
-	/// <returns></returns>
-	public static List<MobAffix> GetMobAffixes(NPC npc, ItemRarity rarity)
+	/// <summary> Returns a weighted pool of mob affixes that are valid for the given NPC and rarity. </summary>
+	public static WeightRand<MobAffix> GetMobAffixes(NPC npc, ItemRarity rarity)
 	{
-		return _mobAffixes.Where(x => rarity >= x.MinimumRarity && x.CanApplyTo(npc)).ToList();
+		var result = new WeightRand<MobAffix>(capacity: _mobAffixes.Count);
+	
+		foreach (MobAffix affix in _mobAffixes)
+		{
+			if (rarity >= affix.MinimumRarity && affix.CanApplyTo(npc))
+			{
+				result.Add(affix, (double)affix.BaseWeight);
+			}
+		}
+
+		return result;
 	}
 
 	public void Load(Mod mod)
 	{
-		_itemAffixes = [];
-		_mobAffixes = [];
+		_itemAffixes.Clear();
+		_mobAffixes.Clear();
 
 		foreach (Type type in AssemblyManager.GetLoadableTypes(mod.Code))
 		{
@@ -379,6 +386,7 @@ internal class AffixHandler : ILoadable
 					continue;
 				case MobAffix mobAffix:
 					_mobAffixes.Add(mobAffix);
+					_mobAffixesByName.Add(mobAffix.Name, mobAffix);
 
 					MobAffix.MobAffixIconsByAffixName[mobAffix.GetType().AssemblyQualifiedName] = ModContent.Request<Texture2D>(mobAffix.TexturePath);
 					break;
@@ -401,7 +409,8 @@ internal class AffixHandler : ILoadable
 			item.OnUnload();
 		}
 
-		_itemAffixes = null;
-		_mobAffixes = null;
+		_itemAffixes.Clear();
+		_mobAffixes.Clear();
 	}
 }
+
