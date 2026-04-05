@@ -2,6 +2,8 @@
 using PathOfTerraria.Common.UI.Elements;
 using PathOfTerraria.Content.Items.Gear.Offhands;
 using ReLogic.Content;
+using Terraria.Audio;
+using Terraria.ID;
 using Terraria.UI;
 
 #nullable enable
@@ -52,7 +54,19 @@ public sealed class UIDefaultArmor : UIArmorPage
 		(int, bool)? armorHideSlot = (customModSlot, false);
 		var handler = new UIImageItemSlot.SlotWrapper(() => modSlot.FunctionalItem, value => modSlot.FunctionalItem = value);
 		var uiSlot = new UIHoverImageItemSlot(DefaultFrameTexture, MiscellaneousIconTexture, handler, (LocPrefix + "NumberedAccessory", accessoryNumber), ItemSlot.Context.ModdedAccessorySlot, armorHideSlot: armorHideSlot);
+		uiSlot.OnRightClick += (_, _) => SwapFunctionalAndVanity(modSlot);
 
 		return uiSlot;
+	}
+
+	private static void SwapFunctionalAndVanity(ModAccessorySlot modSlot)
+	{
+		if (!Main.mouseItem.IsAir)
+		{
+			return;
+		}
+
+		(modSlot.FunctionalItem, modSlot.VanityItem) = (modSlot.VanityItem, modSlot.FunctionalItem);
+		SoundEngine.PlaySound(SoundID.Grab);
 	}
 }
