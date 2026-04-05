@@ -1,6 +1,8 @@
 ﻿using PathOfTerraria.Content.Items.Gear.Amulets;
 using PathOfTerraria.Content.Items.Gear.Offhands;
+using PathOfTerraria.Content.Items.Gear.Offhands.Quivers;
 using PathOfTerraria.Content.Items.Gear.Rings;
+using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
 
 namespace PathOfTerraria.Common.AccessorySlots;
 
@@ -78,6 +80,32 @@ public sealed class AccessorySlotRemapping : ModSystem
 		return result;
 	}
 
+	public static bool IsOffhandCompatible(Player player, Item offhand)
+	{
+		if (offhand?.ModItem is not Offhand)
+		{
+			return false;
+		}
+
+		return player.inventory[0].ModItem switch
+		{
+			Bow => offhand.ModItem is Quiver,
+			_ => true
+		};
+	}
+
+	public static bool IsWeaponCompatible(Player player, Item weapon)
+	{
+		Item offhand = player.armor[(int)RemappedEquipSlots.Offhand];
+
+		if (weapon?.ModItem is Bow)
+		{
+			return offhand.IsAir || offhand.ModItem is Quiver;
+		}
+
+		return true;
+	}
+
 	private static bool Player_IsItemSlotUnlockedAndUsable_Hook(On_Player.orig_IsItemSlotUnlockedAndUsable orig, Player self, int slot)
 	{
 		return true;
@@ -96,7 +124,7 @@ file sealed class ItemAccessorySlotRemapping : GlobalItem
 			(int)RemappedEquipSlots.Accessory2 => AccessorySlotRemapping.IsNormalAccessory(item),
 			(int)RemappedEquipSlots.Wings => item.wingSlot > 0,
 			(int)RemappedEquipSlots.Necklace => item.ModItem is Amulet,
-			(int)RemappedEquipSlots.Offhand => item.ModItem is Offhand,
+			(int)RemappedEquipSlots.Offhand => item.ModItem is Offhand && AccessorySlotRemapping.IsOffhandCompatible(player, item),
 			(int)RemappedEquipSlots.RingOn => item.ModItem is Ring,
 			(int)RemappedEquipSlots.RingOff => item.ModItem is Ring,
 			// For some reason, TML does a weird last-moment "can go into slot zero" check, so we have to account for that.
