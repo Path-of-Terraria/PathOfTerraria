@@ -1,5 +1,7 @@
 ﻿using Terraria.DataStructures;
 
+using PathOfTerraria.Core.UI.SmartUI;
+
 namespace PathOfTerraria.Common.UI;
 
 internal static class UIHelper
@@ -15,7 +17,7 @@ internal static class UIHelper
 		size ??= new(64, 64);
 		pos = new(x ?? GetTextureXPosition(), y);
 		var bounds = new Rectangle((int)(pos.X - size.Value.X / 1.125f), (int)pos.Y, size.Value.X, size.Value.Y);
-		return bounds.Contains(Main.MouseScreen.ToPoint());
+		return bounds.Contains(Main.MouseScreen.ToPoint()) && !SmartUiLoader.IsCoveredByHigherPriorityBlockingUi(Main.MouseScreen, 0);
 	}
 
 	/// <summary>
