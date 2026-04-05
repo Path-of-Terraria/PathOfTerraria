@@ -6,8 +6,8 @@ Find and help rebuild towns, complete quests, and explore the world of Terraria 
 Path of Terraria is fully multiplayer-compatible and can be played with friends or solo.
 
 New Content Includes
-- Global Leaderboard System
-- Global Trade System
+- Global Leaderboard System (With Online Mod)
+- Global Trade System (With Online Mod)
 - Towns
 - Questing
 - Passive Tree
@@ -17,6 +17,9 @@ New Content Includes
 - Item Modifiers (Affixes)
 - Item Crafting System
 - Mapping Endgame System
+- Several New Bosses
+- Several new NPCs
+- Several new Enemies
 
 CREDITS:
 - ScottieKnowz - Project Lead
@@ -29,6 +32,11 @@ CREDITS:
 - Tree - Developer
 - Mirsario - Developer
 - ThirstyBoi - Spriter
+
+Shoutouts for making this possible:
+- jjohnsnaill - For creating and maintaining the Subworld Lib
+- Rhoenicx - For creating the patches for Subworld Lib to keep us going
+- ScalarVector - For providing the initial foundation for this mod and Developer Tooling (DragonLens, StructureHelper)
 
 Available Links:
 - Discord: https://discord.gg/5c2GrFQReE
