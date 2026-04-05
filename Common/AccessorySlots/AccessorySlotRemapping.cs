@@ -3,6 +3,9 @@ using PathOfTerraria.Content.Items.Gear.Offhands;
 using PathOfTerraria.Content.Items.Gear.Offhands.Quivers;
 using PathOfTerraria.Content.Items.Gear.Rings;
 using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
+using Terraria.Audio;
+using Terraria.ID;
+using Terraria.UI;
 
 namespace PathOfTerraria.Common.AccessorySlots;
 
@@ -65,6 +68,27 @@ public sealed class AccessorySlotRemapping : ModSystem
 	public override void Load()
 	{
 		On_Player.IsItemSlotUnlockedAndUsable += Player_IsItemSlotUnlockedAndUsable_Hook;
+		On_ItemSlot.RightClick_ItemArray_int_int += (orig, inv, context, slot) =>
+		{
+			Player player = Main.LocalPlayer;
+			Item item = inv[slot];
+			bool clicked = Main.mouseRight && Main.mouseRightRelease;
+
+			if (clicked
+				&& context == ItemSlot.Context.InventoryItem
+				&& slot != 0
+				&& !item.IsAir
+				&& item.damage > 0
+				&& !item.accessory
+				&& IsWeaponCompatible(player, item))
+			{
+				(player.inventory[0], inv[slot]) = (inv[slot], player.inventory[0]);
+				SoundEngine.PlaySound(SoundID.Grab);
+				return;
+			}
+
+			orig(inv, context, slot);
+		};
 	}
 
 	public static bool IsNormalAccessory(Item item)
