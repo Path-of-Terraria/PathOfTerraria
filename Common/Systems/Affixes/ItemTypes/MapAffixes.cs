@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Systems.ElementalDamage;
+using PathOfTerraria.Common.Systems.Charges;
+using PathOfTerraria.Common.Systems.ElementalDamage;
 using PathOfTerraria.Common.Systems.NPCCritFunctionality;
 using System.IO;
 using Terraria.ID;
@@ -107,6 +108,30 @@ public class MapIncreasedBehaviourAffix : MapAffix
 	public override void PreAI(NPC npc)
 	{
 		npc.GetGlobalNPC<SpeedUpNPC>().ExtraAISpeed += Value / 100f;
+	}
+}
+
+public class MapStealAegisChargeAffix : MapAffix
+{
+	public override void OnHitPlayer(NPC npc, Player player, Player.HurtInfo info)
+	{
+		player.GetModPlayer<AegisChargePlayer>().RemoveCharge();
+	}
+}
+
+public class MapStealFocusChargeAffix : MapAffix
+{
+	public override void OnHitPlayer(NPC npc, Player player, Player.HurtInfo info)
+	{
+		player.GetModPlayer<FocusChargePlayer>().RemoveCharge();
+	}
+}
+
+public class MapStealHasteChargeAffix : MapAffix
+{
+	public override void OnHitPlayer(NPC npc, Player player, Player.HurtInfo info)
+	{
+		player.GetModPlayer<HasteChargePlayer>().RemoveCharge();
 	}
 }
 
