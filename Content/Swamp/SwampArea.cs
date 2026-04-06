@@ -659,7 +659,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 			{
 				for (int y = j; y < j + height; ++y)
 				{
-					GenPlacement.FastPlaceTile(x, y, TileID.LivingWood).IsActuated = y != j && y != j + height - 1;
+					GenPlacement.FastPlaceTile(x, y, ModContent.TileType<CypressWood>()).IsActuated = y != j && y != j + height - 1;
 					SkipActuationLocations.Add(new Point16(x, y));
 				}
 			}

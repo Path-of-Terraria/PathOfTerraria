@@ -1492,6 +1492,16 @@ SwampMossItem: {
 }
 
 MossyPurpleCloudsItem: {
-	// DisplayName: Mossy Purple Clouds Item
+	// DisplayName: Mossy Purple Clouds
+	// Tooltip: ""
+}
+
+CypressWoodItem: {
+	// DisplayName: Cypress Wood
+	// Tooltip: ""
+}
+
+MangroveWoodItem: {
+	// DisplayName: Mangrove Wood
 	// Tooltip: ""
 }
