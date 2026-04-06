@@ -63,6 +63,9 @@ NoFallDamageAffix: {
 // MapMobCritChanceAffix.Description: "{1}{0}% increased enemy crit chance"
 // MapMobChillChanceAffix.Description: "{1}{0}% chance for enemies to inflict chilled"
 // MapIncreasedBehaviourAffix.Description: "{1}{0}% increased enemy behavior speed"
+// MapStealAegisChargeAffix.Description: Monsters steal an Aegis Charge on hit
+// MapStealFocusChargeAffix.Description: Monsters steal a Focus Charge on hit
+// MapStealHasteChargeAffix.Description: Monsters steal a Haste Charge on hit
 // ColdAffix.Prefix: Freezing
 // LightningAffix.Prefix: Shocking
 // FlamingAffix.Prefix: Flaming
