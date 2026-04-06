@@ -198,15 +198,13 @@ public readonly struct ElementalDamage
 	/// <returns></returns>
 	internal static bool CanDebuff(ElementType type, Entity victim, Entity attacker, HitInfoContainer info, float defaultPercent)
 	{
-		float addedIgniteChance = attacker is Player igniteChancePlr ? igniteChancePlr.GetModPlayer<IgnitedPlayer>().AddedIgniteChance : 0;
-
 		if (attacker is Player player)
 		{
 			NPC.HitInfo hit = info.NPCHurt!.Value;
 
 			return type switch
 			{
-				ElementType.Fire => Main.rand.NextFloat() < AilmentUtils.GetEntityAilmentThreshold(victim, info.DamageDealt) + addedIgniteChance,
+				ElementType.Fire => Main.rand.NextFloat() < AilmentUtils.GetEntityAilmentThreshold(victim, info.DamageDealt),
 				ElementType.Cold => true, // Since the Cold element has both Freeze and Chilled, always return true so it can check both individually
 				ElementType.Chaos => false,
 				ElementType.Lightning => hit.Crit || defaultPercent + player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<ShockChancePassive>() / 100f > Main.rand.NextFloat(),
@@ -219,7 +217,7 @@ public readonly struct ElementalDamage
 
 			return type switch
 			{
-				ElementType.Fire => Main.rand.NextFloat() < AilmentUtils.GetEntityAilmentThreshold(victim, info.DamageDealt) + addedIgniteChance,
+				ElementType.Fire => Main.rand.NextFloat() < AilmentUtils.GetEntityAilmentThreshold(victim, info.DamageDealt),
 				ElementType.Cold => true, // Since the Cold element has both Freeze and Chilled, always return true so it can check both individually
 				ElementType.Chaos => false,
 				ElementType.Lightning => isCrit || defaultPercent > Main.rand.NextFloat(),

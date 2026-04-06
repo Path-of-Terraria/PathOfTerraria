@@ -169,6 +169,6 @@ internal class IgniteChanceAffix : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		player.GetModPlayer<IgnitedPlayer>().AddedIgniteChance += Value;
+		player.GetModPlayer<IgnitedPlayer>().AddedIgniteChance += Value / 100f;
 	}
 }

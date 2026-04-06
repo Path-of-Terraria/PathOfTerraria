@@ -34,6 +34,11 @@ internal class ChanceToApplyOnFireGearAffix : ItemAffix
 	{
 		modifier.Buffer.Add(BuffID.OnFire, Duration, Value * 0.01f);
 	}
+
+	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
+	{
+		return base.CreateDefaultTooltip(player, item) with { Value = MathF.Round(Value * 100f) };
+	}
 }
 	
 internal class ChanceToApplyArmorShredGearAffix : ItemAffix

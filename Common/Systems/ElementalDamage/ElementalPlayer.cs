@@ -1,8 +1,9 @@
-﻿using PathOfTerraria.Utilities;
+﻿using Microsoft.Build.Tasks;
+using PathOfTerraria.Content.Buffs.ElementalBuffs;
+using PathOfTerraria.Utilities;
 using System.Linq;
-using Terraria.ID;
 using System.Runtime.CompilerServices;
-using Microsoft.Build.Tasks;
+using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.ElementalDamage;
 
@@ -261,9 +262,24 @@ public class ElementalPlayer : ModPlayer
 			}
 		}
 
+		OnElementalHit(attacker, target, infoContainer);
+
 		if (attacker is Player plr && target is NPC postNpc && infoContainer.NPCHurt.HasValue)
 		{
 			ElementalPlayerHooks.PostElementalHit(plr, postNpc, container, other, finalDamage, infoContainer.NPCHurt.Value, item);
+		}
+	}
+
+	private static void OnElementalHit(Entity attacker, Entity target, HitInfoContainer infoContainer)
+	{
+		if (attacker is Player plr && target is NPC npc)
+		{
+			float chance = plr.GetModPlayer<IgnitedPlayer>().AddedIgniteChance;
+
+			if (chance > 0 && Main.rand.NextFloat() < chance)
+			{
+				IgnitedDebuff.ApplyTo(plr, npc, infoContainer.DamageDealt);
+			}
 		}
 	}
 
