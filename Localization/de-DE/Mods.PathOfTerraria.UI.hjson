@@ -401,6 +401,8 @@ MapDevice: {
 	// InjectResource: Inject Resource
 	// EjectResource: Eject Resource
 	// NotEnoughResources: Not Enough Resources
+	// ClosePortalMapWarning: Closing the portal will discard the map!
+	// ClosePortalResourceWarning: Closing the portal will discard the portal fluid!
 }
 
 MigrateRavencrest: {

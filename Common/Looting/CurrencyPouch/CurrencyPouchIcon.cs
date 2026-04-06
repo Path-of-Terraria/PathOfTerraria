@@ -66,13 +66,7 @@ public class CurrencyPouchIcon : SmartUiState
 
 	public override void SafeClick(UIMouseEvent evt)
 	{
-		Texture2D texture = Texture.Value;
-		Vector2 pos = new(UIHelper.GetTextureXPosition(), 150);
-
-		//Uses just a 64/64 texture size
-		var bounding = new Rectangle((int)(pos.X - texture.Width / 1.125f) - 64, (int)pos.Y, 64, 64);
-
-		if (!bounding.Contains(Main.MouseScreen.ToPoint()))
+		if (!UIHelper.GetInvButtonInfo(150, out _, null, NewXPosition))
 		{
 			return;
 		}

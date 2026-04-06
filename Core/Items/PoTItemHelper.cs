@@ -125,12 +125,8 @@ public static class PoTItemHelper
 		}
 
 		IEnumerable<ItemAffixData> exclusions = data.Affixes.SelectExcept(null, a => a.TryGetData(item));
-		if (!exclusions.Any())
-		{
-			return;
-		}
-
 		ItemAffixData chosenAffix = AffixRegistry.GetRandomAffixDataByItemType(data.ItemType, excludedAffixes: exclusions);
+
 		if (chosenAffix is null)
 		{
 			return;

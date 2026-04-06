@@ -27,6 +27,11 @@ public abstract class CloseableSmartUi : SmartUiState
         return layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
     }
 
+    public override bool ShouldBlockClickThrough(Vector2 mousePosition)
+    {
+        return Panel?.ContainsPoint(mousePosition) == true;
+    }
+
     protected override void DrawSelf(SpriteBatch spriteBatch)
     {
         base.DrawSelf(spriteBatch);

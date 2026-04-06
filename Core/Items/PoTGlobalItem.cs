@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.AccessorySlots;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using Terraria.DataStructures;
 using Terraria.UI;
@@ -35,6 +36,11 @@ public sealed partial class PoTGlobalItem : GlobalItem
 	public override void UpdateEquip(Item item, Player player)
 	{
 		base.UpdateEquip(item, player);
+
+		if (ReferenceEquals(player.armor[(int)RemappedEquipSlots.Offhand], item) && !AccessorySlotRemapping.IsOffhandCompatible(player, item))
+		{
+			return;
+		}
 
 		PoTItemHelper.ApplyAffixes(item, player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier, player);
 	}

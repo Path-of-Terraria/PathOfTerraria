@@ -175,11 +175,13 @@ internal class IgnitedNPC : GlobalNPC
 public class IgnitedPlayer : ModPlayer
 {
 	public StatModifier IgniteDuration = new();
+	public float AddedIgniteChance = 0;
 	public List<IgnitedStack> Stacks = [];
 
 	public override void ResetEffects()
 	{
 		IgniteDuration = new();
+		AddedIgniteChance = 0;
 	}
 
 	public override void UpdateBadLifeRegen()
