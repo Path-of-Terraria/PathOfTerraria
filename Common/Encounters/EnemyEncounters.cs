@@ -309,7 +309,7 @@ internal sealed class EnemyEncounters : ModSystem
 	/// <summary> Creates an encounter with the given parameters. </summary>
 	public static Encounter CreateEncounter(in EncounterDescription description)
 	{
-		Encounter encounter = encounters.Put(new InstanceData
+		Encounter encounter = encounters.Add(new InstanceData
 		{
 			Description = description,
 		});
