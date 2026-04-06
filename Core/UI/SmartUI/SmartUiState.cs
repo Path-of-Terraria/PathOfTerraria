@@ -24,6 +24,11 @@ public abstract class SmartUiState : UIState
 
 	public virtual int DepthPriority => 0;
 
+	public virtual bool ShouldBlockClickThrough(Vector2 mousePosition)
+	{
+		return false;
+	}
+
 	/// <summary>
 	///		Where this UI state should be inserted relative to the vanilla UI
 	///		layers.

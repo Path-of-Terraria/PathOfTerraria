@@ -40,6 +40,24 @@ internal sealed partial class SmartUiLoader
 		return state;
 	}
 
+	public static bool IsCoveredByHigherPriorityBlockingUi(Vector2 mousePosition, int depthPriority, SmartUiState? except = null)
+	{
+		foreach (SmartUiState state in ModContent.GetInstance<SmartUiLoader>().uiStates)
+		{
+			if (state == except || !state.Visible || state.DepthPriority <= depthPriority)
+			{
+				continue;
+			}
+
+			if (state.ShouldBlockClickThrough(mousePosition))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	/// <summary>
 	///		Derives the most-ancestral <see cref="SmartUiElement"/> from the
 	///		given <paramref name="element"/>.

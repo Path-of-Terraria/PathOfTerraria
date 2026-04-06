@@ -82,7 +82,6 @@ public abstract class ModChargePlayer : ModPlayer
 
     public void AddCharge(int amount = 1)
     {
-	    bool hadCharges = Charges > 0;
 	    Charges = Math.Min(Charges + amount, MaxCharges);
 	    RefreshChargeDuration();
 	    //ShowChargeGainText();
@@ -94,6 +93,27 @@ public abstract class ModChargePlayer : ModPlayer
 	    }
 
     }
+
+	public void RemoveCharge(int amount = 1)
+	{
+		if (Charges <= 0 || amount <= 0)
+		{
+			return;
+		}
+
+		Charges = Math.Max(Charges - amount, 0);
+
+		if (Charges == 0)
+		{
+			RemoveAllCharges();
+			return;
+		}
+
+		if (BuffType != -1 && Player.HasBuff(BuffType))
+		{
+			Player.buffTime[Player.FindBuffIndex(BuffType)] = chargeDuration;
+		}
+	}
 
     protected void RefreshChargeDuration()
     {
