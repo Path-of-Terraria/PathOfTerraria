@@ -14,6 +14,10 @@ public struct WeightRand<TValue>
     private bool isDirty = true;
     private double totalWeight;
 
+    public WeightRand()
+    {
+        Items = [];
+    }
     public WeightRand(params (TValue Value, double Weight)[] items) : this(Main.rand, items) { }
     public WeightRand(List<(TValue Value, double Weight)> items) : this(Main.rand, items) { }
     public WeightRand(UnifiedRandom random, params (TValue Value, double Weight)[] elements) : this(random, elements.ToList()) { }
