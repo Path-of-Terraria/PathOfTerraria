@@ -62,7 +62,7 @@ internal class Minitera : ModNPC
 		if (SpawningTimer <= 120)
 		{
 			NPC.Opacity = SpawningTimer / 120f * 0.5f + 0.5f;
-			NPC.scale = Easings.EaseCircularOut.Ease(SpawningTimer / 120f) * 0.5f + 0.5f;
+			NPC.scale = Easings.CircularOut(SpawningTimer / 120f) * 0.5f + 0.5f;
 			NPC.dontTakeDamage = true;
 
 			if (SpawningTimer > 60)
