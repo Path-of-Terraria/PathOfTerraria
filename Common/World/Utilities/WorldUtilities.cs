@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using Terraria.ID;
 
 namespace PathOfTerraria.Common.World.Utilities;
 
@@ -62,5 +63,30 @@ internal static class WorldUtilities
 	public static bool TileOrphaned(int i, int j)
 	{
 		return !SolidOrActuatedTile(i, j - 1) && !SolidOrActuatedTile(i, j + 1) && !SolidOrActuatedTile(i - 1, j) && !SolidOrActuatedTile(i + 1, j);
+	}
+
+	/// <summary>
+	/// Determines if a tile has any tiles adjacent to it that have no walls.
+	/// </summary>
+	internal static bool TileExposedToAirWalls(int i, int j, bool diagonal = true)
+	{
+		const int None = WallID.None;
+
+		if (Main.tile[i, j - 1].WallType == None || Main.tile[i, j + 1].WallType == None || Main.tile[i + 1, j].WallType == None || Main.tile[i - 1, j].WallType == None)
+		{
+			return true;
+		}
+
+		if (!diagonal)
+		{
+			return false;
+		}
+
+		if (Main.tile[i - 1, j - 1].WallType == None || Main.tile[i + 1, j + 1].WallType == None || Main.tile[i + 1, j - 1].WallType == None || Main.tile[i - 1, j + 1].WallType == None)
+		{
+			return true;
+		}
+
+		return false;
 	}
 }

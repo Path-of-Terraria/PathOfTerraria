@@ -1,6 +1,8 @@
 ﻿using PathOfTerraria.Common.AccessorySlots;
 using PathOfTerraria.Common.UI.Elements;
 using ReLogic.Content;
+using Terraria.Audio;
+using Terraria.ID;
 using Terraria.UI;
 
 #nullable enable
@@ -38,7 +40,19 @@ public sealed class UIVanityArmor : UIArmorPage
 		int accessoryNumber = ++numAccessorySlots;
 		var handler = new UIImageItemSlot.SlotWrapper(() => modSlot.VanityItem, value => modSlot.VanityItem = value);
 		var uiSlot = new UIHoverImageItemSlot(DefaultFrameTexture, MiscellaneousIconTexture, handler, ($"Mods.{PoTMod.ModName}.UI.Slots.NumberedAccessory", accessoryNumber), ItemSlot.Context.ModdedVanityAccessorySlot);
+		uiSlot.OnRightClick += (_, _) => SwapVanityAndFunctional(modSlot);
 
 		return uiSlot;
+	}
+
+	private static void SwapVanityAndFunctional(ModAccessorySlot modSlot)
+	{
+		if (!Main.mouseItem.IsAir)
+		{
+			return;
+		}
+
+		(modSlot.VanityItem, modSlot.FunctionalItem) = (modSlot.FunctionalItem, modSlot.VanityItem);
+		SoundEngine.PlaySound(SoundID.Grab);
 	}
 }

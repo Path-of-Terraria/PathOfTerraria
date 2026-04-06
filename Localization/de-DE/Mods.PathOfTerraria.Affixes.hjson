@@ -63,6 +63,9 @@ MapBossHealthAffix.Description: "{1}{0}% mehr Boss Leben"
 MapMobCritChanceAffix.Description: "{1}{0}% erhöhte Gegnerische Kritische Trefferchance"
 MapMobChillChanceAffix.Description: "{1}{0}% chance auf Verlangsamung durch Gegner"
 MapIncreasedBehaviourAffix.Description: "{1}{0}% erhöhte Gegnerische Geschwindigkeit"
+// MapStealAegisChargeAffix.Description: Monsters steal an Aegis Charge on hit
+// MapStealFocusChargeAffix.Description: Monsters steal a Focus Charge on hit
+// MapStealHasteChargeAffix.Description: Monsters steal a Haste Charge on hit
 ColdAffix.Prefix: Frierend
 LightningAffix.Prefix: Schockierend
 FlamingAffix.Prefix: Brennend

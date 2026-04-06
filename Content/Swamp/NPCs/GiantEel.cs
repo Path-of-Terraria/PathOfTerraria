@@ -1,15 +1,18 @@
 ﻿using NPCUtils;
 using PathOfTerraria.Common.AI;
+using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.NPCs.Worms;
 using PathOfTerraria.Common.Systems.MobSystem;
+using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.Buffs;
+using PathOfTerraria.Content.Buffs.ElementalBuffs;
 using PathOfTerraria.Content.Dusts;
 using PathOfTerraria.Content.Gores;
+using SubworldLibrary;
 using System.IO;
-using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
@@ -36,7 +39,13 @@ internal class GiantEel : ModNPC
 			NPC.damage = 60;
 			NPC.HitSound = SoundID.NPCHit34;
 			NPC.DeathSound = SoundID.NPCHit53;
-			NPC.defense = 100;
+			NPC.defense = 800;
+			NPC.netAlways = true;
+		}
+
+		public override void ModifyIncomingHit(ref NPC.HitModifiers modifiers)
+		{
+			modifiers.FinalDamage *= 0.9f;
 		}
 
 		public override bool CheckActive()
@@ -65,6 +74,27 @@ internal class GiantEel : ModNPC
 			}
 
 			SpamDust(NPC, NPC.position - NPC.oldPosition);
+		}
+
+		public override void OnHitPlayer(Player target, Player.HurtInfo hurtInfo)
+		{
+			if (target.statLife - hurtInfo.Damage <= 0)
+			{
+				if (Main.netMode == NetmodeID.SinglePlayer)
+				{
+					NPC parent = GetHead();
+
+					if (parent.ModNPC is GiantEel eel)
+					{
+						eel.State = States.Flee;
+						eel.MiscTimer = 0;
+					}
+				}
+				else
+				{
+					SyncEelRetreat.Send(GetHead().whoAmI);
+				}
+			}
 		}
 
 		public override void HitEffect(NPC.HitInfo hit)
@@ -100,6 +130,31 @@ internal class GiantEel : ModNPC
 		}
 	}
 
+	internal class SyncEelRetreat : Handler
+	{
+		public static void Send(int npcWho)
+		{
+			if (Main.netMode == NetmodeID.Server)
+			{
+				return;
+			}
+
+			ModPacket packet = Networking.GetPacket<SyncEelRetreat>();
+			packet.Write((byte)npcWho);
+			packet.Send();
+		}
+
+		internal override void Receive(BinaryReader reader, byte sender)
+		{
+			if (Main.npc[reader.ReadByte()].ModNPC is GiantEel eel)
+			{
+				eel.State = States.Flee;
+				eel.MiscTimer = 0;
+				eel.NPC.netUpdate = true;
+			}
+		}
+	}
+
 	private enum States
 	{
 		Roaming = 0,
@@ -107,6 +162,8 @@ internal class GiantEel : ModNPC
 		Fury,
 		Flee,
 	}
+
+	const int SplineLength = 6;
 
 	private States State
 	{
@@ -122,10 +179,11 @@ internal class GiantEel : ModNPC
 	private ref float MiscTimer => ref NPC.localAI[2];
 
 	private bool _spawnedSegments = false;
-	private Vector2[] _spline = [];
+	private Vector2[] _spline = [Vector2.Zero, Vector2.Zero, Vector2.Zero, Vector2.Zero, Vector2.Zero, Vector2.Zero];
 
 	public override void Load()
 	{
+		//if (Main.dedServ) { return; }
 		//GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, $"{Texture}_GoreBlade");
 		//GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreHead");
 		//GoreLoader.AddGoreFromTexture<AdvancedGore>(Mod, $"{Texture}_GoreChest");
@@ -136,19 +194,21 @@ internal class GiantEel : ModNPC
 	public override void SetStaticDefaults()
 	{
 		ArpgNPC.NoAffixesSet.Add(Type);
+		SkipSectionCheckNPC.SkipSectionCheck.Add(Type);
 	}
 
 	public override void SetDefaults()
 	{
 		NPC.aiStyle = -1;
-		NPC.lifeMax = 150000;
-		NPC.defense = 100;
+		NPC.lifeMax = 150_000;
+		NPC.defense = 800;
 		NPC.damage = 50;
 		NPC.width = 50;
 		NPC.height = 50;
 		NPC.knockBackResist = 0f;
 		NPC.noGravity = true;
 		NPC.noTileCollide = true;
+		NPC.netAlways = true;
 
 		NPC.HitSound = new($"{nameof(PathOfTerraria)}/Assets/Sounds/HitEffects/FleshHit", 3) { MaxInstances = 5, Volume = 0.4f };
 		NPC.DeathSound = SoundID.NPCDeath23 with { Pitch = +0.1f, PitchVariance = 0.15f, Identifier = $"{Name}Death" };
@@ -180,9 +240,14 @@ internal class GiantEel : ModNPC
 		bestiaryEntry.AddInfo(this, "");
 	}
 
+	public override void ModifyIncomingHit(ref NPC.HitModifiers modifiers)
+	{
+		modifiers.FinalDamage *= 0.9f;
+	}
+
 	public override void AI()
 	{
-		if (!_spawnedSegments)
+		if (!_spawnedSegments && Main.netMode != NetmodeID.MultiplayerClient)
 		{
 			WormSegment.SpawnWhole<GiantEelBody, GiantEelTail>(NPC.GetSource_FromAI(), NPC, 42, 16);
 			_spawnedSegments = true;
@@ -204,14 +269,17 @@ internal class GiantEel : ModNPC
 
 		if (State == States.Roaming)
 		{
-			float aggro = Utils.Remap(targetPlayer.Center.Y / 16f, 40, SwampArea.FloorY, 3000, 1200, true) * (targetPlayer.HasBuff<SwampAlgaeBuff>() ? 1.3333f : 1);
+			float aggro = targetPlayer.HasBuff<SwampAlgaeBuff>() ? 4000 : 3000;//Utils.Remap(targetPlayer.Center.Y / 16f, 40, SwampArea.FloorY, 3000, 1200, true) * (targetPlayer.HasBuff<SwampAlgaeBuff>() ? 1.3333f : 1);
 			Vector2 targetDirection = NPC.DirectionTo(new Vector2(targetPlayer.Center.X, MathF.Sin(Timer * 0.008f) * (30 * 16) + 180 * 16)) * new Vector2(2.5f, 1);
 			NPC.velocity = Vector2.SmoothStep(NPC.velocity, targetDirection * 8, 0.05f) + new Vector2(MathF.Sin(Timer * 0.04f) * 0.25f, 0);
 
-			if (targetPlayer.DistanceSQ(NPC.Center) < aggro * aggro)
+			bool inArenaLocation = IsInArena();
+
+			if (targetPlayer.DistanceSQ(NPC.Center) < aggro * aggro && !inArenaLocation)
 			{
 				State = States.Chase;
 				Timer = 0;
+				NPC.netUpdate = true;
 			}
 		}
 		else if (State == States.Chase)
@@ -226,12 +294,17 @@ internal class GiantEel : ModNPC
 					MiscTimer = 1;
 
 					Vector2 reverseDirection = destination.DirectionFrom(NPC.Center);
-					_spline = Spline.InterpolateXY([NPC.Center, destination + reverseDirection * 650, destination - reverseDirection * 300 - new Vector2(0, 800)], 6);
+					_spline = Spline.InterpolateXY([NPC.Center, destination + reverseDirection * 650, destination - reverseDirection * 300 - new Vector2(0, 800)], SplineLength);
 					NPC.netUpdate = true;
 				}
 			}
 			else
 			{
+				if (SplineIndex >= _spline.Length)
+				{
+					return;
+				}
+				 
 				Vector2 destination = _spline[(int)SplineIndex];
 				NPC.velocity = Vector2.SmoothStep(NPC.velocity, NPC.DirectionTo(destination) * 20, 0.2f);
 
@@ -261,7 +334,7 @@ internal class GiantEel : ModNPC
 				}
 			}
 
-			if (targetPlayer.dead || !targetPlayer.active)
+			if (targetPlayer.dead || !targetPlayer.active || IsInArena())
 			{
 				State = States.Flee;
 				MiscTimer = 0;
@@ -280,12 +353,26 @@ internal class GiantEel : ModNPC
 		}
 	}
 
+	private bool IsInArena()
+	{
+		bool left = SwampArea.LeftSpawn;
+		return SubworldSystem.Current is SwampArea
+			&& (!left && NPC.Center.X / 16f < SwampArenaGeneration.ArenaWidth) || (left && NPC.Center.X / 16f > Main.maxTilesX - SwampArenaGeneration.ArenaWidth);
+	}
+
 	public override void OnHitPlayer(Player target, Player.HurtInfo hurtInfo)
 	{
 		if (target.statLife - hurtInfo.Damage <= 0)
 		{
-			State = States.Flee;
-			MiscTimer = 0;
+			if (Main.netMode == NetmodeID.SinglePlayer)
+			{
+				State = States.Flee;
+				MiscTimer = 0;
+			}
+			else
+			{
+				SyncEelRetreat.Send(NPC.whoAmI);
+			}
 		}
 	}
 
@@ -322,9 +409,7 @@ internal class GiantEel : ModNPC
 
 	public override void SendExtraAI(BinaryWriter writer)
 	{
-		writer.Write((byte)_spline.Length);
-
-		for (int i = 0; i < _spline.Length; i++)
+		for (int i = 0; i < SplineLength; i++)
 		{
 			writer.WriteVector2(_spline[i]);
 		}
@@ -332,11 +417,7 @@ internal class GiantEel : ModNPC
 
 	public override void ReceiveExtraAI(BinaryReader reader)
 	{
-		byte count = reader.ReadByte();
-
-		_spline = new Vector2[count];
-		
-		for (int i = 0; i < count; ++i)
+		for (int i = 0; i < SplineLength; ++i)
 		{
 			_spline[i] = reader.ReadVector2();
 		}

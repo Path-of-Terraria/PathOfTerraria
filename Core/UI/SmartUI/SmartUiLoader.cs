@@ -45,21 +45,26 @@ internal sealed partial class SmartUiLoader : ModSystem
 				continue;
 			}
 
-			UIElement hoveredElement = userInterface.CurrentState.GetElementAt(Main.MouseScreen);
-			if (hoveredElement is null)
+			SmartUiState state = (SmartUiState)userInterface.CurrentState;
+			UIElement hoveredElement = state.GetElementAt(Main.MouseScreen);
+			bool shouldBlockClickThrough = state.ShouldBlockClickThrough(Main.MouseScreen);
+
+			if (hoveredElement is null && !shouldBlockClickThrough)
 			{
 				continue;
 			}
 
 			SmartUiElement parent = DeriveSmartUiElement(hoveredElement);
-			if (stateToBlockAt != userInterface.CurrentState && hoveredElement is UIState)
+			if (stateToBlockAt != state && hoveredElement is UIState && !shouldBlockClickThrough)
 			{
 				continue;
 			}
 
 			Main.blockMouse = true;
+			Main.isMouseLeftConsumedByUI = true;
+			Main.LocalPlayer.mouseInterface = true;
 			BlockClickItem.Block = true;
-			stateToBlockAt = userInterface.CurrentState;
+			stateToBlockAt = state;
 
 			if (parent is null)
 			{

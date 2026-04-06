@@ -11,6 +11,9 @@ public sealed class UIConfig : ModConfig
 	public override ConfigScope Mode => ConfigScope.ClientSide;
 
 	[Header("UI")]
+	[DefaultValue(true)]
+	public bool DisplayRichTooltipsInHotbar { get; set; } = true;
+
 	[DefaultValue(false)]
 	public bool PreventExpBarClicking { get; set; } = false;
 

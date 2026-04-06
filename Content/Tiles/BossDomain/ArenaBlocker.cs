@@ -4,7 +4,7 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.Tiles.BossDomain;
 
-internal class ArenaBlocker : ModTile
+internal class ArenaBlocker : ModTile, IBlockerTile
 {
 	public static Asset<Texture2D> GlowTexture = null;
 
@@ -28,7 +28,7 @@ internal class ArenaBlocker : ModTile
 	}
 }
 
-internal class HiveBlocker : ModTile
+internal class HiveBlocker : ModTile, IBlockerTile
 {
 	public static Asset<Texture2D> GlowTexture = null;
 

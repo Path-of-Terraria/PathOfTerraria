@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Runtime.CompilerServices;
 using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.BoCDomain;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
@@ -8,8 +7,10 @@ using PathOfTerraria.Common.Systems.StructureImprovementSystem;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Common.Systems.VanillaModifications;
 using PathOfTerraria.Common.UI;
+using PathOfTerraria.Common.UI.Misc;
 using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.Tiles.BossDomain;
+using PathOfTerraria.Core.UI;
 using ReLogic.Graphics;
 using SubworldLibrary;
 using Terraria.Chat;
@@ -24,10 +25,13 @@ namespace PathOfTerraria.Common.Subworlds.RavencrestContent;
 
 public class RavencrestSystem : ModSystem
 {
+	public const int RavencrestVersion = 1;
+
 	/// <summary> Extra NPCs that do not spawn here by default. </summary>
 	public readonly HashSet<string> HasOverworldNPC = [];
 
 	internal static readonly Dictionary<string, ImprovableStructure> Structures = [];
+	internal static readonly Dictionary<string, Point16> StaticStructureLocations = [];
 
 	public bool SpawnedRaven = false;
 	public bool SpawnedScout = false;
@@ -35,36 +39,44 @@ public class RavencrestSystem : ModSystem
 	public bool OneTimeCheckDone = false;
 	public Point16? SpawnedMorvenPos = null;
 
+	internal int CurrentRavencrestVersion = RavencrestVersion;
+
 	public override void Load()
 	{
 		Structures.Add("Lodge", new ImprovableStructure(2)
 		{
 			StructurePath = "Assets/Structures/RavencrestBuildings/Lodge_",
-			Position = new Point(259, 95),
+			Position = new Point(173, 110),
 		});
 
 		Structures.Add("Forge", new ImprovableStructure(2)
 		{
 			StructurePath = "Assets/Structures/RavencrestBuildings/Forge_",
-			Position = new Point(195, 109)
+			Position = new Point(110, 124)
 		});
 
 		Structures.Add("Burrow", new ImprovableStructure(2)
 		{
 			StructurePath = "Assets/Structures/RavencrestBuildings/Burrow_",
-			Position = new Point(800, 129)
+			Position = new Point(650, 148)
 		});
     
 		Structures.Add("Observatory", new ImprovableStructure(2)
 		{
 			StructurePath = "Assets/Structures/RavencrestBuildings/Observatory_",
-			Position = new Point(107, 122)
+			Position = new Point(71, 110)
 		});
 
 		Structures.Add("Library", new ImprovableStructure(2)
 		{
 			StructurePath = "Assets/Structures/RavencrestBuildings/Library_",
-			Position = new Point(604, 94)
+			Position = new Point(454, 113)
+		});
+
+		Structures.Add("Workshop", new ImprovableStructure(1)
+		{
+			StructurePath = "Assets/Structures/RavencrestBuildings/Workshop_",
+			Position = new Point(234, 103)
 		});
 
 		MiscOverlayUI.DrawOverlay += DrawDistantMorvenDialogue;
@@ -114,6 +126,21 @@ public class RavencrestSystem : ModSystem
 				}
 
 				ModContent.GetInstance<BoCDomainSystem>().OneTimeCheck();
+			}
+			
+			if (Main.netMode == NetmodeID.SinglePlayer && CurrentRavencrestVersion != RavencrestVersion && SubworldSystem.Current is RavencrestSubworld)
+			{
+				const string Identifier = MigrateRavencrestUI.Identifier;
+
+				if (!UIManager.Has(Identifier))
+				{
+					UIManager.Register(Identifier, "Vanilla: Mouse Text", new MigrateRavencrestUI());
+				}
+				else
+				{
+					UIManager.TryDisable(Identifier);
+					UIManager.TryEnable(Identifier);
+				}
 			}
 
 			TavernManager.OneTimeCheck();
@@ -354,6 +381,8 @@ public class RavencrestSystem : ModSystem
 		{
 			HasOverworldNPC.Add(tag.GetString("overworldNPC" + i));
 		}
+
+		CurrentRavencrestVersion = tag.GetByte("ravenVer");
 	}
 
 	public override void SaveWorldData(TagCompound tag)
@@ -378,6 +407,8 @@ public class RavencrestSystem : ModSystem
 		{
 			tag.Add("overworldNPC" + npcNum++, npc);
 		}
+
+		tag.Add("ravenVer", (byte)CurrentRavencrestVersion);
 	}
 
 	public override void ClearWorld()
@@ -385,6 +416,7 @@ public class RavencrestSystem : ModSystem
 		HasOverworldNPC.Clear();
 		OneTimeCheckDone = false;
 		SpawnedMorvenPos = null;
+		CurrentRavencrestVersion = 0;
 
 		foreach (KeyValuePair<string, ImprovableStructure> item in Structures)
 		{

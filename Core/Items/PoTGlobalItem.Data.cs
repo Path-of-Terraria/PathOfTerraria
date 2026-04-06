@@ -15,7 +15,7 @@ public sealed class PoTInstanceItemData : GlobalItem
 {
 	public class NameAffixes(sbyte pre = -1, sbyte suf = -1)
 	{
-		public bool Empty => Prefix == -1 && Suffix == -1;
+		public bool Empty => Prefix < 0 && Suffix < 0;
 
 		public sbyte Prefix { get; set; } = pre;
 		public sbyte Suffix { get; set; } = suf;

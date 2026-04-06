@@ -114,6 +114,66 @@
 		]
 	},
 	{
+		"affixType": "MapStealAegisChargeAffix",
+		"equipTypes": "Map",
+		"tiers": [
+			{
+				"minValue": 1,
+				"maxValue": 1,
+				"minimumLevel": 45,
+				"weight": 1,
+				"strength": 8
+			},
+			{
+				"minValue": 1,
+				"maxValue": 1,
+				"minimumLevel": 65,
+				"weight": 1,
+				"strength": 10
+			}
+		]
+	},
+	{
+		"affixType": "MapStealFocusChargeAffix",
+		"equipTypes": "Map",
+		"tiers": [
+			{
+				"minValue": 1,
+				"maxValue": 1,
+				"minimumLevel": 45,
+				"weight": 1,
+				"strength": 8
+			},
+			{
+				"minValue": 1,
+				"maxValue": 1,
+				"minimumLevel": 65,
+				"weight": 1,
+				"strength": 10
+			}
+		]
+	},
+	{
+		"affixType": "MapStealHasteChargeAffix",
+		"equipTypes": "Map",
+		"tiers": [
+			{
+				"minValue": 1,
+				"maxValue": 1,
+				"minimumLevel": 45,
+				"weight": 1,
+				"strength": 8
+			},
+			{
+				"minValue": 1,
+				"maxValue": 1,
+				"minimumLevel": 65,
+				"weight": 1,
+				"strength": 10
+			}
+		]
+	},
+	{
 		"affixType": "MapFireConversionAffix",
 		"equipTypes": "Map",
 		"tiers": [

@@ -76,13 +76,10 @@ TwinsDomain: {
 
 BrainDomain: {
 	// DisplayName: Rising Steps Above Red
-	/* Description:
-		'''
-		Take the portal at the top of grand steps to challenge the Brain of Cthulhu.
-		[i:53] You have 3 additional double jumps
-		''' */
+	// Description: Take the portal at the top of grand steps to challenge the Brain of Cthulhu.
 	// Mining: "{$DefaultMining}"
 	// Placing: "{$DefaultPlacing}"
+	// Extra: "[i:53] A mysterious power grants you three additional mid-air jumps"
 }
 
 DeerclopsDomain: {
@@ -157,7 +154,7 @@ RavencrestSubworld: {
 
 SwampArea: {
 	// DisplayName: Mossbound Swamp
-	// Description: Jump on floating objects, swim under vicious insects and explore overgrown treetops to challenge the Swamp Boss.
+	// Description: Jump on floating objects, swim through vicious insects and explore overgrown treetops to challenge the Swamp Boss.
 	// Mining: "{$DefaultMining}"
 	// Placing: "{$DefaultPlacing}"
 }

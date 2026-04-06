@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Utilities;
 using System.Runtime.CompilerServices;
 using Terraria.ID;
 
@@ -31,17 +32,14 @@ public class SpeedUpProjectile : GlobalProjectile
 
 	public override void Load()
 	{
-		On_Projectile.Update += ResetProjectileValues;
-	}
-
-	private void ResetProjectileValues(On_Projectile.orig_Update orig, Projectile self, int i)
-	{
-		if (self.TryGetGlobalProjectile(out SpeedUpProjectile speed))
+		// Used to reset all projectile's speed modifier early enough for it to not impact the next frame
+		ILUtils.EmitILDetour(typeof(Projectile).GetMethod("Update"), (Projectile self, int i) =>
 		{
-			speed.VelocityModifier = 0;
-		}
-
-		orig(self, i);
+			if (self.TryGetGlobalProjectile(out SpeedUpProjectile speed))
+			{
+				speed.VelocityModifier = 0;
+			}
+		}, null);
 	}
 
 	public override bool AppliesToEntity(Projectile entity, bool lateInstantiation)

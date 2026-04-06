@@ -1,11 +1,19 @@
-﻿using PathOfTerraria.Content.Buffs;
-using PathOfTerraria.Content.Swamp;
+﻿using PathOfTerraria.Common.Systems.ModPlayers.LivesSystem;
+using PathOfTerraria.Content.Buffs;
 using SubworldLibrary;
 
 namespace PathOfTerraria.Content.Swamp;
 
-internal class SwampPlayer : ModPlayer
+internal class SwampPlayer : ModPlayer, IPreDomainRespawnPlayer
 {
+	public void OnDomainRespawn()
+	{
+		if (SubworldSystem.Current is SwampArea)
+		{
+			Player.breath = Player.breathMax;
+		}
+	}
+
 	public override void PostUpdateEquips()
 	{
 		if (SubworldSystem.Current is SwampArea && Player.wet)

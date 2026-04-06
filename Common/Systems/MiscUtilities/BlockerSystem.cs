@@ -1,16 +1,38 @@
 ﻿using PathOfTerraria.Common.Subworlds;
-using PathOfTerraria.Content.Tiles.BossDomain;
-using PathOfTerraria.Content.Tiles.BossDomain.Mech;
-using PathOfTerraria.Content.Tiles.Maps.Desert;
-using PathOfTerraria.Content.Tiles.Maps.Forest;
 using SubworldLibrary;
+using System.Collections.Generic;
+using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.MiscUtilities;
 
+/// <summary>
+/// Defines a tile as a "blocker" tile - nonsolid, unless any "arena enemies" (<see cref="ArenaEnemyNPC"/>) are alive.
+/// </summary>
+public interface IBlockerTile { }
+
 public class BlockerSystem : ModSystem
 {
+	public static int[] BlockerTiles { get; private set; }
+
 	internal static float FadeOut = 0;
 	internal static bool HasArenaEnemies = false;
+
+	public override void PostSetupContent()
+	{
+		List<int> blockers = [];
+
+		for (int i = TileID.Count; i < TileLoader.TileCount; ++i)
+		{
+			ModTile tile = ModContent.GetModTile(i);
+
+			if (tile is IBlockerTile)
+			{
+				blockers.Add(tile.Type);
+			}
+		}
+
+		BlockerTiles = blockers.ToArray();
+	}
 
 	public override void PreUpdatePlayers()
 	{
@@ -38,10 +60,7 @@ public class BlockerSystem : ModSystem
 
 	private static void SetBlockerSolidity(bool? overrideValue = null)
 	{
-		int[] types = [ModContent.TileType<HiveBlocker>(), ModContent.TileType<ArenaBlocker>(), ModContent.TileType<LivingWoodBlocker>(), 
-			ModContent.TileType<BlockingGate>(), ModContent.TileType<SandstoneBrickBlocker>()];
-
-		foreach (int type in types)
+		foreach (int type in BlockerTiles)
 		{
 			Main.tileSolid[type] = overrideValue ?? HasArenaEnemies;
 		}

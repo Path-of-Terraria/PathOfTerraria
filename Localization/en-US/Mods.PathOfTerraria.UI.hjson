@@ -13,6 +13,13 @@ Gear: {
 	}
 }
 
+Hotbar: {
+	RichTooltipsToggle: {
+		On: Display Full Tooltips In Hotbar: On
+		Off: Display Full Tooltips In Hotbar: Off
+	}
+}
+
 Slots: {
 	Head: Helmet
 	Body: Chest
@@ -394,4 +401,14 @@ MapDevice: {
 	InjectResource: Inject Resource
 	EjectResource: Eject Resource
 	NotEnoughResources: Not Enough Resources
+	ClosePortalMapWarning: Closing the portal will discard the map!
+	ClosePortalResourceWarning: Closing the portal will discard the portal fluid!
+}
+
+MigrateRavencrest: {
+	Yes: Yes
+	No: No
+	Question: Ravencrest is outdated, and may have issues. Do you want to update your save?
+	Note: (It may take a minute)
+	Title: Migrate Ravencrest?
 }

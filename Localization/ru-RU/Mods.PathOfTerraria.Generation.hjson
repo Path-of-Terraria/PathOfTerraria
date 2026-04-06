@@ -16,6 +16,7 @@ Growing: Выращивае травы
 Clouds: Исследование неба
 Space: Выход из атмосферы
 Scanning: Сканирование местности
+// Arena: Building dens
 
 EaterSign: {
 	0: "{0} был мгновенно съеден."

@@ -97,7 +97,7 @@ public class MechGate : ModTile
 	}
 }
 
-public class BlockingGate : MechGate
+public class BlockingGate : MechGate, IBlockerTile
 {
 	public override void SetStaticDefaults()
 	{

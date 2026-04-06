@@ -4,12 +4,23 @@ using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using SubworldLibrary;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.ModLoader.Core;
 
 namespace PathOfTerraria.Common.Systems.ModPlayers.LivesSystem;
 
 public interface IPreDomainRespawnPlayer
 {
+	private static readonly HookList<ModPlayer> OnRespawnHook = PlayerLoader.AddModHook(HookList<ModPlayer>.Create(i => ((IPreDomainRespawnPlayer)i).OnDomainRespawn));
+
 	public void OnDomainRespawn();
+
+	public static void Invoke(Player player)
+	{
+		foreach (IPreDomainRespawnPlayer g in OnRespawnHook.Enumerate(player.ModPlayers))
+		{
+			g.OnDomainRespawn();
+		}
+	}
 }
 
 internal class BossDomainLivesPlayer : ModPlayer
@@ -84,14 +95,6 @@ internal class BossDomainLivesPlayer : ModPlayer
 			Player.Teleport(new Vector2(Main.spawnTileX, Main.spawnTileY).ToWorldCoordinates(), TeleportationStyleID.RodOfDiscord);
 			Player.velocity = Vector2.Zero;
 
-			foreach (ModPlayer player in Player.ModPlayers)
-			{
-				if (player is IPreDomainRespawnPlayer preRespawn)
-				{
-					preRespawn.OnDomainRespawn();
-				}
-			}
-
 			for (int i = 0; i < Player.buffTime.Length; ++i)
 			{
 				if (Player.buffType[i] != 0 && Main.debuff[Player.buffType[i]])
@@ -100,6 +103,8 @@ internal class BossDomainLivesPlayer : ModPlayer
 					i--;
 				}
 			}
+
+			IPreDomainRespawnPlayer.Invoke(Player);
 
 			return false;
 		}
