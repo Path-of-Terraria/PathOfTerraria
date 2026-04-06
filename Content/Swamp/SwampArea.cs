@@ -158,17 +158,20 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 			{
 				Tile tile = Main.tile[i, j];
 
+				bool actuate = (j > HeightMapping[i] - Math.Abs(noise.GetNoise(i, j) * 6) - 10 && j <= HeightMapping[i] - 5)
+					|| (j > HeightMapping[i] - Math.Abs(noise.GetNoise(i, j) * 15) - 40 && j <= HeightMapping[i] - 30);
+
+				if (tile.WallType == ModContent.WallType<MangroveWall>() && !actuate)
+				{
+					tile.WallType = WallID.None;
+					tile.HasTile = true;
+					tile.TileType = (ushort)ModContent.TileType<MangroveWood>();
+				}
+
 				if (!tile.HasTile || !WorldUtilities.SolidOrActuatedTile(tile) || SkipActuationLocations.Contains(new Point16(i, j)) || (!LeftSpawn && i < SwampArenaGeneration.ArenaWidth) 
 					|| (LeftSpawn && i > Main.maxTilesX - SwampArenaGeneration.ArenaWidth))
 				{
 					continue;
-				}
-
-				bool actuate = j > HeightMapping[i] - Math.Abs(noise.GetNoise(i, j) * 6) - 10 && j <= HeightMapping[i] - 5;
-
-				if (!actuate)
-				{
-					actuate = j > HeightMapping[i] - Math.Abs(noise.GetNoise(i, j) * 15) - 40 && j <= HeightMapping[i] - 30;
 				}
 
 				tile.IsActuated = actuate;
@@ -332,6 +335,13 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 
 						for (int v = 1; v < height; ++v)
 						{
+							Tile weed = Main.tile[i, j - v];
+
+							if (weed.HasTile)
+							{
+								break;
+							}
+
 							int frame = 0;
 
 							if (v < height / 3)
@@ -365,7 +375,10 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 						tile.TileType = (ushort)ModContent.TileType<MossyPurpleClouds>();
 					}
 
-					TryGrowMossvine(i, j, cloudNoise);
+					if (inArenaLocation || tile.LiquidAmount == 0)
+					{
+						TryGrowMossvine(i, j, cloudNoise);
+					}
 
 					if (WorldUtilities.TileExposedToAirWalls(i, j))
 					{
@@ -614,7 +627,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 			position.Deconstruct(out short i, out short j);
 			bool underwater = Main.tile[position].LiquidAmount > 0;
 
-			if (!underwater && Random.NextBool(70))
+			if (!underwater && Random.NextBool(70) && NoMangroveNearby(i, j))
 			{
 				decor.TryAdd(0, new());
 				decor[0].Enqueue(position, Random.NextFloat());
@@ -664,6 +677,24 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 				}
 			}
 		}
+	}
+
+	private static bool NoMangroveNearby(short i, short j)
+	{
+		for (int x = i - 4; x < i + 4; ++x)
+		{
+			for (int y = j - 4; y < j + 4; ++y)
+			{
+				Tile tile = Main.tile[i, j];
+
+				if (tile.HasTile && tile.TileType == ModContent.TileType<MangroveWood>())
+				{
+					return false;
+				}
+			}
+		}
+
+		return true;
 	}
 
 	private static void PlaceExtraCypress(CypressTreeMicrobiome cypressBiome, Point origin, int direction, ref Action delayment, int chance, float sizeMod)

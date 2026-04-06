@@ -299,8 +299,8 @@ internal class BranchTreeMicrobiome : MicroBiome
 			{
 				Tile tile = Main.tile[x, y];
 				tile.TileType = (ushort)ModContent.TileType<MangroveWood>();
-				tile.HasTile = true;
-				tile.IsActuated = true;
+				tile.IsActuated = false;
+				tile.WallType = (ushort)ModContent.WallType<MangroveWall>();
 			}, GenPlacement.Replaceability.Cuttable);
 		}
 	}

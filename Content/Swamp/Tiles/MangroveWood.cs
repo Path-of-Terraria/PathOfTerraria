@@ -16,6 +16,6 @@ internal class MangroveWood : ModTile, IAutoloadTileItem
 
 		AddMapEntry(new Color(229, 195, 158));
 
-		DustType = DustID.WoodFurniture;
+		DustType = DustID.Pearlwood;
 	}
 }
