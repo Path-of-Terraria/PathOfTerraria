@@ -121,9 +121,9 @@ internal class EmpressDomain : BossDomainSubworld, IOverrideBiome
 				}
 				else if (Wave == 3)
 				{
-					for (int i = 0; i < 8; ++i)
+					for (int i = 0; i < 10; ++i)
 					{
-						SpawnSpawner(i < 6 ? NPCID.Gastropod : NPCID.Unicorn);
+						SpawnSpawner(i < 8 ? (i < 3 ? NPCID.Gastropod : ModContent.NPCType<NostalgicShard>()) : NPCID.Unicorn);
 					}
 				}
 				else if (Wave == 4)
@@ -139,34 +139,35 @@ internal class EmpressDomain : BossDomainSubworld, IOverrideBiome
 				}
 				else if (Wave == 6)
 				{
-					for (int i = 0; i < 3; ++i)
+					for (int i = 0; i < 5; ++i)
 					{
 						SpawnSpawner(ModContent.NPCType<GreaterFairy>());
 					}
 				}
 				else if (Wave == 7)
 				{
-					for (int i = 0; i < 3; ++i)
+					for (int i = 0; i < 5; ++i)
 					{
 						SpawnSpawner(ModContent.NPCType<Prismatism>());
 					}
 				}
 				else if (Wave == 8)
 				{
-					for (int i = 0; i < 6; ++i)
+					for (int i = 0; i < 9; ++i)
 					{
-						SpawnSpawner(i < 3 ? ModContent.NPCType<GreaterFairy>() : ModContent.NPCType<Prismatism>());
+						SpawnSpawner(i < 4 ? ModContent.NPCType<GreaterFairy>() : ModContent.NPCType<Prismatism>());
 					}
 				}
 				else if (Wave == 9)
 				{
-					for (int i = 0; i < 12; ++i)
+					for (int i = 0; i < 15; ++i)
 					{
 						SpawnSpawner(i switch
 						{
 							< 3 => ModContent.NPCType<GreaterFairy>(),
 							< 6 => ModContent.NPCType<Prismatism>(),
 							< 9 => NPCID.RainbowSlime,
+							< 12 => ModContent.NPCType<NostalgicShard>(),
 							_ => NPCID.Unicorn
 						});
 					}

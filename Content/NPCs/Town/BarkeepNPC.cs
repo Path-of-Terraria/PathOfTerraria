@@ -11,6 +11,7 @@ using PathOfTerraria.Common.NPCs;
 using Terraria.GameContent.Bestiary;
 using NPCUtils;
 using Terraria.DataStructures;
+using PathOfTerraria.Common.Subworlds.RavencrestContent;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
@@ -19,7 +20,7 @@ public sealed class BarkeepNPC : ModNPC, IOverheadDialogueNPC, ISpawnInRavencres
 {
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
 
-	public Point16 TileSpawn => new(517, 142);
+	public Point16 TileSpawn => TavernManager.Seats[3];
 
 	public override void SetStaticDefaults()
 	{

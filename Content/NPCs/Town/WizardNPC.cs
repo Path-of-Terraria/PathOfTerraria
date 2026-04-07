@@ -11,6 +11,7 @@ using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Content.Items.Currency;
+using PathOfTerraria.Content.Items.Gear.Armor.Helmet;
 using PathOfTerraria.Content.Items.Gear.Weapons.Wand;
 using PathOfTerraria.Content.Items.Quest;
 using PathOfTerraria.Content.Tiles.BossDomain;
@@ -141,12 +142,12 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 	
 	private static Quest DetermineNewestQuest()
 	{
-		if (QuestUnlockManager.CanStartQuest<WizardStartQuest>())
+		if (QuestUnlockManager.CanStartQuest<WizardStartQuest>() || Quest.GetLocalPlayerInstance<WizardStartQuest>().Active)
 		{
 			return Quest.GetLocalPlayerInstance<WizardStartQuest>();
 		}
 
-		if (QuestUnlockManager.CanStartQuest<EoLQuest>())
+		if (QuestUnlockManager.CanStartQuest<EoLQuest>() || Quest.GetLocalPlayerInstance<EoLQuest>().Active)
 		{
 			return Quest.GetLocalPlayerInstance<EoLQuest>();
 		}
@@ -181,8 +182,9 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<WizardStartQuest>();
 				break;
 			case EoLQuest:
-				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.WizardEmpressDialogue1");
+				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.EoL.0");
 				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<EoLQuest>();
+				Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<CrystalVisors>());
 				break;
 		}
 	}

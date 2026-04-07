@@ -2,7 +2,6 @@ using NPCUtils;
 using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Dialogue;
-using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.NPCs.OverheadDialogue;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
@@ -20,8 +19,7 @@ namespace PathOfTerraria.Content.NPCs.Town;
 [AutoloadHead]
 public class FishermanNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnInRavencrestNPC
 {
-	Point16 ISpawnInRavencrestNPC.TileSpawn =>
-		(RavencrestSystem.Structures["Burrow"].Position + new Point(30, 20)).ToPoint16();
+	Point16 ISpawnInRavencrestNPC.TileSpawn => RavencrestSystem.StaticStructureLocations["Port"];
 
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
 

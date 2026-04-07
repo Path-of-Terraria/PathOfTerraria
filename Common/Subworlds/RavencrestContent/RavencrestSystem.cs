@@ -30,7 +30,14 @@ public class RavencrestSystem : ModSystem
 	/// <summary> Extra NPCs that do not spawn here by default. </summary>
 	public readonly HashSet<string> HasOverworldNPC = [];
 
+	/// <summary>
+	/// Keys: Lodge (Hunter), Forge (Blacksmith), Burrow (Witch), Observatory (Eldric), Library (Wizard), Workshop (Tinkerer)
+	/// </summary>
 	internal static readonly Dictionary<string, ImprovableStructure> Structures = [];
+
+	/// <summary>
+	/// Keys: Chamber (Cultist), Port (Fisherman)
+	/// </summary>
 	internal static readonly Dictionary<string, Point16> StaticStructureLocations = [];
 
 	public bool SpawnedRaven = false;
@@ -78,6 +85,9 @@ public class RavencrestSystem : ModSystem
 			StructurePath = "Assets/Structures/RavencrestBuildings/Workshop_",
 			Position = new Point(234, 103)
 		});
+
+		StaticStructureLocations.Add("Chamber", new Point16(652, 224));
+		StaticStructureLocations.Add("Port", new Point16(761, 163));
 
 		MiscOverlayUI.DrawOverlay += DrawDistantMorvenDialogue;
 	}
@@ -141,6 +151,7 @@ public class RavencrestSystem : ModSystem
 					UIManager.TryDisable(Identifier);
 					UIManager.TryEnable(Identifier);
 				}
+
 			}
 
 			TavernManager.OneTimeCheck();

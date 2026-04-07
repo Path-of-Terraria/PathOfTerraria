@@ -18,7 +18,7 @@ internal class SaveProjectileSystem : ModSystem
 
 			TagCompound proj = [];
 			proj.Add("name", projectile.ModProjectile.FullName);
-			proj.Add("pos", projectile.position);
+			proj.Add("pos", projectile.Center);
 			saveProj.SaveData(proj);
 			saveProjs.Add("projectile" + saveCount++, proj);
 		}

@@ -45,9 +45,7 @@ internal class FishronQuest() : Quest
 		return
 		[
 			new ParallelQuestStep("Start", [
-				new CollectCount("Coral", ItemID.Coral, 10),
-				//TODO: Change to be 5 of ANY fish.
-				new CollectCount("Fish", ItemID.Fish, 5),
+				new CollectCount("Coral", ItemID.Coral, 10), // Replace the NPCs below with custom, more aggressive post-Golem NPCs because otherwise this is extremely boring
 				new KillCount("Kill", npc => npc.netID is NPCID.Shark or NPCID.Crab or NPCID.BlueJellyfish or NPCID.GreenJellyfish or NPCID.PinkJellyfish, 10, this.GetLocalization("OceanEnemies"))
 			], Language.GetText("Mods.PathOfTerraria.NPCs.FishermanNPC.Dialogue.FishermanFishronDialogue1")),
 

@@ -19,7 +19,7 @@ internal class TavernManager : ModSystem
 
 	public static readonly List<string> TavernNPCFullNames = [];
 
-	private static readonly Point16[] Seats = [new Point16(FirstSeat.X, SeatY), new Point16(FirstSeat.X + 4, SeatY), new Point16(FirstSeat.X + 8, SeatY), new Point16(FirstSeat.X + 12, SeatY)];
+	internal static readonly Point16[] Seats = [new Point16(FirstSeat.X, SeatY), new(FirstSeat.X + 4, SeatY), new(FirstSeat.X + 8, SeatY), new(FirstSeat.X + 12, SeatY)];
 
 	public override void PostSetupContent()
 	{

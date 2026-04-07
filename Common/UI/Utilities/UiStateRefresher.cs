@@ -37,6 +37,11 @@ internal sealed class UiStateRefresher : ModSystem
 	/// <param name="newSize"></param>
 	private static void RefreshUi(Vector2 newSize)
 	{
+		if (Main.gameMenu) // There's no UI to refresh on the menu
+		{
+			return;
+		}
+
 		SmartUiLoader.GetUiState<QuestPanelButton>().Refresh();
 		SmartUiLoader.GetUiState<PlayerStatButton>().Refresh();
 		SmartUiLoader.GetUiState<GrimoireInvButton>().Refresh();

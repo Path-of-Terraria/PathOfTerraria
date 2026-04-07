@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Common.Subworlds;
-using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
@@ -10,6 +9,7 @@ using System.Collections.Generic;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using Terraria.ID;
 using Terraria.Localization;
+using PathOfTerraria.Content.Items.BossDomain;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 
@@ -23,38 +23,26 @@ internal class EoLQuest() : Quest
 		new ActionRewards((p, v) =>
 		{
 			p.GetModPlayer<ExpModPlayer>().Exp += 30000;
-		},
-			"30000 experience"),
+		}, "30000 experience"),
 	];
 
 	public override List<QuestStep> SetSteps()
 	{
 		return
 		[
-			// TODO: Change this to be new prismatic fragment item 
-			new CollectCount("Start", ItemID.CrystalBullet, 10),
+			new CollectCount("Start", ModContent.ItemType<PrismShardItem>(), 10, Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.EoL.0")),
 		
-			new InteractWithNPC("Talk", NPCQuestGiver,Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.WizardEmpressDialogue2"),
-				Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.WizardEmpressDialogue2"),
-				onSuccess: _ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<EoLMap>())),
-			// TODO: Remove the above map giving later
-			
-			// TODO: Make rose colored glasses item.
-			new ParallelQuestStep("Branch", [
-				new CollectCount("Glasses", ItemID.IronHelmet, 1),
-				new ConditionCheck("Equip", _ => Main.LocalPlayer.armor[0].type == ItemID.IronHelmet, 1, this.GetLocalization("EquipGlasses"))
-			], this.GetLocalization("EquipGlasses")),
-		
-			// Explore the Hallow
-			new ConditionCheck("Explore", _ => Main.LocalPlayer.ZoneHallow, 1, this.GetLocalization("ExploreHallow")),
+			new InteractWithNPC("Talk", NPCQuestGiver, LocalizedText.Empty,
+				Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.EoL.1"), [new GiveItem(10, ModContent.ItemType<PrismShardItem>())], true,
+				_ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<EoLMap>())),
 		
 			// Enter the rift (Enter the Empress domain)
 			new ConditionCheck("Domain", _ => SubworldSystem.Current is EmpressDomain, 1, this.GetLocalization("EnterDomain")),
 		
 			new ConditionCheck("Boss", _ => BossTracker.DownedInDomain<EmpressDomain>(NPCID.HallowBoss), 1, this.GetLocalization("Boss")),
 		
-			new InteractWithNPC("Finish", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.WizardEmpressDialogue3"), 
-				Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.WizardEmpressDialogue3"))
+			new InteractWithNPC("Finish", NPCQuestGiver, this.GetLocalization("Boss"), 
+				Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.EoL.2"))
 		];
 	}
 

@@ -47,8 +47,11 @@ internal class SkelePrimeQuest() : Quest
 			
 			new ConditionCheck("Boss", _ => BossTracker.DownedInDomain<PrimeDomain>(NPCID.SkeletronPrime), 1, this.GetLocalization("Boss")),
 	
-			new InteractWithNPC("Finish", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerSkeletronPrimeDialogue3"), 
+			new InteractWithNPC("Finish", NPCQuestGiver, this.GetLocalization("Boss"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerSkeletronPrimeDialogue3"))
+			{
+				CountsAsCompletedOnMarker = true
+			}
 		];
 	}
 

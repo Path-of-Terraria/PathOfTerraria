@@ -12,3 +12,8 @@ SwampBiome: {
 	// DisplayName: Swamp Biome
 	// TownNPCDialogueName: the Swamp Biome
 }
+
+LunaticDungeonBiome: {
+	// DisplayName: Lunatic Dungeon Biome
+	// TownNPCDialogueName: the Lunatic Dungeon Biome
+}
