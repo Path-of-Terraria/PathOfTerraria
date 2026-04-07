@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Utilities;
 using System.Reflection;
+using Terraria.Enums;
 
 namespace PathOfTerraria.Core.Time;
 
@@ -45,8 +46,11 @@ internal sealed class TimeSystem : ModSystem
 				RenderOnlyFrame = updateCount == lastRenderUpdateCount;
 				lastRenderUpdateCount = updateCount;
 
+				// Subtle frameskip causes inconsistent deltas to be reported.
+				// It is okay to assume that any frameskip mode just takes 1/60 to complete, as it locks framerate.
+				bool frameSkip = Main.FrameSkipMode != FrameSkipMode.Off;
 				RenderTime = (float)gameTime.TotalGameTime.TotalSeconds;
-				RenderDeltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+				RenderDeltaTime = frameSkip ? LogicDeltaTime : (float)gameTime.ElapsedGameTime.TotalSeconds;
 			}, 
 			(Main main, GameTime gameTime) => // and then unset flag
 			{
