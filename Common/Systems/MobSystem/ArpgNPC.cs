@@ -303,10 +303,11 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 		if (!fromNet)
 		{
 			List<MobAffix> possible = AffixHandler.GetMobAffixes(npc, Rarity);
+			int areaLevel = PoTMobHelper.GetAreaLevel();
 
 			Affixes = Rarity switch
 			{
-				ItemRarity.Magic or ItemRarity.Rare => Affix.GenerateAffixes(possible, PoTItemHelper.GetMaxMobAffixCounts(Rarity)),
+				ItemRarity.Magic or ItemRarity.Rare => Affix.GenerateAffixes(possible, PoTMobHelper.GetAffixCount(Rarity, areaLevel)),
 				_ => []
 			};
 		}
@@ -314,6 +315,7 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 		Affixes.ForEach(a => a.PreRarity(npc));
 
 		bool alwaysDisplayHealthbar = false;
+		float statScaling = PoTMobHelper.GetStatScaling();
 
 		switch (Rarity)
 		{
@@ -321,16 +323,16 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 				break;
 			case ItemRarity.Magic:
 				npc.color = Color.Lerp(npc.color == Color.Transparent ? Color.White : npc.color, new Color(125, 125, 255), 0.5f);
-				npc.lifeMax *= 2; // Magic mobs get 100% increased life
+				npc.lifeMax = (int)(npc.lifeMax * MathHelper.Lerp(1.35f, 2f, statScaling));
 				npc.life = currentlyTransforming ? npc.life : npc.lifeMax;
-				npc.damage = (int)(npc.damage * 1.1f); // Magic mobs get 10% increase damage
+				npc.damage = (int)(npc.damage * MathHelper.Lerp(1.04f, 1.1f, statScaling));
 				alwaysDisplayHealthbar = true;
 				break;
 			case ItemRarity.Rare:
 				npc.color = Color.Lerp(npc.color == Color.Transparent ? Color.White : npc.color, new Color(255, 255, 0), 0.5f);
-				npc.lifeMax *= 3; // Rare mobs get 200% Increased Life
+				npc.lifeMax = (int)(npc.lifeMax * MathHelper.Lerp(1.75f, 3f, statScaling));
 				npc.life = currentlyTransforming ? npc.life : npc.lifeMax;
-				npc.damage = (int)(npc.damage * 1.2f); // Magic mobs get 20% increase damage
+				npc.damage = (int)(npc.damage * MathHelper.Lerp(1.08f, 1.2f, statScaling));
 				alwaysDisplayHealthbar = true;
 				break;
 			case ItemRarity.Unique:
