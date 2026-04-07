@@ -226,8 +226,8 @@ WizardNPC: {
 		GiveQSQuest: Hm? Ah, yes. You've got some adventures, haven't you? I cannot simply place you in success - you must find it for yourself! Yes! That's a good reason. Here's a small quest to find your progress. You will be lead all over the world, and perhaps reach even a modicum of my power!
 
 		EoL: {
-			0: Aha! Hello, [plrclass/l:l]. I've caught wind of these most curious creatures in the place you call the Hallow - and I've half a mind to get my hands on their spirits. If only I had the time...alas! You must retrieve them for me. I am to hope your journey is direct and unobstructed! First, retrieve some Pixie Dust from the Hallow's surface...I think.
-			1: Curious crystals...yes. Their power rivals most - not mine - and belies a world most cannot see - NOT including myself. I see into all realms, [plrclass/l:l]. I simply choose not to act on it. Huzzah! You must find more of this mysterious rift, and I may reign it in enough to find its cause.
+			0: Aha! Hello, [plrclass/l:l]. I've caught wind of these most curious creatures in the place you call the Hallow - and I've half a mind to get my hands on their crystals. If only I had the time...alas! You must retrieve them for me. I am to hope your journey is direct and unobstructed! Put these on. I think- I know these'll make your journeys easier!
+			1: Curious crystals...yes. Their power rivals most - not mine - and belies a world most cannot see - NOT including myself. I see into all realms, [plrclass/l:l]. I simply choose not to act on it. Huzzah! Your curious map device should handle this parchment well.
 			2: Hmm...the Empress of Light, so you say? An old rival of mine. Not on my caliber, of course. She'd marvel at the explo- spells I can cast! Regardless, thank you. I almost though I'd have to...use my substantial and unending power for once. Not that I don't use it.
 		}
 	}
@@ -1060,5 +1060,5 @@ Mossling: {
 
 NostalgicShard: {
 	DisplayName: Nostalgic Shard
-	Entry: An odd, half-dimensional creature that, for some reason, cannot stand people. It's said make to make people reminisce in a way that is uncomfortable, somehow.
+	Entry: An odd, half-dimensional creature that cannot stand people. It's said make to make people reminisce in a way that is uncomfortable, somehow. It is only visible with the Crystal Visors.
 }

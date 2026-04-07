@@ -1499,3 +1499,10 @@ CrystalVisors: {
 	// DisplayName: Crystal Visors
 	// Tooltip: ""
 }
+
+PrismShardItem: {
+	// DisplayName: Prism Shard
+	// Tooltip: Alaric may want to look at these
+}
+
+// NostalgicShardBannerItem.DisplayName: Nostalgic Shard Banner

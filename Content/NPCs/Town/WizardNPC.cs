@@ -11,6 +11,7 @@ using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Content.Items.Currency;
+using PathOfTerraria.Content.Items.Gear.Armor.Helmet;
 using PathOfTerraria.Content.Items.Gear.Weapons.Wand;
 using PathOfTerraria.Content.Items.Quest;
 using PathOfTerraria.Content.Tiles.BossDomain;
@@ -183,6 +184,7 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 			case EoLQuest:
 				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.EoL.0");
 				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<EoLQuest>();
+				Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<CrystalVisors>());
 				break;
 		}
 	}
