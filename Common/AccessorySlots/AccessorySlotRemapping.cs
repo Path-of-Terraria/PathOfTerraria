@@ -87,6 +87,17 @@ public sealed class AccessorySlotRemapping : ModSystem
 				return;
 			}
 
+			if (clicked
+				&& context == ItemSlot.Context.InventoryItem
+				&& slot != 0
+				&& !item.IsAir
+				&& item.ModItem is Amulet)
+			{
+				(player.armor[(int)RemappedEquipSlots.Necklace], inv[slot]) = (inv[slot], player.armor[(int)RemappedEquipSlots.Necklace]);
+				SoundEngine.PlaySound(SoundID.Grab);
+				return;
+			}
+
 			orig(inv, context, slot);
 		};
 	}

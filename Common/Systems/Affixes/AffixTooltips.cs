@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using PathOfTerraria.Common.AccessorySlots;
+using PathOfTerraria.Content.Items.Gear.Amulets;
 using PathOfTerraria.Content.Items.Gear.Rings;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Utilities.Xna;
@@ -74,7 +75,7 @@ public sealed class AffixTooltips
 		{
 			result = AffixSource.Wings;
 		}
-		else if (source.accessory && source.neckSlot > 0)
+		else if (source.ModItem is Amulet || source is { accessory: true, neckSlot: > 0 })
 		{
 			result = AffixSource.Necklace;
 		}

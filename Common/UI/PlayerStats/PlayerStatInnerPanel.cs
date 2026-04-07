@@ -105,14 +105,12 @@ internal class PlayerStatInnerPanel : SmartUiElement
 				{
 					return -1;
 				}
-				else if (y is not PlayerStatUI yStat)
+				if (y is not PlayerStatUI yStat)
 				{
 					return 1;
 				}
-				else
-				{
-					return xStat.Slot.CompareTo(yStat.Slot);
-				}
+
+				return xStat.Slot.CompareTo(yStat.Slot);
 			});
 
 		UIScrollbar bar = new()
@@ -134,7 +132,7 @@ internal class PlayerStatInnerPanel : SmartUiElement
 		{
 			StarterClass starterClass = player.GetModPlayer<ClassingPlayer>().Class;
 			return starterClass == StarterClass.None ? Language.GetTextValue("LegacyInterface.23") : starterClass.Localize().Value;
-		}, 0.7f));
+		}, 0.9f));
 		
 		list.Add(new PlayerStatUI(Localize("CharacterHeader"), player => "", isHeader: true));
 		list.Add(new PlayerStatUI(Localize("Level"), player => player.GetModPlayer<ExpModPlayer>().Level.ToString()));
