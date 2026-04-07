@@ -24,10 +24,9 @@ internal class PassiveElement : AllocatableElement
 		Width.Set(passive.Size.X, 0);
 		Height.Set(passive.Size.Y, 0);
 
-		// Anchor passive should always be "unlocked", thus this hardcoding
 		if (Passive is AnchorPassive)
 		{
-			Passive.Level = 1;
+			Passive.Level = Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().IsAllowedAnchor(Passive) ? 1 : 0;
 		}
 	}
 
