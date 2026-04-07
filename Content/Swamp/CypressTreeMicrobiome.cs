@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.World.Generation;
+using PathOfTerraria.Content.Swamp.Tiles;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.WorldBuilding;
@@ -164,23 +165,14 @@ internal class CypressTreeMicrobiome : MicroBiome
 			{
 				Tile tile = Main.tile[x, y];
 				tile.HasTile = true;
-				tile.TileType = TileID.LivingWood;
-
-				//bool actuate = y > SwampArea.HeightMapping[x] - Math.Abs(noise.GetNoise(x, y) * 6) - 10 && y <= SwampArea.HeightMapping[x] - 5;
-
-				//if (!actuate && tile.LiquidAmount > 0)
-				//{
-				//	actuate = y > SwampArea.HeightMapping[x] - Math.Abs(noise.GetNoise(x, y) * 15) - 40 && y <= SwampArea.HeightMapping[x] - 30;
-				//}
-
-				//tile.IsActuated = actuate;
+				tile.TileType = (ushort)ModContent.TileType<CypressWood>();
 			}
 		}
 
 		static void PlaceRoot(Point origin)
 		{
 			WorldUtils.Gen(origin, new ShapeRoot(MathHelper.PiOver2 + _random.NextFloat(-0.2f, 0.2f), _random.NextFloat(20, 80), 8, 1),
-				Actions.Chain(new Actions.ClearTile(false), new Actions.PlaceTile(TileID.LivingWood)));
+				Actions.Chain(new Actions.ClearTile(false), new Actions.PlaceTile((ushort)ModContent.TileType<CypressWood>())));
 		}
 	}
 }
