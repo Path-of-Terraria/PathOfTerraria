@@ -22,7 +22,6 @@ internal class SkillTreePlayer : ModPlayer
 
 	private readonly List<CachedSkillTreeData> cachedData = [];
 	private readonly Dictionary<SkillTree, Dictionary<Type, int>> TotalLevelByTypeByTree = [];
-	private readonly Dictionary<int, float> PassiveStrengthByID = [];
 
 	public void AddCache(CachedSkillTreeData cache)
 	{
@@ -77,19 +76,6 @@ internal class SkillTreePlayer : ModPlayer
 		}
 	}
 
-	public void ModifyPassive(Passive passive, float modifier)
-	{
-		ModifyPassive(passive.ID, modifier);
-	}
-
-	public void ModifyPassive(int id, float modifier)
-	{
-		if (!PassiveStrengthByID.TryAdd(id, modifier))
-		{
-			PassiveStrengthByID[id] += modifier;
-		}
-	}
-
 	/// <summary>
 	/// Sets the specialization for the given skill type. Used for syncing.
 	/// </summary>
@@ -114,7 +100,7 @@ internal class SkillTreePlayer : ModPlayer
 	}
 
 	/// <summary>
-	/// Modifies the stored value for a SKILL passive, per tree and per node. This does nothing for standard passives.
+	/// Modifies the stored value for a skill passive, per tree and per node. This does nothing for standard passives.
 	/// </summary>
 	/// <param name="tree">The tree being modified.</param>
 	/// <param name="nodeType">The node value being modified.</param>
