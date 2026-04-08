@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using PathOfTerraria.Common.Data.Models;
+﻿using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Systems.Skills;
+using PathOfTerraria.Content.Passives.Magic.Masteries;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Terraria.Localization;
 using Terraria.ModLoader.Core;
 
@@ -131,6 +133,12 @@ public abstract class Passive : Allocatable, ILoadable
 	{
 		PassiveTreePlayer passivePlayer = player.GetModPlayer<PassiveTreePlayer>();
 
+		if (this is CenterOfTheUniverseMastery)
+		{
+			int i = 0;
+			
+		}
+
 		return
 			Level < MaxLevel &&
 			Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().Points > 0 &&
@@ -166,5 +174,17 @@ public abstract class Passive : Allocatable, ILoadable
 		PassiveTreePlayer passiveTreeSystem = player.GetModPlayer<PassiveTreePlayer>();
 
 		return Level > 0 && (Level > 1 || passiveTreeSystem.FullyLinkedWithout(this));
+	}
+
+	public override void OnAllocate(Player player)
+	{
+		base.OnAllocate(player);
+		player.GetModPlayer<PassiveTreePlayer>().AllocatePassive(this, 1);
+	}
+
+	public override void OnDeallocate(Player player)
+	{
+		base.OnDeallocate(player);
+		player.GetModPlayer<PassiveTreePlayer>().AllocatePassive(this, -1);
 	}
 }
