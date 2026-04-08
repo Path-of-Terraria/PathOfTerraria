@@ -68,7 +68,7 @@ internal class PassiveTreePlayer : ModPlayer
 				}
 				else if (oldLevel > passive.Level)
 				{
-					DeallocatePassive(passive, oldLevel - passive.Level);
+					DeallocatePassive(passive, passive.Value, oldLevel - passive.Level);
 				}
 			}
 
@@ -158,7 +158,7 @@ internal class PassiveTreePlayer : ModPlayer
 
 			if (node.Level > 0)
 			{
-				Player.GetModPlayer<PassiveTreePlayer>().DeallocatePassive(node, node.Level, false);
+				Player.GetModPlayer<PassiveTreePlayer>().DeallocatePassive(node, node.Value, node.Level, false);
 				node.Level = 0;
 			}
 		}
@@ -296,7 +296,7 @@ internal class PassiveTreePlayer : ModPlayer
 		}
 	}
 
-	internal void DeallocatePassive(Passive passive, int usedCost, bool save = true)
+	internal void DeallocatePassive(Passive passive, int valueLoss, int pointRefund, bool save = true)
 	{
 		if (passive is MasteryPassive)
 		{
@@ -306,14 +306,14 @@ internal class PassiveTreePlayer : ModPlayer
 
 		int id = Passive.PassiveNameToId[passive.Name];
 
-		Points += usedCost;
+		Points += pointRefund;
 		Player.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.DeallocatedPassive);
 
 		ref float str = ref StrengthByPassive[id];
 
 		if (str > 0)
 		{
-			str = Math.Max(0, str - usedCost);
+			str = Math.Max(0, str - valueLoss);
 		}
 #if DEBUG
 		else

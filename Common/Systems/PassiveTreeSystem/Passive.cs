@@ -178,7 +178,7 @@ public abstract class Passive : Allocatable, ILoadable
 		{
 			base.OnAllocate(player);
 
-			player.GetModPlayer<PassiveTreePlayer>().AllocatePassive(this, 1);
+			player.GetModPlayer<PassiveTreePlayer>().AllocatePassive(this, Value);
 		}
 	}
 
@@ -188,7 +188,7 @@ public abstract class Passive : Allocatable, ILoadable
 		{
 			base.OnDeallocate(player);
 
-			player.GetModPlayer<PassiveTreePlayer>().AllocatePassive(this, -1);
+			player.GetModPlayer<PassiveTreePlayer>().DeallocatePassive(this, Value, 1);
 		}
 	}
 }

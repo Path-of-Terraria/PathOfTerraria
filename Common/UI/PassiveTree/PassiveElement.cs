@@ -41,7 +41,7 @@ internal class PassiveElement : AllocatableElement
 	protected override void Allocate(Allocatable passive, int usedCost)
 	{
 		base.Allocate(passive, usedCost);
-		Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().AllocatePassive((Passive)passive);
+		//Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().AllocatePassive((Passive)passive);
 	}
 
 	public override void SafeRightClick(UIMouseEvent evt)
@@ -56,7 +56,7 @@ internal class PassiveElement : AllocatableElement
 	{
 		base.Deallocate(passive, usedCost);
 
-		Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().DeallocatePassive(Passive, usedCost);
+		//Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().DeallocatePassive(Passive, Value, usedCost);
 		SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath);
 	}
 }
