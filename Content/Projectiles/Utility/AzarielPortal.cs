@@ -28,8 +28,6 @@ internal class AzarielPortal : ModProjectile, ISaveProjectile, IRightClickablePr
 	private static Asset<Effect> PortalEffect = null;
 
 	private Domain DomainTarget => (Domain)Projectile.ai[0];
-	private ref float Uses => ref Projectile.ai[1];
-	private ref float MaxUses => ref Projectile.ai[2];
 
 	public override void SetStaticDefaults()
 	{
@@ -87,11 +85,6 @@ internal class AzarielPortal : ModProjectile, ISaveProjectile, IRightClickablePr
 		Projectile.Opacity = MathHelper.Lerp(Projectile.Opacity, 1f, 0.002f);
 		Projectile.velocity *= 0.96f;
 
-		if (MaxUses == 0)
-		{
-			MaxUses = Map.GetBossUseCount();
-		}
-		
 		Lighting.AddLight(Projectile.Center, TorchID.Red);
 	}
 
@@ -133,13 +126,11 @@ internal class AzarielPortal : ModProjectile, ISaveProjectile, IRightClickablePr
 	public void SaveData(TagCompound tag)
 	{
 		tag.Add("target", (byte)DomainTarget);
-		tag.Add("uses", Uses);
 	}
 
 	public void LoadData(TagCompound tag, Projectile projectile)
 	{
 		projectile.ai[0] = tag.GetByte("target");
-		projectile.ai[1] = tag.GetFloat("uses");
 	}
 
 	bool IRightClickableProjectile.RightClick(Player player, bool mouseDirectlyOver)
@@ -155,13 +146,7 @@ internal class AzarielPortal : ModProjectile, ISaveProjectile, IRightClickablePr
 				SubworldSystem.Enter<MoonLordDomain>();
 			}
 
-			Projectile.ai[1]++;
 			Projectile.netUpdate = true;
-
-			if (Projectile.ai[1] > Projectile.ai[2])
-			{
-				Projectile.Kill();
-			}
 
 			return true;
 		}

@@ -164,22 +164,20 @@ public class BlacksmithNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOv
 			return;
 		}
 		
-		Quest quest = DetermineNewestQuest();
-
-		switch (quest)
+		if (QuestUnlockManager.CanStartQuest<BlacksmithStartQuest>())
 		{
-			case BlacksmithStartQuest:
-				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest");
-				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<BlacksmithStartQuest>();
-				break;
-			case EoWQuest:
-				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.EoWDialogue");
-				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<EoWQuest>();
-				break;
-			case GolemQuest:
-				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Golem.0");
-				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<GolemQuest>();
-				break;
+			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest");
+			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<BlacksmithStartQuest>();
+		}
+		else if (QuestUnlockManager.CanStartQuest<EoWQuest>())
+		{
+			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.EoWDialogue");
+			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<EoWQuest>();
+		}
+		else if (QuestUnlockManager.CanStartQuest<GolemQuest>())
+		{
+			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Golem.Intro");
+			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<GolemQuest>();
 		}
 	}
 

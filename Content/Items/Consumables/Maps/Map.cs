@@ -5,6 +5,7 @@ using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Common.Systems.ModPlayers.LivesSystem;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
+using PathOfTerraria.Content.Tiles.Furniture;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI.SmartUI;
 using System.Collections.Generic;
@@ -66,6 +67,11 @@ public abstract class Map : ModItem, GenerateNameAffixes.IItem, GenerateAffixes.
 			Item.TurnToAir();
 			MapDeviceInterface.Entity.StoredMap = invItem;
 			SoundEngine.PlaySound(SoundID.Grab);
+
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				MapDeviceSync.Send(MapDeviceInterface.Entity.ID, MapDeviceSync.Flags.Map, null);
+			}
 		}
 	}
 

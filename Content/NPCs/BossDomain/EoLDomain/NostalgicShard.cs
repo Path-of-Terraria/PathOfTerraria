@@ -5,6 +5,7 @@ using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using PathOfTerraria.Content.Items.BossDomain;
 using PathOfTerraria.Content.Items.Gear.Armor.Helmet;
 using SubworldLibrary;
+using System.IO;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
@@ -99,6 +100,7 @@ internal class NostalgicShard : ModNPC
 					NPC.target = player.whoAmI;
 					NPC.dontTakeDamage = false;
 					NPC.velocity.Y = -8;
+					NPC.netUpdate = true;
 
 					State = 1;
 					Timer = 0;
@@ -133,6 +135,7 @@ internal class NostalgicShard : ModNPC
 			if (Target.dead || !Target.active)
 			{
 				State = 0;
+				NPC.target = -1;
 			}
 		}
 
@@ -160,5 +163,15 @@ internal class NostalgicShard : ModNPC
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
 		return CanBeSeen(Main.LocalPlayer);
+	}
+
+	public override void SendExtraAI(BinaryWriter writer)
+	{
+		writer.Write(NPC.dontTakeDamage);
+	}
+
+	public override void ReceiveExtraAI(BinaryReader reader)
+	{
+		NPC.dontTakeDamage = reader.ReadBoolean();
 	}
 }
