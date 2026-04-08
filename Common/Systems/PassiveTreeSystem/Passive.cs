@@ -1,7 +1,6 @@
 ﻿using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Mechanics;
-using PathOfTerraria.Common.Systems.Skills;
-using PathOfTerraria.Content.Passives.Magic.Masteries;
+using PathOfTerraria.Content.Passives.Misc;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Terraria.Localization;
@@ -133,12 +132,6 @@ public abstract class Passive : Allocatable, ILoadable
 	{
 		PassiveTreePlayer passivePlayer = player.GetModPlayer<PassiveTreePlayer>();
 
-		if (this is CenterOfTheUniverseMastery)
-		{
-			int i = 0;
-			
-		}
-
 		return
 			Level < MaxLevel &&
 			Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().Points > 0 &&
@@ -151,7 +144,10 @@ public abstract class Passive : Allocatable, ILoadable
 
 		foreach (Edge<Allocatable> edge in edges)
 		{
-			if (edge.Contains(this) && edge.Other(this).Level > 0)
+			// If the edge contains this, and the other side of the edge is either allocated, or
+			// if this is a hidden node, connected to a mastery - i.e., it's a child node to a mastery - allow allocation.
+			// A bit of a hacky fix, as IsHidden isn't necessarily meant to be used this way, but it'll work for at least release.
+			if (edge.Contains(this) && (edge.Other(this).Level > 0 || (edge.Other(this) is MasteryPassive) && IsHidden))
 			{
 				count++;
 
@@ -178,13 +174,21 @@ public abstract class Passive : Allocatable, ILoadable
 
 	public override void OnAllocate(Player player)
 	{
-		base.OnAllocate(player);
-		player.GetModPlayer<PassiveTreePlayer>().AllocatePassive(this, 1);
+		if (this is not MasteryPassive)
+		{
+			base.OnAllocate(player);
+
+			player.GetModPlayer<PassiveTreePlayer>().AllocatePassive(this, 1);
+		}
 	}
 
 	public override void OnDeallocate(Player player)
 	{
-		base.OnDeallocate(player);
-		player.GetModPlayer<PassiveTreePlayer>().AllocatePassive(this, -1);
+		if (this is not MasteryPassive)
+		{
+			base.OnDeallocate(player);
+
+			player.GetModPlayer<PassiveTreePlayer>().AllocatePassive(this, -1);
+		}
 	}
 }
