@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#define DEBUG_COMMANDS
+
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -316,3 +318,70 @@ internal sealed class MapResources : ModSystem
 		}
 	}
 }
+
+#if DEBUG && DEBUG_COMMANDS
+internal sealed class MapResourceCommand : ModCommand
+{
+	public override string Command => "potMapResource";
+	public override CommandType Type => CommandType.World;
+	public override string Usage => $"/{Command} set/add/undiscover {{itemName}} {{value?}} (/{Command} set InfernalConflux 10)";
+	public override bool IsCaseSensitive => true;
+
+	public override void Action(CommandCaller caller, string input, string[] args)
+	{
+		if (args.Length < 2) { throw new UsageException(); }
+
+		MapResource GetResource(int argIdx)
+		{
+			string resName = args[argIdx];
+			if (!ItemID.Search.TryGetId(resName, out int itemId)
+			&& !ItemID.Search.TryGetId($"{Mod.Name}/{resName}", out itemId))
+			{
+				throw new UsageException($"Item '{resName}' could not be found.");
+			}
+		
+			if (!MapResources.TryGet(itemId, out MapResource res))
+			{
+				throw new UsageException($"Not a map resource: '{resName}'");
+			}
+
+			return res;
+		}
+
+		string cmd = args[0];
+		switch (cmd)
+		{
+			case "undiscover":
+			{
+				MapResource res = GetResource(1);
+				MapResources.ModifyValue(res.AssociatedItem, delta: +0, discovery: ResourceDiscovery.Undiscover);
+				break;
+			}
+			case "add":
+			{
+				MapResource res = GetResource(1);
+				CheckArgCount(3);
+				if (!int.TryParse(args[2], out int delta)) { throw new UsageException(); }
+				MapResources.ModifyValue(res.AssociatedItem, delta);
+				break;
+			}
+			case "set":
+			{
+				MapResource res = GetResource(1);
+				CheckArgCount(3);
+				if (!int.TryParse(args[2], out int value)) { throw new UsageException(); }
+				value = Math.Clamp(value, res.MinValue, res.MaxValue);
+				MapResources.ModifyValue(res.AssociatedItem, value - res.Value);
+				break;
+			}
+		}
+
+		void CheckArgCount(int expected)
+		{
+			if (args.Length != expected) { throw new UsageException($"Expected {expected} arguments, got {args.Length}."); }
+		}
+
+		Main.NewText("Success!", Color.LimeGreen);
+	}
+}
+#endif
