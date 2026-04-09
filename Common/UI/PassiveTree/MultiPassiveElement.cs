@@ -156,7 +156,7 @@ internal class PassiveRadialElement : PassiveElement
 
 	public MultiPassiveElement? Handler => Parent is MultiPassiveElement e ? e : null;
 
-	private float Progress => Handler is { } handler ? (float)Handler.AnimationTime / MultiPassiveElement.AnimationTimeMax : 0f;
+	private float Progress => Handler is { } handler ? (float)Handler.AnimationTime / Handler.AnimationTimeMax : 0f;
 
 	public PassiveRadialElement(Passive passive, Vector2 startOffset, Vector2 targetOffset) : base(passive)
 	{
