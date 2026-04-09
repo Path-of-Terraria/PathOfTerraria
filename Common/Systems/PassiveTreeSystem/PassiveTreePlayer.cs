@@ -11,6 +11,7 @@ using PathOfTerraria.Core.UI.SmartUI;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.ModLoader.IO;
+using System.Runtime.InteropServices;
 
 namespace PathOfTerraria.Common.Systems.PassiveTreeSystem;
 
@@ -42,7 +43,7 @@ internal class PassiveTreePlayer : ModPlayer
 	{
 		ResetNodes();
 
-		ExpModPlayer expPlayer = Main.LocalPlayer.GetModPlayer<ExpModPlayer>();
+		ExpModPlayer expPlayer = Player.GetModPlayer<ExpModPlayer>();
 		Points = expPlayer.EffectiveLevel + ExtraPoints;
 
 		SetTree(false);
@@ -53,8 +54,15 @@ internal class PassiveTreePlayer : ModPlayer
 	/// </summary>
 	private void SetTree(bool setStrengths)
 	{
-		foreach (Passive passive in ActiveNodes.Where(passive => passive != null))
+		Span<Passive> span = CollectionsMarshal.AsSpan(ActiveNodes);
+
+		foreach (ref Passive passive in span)
 		{
+			if (passive is null)
+			{
+				continue;
+			}
+
 			int oldLevel = passive.Level;
 			passive.Level = passive is AnchorPassive
 				? (IsAllowedAnchor(passive) ? 1 : 0)
@@ -68,7 +76,7 @@ internal class PassiveTreePlayer : ModPlayer
 				}
 				else if (oldLevel > passive.Level)
 				{
-					DeallocatePassive(passive, oldLevel - passive.Level);
+					DeallocatePassive(passive, passive.Value, oldLevel - passive.Level);
 				}
 			}
 
@@ -86,7 +94,7 @@ internal class PassiveTreePlayer : ModPlayer
 			}
 		}
 
-		PruneDisconnectedNodes(setStrengths);
+		// PruneDisconnectedNodes(setStrengths);
 	}
 
 	private void ResetNodes()
@@ -158,7 +166,7 @@ internal class PassiveTreePlayer : ModPlayer
 
 			if (node.Level > 0)
 			{
-				Player.GetModPlayer<PassiveTreePlayer>().DeallocatePassive(node, node.Level, false);
+				Player.GetModPlayer<PassiveTreePlayer>().DeallocatePassive(node, node.Value, node.Level, false);
 				node.Level = 0;
 			}
 		}
@@ -296,7 +304,7 @@ internal class PassiveTreePlayer : ModPlayer
 		}
 	}
 
-	internal void DeallocatePassive(Passive passive, int usedCost, bool save = true)
+	internal void DeallocatePassive(Passive passive, int valueLoss, int pointRefund, bool save = true)
 	{
 		if (passive is MasteryPassive)
 		{
@@ -306,14 +314,14 @@ internal class PassiveTreePlayer : ModPlayer
 
 		int id = Passive.PassiveNameToId[passive.Name];
 
-		Points += usedCost;
+		Points += pointRefund;
 		Player.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.DeallocatedPassive);
 
 		ref float str = ref StrengthByPassive[id];
 
 		if (str > 0)
 		{
-			str = Math.Max(0, str - usedCost);
+			str = Math.Max(0, str - valueLoss);
 		}
 #if DEBUG
 		else
@@ -361,20 +369,22 @@ internal class PassiveTreePlayer : ModPlayer
 		return passive.ReferenceId == allowedAnchorReferenceId;
 	}
 
-	private void PruneDisconnectedNodes(bool setStrengths)
-	{
-		HashSet<Passive> connectedNodes = GetConnectedNodesFromAllowedAnchors();
+	// This method caused mastery nodes to work improperly, and I didn't see any additional functionality.
+	// Why was this here? - Gabe
+	//private void PruneDisconnectedNodes(bool setStrengths)
+	//{
+	//	HashSet<Passive> connectedNodes = GetConnectedNodesFromAllowedAnchors();
 
-		foreach (Passive passive in ActiveNodes)
-		{
-			if (passive is AnchorPassive || passive.Level <= 0 || connectedNodes.Contains(passive))
-			{
-				continue;
-			}
-
-			RemovePassiveLevels(passive, setStrengths);
-		}
-	}
+	//	foreach (Passive passive in ActiveNodes)
+	//	{
+	//		if (passive is AnchorPassive || passive.Level <= 0 || connectedNodes.Contains(passive))
+	//		{
+	//			continue;
+	//		}
+	//
+	//		RemovePassiveLevels(passive, setStrengths);
+	//	}
+	//}
 
 	private HashSet<Passive> GetConnectedNodesFromAllowedAnchors()
 	{

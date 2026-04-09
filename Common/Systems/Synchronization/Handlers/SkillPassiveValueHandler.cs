@@ -28,7 +28,7 @@ internal class SkillPassiveValueHandler : Handler
 		Type nodeType = typeof(PoTMod).Assembly.GetType(nodeName);
 		MethodInfo method = typeof(ModContent).GetMethod(nameof(ModContent.GetInstance)).MakeGenericMethod(skillType);
 		var skill = (Skill)method.Invoke(null, null);
-		Main.player[player].GetModPlayer<SkillTreePlayer>().ModifyPassive(skill.Tree, nodeType, level, false);
+		Main.player[player].GetModPlayer<SkillTreePlayer>().ModifySkillPassive(skill.Tree, nodeType, level, false);
 	}
 
 	internal override void ServerReceive(BinaryReader reader, byte sender)

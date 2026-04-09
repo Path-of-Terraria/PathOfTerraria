@@ -2,7 +2,6 @@
 using System.Linq;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
-using PathOfTerraria.Content.Passives.Misc;
 using Terraria.UI;
 
 #nullable enable
@@ -12,6 +11,7 @@ namespace PathOfTerraria.Common.UI.PassiveTree;
 /// <summary> Offers a choice of one of multiple passives contained within. Every hidden child node is considered an inner node. </summary>
 internal class MultiPassiveElement : PassiveElement
 {
+
 	private readonly Edge<IConnectedAllocatableNode>[] _extraEdges;
 
 	public int AnimationTime { get; set; }

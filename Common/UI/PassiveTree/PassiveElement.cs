@@ -1,8 +1,6 @@
-﻿using PathOfTerraria.Common.Looting.VirtualBagUI;
-using PathOfTerraria.Common.Mechanics;
+﻿using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Content.Passives;
-using PathOfTerraria.Content.Passives.Misc;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.UI;
@@ -38,12 +36,6 @@ internal class PassiveElement : AllocatableElement
 		}
 	}
 
-	protected override void Allocate(Allocatable passive, int usedCost)
-	{
-		base.Allocate(passive, usedCost);
-		Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().AllocatePassive((Passive)passive);
-	}
-
 	public override void SafeRightClick(UIMouseEvent evt)
 	{
 		if (Passive.CanDeallocate(Main.LocalPlayer) && CheckMouseContained())
@@ -56,7 +48,6 @@ internal class PassiveElement : AllocatableElement
 	{
 		base.Deallocate(passive, usedCost);
 
-		Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().DeallocatePassive(Passive, usedCost);
 		SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath);
 	}
 }
