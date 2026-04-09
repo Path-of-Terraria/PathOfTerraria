@@ -439,11 +439,11 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile, 
 		return false;
 	}
 
-	public void Activate()
+	public void Activate(bool fromNet = false)
 	{
 		if ((BitFlags & Flags.Activated) != 0) { return; }
 
-		if (Main.netMode == NetmodeID.MultiplayerClient)
+		if (Main.netMode == NetmodeID.MultiplayerClient && !fromNet)
 		{
 			Vector2 compareSpot = Main.LocalPlayer.Center;
 			if (!Main.LocalPlayer.IsProjectileInteractibleAndInInteractionRange(Projectile, ref compareSpot)) { return; }
@@ -456,7 +456,7 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile, 
 
 		if (Main.netMode == NetmodeID.Server)
 		{
-			NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, Projectile.whoAmI);
+			RiftInteractionHandler.Send(Projectile.identity);
 		}
 
 		// Effects.
@@ -784,18 +784,21 @@ internal class RiftInteractionHandler : Handler
 		packet.Send();
 	}
 
-	internal override void ServerReceive(BinaryReader reader, byte sender)
+	internal override void Receive(BinaryReader reader, byte sender)
 	{
 		ModPacket packet = Networking.GetPacket(Id);
 		int riftIdentity = reader.ReadInt32();
 
-		if (Main.player[sender] is not { active: true } player) { return; }
-
 		if (Main.projectile.FirstOrDefault(p => p.identity == riftIdentity) is not { ModProjectile: ConfluxRift rift }) { return; }
 
-		// Increased reach distance for synchronization grace.
-		Point tileTarget = rift.Projectile.Hitbox.ClosestPointInRect(player.Center).ToTileCoordinates();
-		if (!player.IsInTileInteractionRange(tileTarget.X, tileTarget.Y, TileReachCheckSettings.Simple with { TileRangeMultiplier = 2 })) { return; }
+		if (Main.netMode == NetmodeID.Server)
+		{
+			if (Main.player[sender] is not { active: true } player) { return; }
+
+			// Increased reach distance for synchronization grace.
+			Point tileTarget = rift.Projectile.Hitbox.ClosestPointInRect(player.Center).ToTileCoordinates();
+			if (!player.IsInTileInteractionRange(tileTarget.X, tileTarget.Y, TileReachCheckSettings.Simple with { TileRangeMultiplier = 2 })) { return; }
+		}
 
 		rift.Activate();
 	}
