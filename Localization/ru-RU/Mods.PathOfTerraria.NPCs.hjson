@@ -15,6 +15,7 @@ BlacksmithNPC: {
 		OldManDialogue: Привет, путешественник!... что ты сказал? Кто-то направил тебя ко мне? Хм... я помню человека, закутанного в красное, он был здесь... некоторое время назад. Не могу сказать, сколько прошло времени, но довольно давно. Он просил кое-что конкретное... книгу зла, две свечи и слиток зла. Он говорил что-то о том, чтобы посыпать книгу порошком зла... но... это всё, что я могу сказать. Не уверен, о чём он говорил.
 
 		Golem: {
+			// Intro: Ah! Grand adventurer. I've been looking for more smithwork, but with all these new events I've got my eye on something. There's a temple deep in the jungle that may have some interesting new metalsmithing...bricksmithing? I've yet to figure it out. It's guarded, so be wary!
 			// 0: Excellent work! These are weird smiths, but nothing I can't figure out with a bit of hard work and sweat. Clear out the temple for a bit, I've heard it quite infested by vicious animals. I'll have a solution sorted...eventually. Hopefully before lunch!
 			// 1: Aha! I've procured a simple map. I'm no glyphsmith, but I've been around. They had inscribed some info on the inside of each cell - while the cells are no longer functional, they point to an "origin" of some kind. Take it, and find the beast behind it. I know it's to give great reward. If all goes well, we may enjoy a grand feast after!
 			// 2: You surpass me! Well, who's to complain? I'll see if I can scrounge up a feast deserving for such a feat. This will do wonders for my smithing, thank you!

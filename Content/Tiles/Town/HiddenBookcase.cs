@@ -1,3 +1,4 @@
+using PathOfTerraria.Common.Tiles;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
@@ -44,7 +45,15 @@ public class HiddenBookcase : ModTile
 	{
 		if (HoveringOverBook(i, j))
 		{
-			Wiring.TripWire(i, j, 1, 1);
+			if (Main.netMode == NetmodeID.SinglePlayer)
+			{
+				Wiring.TripWire(i, j, 1, 1);
+			}
+			else
+			{
+				TripWireHandler.Send(i, j, false);
+			}
+
 			return true;
 		}
 

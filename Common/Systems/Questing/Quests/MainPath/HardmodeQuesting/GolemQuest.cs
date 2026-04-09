@@ -30,13 +30,13 @@ internal class GolemQuest() : Quest
 	{
 		return
 		[
-			new InteractWithNPC("GiveCells", NPCQuestGiver, LocalizedText.Empty, 
+			new KillCount("Kill", npc => npc.netID == NPCID.Lihzahrd || npc.netID == NPCID.LihzahrdCrawler, 10, this.GetLocalization("Lihzards")),
+
+			new InteractWithNPC("GiveCells", NPCQuestGiver, LocalizedText.Empty,
 				Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Golem.0"),
 				[
 					new GiveItem(2, ItemID.LihzahrdPowerCell),
 				]),
-
-			new KillCount("Kill", npc => npc.netID == NPCID.Lihzahrd || npc.netID == NPCID.LihzahrdCrawler, 10, this.GetLocalization("Lihzards")),
 
 			// TODO: REMOVE LATER for -> After step 1, Thrain will give you an item to use on the Altar in the temple. This will summon the Golem domain portal in the temple. 
 			new InteractWithNPC("Talk", NPCQuestGiver, this.GetLocalization("Lihzards"), 
