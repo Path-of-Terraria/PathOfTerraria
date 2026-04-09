@@ -958,7 +958,8 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		Asset<Texture2D> mapIconTexture = ModContent.Request<Texture2D>($"{BasePath}/MapDeviceBase_Map_Icon", AssetRequestMode.ImmediateLoad);
 		Asset<Texture2D> mapLockTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/LockIcon", AssetRequestMode.ImmediateLoad);
 		var mapSlot = new UIImageItemSlot.SlotWrapper(() => entity.StoredMap, value => entity.StoredMap = value);
-		Window.AddElement(new UIHoverImageItemSlot(mapSlotTexture, mapIconTexture, mapSlot, null, context: CustomSlotContext), e =>
+		(string Key, object? Arg) mapSlotHover = ($"Mods.{nameof(PathOfTerraria)}.UI.MapDevice.MapSlot", null);
+		Window.AddElement(new UIHoverImageItemSlot(mapSlotTexture, mapIconTexture, mapSlot, mapSlotHover, context: CustomSlotContext), e =>
 		{
 			static bool HasInjection()
 			{

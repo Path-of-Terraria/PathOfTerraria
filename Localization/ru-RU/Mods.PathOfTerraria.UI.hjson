@@ -401,6 +401,7 @@ ClassPages: {
 }
 
 MapDevice: {
+	// MapSlot: Map Slot
 	// ActivatePortal: Open Portal
 	// DeactivatePortal: Close Portal
 	// AlreadyInUse: This map device is already in use!
