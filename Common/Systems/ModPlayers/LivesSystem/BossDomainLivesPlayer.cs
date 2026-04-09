@@ -111,6 +111,7 @@ internal class BossDomainLivesPlayer : ModPlayer
 
 		if (InDomain)
 		{
+			MappingWorld.MarkActivePortalForClosure();
 			Player.ghost = true;
 		}
 

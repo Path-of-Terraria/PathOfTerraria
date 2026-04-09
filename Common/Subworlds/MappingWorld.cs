@@ -7,8 +7,10 @@ using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.DisableBuilding;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Common.UI.SubworldHelp;
+using PathOfTerraria.Content.Tiles.Furniture;
 using ReLogic.Content;
 using SubworldLibrary;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.Localization;
@@ -30,7 +32,7 @@ public abstract class MappingWorld : Subworld
 	public override int Width => 1000;
 	public override int Height => 1000;
 
-	public override bool ShouldSave => false;
+	public override bool ShouldSave => !ClosePortalOnReturn;
 	public override bool NoPlayerSaving => false;
 	
 	/// <summary>
@@ -80,6 +82,17 @@ public abstract class MappingWorld : Subworld
 	/// This is kept as the map tier is used for a couple of things, namely <see cref="MappingDomainSystem.Tracker"/>.
 	/// </summary>
 	public static int MapTier = 0;
+	public static Point16 ActiveMapDevicePosition = new(-1, -1);
+	public static bool ClosePortalOnReturn;
+	/// <summary>
+	/// The file path of the last saved subworld, used to delete the save when the portal closes.
+	/// </summary>
+	internal static string LastSubworldSavePath;
+	private static bool pendingPortalStateApply;
+	private static bool pendingPortalActive;
+	private static int pendingPortalUsesLeft;
+	private static Item pendingPortalMap = new();
+	private static (int Id, int Amount)? pendingPortalInjection;
 
 	public LocalizedText SubworldName { get; private set; }
 	public LocalizedText SubworldDescription { get; private set; }
@@ -109,7 +122,12 @@ public abstract class MappingWorld : Subworld
 	public override void OnEnter()
 	{
 		TimesEntered++;
+
+		// Capture the save file path early so it can be deleted when the portal is closed.
+		// CurrentPath is only valid while the subworld is active.
+		LastSubworldSavePath = SubworldSystem.CurrentPath;
 	}
+
 
 	private void LoadLoadingScreens()
 	{
@@ -160,6 +178,46 @@ public abstract class MappingWorld : Subworld
 		CopyConsistentInfo();
 	}
 
+	public static void SetActiveMapDevice(Point16 position)
+	{
+		ActiveMapDevicePosition = position;
+		ClosePortalOnReturn = false;
+	}
+
+	public static void MarkActivePortalForClosure()
+	{
+		if (HasActiveMapDevice())
+		{
+			ClosePortalOnReturn = true;
+		}
+	}
+
+	public static void ClearActiveMapDevice()
+	{
+		ActiveMapDevicePosition = new Point16(-1, -1);
+		ClosePortalOnReturn = false;
+	}
+
+	/// <summary>
+	/// Deletes the saved subworld file so the next portal entry generates a fresh world.
+	/// </summary>
+	internal static void DeleteSavedSubworld()
+	{
+		if (LastSubworldSavePath is { Length: > 0 } && System.IO.File.Exists(LastSubworldSavePath))
+		{
+			try
+			{
+				System.IO.File.Delete(LastSubworldSavePath);
+			}
+			catch
+			{
+				// Best-effort cleanup; file may be locked or already removed.
+			}
+		}
+
+		LastSubworldSavePath = null;
+	}
+
 	private static void CopyConsistentInfo()
 	{
 		TagCompound trackerTag = [];
@@ -177,6 +235,48 @@ public abstract class MappingWorld : Subworld
 		TagCompound worldInfoTag = [];
 		worldInfoTag.Add("level", AreaLevel);
 		worldInfoTag.Add("tier", MapTier);
+		worldInfoTag.Add("closePortalOnReturn", ClosePortalOnReturn);
+
+		if (HasActiveMapDevice())
+		{
+			worldInfoTag.Add("activeMapDeviceX", ActiveMapDevicePosition.X);
+			worldInfoTag.Add("activeMapDeviceY", ActiveMapDevicePosition.Y);
+
+			// When called from CopySubworldData, the map device entity doesn't exist in the subworld.
+			// Fall back to the cached pending values that were read when entering.
+			if (TileEntity.ByPosition.TryGetValue(ActiveMapDevicePosition, out TileEntity tileEntity) && tileEntity is MapDeviceEntity device)
+			{
+				worldInfoTag.Add("activeMapPortalActive", device.PortalActive);
+				worldInfoTag.Add("activeMapPortalUsesLeft", device.PortalUsesLeft);
+
+				if (device.ActiveMap is { IsAir: false })
+				{
+					worldInfoTag.Add("activeMapPortalItem", ItemIO.Save(device.ActiveMap));
+				}
+
+				if (device.Injection is { } injection)
+				{
+					worldInfoTag.Add("activeMapInjectionId", injection.Id);
+					worldInfoTag.Add("activeMapInjectionAmount", injection.Amount);
+				}
+			}
+			else
+			{
+				worldInfoTag.Add("activeMapPortalActive", pendingPortalActive);
+				worldInfoTag.Add("activeMapPortalUsesLeft", pendingPortalUsesLeft);
+
+				if (pendingPortalMap is { IsAir: false })
+				{
+					worldInfoTag.Add("activeMapPortalItem", ItemIO.Save(pendingPortalMap));
+				}
+
+				if (pendingPortalInjection is { } injection)
+				{
+					worldInfoTag.Add("activeMapInjectionId", injection.Id);
+					worldInfoTag.Add("activeMapInjectionAmount", injection.Amount);
+				}
+			}
+		}
 
 		if (Affixes is not null && Affixes.Count > 0)
 		{
@@ -215,7 +315,24 @@ public abstract class MappingWorld : Subworld
 		TagCompound worldInfoTag = SubworldSystem.ReadCopiedWorldData<TagCompound>("worldInfo");
 		AreaLevel = worldInfoTag.GetInt("level");
 		MapTier = worldInfoTag.GetInt("tier");
+		ClosePortalOnReturn = worldInfoTag.GetBool("closePortalOnReturn");
 		Affixes = [];
+
+		if (worldInfoTag.ContainsKey("activeMapDeviceX") && worldInfoTag.ContainsKey("activeMapDeviceY"))
+		{
+			ActiveMapDevicePosition = new Point16(worldInfoTag.GetShort("activeMapDeviceX"), worldInfoTag.GetShort("activeMapDeviceY"));
+		}
+		else
+		{
+			ActiveMapDevicePosition = new Point16(-1, -1);
+		}
+
+		pendingPortalActive = worldInfoTag.GetBool("activeMapPortalActive");
+		pendingPortalUsesLeft = worldInfoTag.GetInt("activeMapPortalUsesLeft");
+		pendingPortalMap = worldInfoTag.TryGet("activeMapPortalItem", out TagCompound activeMapTag) ? ItemIO.Load(activeMapTag) : new();
+		pendingPortalInjection = worldInfoTag.ContainsKey("activeMapInjectionId")
+			? (worldInfoTag.GetInt("activeMapInjectionId"), worldInfoTag.GetInt("activeMapInjectionAmount"))
+			: null;
 
 		if (worldInfoTag.TryGet("affixes", out TagCompound[] affixes))
 		{
@@ -232,12 +349,52 @@ public abstract class MappingWorld : Subworld
 	{
 		base.CopySubworldData();
 		CopyConsistentInfo();
+
 	}
 
 	public override void ReadCopiedSubworldData()
 	{
 		base.ReadCopiedSubworldData();
 		ReadConsistentInfo();
+		pendingPortalStateApply = HasActiveMapDevice();
+	}
+
+	internal static bool HasActiveMapDevice()
+	{
+		return ActiveMapDevicePosition.X >= 0 && ActiveMapDevicePosition.Y >= 0;
+	}
+
+	internal static void TryApplyTrackedPortalState()
+	{
+		if (!pendingPortalStateApply || !HasActiveMapDevice())
+		{
+			return;
+		}
+
+		if (!TileEntity.ByPosition.TryGetValue(ActiveMapDevicePosition, out TileEntity tileEntity) || tileEntity is not MapDeviceEntity device)
+		{
+			return;
+		}
+
+		if (ClosePortalOnReturn)
+		{
+			device.TryClosingPortal();
+			pendingPortalStateApply = false;
+			return;
+		}
+
+		device.PortalActive = pendingPortalActive;
+		device.PortalUsesLeft = pendingPortalUsesLeft;
+		device.StoredMap = new();
+		device.ActiveMap = pendingPortalMap.Clone();
+		device.Injection = pendingPortalInjection;
+
+		if (Main.netMode == NetmodeID.Server)
+		{
+			MapDeviceSync.Send(device.ID, MapDeviceSync.Flags.FullSync);
+		}
+
+		pendingPortalStateApply = false;
 	}
 
 	public override void DrawMenu(GameTime gameTime)
@@ -283,5 +440,18 @@ public abstract class MappingWorld : Subworld
 		}
 
 		return Affixes.Sum(x => x.Strength);
+	}
+}
+
+internal sealed class MappingPortalReturnSystem : ModSystem
+{
+	public override void PostUpdateWorld()
+	{
+		if (SubworldSystem.Current is MappingWorld)
+		{
+			return;
+		}
+
+		MappingWorld.TryApplyTrackedPortalState();
 	}
 }

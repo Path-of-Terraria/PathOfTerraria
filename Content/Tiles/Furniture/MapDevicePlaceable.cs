@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using Mono.Cecil;
 using PathOfTerraria.Common.Mapping;
+using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Content.Items.Consumables.Maps;
@@ -219,8 +220,9 @@ public class MapDeviceTile : ModTile
 		Texture2D portalTexture = AssetUtils.ImmediateValue(PortalTexturePath, ref _portalTex);
 		Texture2D? itemTex = null;
 		Color baseColor = entity.GetPortalColor();
+		Item portalItem = entity.ActiveMap.IsAir ? entity.StoredMap : entity.ActiveMap;
 
-		if (entity.StoredMap is { IsAir: false, type: int itemType })
+		if (portalItem is { IsAir: false, type: int itemType })
 		{
 			itemTex = TextureAssets.Item[itemType].Value;
 		}
@@ -295,7 +297,7 @@ public class MapDeviceTile : ModTile
 				if (entity.TryEnteringPortal(evalMode: true))
 				{
 					player.cursorItemIconEnabled = true;
-					player.cursorItemIconID = entity.StoredMap.type;
+					player.cursorItemIconID = entity.ActiveMap.IsAir ? entity.StoredMap.type : entity.ActiveMap.type;
 				}
 			}
 			else if (entity.TryOpeningInterface(evalMode: true))
@@ -345,6 +347,7 @@ internal class MapDeviceEntity : ModTileEntity
 	private float engineSoundVolume;
 
 	public Item StoredMap { get; set; }
+	public Item ActiveMap { get; set; }
 	public Item[] Storage { get; set; }
 	public bool PortalActive { get; set; }
 	public int PortalUsesLeft { get; set; }
@@ -359,6 +362,7 @@ internal class MapDeviceEntity : ModTileEntity
 	public MapDeviceEntity()
 	{
 		StoredMap = new();
+		ActiveMap = new();
 		Storage = new Item[StorageSize];
 		for (int i = 0; i < Storage.Length; i++) { Storage[i] = new(); }
 	}
@@ -435,10 +439,21 @@ internal class MapDeviceEntity : ModTileEntity
 
 	public override void SaveData(TagCompound tag)
 	{
+		// Portal state
+		if (PortalActive)
+		{
+			tag.Add("portalActive", true);
+			tag.Add("portalUsesLeft", PortalUsesLeft);
+		}
+
 		// Map
 		if (StoredMap is { IsAir: false })
 		{
 			tag.Add("item", ItemIO.Save(StoredMap));
+		}
+		if (ActiveMap is { IsAir: false })
+		{
+			tag.Add("activeItem", ItemIO.Save(ActiveMap));
 		}
 
 		// Injection
@@ -466,10 +481,18 @@ internal class MapDeviceEntity : ModTileEntity
 	}
 	public override void LoadData(TagCompound tag)
 	{
+		// Portal state
+		PortalActive = tag.GetBool("portalActive");
+		PortalUsesLeft = tag.GetInt("portalUsesLeft");
+
 		// Map
 		if (tag.TryGet("item", out TagCompound itemTag))
 		{
 			StoredMap = ItemIO.Load(itemTag);
+		}
+		if (tag.TryGet("activeItem", out TagCompound activeItemTag))
+		{
+			ActiveMap = ItemIO.Load(activeItemTag);
 		}
 
 		// Injection
@@ -675,7 +698,8 @@ internal class MapDeviceEntity : ModTileEntity
 	/// </summary>
 	public bool TryEnteringPortal(bool evalMode = false, byte? netSender = null)
 	{
-		if (!PortalActive || StoredMap is not { IsAir: false, ModItem: Map map })
+		Item portalItem = ActiveMap.IsAir ? StoredMap : ActiveMap;
+		if (!PortalActive || portalItem is not { IsAir: false, ModItem: Map map })
 		{
 			return false;
 		}
@@ -702,15 +726,9 @@ internal class MapDeviceEntity : ModTileEntity
 			MapDeviceInteraction.Send(ID, MapDeviceInteraction.Kind.EnterPortal, toClient: netSender.Value);
 		}
 
-		// Roll down uses and close the portal if needed.
 		if (Main.netMode != NetmodeID.MultiplayerClient)
 		{
-			PortalUsesLeft--;
-
-			if (PortalUsesLeft <= 0)
-			{
-				TryClosingPortal();
-			}
+			MappingWorld.SetActiveMapDevice(Position);
 		}
 
 		return true;
@@ -748,11 +766,16 @@ internal class MapDeviceEntity : ModTileEntity
 			return false;
 		}
 
+		// Delete any existing saved subworld to ensure a fresh world is generated.
+		MappingWorld.DeleteSavedSubworld();
+
 		PortalActive = true;
 		PortalUsesLeft = int.MaxValue;
 
 		if (StoredMap is { IsAir: false, ModItem: Map map })
 		{
+			ActiveMap = StoredMap.Clone();
+			StoredMap = new();
 			PortalUsesLeft = map.MaxUses;
 		}
 		else if (Injection is { } injection)
@@ -812,9 +835,12 @@ internal class MapDeviceEntity : ModTileEntity
 
 		// The map is destroyed if the portal is ever closed.
 		StoredMap = new();
+		ActiveMap = new();
 		PortalActive = false;
 		PortalUsesLeft = 0;
 		Injection = null;
+		MappingWorld.ClearActiveMapDevice();
+		MappingWorld.DeleteSavedSubworld();
 
 		// Broadcast the interaction.
 		if (Main.netMode == NetmodeID.Server)
@@ -953,7 +979,7 @@ internal class MapDeviceEntity : ModTileEntity
 		{
 			return MapResources.Get(injection.Id).AccentColor;
 		}
-		else if (StoredMap is { IsAir: false, type: int itemType })
+		else if ((ActiveMap.IsAir ? StoredMap : ActiveMap) is { IsAir: false, type: int itemType })
 		{
 			return ColorUtils.FromHexRgb(0x_0097ff);
 		}
@@ -1019,7 +1045,8 @@ internal class MapDeviceSync : Handler
 		Map = 1 << 1,
 		Storage = 1 << 2,
 		Injection = 1 << 3,
-		FullSync = Status | Map | Storage | Injection,
+		ActiveMap = 1 << 4,
+		FullSync = Status | Map | Storage | Injection | ActiveMap,
 	}
 
 	public static void CorrectDesync(int entityId, byte? toClient, Flags flags)
@@ -1066,6 +1093,11 @@ internal class MapDeviceSync : Handler
 		if (flags.HasFlag(Flags.Map))
 		{
 			ItemIO.Send(device.StoredMap, writer, writeStack: true);
+		}
+
+		if (flags.HasFlag(Flags.ActiveMap))
+		{
+			ItemIO.Send(device.ActiveMap, writer, writeStack: true);
 		}
 
 		if (flags.HasFlag(Flags.Storage))
@@ -1142,6 +1174,13 @@ internal class MapDeviceSync : Handler
 			{
 				Item.NewItem(null, player.Center, mapSlot);
 			}
+		}
+
+		if (flags.HasFlag(Flags.ActiveMap))
+		{
+			bool useDummy = mapEntity?.ActiveMap == null;
+			Item activeMapSlot = useDummy ? new() : mapEntity!.ActiveMap;
+			ItemIO.Receive(activeMapSlot, reader, readStack: true);
 		}
 
 		if (flags.HasFlag(Flags.Storage))
