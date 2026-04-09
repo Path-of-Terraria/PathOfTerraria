@@ -151,7 +151,6 @@ public class RavencrestSystem : ModSystem
 					UIManager.TryDisable(Identifier);
 					UIManager.TryEnable(Identifier);
 				}
-
 			}
 
 			TavernManager.OneTimeCheck();
