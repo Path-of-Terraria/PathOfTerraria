@@ -160,11 +160,14 @@ internal class IgnitedNPC : GlobalNPC
 
 	public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
 	{
-		if (binaryReader.ReadInt16() is not 0 and { } count)
+		Stacks.Clear();
+		short count = binaryReader.ReadInt16();
+
+		if (count > 0)
 		{
 			for (int i = 0; i < count; ++i)
 			{
-				IgnitedStack stack = new(binaryReader.ReadInt16(), binaryReader.ReadInt32());
+				Stacks.Add(new IgnitedStack(binaryReader.ReadInt16(), binaryReader.ReadInt32()));
 			}
 		
 			Stacks = [.. Stacks.OrderByDescending(x => x.BaseDamage)];
