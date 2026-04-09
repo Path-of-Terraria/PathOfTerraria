@@ -173,7 +173,7 @@ internal abstract class ConfluxResource : ModItem
 		if (Item.position.Y <= 0f || Time.Remaining <= -60)
 		{
 			// Convert to resource.
-			MapResources.AddOrRemove(Item.netID, Math.Max(1, Item.stack));
+			MapResources.ModifyValue(Item.netID, Math.Max(1, Item.stack));
 			Item.active = false;
 		}
 

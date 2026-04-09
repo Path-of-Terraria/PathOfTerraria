@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using PathOfTerraria.Common.Systems.Synchronization;
 using SubworldLibrary;
@@ -29,6 +30,14 @@ internal record struct MapResource()
 	public int PortalUses = int.MaxValue;
 	/// <summary> Whether this resource has been discovered by the player. Will affect how and whether it will be displayed. </summary>
 	public bool Discovered;
+}
+
+internal enum ResourceDiscovery : byte
+{
+	Auto,
+	Always,
+	Never,
+	Undiscover,
 }
 
 /// <summary> Tracks and synchronizes <see cref="MapResource"/>s across servers and clients. </summary>
@@ -87,14 +96,15 @@ internal sealed class MapResources : ModSystem
 		}
 	}
 
-	/// <inheritdoc cref="AddOrRemove"/>
-	internal sealed class AddOrRemoveMessage : Handler
+	/// <inheritdoc cref="ModifyValue"/>
+	internal sealed class ModifyValueMessage : Handler
 	{
-		public static ModPacket Write(int itemId, int delta)
+		public static ModPacket Write(int itemId, int delta, ResourceDiscovery discover)
 		{
-			ModPacket packet = Networking.GetPacket<AddOrRemoveMessage>();
+			ModPacket packet = Networking.GetPacket<ModifyValueMessage>();
 			packet.Write7BitEncodedInt(itemId);
 			packet.Write7BitEncodedInt(delta);
+			packet.Write((byte)discover);
 			return packet;
 		}
 
@@ -102,7 +112,8 @@ internal sealed class MapResources : ModSystem
 		{
 			int itemId = reader.Read7BitEncodedInt();
 			int delta = reader.Read7BitEncodedInt();
-			AddOrRemove(itemId, delta, netSender: sender);
+			var discovery = (ResourceDiscovery)reader.ReadByte();
+			ModifyValue(itemId, delta, discovery: discovery, netSender: sender);
 		}
 	}
 
@@ -161,7 +172,7 @@ internal sealed class MapResources : ModSystem
 	{
 		return TryGet(ModContent.GetInstance<T>().Item.type, out result);
 	}
-	/// <summary> Returns the globally stored amount of the resource associated with the provided item. </summary>
+	/// <summary> Returns a copy of the resource associated with the provided item. </summary>
 	public static MapResource Get(int itemType)
 	{
 		return TryGet(itemType, out MapResource result) ? result : throw new InvalidOperationException($"Invalid resource: {ModContent.GetModItem(itemType).FullName}");
@@ -183,13 +194,13 @@ internal sealed class MapResources : ModSystem
 		return IndexOf(ModContent.GetInstance<T>().Item.type);
 	}
 
-	/// <inheritdoc cref="AddOrRemove"/>
-	public static void AddOrRemove<T>(int delta) where T : ModItem
+	/// <inheritdoc cref="ModifyValue"/>
+	public static void ModifyValue<T>(int delta, ResourceDiscovery discovery = 0) where T : ModItem
 	{
-		AddOrRemove(ModContent.GetInstance<T>().Item.type, delta);
+		ModifyValue(ModContent.GetInstance<T>().Item.type, delta, discovery: discovery);
 	}
 	/// <summary> Atomically adds the given value to the resource associated with the provided item, synchronizing across all servers and clients. </summary>
-	public static void AddOrRemove(int itemType, int delta, byte? netSender = null)
+	public static void ModifyValue(int itemType, int delta, ResourceDiscovery discovery = 0, byte? netSender = null)
 	{
 		// Only servers can send this.
 		if (netSender != null && netSender < byte.MaxValue) { return; }
@@ -200,19 +211,45 @@ internal sealed class MapResources : ModSystem
 		// Redirect to main server.
 		if (Main.netMode == NetmodeID.Server && SubworldSystem.Current != null)
 		{
-			SubworldSystem.SendToMainServer(PoTMod.Instance, Networking.GetFinalPacketBuffer(AddOrRemoveMessage.Write(itemType, delta)));
+			SubworldSystem.SendToMainServer(PoTMod.Instance, Networking.GetFinalPacketBuffer(ModifyValueMessage.Write(itemType, delta, discovery)));
 			return;
 		}
 
 		// Perform function.
 		ref MapResource resource = ref ResourcesMut[index];
 		resource.Value = Math.Clamp(resource.Value + delta, resource.MinValue, resource.MaxValue);
+		resource.Discovered = discovery switch
+		{
+			ResourceDiscovery.Always => true,
+			ResourceDiscovery.Never => resource.Discovered,
+			ResourceDiscovery.Undiscover => false,
+			_ => resource.Value > resource.MinValue || resource.Discovered,
+		};
 
 		// Enqueue a full sync.
-		if (Main.netMode == NetmodeID.Server)
-		{
-			needsSync = true;
-		}
+		needsSync |= Main.netMode == NetmodeID.Server;
+	}
+
+	/// <inheritdoc cref="Undiscover"/>
+	public static void Undiscover<T>() where T : ModItem
+	{
+		Undiscover(ModContent.GetInstance<T>().Item.type);
+	}
+	/// <summary> Undiscovers a resource, also setting its value to the minimum. </summary>
+	public static void Undiscover(int itemType)
+	{
+		if (!resourcesByItem.TryGetValue(itemType, out int index)) { return; }
+
+		ref MapResource resource = ref ResourcesMut[index];
+		resource.Value = resource.MinValue;
+		resource.Discovered = false;
+		// Enqueue a full sync.
+		needsSync |= Main.netMode == NetmodeID.Server;
+	}
+
+	public static bool AnyResourceDiscovered()
+	{
+		return resources.Any(r => r.Discovered);
 	}
 
 	public override void SaveWorldData(TagCompound tag)
@@ -257,6 +294,7 @@ internal sealed class MapResources : ModSystem
 		{
 			writer.Write7BitEncodedInt((int)resource.AssociatedItem);
 			writer.Write7BitEncodedInt((int)resource.Value);
+			writer.Write((bool)resource.Discovered);
 		}
 	}
 	public override void NetReceive(BinaryReader reader)
@@ -267,11 +305,13 @@ internal sealed class MapResources : ModSystem
 		{
 			int item = reader.Read7BitEncodedInt();
 			int value = reader.Read7BitEncodedInt();
+			bool discovered = reader.ReadBoolean();
 
 			if (resourcesByItem.TryGetValue(item, out int index))
 			{
 				ref MapResource resource = ref ResourcesMut[index];
 				resource.Value = value;
+				resource.Discovered = true;
 			}
 		}
 	}

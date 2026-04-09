@@ -886,7 +886,7 @@ internal class MapDeviceEntity : ModTileEntity
 		}
 
 		Injection = (resourceId, resource.Cost);
-		MapResources.AddOrRemove(resourceId, -resource.Cost);
+		MapResources.ModifyValue(resourceId, -resource.Cost);
 
 		// Broadcast the interaction.
 		if (Main.netMode == NetmodeID.Server)
@@ -933,7 +933,7 @@ internal class MapDeviceEntity : ModTileEntity
 
 		if (MapResources.TryGet(injection.Id, out MapResource resource))
 		{
-			MapResources.AddOrRemove(injection.Id, +injection.Amount);
+			MapResources.ModifyValue(injection.Id, +injection.Amount, discovery: ResourceDiscovery.Never);
 		}
 
 		Injection = null;
