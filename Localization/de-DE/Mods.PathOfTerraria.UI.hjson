@@ -403,6 +403,7 @@ MapDevice: {
 	// NotEnoughResources: Not Enough Resources
 	// ClosePortalMapWarning: Closing the portal will discard the map!
 	// ClosePortalResourceWarning: Closing the portal will discard the portal fluid!
+	// InjectionModuleUnavailable: ???
 }
 
 MigrateRavencrest: {
