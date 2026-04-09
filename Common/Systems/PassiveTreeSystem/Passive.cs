@@ -144,10 +144,7 @@ public abstract class Passive : Allocatable, ILoadable
 
 		foreach (Edge<Allocatable> edge in edges)
 		{
-			// If the edge contains this, and the other side of the edge is either allocated, or
-			// if this is a hidden node, connected to a mastery - i.e., it's a child node to a mastery - allow allocation.
-			// A bit of a hacky fix, as IsHidden isn't necessarily meant to be used this way, but it'll work for at least release.
-			if (edge.Contains(this) && (edge.Other(this).Level > 0 || (edge.Other(this) is MasteryPassive) && IsHidden))
+			if (edge.Contains(this) && edge.Other(this).Level > 0)
 			{
 				count++;
 

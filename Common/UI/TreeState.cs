@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.ModPlayers.SkillPlayers;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
@@ -102,7 +103,7 @@ internal class TreeState : TabsUiState
 
 		// Add nodes
 		var mapping = new Dictionary<int, AllocatableElement>(capacity: LocalPassiveTreePlayer.ActiveNodes.Count);
-		foreach (Passive passive in LocalPassiveTreePlayer.ActiveNodes)
+		foreach (Passive passive in CollectionsMarshal.AsSpan(LocalPassiveTreePlayer.ActiveNodes))
 		{
 			if (passive.IsHidden)
 			{

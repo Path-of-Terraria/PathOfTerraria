@@ -11,6 +11,7 @@ using PathOfTerraria.Core.UI.SmartUI;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.ModLoader.IO;
+using System.Runtime.InteropServices;
 
 namespace PathOfTerraria.Common.Systems.PassiveTreeSystem;
 
@@ -42,7 +43,7 @@ internal class PassiveTreePlayer : ModPlayer
 	{
 		ResetNodes();
 
-		ExpModPlayer expPlayer = Main.LocalPlayer.GetModPlayer<ExpModPlayer>();
+		ExpModPlayer expPlayer = Player.GetModPlayer<ExpModPlayer>();
 		Points = expPlayer.EffectiveLevel + ExtraPoints;
 
 		SetTree(false);
@@ -53,8 +54,15 @@ internal class PassiveTreePlayer : ModPlayer
 	/// </summary>
 	private void SetTree(bool setStrengths)
 	{
-		foreach (Passive passive in ActiveNodes.Where(passive => passive != null))
+		Span<Passive> span = CollectionsMarshal.AsSpan(ActiveNodes);
+
+		foreach (ref Passive passive in span)
 		{
+			if (passive is null)
+			{
+				continue;
+			}
+
 			int oldLevel = passive.Level;
 			passive.Level = passive is AnchorPassive
 				? (IsAllowedAnchor(passive) ? 1 : 0)
@@ -86,7 +94,7 @@ internal class PassiveTreePlayer : ModPlayer
 			}
 		}
 
-		PruneDisconnectedNodes(setStrengths);
+		// PruneDisconnectedNodes(setStrengths);
 	}
 
 	private void ResetNodes()
@@ -361,20 +369,22 @@ internal class PassiveTreePlayer : ModPlayer
 		return passive.ReferenceId == allowedAnchorReferenceId;
 	}
 
-	private void PruneDisconnectedNodes(bool setStrengths)
-	{
-		HashSet<Passive> connectedNodes = GetConnectedNodesFromAllowedAnchors();
+	// This method caused mastery nodes to work improperly, and I didn't see any additional functionality.
+	// Why was this here? - Gabe
+	//private void PruneDisconnectedNodes(bool setStrengths)
+	//{
+	//	HashSet<Passive> connectedNodes = GetConnectedNodesFromAllowedAnchors();
 
-		foreach (Passive passive in ActiveNodes)
-		{
-			if (passive is AnchorPassive || passive.Level <= 0 || connectedNodes.Contains(passive))
-			{
-				continue;
-			}
-
-			RemovePassiveLevels(passive, setStrengths);
-		}
-	}
+	//	foreach (Passive passive in ActiveNodes)
+	//	{
+	//		if (passive is AnchorPassive || passive.Level <= 0 || connectedNodes.Contains(passive))
+	//		{
+	//			continue;
+	//		}
+	//
+	//		RemovePassiveLevels(passive, setStrengths);
+	//	}
+	//}
 
 	private HashSet<Passive> GetConnectedNodesFromAllowedAnchors()
 	{

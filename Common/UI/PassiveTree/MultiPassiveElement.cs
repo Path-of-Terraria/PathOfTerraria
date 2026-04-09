@@ -2,7 +2,6 @@
 using System.Linq;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
-using PathOfTerraria.Content.Passives.Misc;
 using Terraria.UI;
 
 #nullable enable
@@ -12,10 +11,11 @@ namespace PathOfTerraria.Common.UI.PassiveTree;
 /// <summary> Offers a choice of one of multiple passives contained within. Every hidden child node is considered an inner node. </summary>
 internal class MultiPassiveElement : PassiveElement
 {
+	public const int AnimationTimeMax = 60;
+
 	private readonly Edge<IConnectedAllocatableNode>[] _extraEdges;
 
 	public int AnimationTime { get; set; }
-	public int AnimationTimeMax => 60;
 	public Passive[] InnerPassives { get; }
 	public Passive? ActivePassive => InnerPassives.FirstOrDefault(p => p.Level > 0);
 
@@ -156,7 +156,7 @@ internal class PassiveRadialElement : PassiveElement
 
 	public MultiPassiveElement? Handler => Parent is MultiPassiveElement e ? e : null;
 
-	private float Progress => Handler is { } handler ? (float)Handler.AnimationTime / Handler.AnimationTimeMax : 0f;
+	private float Progress => Handler is { } handler ? (float)Handler.AnimationTime / MultiPassiveElement.AnimationTimeMax : 0f;
 
 	public PassiveRadialElement(Passive passive, Vector2 startOffset, Vector2 targetOffset) : base(passive)
 	{
