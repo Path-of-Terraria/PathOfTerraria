@@ -22,6 +22,11 @@ internal partial class Mossmother
 
 		if (State == BehaviorState.Huddled) // Do nothing until all players are nearby, at which point, start the fight
 		{
+			if (Timer == 1 && Main.netMode != NetmodeID.MultiplayerClient)
+			{
+				VisualVariant = Main.rand.Next(3);
+			}
+
 			NPC.dontTakeDamage = true;
 			bool allNearby = true;
 
@@ -367,6 +372,7 @@ internal partial class Mossmother
 		writer.Write(ReadyForGas);
 		writer.Write((Half)MiscTwo);
 		writer.Write((byte)movementSpline.Length);
+		writer.Write((byte)VisualVariant);
 
 		foreach (Vector2 position in movementSpline)
 		{
@@ -380,6 +386,7 @@ internal partial class Mossmother
 		ReadyForGas = reader.ReadBoolean();
 		MiscTwo = (float)reader.ReadHalf();
 		byte length = reader.ReadByte();
+		VisualVariant = reader.ReadByte();
 		movementSpline = new Vector2[length];
 
 		for (int i = 0; i < length; ++i)
