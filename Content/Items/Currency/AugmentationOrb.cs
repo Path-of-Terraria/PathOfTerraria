@@ -7,6 +7,8 @@ namespace PathOfTerraria.Content.Items.Currency;
 //Use CurrencyShard so this can be added to the currency drop table
 internal class AugmentationOrb : CurrencyShard
 {
+	public override bool SupportsMouseItemTargeting => false;
+
 	public override void SetStaticDefaults()
 	{
 		PoTStaticItemData staticData = this.GetStaticData();
