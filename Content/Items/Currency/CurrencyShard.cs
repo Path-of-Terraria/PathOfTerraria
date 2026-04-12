@@ -1,7 +1,9 @@
 ﻿using PathOfTerraria.Core.Items;
 using System.Diagnostics.CodeAnalysis;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.UI;
 
 namespace PathOfTerraria.Content.Items.Currency;
 
@@ -11,6 +13,7 @@ namespace PathOfTerraria.Content.Items.Currency;
 public abstract class CurrencyShard : ModItem, GenerateNameAffixes.IItem
 {
 	protected virtual int FrameCount => 4;
+	public virtual bool SupportsMouseItemTargeting => true;
 
 	public override void SetStaticDefaults()
 	{
@@ -73,4 +76,47 @@ public abstract class CurrencyShard : ModItem, GenerateNameAffixes.IItem
 	public abstract bool CanUseInPouch(Item slotItem, [NotNullWhen(false)] out string failKey);
 
 	public abstract void ApplyToItem(Item slotItem);
+}
+
+internal sealed class CurrencyShardMouseItemTargetingSystem : ModSystem
+{
+	public override void Load()
+	{
+		On_ItemSlot.RightClick_ItemArray_int_int += ApplyMouseHeldShardToClickedItem;
+	}
+
+	private static void ApplyMouseHeldShardToClickedItem(On_ItemSlot.orig_RightClick_ItemArray_int_int orig, Item[] inv, int context, int slot)
+	{
+		bool clicked = Main.mouseRight && Main.mouseRightRelease;
+
+		if (!clicked
+			|| context != ItemSlot.Context.InventoryItem
+			|| slot < 0
+			|| slot >= inv.Length
+			|| inv[slot].IsAir
+			|| Main.mouseItem.ModItem is not CurrencyShard shard
+			|| !shard.SupportsMouseItemTargeting)
+		{
+			orig(inv, context, slot);
+			return;
+		}
+
+		Item targetItem = inv[slot];
+
+		if (!shard.CanUseInPouch(targetItem, out _))
+		{
+			return;
+		}
+
+		shard.ApplyToItem(targetItem);
+		Main.mouseItem.stack--;
+
+		if (Main.mouseItem.stack <= 0)
+		{
+			Main.mouseItem.TurnToAir();
+		}
+
+		SoundEngine.PlaySound(SoundID.Grab);
+		Main.mouseRightRelease = false;
+	}
 }
