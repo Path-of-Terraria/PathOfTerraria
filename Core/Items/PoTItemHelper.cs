@@ -125,12 +125,8 @@ public static class PoTItemHelper
 		}
 
 		IEnumerable<ItemAffixData> exclusions = data.Affixes.SelectExcept(null, a => a.TryGetData(item));
-		if (!exclusions.Any())
-		{
-			return;
-		}
-
 		ItemAffixData chosenAffix = AffixRegistry.GetRandomAffixDataByItemType(data.ItemType, excludedAffixes: exclusions);
+
 		if (chosenAffix is null)
 		{
 			return;
@@ -185,21 +181,6 @@ public static class PoTItemHelper
 	}
 
 	public static int GetMaxAffixCounts(ItemRarity rarity)
-	{
-		return rarity switch
-		{
-			ItemRarity.Magic => 2,
-			ItemRarity.Rare => 4,
-			_ => 0
-		};
-	}
-
-	/// <summary>
-	/// Gets the max amount of affixes a mob can have based on the rarity.
-	/// </summary>
-	/// <param name="rarity">Rarity of the mob.</param>
-	/// <returns>How many affixes the mob can have.</returns>
-	public static int GetMaxMobAffixCounts(ItemRarity rarity)
 	{
 		return rarity switch
 		{

@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.BlockSystem;
+using PathOfTerraria.Common.Classing;
 using PathOfTerraria.Common.Systems.Charges;
 using PathOfTerraria.Common.Systems.ElementalDamage;
 using PathOfTerraria.Common.Systems.ModPlayers;
@@ -104,14 +105,12 @@ internal class PlayerStatInnerPanel : SmartUiElement
 				{
 					return -1;
 				}
-				else if (y is not PlayerStatUI yStat)
+				if (y is not PlayerStatUI yStat)
 				{
 					return 1;
 				}
-				else
-				{
-					return xStat.Slot.CompareTo(yStat.Slot);
-				}
+
+				return xStat.Slot.CompareTo(yStat.Slot);
 			});
 
 		UIScrollbar bar = new()
@@ -129,6 +128,11 @@ internal class PlayerStatInnerPanel : SmartUiElement
 
 		list.Add(new UIElement() { Height = StyleDimension.FromPixels(4) }); // Stops the name text from being cut off
 		list.Add(new PlayerStatUI(LocalizedText.Empty, player => player.name, 0.8f, true, true));
+		list.Add(new PlayerStatUI(Language.GetOrRegister($"Mods.{PoTMod.ModName}.UI.StatUI.Class", () => "Class"), player =>
+		{
+			StarterClass starterClass = player.GetModPlayer<ClassingPlayer>().Class;
+			return starterClass == StarterClass.None ? Language.GetTextValue("LegacyInterface.23") : starterClass.Localize().Value;
+		}, 0.9f));
 		
 		list.Add(new PlayerStatUI(Localize("CharacterHeader"), player => "", isHeader: true));
 		list.Add(new PlayerStatUI(Localize("Level"), player => player.GetModPlayer<ExpModPlayer>().Level.ToString()));

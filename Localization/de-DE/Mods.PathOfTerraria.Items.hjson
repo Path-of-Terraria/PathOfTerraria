@@ -60,11 +60,6 @@ Wand: {
 	// Tooltip: ""
 }
 
-LowTierMap: {
-	// DisplayName: Low Tier Map
-	// Tooltip: ""
-}
-
 BodyArmor: {
 	// DisplayName: Body Armor
 	// Tooltip: ""
@@ -107,11 +102,6 @@ Tassets: {
 
 Treads: {
 	// DisplayName: Treads
-	// Tooltip: ""
-}
-
-CaveMap: {
-	// DisplayName: Cave Map
 	// Tooltip: ""
 }
 
@@ -1505,6 +1495,37 @@ SwampMossItem: {
 }
 
 MossyPurpleCloudsItem: {
-	// DisplayName: Mossy Purple Clouds Item
+	// DisplayName: Mossy Purple Clouds
 	// Tooltip: ""
 }
+
+CypressWoodItem: {
+	// DisplayName: Cypress Wood
+	// Tooltip: ""
+}
+
+MangroveWoodItem: {
+	// DisplayName: Mangrove Wood
+	// Tooltip: ""
+}
+
+SwampMap: {
+	// DisplayName: Swamp Map
+	/* Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of moss and wood'
+		''' */
+}
+
+CrystalVisors: {
+	// DisplayName: Crystal Visors
+	// Tooltip: ""
+}
+
+PrismShardItem: {
+	// DisplayName: Prism Shard
+	// Tooltip: Alaric may want to look at these
+}
+
+// NostalgicShardBannerItem.DisplayName: Nostalgic Shard Banner

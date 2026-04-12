@@ -1,6 +1,8 @@
 ﻿using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Terraria.ID;
@@ -98,15 +100,17 @@ internal class SkillTreePlayer : ModPlayer
 	}
 
 	/// <summary>
-	/// Modifies the stored value for a passive, per tree and per node.
+	/// Modifies the stored value for a skill passive, per tree and per node. This does nothing for standard passives.
 	/// </summary>
 	/// <param name="tree">The tree being modified.</param>
 	/// <param name="nodeType">The node value being modified.</param>
 	/// <param name="levelAdjustment">If <paramref name="set"/> is true, the final value to use. Otherwise, the value to add to the stored value.</param>
 	/// <param name="sync">Whether this should run <see cref="SkillPassiveValueHandler.Send(string, string, byte)"/> or not.</param>
 	/// <param name="set">Whether this overrides or adds to the stored value.</param>
-	internal void ModifyPassive(SkillTree tree, Type nodeType, int levelAdjustment, bool sync = true)
+	internal void ModifySkillPassive(SkillTree tree, Type nodeType, int levelAdjustment, bool sync = true)
 	{
+		Debug.Assert(typeof(SkillPassive).IsAssignableFrom(nodeType), "Type must be a SkillPassive.");
+
 		TotalLevelByTypeByTree.TryAdd(tree, []);
 		Dictionary<Type, int> levelByType = TotalLevelByTypeByTree[tree];
 
@@ -127,7 +131,7 @@ internal class SkillTreePlayer : ModPlayer
 	/// <typeparam name="TTree">The tree to reference.</typeparam>
 	/// <typeparam name="TPassive">The passive to get the level of.</typeparam>
 	/// <returns>The cumulative levels of a given passive on a tree.</returns>
-	internal int GetPassiveStrength<TTree, TPassive>() where TTree : SkillTree where TPassive : SkillPassive
+	internal int GetSkillPassiveStrength<TTree, TPassive>() where TTree : SkillTree where TPassive : SkillPassive
 	{
 		if (!TotalLevelByTypeByTree.TryGetValue(ModContent.GetInstance<TTree>(), out Dictionary<Type, int> lookup) || !lookup.TryGetValue(typeof(TPassive), out int level))
 		{
@@ -143,10 +147,10 @@ internal class SkillTreePlayer : ModPlayer
 	/// <typeparam name="TTree">The tree to reference.</typeparam>
 	/// <typeparam name="TPassive">The passive to check for.</typeparam>
 	/// <returns>If the player has any one or more of the passive enabled.</returns>
-	internal bool HasPassive<TTree, TPassive>(out float strength) where TTree : SkillTree where TPassive : SkillPassive
+	internal bool HasSkillPassive<TTree, TPassive>(out float strength) where TTree : SkillTree where TPassive : SkillPassive
 	{
-		strength = GetPassiveStrength<TTree, TPassive>();
-		return strength > 0;
+		strength = GetSkillPassiveStrength<TTree, TPassive>();
+		return GetSkillPassiveStrength<TTree, TPassive>() > 0;
 	}
 
 	/// <summary>

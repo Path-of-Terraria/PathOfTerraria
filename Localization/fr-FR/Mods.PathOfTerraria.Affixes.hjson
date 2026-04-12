@@ -63,6 +63,9 @@ MapBossHealthAffix.Description: "{1}{0} % d'augmentation de la santé du boss"
 MapMobCritChanceAffix.Description: "{1}{0}% d'augmentation des chances de coup critique de l'ennemi"
 MapMobChillChanceAffix.Description: "{1}{0}% chance pour les ennemis d'infliger le statut Gelé"
 MapIncreasedBehaviourAffix.Description: "{1}{0}% d'augmentation de la vitesse de déplacement des ennemis"
+// MapStealAegisChargeAffix.Description: Monsters steal an Aegis Charge on hit
+// MapStealFocusChargeAffix.Description: Monsters steal a Focus Charge on hit
+// MapStealHasteChargeAffix.Description: Monsters steal a Haste Charge on hit
 ColdAffix.Prefix: Congélation
 LightningAffix.Prefix: Choquant
 FlamingAffix.Prefix: Enflammé
@@ -102,3 +105,4 @@ LightningResistItemAffix.Description: "{1}{0} de résistance à la foudre"
 // MapFireConversionAffix.Description: "{1}{0}% of enemy damage converted to fire"
 // MapColdConversionAffix.Description: "{1}{0}% of enemy damage converted to cold"
 // MapLightningConversionAffix.Description: "{1}{0}% of enemy damage converted to lightning"
+// IgniteChanceAffix.Description: "{1}{0}% chance to inflict Ignited"

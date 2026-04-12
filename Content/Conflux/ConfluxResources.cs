@@ -45,7 +45,7 @@ internal abstract class ConfluxResource : ModItem
 	}
 	public override void SetDefaults()
 	{
-		Item.maxStack = 100;
+		Item.maxStack = 999;
 	}
 
 	// Never pickup, never go towards the player, never stack in world.

@@ -157,8 +157,8 @@ Quest: {
 		Description: ""
 		EnterDomain: Enter the Destroyer's domain
 		Boss: Defeat the Destroyer
-		WorldFeeders: Defeat ({0}/{1}) World Feeders
-		CollectCursedFlame: Collect ({0}/{1}) Cursed Flames
+		Clingers: Defeat ({0}/{1}) Clingers or Ichor Stickers
+		Materials: Cursed Flames or Ichor
 	}
 
 	SkelePrimeQuest: {
@@ -213,11 +213,13 @@ Quest: {
 		Boss2: Defeat Moon Lord
 		EnterDomain: Mods.PathOfTerraria.Quests.Quest.CultistMoonlordQuest.EnterDomain
 		Boss: Mods.PathOfTerraria.Quests.Quest.CultistMoonlordQuest.Boss
+		ReadyToGo: Mods.PathOfTerraria.Quests.Quest.CultistMoonlordQuest.ReadyToGo
+		Prepare: Prepare yourself in the Overworld
 	}
 
 	EpilogueQuest: {
-		Name: A New Dawn
+		Name: Distant Travels
 		Description: ""
-		Tiers: Complete {1} Exploration Maps
+		BeatABoss: Beat any Explorable Domain boss
 	}
 }

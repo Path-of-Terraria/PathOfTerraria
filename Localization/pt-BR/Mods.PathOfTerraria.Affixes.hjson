@@ -23,7 +23,7 @@
 // PiercingItemAffix.Description: "{1}{0}% defense piercing"
 // AddedKnockbackItemAffix.Description: "{1}{0} added knockback"
 // IncreasedKnockbackItemAffix.Description: "{1}{0}% increased knockback"
-// ChanceToApplyOnFireGearAffix.Description: "{1}{0} chance to apply on fire!"
+// ChanceToApplyOnFireGearAffix.Description: "{1}{0}% chance to apply on fire!"
 // ChanceToApplyArmorShredGearAffix.Description: "{1}{0} chance to apply armor shred"
 // ChanceToApplyBloodclotItemAffix.Description: "{1}{0}% chance to apply bloodclot"
 // ChanceToApplyPoisonItemAffix.Description: "{1}{0}% chance to apply poisoned"
@@ -63,6 +63,9 @@ NoFallDamageAffix: {
 // MapMobCritChanceAffix.Description: "{1}{0}% increased enemy crit chance"
 // MapMobChillChanceAffix.Description: "{1}{0}% chance for enemies to inflict chilled"
 // MapIncreasedBehaviourAffix.Description: "{1}{0}% increased enemy behavior speed"
+// MapStealAegisChargeAffix.Description: Monsters steal an Aegis Charge on hit
+// MapStealFocusChargeAffix.Description: Monsters steal a Focus Charge on hit
+// MapStealHasteChargeAffix.Description: Monsters steal a Haste Charge on hit
 // ColdAffix.Prefix: Freezing
 // LightningAffix.Prefix: Shocking
 // FlamingAffix.Prefix: Flaming
@@ -102,3 +105,4 @@ NoFallDamageAffix: {
 // MapFireConversionAffix.Description: "{1}{0}% of enemy damage converted to fire"
 // MapColdConversionAffix.Description: "{1}{0}% of enemy damage converted to cold"
 // MapLightningConversionAffix.Description: "{1}{0}% of enemy damage converted to lightning"
+// IgniteChanceAffix.Description: "{1}{0}% chance to inflict Ignited"

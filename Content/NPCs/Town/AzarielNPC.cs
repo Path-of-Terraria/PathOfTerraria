@@ -8,6 +8,8 @@ using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 using PathOfTerraria.Common.Utilities.Extensions;
+using PathOfTerraria.Content.Items.Consumables.Maps.ExplorableMaps;
+using PathOfTerraria.Content.Projectiles.Utility;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
@@ -19,12 +21,9 @@ namespace PathOfTerraria.Content.NPCs.Town;
 [AutoloadHead]
 public class AzarielNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnInRavencrestNPC
 {
-	Point16 ISpawnInRavencrestNPC.TileSpawn =>
-		(RavencrestSystem.Structures["Library"].Position + new Point(55, 45)).ToPoint16();
+	Point16 ISpawnInRavencrestNPC.TileSpawn => RavencrestSystem.StaticStructureLocations["Chamber"];
 
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
-
-	private static bool hasSeenInitialDialogue;
 
 	public override void SetStaticDefaults()
 	{
@@ -47,7 +46,7 @@ public class AzarielNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnI
 		NPC.CloneDefaults(NPCID.ArmsDealer);
 		NPC.townNPC = true;
 		NPC.friendly = true;
-		NPC.aiStyle = 7;
+		NPC.aiStyle = NPCAIStyleID.Passive;
 		NPC.defense = 30;
 		NPC.lifeMax = 250;
 		NPC.HitSound = SoundID.NPCHit1;
@@ -86,14 +85,16 @@ public class AzarielNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnI
 	
 	private static Quest DetermineNewestQuest()
 	{
-		if (QuestUnlockManager.CanStartQuest<CultistMoonlordQuest>())
+		if (QuestUnlockManager.CanStartQuest<CultistMoonlordQuest>() || Quest.GetLocalPlayerInstance<CultistMoonlordQuest>().Active)
 		{
 			return Quest.GetLocalPlayerInstance<CultistMoonlordQuest>();
 		}
-		if (QuestUnlockManager.CanStartQuest<EpilogueQuest>())
+
+		if (QuestUnlockManager.CanStartQuest<EpilogueQuest>() || Quest.GetLocalPlayerInstance<EpilogueQuest>().Active)
 		{
 			return Quest.GetLocalPlayerInstance<EpilogueQuest>();
 		}
+
 		return Quest.GetLocalPlayerInstance<CultistMoonlordQuest>(); //Shouldn't be possible, but just in case
 	}
 
@@ -105,16 +106,27 @@ public class AzarielNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnI
 		//Also epilogue quest
 
 		Quest cultistQuest = Quest.GetLocalPlayerInstance<CultistMoonlordQuest>();
-		// Check if quest just started and player hasn't seen the initial dialogue yet
-		if (cultistQuest.Active && cultistQuest.CurrentStep == 0 && !hasSeenInitialDialogue)
+
+		if (cultistQuest.Active && cultistQuest.CurrentStep >= 3 && NoPortal())
 		{
-			button2 = Language.GetTextValue("Mods.PathOfTerraria.NPCs.Next");
-		}
-		else
-		{
-			button2 = hasAvailableQuest ? Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest") : "";
+			button2 = "Portal";
+			return;
 		}
 
+		button2 = hasAvailableQuest ? Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest") : "";
+	}
+
+	private static bool NoPortal()
+	{
+		foreach (Projectile projectile in Main.ActiveProjectiles)
+		{
+			if (projectile.ModProjectile is AzarielPortal)
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -124,24 +136,35 @@ public class AzarielNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnI
 			shopName = "Shop";
 			return;
 		}
+
 		//Next button to show part 2 of the dialogue
-		Quest cultistQuest = Quest.GetLocalPlayerInstance<CultistMoonlordQuest>();
-		if (cultistQuest.Active && cultistQuest.CurrentStep == 0)
-		{
-			Main.npcChatText =
-				Language.GetTextValue("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.CultistMoonlordDialogue2");
-		}
 		if (QuestUnlockManager.CanStartQuest<CultistMoonlordQuest>())
 		{
-			Main.npcChatText =
-				Language.GetTextValue("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.CultistMoonlordDialogue1");
+			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.Endgame.0");
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<CultistMoonlordQuest>();
+		}
+
+		Quest cultistQuest = Quest.GetLocalPlayerInstance<CultistMoonlordQuest>();
+
+		if (cultistQuest.Active && cultistQuest.CurrentStep >= 3 && NoPortal())
+		{
+			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.Endgame.Retry");
+			Point16 pos = RavencrestSystem.StaticStructureLocations["Chamber"];
+			float domain = NPC.downedAncientCultist ? 1 : 0;
+			Projectile.NewProjectile(new EntitySource_Misc("Quest"), pos.ToWorldCoordinates(8, -136), Vector2.Zero, ModContent.ProjectileType<AzarielPortal>(), 0, 0, Main.myPlayer, domain);
+			return;
 		}
 		else if (QuestUnlockManager.CanStartQuest<EpilogueQuest>())
 		{
-			Main.npcChatText =
-				Language.GetTextValue("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.EpilogueDialogue1");
+			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.Epilogue.0");
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<EpilogueQuest>();
+
+			Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, Main.rand.Next(3) switch 
+			{
+				0 => ModContent.ItemType<DesertMap>(),
+				1 => ModContent.ItemType<ForestMap>(),
+				_ => ModContent.ItemType<SwampMap>(),
+			});
 		}
 	}
 

@@ -4474,7 +4474,7 @@
 			"y": -600
 		},
 		"isChoiceNode": true,
-		"requiredAllocatedEdges": 2
+		"requiredAllocatedEdges": 3
 	},
 	{
 		"internalIdentifier": "HemorrhageMastery",

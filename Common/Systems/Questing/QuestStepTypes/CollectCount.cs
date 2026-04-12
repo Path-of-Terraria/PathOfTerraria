@@ -2,6 +2,8 @@
 
 namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 
+#nullable enable
+
 /// <summary>
 /// Counts up that you've obtained enough items that fit the <paramref name="includes"/> condition.<br/>
 /// <paramref name="itemDescription"/> should describe what you're obtaining; for example, "Items that sell for at least 20 silver."
@@ -9,14 +11,16 @@ namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 /// <param name="includes">The condition(s) for if an item is valid.</param>
 /// <param name="count">How many items to get.</param>
 /// <param name="itemDescription">Appended to the display string to describe what the player needs to get.</param>
-internal class CollectCount(string id, Func<Item, bool> includes, int count, LocalizedText itemDescription) : QuestStep(id)
+internal class CollectCount(string id, Func<Item, bool> includes, int count, LocalizedText itemDescription, LocalizedText? reminder = null) : QuestStep(id)
 {
-	public CollectCount(string id, int itemType, int count) : this(id, item => item.type == itemType, count, Lang.GetItemName(itemType))
+	private readonly LocalizedText? reminder = reminder;
+
+	public CollectCount(string id, int itemType, int count, LocalizedText? reminder = null) : this(id, item => item.type == itemType, count, Lang.GetItemName(itemType), reminder)
 	{
 	}
 
 	// ModItem localization isn't loaded by here through Lang.GetItemName for quests so we need the instance itself
-	public CollectCount(string id, ModItem modItem, int count) : this(id, item => item.type == modItem.Type, count, modItem.DisplayName)
+	public CollectCount(string id, ModItem modItem, int count, LocalizedText? reminder = null) : this(id, item => item.type == modItem.Type, count, modItem.DisplayName, reminder)
 	{
 	}
 
@@ -60,5 +64,15 @@ internal class CollectCount(string id, Func<Item, bool> includes, int count, Loc
 		}
 
 		return total;
+	}
+
+	public override string ReminderText(ref string title)
+	{
+		if (reminder is null)
+		{
+			return string.Empty;
+		}
+
+		return reminder.Value;
 	}
 }

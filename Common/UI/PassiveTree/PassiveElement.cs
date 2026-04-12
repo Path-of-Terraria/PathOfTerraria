@@ -1,8 +1,6 @@
-﻿using PathOfTerraria.Common.Looting.VirtualBagUI;
-using PathOfTerraria.Common.Mechanics;
+﻿using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Content.Passives;
-using PathOfTerraria.Content.Passives.Misc;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.UI;
@@ -24,10 +22,9 @@ internal class PassiveElement : AllocatableElement
 		Width.Set(passive.Size.X, 0);
 		Height.Set(passive.Size.Y, 0);
 
-		// Anchor passive should always be "unlocked", thus this hardcoding
 		if (Passive is AnchorPassive)
 		{
-			Passive.Level = 1;
+			Passive.Level = Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().IsAllowedAnchor(Passive) ? 1 : 0;
 		}
 	}
 
@@ -37,12 +34,6 @@ internal class PassiveElement : AllocatableElement
 		{
 			Allocate(Passive, usedCost: 1);
 		}
-	}
-
-	protected override void Allocate(Allocatable passive, int usedCost)
-	{
-		base.Allocate(passive, usedCost);
-		Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().AllocatePassive((Passive)passive);
 	}
 
 	public override void SafeRightClick(UIMouseEvent evt)
@@ -57,7 +48,6 @@ internal class PassiveElement : AllocatableElement
 	{
 		base.Deallocate(passive, usedCost);
 
-		Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().DeallocatePassive(Passive, usedCost);
 		SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath);
 	}
 }

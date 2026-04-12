@@ -7,7 +7,7 @@ public class MapDevice : ModItem
 {
 	public override void SetDefaults()
 	{
-		Item.DefaultToPlaceableTile(ModContent.TileType<MapDevicePlaceable>());
+		Item.DefaultToPlaceableTile(ModContent.TileType<MapDeviceTile>());
 		Item.rare = ItemRarityID.Blue;
 		Item.width = 36;
 		Item.height = 18;

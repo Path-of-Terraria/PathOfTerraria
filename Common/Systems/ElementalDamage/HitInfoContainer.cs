@@ -10,6 +10,8 @@ namespace PathOfTerraria.Common.Systems.ElementalDamage;
 internal readonly struct HitInfoContainer
 {
 	public bool IsPlayerInfo => PlayerHurt is not null;
+	public int DamageDealt => IsPlayerInfo ? PlayerHurt!.Value.Damage : NPCHurt!.Value.Damage;
+	public bool IsCrit => IsPlayerInfo ? NPCCritFunctionality.CriticalStrikeNPC.CurrentlyCritting : NPCHurt!.Value.Crit;
 
 	public readonly NPC.HitInfo? NPCHurt = null;
 	public readonly Player.HurtInfo? PlayerHurt = null;

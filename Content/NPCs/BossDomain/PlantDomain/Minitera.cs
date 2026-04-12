@@ -4,6 +4,7 @@ using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
+using PathOfTerraria.Common.Utilities;
 using SubworldLibrary;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
@@ -61,8 +62,14 @@ internal class Minitera : ModNPC
 		if (SpawningTimer <= 120)
 		{
 			NPC.Opacity = SpawningTimer / 120f * 0.5f + 0.5f;
-			NPC.scale = SpawningTimer / 120f * 0.5f + 0.5f;
+			NPC.scale = Easings.CircularOut(SpawningTimer / 120f) * 0.5f + 0.5f;
 			NPC.dontTakeDamage = true;
+
+			if (SpawningTimer > 60)
+			{
+				NPC.rotation = Utils.AngleLerp(NPC.rotation, NPC.AngleTo(Main.player[NPC.target].Center) + MathHelper.PiOver2, 0.1f + (SpawningTimer - 60) / 60f * 0.9f);
+			}
+
 			return;
 		}
 

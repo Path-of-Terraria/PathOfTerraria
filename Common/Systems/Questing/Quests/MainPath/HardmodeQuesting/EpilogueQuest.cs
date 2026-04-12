@@ -1,14 +1,13 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
-using PathOfTerraria.Common.Systems.BossTrackingSystems;
+﻿using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
 using PathOfTerraria.Content.NPCs.Town;
-using SubworldLibrary;
 using System.Collections.Generic;
-using PathOfTerraria.Common.Subworlds;
-using Terraria.ID;
 using Terraria.Localization;
+using PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
+using PathOfTerraria.Content.NPCs.Mapping.Forest.GrovetenderBoss;
+using PathOfTerraria.Content.Swamp.NPCs.SwampBoss;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 
@@ -26,21 +25,14 @@ internal class EpilogueQuest() : Quest
 	{
 		return
 		[
-			new ConditionCheck("Start", _ => 
+			new ConditionCheck("Start", plr => BossTracker.TotalBossesDowned.Contains(ModContent.NPCType<SunDevourerNPC>()) 
+				|| BossTracker.TotalBossesDowned.Contains(ModContent.NPCType<Grovetender>()) || BossTracker.TotalBossesDowned.Contains(ModContent.NPCType<Mossmother>()), 0, 
+				this.GetLocalization("BeatABoss"), Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.Epilogue.0")),
+			
+			new InteractWithNPC("Talk", NPCQuestGiver, LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.Epilogue.1")) 
 			{
-				MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
-				//TODO: This is done using the old system. Theres probably a better way to do this.
-				return tracker.CompletionsAtOrAboveTier(15) >= MappingDomainSystem.RequiredCompletionsPerTier;
-			}, 1, () => this.GetLocalization("Tiers").WithFormatArgs(
-				MathHelper.Clamp(ModContent.GetInstance<MappingDomainSystem>().Tracker.CompletionsAtOrAboveTier(15), 0, MappingDomainSystem.RequiredCompletionsPerTier),
-				MappingDomainSystem.RequiredCompletionsPerTier
-			)),
-			
-			new InteractWithNPC("Talk", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.EpilogueDialoue2"),
-				Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.EpilogueDialogue2")),
-			
-			//TODO: This needs to be 100 of ANY of the elemental currencies from the Conflux league.
-			new CollectCount("Finish?", ItemID.FragmentNebula, 100)
+				CountsAsCompletedOnMarker = true
+			},
 		];
 	}
 

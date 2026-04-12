@@ -38,8 +38,8 @@ internal class DestroyerQuest() : Quest
 				Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerDestroyerDialogue1")),
 
 			new ParallelQuestStep("Branch", [
-				new CollectCount("GetFlames", ItemID.CursedFlame, 20),
-				new KillCount("Kill", NPCID.Clinger, 5, this.GetLocalization("WorldFeeders"))
+				new CollectCount("GetFlames", item => item.type is ItemID.CursedFlame or ItemID.Ichor, 20, this.GetLocalization("Materials")),
+				new KillCount("Kill", (npc) => npc.type is NPCID.Clinger or NPCID.IchorSticker, 5, this.GetLocalization("Clingers"))
 			], Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerDestroyerDialogue1")),
 			
 			// TODO: Add in wavelength matching minigame? Placing antennae in overworld?
@@ -52,8 +52,11 @@ internal class DestroyerQuest() : Quest
 			
 			new ConditionCheck("Boss", _ => BossTracker.DownedInDomain<DestroyerDomain>(NPCID.TheDestroyer), 1, this.GetLocalization("Boss")),
 	
-			new InteractWithNPC("Finish", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerDestroyerDialogue3"), 
+			new InteractWithNPC("Finish", NPCQuestGiver, this.GetLocalization("Boss"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerDestroyerDialogue3"))
+			{
+				CountsAsCompletedOnMarker = true
+			}
 		];
 	}
 

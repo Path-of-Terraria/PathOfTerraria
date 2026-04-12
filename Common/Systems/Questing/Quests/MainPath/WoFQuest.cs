@@ -69,7 +69,7 @@ internal class WoFQuest : Quest
 					}
 				}),
 			new ConditionCheck("Kill", _ => Main.hardMode, 1, this.GetLocalization("KillWall")),
-			new InteractWithNPC("Finish", NPCQuestGiver, this.GetLocalization("WizardFinish")),
+			new InteractWithNPC("Finish", NPCQuestGiver, LocalizedText.Empty, this.GetLocalization("WizardFinish")),
 		];
 	}
 

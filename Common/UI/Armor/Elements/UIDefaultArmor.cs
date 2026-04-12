@@ -1,6 +1,9 @@
 ﻿using PathOfTerraria.Common.AccessorySlots;
 using PathOfTerraria.Common.UI.Elements;
+using PathOfTerraria.Content.Items.Gear.Offhands;
 using ReLogic.Content;
+using Terraria.Audio;
+using Terraria.ID;
 using Terraria.UI;
 
 #nullable enable
@@ -17,14 +20,24 @@ public sealed class UIDefaultArmor : UIArmorPage
 	{
 		numAccessorySlots += 2;
 
+		var offhandSlot = new UIHoverImageItemSlot(DefaultFrameTexture, OffhandIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.Offhand)), (LocPrefix + "Offhand", null)!, ItemSlot.Context.EquipAccessory, armorHideSlot: ((int)RemappedEquipSlots.Offhand, true))
+		{
+			Predicate = (_, _) => Main.mouseItem.ModItem is Offhand && AccessorySlotRemapping.IsOffhandCompatible(Player, Main.mouseItem)
+		};
+
+		var weaponSlot = new UIHoverImageItemSlot(DefaultFrameTexture, WeaponIconTexture, new(() => (Player.inventory, 0)), (LocPrefix + "Weapon", null)!, 0)
+		{
+			Predicate = (_, _) => AccessorySlotRemapping.IsWeaponCompatible(Player, Main.mouseItem)
+		};
+
 		return [
 			new(DefaultFrameTexture, WingsIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.Wings)), (LocPrefix + "Wings", null)!, ItemSlot.Context.EquipAccessory, armorHideSlot: ((int)RemappedEquipSlots.Wings, true)),
 			new(DefaultFrameTexture, HelmetIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.Head)), (LocPrefix + "Head", null)!, ItemSlot.Context.EquipArmor),
 			new(DefaultFrameTexture, NecklaceIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.Necklace)), (LocPrefix + "Necklace", null)!, ItemSlot.Context.EquipAccessory, armorHideSlot: ((int)RemappedEquipSlots.Necklace, true)),
 			//
-			new(DefaultFrameTexture, WeaponIconTexture, new(() => (Player.inventory, 0)), (LocPrefix + "Weapon", null)!, 0),
+			weaponSlot,
 			new(DefaultFrameTexture, ChestIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.Body)), (LocPrefix + "Body", null)!, ItemSlot.Context.EquipArmor),
-			new(DefaultFrameTexture, OffhandIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.Offhand)), (LocPrefix + "Offhand", null)!, ItemSlot.Context.EquipAccessory, armorHideSlot: ((int)RemappedEquipSlots.Offhand, true)),
+			offhandSlot,
 			//
 			new(DefaultFrameTexture, RingIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.RingOn)), (LocPrefix + "RingLeft", null)!, ItemSlot.Context.EquipAccessory, armorHideSlot: ((int)RemappedEquipSlots.RingOn, true)),
 			new(DefaultFrameTexture, LegsIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.Legs)), (LocPrefix + "Legs", null)!, ItemSlot.Context.EquipArmor),
@@ -41,7 +54,19 @@ public sealed class UIDefaultArmor : UIArmorPage
 		(int, bool)? armorHideSlot = (customModSlot, false);
 		var handler = new UIImageItemSlot.SlotWrapper(() => modSlot.FunctionalItem, value => modSlot.FunctionalItem = value);
 		var uiSlot = new UIHoverImageItemSlot(DefaultFrameTexture, MiscellaneousIconTexture, handler, (LocPrefix + "NumberedAccessory", accessoryNumber), ItemSlot.Context.ModdedAccessorySlot, armorHideSlot: armorHideSlot);
+		uiSlot.OnRightClick += (_, _) => SwapFunctionalAndVanity(modSlot);
 
 		return uiSlot;
+	}
+
+	private static void SwapFunctionalAndVanity(ModAccessorySlot modSlot)
+	{
+		if (!Main.mouseItem.IsAir)
+		{
+			return;
+		}
+
+		(modSlot.FunctionalItem, modSlot.VanityItem) = (modSlot.VanityItem, modSlot.FunctionalItem);
+		SoundEngine.PlaySound(SoundID.Grab);
 	}
 }

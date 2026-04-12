@@ -31,6 +31,11 @@ public abstract class DraggableSmartUi : SmartUiState
 		return layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 	}
 
+	public override bool ShouldBlockClickThrough(Vector2 mousePosition)
+	{
+		return Panel?.ContainsPoint(mousePosition) == true;
+	}
+
 	protected virtual void CreateMainPanel((string key, LocalizedText text)[] tabs, bool showCloseButton = true, Point? panelSize = null, bool canResize = true)
 	{
 		panelSize ??= new Point(PanelWidth, PanelHeight);

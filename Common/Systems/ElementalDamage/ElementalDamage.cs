@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Systems.ModPlayers;
+﻿using PathOfTerraria.Common.NPCs.AilmentHelpers;
+using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.NPCCritFunctionality;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Content.Buffs;
@@ -99,7 +100,7 @@ public readonly struct ElementalDamage
 	}
 
 	/// <summary> 
-	/// The debuff type to apply. Functionality is in <see cref="ApplyBuff(Entity, int)"/>, which may not call this method. 
+	/// The debuff type to apply. Functionality is in <see cref="ApplyBuff(ElementType, Entity, Entity, int)"/>, which may not call this method. 
 	/// </summary>
 	public static int GetBuffType(ElementType type)
 	{
@@ -112,7 +113,7 @@ public readonly struct ElementalDamage
 		};
 	}
 
-	public static void ApplyBuff(ElementType elementType, Entity attacker, Entity entity, int elementalDamageDealt)
+	public static void ApplyBuff(ElementType elementType, Entity attacker, Entity entity, int elementalDamageDealt, bool isCrit)
 	{
 		switch (elementType)
 		{
@@ -122,26 +123,20 @@ public readonly struct ElementalDamage
 
 			case ElementType.Cold:
 
-				if (entity is NPC frozenNPC)
+				if (isCrit)
 				{
-					float baseEffectiveness = 3.6f * (elementalDamageDealt / (float)frozenNPC.lifeMax);
-					float duration = attacker is Player p ? p.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.FreezeEffectiveness.ApplyTo(baseEffectiveness) : baseEffectiveness;
-
-					if (duration > 0.3f)
-					{
-						frozenNPC.AddBuff(GetBuffType(elementType), (int)(duration * 60));
-						frozenNPC.GetGlobalNPC<FreezeNPC>().Frozen = true;
-						FreezeNPC.ConvertFrozenGore(frozenNPC);
-					}
+					TryApplyFreeze(elementType, attacker, entity, elementalDamageDealt);
 				}
-				else if (entity is Player frozenPlayer)
-				{
-					float baseEffectiveness = 3.6f * (elementalDamageDealt / (float)frozenPlayer.statLifeMax2);
-					float duration = attacker is Player p ? p.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.FreezeEffectiveness.ApplyTo(baseEffectiveness) : baseEffectiveness;
 
-					if (duration > 0.3f)
+				if (Main.rand.NextFloat() < AilmentUtils.GetEntityAilmentThreshold(entity, elementalDamageDealt))
+				{
+					if (entity is Player chilledPlr)
 					{
-						frozenPlayer.AddBuff(BuffID.Frozen, (int)(duration * 60));
+						chilledPlr.AddBuff(BuffID.Chilled, 4 * 60);
+					}
+					else if (entity is NPC chilledNPC)
+					{
+						chilledNPC.AddBuff(BuffID.Chilled, 4 * 60);
 					}
 				}
 
@@ -168,6 +163,32 @@ public readonly struct ElementalDamage
 		}
 	}
 
+	private static void TryApplyFreeze(ElementType elementType, Entity attacker, Entity entity, int elementalDamageDealt)
+	{
+		if (entity is NPC frozenNPC)
+		{
+			float baseEffectiveness = 3.6f * AilmentUtils.GetNPCAilmentThreshold(frozenNPC, elementalDamageDealt);
+			float duration = attacker is Player p ? p.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.FreezeEffectiveness.ApplyTo(baseEffectiveness) : baseEffectiveness;
+
+			if (duration > 0.3f)
+			{
+				frozenNPC.AddBuff(GetBuffType(elementType), (int)(duration * 60));
+				frozenNPC.GetGlobalNPC<FreezeNPC>().Frozen = true;
+				FreezeNPC.ConvertFrozenGore(frozenNPC);
+			}
+		}
+		else if (entity is Player frozenPlayer)
+		{
+			float baseEffectiveness = 3.6f * AilmentUtils.GetPlayerAilmentThreshold(frozenPlayer, elementalDamageDealt);
+			float duration = attacker is Player p ? p.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.FreezeEffectiveness.ApplyTo(baseEffectiveness) : baseEffectiveness;
+
+			if (duration > 0.3f)
+			{
+				frozenPlayer.AddBuff(BuffID.Frozen, (int)(duration * 60));
+			}
+		}
+	}
+
 	/// <summary>
 	/// Whether this can apply a debuff. By default, returns <paramref name="defaultPercent"/>, which is a random chance determined by <see cref="GetDebuffChance(float)"/>.<br/>
 	/// <b><see cref="ElementType.Fire"/>:</b> Only on crits.
@@ -183,8 +204,8 @@ public readonly struct ElementalDamage
 
 			return type switch
 			{
-				ElementType.Fire => hit.Crit,
-				ElementType.Cold => victim is NPC { boss: false } && hit.Crit,
+				ElementType.Fire => Main.rand.NextFloat() < AilmentUtils.GetEntityAilmentThreshold(victim, info.DamageDealt),
+				ElementType.Cold => true, // Since the Cold element has both Freeze and Chilled, always return true so it can check both individually
 				ElementType.Chaos => false,
 				ElementType.Lightning => hit.Crit || defaultPercent + player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<ShockChancePassive>() / 100f > Main.rand.NextFloat(),
 				_ => defaultPercent > Main.rand.NextFloat(),
@@ -196,8 +217,8 @@ public readonly struct ElementalDamage
 
 			return type switch
 			{
-				ElementType.Fire => isCrit,
-				ElementType.Cold => isCrit,
+				ElementType.Fire => Main.rand.NextFloat() < AilmentUtils.GetEntityAilmentThreshold(victim, info.DamageDealt),
+				ElementType.Cold => true, // Since the Cold element has both Freeze and Chilled, always return true so it can check both individually
 				ElementType.Chaos => false,
 				ElementType.Lightning => isCrit || defaultPercent > Main.rand.NextFloat(),
 				_ => defaultPercent > Main.rand.NextFloat(),

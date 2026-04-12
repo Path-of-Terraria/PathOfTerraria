@@ -1,10 +1,12 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.SkeleDomain;
 using PathOfTerraria.Common.Subworlds.Passes;
-using PathOfTerraria.Common.Systems.BossTrackingSystems;
+using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Passes;
+using PathOfTerraria.Common.World.Utilities;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
@@ -66,10 +68,14 @@ internal class CultistDomain : BossDomainSubworld, IOverrideBiome
 
 		List<int> pieceXs = [];
 
-		PlaceStructureWithPiece("Pedestal_" + WorldGen.genRand.Next(2), Width / 2 - PedestalDistance, new Vector2(0.5f, 1), pieceXs);
-		PlaceStructureWithPiece("Pedestal_" + WorldGen.genRand.Next(2), Width / 2 + PedestalDistance, new Vector2(0.5f, 1), pieceXs);
+		PlaceStructureWithPiece("Pedestal_" + WorldGen.genRand.Next(3), Width / 2 - PedestalDistance, new Vector2(0.5f, 1), pieceXs);
+		PlaceStructureWithPiece("Pedestal_" + WorldGen.genRand.Next(3), Width / 2 + PedestalDistance, new Vector2(0.5f, 1), pieceXs);
 		PlaceStructureWithPiece("CliffLeft", Width / 2 - EdgeDistance, new Vector2(0, 1), pieceXs);
 		PlaceStructureWithPiece("CliffRight", Width / 2 + EdgeDistance, new Vector2(1), pieceXs);
+
+		List<int> nonPlacements = [.. pieceXs];
+		nonPlacements.Add(Width / 2);
+		PlaceBoneyards(nonPlacements);
 
 		OffsetArea();
 		ModifyArea();
@@ -84,25 +90,155 @@ internal class CultistDomain : BossDomainSubworld, IOverrideBiome
 		Main.spawnTileY = spawn.Y - 5;
 	}
 
+	private static void PlaceBoneyards(List<int> nonPlacements)
+	{
+		int width = Main.maxTilesX;
+		FastNoiseLite noise = new();
+		int amount = WorldGen.genRand.Next(3, 6);
+
+		for (int i = 0; i < amount; ++i)
+		{
+			int x;
+
+			do
+			{
+				x = WorldGen.genRand.Next(width / 2 - EdgeDistance, width / 2 + EdgeDistance);
+			} while (nonPlacements.Any(x2 => Math.Abs(x - x2) < 170));
+
+			int left = x - (i < 2 ? WorldGen.genRand.Next(55, 100) : WorldGen.genRand.Next(30, 70));
+			int right = x + (i < 2 ? WorldGen.genRand.Next(55, 100) : WorldGen.genRand.Next(30, 70));
+			int heightFactor = (int)((right - left) * WorldGen.genRand.NextFloat(0.8f, 1.3f));
+
+			int leftY = PlaceBoneyardEdge(left, true);
+			int rightY = PlaceBoneyardEdge(right, false);
+
+			if (leftY == -1 || rightY == -1)
+			{
+				i--;
+				continue;
+			}
+
+			nonPlacements.Add(x);
+
+			List<Point> positions = [];
+			float powFactor = WorldGen.genRand.NextFloat(1.5f, 3f);
+
+			for (int placeX = left; placeX < right; ++placeX)
+			{
+				float factor = MathUtils.Clamp01(Utils.GetLerpValue(left, right, placeX, true) + WorldGen.genRand.NextFloat(-0.015f, 0.015f));
+				int y = (int)MathHelper.Lerp(leftY, rightY, factor) + 3;
+				int topY = y - 10;
+				float halfFactor = 1f - MathF.Pow(Math.Abs(factor - 0.5f) * 2, powFactor);
+				int bottomY = y + (int)MathHelper.Lerp(-8, heightFactor * 0.25f, halfFactor);
+				int tileY = y + (int)MathHelper.Lerp(-6, heightFactor * 0.4f, halfFactor) + 1;
+
+				for (int placeY = topY; placeY < tileY; ++placeY)
+				{
+					positions.Add(new Point(placeX, placeY));
+
+					Tile tile = Main.tile[placeX, placeY];
+					tile.HasTile = false;
+
+					if (placeY > bottomY)
+					{
+						tile.HasTile = true;
+						tile.TileType = (ushort)(ModContent.TileType<PolishedBone>());
+					}
+				}
+
+				int boneHeight = (int)(Math.Abs(noise.GetNoise(placeX * 4 + WorldGen.genRand.NextFloat(-1, 1), 0) * 50) * (halfFactor * 2));
+
+				for (int placeY = bottomY - boneHeight + 6; placeY < bottomY + 6; ++placeY)
+				{
+					Tile tile = Main.tile[placeX, placeY];
+					tile.WallType = WallID.Bone;
+				}
+
+				float sideMod = Utils.GetLerpValue(0, 0.05f, halfFactor);
+				boneHeight = (int)(Math.Abs(noise.GetNoise(placeX * 4 + WorldGen.genRand.NextFloat(-1, 1), 30000) * 50) * ((0.5f - halfFactor) * 2) * sideMod);
+
+				for (int placeY = bottomY - boneHeight + 6; placeY < bottomY + 6; ++placeY)
+				{
+					Tile tile = Main.tile[placeX, placeY];
+					tile.WallType = WallID.Bone;
+				}
+			}
+
+			foreach (Point pos in positions)
+			{
+				if (OpenExtensions.GetUnsolidAndWallOpenings(pos.X, pos.Y, false, false) == OpenFlags.None)
+				{
+					Tile tile = Main.tile[pos];
+					tile.WallType = WallID.Bone;
+				}
+			}
+		}
+	}
+
+	private static int PlaceBoneyardEdge(int x, bool left)
+	{
+		if (!WorldUtils.Find(new Point(x, 60), new Searches.Down(Main.maxTilesY - 60).Conditions(new Conditions.IsSolid()), out Point bottom))
+		{
+			return -1;
+		}
+
+		int width = WorldGen.genRand.Next(14, 17);
+
+		if (left)
+		{
+			bottom.X -= width;
+		}
+
+		WorldUtils.Gen(bottom, new Shapes.Rectangle(width, 16), Actions.Chain(new Actions.SetTile((ushort)ModContent.TileType<PolishedBone>()), new NotTouchingAir(), 
+			new Actions.PlaceWall(WallID.Bone)));
+		return bottom.Y;
+	}
+
 	private void OffsetArea()
 	{
-		FastNoiseLite noise = new(WorldGen._genRandSeed);
+		FastNoiseLite noise = new(WorldGen.genRand.Next());
 		noise.SetFrequency(0.004f);
 		noise.SetNoiseType(FastNoiseLite.NoiseType.Value);
 		noise.SetFractalType(FastNoiseLite.FractalType.FBm);
 
+		FastNoiseLite dropoffNoise = new(WorldGen.genRand.Next());
+		dropoffNoise.SetNoiseType(FastNoiseLite.NoiseType.Cellular);
+		dropoffNoise.SetFrequency(0.055f);
+		dropoffNoise.SetCellularReturnType(FastNoiseLite.CellularReturnType.Distance2Mul);
+		dropoffNoise.SetCellularJitter(1.260f);
+		dropoffNoise.SetCellularDistanceFunction(FastNoiseLite.CellularDistanceFunction.EuclideanSq);
+
 		for (int i = 2; i < Width - 2; ++i)
 		{
-			int height = (int)Math.Abs(noise.GetNoise(i, 0) * 16);
+			int height = (int)Math.Abs(noise.GetNoise(i * 1.7f, 0) * 16);
+			float dropoff = dropoffNoise.GetNoise(i * 1.2f, 0);
+
+			if (dropoff > -0.9f)
+			{
+				height -= (int)((dropoff + 0.9f) * 20f);
+			}
 
 			for (int j = 60; j < Height - 60; ++j)
 			{
-				Tile tile = Main.tile[i, j];
-				Tile below = Main.tile[i, j + height];
+				Tile tile;
+				Tile below;
+
+				if (height >= 0)
+				{
+					tile = Main.tile[i, j];
+					below = Main.tile[i, j + height];
+				}
+				else
+				{
+					tile = Main.tile[i, j + height];
+					below = Main.tile[i, j];
+				}
 
 				tile.HasTile = below.HasTile;
 				tile.TileType = below.TileType;
 				tile.WallType = below.WallType;
+				tile.TileFrameX = below.TileFrameX;
+				tile.TileFrameY = below.TileFrameY;
 			}
 		}
 	}
@@ -130,21 +266,18 @@ internal class CultistDomain : BossDomainSubworld, IOverrideBiome
 
 		for (int i = 10; i < Width - 10; ++i)
 		{
-			if (WorldGen.genRand.NextBool(30))
+			if (WorldGen.genRand.NextBool(550) && Math.Abs(i - Width / 2) > 80)
 			{
 				int j = GetFloor(i, 200).Y;
 				j += WorldGen.genRand.Next(-10, 2);
 
-				float xVel = WorldGen.genRand.NextFloat(-2f, 2);
-				float yVel = WorldGen.genRand.NextFloat(-0.5f, 2);
-				WorldGen.digTunnel(i, j, xVel, yVel, WorldGen.genRand.Next(4, 20), WorldGen.genRand.Next(2, 6), WorldGen.genRand.NextBool(8));
-			}
-			else if (WorldGen.genRand.NextBool(600) && Math.Abs(i - Width / 2) > 80)
-			{
-				int j = GetFloor(i, 200).Y;
-				j += WorldGen.genRand.Next(-10, 2);
+				int blastCount = WorldGen.genRand.Next(1, 12);
 
-				bool v = WorldGen.meteor(i, j, true);
+				for (int k = 0; k < blastCount; ++k)
+				{
+					WorldGen.meteor(i, j, true);
+					j += WorldGen.genRand.Next(2, 7);
+				}
 			}
 		}
 
@@ -153,12 +286,92 @@ internal class CultistDomain : BossDomainSubworld, IOverrideBiome
 
 		for (int i = 10; i < Width - 10; ++i)
 		{
-			if (WorldGen.genRand.NextBool(90))
-			{
-				int j = GetFloor(i, 200).Y;
+			int j = GetFloor(i, 200).Y;
+			Tile tile = Main.tile[i, j];
 
-				WorldGen.PlaceObject(i, j - 1, TileID.Lamps, true, 24);
+			if (WorldGen.genRand.NextBool(300))
+			{
+				SpawnPillar(i, j);
 			}
+		}
+
+		for (int i = 10; i < Width - 10; ++i)
+		{
+			int j = GetFloor(i, 200).Y;
+			Tile tile = Main.tile[i, j];
+
+			if (tile.TileType == ModContent.TileType<PolishedBone>())
+			{
+				SpawnBoneDecor(i, j, 1);
+			}
+			else
+			{
+				if (WorldGen.genRand.NextBool(90))
+				{
+					WorldGen.PlaceObject(i, j - 1, TileID.Lamps, true, 24);
+				}
+				else
+				{
+					SpawnBoneDecor(i, j, 5);
+				}
+			}
+		}
+
+		for (int i = 10; i < Width - 10; ++i)
+		{
+			for (int j = 10; j < Height - 60; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+
+				if (WorldGen.genRand.NextBool(250) && tile.WallType == WallID.Bone)
+				{
+					WorldGen.PlaceObject(i, j, TileID.Painting3X3, true, WorldGen.genRand.Next(16, 18));
+				}
+			}
+		}
+	}
+
+	private static void SpawnPillar(int x, int y)
+	{
+		int left = x - WorldGen.genRand.Next(2, 5);
+		int right = x + WorldGen.genRand.Next(2, 5);
+		int baseHeight = WorldGen.genRand.Next(8, 35);
+		Range heightRange = WorldGen.genRand.Next(2, 5)..WorldGen.genRand.Next(9, 14);
+		bool torch = true;
+
+		for (int i = left; i < right; ++i)
+		{
+			for (int j = y; j > y - baseHeight - WorldGen.genRand.Next(heightRange.Start.Value, heightRange.End.Value); --j)
+			{
+				Tile tile = Main.tile[i, j];
+
+				if (tile.WallType == WallID.None || !WorldGen.genRand.NextBool(3))
+				{
+					tile.WallType = WallID.BlueDungeon;
+
+					if (WorldGen.genRand.NextBool(60) && torch && j < y - baseHeight / 2)
+					{
+						WorldGen.PlaceTile(i, j, TileID.Torches, true, false, -1, 13);
+						torch = !WorldGen.genRand.NextBool(3);
+					}
+				}
+			}
+		}
+	}
+
+	private static void SpawnBoneDecor(int i, int j, float mul)
+	{
+		if (WorldGen.genRand.NextBool((int)(16 * mul)))
+		{
+			WorldGen.PlaceObject(i, j - 1, TileID.LargePiles, true, WorldGen.genRand.Next(7));
+		}
+		else if (WorldGen.genRand.NextBool((int)(8 * mul)))
+		{
+			WorldGen.PlaceSmallPile(i, j - 1, WorldGen.genRand.Next(6, 16), 1);
+		}
+		else if (WorldGen.genRand.NextBool((int)(3 * mul)))
+		{
+			WorldGen.PlaceSmallPile(i, j - 1, WorldGen.genRand.Next(11, 28), 0);
 		}
 	}
 
@@ -215,6 +428,6 @@ internal class CultistDomain : BossDomainSubworld, IOverrideBiome
 	public void OverrideBiome()
 	{
 		Main.bgStyle = 0;
-		Main.curMusic = MusicID.OverworldDay;
+		Main.curMusic = MusicID.Dungeon;
 	}
 }

@@ -31,26 +31,29 @@ internal class PlanteraQuest() : HardmodeQuest(5)
 		return
 		[
 			new ParallelQuestStep("Start", [
-				new InteractWithNPC("GiveItems", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.PlanteraDialogue1"), 
-					Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.PlanteraDialogue1"),
+				new InteractWithNPC("GiveItems", NPCQuestGiver, LocalizedText.Empty, 
+					Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.Plantera.0"),
 					[
 						new GiveItem(5, ItemID.Vine), // TODO: Replace this with Plant Growth item from post-mech jg mob.
 						new GiveItem(10, ItemID.JungleSpores), 
 					]),
 				new KillCount("Kill", NPCID.JungleBat, 10, this.GetLocalization("Plantera")) //TODO: Change this to the Plant growth item mob from above^^
-			], Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.PlanteraDialogue1")),
+			], LocalizedText.Empty),
 
 			// TODO: Add a step here that has something to do with the plant growths. Likely something that will lead into a portal spawning for plantera. 
-			new InteractWithNPC("Talk", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.PlanteraDialogue2"), 
-				Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.PlanteraDialogue2"),
+			new InteractWithNPC("Talk", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.Plantera.0"), 
+				Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.Plantera.1"),
 				onSuccess: _ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<PlanteraMap>())),
 			
 			new ConditionCheck("Domain", _ => SubworldSystem.Current is PlanteraDomain, 1, this.GetLocalization("EnterDomain")),
 			
 			new ConditionCheck("Boss", _ => BossTracker.DownedInDomain<PlanteraDomain>(NPCID.Plantera), 1, this.GetLocalization("Boss")),
 	
-			new InteractWithNPC("Finish", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.PlanteraDialogue3"), 
-				Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.PlanteraDialogue3"))
+			new InteractWithNPC("Finish", NPCQuestGiver,this.GetLocalization("Boss"), 
+				Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.Plantera.2"))
+			{
+				CountsAsCompletedOnMarker = true
+			}
 		];
 	}
 

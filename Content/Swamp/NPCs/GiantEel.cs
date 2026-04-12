@@ -269,7 +269,7 @@ internal class GiantEel : ModNPC
 
 		if (State == States.Roaming)
 		{
-			float aggro = targetPlayer.HasBuff<SwampAlgaeBuff>() ? 4000 : 3000;//Utils.Remap(targetPlayer.Center.Y / 16f, 40, SwampArea.FloorY, 3000, 1200, true) * (targetPlayer.HasBuff<SwampAlgaeBuff>() ? 1.3333f : 1);
+			float aggro = targetPlayer.HasBuff<SwampAlgaeBuff>() ? 3100 : 2200;
 			Vector2 targetDirection = NPC.DirectionTo(new Vector2(targetPlayer.Center.X, MathF.Sin(Timer * 0.008f) * (30 * 16) + 180 * 16)) * new Vector2(2.5f, 1);
 			NPC.velocity = Vector2.SmoothStep(NPC.velocity, targetDirection * 8, 0.05f) + new Vector2(MathF.Sin(Timer * 0.04f) * 0.25f, 0);
 

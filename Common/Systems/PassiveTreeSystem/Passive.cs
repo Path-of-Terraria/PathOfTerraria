@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using PathOfTerraria.Common.Data.Models;
+﻿using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Content.Passives.Misc;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Terraria.Localization;
 using Terraria.ModLoader.Core;
 
@@ -166,5 +167,25 @@ public abstract class Passive : Allocatable, ILoadable
 		PassiveTreePlayer passiveTreeSystem = player.GetModPlayer<PassiveTreePlayer>();
 
 		return Level > 0 && (Level > 1 || passiveTreeSystem.FullyLinkedWithout(this));
+	}
+
+	public override void OnAllocate(Player player)
+	{
+		if (this is not MasteryPassive)
+		{
+			base.OnAllocate(player);
+
+			player.GetModPlayer<PassiveTreePlayer>().AllocatePassive(this, Value);
+		}
+	}
+
+	public override void OnDeallocate(Player player)
+	{
+		if (this is not MasteryPassive)
+		{
+			base.OnDeallocate(player);
+
+			player.GetModPlayer<PassiveTreePlayer>().DeallocatePassive(this, Value, 1);
+		}
 	}
 }

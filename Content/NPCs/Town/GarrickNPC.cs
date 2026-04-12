@@ -201,7 +201,14 @@ public override void OnChatButtonClicked(bool firstButton, ref string shopName)
 	public bool HasQuestMarker(out Quest quest)
 	{
 		quest = Quest.GetLocalPlayerInstance<KingSlimeQuest>();
-		return !quest.Completed || !Quest.GetLocalPlayerInstance<QueenSlimeQuest>().Completed;
+
+		if (!quest.Completed)
+		{
+			return quest.Active;
+		}
+
+		quest = Quest.GetLocalPlayerInstance<QueenSlimeQuest>();
+		return !quest.Completed && quest.Active;
 	}
 
 	public bool ForceSpawnInTavern()

@@ -135,7 +135,7 @@ public class MorganaNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC
 				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<QueenBeeQuest>();
 				break;
 			case PlanteraQuest:
-				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.PlanteraDialogue1");
+				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.Plantera.0");
 				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<PlanteraQuest>();
 				break;
 		}

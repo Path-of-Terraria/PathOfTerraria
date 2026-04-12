@@ -3,6 +3,7 @@ using SubworldLibrary;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 
@@ -66,5 +67,18 @@ internal class LunaticStartEventNPC : GlobalNPC
 			NPC.ResetBadgerHatTime();
 			NetMessage.SendData(MessageID.UpdateTowerShieldStrengths);
 		}
+	}
+
+	public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)
+	{
+		if (NPC.LunarApocalypseIsUp || SubworldSystem.Current is not CultistDomain)
+		{
+			return;
+		}
+
+		pool.Clear();
+		pool.Add(NPCID.CultistArcherBlue, 1);
+		pool.Add(NPCID.CultistArcherWhite, 1);
+		pool.Add(NPCID.CultistDragonHead, 0.1f);
 	}
 }

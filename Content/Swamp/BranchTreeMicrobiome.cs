@@ -298,9 +298,9 @@ internal class BranchTreeMicrobiome : MicroBiome
 			GenPlacement.TileCircle(point, size + noise.GetNoise(point.X, point.Y) * 0.8f, (x, y) =>
 			{
 				Tile tile = Main.tile[x, y];
-				tile.TileType = TileID.LivingWood;
-				tile.HasTile = true;
-				tile.IsActuated = true;
+				tile.TileType = (ushort)ModContent.TileType<MangroveWood>();
+				tile.IsActuated = false;
+				tile.WallType = (ushort)ModContent.WallType<MangroveWall>();
 			}, GenPlacement.Replaceability.Cuttable);
 		}
 	}
@@ -333,7 +333,7 @@ internal class BranchTreeMicrobiome : MicroBiome
 			for (int j = 0; j < currentPoints.Count; j++)
 			{
 				Vector2 point = currentPoints[j];
-				GenPlacement.TileCircle(point, (2 + noise.GetNoise(point.X, point.Y) * 0.8f) * (1.4f - j / (float)currentPoints.Count), TileID.LivingWood);
+				GenPlacement.TileCircle(point, (2 + noise.GetNoise(point.X, point.Y) * 0.8f) * (1.4f - j / (float)currentPoints.Count), ModContent.TileType<MangroveWood>());
 			}
 
 			branchTips.TryAdd(tip, tip.AngleFrom(currentPoints[^5]));
@@ -386,7 +386,7 @@ internal class BranchTreeMicrobiome : MicroBiome
 
 			foreach (Vector2 point in currentPoints)
 			{
-				GenPlacement.TileCircle(point, 4 + noise.GetNoise(point.X, point.Y) * 2, TileID.LivingWood);
+				GenPlacement.TileCircle(point, 4 + noise.GetNoise(point.X, point.Y) * 2, ModContent.TileType<MangroveWood>());
 			}
 
 			total.AddRange(currentPoints);
