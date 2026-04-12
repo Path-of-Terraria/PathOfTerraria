@@ -232,23 +232,6 @@ internal sealed class MapResources : ModSystem
 		needsSync |= Main.netMode == NetmodeID.Server;
 	}
 
-	/// <inheritdoc cref="Undiscover"/>
-	public static void Undiscover<T>() where T : ModItem
-	{
-		Undiscover(ModContent.GetInstance<T>().Item.type);
-	}
-	/// <summary> Undiscovers a resource, also setting its value to the minimum. </summary>
-	public static void Undiscover(int itemType)
-	{
-		if (!resourcesByItem.TryGetValue(itemType, out int index)) { return; }
-
-		ref MapResource resource = ref ResourcesMut[index];
-		resource.Value = resource.MinValue;
-		resource.Discovered = false;
-		// Enqueue a full sync.
-		needsSync |= Main.netMode == NetmodeID.Server;
-	}
-
 	public static bool AnyResourceDiscovered()
 	{
 		return resources.Any(r => r.Discovered);
