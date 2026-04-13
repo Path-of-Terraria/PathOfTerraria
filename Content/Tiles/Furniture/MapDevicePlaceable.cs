@@ -535,7 +535,7 @@ internal class MapDeviceEntity : ModTileEntity
 			CameraCurios.Create(new()
 			{
 				Identifier = nameof(MapDeviceInterface),
-				Weight = 9999f,
+				Weight = 1f,
 				LengthInSeconds = 1f / 6f,
 				FadeInLength = 0.50f,
 				FadeOutLength = 0.50f,
