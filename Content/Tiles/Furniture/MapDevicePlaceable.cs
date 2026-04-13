@@ -295,7 +295,7 @@ public class MapDeviceTile : ModTile
 				if (entity.TryEnteringPortal(evalMode: true))
 				{
 					player.cursorItemIconEnabled = true;
-					player.cursorItemIconID = entity.StoredMap.type;
+					player.cursorItemIconID = entity.Injection is { } inj ? inj.Id : entity.StoredMap.type;
 				}
 			}
 			else if (entity.TryOpeningInterface(evalMode: true))
