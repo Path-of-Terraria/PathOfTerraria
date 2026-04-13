@@ -26,7 +26,7 @@ namespace PathOfTerraria.Content.Swamp;
 
 #nullable enable
 
-internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
+internal class SwampArea : MappingWorld, IExplorationWorld
 {
 	public const int FloorY = 470;
 	public const int WaterY = FloorY + 10;
@@ -803,7 +803,8 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 
 			for (int i = 0; i < 3; ++i)
 			{
-				NPC.NewNPC(new EntitySource_WorldGen(), ArenaMiddleX * 16, y * 16, ModContent.NPCType<Mossmother>(), 0, 0, 1);
+				int npc = NPC.NewNPC(new EntitySource_WorldGen(), ArenaMiddleX * 16, y * 16, ModContent.NPCType<Mossmother>(), 0, 0, 1);
+				Main.npc[npc].localAI[3] = i;
 			}
 		}
 
@@ -900,10 +901,5 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 			Encounter encounter = EncounterIO.CreateEncounterFromModPath(PoTMod.Instance, "Content/Encounters/SwampMangrove");
 			encounter.MoveEverythingTo(position.ToPoint16());
 		}
-	}
-
-	public void OverrideBiome()
-	{
-		Main.bgStyle = 0;
 	}
 }
