@@ -30,7 +30,6 @@ internal class ElementalNPC : GlobalNPC
 		{
 			elementalDamages = entry.DamageOverrides;
 		}
-
 		// Otherwise, try get the root (common) data for this type
 		else if (MobRegistry.TryGetMobData(npc.type, out MobData mobData))
 		{

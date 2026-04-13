@@ -401,6 +401,7 @@ ClassPages: {
 }
 
 MapDevice: {
+	// MapSlot: Map Slot
 	// ActivatePortal: Open Portal
 	// DeactivatePortal: Close Portal
 	// AlreadyInUse: This map device is already in use!
@@ -409,6 +410,7 @@ MapDevice: {
 	// NotEnoughResources: Not Enough Resources
 	// ClosePortalMapWarning: Closing the portal will discard the map!
 	// ClosePortalResourceWarning: Closing the portal will discard the portal fluid!
+	// InjectionModuleUnavailable: ???
 }
 
 MigrateRavencrest: {

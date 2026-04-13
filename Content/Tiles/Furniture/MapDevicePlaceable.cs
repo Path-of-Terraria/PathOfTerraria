@@ -295,7 +295,7 @@ public class MapDeviceTile : ModTile
 				if (entity.TryEnteringPortal(evalMode: true))
 				{
 					player.cursorItemIconEnabled = true;
-					player.cursorItemIconID = entity.StoredMap.type;
+					player.cursorItemIconID = entity.Injection is { } inj ? inj.Id : entity.StoredMap.type;
 				}
 			}
 			else if (entity.TryOpeningInterface(evalMode: true))
@@ -534,7 +534,7 @@ internal class MapDeviceEntity : ModTileEntity
 			CameraCurios.Create(new()
 			{
 				Identifier = nameof(MapDeviceInterface),
-				Weight = 9999f,
+				Weight = 1f,
 				LengthInSeconds = 1f / 6f,
 				FadeInLength = 0.50f,
 				FadeOutLength = 0.50f,
@@ -886,7 +886,7 @@ internal class MapDeviceEntity : ModTileEntity
 		}
 
 		Injection = (resourceId, resource.Cost);
-		MapResources.AddOrRemove(resourceId, -resource.Cost);
+		MapResources.ModifyValue(resourceId, -resource.Cost);
 
 		// Broadcast the interaction.
 		if (Main.netMode == NetmodeID.Server)
@@ -933,7 +933,7 @@ internal class MapDeviceEntity : ModTileEntity
 
 		if (MapResources.TryGet(injection.Id, out MapResource resource))
 		{
-			MapResources.AddOrRemove(injection.Id, +injection.Amount);
+			MapResources.ModifyValue(injection.Id, +injection.Amount, discovery: ResourceDiscovery.Never);
 		}
 
 		Injection = null;

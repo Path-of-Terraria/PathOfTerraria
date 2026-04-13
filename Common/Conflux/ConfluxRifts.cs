@@ -127,14 +127,19 @@ internal sealed class ConfluxRifts : ModSystem
 			SkippedLiquids = LiquidMask.All
 		};
 
-		WeightedRandom<int> targetRiftPool = new();
+		WeightRand<int> targetRiftPool = new();
 		targetRiftPool.Add(3, 0.1f + (MathF.Pow(MappingWorld.MapTier - 1.0f, 2.50f) * 0.3f));
 		targetRiftPool.Add(2, 0.3f + (MathF.Pow(MappingWorld.MapTier - 1.0f, 2.05f) * 0.6f));
 		targetRiftPool.Add(1, 0.7f);
 
-		int targetRifts = targetRiftPool.Get();
+		int targetRifts = targetRiftPool.RollValue();
 		IEntitySource? source = Entity.GetSource_None();
 		var rifts = new List<Projectile>(capacity: targetRifts);
+
+		WeightRand<ConfluxRiftKind> riftKindPool = new();
+		riftKindPool.Add(ConfluxRiftKind.Infernal, 3f);
+		riftKindPool.Add(ConfluxRiftKind.Glacial, 2f);
+		riftKindPool.Add(ConfluxRiftKind.Celestial, 1f);
 
 		for (int i = 0; i < targetRifts; i++)
 		{
@@ -150,11 +155,12 @@ internal sealed class ConfluxRifts : ModSystem
 
 			position.Y += 5 * TileUtils.PixelSizeInUnits;
 
-			int type = (i % ((int)ConfluxRiftKind.Count)) switch
+			ConfluxRiftKind kind = riftKindPool.RollValue();
+			int type = kind switch
 			{
-				0 => ModContent.ProjectileType<GlacialRift>(),
-				1 => ModContent.ProjectileType<InfernalRift>(),
-				2 => ModContent.ProjectileType<CelestialRift>(),
+				ConfluxRiftKind.Infernal => ModContent.ProjectileType<InfernalRift>(),
+				ConfluxRiftKind.Glacial => ModContent.ProjectileType<GlacialRift>(),
+				ConfluxRiftKind.Celestial => ModContent.ProjectileType<CelestialRift>(),
 				_ => throw new NotImplementedException(),
 			};
 

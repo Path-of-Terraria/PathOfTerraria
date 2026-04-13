@@ -1,0 +1,20 @@
+{
+	"friendlyName": "Fallen Shaman",
+	"entries": [
+		{
+			"scale": null,
+			"prefix": null,
+			"weight": 1,
+			"stats": {
+				"level": 1,
+				"experience": 2500
+			},
+			"affixes": [
+				{
+					"name": "FlamingAffix"
+				}
+			],
+			"requirements": null
+		}
+	]
+}
