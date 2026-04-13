@@ -97,7 +97,7 @@ internal class ParallelQuestStep(string id, List<QuestStep> stepsLists, Localize
 	public override void Load(TagCompound tag)
 	{
 		List<TagCompound> subStepTags = tag.Get<List<TagCompound>>("subSteps");
-		for (int i = 0; i < subStepTags.Count; i++)
+		for (int i = 0; i < subStepTags.Count && i < steps.Count; i++)
 		{
 			steps[i].Load(subStepTags[i]);
 		}
