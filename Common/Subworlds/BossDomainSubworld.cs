@@ -12,6 +12,7 @@ namespace PathOfTerraria.Common.Subworlds;
 /// </summary>
 public abstract class BossDomainSubworld : MappingWorld
 {
+	public override bool ShouldSave => false;
 	public override bool NoPlayerSaving => false;
 
 	// We are going to first set the world to be completely flat so we can build on top of that
