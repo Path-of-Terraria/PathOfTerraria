@@ -285,7 +285,7 @@ internal partial class Mossmother
 
 	private void SpawnVenomDust()
 	{
-		Vector2 angle = (Main.rand.NextBool() ? new Vector2(42, 110) : new Vector2(-58, 110)).RotatedBy(NPC.rotation);
+		Vector2 angle = (Main.rand.NextBool() ? new Vector2(42, 60) : new Vector2(-48, 60)).RotatedBy(NPC.rotation);
 		byte opacity = (byte)(byte.MaxValue * PoisonShaderFunctionality.Intensity);
 		Vector2 velocity = angle.SafeNormalize(Vector2.Zero).RotatedByRandom(0.4f) * Main.rand.NextFloat(5, 12);
 		int type = Main.rand.NextBool(3) ? ModContent.DustType<BrightVenomDust>() : DustID.Venom;

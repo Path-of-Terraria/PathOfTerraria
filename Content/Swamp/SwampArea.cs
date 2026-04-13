@@ -803,7 +803,8 @@ internal class SwampArea : MappingWorld, IExplorationWorld
 
 			for (int i = 0; i < 3; ++i)
 			{
-				NPC.NewNPC(new EntitySource_WorldGen(), ArenaMiddleX * 16, y * 16, ModContent.NPCType<Mossmother>(), 0, 0, 1);
+				int npc = NPC.NewNPC(new EntitySource_WorldGen(), ArenaMiddleX * 16, y * 16, ModContent.NPCType<Mossmother>(), 0, 0, 1);
+				Main.npc[npc].localAI[3] = i;
 			}
 		}
 
