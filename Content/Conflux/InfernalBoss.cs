@@ -575,10 +575,10 @@ internal sealed class InfernalBoss : ModNPC
 		// Phase-conditional data.
 		if (Phase is PhaseType.Bladewielder or PhaseType.Idle)
 		{
-			ctx.Movement.Data.MaxSpeed = 16.2f;
+			ctx.Movement.Data.MaxSpeed = 20.0f;
 			ctx.Movement.Data.Acceleration = 3.6f;
 			ctx.Voice.Data.PainSound = (9, SoundID.NPCHit56 with { Pitch = 0f, PitchVariance = 0.5f, Identifier = $"{Name}Hit" });
-			ctx.Teleports.Data.MaxCooldown = 300;
+			ctx.Teleports.Data.MaxCooldown = 180;
 		}
 		else if (Phase == PhaseType.Abomination)
 		{
@@ -1201,7 +1201,7 @@ internal sealed class InfernalBoss : ModNPC
 #if FRIENDLY
 		return;
 #endif
-		bool swingingDuringIntro = Cutscene.Type == CutsceneType.Intro && Cutscene.Counter > (Cutscene.Length - 60);
+		bool swingingDuringIntro = Cutscene.Type == CutsceneType.Intro && Cutscene.Counter > (Cutscene.Length - 120);
 
 		if (Phase == PhaseType.Idle) { return; }
 		if (Cutscene.Type != CutsceneType.None && !swingingDuringIntro) { return; }
@@ -1237,10 +1237,10 @@ internal sealed class InfernalBoss : ModNPC
 		const int voluntaryAttackRate = (int)(60 * 1.1f);
 		bool inRange = distance < attackRange;
 		bool voluntaryAttack = Phase is PhaseType.Bladewielder && voluntaryAttackCounter > voluntaryAttackRate;
-		bool ignoreRange = voluntaryAttack || !swingingDuringIntro;
+		bool ignoreRange = voluntaryAttack || swingingDuringIntro;
 
 		// Occassional flame bursts.
-		int enflameAttackRate = (int)(60 * (Phase is PhaseType.Bladewielder ? 12 : 6));
+		int enflameAttackRate = (int)(60 * (Phase is PhaseType.Bladewielder ? 9 : 6));
 		if (enflameAttackCounter > enflameAttackRate)
 		{
 			nextAttackType = AttackType.Enflame;
@@ -1266,7 +1266,7 @@ internal sealed class InfernalBoss : ModNPC
 				ctx.Attacking.Data.AimLag = ((new(0.0f), new(0.3f)), (0f, 0.99f));
 				ctx.Attacking.Data.Hitbox = (new(350, 350), new(+290, +100), new(+0, +0));
 				ctx.Attacking.Data.Damage = (45, 60, DamageInstance.EnemyAttackFilterWithInfighting);
-				ctx.Attacking.Data.Dash = (50, 55, new(20, 15));
+				ctx.Attacking.Data.Dash = (50, 55, new(30, 25));
 				ctx.Attacking.Data.Movement = (0.0f, 0.80f, 0.95f);
 				
 				if (!Main.dedServ)
@@ -1312,10 +1312,10 @@ internal sealed class InfernalBoss : ModNPC
 			else if (attackType is AttackType.Enflame)
 			{
 				enflameAttackCounter = 0;
-				ctx.Attacking.Data.LengthInTicks = 130;
+				ctx.Attacking.Data.LengthInTicks = 120;
 				ctx.Attacking.Data.CooldownLength = 30;
 				ctx.Attacking.Data.Damage = (75, 75, (EntityKind)0);
-				ctx.Attacking.Data.Movement = (0.0f, 0.90f, 0.90f);
+				ctx.Attacking.Data.Movement = (0.0f, 0.95f, 0.95f);
 
 				if (!Main.dedServ)
 				{
@@ -1363,14 +1363,14 @@ internal sealed class InfernalBoss : ModNPC
 		int tickBase = ctx.Attacking.Data.Damage.Start;
 		bool poweredUp = Phase is PhaseType.Abomination;
 		int numInstances = poweredUp ? 3 : 1;
-		int numProjectiles = poweredUp ? 12 : 16;
+		int numProjectiles = poweredUp ? 12 : 24;
 		for (int instance = 0; instance < numInstances; instance++)
 		{
 			if (ctx.Attacking.Progress != tickBase + (instance * 15)) { continue; }
 
 			float instanceFactor = instance / (float)(numInstances);
 			float baseAngle = instance * MathHelper.PiOver4;
-			float baseSpeed = MathHelper.Lerp(10, 15, 1f - instanceFactor);
+			float baseSpeed = MathHelper.Lerp(12, 18, 1f - instanceFactor);
 
 			for (int i = 0; i < numProjectiles; i++)
 			{
@@ -1418,7 +1418,7 @@ internal sealed class InfernalBoss : ModNPC
 
 		bool phase2 = Phase is PhaseType.Abomination;
 		int type = 0;
-		int numSteps = phase2 ? 4 : 2;
+		int numSteps = phase2 ? 5 : 3;
 		for (int i = 1; i <= numSteps; i++)
 		{
 			// In phase II, only spawn shamans.
@@ -1451,7 +1451,7 @@ internal sealed class InfernalBoss : ModNPC
 				grabCooldown = 120;
 			}
 
-			spawnCooldown = (ushort)(Phase is PhaseType.Abomination ? 600 : 300);
+			spawnCooldown = (ushort)(Phase is PhaseType.Abomination ? 550 : 250);
 		}
 	}
 
@@ -1943,6 +1943,7 @@ internal sealed class InfernalBoss : ModNPC
 
 			const float soundRange = 16;
 			if (!Main.dedServ && limb.TileAttachment != null && !playedSounds && !limb.PlayedSound
+			&& Phase is not PhaseType.Idle
 			&& limb.IK.Target.Distance(limb.TargetPosition) <= soundRange
 			&& limb.StartPosition.Distance(limb.TargetPosition) > soundRange)
 			{
