@@ -133,6 +133,18 @@ public struct FightTracker
 
 		return false;
 	}
+	public readonly NPC? GetFirstNPC()
+	{
+		foreach (int type in NpcTypes)
+		{
+			foreach (NPC activeNpc in Main.ActiveNPCs)
+			{
+				if (activeNpc.type == type) { return activeNpc; }
+			}
+		}
+
+		return null;
+	}
 }
 
 /// <summary>

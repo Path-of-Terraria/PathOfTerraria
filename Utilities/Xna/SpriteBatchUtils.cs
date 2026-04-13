@@ -15,6 +15,14 @@ internal record struct SpriteBatchArgs
 	Matrix Matrix
 );
 
+internal readonly ref struct SpriteBatchScope(SpriteBatch SpriteBatch)
+{
+	public readonly void Dispose()
+	{
+		SpriteBatch.End();
+	}
+}
+
 internal static class SpriteBatchUtils
 {
 	[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "sortMode")]
@@ -36,6 +44,13 @@ internal static class SpriteBatchUtils
 	{
 		sb.Begin(args.SortMode, args.BlendState, args.SamplerState, args.DepthStencilState, args.RasterizerState, args.Effect, args.Matrix);
 	}
+	
+	public static SpriteBatchScope Scope(this SpriteBatch sb, in SpriteBatchArgs args)
+	{
+		sb.Begin(in args);
+		return new(sb);
+	}
+
 	public static SpriteBatchArgs GetArguments(this SpriteBatch sb)
 	{
 		return new()

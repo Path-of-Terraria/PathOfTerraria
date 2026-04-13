@@ -1368,7 +1368,7 @@ internal sealed class InfernalBoss : ModNPC
 		{
 			if (ctx.Attacking.Progress != tickBase + (instance * 15)) { continue; }
 
-			float instanceFactor = instance / (float)(numInstances - 1);
+			float instanceFactor = instance / (float)(numInstances);
 			float baseAngle = instance * MathHelper.PiOver4;
 			float baseSpeed = MathHelper.Lerp(10, 15, 1f - instanceFactor);
 
@@ -1382,7 +1382,7 @@ internal sealed class InfernalBoss : ModNPC
 				var projVel = (Vector2)((baseAngle + (iFactor * MathHelper.TwoPi)).ToRotationVector2() * projSpeed);
 				int projType = ModContent.ProjectileType<InfernalFlames>();
 				Projectile.NewProjectileDirect(source, projPos, projVel, projType, 1, 1f);
-			}
+ 			}
 		}
 	}
 
@@ -1469,15 +1469,18 @@ internal sealed class InfernalBoss : ModNPC
 		if (Main.dedServ) { return; }
 
 		// Bias the camera towards the boss.
-		CameraCurios.Create(new()
+		if (Phase is not PhaseType.Idle)
 		{
-			Identifier = nameof(InfernalBoss),
-			Weight = 0.2f,
-			LengthInSeconds = 1f,
-			Position = ctx.Center,
-			Range = new(Min: 1024, Max: 2000, Exponent: 2.0f),
-			Callback = new NPCTracker(NPC).Center,
-		});
+			CameraCurios.Create(new()
+			{
+				Identifier = nameof(InfernalBoss),
+				Weight = 0.2f,
+				LengthInSeconds = 1f,
+				Position = ctx.Center,
+				Range = new(Min: 1024, Max: 2000, Exponent: 2.0f),
+				Callback = new NPCTracker(NPC).Center,
+			});
+		}
 
 		// Movement sound.
 		{
