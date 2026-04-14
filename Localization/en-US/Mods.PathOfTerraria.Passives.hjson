@@ -1061,7 +1061,7 @@ WillingSacrificeMastery: {
 
 ReprisalMastery: {
 	Name: Reprisal
-	Tooltip: ""
+	Tooltip: Reflect {0}% of damage back on successful blocks as a large slash.
 }
 
 ImmolationStrideMastery: {
