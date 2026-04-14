@@ -173,4 +173,45 @@ internal class ItemSpawner
 
 		SpawnItem(type, pos, tier);
 	}
+
+	/// <summary>
+	/// Spawns an item from a specific boss drop pool.
+	/// </summary>
+	/// <param name="pos">Position to spawn the item</param>
+	/// <param name="bossPool">The boss pool identifier</param>
+	/// <param name="itemLevel">Level of the item spawned</param>
+	/// <param name="dropRarityModifier">Drop modifier for rarity</param>
+	/// <returns>The index of the newly spawned item, or -1 if no item was spawned</returns>
+	public static int SpawnBossPoolItem(Vector2 pos, string bossPool, int itemLevel = 0, float dropRarityModifier = 0)
+	{
+		itemLevel = itemLevel == 0 ? PoTItemHelper.PickItemLevel() : itemLevel;
+		
+		// Filter items by boss pool
+		var bossPoolItems = ItemDatabase.AllItems.Where(item =>
+		{
+			PoTStaticItemData staticData = ContentSamples.ItemsByType[item.ItemId].GetStaticData();
+			return staticData.IsUnique && !string.IsNullOrEmpty(staticData.BossDropPool) && staticData.BossDropPool == bossPool && staticData.MinDropItemLevel <= itemLevel;
+		}).ToList();
+
+		if (!bossPoolItems.Any())
+		{	
+			return -1;
+		}
+		// Roll from the boss pool
+		ItemDatabase.ItemRecord selectedItem = DropTable.RollList(itemLevel, dropRarityModifier, bossPoolItems, _ => true, 0);
+		
+		if (selectedItem == ItemDatabase.InvalidItem)
+		{
+			return -1;
+		}
+		return SpawnItem(selectedItem.ItemId, pos, itemLevel, selectedItem.Rarity);
+	}
+
+	/// <summary>
+	/// Spawns an item from a boss pool using the boss type name as the pool identifier.
+	/// </summary>
+	public static int SpawnBossPoolItem<T>(Vector2 pos, int itemLevel = 0, float dropRarityModifier = 0) where T : ModNPC
+	{
+		return SpawnBossPoolItem(pos, typeof(T).Name, itemLevel, dropRarityModifier);
+	}
 }

@@ -123,6 +123,12 @@ public sealed class PoTStaticItemData
 	///		The item's description for alternate use (right-clicking).
 	/// </summary>
 	public LocalizedText AltUseDescription { get; set; } = LocalizedText.Empty;
+	
+	/// <summary>
+	///		The boss drop pool this item belongs to. If set, this item will only drop from bosses
+	///		in the specified pool instead of the global unique drop pool.
+	/// </summary>
+	public string BossDropPool { get; set; }
 }
 
 partial class PoTGlobalItem
