@@ -1531,11 +1531,11 @@ PrismShardItem: {
 // NostalgicShardBannerItem.DisplayName: Nostalgic Shard Banner
 
 CypressLeavesItem: {
-	// DisplayName: Cypress Leaves Item
+	// DisplayName: Cypress Leaves
 	// Tooltip: ""
 }
 
 MangroveLeavesItem: {
-	// DisplayName: Mangrove Leaves Item
+	// DisplayName: Mangrove Leaves
 	// Tooltip: ""
 }
