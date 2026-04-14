@@ -15,23 +15,27 @@ float resY;
 
 float closingProgress;
 
-texture sampleTexture : register(ps, s0);
-sampler2D u_tex0 = sampler_state { Texture = sampleTexture; magfilter = LINEAR; minfilter = LINEAR; mipfilter = LINEAR; AddressU = wrap; AddressV = wrap; };
+// Unused, but has to be registered for SpriteBatch compatibility.
+texture Texture : register(ps, s0);
+sampler2D TextureSampler = sampler_state { Texture = Texture; magfilter = LINEAR; minfilter = LINEAR; mipfilter = LINEAR; AddressU = wrap; AddressV = wrap; };
 
-texture _PaletteTex : register(ps, s1);
-sampler2D u_tex2 = sampler_state { Texture = _PaletteTex; magfilter = POINT; minfilter = POINT; mipfilter = POINT; AddressU = Clamp; AddressV = Clamp; };
+texture sampleTex : register(ps, s1);
+sampler2D sampleSampler = sampler_state { Texture = sampleTex; magfilter = POINT; minfilter = POINT; mipfilter = POINT; AddressU = Clamp; AddressV = Clamp; };
 
-texture _PNoiseTex : register(ps, s2);
-sampler2D u_tex3 = sampler_state { Texture = _PNoiseTex; magfilter = POINT; minfilter = POINT; mipfilter = POINT; AddressU = Wrap; AddressV = Wrap; };
+texture paletteTex : register(ps, s2);
+sampler2D paletteSampler = sampler_state { Texture = paletteTex; magfilter = POINT; minfilter = POINT; mipfilter = POINT; AddressU = Clamp; AddressV = Clamp; };
 
-texture _DNoiseTex : register(ps, s3);
-sampler2D u_tex4 = sampler_state { Texture = _DNoiseTex; magfilter = POINT; minfilter = POINT; mipfilter = POINT; AddressU = Wrap; AddressV = Wrap; };
+texture pNoiseTex : register(ps, s3);
+sampler2D pNoiseSampler = sampler_state { Texture = pNoiseTex; magfilter = POINT; minfilter = POINT; mipfilter = POINT; AddressU = Wrap; AddressV = Wrap; };
 
-texture _SpaceTex1 : register(ps, s3);
-sampler2D u_tex5 = sampler_state { Texture = _SpaceTex1; magfilter = POINT; minfilter = POINT; mipfilter = POINT; AddressU = Wrap; AddressV = Wrap; };
+texture dNoiseTex : register(ps, s4);
+sampler2D dNoiseSampler = sampler_state { Texture = dNoiseTex; magfilter = POINT; minfilter = POINT; mipfilter = POINT; AddressU = Wrap; AddressV = Wrap; };
 
-texture _SpaceTex2 : register(ps, s3);
-sampler2D u_tex6 = sampler_state { Texture = _SpaceTex2; magfilter = POINT; minfilter = POINT; mipfilter = POINT; AddressU = Wrap; AddressV = Wrap; };
+texture spaceTex1 : register(ps, s5);
+sampler2D spaceSampler1 = sampler_state { Texture = spaceTex1; magfilter = POINT; minfilter = POINT; mipfilter = POINT; AddressU = Wrap; AddressV = Wrap; };
+
+texture spaceTex2 : register(ps, s6);
+sampler2D spaceSampler2 = sampler_state { Texture = spaceTex2; magfilter = POINT; minfilter = POINT; mipfilter = POINT; AddressU = Wrap; AddressV = Wrap; };
 
 float inverseLerp(float a, float b, float val)
 {
@@ -156,14 +160,15 @@ float4 PixelShaderFunction(float2 startUV : TEXCOORD) : COLOR0
 	float2 dNoiseCoords = float2(uv.x * lerp(smallRiftXNoiseScale, largeRiftXNoiseScale, step(0.0001, expandProgress)), uv.y * lerp(smallRiftYNoiseScale, largeRiftYNoiseScale, expandProgress));
 	dNoiseCoords.x += (min(progress, 0.65) * 6) * riftXScrollSpeed;
 	dNoiseCoords.x += timeManual * 0.1;
-	float dNoiseVal = tex2D(u_tex4, dNoiseCoords).r;
+	float dNoiseVal = tex2D(dNoiseSampler
+, dNoiseCoords).r;
 	dNoiseVal += dNoiseOffset;
 
 	float anchorX = anchorCenterX + (lerp(anchorSwayBeforeExpansion, anchorSwayAfterExpansion, expandProgress) * dNoiseVal * pow(abs(uv.y - anchorCenterY), lerp(anchorCenterPowBefore, anchorCenterPowAfter, step(0.0001, expandProgress))));
 	float centerDistX = abs(anchorX - uv.x);
 
 	float2 noiseCoordsTwo = float2((timeManual * thicknessNoiseYScrollSpeed), uv.y * lerp(thicknessNoiseYScaleBefore, thicknessNoiseYScaleAfter, expandProgress));
-	float noiseVal2 = tex2D(u_tex3, noiseCoordsTwo).r;
+	float noiseVal2 = tex2D(pNoiseSampler, noiseCoordsTwo).r;
 	noiseVal2 = pow(noiseVal2, thicknessValPow);
 	centerDistX = pow(centerDistX * lerp(minThicknessPow, maxThicknessPow, noiseVal2) * lerp(thicknessPowBeforeExpansion, thicknessPowAfterExpansion, expandProgress), thicknessTotalPow);
 	float paletteX = centerDistX;
@@ -180,7 +185,8 @@ float4 PixelShaderFunction(float2 startUV : TEXCOORD) : COLOR0
 
 	radialCoords.y -= timeManual * ringSpinSpeed;
 
-	float ballVal = tex2D(u_tex4, radialCoords).r + 0.03;
+	float ballVal = tex2D(dNoiseSampler
+, radialCoords).r + 0.03;
 
 	float2 ballLength = uv - float2(lerp(0.5, anchorX, expandProgress), 0.5);
 	ballLength.x *= lerp(ballXScaleStart, ballXScaleEnd, pow(ballProgress - expandProgress, ballXScaleEasing));
@@ -201,19 +207,20 @@ float4 PixelShaderFunction(float2 startUV : TEXCOORD) : COLOR0
 	float2 portalCoords = makeCoordsRadial(float2((uv.x - 0.5) * lerp(7.0, lerp(3.5, 9.0, closingProgress), expandProgress), (uv.y - 0.5) * lerp(1.6, 10.6, closingProgress)));
 
 	float2 bumpCoords = float2((portalCoords.x * 1.0) + (timeManual * 0.1), (portalCoords.y) - (timeManual * 0.15));
-	float portalBumps = tex2D(u_tex4, bumpCoords).r;
+	float portalBumps = tex2D(dNoiseSampler
+, bumpCoords).r;
 	portalCoords.y += 0.32 * portalBumps;
 	portalCoords.x *= 0.75;
 	float portalDist = portalCoords.y;
 	portalCoords.y *= 0.5;
 	portalCoords.y += timeManual * 0.15;
-	float portalVal = tex2D(u_tex3, portalCoords).r + 0.1;
+	float portalVal = tex2D(pNoiseSampler, portalCoords).r + 0.1;
 
 	portalVal *= pow(inverseLerp(0.2 * pow(expandProgress, 1.7), 0.4 * pow(expandProgress, 1.4), portalDist), 3);
 	paletteX = min(paletteX, portalVal);
 	paletteX += closingProgress;
-	float2 paletteCoords = float2(paletteX, tex2D(u_tex0, uv).r * 0.1);
-	float4 ret = tex2D(u_tex2, paletteCoords);
+	float2 paletteCoords = float2(paletteX, tex2D(sampleSampler, uv).r * 0.1);
+	float4 ret = tex2D(paletteSampler, paletteCoords);
 
 	if (length(ret.rgb) == 0.0)
 	{
@@ -234,8 +241,8 @@ float4 PixelShaderFunction(float2 startUV : TEXCOORD) : COLOR0
 		spaceCoords += float2(timeManual * 0.06, timeManual * 0.04);
 		spaceCoords2 += float2(timeManual * -0.03, timeManual * -0.05);
 
-		ret += tex2D(u_tex5, spaceCoords);
-		ret += tex2D(u_tex6, spaceCoords2);
+		ret += tex2D(spaceSampler1, spaceCoords);
+		ret += tex2D(spaceSampler2, spaceCoords2);
 	}
 
 	return ret;

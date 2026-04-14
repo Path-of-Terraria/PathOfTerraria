@@ -129,15 +129,16 @@ internal sealed class CameraCurios : ModSystem
 		if (CameraSystem.MustSkipCameraUpdate) { return; }
 
 		Vector2 baseCameraPoint = Main.LocalPlayer.Center + new Vector2(0, Main.LocalPlayer.gfxOffY); //CameraSystem.ScreenCenter;
-		float maxWeight = curios.Count != 0 ? curios.Max(c => c.Style.Weight) : 1f;
-		var offset = new WeightedValue2D<float, float>((0, 0), (0, 0), (maxWeight, maxWeight));
-		var zoom = new WeightedValue<float, float>(0, 0, 1f);
+		float totalOffsetWeight = 0;
+		float totalZoomWeight = 0;
+		var offset = new WeightedValue2D<float, float>((0, 0), (0, 0), (0, 0));
+		var zoom = new WeightedValue<float, float>(0, 0, 0);
 
 		foreach (ref readonly CameraCurioInstance curio in CollectionsMarshal.AsSpan(curios))
 		{
 			Vector2 targetOffset = curio.Position - baseCameraPoint;
 			float intensity = Easings.QuadInOut(curio.Intensity);
-			
+
 			if (curio.Style.Range.HasValue)
 			{
 				intensity *= curio.Style.Range.Value.DistanceFactor(curio.Position.Distance(baseCameraPoint));
@@ -149,22 +150,32 @@ internal sealed class CameraCurios : ModSystem
 			if (posWeight > 0)
 			{
 				offset.Add((targetOffset.X, targetOffset.Y), (posWeight, posWeight));
+				totalOffsetWeight += posWeight;
 			}
 
 			if (curio.Style.Zoom is { } zoomValue && zoomWeight > 0f)
 			{
 				zoom.Add(zoomValue, zoomWeight);
+				totalZoomWeight += zoomWeight;
 			}
 		}
 
 		if (offset.X.TotalWeight > 0 || offset.Y.TotalWeight > 0)
 		{
+			// Mix-in the base values.
+			float baseWeight = MathF.Max(0, 1 - totalOffsetWeight);
+			offset.Add((0, 0), (baseWeight, baseWeight));
+			
 			(float offX, float offY) = offset.Total();
 			Vector2 usedOffset = new(MathF.Ceiling(offX), MathF.Ceiling(offY));
 			Vector2 screenPosPlusOffset = (Main.screenPosition + usedOffset);
 			Main.screenPosition = screenPosPlusOffset;
 		}
 
+		// Mix-in the base values.
+		float baseZoom = MathF.Max(0, 1 - totalZoomWeight);
+		zoom.Add(0, baseZoom);
+		// Zoom is applied via ModifyTransformMatrix.
 		lastCalculatedZoom = zoom;
 	}
 }

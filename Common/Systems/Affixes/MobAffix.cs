@@ -15,6 +15,7 @@ internal abstract class MobAffix : Affix
 	public Asset<Texture2D> Icon => MobAffixIconsByAffixName[GetType().AssemblyQualifiedName];
 
 	public virtual ItemRarity MinimumRarity => ItemRarity.Magic;
+	public virtual float BaseWeight => 1f;
 
 	/// <summary>
 	/// Texture path that points to the icon that shows over an NPC.

@@ -1,16 +1,13 @@
 ﻿using System.Runtime.CompilerServices;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.World.Utilities;
 
 internal static class WorldUtilities
 {
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static bool SolidTile(int i, int j)
-	{
-		return SolidTile(Main.tile[i, j]);
-	}
-
+	public static bool SolidTile(int i, int j) { return SolidTile(Main.tile[i, j]); }
+	public static bool SolidTile(Point16 point) { return SolidTile(Main.tile[point]); }
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool SolidTile(Tile tile)
 	{
@@ -18,15 +15,10 @@ internal static class WorldUtilities
 	}
 
 	/// <inheritdoc cref="SolidOrActuatedTile(Tile)"/>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static bool SolidOrActuatedTile(int i, int j)
-	{
-		return SolidOrActuatedTile(Main.tile[i, j]);
-	}
-
-	/// <summary>
-	/// Checks if a tile is solid, regardless of if its actuated.
-	/// </summary>
+	public static bool SolidOrActuatedTile(int i, int j) { return SolidOrActuatedTile(Main.tile[i, j]); }
+	/// <inheritdoc cref="SolidOrActuatedTile(Tile)"/>
+	public static bool SolidOrActuatedTile(Point16 point) { return SolidOrActuatedTile(Main.tile[point]); }
+	/// <summary> Checks if a tile is solid, regardless of if its actuated. </summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool SolidOrActuatedTile(Tile tile)
 	{
@@ -34,15 +26,10 @@ internal static class WorldUtilities
 	}
 
 	/// <inheritdoc cref="SolidUnslopedTile(Tile, bool)"/>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static bool SolidUnslopedTile(int i, int j, bool noHalfBrick = false)
-	{
-		return SolidUnslopedTile(Main.tile[i, j], noHalfBrick);
-	}
-
-	/// <summary>
-	/// Checks if a tile is solid and not sloped. Optionally also checks for half-bricks.
-	/// </summary>
+	public static bool SolidUnslopedTile(int i, int j, bool noHalfBrick = false) { return SolidUnslopedTile(Main.tile[i, j], noHalfBrick); }
+	/// <inheritdoc cref="SolidUnslopedTile(Tile, bool)"/>
+	public static bool SolidUnslopedTile(Point16 point, bool noHalfBrick = false) { return SolidUnslopedTile(Main.tile[point], noHalfBrick); }
+	/// <summary> Checks if a tile is solid and not sloped. Optionally also checks for half-bricks. </summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool SolidUnslopedTile(Tile tile, bool noHalfBrick = false)
 	{

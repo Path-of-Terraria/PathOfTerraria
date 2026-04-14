@@ -7,10 +7,12 @@ using System.Runtime.CompilerServices;
 using PathOfTerraria.Common.Encounters;
 using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.Systems.MapContent;
 using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Core.Time;
 using PathOfTerraria.Utilities;
+using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
 using ReLogic.Content;
 using ReLogic.Utilities;
@@ -75,7 +77,7 @@ internal record struct EnemyRole
 	}
 }
 
-internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile
+internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile, IMapIcon
 {
 	[Flags]
 	public enum Flags : int
@@ -174,10 +176,8 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 		if (!Main.dedServ)
 		{
-			shader = Mod.Assets.Request<Effect>($"Assets/Effects/ConfluxRift");
 		}
 	}
-
 	public override void SetDefaults()
 	{
 		Projectile.friendly = false;
@@ -369,45 +369,46 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 	public override bool PreDraw(ref Color lightColor)
 	{
-		Texture2D tex = TextureAssets.Projectile[Type].Value;
+		// Coconut situation ahead! We feed this texture because, even though it is unused, it was there back when everything worked.
+		// The original shader had incorrect/overlapping sampler assigments, fixing which broke behavior further.
+		// To be fixed up after we get shader hot reloading.
+		Texture2D tex = AssetUtils.ImmediateValue<Texture2D>($"{Texture}_Coconut");
+		Effect effect = AssetUtils.ImmediateValue($"{Mod.Name}/Assets/Effects/ConfluxRift", ref shader);
+		Vector2 baseSize = new(128, 128);
 		Vector2 position = Projectile.Center - Main.screenPosition;
-
-		if (shader?.Value is not Effect effect)
-		{
-			return false;
-		}
 
 		float openFactor = MathUtils.Clamp01((OpeningAnimation * 0.75f) + (ApproachAnimation * 0.25f));
 		float closeFactor = MathUtils.Clamp01((ClosingAnimation * 0.8f) + (ProgressAnimation * 0.2f));
 
+		// General.
 		effect.Parameters["progress"].SetValue(openFactor);
 		effect.Parameters["closingProgress"].SetValue(closeFactor);
 		effect.Parameters["timeManual"].SetValue((float)Main.timeForVisualEffects * 0.027f);
-		effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(Texture + "_PerlinNoiseMap").Value);
-		effect.Parameters["_PaletteTex"].SetValue(ModContent.Request<Texture2D>(Texture + "_Palette_" + Kind.ToString()).Value);
-		effect.Parameters["_PNoiseTex"].SetValue(ModContent.Request<Texture2D>(Texture + "_PerlinNoiseMap").Value);
-		effect.Parameters["_DNoiseTex"].SetValue(ModContent.Request<Texture2D>(Texture + "_DisplacementNoiseMap").Value);
-
+		// Textures.
+		Texture2D spaceTex1 = ModContent.Request<Texture2D>(Texture + "_SpaceMap1_" + Kind.ToString()).Value;
+		Texture2D spaceTex2 = ModContent.Request<Texture2D>(Texture + "_SpaceMap2_" + Kind.ToString()).Value;
+		effect.Parameters["sampleTex"].SetValue(ModContent.Request<Texture2D>(Texture + "_PerlinNoiseMap").Value);
+		effect.Parameters["paletteTex"].SetValue(ModContent.Request<Texture2D>(Texture + "_Palette_" + Kind.ToString()).Value);
+		effect.Parameters["pNoiseTex"].SetValue(ModContent.Request<Texture2D>(Texture + "_PerlinNoiseMap").Value);
+		effect.Parameters["dNoiseTex"].SetValue(ModContent.Request<Texture2D>(Texture + "_DisplacementNoiseMap").Value);
+		effect.Parameters["spaceTex1"].SetValue(spaceTex1);
+		effect.Parameters["spaceTex2"].SetValue(spaceTex2);
+		// Sizes/Coordinates
+		effect.Parameters["resX"].SetValue(baseSize.X * Projectile.scale * 4);
+		effect.Parameters["resY"].SetValue(baseSize.Y * Projectile.scale * 4);
+		effect.Parameters["mapResX"].SetValue(spaceTex1.Width);
+		effect.Parameters["mapResY"].SetValue(spaceTex1.Height);
 		effect.Parameters["xCameraOffset"].SetValue(Main.screenPosition.X - Projectile.Center.X);
 		effect.Parameters["yCameraOffset"].SetValue(Main.screenPosition.Y - Projectile.Center.Y);
 
-		Texture2D spaceTex1 = ModContent.Request<Texture2D>(Texture + "_SpaceMap1_" + Kind.ToString()).Value;
-		Texture2D spaceTex2 = ModContent.Request<Texture2D>(Texture + "_SpaceMap2_" + Kind.ToString()).Value;
-
-		effect.Parameters["mapResX"].SetValue(spaceTex1.Width);
-		effect.Parameters["mapResY"].SetValue(spaceTex1.Height);
-
-		effect.Parameters["resX"].SetValue(tex.Width * Projectile.scale * 4f);
-		effect.Parameters["resY"].SetValue(tex.Height * Projectile.scale * 4f);
-		effect.Parameters["_SpaceTex1"].SetValue(spaceTex1);
-		effect.Parameters["_SpaceTex2"].SetValue(spaceTex2);
-
+		SpriteBatchArgs sbArgs = Main.spriteBatch.GetArguments();
 		Main.spriteBatch.End();
 		Main.spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointClamp, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
-		Main.spriteBatch.Draw(tex, position, null, Color.White, 0, tex.Size() / 2f, Projectile.scale * 4.0f, SpriteEffects.None, 0);
+		
+		Main.spriteBatch.Draw(tex, position, null, Color.White, 0, baseSize * 0.5f, Projectile.scale * 4.0f, SpriteEffects.None, 0);
 
 		Main.spriteBatch.End();
-		Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+		Main.spriteBatch.Begin(sbArgs);
 		
 		this.TryInteracting();
 
@@ -438,11 +439,11 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile
 		return false;
 	}
 
-	public void Activate()
+	public void Activate(bool fromNet = false)
 	{
 		if ((BitFlags & Flags.Activated) != 0) { return; }
 
-		if (Main.netMode == NetmodeID.MultiplayerClient)
+		if (Main.netMode == NetmodeID.MultiplayerClient && !fromNet)
 		{
 			Vector2 compareSpot = Main.LocalPlayer.Center;
 			if (!Main.LocalPlayer.IsProjectileInteractibleAndInInteractionRange(Projectile, ref compareSpot)) { return; }
@@ -455,7 +456,7 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 		if (Main.netMode == NetmodeID.Server)
 		{
-			NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, Projectile.whoAmI);
+			RiftInteractionHandler.Send(Projectile.identity);
 		}
 
 		// Effects.
@@ -783,18 +784,21 @@ internal class RiftInteractionHandler : Handler
 		packet.Send();
 	}
 
-	internal override void ServerReceive(BinaryReader reader, byte sender)
+	internal override void Receive(BinaryReader reader, byte sender)
 	{
 		ModPacket packet = Networking.GetPacket(Id);
 		int riftIdentity = reader.ReadInt32();
 
-		if (Main.player[sender] is not { active: true } player) { return; }
-
 		if (Main.projectile.FirstOrDefault(p => p.identity == riftIdentity) is not { ModProjectile: ConfluxRift rift }) { return; }
 
-		// Increased reach distance for synchronization grace.
-		Point tileTarget = rift.Projectile.Hitbox.ClosestPointInRect(player.Center).ToTileCoordinates();
-		if (!player.IsInTileInteractionRange(tileTarget.X, tileTarget.Y, TileReachCheckSettings.Simple with { TileRangeMultiplier = 2 })) { return; }
+		if (Main.netMode == NetmodeID.Server)
+		{
+			if (Main.player[sender] is not { active: true } player) { return; }
+
+			// Increased reach distance for synchronization grace.
+			Point tileTarget = rift.Projectile.Hitbox.ClosestPointInRect(player.Center).ToTileCoordinates();
+			if (!player.IsInTileInteractionRange(tileTarget.X, tileTarget.Y, TileReachCheckSettings.Simple with { TileRangeMultiplier = 2 })) { return; }
+		}
 
 		rift.Activate();
 	}

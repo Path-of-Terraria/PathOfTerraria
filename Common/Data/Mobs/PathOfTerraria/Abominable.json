@@ -7,10 +7,14 @@
 			"weight": 1,
 			"stats": {
 				"level": 1,
-				"experience": 35
+				"experience": 2500
 			},
-			"affixes": null,
-			"requirements": "Desert"
+			"affixes": [
+				{
+					"name": "ColdAffix"
+				}
+			],
+			"requirements": null
 		}
 	]
 }
