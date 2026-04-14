@@ -21,7 +21,7 @@ public sealed class ItemDatabase : ModSystem
 
 			if (_vanillaItems.TryGetValue(entity.type, out ItemType itemType))
 			{
-				entity.GetInstanceData().ItemType = itemType;
+				entity.GetInstanceData().ItemType = entity.ResolveToSingleType(itemType);
 			}
 		}
 	}
