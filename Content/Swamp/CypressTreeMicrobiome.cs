@@ -57,7 +57,7 @@ internal class CypressTreeMicrobiome : MicroBiome
 		for (int i = 0; i < 30; ++i)
 		{
 			int x = origin.X + _random.Next(-MinimumTrunkWidth, MinimumTrunkWidth);
-			WorldGen.TileRunner(x, (int)MathHelper.Lerp(topY, bottomLeavesY, _random.NextFloat()), _random.NextFloat(7, 12), 8, TileID.LeafBlock, true, overRide: _random.NextBool());
+			WorldGen.TileRunner(x, (int)MathHelper.Lerp(topY, bottomLeavesY, _random.NextFloat()), _random.NextFloat(7, 12), 8, ModContent.TileType<CypressLeaves>(), true, overRide: _random.NextBool());
 		}
 	}
 
@@ -82,12 +82,12 @@ internal class CypressTreeMicrobiome : MicroBiome
 		for (int x = origin.X - (int)(useWidth * globalSizeModifier); x < origin.X + useWidth * globalSizeModifier; ++x)
 		{
 			float sizeMod = (1 - Math.Abs(x - origin.X) / (float)useWidth * 0.75f) + 0.25f;
-			WorldGen.TileRunner(x, y, sizeMod * 12 * size * globalSizeModifier, 8, TileID.LeafBlock, true);
+			WorldGen.TileRunner(x, y, sizeMod * 12 * size * globalSizeModifier, 8, ModContent.TileType<CypressLeaves>(), true);
 
 			if (_random.NextBool(3))
 			{
 				int range = (int)MathF.Max(sizeMod * 8 * size, 1);
-				WorldGen.TileRunner(x, y - _random.Next(-range, range), sizeMod * 14 * size * globalSizeModifier, 8, TileID.LeafBlock, true, overRide: i == leafCount - 1);
+				WorldGen.TileRunner(x, y - _random.Next(-range, range), sizeMod * 14 * size * globalSizeModifier, 8, ModContent.TileType<CypressLeaves>(), true, overRide: i == leafCount - 1);
 			}
 
 			minX = Math.Min(x, minX);
