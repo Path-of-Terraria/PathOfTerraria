@@ -1148,3 +1148,8 @@ MoneySpeedMastery: {
 	// Name: MoneySpeedMastery
 	// Tooltip: ""
 }
+
+DangerMiningPassive: {
+	// Name: DangerMiningPassive
+	// Tooltip: ""
+}

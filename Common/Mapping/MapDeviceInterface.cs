@@ -664,6 +664,17 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 			{
 				MapDeviceInterface.Entity?.TryInjectingResource(CurrentMapResource.AssociatedItem);
 			};
+			e.OnUpdate += self => // Small sine animation when the device has sufficient resources
+			{
+				if (CurrentMapResource.Value >= 100)
+				{
+					self.Top = StyleDimension.FromPixelsAndPercent(inject.Pos.Y + MathF.Sin(Main.GameUpdateCount * 0.06f) * 6, 0);
+				}
+				else
+				{
+					self.Top = StyleDimension.FromPixelsAndPercent(inject.Pos.Y, 0);
+				}
+			};
 		});
 		UIElement ejectButton = this.AddElement(new UIImage(injectDefTex), e =>
 		{
@@ -889,7 +900,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 					ChatManager.DrawColorCodedStringWithShadow(sb, font, text, center, color, 0f, size * 0.5f, Vector2.One);
 				}
 
-				DrawString(canisterCenter + new Vector2(0f, -56f), availabilityColor, resource.Value.ToString());
+				DrawString(canisterCenter + new Vector2(0f, -68f), availabilityColor, resource.Value.ToString());
 				DrawString(canisterCenter + new Vector2(0f, -59f), neutralColor, "_");
 				DrawString(canisterCenter + new Vector2(0f, -40f), availabilityColor, resource.Cost.ToString());
 			}
