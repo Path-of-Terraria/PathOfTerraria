@@ -287,7 +287,7 @@ internal sealed class NPCTeleports : NPCComponent<TeleportData>
 				if (Data.Progress >= Data.Reappear.Start) { moveStep = 1f; }
 				moveStep = Easing(moveStep);
 				npc.Center = Vector2.Lerp(Data.TeleportSource, Data.TeleportTarget, moveStep);
-				npc.velocity = default;
+				npc.velocity = Data.Progress < Data.Reappear.Start ? default : npc.velocity;
 			}
 
 			Data.Progress++;
