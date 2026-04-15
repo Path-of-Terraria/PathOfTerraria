@@ -256,7 +256,7 @@ public abstract class MappingWorld : Subworld
 			}
 			catch
 			{
-				// Best-effort cleanup.
+				PoTMod.Instance.Logger.Error("[DeleteSavedSubworld] Failed to delete saved subworld.");
 			}
 		}
 

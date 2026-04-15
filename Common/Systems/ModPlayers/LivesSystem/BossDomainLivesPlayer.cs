@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
+using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using SubworldLibrary;
 using Terraria.DataStructures;
@@ -182,7 +183,17 @@ internal class BossDomainLivesPlayer : ModPlayer
 
 		if (Main.netMode == NetmodeID.MultiplayerClient)
 		{
-			CloseMapDevicePortalHandler.Send(ActiveMapDevicePosition);
+			if (SubworldSystem.Current is not null)
+			{
+				ModPacket packet = Networking.GetPacket<CloseMapDevicePortalHandler>(5);
+				packet.Write(ActiveMapDevicePosition.X);
+				packet.Write(ActiveMapDevicePosition.Y);
+				Networking.SendPacketToMainServer(packet);
+			}
+			else
+			{
+				CloseMapDevicePortalHandler.Send(ActiveMapDevicePosition);
+			}
 		}
 		else if (SubworldSystem.Current == null)
 		{
