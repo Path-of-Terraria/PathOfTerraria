@@ -436,9 +436,9 @@ internal sealed class InfernalBoss : ModNPC
 			e.Data.Reappear = (20, 25);
 			e.Data.Invulnerability = (5, 20);
 			e.Data.CooldownDamage = (0.5f, 0);
-			e.Data.Velocity = (new(1f, -1f), new(1f, -2f));
 			e.Data.LightColor = Color.Red.ToVector3() * 3f;
 			e.Data.DisappearSound = (0, SoundID.DD2_DarkMageAttack with { Volume = 1f, Pitch = -0.9f, PitchVariance = 0.1f });
+			e.Data.Velocity = (null, new Vector2(-15, -10));
 			// Triggers
 			e.Data.TriggerIfEndangered = true;
 			e.Data.TriggerAtDistance = (250, float.PositiveInfinity);
@@ -580,7 +580,7 @@ internal sealed class InfernalBoss : ModNPC
 			ctx.Movement.Data.MaxSpeed = 20.0f;
 			ctx.Movement.Data.Acceleration = 3.6f;
 			ctx.Voice.Data.PainSound = (9, SoundID.NPCHit56 with { Pitch = 0f, PitchVariance = 0.5f, Identifier = $"{Name}Hit" });
-			ctx.Teleports.Data.MaxCooldown = 180;
+			ctx.Teleports.Data.MaxCooldown = 120;
 		}
 		else if (Phase == PhaseType.Abomination)
 		{
@@ -593,7 +593,7 @@ internal sealed class InfernalBoss : ModNPC
 			});
 			ctx.Movement.Data.MaxSpeed = 17.8f;
 			ctx.Movement.Data.Acceleration = 3.9f;
-			ctx.Teleports.Data.MaxCooldown = 240;
+			ctx.Teleports.Data.MaxCooldown = 180;
 		}
 
 		// Start intro.
@@ -750,7 +750,7 @@ internal sealed class InfernalBoss : ModNPC
 				SetupLimbs(in ctx);
 
 				// Prevent immediate teleportation & flame attacks.
-				ctx.Teleports.Data.Cooldown.Set(180);
+				ctx.Teleports.Data.Cooldown.Set(600);
 				enflameAttackCounter = 0;
 
 				OverlayText.Create(new OverlayTextLine
@@ -1278,10 +1278,8 @@ internal sealed class InfernalBoss : ModNPC
 			// Configure dynamic data.
 			if (attackType is AttackType.BladeSlash or AttackType.BladeReverse or AttackType.BladeStab)
 			{
-				ctx.Attacking.Data.LengthInTicks = 95;
+				ctx.Attacking.Data.LengthInTicks = 90;
 				ctx.Attacking.Data.CooldownLength = 0;
-				ctx.Attacking.Data.AimLag = ((new(0.0f), new(0.3f)), (0f, 0.99f));
-				ctx.Attacking.Data.Hitbox = (new(350, 350), new(+290, +100), new(+0, +0));
 				ctx.Attacking.Data.Damage = (45, 60, DamageInstance.EnemyAttackFilterWithInfighting);
 				ctx.Attacking.Data.Dash = (50, 55, new(30, 25));
 				ctx.Attacking.Data.Movement = (0.0f, 0.80f, 0.95f);
@@ -1290,20 +1288,20 @@ internal sealed class InfernalBoss : ModNPC
 				{
 					ctx.Attacking.Data.Sounds =
 					[
+						(23, new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/PyralisBlade", 3) { MaxInstances = 3, Volume = 2.0f, Pitch = -0.1f, PitchVariance = 0.0f }),
 						(24, new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/PyralisBlade", 3) { MaxInstances = 3, Volume = 2.0f, Pitch = -0.1f, PitchVariance = 0.0f }),
-						(25, new($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/PyralisBlade", 3) { MaxInstances = 3, Volume = 2.0f, Pitch = -0.1f, PitchVariance = 0.0f }),
 					];
 				}
 
 				if (attackType is AttackType.BladeStab)
 				{
-					ctx.Attacking.Data.AimLag = ((new(0.01f), new(0.06f)), (0f, 0.95f));
-					ctx.Attacking.Data.Hitbox = (new(200, 200), new(+500, +500), new(+0, +0));
+					ctx.Attacking.Data.AimLag = ((new(0.01f), new(0.06f)), (0f, 0.50f));
+					ctx.Attacking.Data.Hitbox = (new(240, 240), new(+500, +500), new(+0, +0));
 				}
 				else
 				{
-					ctx.Attacking.Data.AimLag = ((new(0.01f), new(0.27f)), (0f, 0.95f));
-					ctx.Attacking.Data.Hitbox = (new(350, 350), new(+280, +280), new(+0, +0));
+					ctx.Attacking.Data.AimLag = ((new(0.01f), new(0.15f)), (0f, 0.80f));
+					ctx.Attacking.Data.Hitbox = (new(360, 360), new(+280, +280), new(+0, +0));
 				}
 			}
 			else if (attackType is AttackType.Ravage)
@@ -1438,10 +1436,11 @@ internal sealed class InfernalBoss : ModNPC
 		int numSteps = phase2 ? 5 : 3;
 		for (int i = 1; i <= numSteps; i++)
 		{
-			// In phase II, only spawn shamans.
+			// In phase II, only spawn shamans and schemers.
 			if (phase2)
 			{
 				if (numShamans < 3) { type = ModContent.NPCType<FallenShaman>(); }
+				else if (numSchemers < 10) { type = ModContent.NPCType<FallenSchemer>(); }
 				break;
 			}
 
@@ -1468,7 +1467,8 @@ internal sealed class InfernalBoss : ModNPC
 				grabCooldown = 120;
 			}
 
-			spawnCooldown = (ushort)(Phase is PhaseType.Abomination ? 550 : 250);
+			bool spawnedImportantShaman = Phase is PhaseType.Abomination && type == ModContent.NPCType<FallenShaman>();
+			spawnCooldown = (ushort)(spawnedImportantShaman ? 500 : 250);
 		}
 	}
 
@@ -2143,6 +2143,12 @@ internal sealed class InfernalBoss : ModNPC
 						if (npc.immortal || NPCID.Sets.ImmuneToAllBuffs[npc.type]) { continue; }
 						if (npc.DistanceSQ(logicalLimbPos) > sqrNpcGrabRange) { continue; }
 						if (limbs.Any(l => l.EntityAttachment.NPC == npc)) { continue; }
+						
+						// In phase II, only grab shamans.
+						if (Phase is PhaseType.Abomination && npc.type != ModContent.NPCType<FallenShaman>())
+						{
+							continue;
+						}
 
 						limb.ResetState();
 						limb.EntityAttachment = (EntityRef)npc;
@@ -2221,8 +2227,8 @@ internal sealed class InfernalBoss : ModNPC
 				limb.TargetPosition = logicalLimbPos + ((Vector2.UnitX * NPC.direction).RotatedBy(MathHelper.Pi * +0.2f * NPC.direction) * limb.IK.Length * +0.25f);
 
 				float progressSpeed = 1.5f;
-				// In phase II, keep minions in hand for quite some time, in order to use them as turrets.
-				if (Phase is PhaseType.Abomination && grabEntity is NPC)
+				// In phase II, keep shamans in hand for quite some time, in order to use them as turrets.
+				if (Phase is PhaseType.Abomination && grabEntity is NPC n && n.type == ModContent.NPCType<FallenShaman>())
 				{
 					limb.TargetPosition += new Vector2(((limbIndex % 3) - 1) * 32, -144);
 					if (limb.Animation.Progress > 0.90f)
