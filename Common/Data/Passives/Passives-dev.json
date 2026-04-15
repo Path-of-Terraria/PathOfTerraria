@@ -64,7 +64,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedIntelligenceDexterityPassive",
 		"referenceId": 4,
 		"value": 5,
 		"maxLevel": 1,
@@ -148,7 +148,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedDexterityStrengthPassive",
 		"referenceId": 9,
 		"maxLevel": 1,
 		"value": 5,
@@ -232,7 +232,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedIntelligenceStrengthPassive",
 		"referenceId": 14,
 		"maxLevel": 1,
 		"value": 5,
@@ -308,7 +308,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedIntelligenceDexterityPassive",
 		"referenceId": 19,
 		"maxLevel": 1,
 		"value": 5,
@@ -415,7 +415,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedIntelligenceDexterityPassive",
 		"referenceId": 26,
 		"maxLevel": 1,
 		"value": 5,
@@ -532,7 +532,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedDexterityStrengthPassive",
 		"referenceId": 32,
 		"maxLevel": 1,
 		"value": 5,
@@ -649,7 +649,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedIntelligenceStrengthPassive",
 		"referenceId": 38,
 		"maxLevel": 1,
 		"value": 5,
@@ -754,7 +754,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedIntelligenceDexterityPassive",
 		"referenceId": 44,
 		"maxLevel": 1,
 		"value": 5,
@@ -5872,7 +5872,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedIntelligenceDexterityPassive",
 		"referenceId": 264,
 		"maxLevel": 1,
 		"value": 5,
@@ -5887,7 +5887,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedIntelligenceDexterityPassive",
 		"referenceId": 265,
 		"maxLevel": 1,
 		"value": 5,
@@ -5902,7 +5902,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedIntelligenceStrengthPassive",
 		"referenceId": 266,
 		"maxLevel": 1,
 		"value": 5,
@@ -5912,7 +5912,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedDexterityStrengthPassive",
 		"referenceId": 267,
 		"maxLevel": 1,
 		"value": 5,
