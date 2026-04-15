@@ -110,7 +110,19 @@ public abstract class MappingWorld : Subworld
 	public override void OnEnter()
 	{
 		TimesEntered++;
-		LastSubworldSavePath = SubworldSystem.CurrentPath;
+		LastSubworldSavePath = TryGetCurrentPath();
+	}
+
+	private static string TryGetCurrentPath()
+	{
+		try
+		{
+			return SubworldSystem.CurrentPath;
+		}
+		catch (NullReferenceException)
+		{
+			return null;
+		}
 	}
 
 	private void LoadLoadingScreens()
