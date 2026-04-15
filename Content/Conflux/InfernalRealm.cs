@@ -240,7 +240,7 @@ internal sealed class InfernalRealmRendering : ModSystem
 
 		float drawScale = 2;
 		Point16 baseTilePos = InfernalRealm.ArenaCenter;
-		Vector2 baseWorldPos = baseTilePos.ToWorldCoordinates() + new Vector2(-1, 0);
+		Vector2 baseWorldPos = baseTilePos.ToWorldCoordinates();
 
 		float wallStep = 656 * drawScale;
 
