@@ -324,7 +324,7 @@ internal static class EnemySpawning
 			{
 				for (int yy = y; yy < Main.maxTilesY + 1; yy++)
 				{
-					if (TileUtils.HasUnactuatedSolid(Main.tile[x, yy]))
+					if (TileUtils.HasUnactuatedSolidTop(Main.tile[x, yy]))
 					{
 						y = yy - 1;
 						break;
