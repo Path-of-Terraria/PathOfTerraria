@@ -32,7 +32,7 @@ internal class InfernalRealm : BossDomainSubworld, IOverrideBiome
 	public override (int time, bool isDay) ForceTime => (49000, true);
 	// public override (int time, bool isDay) ForceTime => ((int)(Main.nightLength * 0.5), false);
 
-	public bool FightActive => FightTracker.GetFirstNPC() is { ModNPC: InfernalBoss { Phase: > 0 } };
+	public bool FightActive => FightTracker.GetFirstNPC() is { ModNPC: InfernalBoss { Phase: > 0, CutsceneActive: false } };
 
 	public override List<GenPass> Tasks =>
 	[
@@ -75,21 +75,19 @@ internal class InfernalRealm : BossDomainSubworld, IOverrideBiome
 			Projectile.NewProjectile(src, exitPoint, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0);
 		}
 
-		if (!FightActive)
+		bool inFight = FightActive;
+		// Bias the camera towards the arena's mozaic windows.
+		for (int i = 0; i < 3; i++)
 		{
-			// Bias the camera towards the arena's mozaic windows.
-			for (int i = 0; i < 3; i++)
+			Vector2 point = ArenaCenter.ToWorldCoordinates() + new Vector2((i - 1) * 656 * 2, -900);
+			CameraCurios.Create(new()
 			{
-				Vector2 point = ArenaCenter.ToWorldCoordinates() + new Vector2((i - 1) * 656 * 2, -900);
-				CameraCurios.Create(new()
-				{
-					Identifier = $"{nameof(InfernalRealm)}_Pane{i + 1}",
-					Weight = 0.45f,
-					LengthInSeconds = 1f,
-					Position = point,
-					Range = new(Min: 200, Max: 1800, Exponent: 1.2f),
-				});
-			}
+				Identifier = $"{nameof(InfernalRealm)}_Pane{i + 1}_{(inFight ? "Fight" : "")}",
+				Weight = inFight ? 0.2f : 0.45f,
+				LengthInSeconds = 1f,
+				Position = point,
+				Range = new(Min: 200, Max: 1800, Exponent: 1.2f),
+			});
 		}
 	}
 
