@@ -1524,3 +1524,8 @@ PrismShardItem: {
 }
 
 // NostalgicShardBannerItem.DisplayName: Nostalgic Shard Banner
+
+LogwoodCrossbow: {
+	// DisplayName: Logwood Crossbow
+	// Tooltip: ""
+}
