@@ -367,6 +367,7 @@ internal sealed class InfernalBoss : ModNPC
 	private readonly HashSet<Point16> flamePoints = [];
 
 	public bool CutsceneActive => Cutscene.Type != 0;
+	public bool CurrentlySitting => Phase is PhaseType.Idle || Cutscene is { Type: CutsceneType.Intro, Counter: < 60 };
 
 	public override void Load()
 	{
@@ -381,6 +382,7 @@ internal sealed class InfernalBoss : ModNPC
 		NPCID.Sets.SpecificDebuffImmunity[Type][BuffID.CursedInferno] = true;
 		NPCID.Sets.SpecificDebuffImmunity[Type][BuffID.Shimmer] = true;
 		NPCID.Sets.ShouldBeCountedAsBoss[Type] = true;
+		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, new() { CustomTexturePath = $"{Texture}_Bestiary" });
 		Main.npcFrameCount[Type] = 4;
 
 		minionTypes =
@@ -603,7 +605,7 @@ internal sealed class InfernalBoss : ModNPC
 				if (player.WithinRange(ctx.Center, introRange))
 				{
 					Phase = PhaseType.Bladewielder;
-					Cutscene = new(CutsceneType.Intro, 0, 270);
+					Cutscene = new(CutsceneType.Intro, 0, 250);
 					break;
 				}
 			}
@@ -662,7 +664,7 @@ internal sealed class InfernalBoss : ModNPC
 					Weight = 0.5f,
 					LengthInSeconds = lengthInSeconds,
 					FadeOutLength = 0.2f,
-					Position = ctx.Center,
+					Position = ctx.Center + new Vector2(0, 128),
 					Range = new(Min: 1024, Max: 3072, Exponent: 1.5f),
 					Zoom = +0.5f,
 				});
@@ -975,17 +977,19 @@ internal sealed class InfernalBoss : ModNPC
 		// NPC.noGravity = isClimbing;
 		NPC.noGravity = false;
 
-		bool hasTarget = NPC.HasValidTarget && Phase != PhaseType.Idle;
+		bool hasTarget = NPC.HasValidTarget && !CurrentlySitting;
 		NPCAimedTarget target = NPC.GetTargetData(ignorePlayerTankPets: true);
 		Vector2 targetPos = target.Center;
 		Vector2 walkPos = targetPos;
+		bool fixedPosition = false;
 
 		// Go to the center of the arena if lacking a target in the infernal realm.
 		if (!hasTarget)
 		{
 			bool inNativeArena = SubworldSystem.IsActive<InfernalRealm>();
-			targetPos = inNativeArena ? InfernalRealm.ArenaCenter.ToWorldCoordinates() : ctx.Center;
+			targetPos = inNativeArena ? InfernalRealm.ArenaCenter.ToWorldCoordinates(+8, -128) : ctx.Center;
 			walkPos = targetPos;
+			fixedPosition = true;
 		}
 
 		// In phase I, when using the sword, keep some distance away from the target and also rotate around it.
@@ -1013,7 +1017,7 @@ internal sealed class InfernalBoss : ModNPC
 
 		// Stand up, but only if that doesn't prevent the creature from getting into tight spaces.
 		Vector2Int sizeInTiles = (NPC.Size * new Vector2(0.9f, 2.2f)).ToTileCoordinates();
-		if (TileUtils.TryFitRectangleIntoTilemap(walkPos.ToTileCoordinates() - new Point(0, 1), sizeInTiles, out Vector2Int adjustedPoint))
+		if (!fixedPosition && TileUtils.TryFitRectangleIntoTilemap(walkPos.ToTileCoordinates() - new Point(0, 1), sizeInTiles, out Vector2Int adjustedPoint))
 		{
 			walkPos = (adjustedPoint + (sizeInTiles * 0.5f)).ToWorldCoordinates();
 		}
@@ -1091,8 +1095,13 @@ internal sealed class InfernalBoss : ModNPC
 			}
 		}
 
+		if (fixedPosition)
+		{
+			NPC.Center = walkPos;
+			NPC.velocity = default;
+		}
 		// Pull the body towards tile-grabbing limbs.
-		if (!ctx.Attacking.Active || ctx.Attacking.Progress < ctx.Attacking.Data.Dash.Start || ctx.Attacking.Progress >= ctx.Attacking.Data.Dash.End)
+		else if (!ctx.Attacking.Active || ctx.Attacking.Progress < ctx.Attacking.Data.Dash.Start || ctx.Attacking.Progress >= ctx.Attacking.Data.Dash.End)
 		{
 			float factorSum = 0f;
 			foreach (ref Limb limb in limbs.AsSpan())
@@ -1134,7 +1143,7 @@ internal sealed class InfernalBoss : ModNPC
 			NPC.direction = targetDir.X >= 0f ? 1 : -1;
 		}
 		// Face left when idle.
-		else if (Phase == 0)
+		else if (Phase is PhaseType.Idle || Cutscene.Type is CutsceneType.Intro)
 		{
 			NPC.direction = -1;
 			NPC.spriteDirection = NPC.direction;
@@ -1172,28 +1181,36 @@ internal sealed class InfernalBoss : ModNPC
 			averageAngle = 0f;
 		}
 
-		// Update body rotation. Rotate towards zero faster than from it.
-		float limbNormal = averageAngle;
-		bodyAngle.Target = limbNormal * 0.30f;
-		bool anglingBodyTowardsZero = MathF.Abs(bodyAngle.Target) < MathF.Abs(bodyAngle.Current);
-		bodyAngle.Current = MathUtils.LerpRadians(bodyAngle.Current, bodyAngle.Target, (anglingBodyTowardsZero ? 2.10f : 0.80f) * TimeSystem.LogicDeltaTime);
-		NPC.rotation = bodyAngle.Current;
-		Debug.Assert(!float.IsNaN(bodyAngle.Target));
-		Debug.Assert(!float.IsNaN(bodyAngle.Current));
-		Debug.Assert(!float.IsNaN(NPC.rotation));
+		if (CurrentlySitting)
+		{
+			bodyAngle = default;
+			headAngle = default;
+		}
+		else
+		{
+			// Update body rotation. Rotate towards zero faster than from it.
+			float limbNormal = averageAngle;
+			bodyAngle.Target = limbNormal * 0.30f;
+			bool anglingBodyTowardsZero = MathF.Abs(bodyAngle.Target) < MathF.Abs(bodyAngle.Current);
+			bodyAngle.Current = MathUtils.LerpRadians(bodyAngle.Current, bodyAngle.Target, (anglingBodyTowardsZero ? 2.10f : 0.80f) * TimeSystem.LogicDeltaTime);
+			NPC.rotation = bodyAngle.Current;
+			Debug.Assert(!float.IsNaN(bodyAngle.Target));
+			Debug.Assert(!float.IsNaN(bodyAngle.Current));
+			Debug.Assert(!float.IsNaN(NPC.rotation));
 
-		// Update head rotation. Body-relative.
-		const float HeadAngleMul = 0.5f;
-		bool lookAtTarget = NPC.HasValidTarget && (Phase > 0 || CutsceneActive);
-		bool targetInFront = ((ctx.Center.X - ctx.TargetCenter.X) >= 0 ? 1 : -1) != NPC.spriteDirection;
-		bool isFlipped = NPC.spriteDirection < 0;
-		float flip01 = isFlipped ? 1f : 0f;
-		headAngle.Target = 0f;
-		headAngle.Target = lookAtTarget && targetInFront ? ctx.TargetCenter.AngleFrom(ctx.Center) : flip01 * MathHelper.Pi;
-		headAngle.Target += lookAtTarget && !targetInFront ? (MathHelper.PiOver4 * NPC.spriteDirection) : 0f;
-		headAngle.Target += (flip01 * MathHelper.Pi);
-		headAngle.Target = MathUtils.LerpRadians(headAngle.Target, 0f, 1f - HeadAngleMul);
-		headAngle.Current = MathUtils.LerpRadians(headAngle.Current, headAngle.Target, 2.5f * TimeSystem.LogicDeltaTime);
+			// Update head rotation. Body-relative.
+			const float HeadAngleMul = 0.5f;
+			bool lookAtTarget = NPC.HasValidTarget && (Phase > 0 || CutsceneActive);
+			bool targetInFront = ((ctx.Center.X - ctx.TargetCenter.X) >= 0 ? 1 : -1) != NPC.spriteDirection;
+			bool isFlipped = NPC.spriteDirection < 0;
+			float flip01 = isFlipped ? 1f : 0f;
+			headAngle.Target = 0f;
+			headAngle.Target = lookAtTarget && targetInFront ? ctx.TargetCenter.AngleFrom(ctx.Center) : flip01 * MathHelper.Pi;
+			headAngle.Target += lookAtTarget && !targetInFront ? (MathHelper.PiOver4 * NPC.spriteDirection) : 0f;
+			headAngle.Target += (flip01 * MathHelper.Pi);
+			headAngle.Target = MathUtils.LerpRadians(headAngle.Target, 0f, 1f - HeadAngleMul);
+			headAngle.Current = MathUtils.LerpRadians(headAngle.Current, headAngle.Target, 2.5f * TimeSystem.LogicDeltaTime);
+		}
 	}
 
 	private void InitiateAttacks(in Context ctx)
@@ -1201,7 +1218,7 @@ internal sealed class InfernalBoss : ModNPC
 #if FRIENDLY
 		return;
 #endif
-		bool swingingDuringIntro = Cutscene.Type == CutsceneType.Intro && Cutscene.Counter > (Cutscene.Length - 120);
+		bool swingingDuringIntro = Cutscene.Type == CutsceneType.Intro && Cutscene.Counter > (Cutscene.Length - 80);
 
 		if (Phase == PhaseType.Idle) { return; }
 		if (Cutscene.Type != CutsceneType.None && !swingingDuringIntro) { return; }
@@ -1458,7 +1475,15 @@ internal sealed class InfernalBoss : ModNPC
 	private void ResetOffsets(in Context ctx)
 	{
 		_ = ctx;
-		NPC.gfxOffY = MathF.Sin(((float)Main.timeForVisualEffects / 25f) + (movementAnimation / 40f)) * 6f;
+
+		if (CurrentlySitting)
+		{
+			NPC.gfxOffY = -275;
+		}
+		else
+		{
+			NPC.gfxOffY = MathF.Sin(((float)Main.timeForVisualEffects / 25f) + (movementAnimation / 40f)) * 6f;
+		}
 
 #if IK_PREVIEW
 		NPC.gfxOffY = 0f;
@@ -1469,16 +1494,19 @@ internal sealed class InfernalBoss : ModNPC
 		if (Main.dedServ) { return; }
 
 		// Bias the camera towards the boss.
-		if (Phase is not PhaseType.Idle)
+		bool fightStarted = Phase is not PhaseType.Idle && Cutscene.Type is not CutsceneType.Intro;
+		bool introStarted = Phase is PhaseType.Idle && Cutscene.Type is not CutsceneType.Intro;
+		if (fightStarted || !introStarted)
 		{
 			CameraCurios.Create(new()
 			{
-				Identifier = nameof(InfernalBoss),
-				Weight = 0.2f,
+				Identifier = $"{nameof(InfernalBoss)}{(fightStarted ? "" : "_Idle")}",
+				Weight = fightStarted ? 0.2f : 0.3f,
+				Zoom = fightStarted ? 0f : 0.5f,
 				LengthInSeconds = 1f,
-				Position = ctx.Center,
-				Range = new(Min: 1024, Max: 2000, Exponent: 2.0f),
-				Callback = new NPCTracker(NPC).Center,
+				Position = ctx.Center + (!introStarted ? new Vector2(0, +128) : default),
+				Range = fightStarted ? new(Min: 1000, Max: 2000, Exponent: 2.0f) : new(Min: 300, Max: 1000, Exponent: 1.5f),
+				Callback = fightStarted ? new NPCTracker(NPC).Center : null,
 			});
 		}
 
@@ -1501,6 +1529,8 @@ internal sealed class InfernalBoss : ModNPC
 #if HIDE_SWORD
 		return;
 #endif
+
+		bool isSitting = CurrentlySitting;
 
 		// Blade tile collision effects.
 		Vector2 forward = Blade.Rotation.ToRotationVector2();
@@ -1529,6 +1559,7 @@ internal sealed class InfernalBoss : ModNPC
 					continue;
 				}
 
+				if (isSitting) { continue; }
 				if (!IsTileSuitableForFlames(x, y)) { continue; }
 
 				Dust.NewDustPerfect(point, DustID.Torch, Scale: 2f, Alpha: 128);
@@ -2553,6 +2584,13 @@ internal sealed class InfernalBoss : ModNPC
 		// Store historical information.
 		Array.Copy(BladeHistory, 0, BladeHistory, 1, BladeHistory.Length - 1);
 
+		if (CurrentlySitting)
+		{
+			Blade.Position = ctx.Center + new Vector2(-150, -202);
+			Blade.Rotation = MathHelper.ToRadians(108.5f);
+			return;
+		}
+
 		if (Phase > PhaseType.Bladewielder)
 		{
 			bladeVelocity.Pos.Y += 20f * TimeSystem.LogicDeltaTime;
@@ -2709,9 +2747,11 @@ internal sealed class InfernalBoss : ModNPC
 	{
 		Context ctx = new(NPC);
 
-		if (NPC.IsABestiaryIconDummy && limbs.Length == 0)
+		if (CurrentlySitting || NPC.IsABestiaryIconDummy) // && limbs.Length == 0)
 		{
-			SetupLimbs(in ctx);
+			// SetupLimbs(in ctx);
+			RenderBlade(sb, screenPos);
+			return true;
 		}
 
 		helmetTexture ??= ModContent.Request<Texture2D>($"{Texture}_Helmet", AssetRequestMode.ImmediateLoad);
