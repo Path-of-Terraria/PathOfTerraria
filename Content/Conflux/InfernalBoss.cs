@@ -969,6 +969,8 @@ internal sealed class InfernalBoss : ModNPC
 
 	private void BodyMovement(in Context ctx)
 	{
+		NPC.GravityMultiplier = MultipliableFloat.One * 2.5f;
+		
 		int numTotalLimbs = limbs.Count(l => l.Role.HasFlag(LimbRole.Walking));
 		int numAvailableLimbs = limbs.Count(l => l.Role.HasFlag(LimbRole.Walking) && !l.IsRenderedUseless);
 		int numAttachedLimbs = limbs.Count(l => l.TileAttachment != null && l.Role.HasFlag(LimbRole.Walking) && !l.IsRenderedUseless);
