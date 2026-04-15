@@ -1530,7 +1530,17 @@ PrismShardItem: {
 
 NostalgicShardBannerItem.DisplayName: Nostalgic Shard Banner
 
-LogwoodCrossbow: {
-	DisplayName: Logwood Crossbow
+LogwoodPistol: {
+	DisplayName: Logwood Pistol
+	Description:
+		'''
+		Always inflicts Poison
+		Buullets hitting already poisoned enemies will bounce between up to 5 other poisoned enemies
+		'''
+	Tooltip: "'Wet for safety reasons.'"
+}
+
+BloatingLeech: {
+	DisplayName: Bloating Leech
 	Tooltip: ""
 }

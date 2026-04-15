@@ -2,7 +2,6 @@
 using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Content.Skills.Ranged.RainOfArrowsVFX;
 using PathOfTerraria.Core.Items;
-using PathOfTerraria.Utilities;
 using System.Collections.Generic;
 using System.IO;
 using Terraria.DataStructures;
@@ -11,7 +10,7 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Swamp;
 
-internal class LogwoodCrossbow : Gear
+internal class LogwoodPistol : Gear
 {
 	internal class LogwoodProjectile : GlobalProjectile
 	{
@@ -22,16 +21,12 @@ internal class LogwoodCrossbow : Gear
 		private bool _logWood = false;
 		private int _hits = 0;
 
-		public override bool AppliesToEntity(Projectile entity, bool lateInstantiation)
-		{
-			return entity.arrow;
-		}
-
 		public override void OnSpawn(Projectile projectile, IEntitySource source)
 		{
-			if (source is EntitySource_ItemUse_WithAmmo { Item: Item item })
+			if (source is EntitySource_ItemUse_WithAmmo { Item: Item item } && item.type == ModContent.ItemType<LogwoodPistol>())
 			{
 				_logWood = true;
+				projectile.extraUpdates++;
 			}
 		}
 
@@ -48,17 +43,23 @@ internal class LogwoodCrossbow : Gear
 			return null;
 		}
 
+		public override void AI(Projectile projectile)
+		{
+			if (_logWood && Main.rand.NextBool(10))
+			{
+				Dust dust = Main.dust[Dust.NewDust(projectile.position, projectile.width, projectile.height, DustID.Poisoned)];
+				dust.fadeIn = Main.rand.NextFloat(0.6f, 1.8f);
+				dust.scale = 0.2f;
+				dust.alpha = 155;
+			}
+		}
+
 		public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (target.HasBuff<PoisonedDebuff>() && _hits < 5)
 			{
 				_hitNpcs[_hits] = target.whoAmI;
 				_hits++;
-				
-				if (projectile.penetrate >= 0)
-				{
-					projectile.penetrate++;
-				}
 
 				PriorityQueue<int, float> options = new();
 
@@ -88,6 +89,11 @@ internal class LogwoodCrossbow : Gear
 
 				if (options.Count > 0)
 				{
+					if (projectile.penetrate >= 0)
+					{
+						projectile.penetrate++;
+					}
+
 					NPC npc = Main.npc[options.Dequeue()];
 					float len = projectile.velocity.Length();
 					projectile.velocity = projectile.DirectionTo(npc.Center) * len;
@@ -114,36 +120,53 @@ internal class LogwoodCrossbow : Gear
 		public override void SendExtraAI(Projectile projectile, BitWriter bitWriter, BinaryWriter binaryWriter)
 		{
 			bitWriter.WriteBit(_logWood);
+
+			if (_logWood)
+			{
+ 				binaryWriter.Write((byte)projectile.extraUpdates);
+			}
 		}
 
 		public override void ReceiveExtraAI(Projectile projectile, BitReader bitReader, BinaryReader binaryReader)
 		{
 			_logWood = bitReader.ReadBit();
+
+			if (_logWood)
+			{
+				projectile.extraUpdates = binaryReader.ReadByte();
+			}
 		}
+	}
+
+	protected override string GearLocalizationCategory => "Gun";
+
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.IsUnique = true;
+		//staticData.AltUseDescription = this.GetLocalization("AltUseDescription");
+		staticData.Description = this.GetLocalization("Description");
 	}
 
 	public override void SetDefaults()
 	{
 		base.SetDefaults();
 
-		Item.CloneDefaults(ItemID.WoodenBow);
+		Item.CloneDefaults(ItemID.FlintlockPistol);
 		Item.width = 42;
 		Item.height = 22;
 		Item.useTime = 22;
 		Item.useAnimation = 22;
 		Item.shootSpeed = 12;
 		Item.useStyle = ItemUseStyleID.Shoot;
+		Item.useAmmo = AmmoID.Bullet;
 		Item.channel = false;
 		Item.damage = 185;
 		Item.crit = 6;
 
 		PoTInstanceItemData data = this.GetInstanceData();
-		data.ItemType = Common.Enums.ItemType.Bow;
-	}
-
-	public override bool? UseItem(Player player)
-	{
-
-		return null;
+		data.ItemType = Common.Enums.ItemType.Gun;
 	}
 }
