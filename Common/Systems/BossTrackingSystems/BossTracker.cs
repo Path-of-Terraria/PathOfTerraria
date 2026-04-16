@@ -110,7 +110,7 @@ internal sealed class BossTracker : ModSystem
 			// Spawns the Wall of Flesh's box around itself, which is overriden by this method
 			OnDeathNPC.OnDeathEffects(self);
 
-			if (CheckSpecialConditions(self, isBoss) && SubworldSystem.Current is not null)
+			if (CheckSpecialConditions(self, isBoss))
 			{
 				// Automatically add/send the boss downed cache/packet
 				AddDowned(self.netID, false, true, false);

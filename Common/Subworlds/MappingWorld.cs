@@ -30,7 +30,13 @@ public abstract class MappingWorld : Subworld
 	public override int Width => 1000;
 	public override int Height => 1000;
 
-	public override bool ShouldSave => true;
+	public override bool ShouldSave =>
+#if DEBUG
+		false;
+#else
+		true;
+#endif
+
 	public override bool NoPlayerSaving => false;
 
 	/// <summary>

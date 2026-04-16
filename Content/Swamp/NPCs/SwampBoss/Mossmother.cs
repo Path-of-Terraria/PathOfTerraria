@@ -216,8 +216,6 @@ internal partial class Mossmother : ModNPC
 		rule.OnSuccess(new OneFromOptionsDropRule(1, 1, ModContent.ItemType<BloatingLeech>(), ModContent.ItemType<LogwoodPistol>()));
 
 		npcLoot.Add(rule);
-
-		npcLoot.AddCommon(ItemID.Eggnog);
 	}
 
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)

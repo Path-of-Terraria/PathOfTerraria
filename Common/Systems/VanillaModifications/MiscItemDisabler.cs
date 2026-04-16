@@ -91,7 +91,7 @@ internal class MiscItemDisabler : ModSystem
 			//		Compiler Exception Type: System.Collections.Generic.KeyNotFoundException
 			//		Compiler Exception Message: The given key was not present in the dictionary.
 			//		Compiler Exception Stack Trace: mscorlib.dll!System.ThrowHelper.ThrowKeyNotFoundException() + 0x5
-			// mscorlib.dll!System.Collections.Generic.Dictionary`2.get_Item(TKey) + 0x1E
+			//			mscorlib.dll!System.Collections.Generic.Dictionary`2.get_Item(TKey) + 0x1E
 			// Why? I don't know. Why only in the domain? I don't know.
 			// But this works. - GabeHasWon
 
