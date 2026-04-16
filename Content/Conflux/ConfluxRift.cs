@@ -88,6 +88,7 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile, 
 		Closing = 1 << 1,
 		PreGenerated = 1 << 2,
 		NaturallySpawned = 1 << 3,
+		Special = 1 << 4,
 	}
 
 	private record struct VisualParams(int DustId, Color ColorBase, Color lightA, Color lightB, string? Filter);
@@ -154,7 +155,7 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile, 
 	public Flags BitFlags
 	{
 		get => Unsafe.BitCast<float, Flags>(Projectile.ai[0]);
-		set => Projectile.ai[0] = Unsafe.BitCast<Flags, float>(value);
+		set => Projectile.ai[0] = FlagsToFloat(value);
 	}
 	/// <summary> The synchronized progress of the rift's encounter. </summary>
 	public ref float Progress => ref Projectile.ai[1];
@@ -336,15 +337,16 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile, 
 		}
 
 		// Attract the camera.
+		bool isSpecial = BitFlags.HasFlag(Flags.Special);
 		CameraCurios.Create(new()
 		{
 			Identifier = $"{nameof(ConfluxRift)}_{Projectile.identity}_{(Activated ? "Active" : "Inactive")}",
-			Weight = Activated ? 0.125f : 0.55f,
+			Weight = Activated ? 0.125f : (isSpecial ? 0.75f : 0.55f),
 			LengthInSeconds = 1,
 			FadeInLength = 1.0f,
 			FadeOutLength = 1.0f,
 			Position = Projectile.Center,
-			Range = new(Min: 256, Max: 800, Exponent: 2.0f),
+			Range = new(Min: 256, Max: isSpecial ? 2500 : 800, Exponent: 2.0f),
 		});
 	}
 	private void UpdateAudio()
@@ -726,8 +728,12 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile, 
 		{
 			ConfluxRiftKind.Glacial => ModContent.ItemType<GlacialConflux>(),
 			ConfluxRiftKind.Celestial => ModContent.ItemType<CelestialConflux>(),
-			_ => ModContent.ItemType<InfernalConflux>(),
+			ConfluxRiftKind.Infernal => ModContent.ItemType<InfernalConflux>(),
+			_ => -1,
 		};
+
+		if (rewardType < 0) { return; }
+		
 		int rewardAmount = Progress switch
 		{
 			<= 0.20f => 0,
@@ -739,7 +745,8 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile, 
 
 		float multiplier = 1f;
 
-		if (SubworldSystem.Current != null)
+		// If this is an exploration realm, or another in which rifts are pre-generated.
+		if (ConfluxRifts.GetGenerationConfig() is { MaxAmount: > 0 })
 		{
 			// 5% increase per map tier.
 			multiplier += (MappingWorld.MapTier * 0.05f);
@@ -777,6 +784,11 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile, 
 			ConfluxRiftKind.Celestial => new(DustID.WitherLightning, Color.MediumVioletRed, ColorUtils.FromHexRgb(0x7f3b82), ColorUtils.FromHexRgb(0xe4a4be), "Nebula"),
 			_ => throw new NotImplementedException(),
 		};
+	}
+
+	public static float FlagsToFloat(Flags flags)
+	{
+		return Unsafe.BitCast<Flags, float>(flags);
 	}
 
 	bool IMapIcon.ShowMapIcon(Projectile projectile)
