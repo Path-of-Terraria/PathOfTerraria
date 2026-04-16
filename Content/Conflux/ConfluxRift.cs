@@ -1,28 +1,30 @@
-﻿using System;
+﻿// #define ALWAYS_DISPLAY_MAP_ICONS
+
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using PathOfTerraria.Common.Conflux;
 using PathOfTerraria.Common.Encounters;
 using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.MapContent;
 using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Common.Utilities;
+using PathOfTerraria.Core.Camera;
 using PathOfTerraria.Core.Time;
 using PathOfTerraria.Utilities;
 using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
 using ReLogic.Content;
 using ReLogic.Utilities;
+using SubworldLibrary;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.Localization;
-using Terraria.ModLoader.Config;
 
 #nullable enable
 
@@ -82,8 +84,10 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile, 
 	[Flags]
 	public enum Flags : int
 	{
-		Activated = 1,
-		Closing = 2,
+		Activated = 1 << 0,
+		Closing = 1 << 1,
+		PreGenerated = 1 << 2,
+		NaturallySpawned = 1 << 3,
 	}
 
 	private record struct VisualParams(int DustId, Color ColorBase, Color lightA, Color lightB, string? Filter);
@@ -149,11 +153,11 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile, 
 	/// <summary> The rift's state flags. </summary>
 	public Flags BitFlags
 	{
-		get => Unsafe.BitCast<float, Flags>(Projectile.ai[1]);
-		set => Projectile.ai[1] = Unsafe.BitCast<Flags, float>(value);
+		get => Unsafe.BitCast<float, Flags>(Projectile.ai[0]);
+		set => Projectile.ai[0] = Unsafe.BitCast<Flags, float>(value);
 	}
 	/// <summary> The synchronized progress of the rift's encounter. </summary>
-	public ref float Progress => ref Projectile.ai[2];
+	public ref float Progress => ref Projectile.ai[1];
 	/// <summary> Whether the rift has been opened. </summary>
 	public bool Activated => (BitFlags & Flags.Activated) != 0;
 	/// <summary> Whether the rift is about to disappear. </summary>
@@ -173,10 +177,6 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile, 
 	public override void SetStaticDefaults()
 	{
 		ProjectileID.Sets.IsInteractable[Type] = true;
-
-		if (!Main.dedServ)
-		{
-		}
 	}
 	public override void SetDefaults()
 	{
@@ -471,6 +471,11 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile, 
 			RiftInteractionHandler.Send(Projectile.identity);
 		}
 
+		if (Main.netMode != NetmodeID.MultiplayerClient)
+		{
+			ConfluxRifts.OnRiftActivated(this);
+		}
+
 		// Effects.
 		if (!Main.dedServ)
 		{
@@ -508,6 +513,7 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile, 
 	public void UpdateProgress()
 	{
 		if (Main.netMode == NetmodeID.MultiplayerClient) { return; }
+		if (!Encounter.IsValid) { return; }
 
 		float progress = Encounter.Instance.EncounterScore / MathF.Max(0.001f, Encounter.Instance.TotalBaseScore);
 		if (progress != Progress)
@@ -732,10 +738,19 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile, 
 		};
 
 		float multiplier = 1f;
-		// 5% increase per map tier.
-		multiplier += (MappingWorld.MapTier * 0.05f);
-		// 2% increase per map modifier weight.
-		multiplier += (MappingWorld.TotalWeight() * 0.02f);
+
+		if (SubworldSystem.Current != null)
+		{
+			// 5% increase per map tier.
+			multiplier += (MappingWorld.MapTier * 0.05f);
+			// 2% increase per map modifier weight.
+			multiplier += (MappingWorld.TotalWeight() * 0.02f);
+		}
+		// Reduced drops in naturally spawned overworld rifts.
+		else if (BitFlags.HasFlag(Flags.NaturallySpawned))
+		{
+			multiplier = 0.6f;
+		}
 
 		rewardAmount = (int)MathF.Floor(rewardAmount * multiplier);
 
@@ -762,6 +777,19 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile, 
 			ConfluxRiftKind.Celestial => new(DustID.WitherLightning, Color.MediumVioletRed, ColorUtils.FromHexRgb(0x7f3b82), ColorUtils.FromHexRgb(0xe4a4be), "Nebula"),
 			_ => throw new NotImplementedException(),
 		};
+	}
+
+	bool IMapIcon.ShowMapIcon(Projectile projectile)
+	{
+#if !ALWAYS_DISPLAY_MAP_ICONS
+		// Naturally generated rifts only display a map icon up-close.
+		if (BitFlags.HasFlag(Flags.NaturallySpawned))
+		{
+			return Main.LocalPlayer.WithinRange(projectile.Center, 2250);
+		}
+#endif
+		
+		return true;
 	}
 
 	bool IRightClickableProjectile.RightClick(Player player, bool mouseDirectlyOver)
