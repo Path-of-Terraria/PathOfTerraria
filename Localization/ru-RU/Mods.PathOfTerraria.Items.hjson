@@ -1530,4 +1530,10 @@ LogwoodPistol: {
 BloatingLeech: {
 	// DisplayName: Bloating Leech
 	// Tooltip: ""
+	/* Description:
+		'''
+		Latches on to enemies, bloating with blood and exploding over time.
+		The leech bloats quicker on bleeding enemies
+		''' */
+	// AltUseDescription: Right click to detatch the leech from the victim, bursing the leech instantly with a smaller explosion
 }

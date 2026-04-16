@@ -5,6 +5,7 @@ using PathOfTerraria.Content.Projectiles.Utility;
 using ReLogic.Content;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Swamp.NPCs.SwampBoss;
@@ -14,6 +15,24 @@ namespace PathOfTerraria.Content.Swamp.NPCs.SwampBoss;
 [AutoloadBossHead]
 internal partial class Mossmother : ModNPC
 {
+	public class LastMossmotherCondition : IItemDropRuleCondition
+	{
+		public bool CanDrop(DropAttemptInfo info)
+		{
+			return NPC.CountNPCS(ModContent.NPCType<Mossmother>()) == 1;
+		}
+
+		public bool CanShowItemDropInUI()
+		{
+			return true;
+		}
+
+		public string? GetConditionDescription()
+		{
+			return null;
+		}
+	}
+
 	public enum BehaviorState : byte
 	{
 		Huddled,
@@ -66,7 +85,7 @@ internal partial class Mossmother : ModNPC
 		NPCID.Sets.TrailCacheLength[Type] = TrailingIndex;
 		NPCID.Sets.TrailingMode[Type] = 1;
 
-		NPCID.Sets.NPCBestiaryDrawOffset[Type] = new NPCID.Sets.NPCBestiaryDrawModifiers() { PortraitPositionYOverride = -50, PortraitPositionXOverride = 4 };
+		NPCID.Sets.NPCBestiaryDrawOffset[Type] = new NPCID.Sets.NPCBestiaryDrawModifiers() { PortraitPositionYOverride = -30, PortraitPositionXOverride = 4 };
 
 		Face = ModContent.Request<Texture2D>(Texture + "_Face");
 	}
@@ -189,6 +208,16 @@ internal partial class Mossmother : ModNPC
 
 		_animationSpeedTarget = MathHelper.Lerp(_animationSpeedTarget, target, 0.02f);
 		_animationSpeed += _animationSpeedTarget;
+	}
+
+	public override void ModifyNPCLoot(NPCLoot npcLoot)
+	{
+		LeadingConditionRule rule = new(new LastMossmotherCondition());
+		rule.OnSuccess(new OneFromOptionsDropRule(1, 1, ModContent.ItemType<BloatingLeech>(), ModContent.ItemType<LogwoodPistol>()));
+
+		npcLoot.Add(rule);
+
+		npcLoot.AddCommon(ItemID.Eggnog);
 	}
 
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)

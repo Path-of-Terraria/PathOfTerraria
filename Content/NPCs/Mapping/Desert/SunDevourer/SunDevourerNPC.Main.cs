@@ -94,7 +94,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 		NPC.noTileCollide = true;
 		NPC.lavaImmune = true;
 		NPC.noGravity = true;
-		NPC.boss = false;
+		NPC.boss = true;
 		NPC.lifeMax = 10000;
 		NPC.defense = 20;
 		NPC.aiStyle = -1;

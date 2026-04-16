@@ -102,6 +102,8 @@ internal sealed class BossTracker : ModSystem
 	{
 		bool isBoss = ContentSamples.NpcsByNetId[self.netID].boss || NPCID.Sets.ShouldBeCountedAsBoss[self.type];
 		bool isPillar = self.type is NPCID.LunarTowerNebula or NPCID.LunarTowerSolar or NPCID.LunarTowerStardust or NPCID.LunarTowerVortex;
+		int type = self.type;
+		bool oldBoss = self.boss;
 
 		if (SubworldSystem.Current is BossDomainSubworld or IExplorationWorld && isBoss && !isPillar)
 		{
@@ -124,8 +126,11 @@ internal sealed class BossTracker : ModSystem
 				}
 			}
 
-			self.type = NPCID.None;
-			self.boss = false;
+			if (SubworldSystem.Current is not IExplorationWorld)
+			{
+				self.type = NPCID.None;
+				self.boss = false;
+			}
 		}
 
 		orig(self, closestPlayer);
