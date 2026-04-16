@@ -1,5 +1,5 @@
 displayName = Path of Terraria (BETA)
 author = ScottieKnowz & GabeHasWon
 modReferences = SubworldLibrary, HousingAPI
-dllReferences = NPCUtils, StructureHelper, Wayfarer
+dllReferences = NPCUtils, StructureHelper, Wayfarer, Daybreak
 version = 0.3.0.1
