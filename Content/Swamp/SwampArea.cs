@@ -26,7 +26,7 @@ namespace PathOfTerraria.Content.Swamp;
 
 #nullable enable
 
-internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
+internal class SwampArea : MappingWorld, IExplorationWorld
 {
 	public const int FloorY = 470;
 	public const int WaterY = FloorY + 10;
@@ -286,9 +286,19 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 					Tile.SmoothSlope(i, j, false);
 				}
 
+				if (tile.HasTile && tile.TileType == ModContent.TileType<CypressLeaves>())
+				{
+					OpenFlags flags = OpenExtensions.GetOpenings(i, j, false);
+
+					if (flags == (OpenFlags)0b_1111)
+					{
+						tile.HasTile = false;
+					}
+				}
+
 				if (WorldUtilities.SolidUnslopedTile(i, j))
 				{
-					if (tile.TileType == TileID.LeafBlock)
+					if (tile.TileType == ModContent.TileType<MangroveLeaves>() || tile.TileType == ModContent.TileType<CypressLeaves>())
 					{
 						if (!WorldUtilities.SolidTile(i, j + 1))
 						{
@@ -304,11 +314,11 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 
 								if (isWall)
 								{
-									GenPlacement.FastPlaceWall(i, j + v, WallID.LivingLeaf);
+									GenPlacement.FastPlaceWall(i, j + v, ModContent.WallType<SwampVineWall>());
 								}
-								else
+								else if (tile.TileType == ModContent.TileType<CypressLeaves>())
 								{
-									GenPlacement.FastPlaceTile(i, j + v, TileID.Vines);
+									GenPlacement.FastPlaceTile(i, j + v, ModContent.TileType<CypressVines>());
 								}
 							}
 						}
@@ -441,7 +451,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 				}
 
 				float str = MathF.Abs(j - vine.Length / 2) / (vine.Length / 2f);
-				GenPlacement.WallCircle(pos, baseStrength * str + 1.05f, WallID.LivingLeaf);
+				GenPlacement.WallCircle(pos, baseStrength * str + 1.05f, ModContent.WallType<SwampVineWall>());
 
 				if (Random.NextBool(10))
 				{
@@ -454,7 +464,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 
 					for (int v = 0; v < length; ++v)
 					{
-						GenPlacement.WallCircle(pos + new Vector2(0, v), 1.5f - v / length, WallID.LivingLeaf);
+						GenPlacement.WallCircle(pos + new Vector2(0, v), 1.5f - v / length, ModContent.WallType<SwampVineWall>());
 
 						if (Random.NextBool(8))
 						{
@@ -803,7 +813,8 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 
 			for (int i = 0; i < 3; ++i)
 			{
-				NPC.NewNPC(new EntitySource_WorldGen(), ArenaMiddleX * 16, y * 16, ModContent.NPCType<Mossmother>(), 0, 0, 1);
+				int npc = NPC.NewNPC(new EntitySource_WorldGen(), ArenaMiddleX * 16, y * 16, ModContent.NPCType<Mossmother>(), 0, 0, 1);
+				Main.npc[npc].localAI[3] = i;
 			}
 		}
 
@@ -900,10 +911,5 @@ internal class SwampArea : MappingWorld, IExplorationWorld, IOverrideBiome
 			Encounter encounter = EncounterIO.CreateEncounterFromModPath(PoTMod.Instance, "Content/Encounters/SwampMangrove");
 			encounter.MoveEverythingTo(position.ToPoint16());
 		}
-	}
-
-	public void OverrideBiome()
-	{
-		Main.bgStyle = 0;
 	}
 }

@@ -22,6 +22,11 @@ internal partial class Mossmother
 
 		if (State == BehaviorState.Huddled) // Do nothing until all players are nearby, at which point, start the fight
 		{
+			if (Timer == 1 && Main.netMode != NetmodeID.MultiplayerClient)
+			{
+				VisualVariant = Main.rand.Next(3);
+			}
+
 			NPC.dontTakeDamage = true;
 			bool allNearby = true;
 
@@ -280,7 +285,7 @@ internal partial class Mossmother
 
 	private void SpawnVenomDust()
 	{
-		Vector2 angle = (Main.rand.NextBool() ? new Vector2(42, 110) : new Vector2(-58, 110)).RotatedBy(NPC.rotation);
+		Vector2 angle = (Main.rand.NextBool() ? new Vector2(42, 60) : new Vector2(-48, 60)).RotatedBy(NPC.rotation);
 		byte opacity = (byte)(byte.MaxValue * PoisonShaderFunctionality.Intensity);
 		Vector2 velocity = angle.SafeNormalize(Vector2.Zero).RotatedByRandom(0.4f) * Main.rand.NextFloat(5, 12);
 		int type = Main.rand.NextBool(3) ? ModContent.DustType<BrightVenomDust>() : DustID.Venom;
@@ -367,6 +372,7 @@ internal partial class Mossmother
 		writer.Write(ReadyForGas);
 		writer.Write((Half)MiscTwo);
 		writer.Write((byte)movementSpline.Length);
+		writer.Write((byte)VisualVariant);
 
 		foreach (Vector2 position in movementSpline)
 		{
@@ -380,6 +386,7 @@ internal partial class Mossmother
 		ReadyForGas = reader.ReadBoolean();
 		MiscTwo = (float)reader.ReadHalf();
 		byte length = reader.ReadByte();
+		VisualVariant = reader.ReadByte();
 		movementSpline = new Vector2[length];
 
 		for (int i = 0; i < length; ++i)

@@ -2,13 +2,13 @@
 
 public class AttributesPlayer : ModPlayer
 {
-	public int LifeBoost => Strength / 10 * 5;
+	public int LifeBoost => (int)(Strength / 10f) * 5;
 	public float UseSpeedBoost => Dexterity / 1000f;
-	public int ManaBoost => Intelligence / 10 * 5;
+	public int ManaBoost => (int)(Intelligence / 10f) * 5;
 
-	public int Strength;
-	public int Dexterity;
-	public int Intelligence;
+	public float Strength;
+	public float Dexterity;
+	public float Intelligence;
 
 	public override void ResetEffects()
 	{
@@ -18,6 +18,6 @@ public class AttributesPlayer : ModPlayer
 		Player.statManaMax2 += ManaBoost;
 		
 		// Reset
-		Strength = Dexterity = Intelligence = 0;
+		Strength = Dexterity = Intelligence = 0f;
 	}
 }

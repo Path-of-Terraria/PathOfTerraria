@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using Mono.Cecil;
 using PathOfTerraria.Common.Mapping;
+using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.Systems.ModPlayers.LivesSystem;
 using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Content.Items.Consumables.Maps;
@@ -220,8 +222,9 @@ public class MapDeviceTile : ModTile
 		Texture2D portalTexture = AssetUtils.ImmediateValue(PortalTexturePath, ref _portalTex);
 		Texture2D? itemTex = null;
 		Color baseColor = entity.GetPortalColor();
+		Item portalItem = entity.StoredMap;
 
-		if (entity.StoredMap is { IsAir: false, type: int itemType })
+		if (portalItem is { IsAir: false, type: int itemType })
 		{
 			itemTex = TextureAssets.Item[itemType].Value;
 		}
@@ -436,6 +439,13 @@ internal class MapDeviceEntity : ModTileEntity
 
 	public override void SaveData(TagCompound tag)
 	{
+		// Portal state
+		if (PortalActive)
+		{
+			tag.Add("portalActive", true);
+			tag.Add("portalUsesLeft", PortalUsesLeft);
+		}
+
 		// Map
 		if (StoredMap is { IsAir: false })
 		{
@@ -467,6 +477,10 @@ internal class MapDeviceEntity : ModTileEntity
 	}
 	public override void LoadData(TagCompound tag)
 	{
+		// Portal state
+		PortalActive = tag.GetBool("portalActive");
+		PortalUsesLeft = tag.GetInt("portalUsesLeft");
+
 		// Map
 		if (tag.TryGet("item", out TagCompound itemTag))
 		{
@@ -676,12 +690,8 @@ internal class MapDeviceEntity : ModTileEntity
 	/// </summary>
 	public bool TryEnteringPortal(bool evalMode = false, byte? netSender = null)
 	{
-		if (!PortalActive)
-		{
-			return false;
-		}
-
-		if (StoredMap is not { IsAir: false, ModItem: Map m } && Injection == null)
+		Item portalItem = StoredMap;
+		if (!PortalActive || portalItem is not { IsAir: false, ModItem: Map })
 		{
 			return false;
 		}
@@ -716,15 +726,10 @@ internal class MapDeviceEntity : ModTileEntity
 			MapDeviceInteraction.Send(ID, MapDeviceInteraction.Kind.EnterPortal, toClient: netSender.Value);
 		}
 
-		// Roll down uses and close the portal if needed.
 		if (Main.netMode != NetmodeID.MultiplayerClient)
 		{
-			PortalUsesLeft--;
-
-			if (PortalUsesLeft <= 0)
-			{
-				TryClosingPortal();
-			}
+			Player player = Main.netMode == NetmodeID.SinglePlayer ? Main.LocalPlayer : Main.player[netSender!.Value];
+			player.GetModPlayer<BossDomainLivesPlayer>().SetActiveMapDevice(Position);
 		}
 
 		return true;
@@ -761,6 +766,9 @@ internal class MapDeviceEntity : ModTileEntity
 		{
 			return false;
 		}
+
+		// Ensure a newly opened portal starts from a fresh save.
+		MappingWorld.DeleteSavedSubworld();
 
 		PortalActive = true;
 		PortalUsesLeft = int.MaxValue;
@@ -829,6 +837,7 @@ internal class MapDeviceEntity : ModTileEntity
 		PortalActive = false;
 		PortalUsesLeft = 0;
 		Injection = null;
+		MappingWorld.DeleteSavedSubworld();
 
 		// Broadcast the interaction.
 		if (Main.netMode == NetmodeID.Server)
@@ -900,7 +909,7 @@ internal class MapDeviceEntity : ModTileEntity
 		}
 
 		Injection = (resourceId, resource.Cost);
-		MapResources.AddOrRemove(resourceId, -resource.Cost);
+		MapResources.ModifyValue(resourceId, -resource.Cost);
 
 		// Broadcast the interaction.
 		if (Main.netMode == NetmodeID.Server)
@@ -947,7 +956,7 @@ internal class MapDeviceEntity : ModTileEntity
 
 		if (MapResources.TryGet(injection.Id, out MapResource resource))
 		{
-			MapResources.AddOrRemove(injection.Id, +injection.Amount);
+			MapResources.ModifyValue(injection.Id, +injection.Amount, discovery: ResourceDiscovery.Never);
 		}
 
 		Injection = null;

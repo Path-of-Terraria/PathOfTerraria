@@ -55,7 +55,7 @@ public class AffixRegistry : ILoadable
 	/// <summary> Unsafely acquires an ItemAffixData entry specific to the provided arguments. Errors if no such data exists! </summary>
 	public static ItemAffixData GetItemData(Type affixType, Item item)
 	{
-		return GetItemData(affixType, item.GetInstanceData().ItemType);
+		return GetItemData(affixType, item.ResolveToSingleType(item.GetInstanceData().ItemType));
 	}
 	/// <summary> Unsafely acquires an ItemAffixData entry specific to the provided arguments. Errors if no such data exists! </summary>
 	public static ItemAffixData GetItemData(Type affixType, ItemType itemType)
@@ -76,7 +76,7 @@ public class AffixRegistry : ILoadable
 	/// <summary> Safely tries to acquire an affix item distribution entry specific to the provided arguments. </summary>
 	public static ItemAffixData? TryGetItemData(Type affixType, Item item)
 	{
-		return TryGetItemData(affixType, item.GetInstanceData().ItemType);
+		return TryGetItemData(affixType, item.ResolveToSingleType(item.GetInstanceData().ItemType));
 	}
 	/// <summary> Safely tries to acquire an affix item distribution entry specific to the provided arguments. </summary>
 	public static ItemAffixData? TryGetItemData(Type affixType, ItemType itemType)
@@ -209,6 +209,12 @@ public class AffixRegistry : ILoadable
 		int randomIndex = Main.rand.Next(0, filteredAffixData.Count);
 
 		return filteredAffixData[randomIndex];
+	}
+
+	public static ItemAffixData? GetRandomAffixData(Item item, IEnumerable<ItemAffixData>? excludedAffixes = null)
+	{
+		ItemType itemType = item.ResolveToSingleType(item.GetInstanceData().ItemType);
+		return GetRandomAffixDataByItemType(itemType, excludedAffixes);
 	}
 
 	/// <summary>

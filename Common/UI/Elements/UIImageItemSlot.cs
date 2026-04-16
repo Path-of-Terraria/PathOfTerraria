@@ -25,7 +25,7 @@ public class UIImageItemSlot
 	Asset<Texture2D> iconTexture,
 	UIImageItemSlot.SlotWrapper itemHandler,
 	int context = ItemSlot.Context.InventoryItem,
-	(string Key, object Arg0)? hoverText = null,
+	(string Key, object? Arg0)? hoverText = null,
 	bool skipAutoSizing = false,
 	float iconScalingSize = UIImageItemSlot.DefaultIconSize,
 	(int slot, bool vanilla)? armorHideSlot = null
@@ -115,7 +115,7 @@ public class UIImageItemSlot
 	/// <remarks>
 	///     Will not have any effect if <see cref="HoverText" /> is <c>null</c> or not provided.
 	/// </remarks>
-	public (string Key, object Arg0)? HoverText = hoverText;
+	public (string Key, object? Arg0)? HoverText = hoverText;
 
 	/// <summary>
 	///     Can be used to register a callback to execute logic when an item is inserted into the slot.

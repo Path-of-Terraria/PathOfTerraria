@@ -16,7 +16,7 @@ public class UIHoverImageItemSlot
 	Asset<Texture2D> backgroundTexture,
 	Asset<Texture2D> iconTexture,
 	UIImageItemSlot.SlotWrapper itemHandler,
-	(string Key, object Arg0)? hoverText = null,
+	(string Key, object? Arg0)? hoverText = null,
 	int context = ItemSlot.Context.InventoryItem,
 	bool skipAutoSize = false,
 	float iconScalingSize = UIImageItemSlot.DefaultIconSize,

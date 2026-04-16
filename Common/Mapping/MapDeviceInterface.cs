@@ -564,9 +564,13 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		}
 	}
 
+	private bool AreCanistersUnlocked()
+	{
+		return MapResources.AnyResourceDiscovered();
+	}
 	private bool CanInteractWithCanisters()
 	{
-		return MapDeviceInterface.Entity is { StoredMap: not { IsAir: false }, Injection: null };
+		return MapDeviceInterface.Entity is { StoredMap: not { IsAir: false }, Injection: null } && AreCanistersUnlocked();
 	}
 	private bool CanInjectCurrentCanister()
 	{
@@ -659,6 +663,17 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 			e.OnLeftClick += (_, _) =>
 			{
 				MapDeviceInterface.Entity?.TryInjectingResource(CurrentMapResource.AssociatedItem);
+			};
+			e.OnUpdate += self => // Small sine animation when the device has sufficient resources
+			{
+				if (CurrentMapResource.Value >= 100)
+				{
+					self.Top = StyleDimension.FromPixelsAndPercent(inject.Pos.Y + MathF.Sin(Main.GameUpdateCount * 0.06f) * 6, 0);
+				}
+				else
+				{
+					self.Top = StyleDimension.FromPixelsAndPercent(inject.Pos.Y, 0);
+				}
 			};
 		});
 		UIElement ejectButton = this.AddElement(new UIImage(injectDefTex), e =>
@@ -774,6 +789,24 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		int leftCanisterOrder = middleCanisterOrder - (int)MathF.Floor(numRenders * 0.5f);
 		Vector2 sharedCenter = windowCenter + new Vector2(0f, -256f - 24f);
 
+		var mousePoint = Main.MouseScreen.ToPoint();
+		bool canInteract = CanInteractWithCanisters();
+		bool areUnlocked = AreCanistersUnlocked();
+
+		// If injection is not yet unlocked - hint at the module with question marks when hovering near it.
+		if (!areUnlocked)
+		{
+			Vector2 hoverCenter = sharedCenter + new Vector2(0, 110);
+			Rectangle hoverRect = new Rectangle((int)hoverCenter.X, (int)hoverCenter.Y, 0, 0).Inflated(16, 16);
+
+			if (hoverRect.Contains(mousePoint))
+			{
+				Main.instance.MouseText(Language.GetTextValue($"Mods.{nameof(PathOfTerraria)}.UI.MapDevice.InjectionModuleUnavailable"));
+			}
+		}
+
+		if (globalVisibility <= 0f) { return; }
+
 		// Render all the canisters.
 		for (int i = 0; i < numRenders; i++)
 		{
@@ -812,7 +845,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 			// Interactions
 			Vector2 canisterTopleft = canisterCenter - (canisterOrigin * scale);
 			Rectangle interactionRect = new Rectangle((int)canisterTopleft.X, (int)canisterTopleft.Y, (int)(canisterTex.Width * scale), (int)(canisterTex.Height * scale)).Inflated(2, 2);
-			if (!isInserting && localVisibility >= 1f && interactionRect.Contains(Main.MouseScreen.ToPoint()) && stepsFromMiddle <= 2f)
+			if (canInteract && !isInserting && localVisibility >= 1f && interactionRect.Contains(Main.MouseScreen.ToPoint()) && stepsFromMiddle <= 2f)
 			{
 				scale *= 1.05f;
 				texture = canisterHoverTex;
@@ -867,7 +900,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 					ChatManager.DrawColorCodedStringWithShadow(sb, font, text, center, color, 0f, size * 0.5f, Vector2.One);
 				}
 
-				DrawString(canisterCenter + new Vector2(0f, -56f), availabilityColor, resource.Value.ToString());
+				DrawString(canisterCenter + new Vector2(0f, -68f), availabilityColor, resource.Value.ToString());
 				DrawString(canisterCenter + new Vector2(0f, -59f), neutralColor, "_");
 				DrawString(canisterCenter + new Vector2(0f, -40f), availabilityColor, resource.Cost.ToString());
 			}
@@ -936,7 +969,8 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		Asset<Texture2D> mapIconTexture = ModContent.Request<Texture2D>($"{BasePath}/MapDeviceBase_Map_Icon", AssetRequestMode.ImmediateLoad);
 		Asset<Texture2D> mapLockTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/LockIcon", AssetRequestMode.ImmediateLoad);
 		var mapSlot = new UIImageItemSlot.SlotWrapper(() => entity.StoredMap, value => entity.StoredMap = value);
-		Window.AddElement(new UIHoverImageItemSlot(mapSlotTexture, mapIconTexture, mapSlot, null, context: CustomSlotContext), e =>
+		(string Key, object? Arg) mapSlotHover = ($"Mods.{nameof(PathOfTerraria)}.UI.MapDevice.MapSlot", null);
+		Window.AddElement(new UIHoverImageItemSlot(mapSlotTexture, mapIconTexture, mapSlot, mapSlotHover, context: CustomSlotContext), e =>
 		{
 			static bool HasInjection()
 			{

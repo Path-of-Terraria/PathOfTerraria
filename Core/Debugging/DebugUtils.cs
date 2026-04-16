@@ -62,6 +62,24 @@ public sealed class DebugUtils : ModSystem
 		sb.Draw(tex, new Rectangle(x2, y1, lw, rh), color);
 	}
 
+	public static void DrawCircle(SpriteBatch sb, Vector2 center, float radius, Color color, int resolution = 16, int width = 2)
+	{
+		Texture2D tex = TextureAssets.BlackTile.Value;
+		float step = MathHelper.TwoPi / resolution;
+		var offset = new Vector2(radius, 0f);
+
+		for (int i = 0; i < resolution; i++)
+		{
+			var start = (Vector2)(center + offset);
+			offset = offset.RotatedBy(step);
+			var end = (Vector2)(center + offset);
+			var edge = (Vector2)(end - start);
+			var rect = new Rectangle((int)start.X, (int)start.Y, (int)edge.Length(), width);
+
+			sb.Draw(tex, rect, null, color, (float)Math.Atan2(edge.Y, edge.X), Vector2.Zero, SpriteEffects.None, 0f);
+		}
+	}
+
 	private static void PostDraw(GameTime obj)
 	{
 		DrawList(worldDraws, Main.GameViewMatrix.TransformationMatrix);
