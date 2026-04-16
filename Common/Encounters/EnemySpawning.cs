@@ -421,8 +421,8 @@ internal static class EnemySpawning
 			area.W - area.Y
 		);
 
-		startPoint.X = Math.Min(area.X, Math.Max(startPoint.X, area.Z)); 
-		startPoint.Y = Math.Min(area.Y, Math.Max(startPoint.Y, area.W));
+		startPoint.X = Math.Max(area.X, Math.Min(startPoint.X, area.Z)); 
+		startPoint.Y = Math.Max(area.Y, Math.Min(startPoint.Y, area.W));
 
 		foreach (GeometryUtils.FloodFill.Result step in new GeometryUtils.FloodFill(startPoint, rect))
 		{
