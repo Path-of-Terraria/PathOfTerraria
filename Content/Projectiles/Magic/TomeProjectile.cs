@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Content.Dusts;
+using PathOfTerraria.Core.Graphics.Particles;
 using Terraria.Audio;
 using Terraria.ID;
 
@@ -62,6 +63,10 @@ public class TomeProjectile : ModProjectile
 			Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height,
 				ModContent.DustType<SparkleDust>(), Projectile.oldVelocity.X * 0.5f, Projectile.oldVelocity.Y * 0.5f);
 		}
+		
+		//Create particle 
+		MagicParticle p = new(Projectile.Center);
+		ParticleSystem.Create(p);
 
 		SoundEngine.PlaySound(SoundID.Item25, Projectile.position);
 	}

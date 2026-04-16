@@ -53,8 +53,12 @@ public abstract class ForegroundParticle : IParticle
     ///     The color of the particle.
     /// </summary>
     public Color Color = Color.White;
+	public virtual bool IsBlendstateAddtive() 
+	{
+		return false;
+	}
 
-    public virtual void Update()
+	public virtual void Update()
     {
         Position += Velocity;
     }

@@ -101,6 +101,7 @@ public class Tween<T> : ITween where T : struct
 			{
 				State = TweenState.Stopped;
 				Active = false;
+				OnFinsihed?.Invoke(this);
 			}
 		}
 	}
