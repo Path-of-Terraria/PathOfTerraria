@@ -19,8 +19,6 @@ internal class LifeRegenRatePassive : Passive
 
 internal class LifeRegenCountPassive : Passive
 {
-	public override string DisplayTooltip => Language.GetTextValue($"Mods.PathOfTerraria.Passives.{Name}.Tooltip").FormatWith(MathUtils.Percent(Value));
-
 	public override void BuffPlayer(Player player)
 	{
 		player.lifeRegen += Value * 2 * Level;
