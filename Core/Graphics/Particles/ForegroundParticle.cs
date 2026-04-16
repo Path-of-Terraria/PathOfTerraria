@@ -53,10 +53,8 @@ public abstract class ForegroundParticle : IParticle
     ///     The color of the particle.
     /// </summary>
     public Color Color = Color.White;
-	public virtual bool IsBlendstateAddtive() 
-	{
-		return false;
-	}
+
+	public virtual bool IsBlendStateAddtive => false;
 
 	public virtual void Update()
     {
