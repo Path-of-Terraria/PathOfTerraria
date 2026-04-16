@@ -296,7 +296,7 @@ internal sealed class ConfluxRifts : ModSystem
 
 			if (numSpawnsToAnnounce > 0)
 			{
-				ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("A rift has appeared in the world!"), Color.Magenta);
+				ChatHelper.BroadcastChatMessage(NetworkText.FromKey($"Mods.{nameof(PathOfTerraria)}.Misc.Rifts.NaturalSpawn"), Color.Magenta);
 				numSpawnsToAnnounce--;
 			}
 
