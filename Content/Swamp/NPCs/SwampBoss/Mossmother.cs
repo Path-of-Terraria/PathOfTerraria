@@ -235,11 +235,11 @@ internal partial class Mossmother : ModNPC
 		DrawBackLimb(tex, basePosition, [new Vector2(24, -56), new(10, -4), new Vector2(14, 2)], drawColor, false, true); // Back limb
 		DrawBackLimb(tex, basePosition, [new Vector2(-24, -56), new(-6, -4), new Vector2(-8, -2)], drawColor, true, true); // Flipped back limb
 
-		DrawIndividualSegment(new Rectangle(0, 0, 136, 134), drawColor);
-		DrawIndividualSegment(new Rectangle(0, 136, 136, 134), Color.White * (MathF.Sin(_animationSpeed * 0.6f) * 0.25f + 0.75f));
+		DrawIndividualSegment(new Rectangle(0, 0, 136, 134), drawColor); // Body
+		DrawIndividualSegment(new Rectangle(0, 136, 136, 134), Color.White * (MathF.Sin(_animationSpeed * 0.6f) * 0.25f + 0.75f)); // Glowmask
 
 		var faceFrame = new Rectangle(82 * (int)(NPC.frameCounter % 8), (int)(84 * VisualVariant), 82, 84);
-		DrawIndividualSegment(faceFrame, drawColor, -new Vector2(0, 40), Face.Value);
+		DrawIndividualSegment(faceFrame, drawColor, -new Vector2(0, 40), Face.Value); // Face
 
 		return false;
 
