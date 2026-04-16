@@ -334,6 +334,18 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile, 
 		{
 			Filters.Scene.Activate(visuals.Filter);
 		}
+
+		// Attract the camera.
+		CameraCurios.Create(new()
+		{
+			Identifier = $"{nameof(ConfluxRift)}_{Projectile.identity}_{(Activated ? "Active" : "Inactive")}",
+			Weight = Activated ? 0.125f : 0.55f,
+			LengthInSeconds = 1,
+			FadeInLength = 1.0f,
+			FadeOutLength = 1.0f,
+			Position = Projectile.Center,
+			Range = new(Min: 256, Max: 800, Exponent: 2.0f),
+		});
 	}
 	private void UpdateAudio()
 	{
