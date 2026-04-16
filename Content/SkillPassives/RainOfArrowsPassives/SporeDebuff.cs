@@ -1,4 +1,5 @@
-﻿using Terraria.ID;
+using PathOfTerraria.Common.Buffs;
+using Terraria.ID;
 
 namespace PathOfTerraria.Content.SkillPassives.RainOfArrowsPassives;
 
@@ -20,11 +21,16 @@ internal class SporeNPC : GlobalNPC
 	public float DoT = 0;
 	public float VisualDoT = 0;
 
-	public static void AddSporeDebuff(NPC npc, int damage, int time, bool noReApply)
+	public static void AddSporeDebuff(NPC npc, int damage, int time, bool noReApply, Player source = null)
 	{
 		if (noReApply && npc.HasBuff<SporeDebuff>())
 		{
 			return;
+		}
+
+		if (source is not null)
+		{
+			DoTFunctionality.ApplyPlayerInteraction(npc, source);
 		}
 
 		npc.AddBuff(ModContent.BuffType<SporeDebuff>(), time);

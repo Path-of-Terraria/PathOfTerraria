@@ -35,6 +35,7 @@ internal class BleedDebuff : ModBuff
 		int realDamage = (int)(damage * bleedPlayer.BleedEffectiveness);
 		time = (int)(time * bleedPlayer.BleedTime.Value);
 		npc.GetGlobalNPC<BleedDebuffNPC>().LastTickCount = bleedPlayer.TickCountModifier.Value;
+		DoTFunctionality.ApplyPlayerInteraction(npc, player);
 
 		if (realDamage <= 0)
 		{
