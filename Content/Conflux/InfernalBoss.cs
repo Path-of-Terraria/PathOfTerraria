@@ -1341,7 +1341,13 @@ internal sealed class InfernalBoss : ModNPC
 				if (!Main.dedServ)
 				{
 					bool poweredUp = Phase is PhaseType.Abomination;
-					var style = new SoundStyle($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/PyralisEnflame", 3) { Volume = 2.00f, PitchVariance = 0.1f, MaxInstances = 3 };
+					var style = new SoundStyle($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/PyralisEnflame", 3)
+					{
+						Volume = 2.00f,
+						PitchVariance = 0.1f,
+						MaxInstances = 3,
+						PauseBehavior = PauseBehavior.PauseWithGame,
+					};
 					ctx.Attacking.Data.Sounds =
 					[
 						(0, style),
@@ -1518,12 +1524,12 @@ internal sealed class InfernalBoss : ModNPC
 
 		// Movement sound.
 		{
-			bool isDying = Cutscene.Type == CutsceneType.Death;
+			bool quiet = Cutscene.Type == CutsceneType.Death || CurrentlySitting;
 			var loopSound = new SoundStyle($"{nameof(PathOfTerraria)}/Assets/Sounds/Gore/FleshLoopChaotic") { Volume = 0.1f, IsLooped = true, PauseBehavior = PauseBehavior.PauseWithGame };
 			float halfStep = 1f * TimeSystem.LogicDeltaTime;
-			float target = isDying ? 0 : MathUtils.Clamp01(NPC.velocity.Length() * 0.1f);
+			float target = quiet ? 0 : MathUtils.Clamp01(NPC.velocity.Length() * 0.1f);
 			float intensity = movementSound.Intensity = MathUtils.StepTowards(MathHelper.Lerp(movementSound.Intensity, target, halfStep), target, halfStep);
-			float volume = MathHelper.Lerp(0.75f, 1.00f, intensity);
+			float volume = MathHelper.Lerp(quiet ? 0 : 0.75f, 1.00f, intensity);
 			float pitch = MathHelper.Lerp(-0.9f, +0.2f, intensity);
 			SoundUtils.UpdateLoopingSound(ref movementSound.Handle, ctx.Center, volume, pitch, loopSound, _ => Main.npc[NPC.whoAmI] is { active: true } n && n == NPC);
 		}
@@ -2147,10 +2153,10 @@ internal sealed class InfernalBoss : ModNPC
 						if (limbs.Any(l => l.EntityAttachment.NPC == npc)) { continue; }
 
 						// In phase II, only grab shamans.
-						if (Phase is PhaseType.Abomination && npc.type != ModContent.NPCType<FallenShaman>())
-						{
-							continue;
-						}
+						if (Phase is PhaseType.Abomination && npc.type != ModContent.NPCType<FallenShaman>()) { continue; }
+
+						// Don't grab teleporting enemies.
+						if (npc.TryGetGlobalNPC(out NPCTeleports teleports) && teleports.Enabled && teleports.Active) { continue; }
 
 						limb.ResetState();
 						limb.EntityAttachment = (EntityRef)npc;
