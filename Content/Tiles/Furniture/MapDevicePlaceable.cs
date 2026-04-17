@@ -690,11 +690,8 @@ internal class MapDeviceEntity : ModTileEntity
 	/// </summary>
 	public bool TryEnteringPortal(bool evalMode = false, byte? netSender = null)
 	{
-		Item portalItem = StoredMap;
-		if (!PortalActive || portalItem is not { IsAir: false, ModItem: Map })
-		{
-			return false;
-		}
+		if (!PortalActive) { return false; }
+		if (StoredMap is not { IsAir: false, ModItem: Map m } && Injection == null) { return false; }
 
 		// Short-circuit in evaluation mode.
 		if (evalMode) { return true; }
