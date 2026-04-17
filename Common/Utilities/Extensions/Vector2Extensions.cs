@@ -2,6 +2,11 @@
 
 public static class Vector2Extensions
 {
+	public static Vector2 SafeDirection(this Vector2 from, Vector2 towards, Vector2 fallback)
+	{
+		return (towards - from).SafeNormalize(fallback);
+	}
+	
 	public static Vector2 RotateTowards(this Vector2 currentDirection, Vector2 targetDirection, float maxRadiansDelta)
 	{
 		float angleCurrent = (float)Math.Atan2(currentDirection.Y, currentDirection.X);

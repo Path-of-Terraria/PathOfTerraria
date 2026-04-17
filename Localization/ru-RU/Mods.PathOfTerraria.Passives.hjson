@@ -154,6 +154,21 @@ AddedDexterityPassive: {
 	Tooltip: Добавляет +{0} очков ловкости за уровень.
 }
 
+AddedIntelligenceStrengthPassive: {
+	// Name: Added Intelligence and Strength
+	// Tooltip: Adds +{0} points to intelligence and strength
+}
+
+AddedIntelligenceDexterityPassive: {
+	// Name: Added Intelligence and Dexterity
+	// Tooltip: Adds +{0} points to intelligence and dexterity
+}
+
+AddedDexterityStrengthPassive: {
+	// Name: Added Dexterity and Strength
+	// Tooltip: Adds +{0} points to dexterity and strength
+}
+
 IncreasedPotionRecoveryPassive: {
 	Name: Мощные зелья
 	Tooltip: Добавляет +{0}% дополнительного исцеления от зелий здоровья за уровень.
@@ -1061,7 +1076,7 @@ WillingSacrificeMastery: {
 
 ReprisalMastery: {
 	// Name: Reprisal
-	// Tooltip: ""
+	// Tooltip: Reflect {0}% of damage back on successful blocks as a large slash.
 }
 
 ImmolationStrideMastery: {
@@ -1145,6 +1160,11 @@ ExtraStockMastery: {
 }
 
 MoneySpeedMastery: {
-	// Name: MoneySpeedMastery
-	// Tooltip: ""
+	// Name: Haste of Avarice
+	// Tooltip: Picking up a coin grants you increased movement for {0} seconds.
+}
+
+DangerMiningPassive: {
+	// Name: Panic Digging
+	// Tooltip: "{0}% increased mining speed when enemies are [mechanic/shift:Nearby]."
 }

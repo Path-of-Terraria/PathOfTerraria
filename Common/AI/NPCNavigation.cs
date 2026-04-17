@@ -98,13 +98,6 @@ internal sealed class NPCNavigation : NPCComponent
 		pathfinding = null;
 	}
 
-	public override bool? CanFallThroughPlatforms(NPC npc)
-	{
-		if (!Enabled) { return null; }
-
-		return FallThroughPlatforms;
-	}
-
 	/// <summary> Serializes navigation information. </summary>
 	public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter writer)
 	{
@@ -463,7 +456,7 @@ internal sealed class NPCNavigation : NPCComponent
 				}
 			}
 
-			result.FallThroughPlatforms = edge.To.Y > edge.From.Y || (edge.From.Y * TileUtils.TileSizeInPixels) > npc.Bottom.Y;
+			result.FallThroughPlatforms = edge.To.Y >= edge.From.Y && (edge.From.Y * TileUtils.TileSizeInPixels) > npc.Bottom.Y;
 
 			break;
 		}

@@ -1,16 +1,10 @@
-using System.ComponentModel;
-using Newtonsoft.Json;
-using ReLogic.Reflection;
-using Terraria.ID;
-using Terraria.Localization;
-using Terraria.ModLoader.Config;
-using Terraria.ModLoader.IO;
+using System.Linq;
 
 #nullable enable
 
 namespace PathOfTerraria.Utilities.Terraria;
 
-public static class NPCUtils
+public static class NPCUtil
 {
 	public static Entity? GetTargetEntity(this NPC npc)
 	{
@@ -21,5 +15,20 @@ public static class NPCUtils
 		}
 
 		return null;
+	}
+
+	public static void KillAllWithType(ReadOnlySpan<int> types)
+	{
+		foreach (int type in types)
+		{
+			foreach (NPC npc in Main.ActiveNPCs)
+			{
+				if (npc.type == type)
+				{
+					try { npc.StrikeInstantKill(); }
+					catch { }
+				}
+			}
+		}
 	}
 }

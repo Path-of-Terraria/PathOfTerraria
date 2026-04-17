@@ -5,12 +5,23 @@ namespace PathOfTerraria.Common.Utilities;
 
 public static class MathUtils
 {
+	/// <summary> Short-hand for '(Sin(value) + 1) / 2'. </summary>
+	public static float Sin01(float value)
+	{
+		return (MathF.Sin(value) + 1) / 2;
+	}
+	/// <inheritdoc cref="Sin01(float)"/>
+	public static double Sin01(double value)
+	{
+		return (Math.Sin(value) + 1) / 2;
+	}
+
 	/// <summary> Short-hand for Clamp(value, 0, 1). </summary>
 	public static float Clamp01(float value)
 	{
 		return value <= 0f ? 0f : value >= 1f ? 1f : value;
 	}
-	/// <summary> Short-hand for Clamp(value, 0, 1). </summary>
+	/// <inheritdoc cref="Clamp01(float)"/>
 	public static double Clamp01(double value)
 	{
 		return value <= 0.0 ? 0.0 : value >= 1.0 ? 1.0 : value;
@@ -21,12 +32,12 @@ public static class MathUtils
 	{
 		return value - (float)Math.Floor(value / length) * length;
 	}
-	/// <summary> Returns the remainder of a division, compatible with negative numbers. </summary>
+	/// <inheritdoc cref="Modulo(float, float)"/>
 	public static double Modulo(double value, double length)
 	{
 		return value - (float)Math.Floor(value / length) * length;
 	}
-	/// <summary> Returns the remainder of a division, compatible with negative numbers. </summary>
+	/// <inheritdoc cref="Modulo(float, float)"/>
 	public static int Modulo(int value, int length)
 	{
 		int r = value % length;
@@ -89,6 +100,35 @@ public static class MathUtils
 			Pixels = MathHelper.SmoothStep(from.Pixels, to.Pixels, t),
 			Precent = MathHelper.SmoothStep(from.Precent, to.Precent, t),
 		};
+	}
+
+	public static float LerpRadians(float a, float b, float factor)
+	{
+		float result;
+		float diff = b - a;
+
+		if (diff < -MathHelper.Pi) {
+			// Lerp upwards past TwoPi
+			b += MathHelper.TwoPi;
+			result = MathHelper.Lerp(a, b, factor);
+
+			if (result >= MathHelper.TwoPi) {
+				result -= MathHelper.TwoPi;
+			}
+		} else if (diff > MathHelper.Pi) {
+			// Lerp downwards past 0
+			b -= MathHelper.TwoPi;
+			result = MathHelper.Lerp(a, b, factor);
+
+			if (result < 0f) {
+				result += MathHelper.TwoPi;
+			}
+		} else {
+			// Straight lerp
+			result = MathHelper.Lerp(a, b, factor);
+		}
+
+		return result;
 	}
 
 	// Damping

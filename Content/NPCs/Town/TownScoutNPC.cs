@@ -130,8 +130,7 @@ public sealed class TownScoutNPC : ModNPC
 		float chance = NPC.downedGoblins ? 0.1f : 5;
 		bool spawnedScout = ModContent.GetInstance<RavencrestSystem>().SpawnedScout;
 
-		return SubworldSystem.Current is RavencrestSubworld && NPC.downedSlimeKing 
-			&& spawnInfo.SpawnTileX < 180 && !spawnedScout ? chance : 0;
+		return SubworldSystem.Current is RavencrestSubworld && spawnInfo.SpawnTileX < 180 && !spawnedScout ? chance : 0;
 	}
 
 	public override bool CheckActive()

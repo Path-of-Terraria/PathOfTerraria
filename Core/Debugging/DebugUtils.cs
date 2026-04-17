@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System.Diagnostics;
+using ReLogic.Graphics;
 using Terraria.GameContent;
 
 namespace PathOfTerraria.Core.Debugging;
@@ -31,7 +31,23 @@ public sealed class DebugUtils : ModSystem
 	}
 	public static void DrawInUI(Action<SpriteBatch> action)
 	{
-		worldDraws.Add(action);
+		uiDraws.Add(action);
+	}
+	public static void DrawStringInWorld(string text, Vector2 worldPos, Color color)
+	{
+		worldDraws.Add(sb => sb.DrawString(FontAssets.MouseText.Value, text, worldPos - Main.screenPosition, color));
+	}
+	public static void DrawStringInUI(string text, Vector2 screenPos, Color color)
+	{
+		uiDraws.Add(sb => sb.DrawString(FontAssets.MouseText.Value, text, screenPos, color));
+	}
+	public static void DrawRectInWorld(Rectangle rect, Color color)
+	{
+		worldDraws.Add(sb => DrawRectangle(sb, new(rect.X - (int)Main.screenPosition.X, rect.Y - (int)Main.screenPosition.Y, rect.Width, rect.Height), color));
+	}
+	public static void DrawRectInUI(Rectangle rect, Color color)
+	{
+		uiDraws.Add(sb => DrawRectangle(sb, rect, color));
 	}
 
 	public static void DrawRectangle(SpriteBatch sb, Rectangle rect, Color color, int lineWidth = 1)

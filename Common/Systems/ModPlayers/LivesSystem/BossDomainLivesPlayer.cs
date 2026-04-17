@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
+using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using SubworldLibrary;
 using Terraria.DataStructures;
@@ -28,9 +29,11 @@ internal class BossDomainLivesPlayer : ModPlayer
 	public bool InDomain = false;
 	public int LivesLost = 0;
 	public int LivesGained = 0;
+	public Point16 ActiveMapDevicePosition { get; private set; } = new(-1, -1);
 
 	private int _deadTime = 0;
 	private int _maxPlayersWitnessed;
+	private bool _closeMapDeviceOnExit;
 
 	public override void Load()
 	{
@@ -111,6 +114,7 @@ internal class BossDomainLivesPlayer : ModPlayer
 
 		if (InDomain)
 		{
+			CloseTrackedMapDevicePortal();
 			Player.ghost = true;
 		}
 
@@ -137,6 +141,9 @@ internal class BossDomainLivesPlayer : ModPlayer
 		LivesLost = 0;
 		LivesGained = 0;
 		_maxPlayersWitnessed = 0;
+		TryCloseTrackedMapDevicePortal();
+		ActiveMapDevicePosition = new Point16(-1, -1);
+		_closeMapDeviceOnExit = false;
 	}
 
 	private void SetInDomain()
@@ -144,6 +151,54 @@ internal class BossDomainLivesPlayer : ModPlayer
 		LivesLost = 0;
 		LivesGained = 0;
 		_maxPlayersWitnessed = 0;
+	}
+
+	public void SetActiveMapDevice(Point16 position)
+	{
+		ActiveMapDevicePosition = position;
+		_closeMapDeviceOnExit = false;
+	}
+
+	private bool HasActiveMapDevice()
+	{
+		return ActiveMapDevicePosition.X >= 0 && ActiveMapDevicePosition.Y >= 0;
+	}
+
+	private void CloseTrackedMapDevicePortal()
+	{
+		if (!HasActiveMapDevice())
+		{
+			return;
+		}
+
+		_closeMapDeviceOnExit = true;
+	}
+
+	private void TryCloseTrackedMapDevicePortal()
+	{
+		if (!_closeMapDeviceOnExit || !HasActiveMapDevice())
+		{
+			return;
+		}
+
+		if (Main.netMode == NetmodeID.MultiplayerClient)
+		{
+			if (SubworldSystem.Current is not null)
+			{
+				ModPacket packet = Networking.GetPacket<CloseMapDevicePortalHandler>(5);
+				packet.Write(ActiveMapDevicePosition.X);
+				packet.Write(ActiveMapDevicePosition.Y);
+				Networking.SendPacketToMainServer(packet);
+			}
+			else
+			{
+				CloseMapDevicePortalHandler.Send(ActiveMapDevicePosition);
+			}
+		}
+		else if (SubworldSystem.Current == null)
+		{
+			CloseMapDevicePortalHandler.TryClosePortal(ActiveMapDevicePosition);
+		}
 	}
 
 	public int GetLivesLeft()

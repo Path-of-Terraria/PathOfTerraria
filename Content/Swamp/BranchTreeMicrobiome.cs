@@ -103,14 +103,14 @@ internal class BranchTreeMicrobiome : MicroBiome
 
 					while (!tile.HasTile)
 					{
-						WorldGen.PlaceTile(pos.X, pos.Y + y, TileID.VineRope, true);
+						WorldGen.PlaceTile(pos.X, pos.Y + y, ModContent.TileType<MossyVineRope>(), true);
 						y--;
 						tile = Main.tile[pos.X, pos.Y + y];
 					}
 
 					if (tile.TileType == TileID.Platforms)
 					{
-						WorldGen.PlaceTile(pos.X, pos.Y + y - 1, TileID.VineRope, true);
+						WorldGen.PlaceTile(pos.X, pos.Y + y - 1, ModContent.TileType<MossyVineRope>(), true);
 					}
 				}
 			}
@@ -232,7 +232,7 @@ internal class BranchTreeMicrobiome : MicroBiome
 	{
 		Tile tile = Main.tile[x, y];
 		tile.HasTile = true;
-		tile.TileType = TileID.LeafBlock;
+		tile.TileType = (ushort)ModContent.TileType<MangroveLeaves>();
 
 		if (_random.NextBool(60) && moreLeaves is not null)
 		{
