@@ -30,6 +30,7 @@ public struct Vector2Int(int x, int y)
 
 	public static Vector2Int Max(Vector2Int a, Vector2Int b) => new(Math.Max(a.X, b.X), Math.Max(a.Y, b.Y));
 	public static Vector2Int Min(Vector2Int a, Vector2Int b) => new(Math.Min(a.X, b.X), Math.Min(a.Y, b.Y));
+	public static Vector2Int Clamp(Vector2Int v, Vector2Int min, Vector2Int max) => new(Math.Clamp(v.X, min.X, max.X), Math.Clamp(v.Y, min.Y, max.Y));
 
 	// i32
 	public static Vector2Int operator *(Vector2Int a, int d) => new(a.X * d, a.Y * d);

@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Content.Gores;
+using PathOfTerraria.Utilities.Xna;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -60,6 +61,7 @@ internal sealed class FallenTyrant : ModNPC
 		NPC.width = 36;
 		NPC.height = 38;
 		NPC.knockBackResist = 0.2f;
+		NPC.lavaImmune = true;
 
 		NPC.HitSound = new($"{nameof(PathOfTerraria)}/Assets/Sounds/HitEffects/FleshHit", 3) { MaxInstances = 5, Volume = 0.4f };
 		NPC.DeathSound = SoundID.NPCDeath23 with { Pitch = +0.1f, PitchVariance = 0.15f, Identifier = "FallenDeath" };
@@ -94,7 +96,7 @@ internal sealed class FallenTyrant : ModNPC
 
 			if (!Main.dedServ)
 			{
-				e.Data.SlashTexture = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/Misc/Slash");
+				e.Data.Slash = (ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/Misc/Slash"), Vector2.One, ColorUtils.FromHexRgb(0x7624fe));
 				e.Data.Sounds =
 				[
 					(5, SoundID.NPCHit56 with { Volume = 0.25f, Pitch = +0.4f, PitchVariance = 0.1f, MaxInstances = 3 }),

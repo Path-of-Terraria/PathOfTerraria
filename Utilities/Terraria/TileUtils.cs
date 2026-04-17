@@ -13,18 +13,30 @@ internal static class TileUtils
 
 	// Tilemap utilities.
 
-	/// <summary> Inlined method that checks for HasTile, tileSolid, and !tileSolidTop. </summary>
+	/// <summary> Inlined method that checks for HasTile && tileSolid && !tileSolidTop. </summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
 	public static bool HasSolid(Tile tile)
 	{
-		return tile.HasTile && Main.tileSolid[tile.TileType] && !Main.tileSolidTop[tile.TileType];
+		return tile.HasTile && (Main.tileSolid[tile.TileType] && !Main.tileSolidTop[tile.TileType]);
 	}
-
-	/// <summary> Inlined method that checks for HasUnactuatedTile, tileSolid, and !tileSolidTop. </summary>
+	/// <summary> Inlined method that checks for HasUnactuatedTile && tileSolid && !tileSolidTop. </summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
 	public static bool HasUnactuatedSolid(Tile tile)
 	{
-		return tile.HasUnactuatedTile && Main.tileSolid[tile.TileType] && !Main.tileSolidTop[tile.TileType];
+		return tile.HasUnactuatedTile && (Main.tileSolid[tile.TileType] && !Main.tileSolidTop[tile.TileType]);
+	}
+
+	/// <summary> Inlined method that checks for HasTile && (tileSolid || tileSolidTop). </summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+	public static bool HasSolidTop(Tile tile)
+	{
+		return tile.HasTile && (Main.tileSolid[tile.TileType] || Main.tileSolidTop[tile.TileType]);
+	}
+	/// <summary> Inlined method that checks for HasUnactuatedTile && (tileSolid || tileSolidTop). </summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+	public static bool HasUnactuatedSolidTop(Tile tile)
+	{
+		return tile.HasUnactuatedTile && (Main.tileSolid[tile.TileType] || Main.tileSolidTop[tile.TileType]);
 	}
 
 	/// <summary> Attempts to fit an AABB rectangle into a given point. Avoid calling this in loops. </summary>

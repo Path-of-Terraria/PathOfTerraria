@@ -108,7 +108,9 @@ internal class DamageInstance
 					continue;
 				}
 
-				npc.SimpleStrikeNPC(Damage, directionSign, false, Knockback, noPlayerInteraction: true);
+				try { npc.SimpleStrikeNPC(Damage, directionSign, false, Knockback, noPlayerInteraction: true); }
+				catch { }
+				
 				(HitEntities ??= []).Add(hitIndex);
 			}
 		}

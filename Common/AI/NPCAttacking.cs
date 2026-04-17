@@ -1,9 +1,11 @@
 ﻿// #define NEVER_ATTACK
+// #define DRAW_GIZMOS
 
 using System.IO;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Utilities;
+using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
 using ReLogic.Content;
 using Terraria.Audio;
@@ -33,7 +35,7 @@ internal sealed class AttackingData()
 	public (Point16 Size, Vector2 Extent, Vector2 Offset) Hitbox = (new(56, 56), new(24f, 32f), new(+12f, +2f));
 	public ((Vector2 Min, Vector2 Max) Value, (float Min, float Max) Charge) AimLag = ((new(0.0f), new(0.2f)), (0f, 0.99f));
 	public (ushort Tick, SoundStyle Style)[] Sounds = [(0, SoundID.Item71)];
-	public Asset<Texture2D>? SlashTexture;
+	public (Asset<Texture2D> Texture, Vector2? Scale, Color Color)? Slash;
 
 	// State
 	public float Angle;
@@ -65,8 +67,9 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 	public static Counter<uint> AllowDamage;
 
 	public int Sign => Direction.X >= 0f ? 1 : -1;
-	public bool Active => Data.Progress >= 0;
-	public bool DealingDamage => Data.Progress >= 0 && Data.Progress >= Data.Damage.Start && Data.Progress < Data.Damage.End;
+	public ref short Progress => ref Data.Progress;
+	public bool Active => Progress >= 0;
+	public bool DealingDamage => Progress >= 0 && Progress >= Data.Damage.Start && Progress < Data.Damage.End;
 	public Vector2 Direction
 	{
 		get => Data.Angle.ToRotationVector2();
@@ -101,9 +104,16 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 	{
 		if (!Enabled) { return; }
 
-		if (DealingDamage && Data.SlashTexture is { IsLoaded: true, Value: { } texture })
+		if (DealingDamage)
 		{
-			DrawSlash(new(npc), sb, texture, screenPos, drawColor);
+			if (Data.Slash is { Texture: { IsLoaded: true, Value: { } } } slash)
+			{
+				DrawSlash(new(npc), sb, slash.Texture.Value, screenPos, drawColor, slash.Color, slash.Scale);
+			}
+
+#if DRAW_GIZMOS
+			DebugUtils.DrawRectInWorld(GetDamageArea(new(npc)).Aabb, DealingDamage ? Color.Red : Color.Chocolate);
+#endif
 		}
 	}
 
@@ -172,9 +182,14 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 			// Play sounds.
 			if (!Main.dedServ)
 			{
+				NPCTracker? tracker = null;
 				foreach ((ushort tick, SoundStyle style) in Data.Sounds)
 				{
-					if (Data.Progress == tick) { SoundEngine.PlaySound(style, ctx.Center); }
+					if (Data.Progress == tick)
+					{
+						tracker ??= new(npc);
+						SoundEngine.PlaySound(style, ctx.Center, tracker.AudioCallback);
+					}
 				}
 			}
 
@@ -193,9 +208,6 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 			}
 			else if (Data.Progress == Data.Damage.Start)
 			{
-				// Dash.
-				ctx.NPC.velocity = Direction * Data.Dash.Velocity;
-
 				// Prepare damage.
 				Data.Attack = new DamageInstance(Data.Attack)
 				{
@@ -210,7 +222,13 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 					ExcludedEntity = npc,
 				};
 			}
-			else
+
+			if (Data.Progress == Data.Dash.Start)
+			{
+				// Dash.
+				ctx.NPC.velocity = Direction * Data.Dash.Velocity;
+			}
+			else if (Data.Progress >= Data.Dash.End)
 			{
 				// Slow down.
 				npc.velocity.X *= npc.velocity.Y == 0f ? Data.Movement.GroundFriction : Data.Movement.AirFriction;
@@ -263,21 +281,20 @@ internal sealed class NPCAttacking : NPCComponent<AttackingData>
 		return (center, aabb);
 	}
 
-	public void DrawSlash(in Context ctx, SpriteBatch sb, Texture2D texture, Vector2 screenPos, Color lightColor)
+	public void DrawSlash(in Context ctx, SpriteBatch sb, Texture2D texture, Vector2 screenPos, Color lightColor, Color slashColor, Vector2? scale)
 	{
 		// First column is the diffuse, second is the glowmask.
 		var baseFrame = new SpriteFrame(2, (byte)(texture.Height / (texture.Width / 2))) { PaddingX = 0, PaddingY = 0 };
 		byte frameIndex = (byte)Math.Min((baseFrame.RowCount - 1), Math.Floor((Data.Progress - Data.Damage.Start) / (float)(Data.Damage.End - Data.Damage.Start) * baseFrame.RowCount));
 		baseFrame = baseFrame.With(0, Sign > 0 ? frameIndex : (byte)((baseFrame.RowCount - 1) - frameIndex));
 
-		Vector2 center = GetDamageArea(in ctx).Center;
+		(Vector2 center, Rectangle aabb) = GetDamageArea(in ctx);
 		Rectangle srcRect = baseFrame.GetSourceRectangle(texture);
-		Rectangle dstRect = new((int)(center.X), (int)(center.Y), srcRect.Width, srcRect.Height);
-		dstRect.X -= (int)screenPos.X;
-		dstRect.Y -= (int)screenPos.Y;
 		Vector2 origin = srcRect.Size() * 0.5f;
+		Vector2 usedScale = scale ?? (aabb.Size() / srcRect.Size());
+		Vector2 position = center - screenPos;
 
-		sb.Draw(texture, dstRect, srcRect, lightColor, Data.Angle, origin, 0, 0f);
-		sb.Draw(texture, dstRect, srcRect with { X = srcRect.Width }, Color.White, Data.Angle, origin, 0, 0f);
+		sb.Draw(texture, position, srcRect, lightColor.MultiplyRGBA(slashColor), Data.Angle, origin, usedScale, 0, 0f);
+		sb.Draw(texture, position, srcRect with { X = srcRect.Width }, slashColor, Data.Angle, origin, usedScale, 0, 0f);
 	}
 }
