@@ -43,7 +43,7 @@ internal class ItemCreatorPlayer : ModPlayer
 
 internal class ItemCreatorUIState : CloseableSmartUi
 {
-	private static readonly Point MainPanelSize = new(720, 700);
+	private static readonly Point MainPanelSize = new(792, 770);
 
 	protected override bool IsCentered => true;
 
@@ -82,10 +82,11 @@ internal class ItemCreatorUIState : CloseableSmartUi
 
 		Main.playerInventory = true;
 
-		CreateMainPanel(true, MainPanelSize, false);
+		CreateMainPanel(false, MainPanelSize, false);
 		BuildShardBar(Panel);
 		BuildItemSection(Panel);
 		BuildAffixEditor(Panel);
+		AddCloseButton();
 		Activate();
 		Recalculate();
 	}
@@ -129,7 +130,7 @@ internal class ItemCreatorUIState : CloseableSmartUi
 		var itemSection = new UIElement
 		{
 			Width = StyleDimension.Fill,
-			Height = StyleDimension.FromPixels(70),
+			Height = StyleDimension.FromPixels(96),
 			Top = StyleDimension.FromPixels(56),
 		};
 		panel.Append(itemSection);
@@ -139,30 +140,22 @@ internal class ItemCreatorUIState : CloseableSmartUi
 		_itemSlot = new UIImageItemSlot(
 			slotBg, slotBg,
 			new UIImageItemSlot.SlotWrapper(() => _editItem, v => _editItem = v),
-			ItemSlot.Context.BankItem
+			ItemSlot.Context.InventoryItem
 		)
 		{
 			Left = StyleDimension.FromPixels(10),
-			VAlign = 0.5f,
+			Top = StyleDimension.FromPixels(4),
 		};
 		_itemSlot.Predicate = (newItem, _) => newItem.IsAir || newItem.TryGetGlobalItem(out PoTGlobalItem _);
 		_itemSlot.OnModifyItem += (_, _, _) => OnItemChanged();
 		itemSection.Append(_itemSlot);
-
-		_itemInfoText = new UIText("", 0.85f)
-		{
-			Left = StyleDimension.FromPixels(70),
-			VAlign = 0.5f,
-			TextColor = Color.LightGray,
-		};
-		itemSection.Append(_itemInfoText);
 
 		_addAffixButton = new UIButton<string>("Add Affix")
 		{
 			Width = StyleDimension.FromPixels(90),
 			Height = StyleDimension.FromPixels(30),
 			Left = StyleDimension.FromPixels(420),
-			VAlign = 0.5f,
+			Top = StyleDimension.FromPixels(12),
 		};
 		_addAffixButton.OnLeftClick += (_, _) => ShowAddAffixPanel();
 		itemSection.Append(_addAffixButton);
@@ -172,10 +165,18 @@ internal class ItemCreatorUIState : CloseableSmartUi
 			Width = StyleDimension.FromPixels(80),
 			Height = StyleDimension.FromPixels(30),
 			Left = StyleDimension.FromPixels(516),
-			VAlign = 0.5f,
+			Top = StyleDimension.FromPixels(12),
 		};
 		_clearAffixButton.OnLeftClick += (_, _) => ClearAllAffixes();
 		itemSection.Append(_clearAffixButton);
+
+		_itemInfoText = new UIText("", 0.85f)
+		{
+			Left = StyleDimension.FromPixels(10),
+			Top = StyleDimension.FromPixels(70),
+			TextColor = Color.LightGray,
+		};
+		itemSection.Append(_itemInfoText);
 
 		UpdateItemInfo();
 	}
@@ -185,8 +186,8 @@ internal class ItemCreatorUIState : CloseableSmartUi
 		_affixEditorPanel = new UIPanel
 		{
 			Width = StyleDimension.Fill,
-			Height = StyleDimension.FromPixelsAndPercent(-132, 1),
-			Top = StyleDimension.FromPixels(132),
+			Height = StyleDimension.FromPixelsAndPercent(-160, 1),
+			Top = StyleDimension.FromPixels(160),
 			BackgroundColor = new Color(30, 30, 50) * 0.6f,
 		};
 		panel.Append(_affixEditorPanel);

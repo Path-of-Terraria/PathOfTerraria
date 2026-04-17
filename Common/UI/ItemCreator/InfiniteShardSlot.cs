@@ -59,14 +59,15 @@ internal class InfiniteShardSlot : UIElement
 	{
 		if (Main.mouseLeft && Main.mouseLeftRelease)
 		{
-			if (Main.mouseItem.IsAir)
+			Item editItem = _getEditItem();
+
+			if (editItem is { IsAir: false } && _displayItem.ModItem is CurrencyShard shard)
 			{
-				Main.mouseItem.SetDefaults(_shardItemType);
-				Main.mouseItem.stack = 1;
-			}
-			else if (Main.mouseItem.type == _shardItemType && Main.mouseItem.stack < Main.mouseItem.maxStack)
-			{
-				Main.mouseItem.stack++;
+				if (shard.CanUseInPouch(editItem, out _))
+				{
+					shard.ApplyToItem(editItem);
+					_onShardApplied?.Invoke();
+				}
 			}
 
 			Main.mouseLeftRelease = false;
