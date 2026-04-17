@@ -4,6 +4,7 @@ using System.IO;
 using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.Conflux;
+using PathOfTerraria.Content.Projectiles.Utility;
 using Terraria.Audio;
 using Terraria.Chat;
 using Terraria.DataStructures;
@@ -19,9 +20,7 @@ internal sealed class RiftIntroductionNPC : GlobalNPC
         if (npc.type != NPCID.WallofFlesh || Main.hardMode) { return; }
         
         Vector2 point = npc.Center;
-        RiftIntroduction.PlaceArena(point);
-        RiftIntroduction.StartIntroduction(point);
-        // RiftIntroduction.Pending = (Countdown: 5 * 60, Position: point);
+        RiftIntroduction.Pending = (Countdown: 3 * 60, Position: point);
     }
 }
 
@@ -68,27 +67,58 @@ internal sealed class RiftIntroduction : ModSystem
 
     public static void StartIntroduction(Vector2 position)
     {
+        if (Main.netMode == NetmodeID.MultiplayerClient) { return; }
+        
+        // Announce to players.
 		ChatHelper.BroadcastChatMessage(NetworkText.FromKey($"Mods.{nameof(PathOfTerraria)}.Misc.Rifts.Introduction"), Color.Magenta);
 
+        // Place rift.
 		ConfluxRift.Flags flags = ConfluxRift.Flags.Special;
 		float flagsAsFloat = ConfluxRift.FlagsToFloat(flags);
-
         IEntitySource source = Entity.GetSource_None();
         int riftType = ModContent.ProjectileType<InfernalRift>();
-        Vector2 riftPosition = position + new Vector2(0, -44);
+        Vector2 riftPosition = position + new Vector2(40, 200);
 		var rift = Projectile.NewProjectileDirect(source, riftPosition, Vector2.Zero, riftType, 0, 0f, ai0: flagsAsFloat);
-    }
 
-    public static void PlaceArena(Vector2 position)
-    {
-		const string arenaPath = "Assets/Structures/RiftIntroductionArena";
+        // Place arena.
+        const bool largeArena = true;
+		const string arenaPath = $"Assets/Structures/RiftIntroductionArena_{(largeArena ? "Large" : "Small")}";
 		Point16 arenaSize = StructureTools.GetSize(arenaPath);
-        Point16 arenaCenter = position.ToTileCoordinates16() + new Point16(0, 12);
+        Point16 arenaCenter = position.ToTileCoordinates16() + new Point16(0, 20);
 		Point16 arenaPos = StructureTools.PlaceByOrigin(arenaPath, arenaCenter, new Vector2(0.5f, 0.5f));
 
-        NetMessage.SendTileSquare(-1, arenaPos.X, arenaPos.Y, arenaSize.X, arenaSize.Y);
+        // Sync area.
+        if (Main.netMode == NetmodeID.Server)
+        {
+            NetMessage.SendTileSquare(-1, arenaPos.X, arenaPos.Y, arenaSize.X, arenaSize.Y);
+        }
+        
+        // Tile placement effects.
         ArenaSpawnEffects(new Rectangle(arenaPos.X, arenaPos.Y, arenaSize.X, arenaSize.Y));
+
+        // If an exit portal exists - move it onto a platform on the side.
+        Vector2 exitPosition = riftPosition + new Vector2(-130, +500);
+        int exitPortalType = ModContent.ProjectileType<ExitPortal>();
+        foreach (Projectile portal in Main.ActiveProjectiles)
+        {
+            if (portal.type != exitPortalType) { continue; }
+            portal.Center = exitPosition;
+
+            if (Main.netMode == NetmodeID.Server) { NetMessage.SendData(MessageID.SyncProjectile, number: portal.whoAmI); }
+        }
+
+        // Move all items as well.
+        for (int i = 0; i < Main.maxItems; i++)
+        {
+            Item item = Main.item[i];
+            if (!item.active) { continue; }
+
+            item.Center = exitPosition;
+
+            if (Main.netMode == NetmodeID.Server) { NetMessage.SendData(MessageID.SyncItem, number: i); }
+        }
     }
+
     public static void ArenaSpawnEffects(Rectangle area)
     {
         // Non-inclusive.
@@ -115,10 +145,10 @@ internal sealed class RiftIntroduction : ModSystem
             for (int y = y1; y < y2; y++)
 			{
 				Tile tile = Main.tile[x, y];
-				if (tile.TileType != TileID.CrimtaneBrick) { continue; }
+				if (tile.TileType != TileID.CrimtaneBrick || !tile.HasTile) { continue; }
                 
 				Vector2 worldPos = new Point16(x, y).ToWorldCoordinates(0, 0);
-				Dust.NewDustDirect(worldPos, 16, 16, DustID.CrimtaneWeapons);
+				Dust.NewDustDirect(worldPos, 16, 16, DustID.FireworkFountain_Red);
 			}
 		}
     }
