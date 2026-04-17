@@ -1,10 +1,14 @@
 ﻿// #define DEBUG_GIZMOS
 // #define DEBUG_LOGGING
+// #define DEBUG_REQUESTS
 
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Threading;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Core.Pathfinding;
 using PathOfTerraria.Utilities.Terraria;
@@ -21,6 +25,7 @@ using Wayfarer.Pathfinding;
 
 #nullable enable
 #pragma warning disable CA1069 // Enums values should not be duplicated
+#pragma warning disable IDE0042 // Deconstruct variable declaration
 
 namespace PathOfTerraria.Common.AI;
 
@@ -62,6 +67,7 @@ internal sealed class NPCNavigation : NPCComponent
 		public bool GoalJustReached;
 	}
 
+	private static (int Made, int Finished) numRequests;
 	private static bool CanPathfind => Main.netMode != NetmodeID.MultiplayerClient;
 
 	private PathResult? path;
@@ -258,6 +264,9 @@ internal sealed class NPCNavigation : NPCComponent
 			WayfarerAPI.RecalculateNavMesh(pathfinding!.WfHandle, npc.Center.ToTileCoordinates());
 		}
 
+		Interlocked.Increment(ref numRequests.Made);
+		LogRequests();
+
 		WayfarerAPI.RecalculatePath(pathfinding!.WfHandle, footingTiles, r => OnPathFound(npc, r));
 	}
 
@@ -278,6 +287,9 @@ internal sealed class NPCNavigation : NPCComponent
 
 	private void OnPathFound(NPC npc, PathResult result)
 	{
+		Interlocked.Increment(ref numRequests.Finished);
+		LogRequests();
+
 		if (result == null)
 		{
 			StateFlags |= StateFlag.PathNotFound;
@@ -486,6 +498,14 @@ internal sealed class NPCNavigation : NPCComponent
 		{
 			WayfarerAPI.DebugRenderPath(pathfinding!.WfHandle, sb, path);
 		}
+#endif
+	}
+
+	private static void LogRequests()
+	{
+#if DEBUG_REQUESTS
+		(int Made, int Finished) pair = Unsafe.BitCast<ulong, (int, int)>(Interlocked.Read(ref Unsafe.As<(int, int), ulong>(ref numRequests)));
+		Main.NewText($"Requests made: {pair.Made}, finished: {pair.Finished}, delta: {pair.Made - pair.Finished}");
 #endif
 	}
 }
