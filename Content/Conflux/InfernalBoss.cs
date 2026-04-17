@@ -495,8 +495,11 @@ internal sealed class InfernalBoss : ModNPC
 		writer.Write((ushort)spawnCooldown);
 		writer.Write((ushort)voluntaryAttackCounter);
 		writer.Write((byte)Cutscene.Type);
-		if (Cutscene.Type != 0) { writer.Write((ushort)Cutscene.Counter); }
-		if (Cutscene.Type != 0) { writer.Write((ushort)Cutscene.Length); }
+		if (Cutscene.Type != 0)
+		{
+			writer.Write((ushort)Cutscene.Counter);
+			writer.Write((ushort)Cutscene.Length);
+		}
 	}
 	public override void ReceiveExtraAI(BinaryReader reader)
 	{
@@ -699,10 +702,6 @@ internal sealed class InfernalBoss : ModNPC
 					Volume = 0.35f,
 				});
 			}
-			else if (justEnded)
-			{
-
-			}
 		}
 		else if (Cutscene.Type == CutsceneType.Transformation)
 		{
@@ -752,7 +751,11 @@ internal sealed class InfernalBoss : ModNPC
 				// Prevent immediate teleportation & flame attacks.
 				ctx.Teleports.Data.Cooldown.Set(600);
 				enflameAttackCounter = 0;
+			}
 
+			// Effects.
+			if (justEnded && !Main.dedServ)
+			{
 				OverlayText.Create(new OverlayTextLine
 				{
 					AnimationLength = lengthInSeconds,
@@ -787,7 +790,6 @@ internal sealed class InfernalBoss : ModNPC
 					PitchVariance = 0.2f,
 				});
 
-				// Bloody effects.
 				foreach (Limb limb in limbs)
 				{
 					Vector2 logicalBodyCenter = ctx.Center;
@@ -810,8 +812,6 @@ internal sealed class InfernalBoss : ModNPC
 						Gore.NewGorePerfect(NPC.GetSource_FromThis(), pos, vel, 135);
 					}
 				}
-
-				Cutscene = default;
 			}
 		}
 		else if (Cutscene.Type == CutsceneType.Death)
@@ -870,7 +870,11 @@ internal sealed class InfernalBoss : ModNPC
 				{
 					NPC.StrikeInstantKill();
 				}
+			}
 
+			// Death effects.
+			if (justEnded && !Main.dedServ)
+			{
 				// Defeated text overlay.
 				const float OverlayLength = 7.5f;
 				(float, float) defeatedFadeIn = (0.25f, 0.30f);
@@ -1681,9 +1685,7 @@ internal sealed class InfernalBoss : ModNPC
 	private void SetupLimbs(in Context ctx)
 	{
 		_ = ctx;
-		var baseFraming = new SpriteFrame(4, 1) { PaddingX = 0, PaddingY = 0 };
 		var gibbableFraming = new SpriteFrame(4, 2) { PaddingX = 0, PaddingY = 0 };
-		_ = baseFraming;
 
 		// When facing right...
 		limbs =
@@ -2109,12 +2111,10 @@ internal sealed class InfernalBoss : ModNPC
 			Vector2 logicalLimbPos = limb.IK.GetPosition(logicalBodyCenter, rotation: bodyAngle.Current, xDir: NPC.spriteDirection);
 			bool limbAvailable = !limb.IsGibbedAtAll || Phase == PhaseType.Abomination;
 
-			// If already holding something.
-			if (limb.EntityAttachment.Entity is { } grabEntity)
+			// If not already holding something - try grabbing something.
+			if (limb.EntityAttachment.Entity is not { } grabEntity)
 			{
-			}
-			else
-			{
+				// Unless we cannot!
 				if (!canGrabAnyone || !limbAvailable)
 				{
 					continue;
@@ -2145,7 +2145,7 @@ internal sealed class InfernalBoss : ModNPC
 						if (npc.immortal || NPCID.Sets.ImmuneToAllBuffs[npc.type]) { continue; }
 						if (npc.DistanceSQ(logicalLimbPos) > sqrNpcGrabRange) { continue; }
 						if (limbs.Any(l => l.EntityAttachment.NPC == npc)) { continue; }
-						
+
 						// In phase II, only grab shamans.
 						if (Phase is PhaseType.Abomination && npc.type != ModContent.NPCType<FallenShaman>())
 						{
@@ -2418,18 +2418,18 @@ internal sealed class InfernalBoss : ModNPC
 		bool gibDuringDeath = Cutscene.Type == CutsceneType.Death && (Cutscene.Counter % 15 == 0 || Cutscene.Counter % 21 == 0);
 		float volumeFactor = gibDuringDeath ? 0.5f : 1.0f;
 
-		if (gibFromDamage || gibDuringDeath)
+		if ((gibFromDamage || gibDuringDeath) && Enumerable.Range(0, limbs.Length).Where(CanGibLimb).ToArray() is { Length: > 0 } gibbables)
 		{
-			if (Enumerable.Range(0, limbs.Length).Where(CanGibLimb).ToArray() is { Length: > 0 } gibbables)
+			int gibIndex = gibbables[Main.rand.Next(gibbables.Length)];
+			ref Limb limb = ref limbs[gibIndex];
+			Vector2 logicalBodyCenter = ctx.Center;
+			Vector2 limbPos = limb.IK.GetPosition(logicalBodyCenter, rotation: bodyAngle.Current, xDir: NPC.spriteDirection);
+
+			limb.ResetState();
+			limb.SetGibbed(limb.GibLevel + 1);
+
+			if (!Main.dedServ)
 			{
-				int gibIndex = gibbables[Main.rand.Next(gibbables.Length)];
-				ref Limb limb = ref limbs[gibIndex];
-				Vector2 logicalBodyCenter = ctx.Center;
-				Vector2 limbPos = limb.IK.GetPosition(logicalBodyCenter, rotation: bodyAngle.Current, xDir: NPC.spriteDirection);
-
-				limb.ResetState();
-				limb.SetGibbed(limb.GibLevel + 1);
-
 				if (Main.rand.NextBool(3))
 				{
 					SoundEngine.PlaySound(position: ctx.Center, style: new($"{nameof(PathOfTerraria)}/Assets/Sounds/Gore/SuperSplatter1")
@@ -2686,12 +2686,13 @@ internal sealed class InfernalBoss : ModNPC
 			Blade.Position = targetPosition + (targetPosition.DirectionTo(Blade.Position) * maxDistance);
 		}
 	}
-	private static IEnumerable<Vector2> GetBladeGrabPoints()
-	{
-		yield return new(+0, +0);
-		yield return new(-48, +0);
-		yield return new(+48, +0);
-	}
+	
+	private static readonly Vector2[] bladeGrabOffsets =
+	[
+		new(+0, +0),
+		new(-48, +0),
+		new(+48, +0),
+	];
 	/// <summary> Finds the closest free and reachable blade grab point. Object-relative. </summary>
 	private bool PickBladePoint(in Context ctx, ref Limb limb, [MaybeNullWhen(false)] out (Vector2 Local, Vector2 Global) result)
 	{
@@ -2710,7 +2711,7 @@ internal sealed class InfernalBoss : ModNPC
 			hiltAngle = 0f;
 		}
 
-		foreach (Vector2 local in GetBladeGrabPoints())
+		foreach (Vector2 local in bladeGrabOffsets)
 		{
 			Vector2 global = hiltPos + (local.RotatedBy(hiltAngle));
 			float sqrDistance = limbOrigin.DistanceSQ(global);
@@ -2818,7 +2819,6 @@ internal sealed class InfernalBoss : ModNPC
 		RenderBladeInner(screenPos, bladeBaseTexture.Value, bladeGlowTexture.Value, bladeOrigin);
 		sb.Begin(in sbArgs);
 	}
-	private static readonly short[] QuadTriangles = [0, 2, 3, 0, 1, 2];
 	private void RenderBladeInner(Vector2 screenPos, Texture2D diffuse, Texture2D glowmask, Vector2 origin)
 	{
 		if (BladeHistory.Length == 0)
@@ -2886,7 +2886,7 @@ internal sealed class InfernalBoss : ModNPC
 			foreach (EffectPass pass in effect.CurrentTechnique.Passes)
 			{
 				pass.Apply();
-				gfx.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertices.Array, 0, vertices.Length, QuadTriangles, 0, QuadTriangles.Length / 3);
+				RenderUtils.DrawUserQuad(gfx, vertices.Array, vertices.Length);
 			}
 		}
 	}

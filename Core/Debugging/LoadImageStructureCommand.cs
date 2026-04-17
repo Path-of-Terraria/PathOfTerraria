@@ -1,13 +1,18 @@
+// #define ENABLED
+
+#if DEBUG && ENABLED
 using System.Collections.Generic;
 using Terraria.ID;
-using Terraria.GameContent;
 using Terraria.DataStructures;
 using ReLogic.Content;
 using PathOfTerraria.Utilities.Xna;
 
 namespace PathOfTerraria.Core.Debugging;
 
-#if DEBUG
+/// <summary>
+/// This command has once been once used for quickly sketching out structures in image editors before getting in the game and editing them further.
+/// However, using DragonLens' copy-and-paint tools may be more worthwhile than meddling with this command's color tables.
+/// </summary>
 public sealed class LoadImageStructureCommand : ModCommand
 {
 	public override string Command => "potLoadDebugStructure";
