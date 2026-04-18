@@ -12,6 +12,7 @@ using PathOfTerraria.Core.Time;
 using PathOfTerraria.Core.UI;
 using PathOfTerraria.Core.UI.SmartUI;
 using PathOfTerraria.Utilities;
+using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
 using ReLogic.Content;
 using ReLogic.Graphics;
@@ -779,8 +780,9 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		const int numRenders = 7; // Must be odd.
 		const float offsetPerCanister = 48f;
 
-		Texture2D canisterTex = ModContent.Request<Texture2D>($"{BasePath}/MapDevice_Canister", AssetRequestMode.ImmediateLoad).Value;
-		Texture2D canisterHoverTex = ModContent.Request<Texture2D>($"{BasePath}/MapDevice_Canister_Highlight", AssetRequestMode.ImmediateLoad).Value;
+		Texture2D canisterTex = AssetUtils.ImmediateValue<Texture2D>($"{BasePath}/MapDevice_Canister");
+		Texture2D canisterHoverTex = AssetUtils.ImmediateValue<Texture2D>($"{BasePath}/MapDevice_Canister_Highlight");
+		Texture2D resSeparatorTex = AssetUtils.ImmediateValue<Texture2D>($"{BasePath}/ResourceSeparator");
 		Vector2 canisterSize = canisterTex.Size();
 
 		ReadOnlySpan<MapResource> resources = MapResources.Resources;
@@ -900,9 +902,10 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 					ChatManager.DrawColorCodedStringWithShadow(sb, font, text, center, color, 0f, size * 0.5f, Vector2.One);
 				}
 
-				DrawString(canisterCenter + new Vector2(0f, -68f), availabilityColor, resource.Value.ToString());
-				DrawString(canisterCenter + new Vector2(0f, -59f), neutralColor, "_");
-				DrawString(canisterCenter + new Vector2(0f, -40f), availabilityColor, resource.Cost.ToString());
+				Color sepColor = neutralColor.MultiplyRGBA(new Color(Vector4.One * 0.6f));
+				DrawString(canisterCenter + new Vector2(0, -68), availabilityColor, resource.Value.ToString());
+				sb.Draw(resSeparatorTex, canisterCenter + new Vector2(0, -58), null, sepColor, 0, resSeparatorTex.Size() * 0.5f, 1, 0, 0);
+				DrawString(canisterCenter + new Vector2(0, -40), availabilityColor, resource.Cost.ToString());
 			}
 		}
 	}
