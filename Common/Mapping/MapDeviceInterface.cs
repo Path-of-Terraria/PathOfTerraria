@@ -266,7 +266,6 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		public WindowElement(Asset<Texture2D> texture)
 		{
 			Texture = texture;
-			OverrideSamplerState = SamplerState.PointClamp;
 		}
 
 		protected override void DrawSelf(SpriteBatch sb)
@@ -341,11 +340,6 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		return Math.Max(0, layers.FindIndex(l => l.Name == "Vanilla: Mouse Text") - 1);
 	}
 
-	public MapDeviceState()
-	{
-		OverrideSamplerState = SamplerState.PointClamp;
-	}
-
 	internal void OnClosing()
 	{
 		// Prevent interactions when the UI begins to close.
@@ -357,7 +351,6 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		if (Visible) { return; }
 
 		Visible = true;
-		OverrideSamplerState = SamplerState.PointClamp;
 		// Allow interactions once again.
 		IgnoresMouseInteraction = false;
 
@@ -499,6 +492,16 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		}
 
 		Recalculate();
+	}
+
+	public override void Draw(SpriteBatch sb)
+	{
+		// Use point-clamp filtering for *everything*, self and children.
+		// It does not suffice to use the `OverrideSamplerState` property.
+		var args = new SpriteBatchArgs(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, Main.Rasterizer, null, Main.UIScaleMatrix);
+		using SpriteBatchOverride _ = sb.Override(args);
+		
+		base.Draw(sb);
 	}
 
 	protected override void DrawChildren(SpriteBatch sb)
