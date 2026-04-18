@@ -109,6 +109,16 @@ internal class TavernManager : ModSystem
 			int type = types.Dequeue();
 			Point16 pos = seatsToUse.Dequeue();
 
+			if (NPC.AnyNPCs(type))
+			{
+				if (seatsToUse.Count == 0)
+				{
+					return;
+				}
+
+				continue;
+			}
+
 			if (Main.netMode == NetmodeID.SinglePlayer)
 			{
 				NPC.NewNPC(Entity.GetSource_NaturalSpawn(), pos.X * 16, pos.Y * 16, type);
