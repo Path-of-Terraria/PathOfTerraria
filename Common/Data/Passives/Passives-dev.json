@@ -710,6 +710,9 @@
 		"connections": [
 			{
 				"referenceId": 40
+			},
+			{
+				"referenceId": 169
 			}
 		],
 		"position": {
@@ -2587,7 +2590,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "IncreasedMagicAndSummonDamagePassive",
+		"internalIdentifier": "AddedSummonCritChancePassive",
 		"referenceId": 128,
 		"maxLevel": 1,
 		"value": 5,
@@ -2605,7 +2608,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "IncreasedMagicAndSummonDamagePassive",
+		"internalIdentifier": "AddedSummonCritChancePassive",
 		"referenceId": 129,
 		"maxLevel": 1,
 		"value": 5,
@@ -2620,7 +2623,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedSummonCritChancePassive",
+		"internalIdentifier": "IncreasedMagicAndSummonDamagePassive",
 		"referenceId": 130,
 		"maxLevel": 1,
 		"value": 5,
@@ -2641,7 +2644,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedSummonCritChancePassive",
+		"internalIdentifier": "IncreasedMagicAndSummonDamagePassive",
 		"referenceId": 131,
 		"maxLevel": 1,
 		"value": 5,
@@ -3127,7 +3130,7 @@
 			"y": -1255
 		},
 		"isChoiceNode": true,
-		"requiredAllocatedEdges": 2
+		"requiredAllocatedEdges": 1
 	},
 	{
 		"internalIdentifier": "SymbioticPulseMastery",
@@ -3361,6 +3364,12 @@
 		"connections": [
 			{
 				"referenceId": 161
+			},
+			{
+				"referenceId": 43
+			},
+			{
+				"referenceId": 1055
 			}
 		],
 		"position": {
@@ -3702,8 +3711,7 @@
 				"referenceId": 169
 			},
 			{
-				"referenceId": 999,
-				"effectsOnly": true
+				"referenceId": 999
 			}
 		],
 		"position": {
@@ -3721,8 +3729,7 @@
 				"referenceId": 169
 			},
 			{
-				"referenceId": 999,
-				"effectsOnly": true
+				"referenceId": 999
 			}
 		],
 		"position": {
@@ -3751,7 +3758,7 @@
 			"y": -1065
 		},
 		"isChoiceNode": true,
-		"requiredAllocatedEdges": 5
+		"requiredAllocatedEdges": 3
 	},
 	{
 		"internalIdentifier": "SoulReaveMastery",
@@ -4313,7 +4320,7 @@
 				"referenceId": 1133
 			},
 			{
-				"referenceId": 188
+				"referenceId": 189
 			}
 		],
 		"position": {
@@ -5209,7 +5216,7 @@
 			"y": 1147
 		},
 		"isChoiceNode": true,
-		"requiredAllocatedEdges": 2
+		"requiredAllocatedEdges": 1
 	},
 	{
 		"internalIdentifier": "HairTriggerMastery",
@@ -5786,7 +5793,8 @@
 				"referenceId": 1097
 			},
 			{
-				"referenceId": 261
+				"referenceId": 261,
+				"effectsOnly": true
 			}
 		],
 		"position": {
@@ -6713,27 +6721,6 @@
 	},
 	{
 		"internalIdentifier": "IncreasedAttackSpeedPassive",
-		"referenceId": 1141,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 54
-			},
-			{
-				"referenceId": 235
-			},
-			{
-				"referenceId": 243
-			}
-		],
-		"position": {
-			"x": 1150,
-			"y": 550
-		}
-	},
-	{
-		"internalIdentifier": "IncreasedAttackSpeedPassive",
 		"referenceId": 1142,
 		"maxLevel": 1,
 		"value": 5,
@@ -6749,8 +6736,8 @@
 			}
 		],
 		"position": {
-			"x": 1150,
-			"y": 550
+			"x": 585,
+			"y": 1220
 		}
 	},
 	{
