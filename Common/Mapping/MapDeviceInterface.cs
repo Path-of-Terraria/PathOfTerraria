@@ -983,7 +983,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 			(e.InactiveScale, e.ActiveScale) = (1.00f, 1.00f);
 			e.Predicate = static (newItem, oldItem) => newItem is { ModItem: Map };
 			e.OnModifyItem += OnModifyMapItem;
-			e.IsLocked = static _ => MapDeviceInterface.Entity is { PortalActive: true } || HasInjection();
+			e.IsLocked = static _ => MapDeviceInterface.Entity is not { } e || e is { PortalActive: true } || HasInjection();
 			e.OnUpdate += e =>
 			{
 				((UIImageItemSlot)e).IconTexture = HasInjection() ? mapLockTexture : mapIconTexture;
