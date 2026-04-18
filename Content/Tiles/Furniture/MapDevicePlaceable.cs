@@ -1,10 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Linq;
-using Mono.Cecil;
+﻿using Mono.Cecil;
 using PathOfTerraria.Common.Mapping;
+using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.ModPlayers.LivesSystem;
 using PathOfTerraria.Common.Systems.Synchronization;
@@ -19,6 +15,12 @@ using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
 using ReLogic.Content;
 using ReLogic.Utilities;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Linq;
+using Terraria;
 using Terraria.Audio;
 using Terraria.Chat;
 using Terraria.DataStructures;
@@ -60,7 +62,7 @@ public sealed class MapDevicePlaceable : MapDeviceTile
 
 public class MapDeviceTile : ModTile
 {
-	private static Asset<Texture2D>? _portalTex;
+	//private static Asset<Texture2D>? _portalTex;
 	private static Asset<Texture2D>? _spikesTex;
 	private static Asset<Texture2D>? _backTex;
 
@@ -216,9 +218,17 @@ public class MapDeviceTile : ModTile
 			sb.Draw(spikesTexture, spikePos, srcRect, color, spikeRotation, spikeOrigin, 1f, 0, 0f);
 		}
 	}
+	/// <summary>
+	/// the portel itself is now a <see cref="PathOfTerraria.Common.Projectiles.BasePortalProjectile"/> 
+	/// </summary>
+	/// <param name="sb"></param>
+	/// <param name="tilePoint"></param>
+	/// <param name="worldCenter"></param>
+	/// <param name="entity"></param>
+	/// <param name="screenPosition"></param>
 	private void DrawPortal(SpriteBatch sb, Point16 tilePoint, Vector2 worldCenter, MapDeviceEntity entity, Vector2 screenPosition)
 	{
-		Texture2D portalTexture = AssetUtils.ImmediateValue(PortalTexturePath, ref _portalTex);
+		//Texture2D portalTexture = AssetUtils.ImmediateValue(PortalTexturePath, ref _portalTex);
 		Texture2D? itemTex = null;
 		Color baseColor = entity.GetPortalColor();
 		Item portalItem = entity.StoredMap;
@@ -232,8 +242,8 @@ public class MapDeviceTile : ModTile
 		Tile tile = Main.tile[tilePoint];
 		var tileData = TileObjectData.GetTileData(tile);
 		int frameY = tile.TileFrameX % 90 / tileData.CoordinateFullWidth; // Picks the frame on the sheet based on the placeStyle of the item
-		Rectangle frame = portalTexture.Frame(1, 1, 0, frameY);
-		Vector2 origin = frame.Size() / 2f;
+		//Rectangle frame = portalTexture.Frame(1, 1, 0, frameY);
+		//Vector2 origin = frame.Size() / 2f;
 		Color color = Color.Lerp(Lighting.GetColor(tilePoint.X, tilePoint.Y), Color.White, 0.4f).MultiplyRGBA(baseColor);
 		bool direction = tile.TileFrameY / tileData.CoordinateFullHeight != 0; // This is related to the alternate tile data we registered before
 		SpriteEffects effects = direction ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
@@ -248,7 +258,7 @@ public class MapDeviceTile : ModTile
 		{
 			float rotation = Main.GlobalTimeWrappedHourly * 7f * (k % 2 == 0 ? -1 : 1);
 			Color drawColor = (color * (1 - (k * 0.2f)) * 0.7f) with { A = 112 };
-			sb.Draw(portalTexture, drawPos, frame, drawColor, rotation, origin, baseScale - k * 0.2f, effects, 0f);
+			//sb.Draw(portalTexture, drawPos, frame, drawColor, rotation, origin, baseScale - k * 0.2f, effects, 0f);
 		}
 
 		if (itemTex != null)
@@ -263,12 +273,11 @@ public class MapDeviceTile : ModTile
 		Color effectColor = color;
 		effectColor.A = 0;
 		effectColor *= 0.1f * scale;
-		for (float num5 = 0f; num5 < 1f; num5 += 355f / (678f * (float)Math.PI))
-		{
-			sb.Draw(portalTexture, drawPos + (MathHelper.TwoPi * num5).ToRotationVector2() * (6f + offset * 2f), frame, effectColor, 0f, origin, 1f, effects, 0f);
-		}
+		//for (float num5 = 0f; num5 < 1f; num5 += 355f / (678f * (float)Math.PI))
+		//{
+		//	sb.Draw(portalTexture, drawPos + (MathHelper.TwoPi * num5).ToRotationVector2() * (6f + offset * 2f), frame, effectColor, 0f, origin, 1f, effects, 0f);
+		//}
 	}
-
 	public override bool RightClick(int x, int y)
 	{
 		if (TryGetEntity(x, y, out MapDeviceEntity? entity) && Main.netMode != NetmodeID.Server)
@@ -346,10 +355,23 @@ internal class MapDeviceEntity : ModTileEntity
 	private SlotId engineSoundHandle;
 	private float portalSoundVolume;
 	private float engineSoundVolume;
-
+	private bool portalActive = false;
+	private int portalProjWhoAmI = -1;
 	public Item StoredMap { get; set; }
 	public Item[] Storage { get; set; }
-	public bool PortalActive { get; set; }
+	public bool PortalActive { get => portalActive; set
+		{
+			portalActive = value;
+			if (value)
+			{
+				SpawnPortalProjectile();
+			}
+			else if(portalProjWhoAmI != -1)
+			{
+				Main.projectile[portalProjWhoAmI].Kill();
+			}
+		}
+	}
 	public int PortalUsesLeft { get; set; }
 	public int? InteractingPlayer { get; private set; }
 	/// <summary> Which map destination resource is currently injected into the device, and what quantity of it. </summary>
@@ -794,6 +816,16 @@ internal class MapDeviceEntity : ModTileEntity
 		}
 
 		return true;
+	}
+
+	/// <summary>
+	/// The Portal Drawing Projectile. The reason its a projectile is because dealing with shaders in tiles require a lot of effort and we could just use a projecitle which does the same thing but easier and more reliable
+	/// </summary>
+	private void SpawnPortalProjectile() 
+	{
+		Point16 tilePoint = Position;
+		Vector2 worldCenter = tilePoint.ToWorldCoordinates(88, -15);
+		portalProjWhoAmI = Projectile.NewProjectile(null, worldCenter, Vector2.Zero,ModContent.ProjectileType<BasePortalProjectile>(),0,0);
 	}
 
 	/// <summary>
