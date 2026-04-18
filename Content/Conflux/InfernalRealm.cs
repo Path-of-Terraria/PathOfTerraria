@@ -1,6 +1,7 @@
 ﻿// #define DISPLAY_ORIGINS
 
 using System.Collections.Generic;
+using System.IO;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.World.Generation;
@@ -21,9 +22,26 @@ using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Content.Conflux;
 
-internal class InfernalRealm : BossDomainSubworld, IOverrideBiome
+internal sealed class InfernalRealm : BossDomainSubworld, IOverrideBiome
 {
-	public static Point16 ArenaCenter { get; private set; }
+	internal sealed class InfernalRealmSystem : ModSystem
+	{
+		public override void NetSend(BinaryWriter writer)
+		{
+			if (!IsActive) { return; }
+			writer.Write((ushort)ArenaCenter.X);
+			writer.Write((ushort)ArenaCenter.Y);
+		}
+		public override void NetReceive(BinaryReader reader)
+		{
+			if (!IsActive) { return; }
+			ArenaCenter = new Point16(reader.ReadUInt16(), reader.ReadUInt16());
+		}
+	}
+
+	//TODO: Standardize a way of saving, acquiring (with fallbacks), and synchronizing, position metadata from structures.
+	public static Point16 ArenaCenter { get; private set; } = new(412, 510);
+	public static bool IsActive => SubworldSystem.IsActive<InfernalRealm>();
 
 	public FightTracker FightTracker;
 
@@ -43,13 +61,16 @@ internal class InfernalRealm : BossDomainSubworld, IOverrideBiome
 	public override void OnEnter()
 	{
 		base.OnEnter();
+		
 		FightTracker = new([ModContent.NPCType<InfernalBoss>()])
 		{
 			ResetOnVanish = true,
 			HaltTimeOnVanish = 60 * 10,
 		};
-	}
 
+		SetupOrigins();
+	}
+	
 	public override void Update()
 	{
 		FightState state = FightTracker.UpdateState();
@@ -117,14 +138,32 @@ internal class InfernalRealm : BossDomainSubworld, IOverrideBiome
 	{
 		int lavaLevel = (int)(Height / 3 * 2);
 
-		ArenaCenter = new(Main.maxTilesX / 2 + 20, Main.maxTilesY / 2 + 90);
 		Main.worldSurface = lavaLevel;
 		Main.rockLayer = lavaLevel - 4;
 
 		const string Arena = "Assets/Structures/Infernal/Arena";
 		Point16 structSize = StructureTools.GetSize(Arena);
-		Point16 structPos = StructureTools.PlaceByOrigin(Arena, ArenaCenter, new Vector2(0.48f, 0.55f));
+		Point16 structPlacement = new(Main.maxTilesX / 2 + 20, Main.maxTilesY / 2 + 90);
+		Point16 structPos = StructureTools.PlaceByOrigin(Arena, structPlacement, new Vector2(0.48f, 0.55f));
 
+		// Generate lava.
+		for (int x = 0; x < Main.maxTilesX; x++)
+		{
+			for (int y = 0; y < Main.maxTilesY; y++)
+			{
+				Tile tile = Main.tile[x, y];
+				if (y < lavaLevel || tile.HasTile) { continue; }
+
+				(tile.LiquidType, tile.LiquidAmount) = (LiquidID.Lava, byte.MaxValue);
+			}
+		}
+
+		SetupOrigins();
+	}
+	private static void SetupOrigins()
+	{
+		if (Main.netMode == NetmodeID.MultiplayerClient) { return; }
+		
 		// Place a landmine in the structure to determine the arena origin.
 		// ...Yes, that's the best we've got.
 		const int originTileType = TileID.LandMine;
@@ -135,17 +174,10 @@ internal class InfernalRealm : BossDomainSubworld, IOverrideBiome
 			for (int y = 0; y < Main.maxTilesY; y++)
 			{
 				Tile tile = Main.tile[x, y];
+				if (tile.TileType != originTileType || !tile.HasTile) { continue; }
 
-				if (tile.TileType == originTileType && tile.HasTile)
-				{
-					tile.HasTile = false;
-					originTilePos = new Point16(x, y);
-				}
-
-				if (y >= lavaLevel && !tile.HasTile)
-				{
-					(tile.LiquidType, tile.LiquidAmount) = (LiquidID.Lava, byte.MaxValue);
-				}
+				tile.HasTile = false;
+				originTilePos = new Point16(x, y);
 			}
 		}
 
@@ -155,10 +187,8 @@ internal class InfernalRealm : BossDomainSubworld, IOverrideBiome
 		}
 		else
 		{
-#if DEBUG
 			Main.NewText("Could not locate arena origin. Please report this!", Color.Red);
 			Debugger.Break();
-#endif
 		}
 
 		(Main.spawnTileX, Main.spawnTileY) = (ArenaCenter.X - 149, ArenaCenter.Y - 45);
@@ -209,14 +239,14 @@ internal sealed class InfernalRealmRendering : ModSystem
 		// Disable sun and moon in the realm.
 		On_Main.DrawSunAndMoon += (orig, self, sceneArea, moonColor, sunColor, tempMushroomInfluence) =>
 		{
-			if (SubworldSystem.IsActive<InfernalRealm>()) { return; }
+			if (InfernalRealm.IsActive) { return; }
 			orig(self, sceneArea, moonColor, sunColor, tempMushroomInfluence);
 		};
 	}
 
 	public void RenderObjects(Vector2 screenPos, DrawLayer layers, bool batchActive)
 	{
-		if (!SubworldSystem.IsActive<InfernalRealm>()) { return; }
+		if (!InfernalRealm.IsActive) { return; }
 
 		Texture2D texThrone = AssetUtils.ImmediateValue($"{nameof(PathOfTerraria)}/Assets/Conflux/InfernalArena_Throne", ref textureThrone);
 		Texture2D texWall = AssetUtils.ImmediateValue($"{nameof(PathOfTerraria)}/Assets/Conflux/InfernalArena_Wall", ref textureWall);
