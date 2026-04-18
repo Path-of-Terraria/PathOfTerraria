@@ -622,7 +622,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 			e.SetDimensions(x: (0f, left.Pos.X), y: (0f, left.Pos.Y), width: (0f, left.Size.X), height: (0f, left.Size.Y));
 			e.AddComponent(new UIInteractive
 			{
-				IsActive = _ => CanInteractWithCanisters(),
+				IsActive = _ => CanInteractWithCanisters() && e.Color != default,
 				HoverSound = SoundID.MenuTick,
 				HoverTexture = leftHvrTex,
 			});
@@ -637,7 +637,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 			e.SetDimensions(x: (0f, right.Pos.X), y: (0f, right.Pos.Y), width: (0f, right.Size.X), height: (0f, right.Size.Y));
 			e.AddComponent(new UIInteractive
 			{
-				IsActive = _ => CanInteractWithCanisters(),
+				IsActive = _ => CanInteractWithCanisters() && e.Color != default,
 				HoverSound = SoundID.MenuTick,
 				HoverTexture = rightHvrTex,
 			});
@@ -652,7 +652,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 			e.SetDimensions(x: (0f, inject.Pos.X), y: (0f, inject.Pos.Y), width: (0f, inject.Size.X), height: (0f, inject.Size.Y));
 			e.AddComponent(new UIInteractive
 			{
-				IsActive = _ => CanInteractWithCanisters(),
+				IsActive = _ => CanInteractWithCanisters() && e.Color != default,
 				IsUnlocked = _ => CanInjectCurrentCanister(),
 				HoverSound = SoundID.MenuTick,
 				ClickSound = SoundID.MenuTick,
@@ -685,7 +685,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 			e.SetDimensions(x: (0f, eject.Pos.X), y: (0f, eject.Pos.Y), width: (0f, eject.Size.X), height: (0f, eject.Size.Y));
 			e.AddComponent(new UIInteractive
 			{
-				IsActive = _ => CanEjectCanister(),
+				IsActive = _ => CanEjectCanister() && e.Color != default,
 				HoverSound = SoundID.MenuTick,
 				ClickSound = SoundID.MenuTick,
 				HoverTexture = injectHvrTex,
