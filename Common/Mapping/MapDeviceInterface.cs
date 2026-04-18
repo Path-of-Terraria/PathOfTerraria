@@ -807,12 +807,10 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 			}
 		}
 
-		if (globalVisibility <= 0f) { return; }
-
 		// Render all the canisters.
 		for (int i = 0; i < numRenders; i++)
 		{
-			bool isTheInserted = i == numRenders / 2 && canisters.InjectionAnimation > 0f;
+			bool isTheInserted = i == (numRenders / 2) && canisters.InjectionAnimation > 0f;
 			bool isInserting = isTheInserted && canisters.InjectionAnimation < 1f;
 			int order = leftCanisterOrder + i;
 			int index = MathUtils.Modulo(order, resources.Length);
