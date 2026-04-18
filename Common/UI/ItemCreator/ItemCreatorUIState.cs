@@ -349,32 +349,22 @@ internal class ItemCreatorUIState : CloseableSmartUi
 		RefreshAffixList();
 	}
 
+	private static int[]? _shardTypes = null;
 	private static int[] GetAllShardTypes()
 	{
-		List<int> types = [];
-
-		TryAddShard<AscendantShard>(types);
-		TryAddShard<CorruptShard>(types);
-		TryAddShard<EchoingShard>(types);
-		TryAddShard<GlimmeringShard>(types);
-		TryAddShard<LimpidShard>(types);
-		TryAddShard<MysticShard>(types);
-		TryAddShard<RadiantShard>(types);
-		TryAddShard<SeveranceShard>(types);
-		TryAddShard<ShiftingShard>(types);
-		TryAddShard<UnfoldingShard>(types);
-
-		return [.. types];
-	}
-
-	private static void TryAddShard<T>(List<int> list) where T : ModItem
-	{
-		int type = ModContent.ItemType<T>();
-
-		if (type > 0)
+		if (_shardTypes == null)
 		{
-			list.Add(type);
+			List<int> itemIDs = new List<int>(capacity: 16);
+
+			foreach (CurrencyShard shard in ModContent.GetContent<CurrencyShard>())
+			{
+				itemIDs.Add(shard.Item.type);
+			}
+
+			_shardTypes = itemIDs.ToArray();
 		}
+
+		return _shardTypes;
 	}
 }
 #endif
