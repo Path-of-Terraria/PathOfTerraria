@@ -754,7 +754,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligenceDexterityPassive",
+		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 44,
 		"maxLevel": 1,
 		"value": 5,
@@ -887,7 +887,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedIntelligenceDexterityPassive",
 		"referenceId": 52,
 		"maxLevel": 1,
 		"value": 5,
@@ -1421,7 +1421,7 @@
 			"y": -16
 		},
 		"isChoiceNode": true,
-		"requiredAllocatedEdges": 4
+		"requiredAllocatedEdges": 2
 	},
 	{
 		"internalIdentifier": "CriticalOverloadMastery",
@@ -1703,7 +1703,7 @@
 			"y": -270
 		},
 		"isChoiceNode": true,
-		"requiredAllocatedEdges": 3
+		"requiredAllocatedEdges": 2
 	},
 	{
 		"internalIdentifier": "AfterburnMastery",
@@ -1781,6 +1781,9 @@
 				"referenceId": 100
 			},
 			{
+				"referenceId": 111
+			},
+			{
 				"referenceId": 1015
 			}
 		],
@@ -1849,7 +1852,7 @@
 			"y": 266
 		},
 		"isChoiceNode": true,
-		"requiredAllocatedEdges": 3
+		"requiredAllocatedEdges": 2
 	},
 	{
 		"internalIdentifier": "DeepPoolsMastery",
@@ -1943,6 +1946,9 @@
 		"connections": [
 			{
 				"referenceId": 108
+			},
+			{
+				"referenceId": 270
 			}
 		],
 		"position": {
@@ -2117,7 +2123,7 @@
 			"y": 645
 		},
 		"isChoiceNode": true,
-		"requiredAllocatedEdges": 2
+		"requiredAllocatedEdges": 1
 	},
 	{
 		"internalIdentifier": "SharpenedSpellsMastery",
@@ -2302,6 +2308,9 @@
 		"connections": [
 			{
 				"referenceId": 116
+			},
+			{
+				"referenceId": 123
 			}
 		],
 		"position": {
@@ -2335,6 +2344,9 @@
 		"connections": [
 			{
 				"referenceId": 1035
+			},
+			{
+				"referenceId": 269
 			}
 		],
 		"position": {
@@ -2363,7 +2375,7 @@
 			"y": -843
 		},
 		"isChoiceNode": true,
-		"requiredAllocatedEdges": 2
+		"requiredAllocatedEdges": 1
 	},
 	{
 		"internalIdentifier": "ReverberationMastery",
@@ -2503,7 +2515,7 @@
 			"y": -691
 		},
 		"isChoiceNode": true,
-		"requiredAllocatedEdges": 3
+		"requiredAllocatedEdges": 2
 	},
 	{
 		"internalIdentifier": "SingleFocusMastery",
@@ -3898,7 +3910,7 @@
 			"y": -10
 		},
 		"isChoiceNode": true,
-		"requiredAllocatedEdges": 4
+		"requiredAllocatedEdges": 2
 	},
 	{
 		"internalIdentifier": "TitanicImpactMastery",
@@ -4106,6 +4118,9 @@
 		"connections": [
 			{
 				"referenceId": 189
+			},
+			{
+				"referenceId": 274
 			}
 		],
 		"position": {
@@ -4296,6 +4311,9 @@
 			},
 			{
 				"referenceId": 1133
+			},
+			{
+				"referenceId": 188
 			}
 		],
 		"position": {
@@ -4324,7 +4342,7 @@
 			"y": -424
 		},
 		"isChoiceNode": true,
-		"requiredAllocatedEdges": 3
+		"requiredAllocatedEdges": 2
 	},
 	{
 		"internalIdentifier": "UndyingGraspMastery",
@@ -4474,7 +4492,7 @@
 			"y": -600
 		},
 		"isChoiceNode": true,
-		"requiredAllocatedEdges": 2
+		"requiredAllocatedEdges": 1
 	},
 	{
 		"internalIdentifier": "HemorrhageMastery",
@@ -4606,6 +4624,9 @@
 		"connections": [
 			{
 				"referenceId": 1137
+			},
+			{
+				"referenceId": 62
 			}
 		],
 		"position": {
@@ -4759,7 +4780,7 @@
 			"y": 620
 		},
 		"isChoiceNode": true,
-		"requiredAllocatedEdges": 2
+		"requiredAllocatedEdges": 1
 	},
 	{
 		"internalIdentifier": "BloodRushMastery",
@@ -4939,7 +4960,7 @@
 			"y": 612
 		},
 		"isChoiceNode": true,
-		"requiredAllocatedEdges": 4
+		"requiredAllocatedEdges": 2
 	},
 	{
 		"internalIdentifier": "SniperMastery",
@@ -5333,7 +5354,7 @@
 			"y": 740
 		},
 		"isChoiceNode": true,
-		"requiredAllocatedEdges": 2
+		"requiredAllocatedEdges": 1
 	},
 	{
 		"internalIdentifier": "DemolitionsExpertMastery",
@@ -5478,6 +5499,9 @@
 		"connections": [
 			{
 				"referenceId": 244
+			},
+			{
+				"referenceId": 270
 			}
 		],
 		"position": {
@@ -5557,7 +5581,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "IncreasedProjectileSpeedPassive",
+		"internalIdentifier": "IgnitingProjectilesPassive",
 		"referenceId": 251,
 		"maxLevel": 1,
 		"value": 5,
@@ -5590,13 +5614,16 @@
 		}
 	},
 	{
-		"internalIdentifier": "IgnitingProjectilesPassive",
+		"internalIdentifier": "IncreasedProjectileSpeedPassive",
 		"referenceId": 253,
 		"maxLevel": 1,
 		"value": 5,
 		"connections": [
 			{
 				"referenceId": 1085
+			},
+			{
+				"referenceId": 260
 			}
 		],
 		"position": {
@@ -5757,6 +5784,9 @@
 		"connections": [
 			{
 				"referenceId": 1097
+			},
+			{
+				"referenceId": 261
 			}
 		],
 		"position": {
@@ -5887,7 +5917,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligenceDexterityPassive",
+		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 265,
 		"maxLevel": 1,
 		"value": 5,
@@ -5955,7 +5985,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedIntelligenceDexterityPassive",
 		"referenceId": 270,
 		"maxLevel": 1,
 		"value": 5,
@@ -5970,7 +6000,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedIntelligenceDexterityPassive",
 		"referenceId": 271,
 		"maxLevel": 1,
 		"value": 5,
@@ -6021,7 +6051,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedIntelligenceStrengthPassive",
 		"referenceId": 274,
 		"maxLevel": 1,
 		"value": 5,
@@ -6039,7 +6069,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedIntelligenceStrengthPassive",
 		"referenceId": 275,
 		"maxLevel": 1,
 		"value": 5,
@@ -6102,7 +6132,7 @@
 			"y": -355
 		},
 		"isChoiceNode": true,
-		"requiredAllocatedEdges": 2
+		"requiredAllocatedEdges": 1
 	},
 	{
 		"internalIdentifier": "BossDownIncreaseItemRarityMastery",
@@ -6177,7 +6207,7 @@
 			"y": 340
 		},
 		"isChoiceNode": true,
-		"requiredAllocatedEdges": 2
+		"requiredAllocatedEdges": 1
 	},
 	{
 		"internalIdentifier": "AddedFishingLineMastery",
@@ -6252,7 +6282,7 @@
 			"y": 559
 		},
 		"isChoiceNode": true,
-		"requiredAllocatedEdges": 2
+		"requiredAllocatedEdges": 1
 	},
 	{
 		"internalIdentifier": "PseudoicarianMastery",
@@ -6327,7 +6357,7 @@
 			"y": 559
 		},
 		"isChoiceNode": true,
-		"requiredAllocatedEdges": 2
+		"requiredAllocatedEdges": 1
 	},
 	{
 		"internalIdentifier": "JourneymanMastery",
@@ -6405,7 +6435,7 @@
 			"y": 313
 		},
 		"isChoiceNode": true,
-		"requiredAllocatedEdges": 2
+		"requiredAllocatedEdges": 1
 	},
 	{
 		"internalIdentifier": "RockAndStoneMastery",
@@ -6483,7 +6513,7 @@
 			"y": -340
 		},
 		"isChoiceNode": true,
-		"requiredAllocatedEdges": 2
+		"requiredAllocatedEdges": 1
 	},
 	{
 		"internalIdentifier": "ExtraStockMastery",
@@ -6579,7 +6609,7 @@
 			"y": -585
 		},
 		"isChoiceNode": true,
-		"requiredAllocatedEdges": 2
+		"requiredAllocatedEdges": 1
 	},
 	{
 		"internalIdentifier": "AlchemistMastery",
@@ -6642,7 +6672,7 @@
 			"y": -605
 		},
 		"isChoiceNode": true,
-		"requiredAllocatedEdges": 2
+		"requiredAllocatedEdges": 1
 	},
 	{
 		"internalIdentifier": "ProlongingSkillMastery",
@@ -6679,6 +6709,48 @@
 		"position": {
 			"x": 1287,
 			"y": -517
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedAttackSpeedPassive",
+		"referenceId": 1141,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 54
+			},
+			{
+				"referenceId": 235
+			},
+			{
+				"referenceId": 243
+			}
+		],
+		"position": {
+			"x": 1150,
+			"y": 550
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedAttackSpeedPassive",
+		"referenceId": 1142,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 54
+			},
+			{
+				"referenceId": 235
+			},
+			{
+				"referenceId": 243
+			}
+		],
+		"position": {
+			"x": 1150,
+			"y": 550
 		}
 	},
 	{
