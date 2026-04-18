@@ -1,3 +1,4 @@
+#if DEBUG || STAGING
 using System.Collections.Generic;
 using PathOfTerraria.Common.Data;
 using PathOfTerraria.Common.Data.Models;
@@ -8,21 +9,22 @@ using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader.UI;
 using Terraria.UI;
 
+#nullable enable
+
 namespace PathOfTerraria.Common.UI.ItemCreator;
 
-#if DEBUG || STAGING
 internal class AffixEditorRow : UIElement
 {
 	private readonly ItemAffix _affix;
-	private readonly ItemAffixData _affixData;
+	private readonly ItemAffixData? _affixData;
 	private readonly Item _item;
 	private readonly int _affixIndex;
 	private readonly Action _onModified;
 
-	private UIText _nameText;
-	private UIText _tierText;
-	private UIText _valueText;
-	private UIText _rangeText;
+	private UIText _nameText = null!;
+	private UIText _tierText = null!;
+	private UIText _valueText = null!;
+	private UIText _rangeText = null!;
 
 	private int _holdTime;
 	private bool _resetHold;
@@ -80,6 +82,7 @@ internal class AffixEditorRow : UIElement
 
 	private void BuildTierControls()
 	{
+		Debug.Assert(_affixData != null);
 		int maxTier = _affixData.Tiers.Count - 1;
 
 		var tierDown = new UIButton<string>("<")

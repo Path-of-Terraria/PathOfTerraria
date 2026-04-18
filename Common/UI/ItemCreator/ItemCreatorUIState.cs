@@ -1,3 +1,4 @@
+#if DEBUG || STAGING
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.Enums;
@@ -15,12 +16,13 @@ using Terraria.ID;
 using Terraria.ModLoader.UI;
 using Terraria.UI;
 
+#nullable enable
+
 namespace PathOfTerraria.Common.UI.ItemCreator;
 
-#if DEBUG || STAGING
 internal class ItemCreatorPlayer : ModPlayer
 {
-	public static ModKeybind ToggleItemCreatorKey = null;
+	public static ModKeybind ToggleItemCreatorKey = null!;
 
 	public override void Load()
 	{
@@ -48,15 +50,15 @@ internal class ItemCreatorUIState : CloseableSmartUi
 	protected override bool IsCentered => true;
 
 	private Item _editItem = new();
-	private UIImageItemSlot _itemSlot;
-	private UIPanel _affixEditorPanel;
-	private UIList _affixList;
-	private UIText _itemInfoText;
-	private UIText _disabledMessage;
-	private UIButton<string> _addAffixButton;
-	private UIButton<string> _clearAffixButton;
-	private UIElement _shardBar;
-	private AddAffixPanel _addAffixOverlay;
+	private UIImageItemSlot _itemSlot = null!;
+	private UIPanel _affixEditorPanel = null!;
+	private UIList? _affixList;
+	private UIText _itemInfoText = null!;
+	private UIText _disabledMessage = null!;
+	private UIButton<string> _addAffixButton = null!;
+	private UIButton<string> _clearAffixButton = null!;
+	private UIElement _shardBar = null!;
+	private AddAffixPanel? _addAffixOverlay;
 	private bool _isRefreshing;
 
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
@@ -67,8 +69,8 @@ internal class ItemCreatorUIState : CloseableSmartUi
 	internal void Toggle()
 	{
 		RemoveAllChildren();
-		_addAffixOverlay = null;
-		_affixList = null;
+		_addAffixOverlay = null!;
+		_affixList = null!;
 
 		IsVisible = !IsVisible;
 
@@ -145,8 +147,8 @@ internal class ItemCreatorUIState : CloseableSmartUi
 		{
 			Left = StyleDimension.FromPixels(10),
 			Top = StyleDimension.FromPixels(4),
+			Predicate = (newItem, _) => newItem.IsAir || newItem.TryGetGlobalItem(out PoTGlobalItem _)
 		};
-		_itemSlot.Predicate = (newItem, _) => newItem.IsAir || newItem.TryGetGlobalItem(out PoTGlobalItem _);
 		_itemSlot.OnModifyItem += (_, _, _) => OnItemChanged();
 		itemSection.Append(_itemSlot);
 

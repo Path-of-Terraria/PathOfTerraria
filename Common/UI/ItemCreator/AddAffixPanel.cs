@@ -1,3 +1,4 @@
+#if DEBUG || STAGING
 using System.Collections.Generic;
 using System.Linq;
 using PathOfTerraria.Common.Data;
@@ -7,14 +8,15 @@ using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader.UI;
 using Terraria.UI;
 
+#nullable enable
+
 namespace PathOfTerraria.Common.UI.ItemCreator;
 
-#if DEBUG || STAGING
 internal class AddAffixPanel : UIElement
 {
 	private readonly Item _item;
 	private readonly Action _onAffixAdded;
-	private UIList _affixOptions;
+	private UIList _affixOptions = null!;
 
 	public AddAffixPanel(Item item, Action onAffixAdded)
 	{
@@ -118,7 +120,7 @@ internal class AddAffixPanel : UIElement
 	private void AddAffix(Type affixType)
 	{
 		PoTInstanceItemData data = _item.GetInstanceData();
-		var affix = (ItemAffix)Activator.CreateInstance(affixType);
+		var affix = (ItemAffix)Activator.CreateInstance(affixType)!;
 
 		int level = data.RealLevel;
 

@@ -1,12 +1,14 @@
+#if DEBUG || STAGING
 using PathOfTerraria.Content.Items.Currency;
 using ReLogic.Content;
 using Terraria.GameContent;
 using Terraria.GameInput;
 using Terraria.UI;
 
+#nullable enable
+
 namespace PathOfTerraria.Common.UI.ItemCreator;
 
-#if DEBUG || STAGING
 internal class InfiniteShardSlot : UIElement
 {
 	private readonly int _shardItemType;
@@ -14,7 +16,7 @@ internal class InfiniteShardSlot : UIElement
 	private readonly Func<Item> _getEditItem;
 	private readonly Action _onShardApplied;
 
-	private static Asset<Texture2D> _background;
+	private static Asset<Texture2D>? _background;
 
 	public InfiniteShardSlot(int shardItemType, Func<Item> getEditItem, Action onShardApplied)
 	{
