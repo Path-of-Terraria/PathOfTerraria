@@ -993,7 +993,8 @@ internal sealed class InfernalBoss : ModNPC
 		if (!hasTarget)
 		{
 			bool inNativeArena = SubworldSystem.IsActive<InfernalRealm>();
-			targetPos = inNativeArena ? InfernalRealm.ArenaCenter.ToWorldCoordinates(+8, -128) : ctx.Center;
+			Vector2? arenaCenter = inNativeArena ? InfernalRealm.ArenaCenter.Get()?.ToWorldCoordinates(+8, -128) : null;
+			targetPos = arenaCenter ?? ctx.Center;
 			walkPos = targetPos;
 			fixedPosition = true;
 		}
