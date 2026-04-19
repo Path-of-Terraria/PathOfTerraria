@@ -29,6 +29,7 @@ internal sealed class BossTracker : ModSystem
 	public static HashSet<int> TotalBossesDowned = [];
 
 	public static bool SkipWoFBox;
+	public static bool AlwaysSkipWoFBox = true;
 
 	private static readonly MethodInfo DoDeathEventsInfo = typeof(NPC).GetMethod("DoDeathEvents", BindingFlags.Instance | BindingFlags.NonPublic);
 
@@ -92,7 +93,7 @@ internal sealed class BossTracker : ModSystem
 
 	private static void StopBrickBox(On_NPC.orig_CreateBrickBoxForWallOfFlesh orig, NPC self)
 	{
-		if (!SkipWoFBox)
+		if (!SkipWoFBox && !AlwaysSkipWoFBox)
 		{
 			orig(self);
 		}
