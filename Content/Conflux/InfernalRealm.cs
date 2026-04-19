@@ -1,6 +1,4 @@
-﻿// #define DISPLAY_ORIGINS
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Subworlds.BossDomains;
@@ -8,6 +6,7 @@ using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Core.Camera;
 using PathOfTerraria.Core.Lighting;
+using PathOfTerraria.Core.Structures;
 using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
 using ReLogic.Content;
@@ -28,19 +27,17 @@ internal sealed class InfernalRealm : BossDomainSubworld, IOverrideBiome
 	{
 		public override void NetSend(BinaryWriter writer)
 		{
-			if (!IsActive) { return; }
-			writer.Write((ushort)ArenaCenter.X);
-			writer.Write((ushort)ArenaCenter.Y);
+			if (IsActive) { ArenaCenter.NetSend(writer); }
 		}
 		public override void NetReceive(BinaryReader reader)
 		{
-			if (!IsActive) { return; }
-			ArenaCenter = new Point16(reader.ReadUInt16(), reader.ReadUInt16());
+			if (IsActive) { ArenaCenter.NetReceive(reader); }
 		}
 	}
 
-	//TODO: Standardize a way of saving, acquiring (with fallbacks), and synchronizing, position metadata from structures.
-	public static Point16 ArenaCenter { get; private set; } = new(412, 510);
+	public static StructurePointTracker ArenaCenter = new("ArenaCenter");
+	public static StructurePointTracker PlayerSpawn = new("PlayerSpawn");
+	public static StructurePointTracker PlayerExit = new("PlayerExit");
 	public static bool IsActive => SubworldSystem.IsActive<InfernalRealm>();
 
 	public FightTracker FightTracker;
@@ -62,45 +59,38 @@ internal sealed class InfernalRealm : BossDomainSubworld, IOverrideBiome
 	{
 		base.OnEnter();
 		
+		ArenaCenter.Reset();
 		FightTracker = new([ModContent.NPCType<InfernalBoss>()])
 		{
 			ResetOnVanish = true,
 			HaltTimeOnVanish = 60 * 10,
 		};
-
-		SetupOrigins();
 	}
 	
 	public override void Update()
 	{
 		FightState state = FightTracker.UpdateState();
 
-		Vector2 exitPoint = ArenaCenter.ToWorldCoordinates() + new Vector2(+146.5f, -45f).ToWorldCoordinates(0, 0);
-		Vector2 spawnPoint = new Vector2(Main.spawnTileX, Main.spawnTileY).ToWorldCoordinates();
-
-#if DEBUG && DISPLAY_ORIGINS
-		DebugUtils.DrawRectInWorld(new Rectangle(ArenaCenter.X * 16, ArenaCenter.Y * 16, 16, 16), Main.DiscoColor);
-		DebugUtils.DrawRectInWorld(new Rectangle((int)exitPoint.X, (int)exitPoint.Y, 0, 0).Inflated(8, 8), Color.Lerp(Main.DiscoColor, Color.Red, 0.5f));
-		DebugUtils.DrawRectInWorld(new Rectangle((int)spawnPoint.X, (int)spawnPoint.Y, 0, 0).Inflated(8, 8), Color.Lerp(Main.DiscoColor, Color.Green, 0.5f));
-#endif
+		if (ArenaCenter.Get() is not Point16 arenaCenter) { return; }
+		if (PlayerExit.Get() is not Point16 playerExit) { return; }
 
 		if (state == FightState.NotStarted)
 		{
 			// Spawn the boss.
-			var spawnPos = (ArenaCenter.ToWorldCoordinates() + new Vector2(0, -128)).ToPoint16();
+			var spawnPos = (arenaCenter.ToWorldCoordinates() + new Vector2(0, -128)).ToPoint16();
 			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), spawnPos.X, spawnPos.Y, ModContent.NPCType<InfernalBoss>());
 		}
 		else if (state == FightState.JustCompleted)
 		{
 			IEntitySource src = Entity.GetSource_NaturalSpawn();
-			Projectile.NewProjectile(src, exitPoint, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0);
+			Projectile.NewProjectile(src, playerExit.ToWorldCoordinates(), Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0);
 		}
 
 		bool inFight = FightActive;
 		// Bias the camera towards the arena's mozaic windows.
 		for (int i = 0; i < 3; i++)
 		{
-			Vector2 point = ArenaCenter.ToWorldCoordinates() + new Vector2((i - 1) * 656 * 2, -900);
+			Vector2 point = arenaCenter.ToWorldCoordinates() + new Vector2((i - 1) * 656 * 2, -900);
 			CameraCurios.Create(new()
 			{
 				Identifier = $"{nameof(InfernalRealm)}_Pane{i + 1}_{(inFight ? "Fight" : "")}",
@@ -158,40 +148,11 @@ internal sealed class InfernalRealm : BossDomainSubworld, IOverrideBiome
 			}
 		}
 
-		SetupOrigins();
-	}
-	private static void SetupOrigins()
-	{
-		if (Main.netMode == NetmodeID.MultiplayerClient) { return; }
+		ArenaCenter.Reset();
+		Point16 arenaCenter = ArenaCenter.Get()!.Value;
+		Point16 playerSpawn = PlayerSpawn.Get()!.Value;
 		
-		// Place a landmine in the structure to determine the arena origin.
-		// ...Yes, that's the best we've got.
-		const int originTileType = TileID.LandMine;
-		Point16? originTilePos = null;
-
-		for (int x = 0; x < Main.maxTilesX; x++)
-		{
-			for (int y = 0; y < Main.maxTilesY; y++)
-			{
-				Tile tile = Main.tile[x, y];
-				if (tile.TileType != originTileType || !tile.HasTile) { continue; }
-
-				tile.HasTile = false;
-				originTilePos = new Point16(x, y);
-			}
-		}
-
-		if (originTilePos != null)
-		{
-			ArenaCenter = originTilePos.Value;
-		}
-		else
-		{
-			Main.NewText("Could not locate arena origin. Please report this!", Color.Red);
-			Debugger.Break();
-		}
-
-		(Main.spawnTileX, Main.spawnTileY) = (ArenaCenter.X - 149, ArenaCenter.Y - 45);
+		(Main.spawnTileX, Main.spawnTileY) = (playerSpawn.X, playerSpawn.Y);
 	}
 }
 
@@ -247,6 +208,7 @@ internal sealed class InfernalRealmRendering : ModSystem
 	public void RenderObjects(Vector2 screenPos, DrawLayer layers, bool batchActive)
 	{
 		if (!InfernalRealm.IsActive) { return; }
+		if (InfernalRealm.ArenaCenter.Get() is not Point16 baseTilePos) { return; }
 
 		Texture2D texThrone = AssetUtils.ImmediateValue($"{nameof(PathOfTerraria)}/Assets/Conflux/InfernalArena_Throne", ref textureThrone);
 		Texture2D texWall = AssetUtils.ImmediateValue($"{nameof(PathOfTerraria)}/Assets/Conflux/InfernalArena_Wall", ref textureWall);
@@ -267,7 +229,6 @@ internal sealed class InfernalRealmRendering : ModSystem
 		Effect effect = LitShaders.LitSprite(in matrix);
 
 		float drawScale = 2;
-		Point16 baseTilePos = InfernalRealm.ArenaCenter;
 		Vector2 baseWorldPos = baseTilePos.ToWorldCoordinates();
 
 		float wallStep = 656 * drawScale;

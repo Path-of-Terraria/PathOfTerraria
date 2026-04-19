@@ -16,18 +16,18 @@ internal record struct SpriteBatchArgs
 );
 
 /// <summary> Utility that begins a SpriteBatch, ending it when disposed. Use this via the using keyword. </summary>
-internal readonly ref struct SpriteBatchScope
+internal ref struct SpriteBatchScope
 {
-	private readonly SpriteBatch spriteBatch;
+	public SpriteBatch SpriteBatch;
 
 	public SpriteBatchScope(SpriteBatch sb, in SpriteBatchArgs args)
 	{
-		spriteBatch = sb;
-		sb.Begin(args);
+		SpriteBatch = sb;
+		SpriteBatch.Begin(args);
 	}
 	public readonly void Dispose()
 	{
-		spriteBatch.End();
+		SpriteBatch?.End();
 	}
 }
 /// <summary> Like <see cref="SpriteBatchScope"/>, but able to restore prior SpriteBatch parameters. </summary>
