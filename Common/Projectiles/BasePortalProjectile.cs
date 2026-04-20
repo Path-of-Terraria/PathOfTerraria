@@ -46,7 +46,7 @@ public class BasePortalProjectile : ModProjectile
         portalVortexTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Misc/VFX/PortalParts/PortalVortex");
         portalTailTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Misc/VFX/PortalParts/PortalTail");
         paletteTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Palettes/Portal0Palette");
-        ditherTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Misc/BayerMatrix8x8");
+        ditherTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Misc/BayerMatrix512x512");
 
     }
     public override void SetDefaults()
@@ -70,8 +70,8 @@ public class BasePortalProjectile : ModProjectile
         spawnPosition = Projectile.Center;
         tweenScale = new Tween<Vector2>(Vector2.Lerp).TweenProperty(
             [
-            new(new Vector2(2,0),new Vector2(.9f,1),false,TweenEaseType.CubicInOut,15),
-            new(new Vector2(.9f,1),new Vector2(1,1),false,TweenEaseType.CubicInOut,15),
+            new(new Vector2(2,0),new Vector2(.5f,1),false,TweenEaseType.CubicInOut,15),
+            new(new Vector2(.5f,1),new Vector2(1,1),false,TweenEaseType.CubicInOut,15),
 
             ]);
         tweenFlash = new Tween<float>(MathHelper.Lerp).TweenProperty(
@@ -85,8 +85,7 @@ public class BasePortalProjectile : ModProjectile
     public override void AI()
     {
         Projectile.rotation -= MathHelper.TwoPi / 129;
-        Projectile.position.Y = spawnPosition.Y + MathF.Sin(MathHelper.TwoPi * 0.5f + (float)Main.timeForVisualEffects * .01f) * .1f;
-
+		Projectile.Center = new Vector2(MathF.Floor(spawnPosition.X * 2f) / 2f, MathF.Floor(spawnPosition.Y * 2f) / 2f - 1); // the minus one here is important
         //Projectile.velocity *= 0.96f;
         //for(int i = 0; i < 1; i++) 
         //{
@@ -99,30 +98,25 @@ public class BasePortalProjectile : ModProjectile
 	public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
 	{
         Main.spriteBatch.End();
-        Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+        Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
         Vector2 scaleForPixelCalc = Vector2.Zero;
         Effect effectBase = portalTailEffect.Value;
-        Vector2 posProgress = Main.screenPosition - 2f * (Projectile.Center - Main.screenPosition);
-        float tileSizeInPixels = 32f;
-        Vector2 additionalScale = tweenScale.CurrentProgress;
-        float pixelSize = 256;
+        Vector2 additionalScale = tweenScale.CurrentProgress * 0.5f;
+        float pixelSize = 256 / 4f;
         gd.Textures[1] = paletteTexture.Value;
         gd.Textures[2] = ditherTexture.Value;
-        effectBase.Parameters["positionsOffset"].SetValue(posProgress);
-        effectBase.Parameters["data"].SetValue(new Vector4(32, tweenFlash.CurrentProgress, 1, 1));
+        effectBase.Parameters["data"].SetValue(new Vector4(1, tweenFlash.CurrentProgress,1f, 1));
         effectBase.Parameters["rotation"].SetValue(Projectile.rotation);
-        effectBase.Parameters["worldSize"].SetValue(new Vector2(Main.maxTilesX, Main.maxTilesY) * tileSizeInPixels);
         effectBase.Parameters["canvasSize"].SetValue(portalVortexTexture.Size());
         effectBase.Parameters["pixelSize"].SetValue(pixelSize);
         effectBase.Parameters["transform"].SetValue(Main.GameViewMatrix.NormalizedTransformationmatrix);
-        effectBase.Parameters["blackCircle"].SetValue(.35f);
         effectBase.Parameters["uTime"].SetValue((3));
-        effectBase.Parameters["additionalScale"].SetValue(additionalScale.Length() * .5f) ;
+        effectBase.Parameters["screenRes"].SetValue(Main.ScreenSize.ToVector2());
+        
+        effectBase.Parameters["additionalScale"].SetValue(additionalScale.Length());
+
         effectBase.CurrentTechnique.Passes[0].Apply();
-        Main.EntitySpriteDraw(portalVortexTexture.Value, Projectile.Center - Main.screenPosition, null, Color.White, 0, portalBaseTexture.Size() / 2f, additionalScale * 0.5f, SpriteEffects.None);
-        effectBase.Parameters["additionalScale"].SetValue(additionalScale.Length() * 0.25f);
-        effectBase.CurrentTechnique.Passes[0].Apply();
-        Main.EntitySpriteDraw(portalBaseTexture.Value, Projectile.Center - Main.screenPosition, null, Color.White, 0, portalBaseTexture.Size() / 2f, additionalScale * 0.25f, SpriteEffects.None);
+        Main.EntitySpriteDraw(portalBaseTexture.Value, Projectile.Center - Main.screenPosition, null, Color.White, 0, portalBaseTexture.Size() / 2f, additionalScale / 4f, SpriteEffects.None);
 
         Main.spriteBatch.End();
         Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);

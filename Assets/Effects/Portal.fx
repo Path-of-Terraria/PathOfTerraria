@@ -1,14 +1,12 @@
-float blackCircle;
 float4 data;
 float uTime;
 float rotation;
-float2 positionsOffset;
+float2 pixelCalculationFormula;
 float canvasSize;
-float2 worldSize;
 matrix transform;
 float pixelSize;
 float additionalScale;
-
+float2 screenRes;
 texture sampleTexture;
 sampler2D uImage0 : register(s0) = sampler_state
 {
@@ -41,7 +39,18 @@ sampler2D uImage2 : register(s2) = sampler_state
 	AddressV = Wrap;
 };
 
+float2 canvasToScreenScale(float2 customCanvasScale)
+{
+	float2 scaledCanvas = customCanvasScale * additionalScale;
+	return floor(screenRes / scaledCanvas + scaledCanvas);
 
+}
+
+float2 pixelsAmount(float customPixelSize, float2 customCanvasScale)
+{
+	return float2(customPixelSize,customPixelSize);
+	//return floor(canvasToScreenScale(customCanvasScale) / customPixelSize);
+}
 
 struct VertexShaderInput
 {
@@ -56,12 +65,12 @@ struct VertexShaderOutput
 	float4 Color : COLOR0;
 	float3 TextureCoordinates : TEXCOORD0;
 };
-
+// pixelSize / length(canvasSize / additionalScale) / pixelSize; //the formula
 VertexShaderOutput VertexShaderFunction(in VertexShaderInput input)
 {
 	VertexShaderOutput output = (VertexShaderOutput) 0;
-	float vertexPixelSize = pixelSize / length(canvasSize / additionalScale) / pixelSize;
-	input.Position.xyz = ceil(input.Position.xyz / vertexPixelSize) * vertexPixelSize;
+	float2 vertexPixelSize = pixelSize;
+	input.Position.xy = floor(input.Position.xy * vertexPixelSize) / vertexPixelSize;
 	
 	float4 pos = mul(input.Position, transform);
 	
@@ -94,26 +103,41 @@ float3 Palette(float2 t)
 	return tex2D(uImage1, float2(t.x, 0)).rgb;
 }
 
+//pixelSize: the amount of pixels in the canvas
+
 float4 PixelShaderFunction(VertexShaderOutput output) : COLOR0
 {
+	float oneLevel = 1 / 8.;
 	float2 uv = output.TextureCoordinates;
-	float pixelSizeBasedOnCanvasSize = (pixelSize / (length(canvasSize / additionalScale) / pixelSize)); // idk what did i make lol, but it works!
+	float2 pixelSizeBasedOnCanvasSize = pixelsAmount(pixelSize, canvasSize); // idk what did i make lol, but it works!
 	uv = floor(uv * pixelSizeBasedOnCanvasSize) / pixelSizeBasedOnCanvasSize;
 	uv = Rotate(uv, rotation, float2(.5, .5));
 	float4 portal = tex2D(uImage0, uv);
-	portal.rgb = floor(portal.rgb * 8) / 8;
-	portal.rgb = Palette(lerp(1, 0, length(portal.rgba) * 1.25f));
+	portal.rgba = floor(portal.rgba * 8) / 8 - oneLevel;
+	portal.rgb = Palette(lerp(1, 0, length(portal.rgb) * 1));
+	portal.a *= length(portal.rgb);
+	
+	//fix flickering pixels bug pleasse
 
 	//dither texturing
-	pixelSizeBasedOnCanvasSize = (pixelSize / (length(8 * (canvasSize / additionalScale)))); // idk what did i make lol, but it works!
-
-	float2 ditherUV = floor(output.TextureCoordinates * pixelSizeBasedOnCanvasSize) / (pixelSizeBasedOnCanvasSize);
-	float4 ditherTexture = tex2D(uImage2, ditherUV) + float4(portal.rgb,1);
-	float4 ditherPortal = portal * length(portal.a / ditherTexture);
-	ditherPortal = floor(ditherPortal * 16) / 16;
+	float2 ditherUV = output.TextureCoordinates.xy;
+	float ditherTexture = tex2D(uImage2, ditherUV * (pixelSize.xx / 256));
+	
+	// get previous level palette 
+	float4 portalPrevColor = tex2D(uImage0, uv);
+	portalPrevColor.rgba = saturate(floor(portalPrevColor.rgba * 8) / 8) - oneLevel * 2 * ditherTexture;
+	portalPrevColor.rgb = Palette(lerp(1, 0, length(portalPrevColor.rgb)));
+	
+	// put everything togather
+	float4 ditherPortal = lerp(portal, (portalPrevColor), ditherTexture);
 	
 	//flash
 	ditherPortal = lerp(ditherPortal, portal.a, data.y);
+	
+	//alpha based on color
+	ditherPortal.a = length(ditherPortal.rgb);
+	
+	
 	return ditherPortal;
 }
 
