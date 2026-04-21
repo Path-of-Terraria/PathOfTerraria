@@ -81,10 +81,13 @@ internal sealed class NPCMovement : NPCComponent<MovementData>
 			npc.velocity.X = MathUtils.StepTowards(npc.velocity.X, 0f, friction * TimeSystem.LogicDeltaTime);
 		}
 
-		// Slopes.
-		if (npc.velocity.Y == 0f) { Collision.StepDown(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY); }
+		// Handle slopes.
+		if (npc.position.X >= 0 && npc.position.Y > 0 && npc.position.X < Main.maxTilesX * 16 && npc.position.Y < Main.maxTilesY * 16)
+		{
+			if (npc.velocity.Y == 0f) { Collision.StepDown(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY); }
 
-		Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
+			Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
+		}
 
 		if ((!npc.HasValidTarget && !Data.TargetOverride.HasValue) || Data.NoAccelerationTime.Value > 0)
 		{

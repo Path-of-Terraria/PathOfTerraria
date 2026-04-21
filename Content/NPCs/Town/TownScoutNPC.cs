@@ -3,6 +3,8 @@ using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
+using PathOfTerraria.Common.Systems.Questing;
+using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using SubworldLibrary;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
@@ -112,13 +114,22 @@ public sealed class TownScoutNPC : ModNPC
 	public override float SpawnChance(NPCSpawnInfo spawnInfo)
 	{
 		bool anyHealthyPlayer = true;
+		bool forceQuestSpawn = false;
 
 		foreach (Player plr in Main.ActivePlayers)
 		{
+			QuestModPlayer questPlayer = plr.GetModPlayer<QuestModPlayer>();
+
+			if (questPlayer.QuestsByName.TryGetValue(ModContent.GetInstance<WizardStartQuest>().FullName, out Quest quest)
+				&& quest.Active
+				&& quest.ActiveStep.Id == "KillScout")
+			{
+				forceQuestSpawn = true;
+			}
+
 			if (plr.ConsumedLifeCrystals > 5)
 			{
 				anyHealthyPlayer = true;
-				break;
 			}
 		}
 
@@ -127,7 +138,7 @@ public sealed class TownScoutNPC : ModNPC
 			return 0;
 		}
 		
-		float chance = NPC.downedGoblins ? 0.1f : 5;
+		float chance = forceQuestSpawn ? 100f : NPC.downedGoblins ? 0.1f : 5;
 		bool spawnedScout = ModContent.GetInstance<RavencrestSystem>().SpawnedScout;
 
 		return SubworldSystem.Current is RavencrestSubworld && spawnInfo.SpawnTileX < 180 && !spawnedScout ? chance : 0;

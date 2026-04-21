@@ -186,9 +186,10 @@ public class AffixRegistry : ILoadable
 	/// <returns>Random ItemAffixData entry matching the ItemType.</returns>
 	public static ItemAffixData? GetRandomAffixDataByItemType(ItemType itemType, IEnumerable<ItemAffixData>? excludedAffixes = null)
 	{
-		if (itemType == 0) 
+		// No affixes for unrecognized item types.
+		if (itemType == ItemType.None)
 		{
-			throw new ArgumentNullException(nameof(itemType));
+			return null;
 		}
 
 		IEnumerable<ItemAffixData> enumerable = AllItemData
