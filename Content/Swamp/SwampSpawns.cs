@@ -1,4 +1,5 @@
-﻿using SubworldLibrary;
+﻿using PathOfTerraria.Content.Swamp.NPCs;
+using SubworldLibrary;
 using System.Collections.Generic;
 
 namespace PathOfTerraria.Content.Swamp;
@@ -11,6 +12,15 @@ internal class SwampSpawns : GlobalNPC
 		{
 			pool.Clear();
 
+			if (spawnInfo.Water)
+			{
+				pool.Add(ModContent.NPCType<SwampCroc>(), 0.2f);
+				pool.Add(ModContent.NPCType<Mudsquit>(), 0.8f);
+			}
+			else
+			{
+				pool.Add(ModContent.NPCType<DragonFly>(), 1f);
+			}
 			// No natural spawning, enemies are either generated or come from encounters.
 		}
 	}

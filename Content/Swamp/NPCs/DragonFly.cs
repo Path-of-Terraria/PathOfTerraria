@@ -1,12 +1,13 @@
 ﻿using NPCUtils;
 using PathOfTerraria.Common;
 using PathOfTerraria.Common.AI;
-using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.Gores;
+using System.IO;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
@@ -19,6 +20,35 @@ internal class DragonFly : ModNPC, IGrabberNPC
 	{
 		public NPCTargeting Targeting { get; } = npc.GetGlobalNPC<NPCTargeting>();
 		public NPCAnimations Animations { get; } = npc.GetGlobalNPC<NPCAnimations>();
+	}
+
+	private class ForceChaseHandler : Handler
+	{
+		public static void Send(NPC npc, int target = -1)
+		{
+			ModPacket packet = Networking.GetPacket<ForceChaseHandler>();
+			packet.Write((byte)npc.whoAmI);
+
+			if (target != -1)
+			{
+				packet.Write((byte)target);
+			}
+
+			packet.Send();
+		}
+
+		internal override void Receive(BinaryReader reader, byte sender)
+		{
+			byte who = reader.ReadByte();
+			byte target = Main.netMode == NetmodeID.Server ? sender : reader.ReadByte();
+
+			if (Main.netMode == NetmodeID.Server)
+			{
+				Send(Main.npc[who], sender);
+			}
+
+			(Main.npc[who].ModNPC as DragonFly).SetHitByPlayer(Main.player[target]);
+		}
 	}
 
 	private enum States
@@ -63,6 +93,8 @@ internal class DragonFly : ModNPC, IGrabberNPC
 		set => NPC.localAI[1] = value ? 1 : 0;
 	}
 
+	private ref float ForceChaseTimer => ref NPC.localAI[2];
+
 	void IGrabberNPC.OnGrab(int playerGrabbed)
 	{
 		CarryingPlayerWhoAmI = playerGrabbed;
@@ -99,10 +131,10 @@ internal class DragonFly : ModNPC, IGrabberNPC
 	public override void SetDefaults()
 	{
 		NPC.aiStyle = -1;
-		NPC.lifeMax = 300;
+		NPC.lifeMax = 4_000;
 		NPC.defense = 15;
 		NPC.damage = 5;
-		NPC.width = 142;
+		NPC.width = 92;
 		NPC.height = 42;
 		NPC.knockBackResist = 0;
 		NPC.noGravity = true;
@@ -211,10 +243,11 @@ internal class DragonFly : ModNPC, IGrabberNPC
 				}
 			}
 
-			if (NPC.DistanceSQ(targetCenter) > 600 * 600)
+			if (NPC.DistanceSQ(targetCenter) > 600 * 600 && ForceChaseTimer-- <= 0)
 			{
 				State = States.IdleFly;
 				SwitchingToGrab = false;
+				ForceChaseTimer = 0;
 				Timer = 0;
 			}
 		}
@@ -307,5 +340,32 @@ internal class DragonFly : ModNPC, IGrabberNPC
 			_ when State == States.CarryingPlayer && HasLetGo => animFly,
 			_ => null,
 		};
+	}
+
+	public override bool? CanFallThroughPlatforms()
+	{
+		return true;
+	}
+
+	public override void OnHitByProjectile(Projectile projectile, NPC.HitInfo hit, int damageDone)
+	{
+		if (projectile.friendly && projectile.TryGetOwner(out Player plr) && State == States.IdleFly)
+		{
+			if (Main.netMode == NetmodeID.SinglePlayer)
+			{
+				SetHitByPlayer(plr);
+			}
+			else
+			{
+				ForceChaseHandler.Send(NPC);
+			}
+		}
+	}
+
+	private void SetHitByPlayer(Player plr)
+	{
+		NPC.target = plr.whoAmI;
+		State = States.ChaseFly;
+		ForceChaseTimer = 240;
 	}
 }

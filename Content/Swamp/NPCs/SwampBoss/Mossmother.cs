@@ -110,7 +110,7 @@ internal partial class Mossmother : ModNPC
 
 	public override bool CanHitPlayer(Player target, ref int cooldownSlot)
 	{
-		return State == BehaviorState.Desperation;
+		return State is BehaviorState.Desperation or BehaviorState.MoveToWall or BehaviorState.GasCrawl;
 	}
 
 	public override bool? CanBeHitByProjectile(Projectile projectile)

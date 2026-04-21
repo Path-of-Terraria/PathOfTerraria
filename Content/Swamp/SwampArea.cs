@@ -67,7 +67,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld
 		SkipActuationLocations.Clear();
 		BlockerPositions.Clear();
 
-		Main.spawnTileX = LeftSpawn ? 70 : Main.maxTilesX - 70;
+		Main.spawnTileX = LeftSpawn ? 90 : Main.maxTilesX - 90;
 		Main.spawnTileY = FloorY - 6;
 
 		FastNoiseLite noise = new(Random.Next());
