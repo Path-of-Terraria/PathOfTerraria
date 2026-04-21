@@ -15,8 +15,55 @@ internal record struct SpriteBatchArgs
 	Matrix Matrix
 );
 
+/// <summary> Utility that begins a SpriteBatch, ending it when disposed. Use this via the using keyword. </summary>
+internal ref struct SpriteBatchScope
+{
+	public SpriteBatch SpriteBatch;
+
+	public SpriteBatchScope(SpriteBatch sb, in SpriteBatchArgs args)
+	{
+		SpriteBatch = sb;
+		SpriteBatch.Begin(args);
+	}
+	public readonly void Dispose()
+	{
+		SpriteBatch?.End();
+	}
+}
+/// <summary> Like <see cref="SpriteBatchScope"/>, but able to restore prior SpriteBatch parameters. </summary>
+internal readonly ref struct SpriteBatchOverride
+{
+	private readonly SpriteBatch spriteBatch;
+	private readonly SpriteBatchArgs? argsToRestore;
+
+	public SpriteBatchOverride(SpriteBatch sb, in SpriteBatchArgs args)
+	{
+		spriteBatch = sb;
+
+		if (sb.IsActive())
+		{
+			argsToRestore = sb.GetArguments();
+			sb.End();
+		}
+
+		sb.Begin(args);
+	}
+
+	public readonly void Dispose()
+	{
+		spriteBatch.End();
+
+		if (argsToRestore.HasValue)
+		{
+			spriteBatch.Begin(argsToRestore.Value);
+		}
+	}
+}
+
 internal static class SpriteBatchUtils
 {
+	[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "beginCalled")]
+	public extern static ref readonly bool IsActive(this SpriteBatch sb);
 	[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "sortMode")]
 	public extern static ref readonly SpriteSortMode GetSortMode(this SpriteBatch sb);
 	[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "blendState")]
@@ -36,6 +83,17 @@ internal static class SpriteBatchUtils
 	{
 		sb.Begin(args.SortMode, args.BlendState, args.SamplerState, args.DepthStencilState, args.RasterizerState, args.Effect, args.Matrix);
 	}
+	
+	public static SpriteBatchScope Scope(this SpriteBatch sb, in SpriteBatchArgs args)
+	{
+		return new(sb, in args);
+	}
+	
+	public static SpriteBatchOverride Override(this SpriteBatch sb, in SpriteBatchArgs args)
+	{
+		return new(sb, in args);
+	}
+
 	public static SpriteBatchArgs GetArguments(this SpriteBatch sb)
 	{
 		return new()

@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Content.Gores;
+using PathOfTerraria.Utilities.Xna;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -82,14 +83,14 @@ internal sealed class Abominable : ModNPC
 			e.Data.CooldownLength = 96;
 			e.Data.NoGravityLength = 15;
 			e.Data.InitiationRange = new(215f, 400f);
-			e.Data.Dash = (39, 54, new(30f, 12f));
+			e.Data.Dash = (39, 40, new(30f, 12f));
 			e.Data.Damage = (39, 54, DamageInstance.EnemyAttackFilterWithInfighting);
 			e.Data.Hitbox = (new(112, 112), new(48f, 32f), new(12f, 2f));
 			e.Data.Movement = (0.4f, 0.84f, 0.90f);
 
 			if (!Main.dedServ)
 			{
-				e.Data.SlashTexture = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/Misc/Slash");
+				e.Data.Slash = (ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/Misc/Slash"), null, ColorUtils.FromHexRgb(0x77a4d3));
 				e.Data.Sounds =
 				[
 					(0, new SoundStyle($"{nameof(PathOfTerraria)}/Assets/Sounds/Conflux/AbominableAttack", 2) {

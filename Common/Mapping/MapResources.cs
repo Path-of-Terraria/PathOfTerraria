@@ -30,6 +30,8 @@ internal record struct MapResource()
 	public int MaxValue = int.MaxValue;
 	/// <summary> How many uses the portal spawned from this resource should have. </summary>
 	public int PortalUses = int.MaxValue;
+	/// <summary> The FullName of the subworld that portals using this resource will lead to. </summary>
+	public string PortalDestination = string.Empty;
 	/// <summary> Whether this resource has been discovered by the player. Will affect how and whether it will be displayed. </summary>
 	public bool Discovered;
 }

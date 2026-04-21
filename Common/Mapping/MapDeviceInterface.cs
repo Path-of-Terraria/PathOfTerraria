@@ -12,6 +12,7 @@ using PathOfTerraria.Core.Time;
 using PathOfTerraria.Core.UI;
 using PathOfTerraria.Core.UI.SmartUI;
 using PathOfTerraria.Utilities;
+using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
 using ReLogic.Content;
 using ReLogic.Graphics;
@@ -265,7 +266,6 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		public WindowElement(Asset<Texture2D> texture)
 		{
 			Texture = texture;
-			OverrideSamplerState = SamplerState.PointClamp;
 		}
 
 		protected override void DrawSelf(SpriteBatch sb)
@@ -340,11 +340,6 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		return Math.Max(0, layers.FindIndex(l => l.Name == "Vanilla: Mouse Text") - 1);
 	}
 
-	public MapDeviceState()
-	{
-		OverrideSamplerState = SamplerState.PointClamp;
-	}
-
 	internal void OnClosing()
 	{
 		// Prevent interactions when the UI begins to close.
@@ -356,7 +351,6 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		if (Visible) { return; }
 
 		Visible = true;
-		OverrideSamplerState = SamplerState.PointClamp;
 		// Allow interactions once again.
 		IgnoresMouseInteraction = false;
 
@@ -500,6 +494,16 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		Recalculate();
 	}
 
+	public override void Draw(SpriteBatch sb)
+	{
+		// Use point-clamp filtering for *everything*, self and children.
+		// It does not suffice to use the `OverrideSamplerState` property.
+		var args = new SpriteBatchArgs(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, Main.Rasterizer, null, Main.UIScaleMatrix);
+		using SpriteBatchOverride _ = sb.Override(args);
+		
+		base.Draw(sb);
+	}
+
 	protected override void DrawChildren(SpriteBatch sb)
 	{
 		if (Window != null && Visible) { DrawUnder(sb); }
@@ -621,7 +625,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 			e.SetDimensions(x: (0f, left.Pos.X), y: (0f, left.Pos.Y), width: (0f, left.Size.X), height: (0f, left.Size.Y));
 			e.AddComponent(new UIInteractive
 			{
-				IsActive = _ => CanInteractWithCanisters(),
+				IsActive = _ => CanInteractWithCanisters() && e.Color != default,
 				HoverSound = SoundID.MenuTick,
 				HoverTexture = leftHvrTex,
 			});
@@ -636,7 +640,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 			e.SetDimensions(x: (0f, right.Pos.X), y: (0f, right.Pos.Y), width: (0f, right.Size.X), height: (0f, right.Size.Y));
 			e.AddComponent(new UIInteractive
 			{
-				IsActive = _ => CanInteractWithCanisters(),
+				IsActive = _ => CanInteractWithCanisters() && e.Color != default,
 				HoverSound = SoundID.MenuTick,
 				HoverTexture = rightHvrTex,
 			});
@@ -651,7 +655,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 			e.SetDimensions(x: (0f, inject.Pos.X), y: (0f, inject.Pos.Y), width: (0f, inject.Size.X), height: (0f, inject.Size.Y));
 			e.AddComponent(new UIInteractive
 			{
-				IsActive = _ => CanInteractWithCanisters(),
+				IsActive = _ => CanInteractWithCanisters() && e.Color != default,
 				IsUnlocked = _ => CanInjectCurrentCanister(),
 				HoverSound = SoundID.MenuTick,
 				ClickSound = SoundID.MenuTick,
@@ -684,7 +688,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 			e.SetDimensions(x: (0f, eject.Pos.X), y: (0f, eject.Pos.Y), width: (0f, eject.Size.X), height: (0f, eject.Size.Y));
 			e.AddComponent(new UIInteractive
 			{
-				IsActive = _ => CanEjectCanister(),
+				IsActive = _ => CanEjectCanister() && e.Color != default,
 				HoverSound = SoundID.MenuTick,
 				ClickSound = SoundID.MenuTick,
 				HoverTexture = injectHvrTex,
@@ -779,8 +783,9 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		const int numRenders = 7; // Must be odd.
 		const float offsetPerCanister = 48f;
 
-		Texture2D canisterTex = ModContent.Request<Texture2D>($"{BasePath}/MapDevice_Canister", AssetRequestMode.ImmediateLoad).Value;
-		Texture2D canisterHoverTex = ModContent.Request<Texture2D>($"{BasePath}/MapDevice_Canister_Highlight", AssetRequestMode.ImmediateLoad).Value;
+		Texture2D canisterTex = AssetUtils.ImmediateValue<Texture2D>($"{BasePath}/MapDevice_Canister");
+		Texture2D canisterHoverTex = AssetUtils.ImmediateValue<Texture2D>($"{BasePath}/MapDevice_Canister_Highlight");
+		Texture2D resSeparatorTex = AssetUtils.ImmediateValue<Texture2D>($"{BasePath}/ResourceSeparator");
 		Vector2 canisterSize = canisterTex.Size();
 
 		ReadOnlySpan<MapResource> resources = MapResources.Resources;
@@ -805,12 +810,10 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 			}
 		}
 
-		if (globalVisibility <= 0f) { return; }
-
 		// Render all the canisters.
 		for (int i = 0; i < numRenders; i++)
 		{
-			bool isTheInserted = i == numRenders / 2 && canisters.InjectionAnimation > 0f;
+			bool isTheInserted = i == (numRenders / 2) && canisters.InjectionAnimation > 0f;
 			bool isInserting = isTheInserted && canisters.InjectionAnimation < 1f;
 			int order = leftCanisterOrder + i;
 			int index = MathUtils.Modulo(order, resources.Length);
@@ -900,9 +903,10 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 					ChatManager.DrawColorCodedStringWithShadow(sb, font, text, center, color, 0f, size * 0.5f, Vector2.One);
 				}
 
-				DrawString(canisterCenter + new Vector2(0f, -68f), availabilityColor, resource.Value.ToString());
-				DrawString(canisterCenter + new Vector2(0f, -59f), neutralColor, "_");
-				DrawString(canisterCenter + new Vector2(0f, -40f), availabilityColor, resource.Cost.ToString());
+				Color sepColor = neutralColor.MultiplyRGBA(new Color(Vector4.One * 0.6f));
+				DrawString(canisterCenter + new Vector2(0, -68), availabilityColor, resource.Value.ToString());
+				sb.Draw(resSeparatorTex, canisterCenter + new Vector2(0, -58), null, sepColor, 0, resSeparatorTex.Size() * 0.5f, 1, 0, 0);
+				DrawString(canisterCenter + new Vector2(0, -40), availabilityColor, resource.Cost.ToString());
 			}
 		}
 	}
@@ -983,7 +987,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 			(e.InactiveScale, e.ActiveScale) = (1.00f, 1.00f);
 			e.Predicate = static (newItem, oldItem) => newItem is { ModItem: Map };
 			e.OnModifyItem += OnModifyMapItem;
-			e.IsLocked = static _ => MapDeviceInterface.Entity is { PortalActive: true } || HasInjection();
+			e.IsLocked = static _ => MapDeviceInterface.Entity is not { } e || e is { PortalActive: true } || HasInjection();
 			e.OnUpdate += e =>
 			{
 				((UIImageItemSlot)e).IconTexture = HasInjection() ? mapLockTexture : mapIconTexture;

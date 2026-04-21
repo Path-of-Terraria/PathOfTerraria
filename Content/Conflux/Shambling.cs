@@ -6,6 +6,7 @@ using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Content.Gores;
 using PathOfTerraria.Core.Time;
 using PathOfTerraria.Utilities.Terraria;
+using PathOfTerraria.Utilities.Xna;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -100,7 +101,7 @@ internal sealed class Shambling : ModNPC
 
 			if (!Main.dedServ)
 			{
-				e.Data.SlashTexture = ModContent.Request<Texture2D>($"{Texture}_Slash");
+				e.Data.Slash = (ModContent.Request<Texture2D>($"{Texture}_Slash"), Vector2.One, ColorUtils.FromHexRgb(0x77a4d3));
 				e.Data.Sounds =
 				[
 					(0, SoundID.NPCHit55 with

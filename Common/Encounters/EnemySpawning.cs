@@ -1,10 +1,14 @@
-﻿using System.ComponentModel;
+﻿// #define LOG_BEHAVIOR
+// #define DRAW_GIZMOS
+
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Content.Conflux;
+using PathOfTerraria.Utilities;
 using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
 using Terraria.Audio;
@@ -64,12 +68,21 @@ internal record struct SpawnPlacement()
 	/// <summary> If not zero, the spawn point must be submerged into any of the liquids within this mask. </summary>
 	[DefaultValue(LiquidMask.None)]
 	public LiquidMask RequiredLiquids { get; set; } = LiquidMask.None;
-	/// <summary> How far away from players, in pixels, must the spawn be placed. </summary>
-	[Range(0, 2048), Increment(8), DefaultValue(256f)]
-	public float MinDistanceFromPlayers { get; set; } = 256f;
-	/// <summary> How far away from existing enemies, in pixels, must the spawn be placed. </summary>
-	[Range(0, 2048), Increment(8), DefaultValue(256f)]
-	public float MinDistanceFromEnemies { get; set; } = 256f;
+	
+	/// <summary> How maximally far from players, in pixels, must the spawn be placed. 0 skips the check. </summary>
+	[Range(0, 8192), Increment(8), DefaultValue(256)]
+	public float MinDistanceFromPlayers { get; set; } = 256;
+	/// <summary> How minimally close to players, in pixels, must the spawn be placed. 0 skips the check. </summary>
+	[Range(0, 8192), Increment(8), DefaultValue(float.PositiveInfinity)]
+	public float MaxDistanceFromPlayers { get; set; } = 0;
+	
+	/// <summary> How maximally far from existing enemies, in pixels, must the spawn be placed. 0 skips the check. </summary>
+	[Range(0, 8192), Increment(8), DefaultValue(256)]
+	public float MinDistanceFromEnemies { get; set; } = 256;
+	/// <summary> How minimally close to existing enemies, in pixels, must the spawn be placed. 0 skips the check. </summary>
+	[Range(0, 8192), Increment(8), DefaultValue(float.PositiveInfinity)]
+	public float MaxDistanceFromEnemies { get; set; } = 0;
+	
 	/// <summary> How many dynamic placement attempts to perform before giving up. High values may affect performance. </summary>
 	[Range(1, 1024), Increment(1), DefaultValue(10)]
 	public int MaxSearchAttempts { get; set; } = 10;
@@ -271,10 +284,10 @@ internal static class EnemySpawning
 			throw new ArgumentException("Invalid area.");
 		}
 
-		float minSqrDistanceFromPlayers = spawn.MinDistanceFromPlayers * spawn.MinDistanceFromPlayers;
-		float minSqrDistanceFromEnemies = spawn.MinDistanceFromEnemies * spawn.MinDistanceFromEnemies;
-		bool checksPlayerAdjacency = minSqrDistanceFromPlayers > 0f;
-		bool checksEnemyAdjacency = minSqrDistanceFromEnemies > 0f;
+		var distanceFromPlayers = new SqrRange<float>(spawn.MinDistanceFromPlayers, spawn.MaxDistanceFromPlayers);
+		var distanceFromEnemies = new SqrRange<float>(spawn.MinDistanceFromEnemies, spawn.MaxDistanceFromEnemies);
+		bool checksPlayerAdjacency = distanceFromPlayers.Min > 0 || distanceFromPlayers.Max > 0;
+		bool checksEnemyAdjacency = distanceFromEnemies.Min > 0;
 		bool checksForLiquids = (spawn.SkippedLiquids | spawn.RequiredLiquids) != 0;
 
 		var sizeInTiles = new Vector2Int(
@@ -324,7 +337,7 @@ internal static class EnemySpawning
 			{
 				for (int yy = y; yy < Main.maxTilesY + 1; yy++)
 				{
-					if (TileUtils.HasUnactuatedSolid(Main.tile[x, yy]))
+					if (TileUtils.HasUnactuatedSolidTop(Main.tile[x, yy]))
 					{
 						y = yy - 1;
 						break;
@@ -342,6 +355,7 @@ internal static class EnemySpawning
 			}
 			else
 			{
+				LogAction("cannot fit");
 				continue;
 			}
 
@@ -350,24 +364,36 @@ internal static class EnemySpawning
 			// Ensure that this is not too close to a player.
 			if (checksPlayerAdjacency)
 			{
+				float closestSqrDistance = float.PositiveInfinity;
 				foreach (Player player in Main.ActivePlayers)
 				{
-					if (player.DistanceSQ(spawnPosition) <= minSqrDistanceFromPlayers)
-					{
-						goto Continue;
-					}
+					float sqrDistance = player.DistanceSQ(spawnPosition);
+					if (sqrDistance < distanceFromPlayers.SqrMin) { LogAction("too close to player"); goto Continue; }
+					closestSqrDistance = MathF.Min(sqrDistance, closestSqrDistance);
+				}
+
+				if (distanceFromPlayers.Max > 0 && closestSqrDistance > distanceFromPlayers.SqrMax)
+				{
+					LogAction("too far from players");
+					continue;
 				}
 			}
 
 			// Ensure that this is not too close to an existing enemy.
 			if (checksEnemyAdjacency)
 			{
+				float closestSqrDistance = float.PositiveInfinity;
 				foreach (NPC npc in Main.ActiveNPCs)
 				{
-					if (npc.DistanceSQ(spawnPosition) <= minSqrDistanceFromEnemies)
-					{
-						goto Continue;
-					}
+					float sqrDistance = npc.DistanceSQ(spawnPosition);
+					if (sqrDistance < distanceFromEnemies.SqrMin) { LogAction("too close to enemy"); goto Continue; }
+					closestSqrDistance = MathF.Min(sqrDistance, closestSqrDistance);
+				}
+				
+				if (distanceFromEnemies.Max > 0 && closestSqrDistance > distanceFromEnemies.SqrMax)
+				{
+					LogAction("too far from enemies");
+					continue;
 				}
 			}
 
@@ -376,6 +402,7 @@ internal static class EnemySpawning
 			{
 				if (!LiquidUtils.CheckAreaWithMasks(new Rectangle(x, y, sizeInTiles.X, sizeInTiles.Y), spawn.SkippedLiquids, spawn.RequiredLiquids))
 				{
+					LogAction("in liquid");
 					continue;
 				}
 			}
@@ -383,12 +410,16 @@ internal static class EnemySpawning
 			// Run custom checks. Before the most expensive one.
 			if (spawn.CustomPredicate?.Invoke(new(x, y)) == false)
 			{
+				LogAction("custom predicate fail");
 				continue;
 			}
 
 			// As the last check, perform an optional floodfill loop to see if we can reach the encounter's center.
 			if (spawn.AreaOrigin.HasValue && !PathfindToSpawnOrigin(area, new(x, y), adjustedSpawnOrigin, sizeTileExtents))
 			{
+				LogAction("pathfind fail");
+				HighlightTile(new(x, y), Color.Red);
+				HighlightTile((Point16)adjustedSpawnOrigin, Color.GreenYellow);
 				continue;
 			}
 
@@ -421,8 +452,9 @@ internal static class EnemySpawning
 			area.W - area.Y
 		);
 
-		startPoint.X = Math.Min(area.X, Math.Max(startPoint.X, area.Z)); 
-		startPoint.Y = Math.Min(area.Y, Math.Max(startPoint.Y, area.W));
+		startPoint.X = Math.Max(area.X, Math.Min(startPoint.X, area.Z)); 
+		startPoint.Y = Math.Max(area.Y, Math.Min(startPoint.Y, area.W));
+		HighlightTile(new(startPoint.X, startPoint.Y), Color.Yellow);
 
 		foreach (GeometryUtils.FloodFill.Result step in new GeometryUtils.FloodFill(startPoint, rect))
 		{
@@ -435,9 +467,11 @@ internal static class EnemySpawning
 			{
 				for (int checkY = checkY1; checkY <= checkY2; checkY++)
 				{
-					if (TileUtils.HasUnactuatedSolid(Main.tile[checkX, checkY]))
+					Tile checkedTile = Main.tile[checkX, checkY];
+					if (TileUtils.HasUnactuatedSolid(checkedTile))
 					{
 						isPointFree = false;
+						HighlightTile(new(checkX, checkY), Color.Purple);
 						goto CycleBreak;
 					}
 				}
@@ -453,5 +487,18 @@ internal static class EnemySpawning
 
 		// Failure, the origin point has never been reached.
 		return false;
+	}
+
+	private static void LogAction(string text)
+	{
+#if LOG_BEHAVIOR
+		Main.NewText($"{nameof(EnemySpawning)}: {text}");
+#endif
+	}
+	private static void HighlightTile(Point16 point, Color color)
+	{
+#if DRAW_GIZMOS
+		DebugUtils.DrawRectInWorld(new Rectangle(point.X * 16, point.Y * 16, 16, 16), color);
+#endif
 	}
 }
