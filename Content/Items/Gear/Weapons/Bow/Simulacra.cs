@@ -46,7 +46,7 @@ public class Simulacra : Gear
     
     public override bool CanConsumeAmmo(Item ammo, Player player)
     {
-	    return player.altFunctionUse != 2;
+        return player.altFunctionUse != 2;
     }
 
     public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -77,16 +77,16 @@ public class Simulacra : Gear
             Projectile.NewProjectileDirect(source, position, velocity, type, damage, knockback, player.whoAmI);
             
             var echoProj = Projectile.NewProjectileDirect( 
-	            source,
-	            position,
-	            Vector2.Zero,
-	            ModContent.ProjectileType<SimulacraEcho>(),
-	            damage,
-	            knockback,
-	            player.whoAmI,
-	            ai0: position.X, 
-	            ai1: position.Y,
-	            ai2: velocity.X
+                source,
+                position,
+                Vector2.Zero,
+                ModContent.ProjectileType<SimulacraEcho>(),
+                damage,
+                knockback,
+                player.whoAmI,
+                ai0: position.X, 
+                ai1: position.Y,
+                ai2: velocity.X
             );
         
             echoProj.localAI[0] = velocity.Y;
@@ -97,6 +97,8 @@ public class Simulacra : Gear
         }
     }
 }
+
+// Rest of the code remains the same...
 
 public class SimulacraEcho : ModProjectile
 {
@@ -289,10 +291,5 @@ public class SimulacraMirror : ModProjectile
 			dust.noGravity = true;
 			dust.alpha = 150;
 		}
-	}
-
-	public override Color? GetAlpha(Color lightColor)
-	{
-		return Color.Cyan * ((255 - Projectile.alpha) / 255f);
 	}
 }

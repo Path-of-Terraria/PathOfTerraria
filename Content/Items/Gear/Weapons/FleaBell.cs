@@ -45,8 +45,8 @@ public class FleaBell : Gear
 
         Item.damage = 40;
         Item.DamageType = DamageClass.Summon;
-        Item.width = 26;
-        Item.height = 34;
+        Item.width = 43;
+        Item.height = 42;
         Item.useTime = 36;
         Item.useAnimation = 36;
         Item.useStyle = ItemUseStyleID.Swing;
@@ -164,8 +164,8 @@ public class FleaBellMinion : ModProjectile
 	private const float SpreadRadius = 80f;
     
 	// Animation constants
-	private const int AnimationFrameCount = 5;
-	private const int AnimationSpeed = 8;
+	private const int AnimationFrameCount = 4;
+	private const int AnimationSpeed = 16;
 
 	// Properties
 	private AIState State
