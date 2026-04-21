@@ -8,6 +8,7 @@ float pixelSize;
 float additionalScale;
 float2 screenRes;
 texture sampleTexture;
+float paletteColorsAmount;
 sampler2D uImage0 : register(s0) = sampler_state
 {
 	texture = <sampleTexture>;
@@ -38,19 +39,6 @@ sampler2D uImage2 : register(s2) = sampler_state
 	AddressU = Wrap;
 	AddressV = Wrap;
 };
-
-float2 canvasToScreenScale(float2 customCanvasScale)
-{
-	float2 scaledCanvas = customCanvasScale * additionalScale;
-	return floor(screenRes / scaledCanvas + scaledCanvas);
-
-}
-
-float2 pixelsAmount(float customPixelSize, float2 customCanvasScale)
-{
-	return float2(customPixelSize,customPixelSize);
-	//return floor(canvasToScreenScale(customCanvasScale) / customPixelSize);
-}
 
 struct VertexShaderInput
 {
@@ -98,47 +86,64 @@ float2 SinBetween(float2 a, float2 b, float2 v)
 	return a + h + sin
     (v) * h;
 }
-float3 Palette(float2 t)
+
+// returns the color
+float3 palette(float index)
 {
-	return tex2D(uImage1, float2(t.x, 0)).rgb;
+	return tex2D(uImage1, float2(index, 0)).rgb;
 }
+
+float toIndex(float v)
+{
+	return floor(v * paletteColorsAmount) / paletteColorsAmount;
+
+}
+
+float3 Palette(float4 v)
+{
+	return palette(toIndex(saturate(length(v))));
+}
+
 
 //pixelSize: the amount of pixels in the canvas
 
 float4 PixelShaderFunction(VertexShaderOutput output) : COLOR0
 {
-	float oneLevel = 1 / 8.;
+	float oneLevel = 1 / paletteColorsAmount; // the indexer of the palette texture
 	float2 uv = output.TextureCoordinates;
-	float2 pixelSizeBasedOnCanvasSize = pixelsAmount(pixelSize, canvasSize); // idk what did i make lol, but it works!
-	uv = floor(uv * pixelSizeBasedOnCanvasSize) / pixelSizeBasedOnCanvasSize;
-	uv = Rotate(uv, rotation, float2(.5, .5));
-	float4 portal = tex2D(uImage0, uv);
-	portal.rgba = floor(portal.rgba * 8) / 8 - oneLevel;
-	portal.rgb = Palette(lerp(1, 0, length(portal.rgb) * 1));
-	portal.a *= length(portal.rgb);
+	float2 pixelSizeBasedOnCanvasSize = pixelSize; // pixel size
+	uv = floor(uv * pixelSizeBasedOnCanvasSize) / pixelSizeBasedOnCanvasSize; // pixel effect uv
+	float4 col = 0; //  return value
+	float4 invertedCol = 0; //  return value
 	
-	//fix flickering pixels bug pleasse
+	// draw the portal. then draw the dither texture which its pattern isnt visible when the alpha isnt equal to (index % 2 == 1)
+	float4 portalBase = tex2D(uImage0, Rotate(uv, rotation, float2(.5, .5)));
+	float4 ditherPatternTexture = tex2D(uImage2, output.TextureCoordinates.xy * (pixelSizeBasedOnCanvasSize / 256));
+	float ditherPattern_NonInverted = ditherPatternTexture.r;
+	float ditherPattern_Inverted = step(ditherPatternTexture.r, 1);
+	
+	float3 currentColor = palette(toIndex(portalBase.r) - oneLevel); // add extra level to increase the color brightness
+	float3 prevColor = palette(saturate(toIndex(portalBase.r) - oneLevel * 2)); // same with this one
+	
+	// setup dither Textures to be added to col
+	
+	float ditherAlpha = lerp(0, 1, toIndex(portalBase.r));
+	
+	col += float4(currentColor * ditherPattern_Inverted,ditherPattern_NonInverted);
+	float alphaCut = step(oneLevel * .05, toIndex(ditherAlpha));
+	float3 invertedDitherCol = lerp(portalBase.r, currentColor, alphaCut); //palette(saturate(toIndex(portalBase.r) - (oneLevel * (toIndex(ditherAlpha) % 2))));
+	invertedCol += float4(invertedDitherCol * ditherPattern_Inverted * alphaCut, alphaCut);
+	
+	//clean ups (remove flickering pixels bug, remove black pixels in both outside and inside the shader effect)
+	float4 finalCol = (col + invertedCol) * step(0, length(uv * 2 - 1) - data.w);
+	finalCol *= step(length(uv * 2 - 1) - data.z,0);
+	
+	float4 blackHole = 0;
+	blackHole.a = smoothstep(.5, length(uv * 2 - 1) * 1.2 - data.w, data.w) * 2;
+	//finalCol += lerp(blackHole, finalCol, alphaCut);
+	finalCol = lerp(finalCol, blackHole.a, data.y);
 
-	//dither texturing
-	float2 ditherUV = output.TextureCoordinates.xy;
-	float ditherTexture = tex2D(uImage2, ditherUV * (pixelSize.xx / 256));
-	
-	// get previous level palette 
-	float4 portalPrevColor = tex2D(uImage0, uv);
-	portalPrevColor.rgba = saturate(floor(portalPrevColor.rgba * 8) / 8) - oneLevel * 2 * ditherTexture;
-	portalPrevColor.rgb = Palette(lerp(1, 0, length(portalPrevColor.rgb)));
-	
-	// put everything togather
-	float4 ditherPortal = lerp(portal, (portalPrevColor), ditherTexture);
-	
-	//flash
-	ditherPortal = lerp(ditherPortal, portal.a, data.y);
-	
-	//alpha based on color
-	ditherPortal.a = length(ditherPortal.rgb);
-	
-	
-	return ditherPortal;
+	return finalCol;
 }
 
 technique t0

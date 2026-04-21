@@ -3,8 +3,8 @@
 	<!-- Import TML targets. -->
 	<Import Project="..\tModLoader.targets" />
 	<!-- Import shader compiler -->
-	<Import Project="BuildTools\ShaderCompiler\KBOFXCTask.props" />
-	<Import Project="BuildTools\ShaderCompiler\KBOFXCTask.targets" />
+	<!--<Import Project="BuildTools\ShaderCompiler\KBOFXCTask.props" />
+	<Import Project="BuildTools\ShaderCompiler\KBOFXCTask.targets" />-->
 
 	<!-- General -->
 	<PropertyGroup>

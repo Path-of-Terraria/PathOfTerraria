@@ -212,9 +212,17 @@ public class MapDeviceTile : ModTile
 				spikeOffset += new Vector2(0, offInt * -1);
 				spikeRotation = rotInt * -0.015f * (openingAnim > 0f ? 1 : 0);
 			}
-			
+
 			Vector2 spikePos = worldCenter + baseOffset + spikeOffset - screenPosition;
-			
+
+			//additional animations to go with the new portal
+			float indexMultiplier = MathHelper.Lerp(-1,1,i / 4f);
+			float indexMultiplierPosY = MathHelper.Lerp(0, -7, readyAnim);
+			spikeRotation += (indexMultiplier * -.2f);
+			float waveProgress = MathF.Sin(Main.GameUpdateCount * 1f) *2;
+			spikeRotation -= (indexMultiplier * -.4f * openingAnim);
+			spikePos.Y -= indexMultiplierPosY;
+
 			sb.Draw(spikesTexture, spikePos, srcRect, color, spikeRotation, spikeOrigin, 1f, 0, 0f);
 		}
 	}
@@ -250,7 +258,7 @@ public class MapDeviceTile : ModTile
 
 		// Some math magic to make it smoothly move up and down over time
 		float offset = MathF.Sin(Main.GlobalTimeWrappedHourly * MathHelper.TwoPi / 5f);
-		Vector2 drawPos = worldCenter - screenPosition + new Vector2(0f, -36f) + new Vector2(0f, offset * 7f);
+		Vector2 drawPos = worldCenter - screenPosition + new Vector2(0f, -65) + new Vector2(0f, offset * 7f);
 
 		// Draw the main texture
 		float baseScale = MathHelper.Lerp(0.1f, 2.0f, 1f - MathF.Pow(1f - entity.OpeningAnimation, 3f));
@@ -264,7 +272,7 @@ public class MapDeviceTile : ModTile
 		if (itemTex != null)
 		{
 			float itemStep = 1f - MathF.Pow(1f - entity.OpeningAnimation, 3f);
-			var itemPos = Vector2.Lerp(drawPos + new Vector2(0, 48), drawPos, itemStep);
+			var itemPos = Vector2.Lerp(drawPos + new Vector2(0, 129), drawPos, itemStep);
 			sb.Draw(itemTex, itemPos, null, new Color(140, 230, 255) * 0.95f, 0f, itemTex.Size() / 2f, 0.75f, effects, 0f);
 		}
 
@@ -368,7 +376,7 @@ internal class MapDeviceEntity : ModTileEntity
 			}
 			else if(portalProjWhoAmI != -1)
 			{
-				Main.projectile[portalProjWhoAmI].Kill();
+				Main.projectile[portalProjWhoAmI].ai[0] = 1; //kill animation 
 			}
 		}
 	}
@@ -824,7 +832,7 @@ internal class MapDeviceEntity : ModTileEntity
 	private void SpawnPortalProjectile() 
 	{
 		Point16 tilePoint = Position;
-		Vector2 worldCenter = tilePoint.ToWorldCoordinates(88, -15);
+		Vector2 worldCenter = tilePoint.ToWorldCoordinates(88, -20f);
 		portalProjWhoAmI = Projectile.NewProjectile(null, worldCenter, Vector2.Zero,ModContent.ProjectileType<BasePortalProjectile>(),0,0);
 	}
 
