@@ -30,14 +30,17 @@ public sealed class ExtraRolls : ILoadable
 			i.ExtraRolls();
 		}
 
-		foreach (GlobalItem g in _hook.Enumerate(item))
+		if (ItemHookLoadState.GlobalItemHooksReady)
 		{
-			if (g is not IGlobal gl)
+			foreach (GlobalItem g in _hook.Enumerate(item))
 			{
-				continue;
-			}
+				if (g is not IGlobal gl)
+				{
+					continue;
+				}
 
-			gl.ExtraRolls(item);
+				gl.ExtraRolls(item);
+			}
 		}
 	}
 
@@ -98,14 +101,17 @@ public sealed class CopyToClipboard : ILoadable
 			i.CopyToClipboard();
 		}
 
-		foreach (GlobalItem g in _hook.Enumerate(item))
+		if (ItemHookLoadState.GlobalItemHooksReady)
 		{
-			if (g is not IGlobal gl)
+			foreach (GlobalItem g in _hook.Enumerate(item))
 			{
-				continue;
-			}
+				if (g is not IGlobal gl)
+				{
+					continue;
+				}
 
-			gl.CopyToClipboard(item);
+				gl.CopyToClipboard(item);
+			}
 		}
 	}
 
@@ -140,14 +146,17 @@ public sealed class GenerateAffixes : ILoadable
 			affixes = i.GenerateAffixes();
 		}
 
-		foreach (GlobalItem g in _hook.Enumerate(item))
+		if (ItemHookLoadState.GlobalItemHooksReady)
 		{
-			if (g is not IGlobal gl)
+			foreach (GlobalItem g in _hook.Enumerate(item))
 			{
-				continue;
-			}
+				if (g is not IGlobal gl)
+				{
+					continue;
+				}
 
-			gl.ModifyAffixes(item, affixes);
+				gl.ModifyAffixes(item, affixes);
+			}
 		}
 
 		return affixes;
@@ -184,14 +193,17 @@ public sealed class GenerateImplicits : ILoadable
 			implicits = i.GenerateImplicits();
 		}
 
-		foreach (GlobalItem g in _hook.Enumerate(item))
+		if (ItemHookLoadState.GlobalItemHooksReady)
 		{
-			if (g is not IGlobal gl)
+			foreach (GlobalItem g in _hook.Enumerate(item))
 			{
-				continue;
-			}
+				if (g is not IGlobal gl)
+				{
+					continue;
+				}
 
-			gl.ModifyImplicits(item, implicits);
+				gl.ModifyImplicits(item, implicits);
+			}
 		}
 		
 		// Mark all generated implicits as implicit
@@ -246,14 +258,17 @@ public sealed class GenerateNameAffixes : ILoadable
 			(pre, suf) = i.GenerateAffixIds();
 		}
 
-		foreach (GlobalItem g in _hook.Enumerate(item))
+		if (ItemHookLoadState.GlobalItemHooksReady)
 		{
-			if (g is not IGlobal gl)
+			foreach (GlobalItem g in _hook.Enumerate(item))
 			{
-				continue;
-			}
+				if (g is not IGlobal gl)
+				{
+					continue;
+				}
 
-			gl.ModifyNameAffixes(item, ref pre, ref suf);
+				gl.ModifyNameAffixes(item, ref pre, ref suf);
+			}
 		}
 
 		return new(pre, suf);
@@ -300,14 +315,17 @@ public sealed class GeneratePrefix : ILoadable
 			prefix = i.GeneratePrefix(prefix);
 		}
 
-		foreach (GlobalItem g in _hook.Enumerate(item))
+		if (ItemHookLoadState.GlobalItemHooksReady)
 		{
-			if (g is not IGlobal gl)
+			foreach (GlobalItem g in _hook.Enumerate(item))
 			{
-				continue;
-			}
+				if (g is not IGlobal gl)
+				{
+					continue;
+				}
 
-			gl.ModifyPrefix(item, ref prefix);
+				gl.ModifyPrefix(item, ref prefix);
+			}
 		}
 
 		return prefix;
@@ -349,14 +367,17 @@ public sealed class GenerateSuffix : ILoadable
 			suffix = i.GenerateSuffix(suffix);
 		}
 
-		foreach (GlobalItem g in _hook.Enumerate(item))
+		if (ItemHookLoadState.GlobalItemHooksReady)
 		{
-			if (g is not IGlobal gl)
+			foreach (GlobalItem g in _hook.Enumerate(item))
 			{
-				continue;
-			}
+				if (g is not IGlobal gl)
+				{
+					continue;
+				}
 
-			gl.ModifySuffix(item, ref suffix);
+				gl.ModifySuffix(item, ref suffix);
+			}
 		}
 
 		return suffix;
@@ -396,14 +417,17 @@ public sealed class InsertAdditionalTooltipLines : ILoadable
 			i.InsertAdditionalTooltipLines(tooltips);
 		}
 
-		foreach (GlobalItem g in _hook.Enumerate(item))
+		if (ItemHookLoadState.GlobalItemHooksReady)
 		{
-			if (g is not IGlobal gl)
+			foreach (GlobalItem g in _hook.Enumerate(item))
 			{
-				continue;
-			}
+				if (g is not IGlobal gl)
+				{
+					continue;
+				}
 
-			gl.InsertAdditionalTooltipLines(item, tooltips);
+				gl.InsertAdditionalTooltipLines(item, tooltips);
+			}
 		}
 	}
 
@@ -439,14 +463,17 @@ public sealed class GetItemLevel : ILoadable
 			level = i.GetItemLevel(realLevel);
 		}
 
-		foreach (GlobalItem g in _hook.Enumerate(item))
+		if (ItemHookLoadState.GlobalItemHooksReady)
 		{
-			if (g is not IGlobal gl)
+			foreach (GlobalItem g in _hook.Enumerate(item))
 			{
-				continue;
-			}
+				if (g is not IGlobal gl)
+				{
+					continue;
+				}
 
-			gl.ModifyGetItemLevel(item, realLevel, ref level);
+				gl.ModifyGetItemLevel(item, realLevel, ref level);
+			}
 		}
 
 		return level;
@@ -488,14 +515,17 @@ public sealed class SetItemLevel : ILoadable
 			realLevel = level;
 		}
 
-		foreach (GlobalItem g in _hook.Enumerate(item))
+		if (ItemHookLoadState.GlobalItemHooksReady)
 		{
-			if (g is not IGlobal gl)
+			foreach (GlobalItem g in _hook.Enumerate(item))
 			{
-				continue;
-			}
+				if (g is not IGlobal gl)
+				{
+					continue;
+				}
 
-			gl.ModifySetItemLevel(item, level, realLevelBeforeSet, ref realLevel);
+				gl.ModifySetItemLevel(item, level, realLevelBeforeSet, ref realLevel);
+			}
 		}
 
 		item.GetInstanceData().RealLevel = realLevel;
@@ -530,14 +560,17 @@ public sealed class PostRoll : ILoadable
 			i.PostRoll();
 		}
 
-		foreach (GlobalItem g in _hook.Enumerate(item))
+		if (ItemHookLoadState.GlobalItemHooksReady)
 		{
-			if (g is not IGlobal gl)
+			foreach (GlobalItem g in _hook.Enumerate(item))
 			{
-				continue;
-			}
+				if (g is not IGlobal gl)
+				{
+					continue;
+				}
 
-			gl.PostRoll(item);
+				gl.PostRoll(item);
+			}
 		}
 	}
 
@@ -570,14 +603,17 @@ public sealed class SwapItemModifiers : ILoadable
 			i.SwapItemModifiers(swapItemModifier);
 		}
 
-		foreach (GlobalItem g in _hook.Enumerate(item))
+		if (ItemHookLoadState.GlobalItemHooksReady)
 		{
-			if (g is not IGlobal gl)
+			foreach (GlobalItem g in _hook.Enumerate(item))
 			{
-				continue;
-			}
+				if (g is not IGlobal gl)
+				{
+					continue;
+				}
 
-			gl.SwapItemModifiers(item, swapItemModifier);
+				gl.SwapItemModifiers(item, swapItemModifier);
+			}
 		}
 	}
 
