@@ -1,6 +1,51 @@
 [
 	{
 		"internalIdentifier": "AnchorPassive",
+		"referenceId": -3,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 17
+			}
+		],
+		"position": {
+			"x": -10,
+			"y": -330
+		}
+	},
+	{
+		"internalIdentifier": "AnchorPassive",
+		"referenceId": -2,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 2
+			}
+		],
+		"position": {
+			"x": 300,
+			"y": -5
+		}
+	},
+	{
+		"internalIdentifier": "AnchorPassive",
+		"referenceId": -1,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 7
+			}
+		],
+		"position": {
+			"x": -10,
+			"y": 300
+		}
+	},
+	{
+		"internalIdentifier": "AnchorPassive",
 		"referenceId": 0,
 		"maxLevel": 1,
 		"value": 5,
@@ -61,7 +106,8 @@
 		"position": {
 			"x": 388,
 			"y": 202
-		}
+		},
+		"connections": []
 	},
 	{
 		"internalIdentifier": "AddedIntelligenceDexterityPassive",
@@ -257,7 +303,8 @@
 		"position": {
 			"x": -221,
 			"y": -411
-		}
+		},
+		"connections": []
 	},
 	{
 		"internalIdentifier": "AddedIntelligencePassive",
@@ -308,7 +355,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligenceDexterityPassive",
+		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 19,
 		"maxLevel": 1,
 		"value": 5,
@@ -381,7 +428,8 @@
 		"position": {
 			"x": 804,
 			"y": -11
-		}
+		},
+		"connections": []
 	},
 	{
 		"internalIdentifier": "AddedManaPassive",
@@ -412,7 +460,8 @@
 		"position": {
 			"x": 703,
 			"y": 394
-		}
+		},
+		"connections": []
 	},
 	{
 		"internalIdentifier": "AddedIntelligenceDexterityPassive",
@@ -563,6 +612,9 @@
 			},
 			{
 				"referenceId": 205
+			},
+			{
+				"referenceId": 206
 			}
 		],
 		"position": {
@@ -673,7 +725,10 @@
 		"value": 5,
 		"connections": [
 			{
-				"referenceId": 142
+				"referenceId": 1160
+			},
+			{
+				"referenceId": 1163
 			}
 		],
 		"position": {
@@ -749,6 +804,9 @@
 		"connections": [
 			{
 				"referenceId": 42
+			},
+			{
+				"referenceId": 163
 			}
 		],
 		"position": {
@@ -785,7 +843,8 @@
 		"position": {
 			"x": 1240,
 			"y": -848
-		}
+		},
+		"connections": []
 	},
 	{
 		"internalIdentifier": "AddedIntelligencePassive",
@@ -800,7 +859,7 @@
 				"referenceId": 45
 			},
 			{
-				"referenceId": 292
+				"referenceId": 1167
 			}
 		],
 		"position": {
@@ -936,6 +995,9 @@
 			},
 			{
 				"referenceId": 53
+			},
+			{
+				"referenceId": 1151
 			}
 		],
 		"position": {
@@ -951,7 +1013,8 @@
 		"position": {
 			"x": 292,
 			"y": 1451
-		}
+		},
+		"connections": []
 	},
 	{
 		"internalIdentifier": "AddedDexterityPassive",
@@ -1015,10 +1078,11 @@
 		"position": {
 			"x": -833,
 			"y": 1227
-		}
+		},
+		"connections": []
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedDexterityStrengthPassive",
 		"referenceId": 60,
 		"maxLevel": 1,
 		"value": 5,
@@ -1061,6 +1125,9 @@
 			},
 			{
 				"referenceId": 61
+			},
+			{
+				"referenceId": 211
 			}
 		],
 		"position": {
@@ -1076,7 +1143,8 @@
 		"position": {
 			"x": -1470,
 			"y": 291
-		}
+		},
+		"connections": []
 	},
 	{
 		"internalIdentifier": "AddedStrengthPassive",
@@ -1140,10 +1208,11 @@
 		"position": {
 			"x": -1251,
 			"y": -850
-		}
+		},
+		"connections": []
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedIntelligenceStrengthPassive",
 		"referenceId": 68,
 		"maxLevel": 1,
 		"value": 5,
@@ -1171,6 +1240,9 @@
 		"connections": [
 			{
 				"referenceId": 155
+			},
+			{
+				"referenceId": 156
 			}
 		],
 		"position": {
@@ -1404,62 +1476,6 @@
 		}
 	},
 	{
-		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1027,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 1028
-			},
-			{
-				"referenceId": 1029
-			},
-			{
-				"referenceId": 1030
-			}
-		],
-		"position": {
-			"x": 587,
-			"y": -16
-		},
-		"isChoiceNode": true,
-		"requiredAllocatedEdges": 2
-	},
-	{
-		"internalIdentifier": "CriticalOverloadMastery",
-		"referenceId": 1028,
-		"maxLevel": 1,
-		"value": 5,
-		"position": {
-			"x": 547,
-			"y": -86
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "AnticipatedStrikeMastery",
-		"referenceId": 1029,
-		"maxLevel": 1,
-		"value": 10,
-		"position": {
-			"x": 627,
-			"y": -86
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "ArcaneSurgeMastery",
-		"referenceId": 1030,
-		"maxLevel": 1,
-		"value": 20,
-		"position": {
-			"x": 587,
-			"y": 70
-		},
-		"isHidden": true
-	},
-	{
 		"internalIdentifier": "AddedLightningResistancePassive",
 		"referenceId": 84,
 		"maxLevel": 1,
@@ -1581,7 +1597,8 @@
 		"position": {
 			"x": 1364,
 			"y": -11
-		}
+		},
+		"connections": []
 	},
 	{
 		"internalIdentifier": "ChanceToIgnitePassive",
@@ -1686,62 +1703,6 @@
 		}
 	},
 	{
-		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1011,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 1012
-			},
-			{
-				"referenceId": 1013
-			},
-			{
-				"referenceId": 1014
-			}
-		],
-		"position": {
-			"x": 1270,
-			"y": -270
-		},
-		"isChoiceNode": true,
-		"requiredAllocatedEdges": 2
-	},
-	{
-		"internalIdentifier": "AfterburnMastery",
-		"referenceId": 1012,
-		"maxLevel": 1,
-		"value": 1,
-		"position": {
-			"x": 1240,
-			"y": -320
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "ScorchingFlamesMastery",
-		"referenceId": 1013,
-		"maxLevel": 1,
-		"value": 20,
-		"position": {
-			"x": 1236,
-			"y": -226
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "BurstingFuryMastery",
-		"referenceId": 1014,
-		"maxLevel": 1,
-		"value": 55,
-		"position": {
-			"x": 1326,
-			"y": -250
-		},
-		"isHidden": true
-	},
-	{
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 98,
 		"maxLevel": 1,
@@ -1775,6 +1736,24 @@
 		}
 	},
 	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 100,
+		"maxLevel": 1,
+		"value": 20,
+		"connections": [
+			{
+				"referenceId": 99
+			},
+			{
+				"referenceId": 87
+			}
+		],
+		"position": {
+			"x": 1135,
+			"y": 258
+		}
+	},
+	{
 		"internalIdentifier": "PercentIncreasedMaximumManaPassive",
 		"referenceId": 101,
 		"maxLevel": 1,
@@ -1784,10 +1763,10 @@
 				"referenceId": 100
 			},
 			{
-				"referenceId": 111
+				"referenceId": 1015
 			},
 			{
-				"referenceId": 1015
+				"referenceId": 1143
 			}
 		],
 		"position": {
@@ -1832,80 +1811,6 @@
 		"position": {
 			"x": 1364,
 			"y": 261
-		}
-	},
-	{
-		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1015,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 1016
-			},
-			{
-				"referenceId": 1017
-			},
-			{
-				"referenceId": 1018
-			}
-		],
-		"position": {
-			"x": 1256,
-			"y": 266
-		},
-		"isChoiceNode": true,
-		"requiredAllocatedEdges": 2
-	},
-	{
-		"internalIdentifier": "DeepPoolsMastery",
-		"referenceId": 1016,
-		"maxLevel": 1,
-		"value": 30,
-		"position": {
-			"x": 1200,
-			"y": 280
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "ManaBombMastery",
-		"referenceId": 1017,
-		"maxLevel": 1,
-		"value": 50,
-		"position": {
-			"x": 1296,
-			"y": 210
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "MagicGuardMastery",
-		"referenceId": 1018,
-		"maxLevel": 1,
-		"value": 1,
-		"position": {
-			"x": 1276,
-			"y": 320
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 100,
-		"maxLevel": 1,
-		"value": 20,
-		"connections": [
-			{
-				"referenceId": 99
-			},
-			{
-				"referenceId": 87
-			}
-		],
-		"position": {
-			"x": 1135,
-			"y": 258
 		}
 	},
 	{
@@ -1988,68 +1893,15 @@
 			},
 			{
 				"referenceId": 1031
+			},
+			{
+				"referenceId": 1143
 			}
 		],
 		"position": {
 			"x": 1018,
 			"y": 479
 		}
-	},
-	{
-		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1031,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 1032
-			},
-			{
-				"referenceId": 1033
-			},
-			{
-				"referenceId": 1034
-			}
-		],
-		"position": {
-			"x": 893,
-			"y": 518
-		},
-		"isChoiceNode": true,
-		"requiredAllocatedEdges": 2
-	},
-	{
-		"internalIdentifier": "StarcallerMastery",
-		"referenceId": 1032,
-		"maxLevel": 1,
-		"value": 100,
-		"position": {
-			"x": 831,
-			"y": 432
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "CenterOfTheUniverseMastery",
-		"referenceId": 1033,
-		"maxLevel": 1,
-		"value": 10,
-		"position": {
-			"x": 955,
-			"y": 432
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "OverloadingEnergyMastery",
-		"referenceId": 1034,
-		"maxLevel": 1,
-		"value": 20,
-		"position": {
-			"x": 893,
-			"y": 618
-		},
-		"isHidden": true
 	},
 	{
 		"internalIdentifier": "ChanceToChillPassive",
@@ -2065,8 +1917,8 @@
 			}
 		],
 		"position": {
-			"x": 1085,
-			"y": 697
+			"x": 1095,
+			"y": 695
 		}
 	},
 	{
@@ -2098,68 +1950,15 @@
 			},
 			{
 				"referenceId": 1039
+			},
+			{
+				"referenceId": 1143
 			}
 		],
 		"position": {
 			"x": 1201,
 			"y": 540
 		}
-	},
-	{
-		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1039,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 1040
-			},
-			{
-				"referenceId": 1041
-			},
-			{
-				"referenceId": 1042
-			}
-		],
-		"position": {
-			"x": 1184,
-			"y": 645
-		},
-		"isChoiceNode": true,
-		"requiredAllocatedEdges": 1
-	},
-	{
-		"internalIdentifier": "SharpenedSpellsMastery",
-		"referenceId": 1040,
-		"maxLevel": 1,
-		"value": 20,
-		"position": {
-			"x": 1179,
-			"y": 705
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "AbsoluteZeroMastery",
-		"referenceId": 1041,
-		"maxLevel": 1,
-		"value": 20,
-		"position": {
-			"x": 1229,
-			"y": 710
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "BludgeoningBlowMastery",
-		"referenceId": 1042,
-		"maxLevel": 1,
-		"value": 25,
-		"position": {
-			"x": 1234,
-			"y": 660
-		},
-		"isHidden": true
 	},
 	{
 		"internalIdentifier": "ChanceToFreezePassive",
@@ -2169,7 +1968,8 @@
 		"position": {
 			"x": 1274,
 			"y": 615
-		}
+		},
+		"connections": []
 	},
 	{
 		"internalIdentifier": "ShockChancePassive",
@@ -2197,63 +1997,8 @@
 		"position": {
 			"x": 867,
 			"y": -390
-		}
-	},
-	{
-		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1019,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 1020
-			},
-			{
-				"referenceId": 1021
-			},
-			{
-				"referenceId": 1022
-			}
-		],
-		"position": {
-			"x": 907,
-			"y": -470
 		},
-		"isChoiceNode": true,
-		"requiredAllocatedEdges": 1
-	},
-	{
-		"internalIdentifier": "ThunderbootsMastery",
-		"referenceId": 1020,
-		"maxLevel": 1,
-		"value": 1,
-		"position": {
-			"x": 1007,
-			"y": -470
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "ElectrostaticAttractionMastery",
-		"referenceId": 1021,
-		"maxLevel": 1,
-		"value": 1,
-		"position": {
-			"x": 947,
-			"y": -550
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "ChainLightningMastery",
-		"referenceId": 1022,
-		"maxLevel": 1,
-		"value": 10,
-		"position": {
-			"x": 830,
-			"y": -500
-		},
-		"isHidden": true
+		"connections": []
 	},
 	{
 		"internalIdentifier": "IncreasedMagicAndSummonDamagePassive",
@@ -2313,7 +2058,7 @@
 				"referenceId": 116
 			},
 			{
-				"referenceId": 123
+				"referenceId": 1166
 			}
 		],
 		"position": {
@@ -2358,62 +2103,6 @@
 		}
 	},
 	{
-		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1035,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 1036
-			},
-			{
-				"referenceId": 1037
-			},
-			{
-				"referenceId": 1038
-			}
-		],
-		"position": {
-			"x": 1063,
-			"y": -843
-		},
-		"isChoiceNode": true,
-		"requiredAllocatedEdges": 1
-	},
-	{
-		"internalIdentifier": "ReverberationMastery",
-		"referenceId": 1036,
-		"maxLevel": 1,
-		"value": 20,
-		"position": {
-			"x": 1113,
-			"y": -893
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "SkillfulMagicMastery",
-		"referenceId": 1037,
-		"maxLevel": 1,
-		"value": 10,
-		"position": {
-			"x": 1043,
-			"y": -913
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "AutomagicMissileMastery",
-		"referenceId": 1038,
-		"maxLevel": 1,
-		"value": 15,
-		"position": {
-			"x": 1133,
-			"y": -823
-		},
-		"isHidden": true
-	},
-	{
 		"internalIdentifier": "IncreasedProjectileSpeedPassive",
 		"referenceId": 121,
 		"maxLevel": 1,
@@ -2438,30 +2127,18 @@
 		"value": 10,
 		"connections": [
 			{
-				"referenceId": 292
+				"referenceId": 1023
 			},
 			{
-				"referenceId": 1023
+				"referenceId": 1166
+			},
+			{
+				"referenceId": 1167
 			}
 		],
 		"position": {
 			"x": 1180,
 			"y": -462
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 123,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 122
-			}
-		],
-		"position": {
-			"x": 1076,
-			"y": -513
 		}
 	},
 	{
@@ -2471,10 +2148,10 @@
 		"value": 5,
 		"connections": [
 			{
-				"referenceId": 123
+				"referenceId": 1023
 			},
 			{
-				"referenceId": 1023
+				"referenceId": 1166
 			}
 		],
 		"position": {
@@ -2490,68 +2167,15 @@
 		"connections": [
 			{
 				"referenceId": 1023
+			},
+			{
+				"referenceId": 1167
 			}
 		],
 		"position": {
 			"x": 1244,
 			"y": -621
 		}
-	},
-	{
-		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1023,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 1024
-			},
-			{
-				"referenceId": 1025
-			},
-			{
-				"referenceId": 1026
-			}
-		],
-		"position": {
-			"x": 1180,
-			"y": -691
-		},
-		"isChoiceNode": true,
-		"requiredAllocatedEdges": 2
-	},
-	{
-		"internalIdentifier": "SingleFocusMastery",
-		"referenceId": 1024,
-		"maxLevel": 1,
-		"value": 1,
-		"position": {
-			"x": 1180,
-			"y": -781
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "ChannelingBurstMastery",
-		"referenceId": 1025,
-		"maxLevel": 1,
-		"value": 30,
-		"position": {
-			"x": 1110,
-			"y": -731
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "EnergySurgeMastery",
-		"referenceId": 1026,
-		"maxLevel": 1,
-		"value": 20,
-		"position": {
-			"x": 1250,
-			"y": -731
-		},
-		"isHidden": true
 	},
 	{
 		"internalIdentifier": "AddedIntelligencePassive",
@@ -2590,7 +2214,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedSummonCritChancePassive",
+		"internalIdentifier": "IncreasedMagicAndSummonDamagePassive",
 		"referenceId": 128,
 		"maxLevel": 1,
 		"value": 5,
@@ -2608,7 +2232,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedSummonCritChancePassive",
+		"internalIdentifier": "IncreasedMagicAndSummonDamagePassive",
 		"referenceId": 129,
 		"maxLevel": 1,
 		"value": 5,
@@ -2623,7 +2247,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "IncreasedMagicAndSummonDamagePassive",
+		"internalIdentifier": "AddedSummonCritChancePassive",
 		"referenceId": 130,
 		"maxLevel": 1,
 		"value": 5,
@@ -2644,7 +2268,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "IncreasedMagicAndSummonDamagePassive",
+		"internalIdentifier": "AddedSummonCritChancePassive",
 		"referenceId": 131,
 		"maxLevel": 1,
 		"value": 5,
@@ -2660,62 +2284,6 @@
 			"x": 54,
 			"y": -705
 		}
-	},
-	{
-		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1047,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 1048
-			},
-			{
-				"referenceId": 1049
-			},
-			{
-				"referenceId": 1050
-			}
-		],
-		"position": {
-			"x": -10,
-			"y": -620
-		},
-		"isChoiceNode": true,
-		"requiredAllocatedEdges": 2
-	},
-	{
-		"internalIdentifier": "UndeadLegionMastery",
-		"referenceId": 1048,
-		"maxLevel": 1,
-		"value": 10,
-		"position": {
-			"x": -90,
-			"y": -620
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "OpportuneStrikeMastery",
-		"referenceId": 1049,
-		"maxLevel": 1,
-		"value": 10,
-		"position": {
-			"x": 70,
-			"y": -650
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "OverrunMastery",
-		"referenceId": 1050,
-		"maxLevel": 1,
-		"value": 25,
-		"position": {
-			"x": 70,
-			"y": -590
-		},
-		"isHidden": true
 	},
 	{
 		"internalIdentifier": "AddedIntelligencePassive",
@@ -2782,6 +2350,9 @@
 			},
 			{
 				"referenceId": 164
+			},
+			{
+				"referenceId": 1148
 			}
 		],
 		"position": {
@@ -2830,6 +2401,9 @@
 		"connections": [
 			{
 				"referenceId": 139
+			},
+			{
+				"referenceId": 171
 			}
 		],
 		"position": {
@@ -2845,11 +2419,14 @@
 		"connections": [
 			{
 				"referenceId": 137
+			},
+			{
+				"referenceId": 172
 			}
 		],
 		"position": {
-			"x": 97,
-			"y": -1288
+			"x": 91,
+			"y": -1290
 		}
 	},
 	{
@@ -2860,7 +2437,8 @@
 		"position": {
 			"x": -272,
 			"y": -1377
-		}
+		},
+		"connections": []
 	},
 	{
 		"internalIdentifier": "AddedIntelligencePassive",
@@ -2878,146 +2456,25 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 142,
-		"maxLevel": 1,
-		"value": 5,
-		"position": {
-			"x": -525,
-			"y": -733
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 143,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 146
-			},
-			{
-				"referenceId": 142
-			}
-		],
-		"position": {
-			"x": -639,
-			"y": -797
-		}
-	},
-	{
-		"internalIdentifier": "AddedMaxMinionsPassive",
-		"referenceId": 144,
-		"maxLevel": 1,
-		"value": 1,
-		"connections": [
-			{
-				"referenceId": 145
-			},
-			{
-				"referenceId": 142
-			}
-		],
-		"position": {
-			"x": -442,
-			"y": -850
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 145,
-		"maxLevel": 1,
-		"value": 5,
-		"position": {
-			"x": -471,
-			"y": -957
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 146,
-		"maxLevel": 1,
-		"value": 5,
-		"position": {
-			"x": -668,
-			"y": -905
-		}
-	},
-	{
 		"internalIdentifier": "MoveIncreaseOnSummonPassive",
 		"referenceId": 147,
 		"maxLevel": 1,
 		"value": 5,
 		"connections": [
 			{
-				"referenceId": 145
-			},
-			{
-				"referenceId": 146
-			},
-			{
 				"referenceId": 1075
+			},
+			{
+				"referenceId": 1161
+			},
+			{
+				"referenceId": 1162
 			}
 		],
 		"position": {
-			"x": -607,
-			"y": -1062
+			"x": -620,
+			"y": -1037
 		}
-	},
-	{
-		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1075,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 1076
-			},
-			{
-				"referenceId": 1077
-			},
-			{
-				"referenceId": 1078
-			}
-		],
-		"position": {
-			"x": -577,
-			"y": -952
-		},
-		"isChoiceNode": true,
-		"requiredAllocatedEdges": 1
-	},
-	{
-		"internalIdentifier": "LimitedEntranceMastery",
-		"referenceId": 1076,
-		"maxLevel": 1,
-		"value": 3,
-		"position": {
-			"x": -507,
-			"y": -902
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "DeathrushMastery",
-		"referenceId": 1077,
-		"maxLevel": 1,
-		"value": 150,
-		"position": {
-			"x": -557,
-			"y": -850
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "ShatteredBondMastery",
-		"referenceId": 1078,
-		"maxLevel": 1,
-		"value": 300,
-		"position": {
-			"x": -607,
-			"y": -902
-		},
-		"isHidden": true
 	},
 	{
 		"internalIdentifier": "MinionDamageAuraPassive",
@@ -3027,7 +2484,12 @@
 		"position": {
 			"x": -372,
 			"y": -1144
-		}
+		},
+		"connections": [
+			{
+				"referenceId": 1165
+			}
+		]
 	},
 	{
 		"internalIdentifier": "IncreasedSummonDamagePassive",
@@ -3070,7 +2532,8 @@
 		"position": {
 			"x": -628,
 			"y": -1255
-		}
+		},
+		"connections": []
 	},
 	{
 		"internalIdentifier": "HeartySummonsPassive",
@@ -3101,6 +2564,9 @@
 		"connections": [
 			{
 				"referenceId": 1051
+			},
+			{
+				"referenceId": 1165
 			}
 		],
 		"position": {
@@ -3108,107 +2574,37 @@
 			"y": -1330
 		}
 	},
-
-	{
-		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1051,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 1052
-			},
-			{
-				"referenceId": 1053
-			},
-			{
-				"referenceId": 1054
-			}
-		],
-		"position": {
-			"x": -480,
-			"y": -1255
-		},
-		"isChoiceNode": true,
-		"requiredAllocatedEdges": 1
-	},
-	{
-		"internalIdentifier": "SymbioticPulseMastery",
-		"referenceId": 1052,
-		"maxLevel": 1,
-		"value": 3,
-		"position": {
-			"x": -480,
-			"y": -1155
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "SacrificialSummonsMastery",
-		"referenceId": 1053,
-		"maxLevel": 1,
-		"value": 2,
-		"position": {
-			"x": -540,
-			"y": -1195
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "OverhealMastery",
-		"referenceId": 1054,
-		"maxLevel": 1,
-		"value": 50,
-		"position": {
-			"x": -420,
-			"y": -1195
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 154,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 153
-			},
-			{
-				"referenceId": 148
-			}
-		],
-		"position": {
-			"x": -337,
-			"y": -1255
-		}
-	},
 	{
 		"internalIdentifier": "FocusChargeChanceOnKillPassive",
 		"referenceId": 155,
 		"maxLevel": 1,
-		"value": 10,
+		"value": 5,
 		"position": {
-			"x": -731,
-			"y": -1181
-		}
+			"x": -746,
+			"y": -1188
+		},
+		"connections": [
+			{
+				"referenceId": 157
+			}
+		]
 	},
 	{
 		"internalIdentifier": "FocusChargeDamageBonusPassive",
 		"referenceId": 156,
 		"maxLevel": 1,
-		"value": 3,
+		"value": 2,
 		"connections": [
 			{
-				"referenceId": 155
+				"referenceId": 157
 			},
 			{
-				"referenceId": 157
+				"referenceId": 69
 			}
 		],
 		"position": {
-			"x": -838,
-			"y": -1128
+			"x": -846,
+			"y": -1180
 		}
 	},
 	{
@@ -3217,9 +2613,20 @@
 		"maxLevel": 1,
 		"value": 1,
 		"position": {
-			"x": -731,
-			"y": -1037
-		}
+			"x": -791,
+			"y": -1100
+		},
+		"connections": [
+			{
+				"referenceId": 1144
+			},
+			{
+				"referenceId": 155
+			},
+			{
+				"referenceId": 1142
+			}
+		]
 	},
 	{
 		"internalIdentifier": "IncreasedSentryDamagePassive",
@@ -3267,68 +2674,6 @@
 		}
 	},
 	{
-		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1055,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 1056
-			},
-			{
-				"referenceId": 1057
-			},
-			{
-				"referenceId": 1058
-			},
-			{
-				"referenceId": 160
-			},
-			{
-				"referenceId": 161
-			}
-		],
-		"position": {
-			"x": 660,
-			"y": -885
-		},
-		"isChoiceNode": true,
-		"requiredAllocatedEdges": 2
-	},
-	{
-		"internalIdentifier": "SwiftPlacementsMastery",
-		"referenceId": 1056,
-		"maxLevel": 1,
-		"value": 10,
-		"position": {
-			"x": 660,
-			"y": -975
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "WitheringBoltsMastery",
-		"referenceId": 1057,
-		"maxLevel": 1,
-		"value": 3,
-		"position": {
-			"x": 740,
-			"y": -885
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "TowerDefenseMastery",
-		"referenceId": 1058,
-		"maxLevel": 1,
-		"value": 3,
-		"position": {
-			"x": 660,
-			"y": -800
-		},
-		"isHidden": true
-	},
-	{
 		"internalIdentifier": "MaximumSentryPassive",
 		"referenceId": 161,
 		"maxLevel": 1,
@@ -3336,7 +2681,8 @@
 		"position": {
 			"x": 445,
 			"y": -875
-		}
+		},
+		"connections": []
 	},
 	{
 		"internalIdentifier": "IncreasedSentryKnockbackPassive",
@@ -3383,9 +2729,10 @@
 		"maxLevel": 1,
 		"value": 5,
 		"position": {
-			"x": 308,
-			"y": -1190
-		}
+			"x": 296,
+			"y": -1197
+		},
+		"connections": []
 	},
 	{
 		"internalIdentifier": "IncreasedWhipReachPassive",
@@ -3401,8 +2748,8 @@
 			}
 		],
 		"position": {
-			"x": 398,
-			"y": -1231
+			"x": 363,
+			"y": -1255
 		}
 	},
 	{
@@ -3413,80 +2760,26 @@
 		"connections": [
 			{
 				"referenceId": 167
+			},
+			{
+				"referenceId": 1146
 			}
 		],
 		"position": {
-			"x": 446,
-			"y": -1159
+			"x": 440,
+			"y": -1195
 		}
 	},
 	{
 		"internalIdentifier": "IncreasedTagCritPassive",
 		"referenceId": 167,
 		"maxLevel": 1,
-		"value": 20,
+		"value": 10,
 		"position": {
-			"x": 497,
-			"y": -1090
-		}
-	},
-	{
-		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1043,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 1044
-			},
-			{
-				"referenceId": 1045
-			},
-			{
-				"referenceId": 1046
-			},
-			{
-				"referenceId": 167
-			}
-		],
-		"position": {
-			"x": 580,
-			"y": -1220
+			"x": 520,
+			"y": -1128
 		},
-		"isChoiceNode": true,
-		"requiredAllocatedEdges": 1
-	},
-	{
-		"internalIdentifier": "WhipCritDamageMastery",
-		"referenceId": 1044,
-		"maxLevel": 1,
-		"value": 20,
-		"position": {
-			"x": 500,
-			"y": -1220
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "WhipDoubleStrikeMastery",
-		"referenceId": 1045,
-		"maxLevel": 1,
-		"value": 50,
-		"position": {
-			"x": 580,
-			"y": -1300
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "WhipReachMastery",
-		"referenceId": 1046,
-		"maxLevel": 1,
-		"value": 50,
-		"position": {
-			"x": 660,
-			"y": -1220
-		},
-		"isHidden": true
+		"connections": []
 	},
 	{
 		"internalIdentifier": "IncreasedMinionDamagePassive",
@@ -3508,163 +2801,6 @@
 		}
 	},
 	{
-		"internalIdentifier": "FasterGrimoirePassive",
-		"referenceId": 1059,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 269
-			},
-			{
-				"referenceId": 1070
-			}
-		],
-		"position": {
-			"x": 860,
-			"y": -1020
-		}
-	},
-	{
-		"internalIdentifier": "IncreasedGrimoireCritPassive",
-		"referenceId": 1060,
-		"maxLevel": 1,
-		"value": 10,
-		"connections": [
-			{
-				"referenceId": 1059
-			}
-		],
-		"position": {
-			"x": 790,
-			"y": -955
-		}
-	},
-	{
-		"internalIdentifier": "IncreasedGrimoireDamagePassive",
-		"referenceId": 1061,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 1059
-			}
-		],
-		"position": {
-			"x": 930,
-			"y": -1090
-		}
-	},
-	{
-		"internalIdentifier": "IncreasedGrimoireCritPassive",
-		"referenceId": 1062,
-		"maxLevel": 1,
-		"value": 10,
-		"connections": [
-			{
-				"referenceId": 1060
-			}
-		],
-		"position": {
-			"x": 625,
-			"y": -1105
-		}
-	},
-	{
-		"internalIdentifier": "IncreasedGrimoireDamagePassive",
-		"referenceId": 1063,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 1061
-			},
-			{
-				"referenceId": 75
-			}
-		],
-		"position": {
-			"x": 765,
-			"y": -1245
-		}
-	},
-	{
-		"internalIdentifier": "FasterGrimoirePassive",
-		"referenceId": 1064,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 1062
-			},
-			{
-				"referenceId": 1063
-			},
-			{
-				"referenceId": 1070
-			}
-		],
-		"position": {
-			"x": 695,
-			"y": -1175
-		}
-	},
-	{
-		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1070,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 1071
-			},
-			{
-				"referenceId": 1072
-			},
-			{
-				"referenceId": 1073
-			}
-		],
-		"position": {
-			"x": 780,
-			"y": -1100
-		},
-		"isChoiceNode": true,
-		"requiredAllocatedEdges": 2
-	},
-	{
-		"internalIdentifier": "HealingGrimoireMastery",
-		"referenceId": 1071,
-		"maxLevel": 1,
-		"value": 20,
-		"position": {
-			"x": 700,
-			"y": -1100
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "ManaLeechMastery",
-		"referenceId": 1072,
-		"maxLevel": 1,
-		"value": 5,
-		"position": {
-			"x": 860,
-			"y": -1100
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "TwinPowerMastery",
-		"referenceId": 1073,
-		"maxLevel": 1,
-		"value": 60,
-		"position": {
-			"x": 780,
-			"y": -1180
-		},
-		"isHidden": true
-	},
-	{
 		"internalIdentifier": "StrongerDebuffsPassive",
 		"referenceId": 169,
 		"maxLevel": 1,
@@ -3672,11 +2808,14 @@
 		"connections": [
 			{
 				"referenceId": 999
+			},
+			{
+				"referenceId": 41
 			}
 		],
 		"position": {
 			"x": -9,
-			"y": -925
+			"y": -926
 		}
 	},
 	{
@@ -3705,13 +2844,17 @@
 		"internalIdentifier": "FasterMinionsPassive",
 		"referenceId": 171,
 		"maxLevel": 1,
-		"value": 10,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 169
 			},
 			{
-				"referenceId": 999
+				"referenceId": 999,
+				"effectsOnly": true
+			},
+			{
+				"referenceId": 138
 			}
 		],
 		"position": {
@@ -3723,75 +2866,23 @@
 		"internalIdentifier": "FasterMinionsPassive",
 		"referenceId": 172,
 		"maxLevel": 1,
-		"value": 10,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 169
 			},
 			{
-				"referenceId": 999
+				"referenceId": 999,
+				"effectsOnly": true
+			},
+			{
+				"referenceId": 139
 			}
 		],
 		"position": {
 			"x": 69,
 			"y": -1172
 		}
-	},
-	{
-		"internalIdentifier": "MasteryPassive",
-		"referenceId": 999,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 1001
-			},
-			{
-				"referenceId": 1002
-			},
-			{
-				"referenceId": 1003
-			}
-		],
-		"position": {
-			"x": -9,
-			"y": -1065
-		},
-		"isChoiceNode": true,
-		"requiredAllocatedEdges": 3
-	},
-	{
-		"internalIdentifier": "SoulReaveMastery",
-		"referenceId": 1001,
-		"maxLevel": 1,
-		"value": 5,
-		"position": {
-			"x": -104,
-			"y": -1085
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "RagingSpiritsMastery",
-		"referenceId": 1002,
-		"maxLevel": 1,
-		"value": 5,
-		"position": {
-			"x": 86,
-			"y": -1085
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "ChaoticReverberationMastery",
-		"referenceId": 1003,
-		"maxLevel": 1,
-		"value": 20,
-		"position": {
-			"x": -9,
-			"y": -1170
-		},
-		"isHidden": true
 	},
 	{
 		"internalIdentifier": "AddedStrengthPassive",
@@ -3801,7 +2892,8 @@
 		"position": {
 			"x": -622,
 			"y": -180
-		}
+		},
+		"connections": []
 	},
 	{
 		"internalIdentifier": "AddedStrengthPassive",
@@ -3897,62 +2989,6 @@
 		}
 	},
 	{
-		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1111,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 1112
-			},
-			{
-				"referenceId": 1113
-			},
-			{
-				"referenceId": 1114
-			}
-		],
-		"position": {
-			"x": -618,
-			"y": -10
-		},
-		"isChoiceNode": true,
-		"requiredAllocatedEdges": 2
-	},
-	{
-		"internalIdentifier": "TitanicImpactMastery",
-		"referenceId": 1112,
-		"maxLevel": 1,
-		"value": 5,
-		"position": {
-			"x": -587,
-			"y": 70
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "FatalFocusMastery",
-		"referenceId": 1113,
-		"maxLevel": 1,
-		"value": 30,
-		"position": {
-			"x": -647,
-			"y": 70
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "WideSwingsMastery",
-		"referenceId": 1114,
-		"maxLevel": 1,
-		"value": 10,
-		"position": {
-			"x": -618,
-			"y": -86
-		},
-		"isHidden": true
-	},
-	{
 		"internalIdentifier": "AddedStrengthPassive",
 		"referenceId": 179,
 		"maxLevel": 1,
@@ -3960,7 +2996,8 @@
 		"position": {
 			"x": -952,
 			"y": -178
-		}
+		},
+		"connections": []
 	},
 	{
 		"internalIdentifier": "AddedStrengthPassive",
@@ -4075,7 +3112,8 @@
 		"position": {
 			"x": -1382,
 			"y": -9
-		}
+		},
+		"connections": []
 	},
 	{
 		"internalIdentifier": "YoyoDamagePassive",
@@ -4085,7 +3123,8 @@
 		"position": {
 			"x": -913,
 			"y": -344
-		}
+		},
+		"connections": []
 	},
 	{
 		"internalIdentifier": "YoyoSpeedPassive",
@@ -4110,6 +3149,9 @@
 		"connections": [
 			{
 				"referenceId": 188
+			},
+			{
+				"referenceId": 197
 			}
 		],
 		"position": {
@@ -4169,62 +3211,6 @@
 		}
 	},
 	{
-		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1129,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 1130
-			},
-			{
-				"referenceId": 1131
-			},
-			{
-				"referenceId": 1132
-			}
-		],
-		"position": {
-			"x": -909,
-			"y": -416
-		},
-		"isChoiceNode": true,
-		"requiredAllocatedEdges": 1
-	},
-	{
-		"internalIdentifier": "PuppeteerMastery",
-		"referenceId": 1130,
-		"maxLevel": 1,
-		"value": 75,
-		"position": {
-			"x": -939,
-			"y": -476
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "TranslucentTricksMastery",
-		"referenceId": 1131,
-		"maxLevel": 1,
-		"value": 20,
-		"position": {
-			"x": -899,
-			"y": -526
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "SpoolbreakerMastery",
-		"referenceId": 1132,
-		"maxLevel": 1,
-		"value": 150,
-		"position": {
-			"x": -829,
-			"y": -536
-		},
-		"isHidden": true
-	},
-	{
 		"internalIdentifier": "IncreasedEnemyAggressionPassive",
 		"referenceId": 193,
 		"maxLevel": 1,
@@ -4253,7 +3239,8 @@
 		"position": {
 			"x": -1349,
 			"y": -346
-		}
+		},
+		"connections": []
 	},
 	{
 		"internalIdentifier": "AddedLifePassive",
@@ -4263,7 +3250,8 @@
 		"position": {
 			"x": -1139,
 			"y": -346
-		}
+		},
+		"connections": []
 	},
 	{
 		"internalIdentifier": "IncreasedBlockChancePassive",
@@ -4297,6 +3285,9 @@
 			},
 			{
 				"referenceId": 1133
+			},
+			{
+				"referenceId": 189
 			}
 		],
 		"position": {
@@ -4318,71 +3309,12 @@
 			},
 			{
 				"referenceId": 1133
-			},
-			{
-				"referenceId": 189
 			}
 		],
 		"position": {
 			"x": -1247,
 			"y": -574
 		}
-	},
-	{
-		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1133,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 1134
-			},
-			{
-				"referenceId": 1135
-			},
-			{
-				"referenceId": 1136
-			}
-		],
-		"position": {
-			"x": -1247,
-			"y": -424
-		},
-		"isChoiceNode": true,
-		"requiredAllocatedEdges": 2
-	},
-	{
-		"internalIdentifier": "UndyingGraspMastery",
-		"referenceId": 1134,
-		"maxLevel": 1,
-		"value": 15,
-		"position": {
-			"x": -1187,
-			"y": -404
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "WillingSacrificeMastery",
-		"referenceId": 1135,
-		"maxLevel": 1,
-		"value": 80,
-		"position": {
-			"x": -1307,
-			"y": -404
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "ReprisalMastery",
-		"referenceId": 1136,
-		"maxLevel": 1,
-		"value": 200,
-		"position": {
-			"x": -1247,
-			"y": -364
-		},
-		"isHidden": true
 	},
 	{
 		"internalIdentifier": "RangerMeleeChanceToBleedPassive",
@@ -4392,7 +3324,8 @@
 		"position": {
 			"x": -1282,
 			"y": -700
-		}
+		},
+		"connections": []
 	},
 	{
 		"internalIdentifier": "BleedTimePassive",
@@ -4479,89 +3412,36 @@
 		}
 	},
 	{
-		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1115,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 1116
-			},
-			{
-				"referenceId": 1117
-			},
-			{
-				"referenceId": 1118
-			}
-		],
-		"position": {
-			"x": -1120,
-			"y": -600
-		},
-		"isChoiceNode": true,
-		"requiredAllocatedEdges": 1
-	},
-	{
-		"internalIdentifier": "HemorrhageMastery",
-		"referenceId": 1116,
-		"maxLevel": 1,
-		"value": 5,
-		"position": {
-			"x": -1120,
-			"y": -540
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "ExsanguinateMastery",
-		"referenceId": 1117,
-		"maxLevel": 1,
-		"value": 50,
-		"position": {
-			"x": -1060,
-			"y": -600
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "BloodbenderMastery",
-		"referenceId": 1118,
-		"maxLevel": 1,
-		"value": 10,
-		"position": {
-			"x": -1180,
-			"y": -600
-		},
-		"isHidden": true
-	},
-	{
 		"internalIdentifier": "AegisChargeChanceOnKillPassive",
 		"referenceId": 205,
 		"maxLevel": 1,
-		"value": 10,
+		"value": 5,
 		"connections": [
 			{
-				"referenceId": 206
+				"referenceId": 1155
 			}
 		],
 		"position": {
-			"x": -846,
-			"y": 372
+			"x": -834,
+			"y": 348
 		}
 	},
 	{
 		"internalIdentifier": "AegisChargePercentMaxHealthPassive",
 		"referenceId": 206,
 		"maxLevel": 1,
-		"value": 3,
+		"value": 2,
 		"connections": [
 			{
-				"referenceId": 207
+				"referenceId": 33
+			},
+			{
+				"referenceId": 1156
 			}
 		],
 		"position": {
-			"x": -921,
-			"y": 454
+			"x": -831,
+			"y": 457
 		}
 	},
 	{
@@ -4570,9 +3450,17 @@
 		"maxLevel": 1,
 		"value": 1,
 		"position": {
-			"x": -975,
-			"y": 322
-		}
+			"x": -1003,
+			"y": 407
+		},
+		"connections": [
+			{
+				"referenceId": 1155
+			},
+			{
+				"referenceId": 1156
+			}
+		]
 	},
 	{
 		"internalIdentifier": "AddRagePassive",
@@ -4582,7 +3470,8 @@
 		"position": {
 			"x": -1232,
 			"y": 245
-		}
+		},
+		"connections": []
 	},
 	{
 		"internalIdentifier": "AddRageCritPassive",
@@ -4642,62 +3531,6 @@
 		}
 	},
 	{
-		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1137,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 1138
-			},
-			{
-				"referenceId": 1139
-			},
-			{
-				"referenceId": 1140
-			}
-		],
-		"position": {
-			"x": -1232,
-			"y": 498
-		},
-		"isChoiceNode": true,
-		"requiredAllocatedEdges": 2
-	},
-	{
-		"internalIdentifier": "BurningRageMastery",
-		"referenceId": 1138,
-		"maxLevel": 1,
-		"value": 2,
-		"position": {
-			"x": -1292,
-			"y": 588
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "FuriousSiphonMastery",
-		"referenceId": 1139,
-		"maxLevel": 1,
-		"value": 50,
-		"position": {
-			"x": -1172,
-			"y": 588
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "RagingSpeedMastery",
-		"referenceId": 1140,
-		"maxLevel": 1,
-		"value": 1,
-		"position": {
-			"x": -1232,
-			"y": 640
-		},
-		"isHidden": true
-	},
-	{
 		"internalIdentifier": "AddMaxRagePassive",
 		"referenceId": 212,
 		"maxLevel": 1,
@@ -4741,6 +3574,9 @@
 			},
 			{
 				"referenceId": 1119
+			},
+			{
+				"referenceId": 217
 			}
 		],
 		"position": {
@@ -4759,68 +3595,15 @@
 			},
 			{
 				"referenceId": 1119
+			},
+			{
+				"referenceId": 1168
 			}
 		],
 		"position": {
 			"x": -995,
 			"y": 554
 		}
-	},
-	{
-		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1119,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 1120
-			},
-			{
-				"referenceId": 1121
-			},
-			{
-				"referenceId": 1122
-			}
-		],
-		"position": {
-			"x": -1058,
-			"y": 620
-		},
-		"isChoiceNode": true,
-		"requiredAllocatedEdges": 1
-	},
-	{
-		"internalIdentifier": "BloodRushMastery",
-		"referenceId": 1120,
-		"maxLevel": 1,
-		"value": 2,
-		"position": {
-			"x": -1015,
-			"y": 484
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "HeartAndMindMastery",
-		"referenceId": 1121,
-		"maxLevel": 1,
-		"value": 50,
-		"position": {
-			"x": -1104,
-			"y": 484
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "PainTransferenceMastery",
-		"referenceId": 1122,
-		"maxLevel": 1,
-		"value": 35,
-		"position": {
-			"x": -1058,
-			"y": 420
-		},
-		"isHidden": true
 	},
 	{
 		"internalIdentifier": "LifeRegenCountPassive",
@@ -4830,7 +3613,12 @@
 		"position": {
 			"x": -1107,
 			"y": 758
-		}
+		},
+		"connections": [
+			{
+				"referenceId": 1168
+			}
+		]
 	},
 	{
 		"internalIdentifier": "HealOnKillPassive",
@@ -4839,12 +3627,12 @@
 		"value": 20,
 		"connections": [
 			{
-				"referenceId": 216
+				"referenceId": 214
 			}
 		],
 		"position": {
-			"x": -1011,
-			"y": 758
+			"x": -1057,
+			"y": 492
 		}
 	},
 	{
@@ -4870,7 +3658,8 @@
 		"position": {
 			"x": 155,
 			"y": 612
-		}
+		},
+		"connections": []
 	},
 	{
 		"internalIdentifier": "ChanceToConsumeAmmoPassive",
@@ -4948,74 +3737,19 @@
 		}
 	},
 	{
-		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1066,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 1067
-			},
-			{
-				"referenceId": 1068
-			},
-			{
-				"referenceId": 1069
-			}
-		],
-		"position": {
-			"x": -10,
-			"y": 612
-		},
-		"isChoiceNode": true,
-		"requiredAllocatedEdges": 2
-	},
-	{
-		"internalIdentifier": "SniperMastery",
-		"referenceId": 1067,
-		"maxLevel": 1,
-		"value": 20,
-		"position": {
-			"x": 70,
-			"y": 612
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "PinningShotMastery",
-		"referenceId": 1068,
-		"maxLevel": 1,
-		"value": 10,
-		"position": {
-			"x": -80,
-			"y": 582
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "WhipReachMastery",
-		"referenceId": 1069,
-		"maxLevel": 1,
-		"value": 50,
-		"position": {
-			"x": -80,
-			"y": 642
-		},
-		"isHidden": true
-	},
-	{
 		"internalIdentifier": "AddedDexterityPassive",
 		"referenceId": 224,
 		"maxLevel": 1,
 		"value": 5,
 		"connections": [
 			{
-				"referenceId": 256
-			},
-			{
 				"referenceId": 30
 			},
 			{
 				"referenceId": 226
+			},
+			{
+				"referenceId": 1153
 			}
 		],
 		"position": {
@@ -5079,6 +3813,9 @@
 		"connections": [
 			{
 				"referenceId": 247
+			},
+			{
+				"referenceId": 1157
 			}
 		],
 		"position": {
@@ -5105,7 +3842,7 @@
 		"internalIdentifier": "IncreasedRangedDamagePassive",
 		"referenceId": 230,
 		"maxLevel": 1,
-		"value": 10,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 229
@@ -5115,18 +3852,21 @@
 			}
 		],
 		"position": {
-			"x": 294,
-			"y": 1297
+			"x": 295,
+			"y": 1272
 		}
 	},
 	{
 		"internalIdentifier": "IncreasedRangedDamagePassive",
 		"referenceId": 231,
 		"maxLevel": 1,
-		"value": 10,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 1089
+			},
+			{
+				"referenceId": 235
 			}
 		],
 		"position": {
@@ -5148,8 +3888,8 @@
 			}
 		],
 		"position": {
-			"x": 243,
-			"y": 1073
+			"x": 269,
+			"y": 1067
 		}
 	},
 	{
@@ -5160,7 +3900,12 @@
 		"position": {
 			"x": 400,
 			"y": 1032
-		}
+		},
+		"connections": [
+			{
+				"referenceId": 1152
+			}
+		]
 	},
 	{
 		"internalIdentifier": "ChanceForAdditionalProjectilePassive",
@@ -5172,12 +3917,12 @@
 				"referenceId": 233
 			},
 			{
-				"referenceId": 235
+				"referenceId": 1089
 			}
 		],
 		"position": {
-			"x": 563,
-			"y": 986
+			"x": 414,
+			"y": 1089
 		}
 	},
 	{
@@ -5188,68 +3933,21 @@
 		"connections": [
 			{
 				"referenceId": 1089
+			},
+			{
+				"referenceId": 231
+			},
+			{
+				"referenceId": 1151
+			},
+			{
+				"referenceId": 1152
 			}
 		],
 		"position": {
-			"x": 537,
-			"y": 1094
+			"x": 550,
+			"y": 1119
 		}
-	},
-	{
-		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1089,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 1090
-			},
-			{
-				"referenceId": 1091
-			},
-			{
-				"referenceId": 1092
-			}
-		],
-		"position": {
-			"x": 430,
-			"y": 1147
-		},
-		"isChoiceNode": true,
-		"requiredAllocatedEdges": 1
-	},
-	{
-		"internalIdentifier": "HairTriggerMastery",
-		"referenceId": 1090,
-		"maxLevel": 1,
-		"value": 20,
-		"position": {
-			"x": 330,
-			"y": 1106
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "ExplosiveSlugsMastery",
-		"referenceId": 1091,
-		"maxLevel": 1,
-		"value": 50,
-		"position": {
-			"x": 410,
-			"y": 1087
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "AdvantageShotMastery",
-		"referenceId": 1092,
-		"maxLevel": 1,
-		"value": 3,
-		"position": {
-			"x": 490,
-			"y": 1067
-		},
-		"isHidden": true
 	},
 	{
 		"internalIdentifier": "QuickExplosionsPassive",
@@ -5259,7 +3957,8 @@
 		"position": {
 			"x": 301,
 			"y": 840
-		}
+		},
+		"connections": []
 	},
 	{
 		"internalIdentifier": "BiggerExplosivesPassive",
@@ -5305,7 +4004,12 @@
 		"position": {
 			"x": 449,
 			"y": 867
-		}
+		},
+		"connections": [
+			{
+				"referenceId": 1154
+			}
+		]
 	},
 	{
 		"internalIdentifier": "IncreasedCriticalStrikeChance",
@@ -5315,6 +4019,9 @@
 		"connections": [
 			{
 				"referenceId": 1101
+			},
+			{
+				"referenceId": 241
 			}
 		],
 		"position": {
@@ -5329,72 +4036,16 @@
 		"value": 5,
 		"connections": [
 			{
-				"referenceId": 239
+				"referenceId": 1154
 			},
 			{
-				"referenceId": 1101
+				"referenceId": 240
 			}
 		],
 		"position": {
-			"x": 579,
-			"y": 818
+			"x": 497,
+			"y": 782
 		}
-	},
-	{
-		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1101,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 1102
-			},
-			{
-				"referenceId": 1103
-			},
-			{
-				"referenceId": 1104
-			}
-		],
-		"position": {
-			"x": 609,
-			"y": 740
-		},
-		"isChoiceNode": true,
-		"requiredAllocatedEdges": 1
-	},
-	{
-		"internalIdentifier": "DemolitionsExpertMastery",
-		"referenceId": 1102,
-		"maxLevel": 1,
-		"value": 40,
-		"position": {
-			"x": 639,
-			"y": 800
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "ShrapnelStormMastery",
-		"referenceId": 1103,
-		"maxLevel": 1,
-		"value": 20,
-		"position": {
-			"x": 669,
-			"y": 710
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "BlastChainMastery",
-		"referenceId": 1104,
-		"maxLevel": 1,
-		"value": 50,
-		"position": {
-			"x": 584,
-			"y": 675
-		},
-		"isHidden": true
 	},
 	{
 		"internalIdentifier": "PoisonedRangedAttacksPassive",
@@ -5406,7 +4057,7 @@
 				"referenceId": 243
 			},
 			{
-				"referenceId": 246
+				"referenceId": 1150
 			}
 		],
 		"position": {
@@ -5422,63 +4073,15 @@
 		"position": {
 			"x": 625,
 			"y": 1140
-		}
-	},
-	{
-		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1093,
-		"maxLevel": 1,
-		"value": 5,
+		},
 		"connections": [
 			{
-				"referenceId": 1094
+				"referenceId": 1149
 			},
 			{
-				"referenceId": 1095
-			},
-			{
-				"referenceId": 1096
+				"referenceId": 1151
 			}
-		],
-		"position": {
-			"x": 719,
-			"y": 930
-		},
-		"isChoiceNode": true,
-		"requiredAllocatedEdges": 2
-	},
-	{
-		"internalIdentifier": "ContagionBurstMastery",
-		"referenceId": 1094,
-		"maxLevel": 1,
-		"value": 50,
-		"position": {
-			"x": 659,
-			"y": 990
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "CorrosiveTouchMastery",
-		"referenceId": 1095,
-		"maxLevel": 1,
-		"value": 5,
-		"position": {
-			"x": 779,
-			"y": 990
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "LethalDoseMastery",
-		"referenceId": 1096,
-		"maxLevel": 1,
-		"value": 1,
-		"position": {
-			"x": 719,
-			"y": 1030
-		},
-		"isHidden": true
+		]
 	},
 	{
 		"internalIdentifier": "FasterPoisonTickPassive",
@@ -5487,10 +4090,10 @@
 		"value": 10,
 		"connections": [
 			{
-				"referenceId": 243
+				"referenceId": 1093
 			},
 			{
-				"referenceId": 1093
+				"referenceId": 1149
 			}
 		],
 		"position": {
@@ -5506,9 +4109,6 @@
 		"connections": [
 			{
 				"referenceId": 244
-			},
-			{
-				"referenceId": 270
 			}
 		],
 		"position": {
@@ -5527,6 +4127,9 @@
 			},
 			{
 				"referenceId": 1093
+			},
+			{
+				"referenceId": 1150
 			}
 		],
 		"position": {
@@ -5538,17 +4141,18 @@
 		"internalIdentifier": "HasteChargeChanceOnKillPassive",
 		"referenceId": 247,
 		"maxLevel": 1,
-		"value": 10,
+		"value": 5,
 		"position": {
-			"x": -264,
-			"y": 1192
-		}
+			"x": -263,
+			"y": 1190
+		},
+		"connections": []
 	},
 	{
 		"internalIdentifier": "HasteChargeProjectileSpeedPassive",
 		"referenceId": 248,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 3,
 		"connections": [
 			{
 				"referenceId": 247
@@ -5558,8 +4162,8 @@
 			}
 		],
 		"position": {
-			"x": -403,
-			"y": 1226
+			"x": -413,
+			"y": 1175
 		}
 	},
 	{
@@ -5568,9 +4172,14 @@
 		"maxLevel": 1,
 		"value": 1,
 		"position": {
-			"x": -454,
-			"y": 1095
-		}
+			"x": -439,
+			"y": 1086
+		},
+		"connections": [
+			{
+				"referenceId": 1158
+			}
+		]
 	},
 	{
 		"internalIdentifier": "IncreasedProjectileDamagePassive",
@@ -5580,26 +4189,29 @@
 		"connections": [
 			{
 				"referenceId": 251
+			},
+			{
+				"referenceId": 255
 			}
 		],
 		"position": {
-			"x": -607,
-			"y": 1214
+			"x": -606,
+			"y": 1213
 		}
 	},
 	{
-		"internalIdentifier": "IgnitingProjectilesPassive",
+		"internalIdentifier": "IncreasedProjectileSpeedPassive",
 		"referenceId": 251,
 		"maxLevel": 1,
 		"value": 5,
 		"connections": [
 			{
-				"referenceId": 253
+				"referenceId": 252
 			}
 		],
 		"position": {
-			"x": -609,
-			"y": 1083
+			"x": -597,
+			"y": 1084
 		}
 	},
 	{
@@ -5609,33 +4221,36 @@
 		"value": 5,
 		"connections": [
 			{
-				"referenceId": 250
+				"referenceId": 1085
 			},
 			{
-				"referenceId": 255
+				"referenceId": 260
+			},
+			{
+				"referenceId": 251
 			}
 		],
 		"position": {
-			"x": -713,
-			"y": 1164
+			"x": -654,
+			"y": 974
 		}
 	},
 	{
-		"internalIdentifier": "IncreasedProjectileSpeedPassive",
+		"internalIdentifier": "IgnitingProjectilesPassive",
 		"referenceId": 253,
 		"maxLevel": 1,
 		"value": 5,
 		"connections": [
 			{
-				"referenceId": 1085
+				"referenceId": 255
 			},
 			{
-				"referenceId": 260
+				"referenceId": 254
 			}
 		],
 		"position": {
-			"x": -668,
-			"y": 970
+			"x": -839,
+			"y": 1126
 		}
 	},
 	{
@@ -5645,72 +4260,16 @@
 		"value": 5,
 		"connections": [
 			{
-				"referenceId": 252
+				"referenceId": 1085
 			},
 			{
-				"referenceId": 1085
+				"referenceId": 253
 			}
 		],
 		"position": {
 			"x": -786,
 			"y": 1019
 		}
-	},
-	{
-		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1085,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 1086
-			},
-			{
-				"referenceId": 1087
-			},
-			{
-				"referenceId": 1088
-			}
-		],
-		"position": {
-			"x": -756,
-			"y": 902
-		},
-		"isChoiceNode": true,
-		"requiredAllocatedEdges": 2
-	},
-	{
-		"internalIdentifier": "BouncingAmmoMastery",
-		"referenceId": 1086,
-		"maxLevel": 1,
-		"value": 1,
-		"position": {
-			"x": -756,
-			"y": 802
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "BloodroundMastery",
-		"referenceId": 1087,
-		"maxLevel": 1,
-		"value": 2,
-		"position": {
-			"x": -806,
-			"y": 852
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "TracerShotsMastery",
-		"referenceId": 1088,
-		"maxLevel": 1,
-		"value": 33,
-		"position": {
-			"x": -856,
-			"y": 902
-		},
-		"isHidden": true
 	},
 	{
 		"internalIdentifier": "IncreasedAttackSpeedPassive",
@@ -5720,11 +4279,17 @@
 		"connections": [
 			{
 				"referenceId": 254
+			},
+			{
+				"referenceId": 253
+			},
+			{
+				"referenceId": 250
 			}
 		],
 		"position": {
-			"x": -881,
-			"y": 1119
+			"x": -730,
+			"y": 1136
 		}
 	},
 	{
@@ -5733,9 +4298,17 @@
 		"maxLevel": 1,
 		"value": 10,
 		"position": {
-			"x": -265,
-			"y": 922
-		}
+			"x": -498,
+			"y": 862
+		},
+		"connections": [
+			{
+				"referenceId": 258
+			},
+			{
+				"referenceId": 1097
+			}
+		]
 	},
 	{
 		"internalIdentifier": "IncreasedCriticalStrikeChance",
@@ -5748,11 +4321,14 @@
 			},
 			{
 				"referenceId": 256
+			},
+			{
+				"referenceId": 259
 			}
 		],
 		"position": {
-			"x": -406,
-			"y": 859
+			"x": -531,
+			"y": 774
 		}
 	},
 	{
@@ -5761,9 +4337,17 @@
 		"maxLevel": 1,
 		"value": 10,
 		"position": {
-			"x": -552,
-			"y": 774
-		}
+			"x": -398,
+			"y": 854
+		},
+		"connections": [
+			{
+				"referenceId": 256
+			},
+			{
+				"referenceId": 1153
+			}
+		]
 	},
 	{
 		"internalIdentifier": "IncreasedCriticalStrikeChance",
@@ -5772,15 +4356,15 @@
 		"value": 5,
 		"connections": [
 			{
-				"referenceId": 258
+				"referenceId": 260
 			},
 			{
-				"referenceId": 260
+				"referenceId": 257
 			}
 		],
 		"position": {
 			"x": -674,
-			"y": 684
+			"y": 683
 		}
 	},
 	{
@@ -5793,8 +4377,10 @@
 				"referenceId": 1097
 			},
 			{
-				"referenceId": 261,
-				"effectsOnly": true
+				"referenceId": 261
+			},
+			{
+				"referenceId": 252
 			}
 		],
 		"position": {
@@ -5809,72 +4395,19 @@
 		"value": 10,
 		"connections": [
 			{
-				"referenceId": 256
+				"referenceId": 1097
 			},
 			{
-				"referenceId": 1097
+				"referenceId": 260
+			},
+			{
+				"referenceId": 1153
 			}
 		],
 		"position": {
 			"x": -421,
 			"y": 985
 		}
-	},
-	{
-		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1097,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 1098
-			},
-			{
-				"referenceId": 1099
-			},
-			{
-				"referenceId": 1100
-			}
-		],
-		"position": {
-			"x": -534,
-			"y": 920
-		},
-		"isChoiceNode": true,
-		"requiredAllocatedEdges": 2
-	},
-	{
-		"internalIdentifier": "ReturningProjectilesMastery",
-		"referenceId": 1098,
-		"maxLevel": 1,
-		"value": 20,
-		"position": {
-			"x": -584,
-			"y": 840
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "MarksmanMastery",
-		"referenceId": 1099,
-		"maxLevel": 1,
-		"value": 20,
-		"position": {
-			"x": -460,
-			"y": 783
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "FatBulletsMastery",
-		"referenceId": 1100,
-		"maxLevel": 1,
-		"value": 40,
-		"position": {
-			"x": -432,
-			"y": 920
-		},
-		"isHidden": true
 	},
 	{
 		"internalIdentifier": "AddedDexterityPassive",
@@ -5947,7 +4480,8 @@
 		"position": {
 			"x": -454,
 			"y": -468
-		}
+		},
+		"connections": []
 	},
 	{
 		"internalIdentifier": "AddedDexterityStrengthPassive",
@@ -5990,7 +4524,12 @@
 		"position": {
 			"x": 879,
 			"y": -928
-		}
+		},
+		"connections": [
+			{
+				"referenceId": 120
+			}
+		]
 	},
 	{
 		"internalIdentifier": "AddedIntelligenceDexterityPassive",
@@ -6000,6 +4539,9 @@
 		"connections": [
 			{
 				"referenceId": 26
+			},
+			{
+				"referenceId": 106
 			}
 		],
 		"position": {
@@ -6023,7 +4565,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedDexterityStrengthPassive",
 		"referenceId": 272,
 		"maxLevel": 1,
 		"value": 5,
@@ -6038,7 +4580,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedDexterityStrengthPassive",
 		"referenceId": 273,
 		"maxLevel": 1,
 		"value": 5,
@@ -6050,7 +4592,7 @@
 				"referenceId": 60
 			},
 			{
-				"referenceId": 217
+				"referenceId": 1168
 			}
 		],
 		"position": {
@@ -6069,6 +4611,9 @@
 			},
 			{
 				"referenceId": 275
+			},
+			{
+				"referenceId": 190
 			}
 		],
 		"position": {
@@ -6084,7 +4629,8 @@
 		"position": {
 			"x": -891,
 			"y": -914
-		}
+		},
+		"connections": []
 	},
 	{
 		"internalIdentifier": "MagicFindBoost",
@@ -6123,48 +4669,6 @@
 		}
 	},
 	{
-		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1008,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 1009
-			},
-			{
-				"referenceId": 1010
-			}
-		],
-		"position": {
-			"x": 570,
-			"y": -355
-		},
-		"isChoiceNode": true,
-		"requiredAllocatedEdges": 1
-	},
-	{
-		"internalIdentifier": "BossDownIncreaseItemRarityMastery",
-		"referenceId": 1009,
-		"maxLevel": 1,
-		"value": 1,
-		"position": {
-			"x": 460,
-			"y": -355
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "MoreUniquesMastery",
-		"referenceId": 1010,
-		"maxLevel": 1,
-		"value": 15,
-		"position": {
-			"x": 540,
-			"y": -255
-		},
-		"isHidden": true
-	},
-	{
 		"internalIdentifier": "FishingPowerPassive",
 		"referenceId": 278,
 		"maxLevel": 1,
@@ -6196,48 +4700,6 @@
 			"x": 576,
 			"y": 436
 		}
-	},
-	{
-		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1005,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 1006
-			},
-			{
-				"referenceId": 1007
-			}
-		],
-		"position": {
-			"x": 590,
-			"y": 340
-		},
-		"isChoiceNode": true,
-		"requiredAllocatedEdges": 1
-	},
-	{
-		"internalIdentifier": "AddedFishingLineMastery",
-		"referenceId": 1006,
-		"maxLevel": 1,
-		"value": 1,
-		"position": {
-			"x": 480,
-			"y": 320
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "FishingCatchBuffMastery",
-		"referenceId": 1007,
-		"maxLevel": 1,
-		"value": 1,
-		"position": {
-			"x": 550,
-			"y": 240
-		},
-		"isHidden": true
 	},
 	{
 		"internalIdentifier": "IncreasedJumpHeight",
@@ -6273,48 +4735,6 @@
 		}
 	},
 	{
-		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1105,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 1106
-			},
-			{
-				"referenceId": 1107
-			}
-		],
-		"position": {
-			"x": 328,
-			"y": 559
-		},
-		"isChoiceNode": true,
-		"requiredAllocatedEdges": 1
-	},
-	{
-		"internalIdentifier": "PseudoicarianMastery",
-		"referenceId": 1106,
-		"maxLevel": 1,
-		"value": 40,
-		"position": {
-			"x": 228,
-			"y": 518
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "HermesBoonMastery",
-		"referenceId": 1107,
-		"maxLevel": 1,
-		"value": 60,
-		"position": {
-			"x": 325,
-			"y": 452
-		},
-		"isHidden": true
-	},
-	{
 		"internalIdentifier": "FasterPlacementPassive",
 		"referenceId": 282,
 		"maxLevel": 1,
@@ -6346,48 +4766,6 @@
 			"x": -468,
 			"y": 540
 		}
-	},
-	{
-		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1108,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 1109
-			},
-			{
-				"referenceId": 1110
-			}
-		],
-		"position": {
-			"x": -328,
-			"y": 559
-		},
-		"isChoiceNode": true,
-		"requiredAllocatedEdges": 1
-	},
-	{
-		"internalIdentifier": "JourneymanMastery",
-		"referenceId": 1109,
-		"maxLevel": 1,
-		"value": 40,
-		"position": {
-			"x": -228,
-			"y": 518
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "MasterBuilderMastery",
-		"referenceId": 1110,
-		"maxLevel": 1,
-		"value": 6,
-		"position": {
-			"x": -325,
-			"y": 452
-		},
-		"isHidden": true
 	},
 	{
 		"internalIdentifier": "DangerMiningPassive",
@@ -6426,48 +4804,6 @@
 		}
 	},
 	{
-		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1123,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 1124
-			},
-			{
-				"referenceId": 1125
-			}
-		],
-		"position": {
-			"x": -575,
-			"y": 313
-		},
-		"isChoiceNode": true,
-		"requiredAllocatedEdges": 1
-	},
-	{
-		"internalIdentifier": "RockAndStoneMastery",
-		"referenceId": 1124,
-		"maxLevel": 1,
-		"value": 50,
-		"position": {
-			"x": -540,
-			"y": 233
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "SpelunkyMastery",
-		"referenceId": 1125,
-		"maxLevel": 1,
-		"value": 50,
-		"position": {
-			"x": -481,
-			"y": 329
-		},
-		"isHidden": true
-	},
-	{
 		"internalIdentifier": "CheaperShopsPassive",
 		"referenceId": 286,
 		"maxLevel": 1,
@@ -6502,48 +4838,6 @@
 			"x": -565,
 			"y": -470
 		}
-	},
-	{
-		"internalIdentifier": "MasteryPassive",
-		"referenceId": 1126,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 1127
-			},
-			{
-				"referenceId": 1128
-			}
-		],
-		"position": {
-			"x": -555,
-			"y": -340
-		},
-		"isChoiceNode": true,
-		"requiredAllocatedEdges": 1
-	},
-	{
-		"internalIdentifier": "ExtraStockMastery",
-		"referenceId": 1127,
-		"maxLevel": 1,
-		"value": 50,
-		"position": {
-			"x": -523,
-			"y": -237
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "MoneySpeedMastery",
-		"referenceId": 1128,
-		"maxLevel": 1,
-		"value": 1,
-		"position": {
-			"x": -452,
-			"y": -375
-		},
-		"isHidden": true
 	},
 	{
 		"internalIdentifier": "StrongerPotionsPassive",
@@ -6600,6 +4894,1178 @@
 		}
 	},
 	{
+		"internalIdentifier": "ReducedSkillCooldownPassive",
+		"referenceId": 291,
+		"maxLevel": 1,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 44
+			},
+			{
+				"referenceId": 290
+			},
+			{
+				"referenceId": 1082
+			}
+		],
+		"position": {
+			"x": 429,
+			"y": -587
+		}
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 999,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1001
+			},
+			{
+				"referenceId": 1002
+			},
+			{
+				"referenceId": 1003
+			}
+		],
+		"position": {
+			"x": -9,
+			"y": -1065
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 3
+	},
+	{
+		"internalIdentifier": "SoulReaveMastery",
+		"referenceId": 1001,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": -104,
+			"y": -1085
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "RagingSpiritsMastery",
+		"referenceId": 1002,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": 86,
+			"y": -1085
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "ChaoticReverberationMastery",
+		"referenceId": 1003,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": -9,
+			"y": -1170
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1005,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1006
+			},
+			{
+				"referenceId": 1007
+			}
+		],
+		"position": {
+			"x": 590,
+			"y": 340
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 1
+	},
+	{
+		"internalIdentifier": "AddedFishingLineMastery",
+		"referenceId": 1006,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": 480,
+			"y": 320
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "FishingCatchBuffMastery",
+		"referenceId": 1007,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": 550,
+			"y": 240
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1008,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1009
+			},
+			{
+				"referenceId": 1010
+			}
+		],
+		"position": {
+			"x": 570,
+			"y": -355
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 1
+	},
+	{
+		"internalIdentifier": "BossDownIncreaseItemRarityMastery",
+		"referenceId": 1009,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": 460,
+			"y": -355
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MoreUniquesMastery",
+		"referenceId": 1010,
+		"maxLevel": 1,
+		"value": 15,
+		"position": {
+			"x": 540,
+			"y": -255
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1011,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1012
+			},
+			{
+				"referenceId": 1013
+			},
+			{
+				"referenceId": 1014
+			}
+		],
+		"position": {
+			"x": 1270,
+			"y": -270
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "AfterburnMastery",
+		"referenceId": 1012,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": 1240,
+			"y": -320
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "ScorchingFlamesMastery",
+		"referenceId": 1013,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 1236,
+			"y": -226
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "BurstingFuryMastery",
+		"referenceId": 1014,
+		"maxLevel": 1,
+		"value": 55,
+		"position": {
+			"x": 1326,
+			"y": -250
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1015,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1016
+			},
+			{
+				"referenceId": 1017
+			},
+			{
+				"referenceId": 1018
+			}
+		],
+		"position": {
+			"x": 1256,
+			"y": 266
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "DeepPoolsMastery",
+		"referenceId": 1016,
+		"maxLevel": 1,
+		"value": 30,
+		"position": {
+			"x": 1200,
+			"y": 280
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "ManaBombMastery",
+		"referenceId": 1017,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": 1296,
+			"y": 210
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MagicGuardMastery",
+		"referenceId": 1018,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": 1276,
+			"y": 320
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1019,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1020
+			},
+			{
+				"referenceId": 1021
+			},
+			{
+				"referenceId": 1022
+			}
+		],
+		"position": {
+			"x": 907,
+			"y": -470
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 1
+	},
+	{
+		"internalIdentifier": "ThunderbootsMastery",
+		"referenceId": 1020,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": 1007,
+			"y": -470
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "ElectrostaticAttractionMastery",
+		"referenceId": 1021,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": 947,
+			"y": -550
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "ChainLightningMastery",
+		"referenceId": 1022,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": 830,
+			"y": -500
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1023,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1024
+			},
+			{
+				"referenceId": 1025
+			},
+			{
+				"referenceId": 1026
+			}
+		],
+		"position": {
+			"x": 1179,
+			"y": -691
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "SingleFocusMastery",
+		"referenceId": 1024,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": 1180,
+			"y": -781
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "ChannelingBurstMastery",
+		"referenceId": 1025,
+		"maxLevel": 1,
+		"value": 30,
+		"position": {
+			"x": 1110,
+			"y": -731
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "EnergySurgeMastery",
+		"referenceId": 1026,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 1250,
+			"y": -731
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1027,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1028
+			},
+			{
+				"referenceId": 1029
+			},
+			{
+				"referenceId": 1030
+			}
+		],
+		"position": {
+			"x": 587,
+			"y": -16
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "CriticalOverloadMastery",
+		"referenceId": 1028,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": 547,
+			"y": -86
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "AnticipatedStrikeMastery",
+		"referenceId": 1029,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": 627,
+			"y": -86
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "ArcaneSurgeMastery",
+		"referenceId": 1030,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 587,
+			"y": 70
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1031,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1032
+			},
+			{
+				"referenceId": 1033
+			},
+			{
+				"referenceId": 1034
+			}
+		],
+		"position": {
+			"x": 893,
+			"y": 518
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 1
+	},
+	{
+		"internalIdentifier": "StarcallerMastery",
+		"referenceId": 1032,
+		"maxLevel": 1,
+		"value": 100,
+		"position": {
+			"x": 831,
+			"y": 432
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "CenterOfTheUniverseMastery",
+		"referenceId": 1033,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": 955,
+			"y": 432
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "OverloadingEnergyMastery",
+		"referenceId": 1034,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 893,
+			"y": 618
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1035,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1036
+			},
+			{
+				"referenceId": 1037
+			},
+			{
+				"referenceId": 1038
+			}
+		],
+		"position": {
+			"x": 1063,
+			"y": -843
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 1
+	},
+	{
+		"internalIdentifier": "ReverberationMastery",
+		"referenceId": 1036,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 1113,
+			"y": -893
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "SkillfulMagicMastery",
+		"referenceId": 1037,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": 1043,
+			"y": -913
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "AutomagicMissileMastery",
+		"referenceId": 1038,
+		"maxLevel": 1,
+		"value": 15,
+		"position": {
+			"x": 1133,
+			"y": -823
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1039,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1040
+			},
+			{
+				"referenceId": 1041
+			},
+			{
+				"referenceId": 1042
+			}
+		],
+		"position": {
+			"x": 1184,
+			"y": 645
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 1
+	},
+	{
+		"internalIdentifier": "SharpenedSpellsMastery",
+		"referenceId": 1040,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 1179,
+			"y": 705
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "AbsoluteZeroMastery",
+		"referenceId": 1041,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 1229,
+			"y": 710
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "BludgeoningBlowMastery",
+		"referenceId": 1042,
+		"maxLevel": 1,
+		"value": 25,
+		"position": {
+			"x": 1234,
+			"y": 660
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1043,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 1044
+			},
+			{
+				"referenceId": 1045
+			},
+			{
+				"referenceId": 1046
+			},
+			{
+				"referenceId": 167
+			},
+			{
+				"referenceId": 1147
+			}
+		],
+		"position": {
+			"x": 580,
+			"y": -1220
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 1
+	},
+	{
+		"internalIdentifier": "WhipCritDamageMastery",
+		"referenceId": 1044,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 500,
+			"y": -1220
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "WhipDoubleStrikeMastery",
+		"referenceId": 1045,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": 580,
+			"y": -1300
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "WhipReachMastery",
+		"referenceId": 1046,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": 660,
+			"y": -1220
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1047,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1048
+			},
+			{
+				"referenceId": 1049
+			},
+			{
+				"referenceId": 1050
+			}
+		],
+		"position": {
+			"x": -10,
+			"y": -620
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "UndeadLegionMastery",
+		"referenceId": 1048,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": -90,
+			"y": -620
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "OpportuneStrikeMastery",
+		"referenceId": 1049,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": 70,
+			"y": -650
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "OverrunMastery",
+		"referenceId": 1050,
+		"maxLevel": 1,
+		"value": 25,
+		"position": {
+			"x": 70,
+			"y": -590
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1051,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1052
+			},
+			{
+				"referenceId": 1053
+			},
+			{
+				"referenceId": 1054
+			}
+		],
+		"position": {
+			"x": -480,
+			"y": -1255
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "SymbioticPulseMastery",
+		"referenceId": 1052,
+		"maxLevel": 1,
+		"value": 3,
+		"position": {
+			"x": -480,
+			"y": -1155
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "SacrificialSummonsMastery",
+		"referenceId": 1053,
+		"maxLevel": 1,
+		"value": 2,
+		"position": {
+			"x": -540,
+			"y": -1195
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "OverhealMastery",
+		"referenceId": 1054,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": -420,
+			"y": -1195
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1055,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1056
+			},
+			{
+				"referenceId": 1057
+			},
+			{
+				"referenceId": 1058
+			},
+			{
+				"referenceId": 160
+			},
+			{
+				"referenceId": 161
+			},
+			{
+				"referenceId": 163
+			}
+		],
+		"position": {
+			"x": 660,
+			"y": -885
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "SwiftPlacementsMastery",
+		"referenceId": 1056,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": 660,
+			"y": -975
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "WitheringBoltsMastery",
+		"referenceId": 1057,
+		"maxLevel": 1,
+		"value": 3,
+		"position": {
+			"x": 740,
+			"y": -885
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "TowerDefenseMastery",
+		"referenceId": 1058,
+		"maxLevel": 1,
+		"value": 3,
+		"position": {
+			"x": 660,
+			"y": -800
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "FasterGrimoirePassive",
+		"referenceId": 1059,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 269
+			},
+			{
+				"referenceId": 1070
+			}
+		],
+		"position": {
+			"x": 860,
+			"y": -1020
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedGrimoireCritPassive",
+		"referenceId": 1060,
+		"maxLevel": 1,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 1059
+			}
+		],
+		"position": {
+			"x": 790,
+			"y": -955
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedGrimoireDamagePassive",
+		"referenceId": 1061,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1059
+			}
+		],
+		"position": {
+			"x": 930,
+			"y": -1090
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedGrimoireCritPassive",
+		"referenceId": 1062,
+		"maxLevel": 1,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 1060
+			}
+		],
+		"position": {
+			"x": 625,
+			"y": -1105
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedGrimoireDamagePassive",
+		"referenceId": 1063,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1061
+			},
+			{
+				"referenceId": 75
+			}
+		],
+		"position": {
+			"x": 765,
+			"y": -1244
+		}
+	},
+	{
+		"internalIdentifier": "FasterGrimoirePassive",
+		"referenceId": 1064,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1062
+			},
+			{
+				"referenceId": 1063
+			},
+			{
+				"referenceId": 1070
+			}
+		],
+		"position": {
+			"x": 695,
+			"y": -1175
+		}
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1066,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 1067
+			},
+			{
+				"referenceId": 1068
+			},
+			{
+				"referenceId": 1069
+			}
+		],
+		"position": {
+			"x": -10,
+			"y": 612
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "SniperMastery",
+		"referenceId": 1067,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 70,
+			"y": 612
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "PinningShotMastery",
+		"referenceId": 1068,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": -80,
+			"y": 582
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "WhipReachMastery",
+		"referenceId": 1069,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": -80,
+			"y": 642
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1070,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 1071
+			},
+			{
+				"referenceId": 1072
+			},
+			{
+				"referenceId": 1073
+			}
+		],
+		"position": {
+			"x": 780,
+			"y": -1100
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "HealingGrimoireMastery",
+		"referenceId": 1071,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 700,
+			"y": -1100
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "ManaLeechMastery",
+		"referenceId": 1072,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": 860,
+			"y": -1100
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "TwinPowerMastery",
+		"referenceId": 1073,
+		"maxLevel": 1,
+		"value": 60,
+		"position": {
+			"x": 780,
+			"y": -1180
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1075,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 1076
+			},
+			{
+				"referenceId": 1077
+			},
+			{
+				"referenceId": 1078
+			},
+			{
+				"referenceId": 1162
+			},
+			{
+				"referenceId": 1161
+			}
+		],
+		"position": {
+			"x": -577,
+			"y": -952
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "LimitedEntranceMastery",
+		"referenceId": 1076,
+		"maxLevel": 1,
+		"value": 3,
+		"position": {
+			"x": -507,
+			"y": -902
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "DeathrushMastery",
+		"referenceId": 1077,
+		"maxLevel": 1,
+		"value": 150,
+		"position": {
+			"x": -557,
+			"y": -850
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "ShatteredBondMastery",
+		"referenceId": 1078,
+		"maxLevel": 1,
+		"value": 300,
+		"position": {
+			"x": -607,
+			"y": -902
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
 		"internalIdentifier": "MasteryPassive",
 		"referenceId": 1079,
 		"maxLevel": 1,
@@ -6628,7 +6094,8 @@
 			"x": -345,
 			"y": -485
 		},
-		"isHidden": true
+		"isHidden": true,
+		"connections": []
 	},
 	{
 		"internalIdentifier": "BurstingBottlesMastery",
@@ -6639,28 +6106,8 @@
 			"x": -235,
 			"y": -555
 		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "ReducedSkillCooldownPassive",
-		"referenceId": 291,
-		"maxLevel": 1,
-		"value": 10,
-		"connections": [
-			{
-				"referenceId": 44
-			},
-			{
-				"referenceId": 290
-			},
-			{
-				"referenceId": 1082
-			}
-		],
-		"position": {
-			"x": 429,
-			"y": -587
-		}
+		"isHidden": true,
+		"connections": []
 	},
 	{
 		"internalIdentifier": "MasteryPassive",
@@ -6676,7 +6123,7 @@
 			}
 		],
 		"position": {
-			"x": 315,
+			"x": 314,
 			"y": -605
 		},
 		"isChoiceNode": true,
@@ -6691,7 +6138,8 @@
 			"x": 315,
 			"y": -485
 		},
-		"isHidden": true
+		"isHidden": true,
+		"connections": []
 	},
 	{
 		"internalIdentifier": "SurplusVitalityMastery",
@@ -6702,87 +6150,1348 @@
 			"x": 205,
 			"y": -555
 		},
-		"isHidden": true
+		"isHidden": true,
+		"connections": []
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 292,
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1085,
 		"maxLevel": 1,
 		"value": 5,
 		"connections": [
 			{
-				"referenceId": 125
+				"referenceId": 1086
+			},
+			{
+				"referenceId": 1087
+			},
+			{
+				"referenceId": 1088
+			},
+			{
+				"referenceId": 252
 			}
 		],
 		"position": {
-			"x": 1287,
-			"y": -517
-		}
+			"x": -756,
+			"y": 902
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "BouncingAmmoMastery",
+		"referenceId": 1086,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": -756,
+			"y": 802
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "BloodroundMastery",
+		"referenceId": 1087,
+		"maxLevel": 1,
+		"value": 2,
+		"position": {
+			"x": -806,
+			"y": 852
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "TracerShotsMastery",
+		"referenceId": 1088,
+		"maxLevel": 1,
+		"value": 33,
+		"position": {
+			"x": -856,
+			"y": 902
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1089,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1090
+			},
+			{
+				"referenceId": 1091
+			},
+			{
+				"referenceId": 1092
+			},
+			{
+				"referenceId": 234
+			}
+		],
+		"position": {
+			"x": 430,
+			"y": 1147
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "HairTriggerMastery",
+		"referenceId": 1090,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 330,
+			"y": 1106
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "ExplosiveSlugsMastery",
+		"referenceId": 1091,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": 410,
+			"y": 1087
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "AdvantageShotMastery",
+		"referenceId": 1092,
+		"maxLevel": 1,
+		"value": 3,
+		"position": {
+			"x": 490,
+			"y": 1067
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1093,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1094
+			},
+			{
+				"referenceId": 1095
+			},
+			{
+				"referenceId": 1096
+			},
+			{
+				"referenceId": 1149
+			},
+			{
+				"referenceId": 1150
+			}
+		],
+		"position": {
+			"x": 719,
+			"y": 929
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "ContagionBurstMastery",
+		"referenceId": 1094,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": 659,
+			"y": 990
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "CorrosiveTouchMastery",
+		"referenceId": 1095,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": 779,
+			"y": 990
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "LethalDoseMastery",
+		"referenceId": 1096,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": 719,
+			"y": 1030
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1097,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1098
+			},
+			{
+				"referenceId": 1099
+			},
+			{
+				"referenceId": 1100
+			},
+			{
+				"referenceId": 256
+			}
+		],
+		"position": {
+			"x": -534,
+			"y": 920
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "ReturningProjectilesMastery",
+		"referenceId": 1098,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": -584,
+			"y": 840
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MarksmanMastery",
+		"referenceId": 1099,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": -460,
+			"y": 783
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "FatBulletsMastery",
+		"referenceId": 1100,
+		"maxLevel": 1,
+		"value": 40,
+		"position": {
+			"x": -432,
+			"y": 920
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1101,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1102
+			},
+			{
+				"referenceId": 1103
+			},
+			{
+				"referenceId": 1104
+			},
+			{
+				"referenceId": 1154
+			}
+		],
+		"position": {
+			"x": 606,
+			"y": 736
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "DemolitionsExpertMastery",
+		"referenceId": 1102,
+		"maxLevel": 1,
+		"value": 40,
+		"position": {
+			"x": 639,
+			"y": 800
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "ShrapnelStormMastery",
+		"referenceId": 1103,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 669,
+			"y": 710
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "BlastChainMastery",
+		"referenceId": 1104,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": 584,
+			"y": 675
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1105,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1106
+			},
+			{
+				"referenceId": 1107
+			}
+		],
+		"position": {
+			"x": 328,
+			"y": 558
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 1
+	},
+	{
+		"internalIdentifier": "PseudoicarianMastery",
+		"referenceId": 1106,
+		"maxLevel": 1,
+		"value": 40,
+		"position": {
+			"x": 228,
+			"y": 518
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "HermesBoonMastery",
+		"referenceId": 1107,
+		"maxLevel": 1,
+		"value": 60,
+		"position": {
+			"x": 325,
+			"y": 452
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1108,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1109
+			},
+			{
+				"referenceId": 1110
+			}
+		],
+		"position": {
+			"x": -328,
+			"y": 559
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 1
+	},
+	{
+		"internalIdentifier": "JourneymanMastery",
+		"referenceId": 1109,
+		"maxLevel": 1,
+		"value": 40,
+		"position": {
+			"x": -228,
+			"y": 518
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MasterBuilderMastery",
+		"referenceId": 1110,
+		"maxLevel": 1,
+		"value": 6,
+		"position": {
+			"x": -325,
+			"y": 452
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1111,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1112
+			},
+			{
+				"referenceId": 1113
+			},
+			{
+				"referenceId": 1114
+			}
+		],
+		"position": {
+			"x": -618,
+			"y": -10
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "TitanicImpactMastery",
+		"referenceId": 1112,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": -587,
+			"y": 70
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "FatalFocusMastery",
+		"referenceId": 1113,
+		"maxLevel": 1,
+		"value": 30,
+		"position": {
+			"x": -647,
+			"y": 70
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "WideSwingsMastery",
+		"referenceId": 1114,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": -618,
+			"y": -86
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1115,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1116
+			},
+			{
+				"referenceId": 1117
+			},
+			{
+				"referenceId": 1118
+			}
+		],
+		"position": {
+			"x": -1120,
+			"y": -600
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "HemorrhageMastery",
+		"referenceId": 1116,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": -1120,
+			"y": -540
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "ExsanguinateMastery",
+		"referenceId": 1117,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": -1060,
+			"y": -600
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "BloodbenderMastery",
+		"referenceId": 1118,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": -1180,
+			"y": -600
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1119,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1120
+			},
+			{
+				"referenceId": 1121
+			},
+			{
+				"referenceId": 1122
+			}
+		],
+		"position": {
+			"x": -1058,
+			"y": 620
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "BloodRushMastery",
+		"referenceId": 1120,
+		"maxLevel": 1,
+		"value": 2,
+		"position": {
+			"x": -1015,
+			"y": 484
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "HeartAndMindMastery",
+		"referenceId": 1121,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": -1104,
+			"y": 484
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "PainTransferenceMastery",
+		"referenceId": 1122,
+		"maxLevel": 1,
+		"value": 35,
+		"position": {
+			"x": -1058,
+			"y": 420
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1123,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1124
+			},
+			{
+				"referenceId": 1125
+			}
+		],
+		"position": {
+			"x": -575,
+			"y": 313
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 1
+	},
+	{
+		"internalIdentifier": "RockAndStoneMastery",
+		"referenceId": 1124,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": -540,
+			"y": 233
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "SpelunkyMastery",
+		"referenceId": 1125,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": -481,
+			"y": 329
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1126,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1127
+			},
+			{
+				"referenceId": 1128
+			}
+		],
+		"position": {
+			"x": -556,
+			"y": -340
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 1
+	},
+	{
+		"internalIdentifier": "ExtraStockMastery",
+		"referenceId": 1127,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": -523,
+			"y": -237
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MoneySpeedMastery",
+		"referenceId": 1128,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": -452,
+			"y": -375
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1129,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1130
+			},
+			{
+				"referenceId": 1131
+			},
+			{
+				"referenceId": 1132
+			}
+		],
+		"position": {
+			"x": -909,
+			"y": -416
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 1
+	},
+	{
+		"internalIdentifier": "PuppeteerMastery",
+		"referenceId": 1130,
+		"maxLevel": 1,
+		"value": 75,
+		"position": {
+			"x": -939,
+			"y": -476
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "TranslucentTricksMastery",
+		"referenceId": 1131,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": -899,
+			"y": -526
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "SpoolbreakerMastery",
+		"referenceId": 1132,
+		"maxLevel": 1,
+		"value": 150,
+		"position": {
+			"x": -829,
+			"y": -536
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1133,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1134
+			},
+			{
+				"referenceId": 1135
+			},
+			{
+				"referenceId": 1136
+			}
+		],
+		"position": {
+			"x": -1247,
+			"y": -424
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "UndyingGraspMastery",
+		"referenceId": 1134,
+		"maxLevel": 1,
+		"value": 15,
+		"position": {
+			"x": -1187,
+			"y": -404
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "WillingSacrificeMastery",
+		"referenceId": 1135,
+		"maxLevel": 1,
+		"value": 80,
+		"position": {
+			"x": -1307,
+			"y": -404
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "ReprisalMastery",
+		"referenceId": 1136,
+		"maxLevel": 1,
+		"value": 200,
+		"position": {
+			"x": -1247,
+			"y": -364
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1137,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1138
+			},
+			{
+				"referenceId": 1139
+			},
+			{
+				"referenceId": 1140
+			}
+		],
+		"position": {
+			"x": -1232,
+			"y": 498
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "BurningRageMastery",
+		"referenceId": 1138,
+		"maxLevel": 1,
+		"value": 2,
+		"position": {
+			"x": -1292,
+			"y": 588
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "FuriousSiphonMastery",
+		"referenceId": 1139,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": -1172,
+			"y": 588
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "RagingSpeedMastery",
+		"referenceId": 1140,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": -1232,
+			"y": 640
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "FocusChargeDamageBonusPassive",
+		"referenceId": 1142,
+		"maxLevel": 1,
+		"value": 3,
+		"position": {
+			"x": -834,
+			"y": -1019
+		},
+		"connections": [
+			{
+				"referenceId": 157
+			}
+		]
 	},
 	{
 		"internalIdentifier": "IncreasedAttackSpeedPassive",
-		"referenceId": 1142,
+		"referenceId": 1143,
 		"maxLevel": 1,
 		"value": 5,
+		"position": {
+			"x": 1132,
+			"y": 465
+		},
+		"connections": [
+			{
+				"referenceId": 101
+			},
+			{
+				"referenceId": 111
+			},
+			{
+				"referenceId": 108
+			}
+		]
+	},
+	{
+		"internalIdentifier": "FocusChargeChanceOnKillPassive",
+		"referenceId": 1144,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": -750,
+			"y": -1022
+		},
+		"connections": [
+			{
+				"referenceId": 157
+			}
+		]
+	},
+	{
+		"internalIdentifier": "IncreasedWhipDamagePassive",
+		"referenceId": 1145,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": 367,
+			"y": -1197
+		},
+		"connections": [
+			{
+				"referenceId": 1146
+			},
+			{
+				"referenceId": 1148
+			}
+		]
+	},
+	{
+		"internalIdentifier": "IncreasedSummonDamagePassive",
+		"referenceId": 1146,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": 446,
+			"y": -1128
+		},
+		"connections": [
+			{
+				"referenceId": 1145
+			},
+			{
+				"referenceId": 1147
+			},
+			{
+				"referenceId": 166
+			}
+		]
+	},
+	{
+		"internalIdentifier": "IncreasedWhipReachPassive",
+		"referenceId": 1147,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 504,
+			"y": -1192
+		},
+		"connections": [
+			{
+				"referenceId": 1146
+			},
+			{
+				"referenceId": 1043
+			}
+		]
+	},
+	{
+		"internalIdentifier": "IncreasedTagCritPassive",
+		"referenceId": 1148,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": 323,
+			"y": -1148
+		},
+		"connections": [
+			{
+				"referenceId": 135
+			},
+			{
+				"referenceId": 1145
+			}
+		]
+	},
+	{
+		"internalIdentifier": "StrongerPoisonPassive",
+		"referenceId": 1149,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": 617,
+			"y": 1015
+		},
+		"connections": [
+			{
+				"referenceId": 244
+			},
+			{
+				"referenceId": 243
+			},
+			{
+				"referenceId": 1093
+			}
+		]
+	},
+	{
+		"internalIdentifier": "PoisonedRangedAttacksPassive",
+		"referenceId": 1150,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 820,
+			"y": 1019
+		},
+		"connections": [
+			{
+				"referenceId": 242
+			},
+			{
+				"referenceId": 246
+			},
+			{
+				"referenceId": 1093
+			}
+		]
+	},
+	{
+		"internalIdentifier": "IncreasedAttackSpeedPassive",
+		"referenceId": 1151,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 584,
+			"y": 1224
+		},
 		"connections": [
 			{
 				"referenceId": 54
 			},
 			{
-				"referenceId": 235
+				"referenceId": 243
 			},
 			{
-				"referenceId": 243
+				"referenceId": 235
 			}
-		],
-		"position": {
-			"x": 585,
-			"y": 1220
-		}
+		]
 	},
 	{
-		"internalIdentifier": "AnchorPassive",
-		"referenceId": -1,
+		"internalIdentifier": "IncreasedAttackSpeedPassive",
+		"referenceId": 1152,
 		"maxLevel": 1,
 		"value": 5,
+		"position": {
+			"x": 516,
+			"y": 1003
+		},
 		"connections": [
 			{
-				"referenceId": 7
+				"referenceId": 233
+			},
+			{
+				"referenceId": 235
 			}
-		],
-		"position": {
-			"x": -10,
-			"y": 300
-		}
+		]
 	},
 	{
-		"internalIdentifier": "AnchorPassive",
-		"referenceId": -2,
+		"internalIdentifier": "IncreasedAttackSpeedPassive",
+		"referenceId": 1153,
 		"maxLevel": 1,
 		"value": 5,
+		"position": {
+			"x": -253,
+			"y": 931
+		},
 		"connections": [
 			{
-				"referenceId": 2
+				"referenceId": 261
+			},
+			{
+				"referenceId": 258
+			},
+			{
+				"referenceId": 224
 			}
-		],
-		"position": {
-			"x": 300,
-			"y": -5
-		}
+		]
 	},
 	{
-		"internalIdentifier": "AnchorPassive",
-		"referenceId": -3,
+		"internalIdentifier": "ExplosiveKnockbackPassive",
+		"referenceId": 1154,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
+		"position": {
+			"x": 567,
+			"y": 811
+		},
 		"connections": [
 			{
-				"referenceId": 17
+				"referenceId": 239
+			},
+			{
+				"referenceId": 1101
+			},
+			{
+				"referenceId": 241
 			}
-		],
+		]
+	},
+	{
+		"internalIdentifier": "AegisChargeChanceOnKillPassive",
+		"referenceId": 1155,
+		"maxLevel": 1,
+		"value": 5,
 		"position": {
-			"x": -10,
-			"y": -330
-		}
+			"x": -924,
+			"y": 348
+		},
+		"connections": [
+			{
+				"referenceId": 205
+			},
+			{
+				"referenceId": 207
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AegisChargePercentMaxHealthPassive",
+		"referenceId": 1156,
+		"maxLevel": 1,
+		"value": 2,
+		"position": {
+			"x": -920,
+			"y": 457
+		},
+		"connections": [
+			{
+				"referenceId": 206
+			},
+			{
+				"referenceId": 207
+			}
+		]
+	},
+	{
+		"internalIdentifier": "HasteChargeChanceOnKillPassive",
+		"referenceId": 1157,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": -323,
+			"y": 1256
+		},
+		"connections": [
+			{
+				"referenceId": 1158
+			},
+			{
+				"referenceId": 228
+			}
+		]
+	},
+	{
+		"internalIdentifier": "HasteChargeProjectileSpeedPassive",
+		"referenceId": 1158,
+		"maxLevel": 1,
+		"value": 3,
+		"position": {
+			"x": -343,
+			"y": 1106
+		},
+		"connections": [
+			{
+				"referenceId": 1157
+			},
+			{
+				"referenceId": 249
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedSummonCritChancePassive",
+		"referenceId": 1160,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": -398,
+			"y": -838
+		},
+		"connections": [
+			{
+				"referenceId": 39
+			},
+			{
+				"referenceId": 1161
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedSummonCritChancePassive",
+		"referenceId": 1161,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": -470,
+			"y": -988
+		},
+		"connections": [
+			{
+				"referenceId": 1160
+			},
+			{
+				"referenceId": 147
+			},
+			{
+				"referenceId": 1075
+			}
+		]
+	},
+	{
+		"internalIdentifier": "IncreasedMinionDamagePassive",
+		"referenceId": 1162,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": -665,
+			"y": -884
+		},
+		"connections": [
+			{
+				"referenceId": 1163
+			},
+			{
+				"referenceId": 147
+			},
+			{
+				"referenceId": 1075
+			}
+		]
+	},
+	{
+		"internalIdentifier": "IncreasedMinionDamagePassive",
+		"referenceId": 1163,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": -574,
+			"y": -746
+		},
+		"connections": [
+			{
+				"referenceId": 39
+			},
+			{
+				"referenceId": 1162
+			}
+		]
+	},
+	{
+		"internalIdentifier": "FasterMinionsPassive",
+		"referenceId": 1165,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": -343,
+			"y": -1250
+		},
+		"connections": [
+			{
+				"referenceId": 153
+			},
+			{
+				"referenceId": 148
+			}
+		]
+	},
+	{
+		"internalIdentifier": "IncreasedDefenseWhileChanneling",
+		"referenceId": 1166,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": 1070,
+			"y": -521
+		},
+		"connections": [
+			{
+				"referenceId": 124
+			},
+			{
+				"referenceId": 118
+			},
+			{
+				"referenceId": 122
+			}
+		]
+	},
+	{
+		"internalIdentifier": "ReducedManaCostWhileChannelingPassive",
+		"referenceId": 1167,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": 1296,
+			"y": -513
+		},
+		"connections": [
+			{
+				"referenceId": 125
+			},
+			{
+				"referenceId": 122
+			},
+			{
+				"referenceId": 46
+			}
+		]
+	},
+	{
+		"internalIdentifier": "LifeRegenRatePassive",
+		"referenceId": 1168,
+		"maxLevel": 1,
+		"value": 15,
+		"position": {
+			"x": -995,
+			"y": 751
+		},
+		"connections": [
+			{
+				"referenceId": 216
+			},
+			{
+				"referenceId": 215
+			},
+			{
+				"referenceId": 273
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedMaxMinionsPassive",
+		"referenceId": 1169,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": -11,
+			"y": -1354
+		},
+		"connections": [
+			{
+				"referenceId": 138
+			},
+			{
+				"referenceId": 139
+			}
+		]
 	}
 ]
