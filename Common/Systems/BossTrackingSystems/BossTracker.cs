@@ -126,11 +126,8 @@ internal sealed class BossTracker : ModSystem
 				}
 			}
 
-			if (SubworldSystem.Current is not IExplorationWorld)
-			{
-				self.type = NPCID.None;
-				self.boss = false;
-			}
+			self.type = NPCID.None;
+			self.boss = false;
 		}
 
 		orig(self, closestPlayer);
