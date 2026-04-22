@@ -19,6 +19,7 @@ using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
 using ReLogic.Content;
 using ReLogic.Utilities;
+using SubworldLibrary;
 using Terraria.Audio;
 using Terraria.Chat;
 using Terraria.DataStructures;
@@ -606,7 +607,7 @@ internal class MapDeviceEntity : ModTileEntity
 		{
 			MapDeviceInterface.Open(this);
 		}
-		
+
 		// Apply world effect.
 		if (Main.netMode != NetmodeID.MultiplayerClient)
 		{
@@ -661,7 +662,7 @@ internal class MapDeviceEntity : ModTileEntity
 		{
 			MapDeviceInterface.Close(fromEntity: true);
 		}
-		
+
 		// Apply world effect.
 		if (Main.netMode != NetmodeID.MultiplayerClient)
 		{
@@ -689,11 +690,8 @@ internal class MapDeviceEntity : ModTileEntity
 	/// </summary>
 	public bool TryEnteringPortal(bool evalMode = false, byte? netSender = null)
 	{
-		Item portalItem = StoredMap;
-		if (!PortalActive || portalItem is not { IsAir: false, ModItem: Map map })
-		{
-			return false;
-		}
+		if (!PortalActive) { return false; }
+		if (StoredMap is not { IsAir: false, ModItem: Map m } && Injection == null) { return false; }
 
 		// Short-circuit in evaluation mode.
 		if (evalMode) { return true; }
@@ -708,7 +706,15 @@ internal class MapDeviceEntity : ModTileEntity
 		if (Main.netMode != NetmodeID.Server)
 		{
 			// Finish clientside interaction.
-			map.OpenMap();
+			if (StoredMap?.ModItem is Map map)
+			{
+				map.OpenMap();
+			}
+			else if (MapResources.TryGet(Injection!.Value.Id, out MapResource res)
+			&& res.PortalDestination is { Length: > 0 })
+			{
+				SubworldSystem.Enter(res.PortalDestination);
+			}
 		}
 		else
 		{

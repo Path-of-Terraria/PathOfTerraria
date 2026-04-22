@@ -157,6 +157,8 @@ file sealed class FishronQuestSystem : ModSystem
 				MinDistanceFromEnemies = 0f,
 				MinDistanceFromPlayers = 1500f,
 				MaxSearchAttempts = 16,
+				RequiredLiquids = LiquidMask.Water,
+				SkippedLiquids = LiquidMask.Lava | LiquidMask.Honey,
 			}))
 			{
 				Vector2 position = spawnPoint + new Vector2(0f, -64f);

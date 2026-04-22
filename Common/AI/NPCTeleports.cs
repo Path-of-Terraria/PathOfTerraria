@@ -1,11 +1,14 @@
-﻿using System.IO;
+﻿// #define DEBUG_LOG
+// #define DEBUG_GIZMOS
+
+using System.Diagnostics;
+using System.IO;
 using PathOfTerraria.Common.Encounters;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Utilities;
 using PathOfTerraria.Utilities.Terraria;
-using PathOfTerraria.Utilities.Xna;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -82,6 +85,8 @@ internal sealed class NPCTeleports : NPCComponent<TeleportData>
 		public NPCAimedTarget Target = npc.GetTargetData(false);
 		//TODO: Create an action counter/tracking/interaction system to remove this type of coupling.
 		public NPCAttacking? Attacking = npc.TryGetGlobalNPC(out NPCAttacking c) ? c : null;
+
+		public bool IsBusy;
 	}
 	public struct Result()
 	{
@@ -128,8 +133,9 @@ internal sealed class NPCTeleports : NPCComponent<TeleportData>
 			if (Data.TriggerAtDistance is { } range
 			&& npc.HasValidTarget
 			&& ctx.Center.DistanceSQ(ctx.TargetCenter) is float sqrDst
-			&& sqrDst >= range.Min * range.Min && sqrDst <= range.Max * range.Max)
+			&& MathUtils.IntersectsRangeSqr(range, sqrDst))
 			{
+				DebugLog("NPCTeleports: Within trigger distance.");
 				return true;
 			}
 
@@ -139,9 +145,12 @@ internal sealed class NPCTeleports : NPCComponent<TeleportData>
 			&& Main.player[npc.target] is { } p && p.itemAnimation > 0
 			&& p.direction == MathF.Sign(ctx.Center.X - p.Center.X))
 			{
+				DebugLog("NPCTeleports: Endangered.");
 				return true;
 			}
 
+			DebugLog("NPCTeleports: No reason to teleport.");
+			
 			return false;
 		}
 
@@ -151,6 +160,7 @@ internal sealed class NPCTeleports : NPCComponent<TeleportData>
 		if (Data.RequireLineOfSightOnTrigger is bool req
 		&& req != Collision.CanHitLine(npc.position, npc.width, npc.height, ctx.Target.Position, ctx.Target.Width, ctx.Target.Height))
 		{
+			DebugLog("NPCTeleports: No line of sight on trigger.");
 			return false;
 		}
 
@@ -161,6 +171,7 @@ internal sealed class NPCTeleports : NPCComponent<TeleportData>
 	{
 		if (Main.netMode == NetmodeID.MultiplayerClient) { return false; }
 		if (Active) { return false; }
+		if (ctx.IsBusy) { return false; }
 		if (!bypassCooldowns && (ctx.Attacking?.Active == true || Data.Cooldown.Value > 0)) { return false; }
 		if (!TryPickPosition(in ctx)) { return false; }
 
@@ -276,7 +287,7 @@ internal sealed class NPCTeleports : NPCComponent<TeleportData>
 				if (Data.Progress >= Data.Reappear.Start) { moveStep = 1f; }
 				moveStep = Easing(moveStep);
 				npc.Center = Vector2.Lerp(Data.TeleportSource, Data.TeleportTarget, moveStep);
-				npc.velocity = default;
+				npc.velocity = Data.Progress < Data.Reappear.Start ? default : npc.velocity;
 			}
 
 			Data.Progress++;
@@ -300,24 +311,26 @@ internal sealed class NPCTeleports : NPCComponent<TeleportData>
 		Vector2 center = ctx.Center;
 		NPCAimedTarget target = ctx.Target;
 		Vector2 targetCenter = ctx.TargetCenter;
-		Point targetPoint = (targetCenter).ToTileCoordinates();
+		Point originPoint = (Data.PlaceOriginAtTarget ? targetCenter : center).ToTileCoordinates();
 		Func<Point16, bool>? basePredicate = Data.BasePlacement.CustomPredicate;
 
 		bool IsSpawnPointSuitable(Point16 tilePos)
 		{
 			Vector2 spawnPos = tilePos.ToWorldCoordinates();
 
-			// Check if this is sufficiently close to the target.
+			// Check if this is within the required distance from the target.
 			if (Data.RequiredTargetDistance is { } rtd
 			&& !MathUtils.IntersectsRangeSqr(rtd, spawnPos.DistanceSQ(targetCenter)))
 			{
+				TileGizmo(tilePos, Color.Red);
 				return false;
 			}
 
-			// Check if this is sufficiently closer to the target relative to the previous position.
+			// Check if this is sufficiently closer to or farther from the target relative to the previous position.
 			if (Data.RequiredTargetDistanceDiff is { } rtdd
-			&& !MathUtils.IntersectsRangeSqr(rtdd, spawnPos.DistanceSQ(targetCenter) - center.DistanceSQ(targetCenter)))
+			&& !MathUtils.IntersectsRangeSqr(rtdd, MathF.Abs(spawnPos.DistanceSQ(targetCenter) - center.DistanceSQ(targetCenter))))
 			{
+				TileGizmo(tilePos, Color.Bisque);
 				return false;
 			}
 
@@ -326,31 +339,41 @@ internal sealed class NPCTeleports : NPCComponent<TeleportData>
 			&& (Math.Sign(center.X - targetCenter.X) != Math.Sign(spawnPos.X - targetCenter.X)) is bool swapped
 			&& mustSwap != swapped)
 			{
+				TileGizmo(tilePos, Color.Yellow);
 				return false;
 			}
 
 			// Preference for whether to teleport in front or behind the target.
 			if (Data.RequirePlacementBehind is bool mustBeBehind
 			&& npc.GetTargetEntity() is Entity targetEntity
-			&& (targetEntity.direction != npc.direction) is bool isBehind
+			&& (((spawnPos.X - targetEntity.Center.X) >= 0 ? 1 : -1) != targetEntity.direction) is bool isBehind
 			&& mustBeBehind != isBehind)
 			{
+				TileGizmo(tilePos, Color.BlueViolet);
 				return false;
 			}
 
 			if (Data.RequireLineOfSightOnExit is bool req
 			&& req != Collision.CanHitLine(spawnPos, 1, 1, target.Position, target.Width, target.Height))
 			{
+				TileGizmo(tilePos, Color.Purple);
 				return false;
 			}
 
 			return basePredicate?.Invoke(tilePos) != false;
 		}
 
+		var areaSize = Data.BasePlacement.Area.Size().ToPoint();
+		var areaRect = new Rectangle(originPoint.X - areaSize.X / 2, originPoint.Y - areaSize.Y / 2, areaSize.X, areaSize.Y);
+		areaRect.X = Math.Max(0, areaRect.X);
+		areaRect.Y = Math.Max(0, areaRect.Y);
+		areaRect.Width = Math.Min(Main.maxTilesX - 1, areaRect.X + areaRect.Width) - areaRect.X;
+		areaRect.Height = Math.Min(Main.maxTilesY - 1, areaRect.Y + areaRect.Height) - areaRect.Y;
+
 		SpawnPlacement spawn = Data.BasePlacement with
 		{
-			Area = Data.BasePlacement.Area with { X = targetPoint.X, Y = targetPoint.Y },
-			AreaOrigin = Data.RequireReachablePoint ? targetPoint.ToPoint16() : null,
+			Area = areaRect,
+			AreaOrigin = Data.RequireReachablePoint ? originPoint.ToPoint16() : null,
 			CollisionSize = npc.Size.ToPoint(),
 			CustomPredicate = IsSpawnPointSuitable,
 		};
@@ -363,5 +386,20 @@ internal sealed class NPCTeleports : NPCComponent<TeleportData>
 		}
 
 		return false;
+	}
+
+	private static void DebugLog(string msg)
+	{
+#if DEBUG_LOG
+		Main.chatMonitor.NewText(msg, R: Color.DarkCyan.R, G: Color.DarkCyan.G, B: Color.DarkCyan.B);
+#endif
+	}
+	private static void TileGizmo(Point16 tilePos, Color color)
+	{
+#if DEBUG_GIZMOS
+		var worldPos = tilePos.ToWorldCoordinates(0, 0).ToPoint();
+		var gizmoRect = new Rectangle(worldPos.X, worldPos.Y, 16, 16);
+		DebugUtils.DrawRectInWorld(gizmoRect, color);
+#endif
 	}
 }

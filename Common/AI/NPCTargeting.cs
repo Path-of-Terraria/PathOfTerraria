@@ -1,6 +1,9 @@
-﻿using PathOfTerraria.Common.NPCs.Components;
+﻿// #define DRAW_GIZMOS
+
+using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Core.Time;
+using PathOfTerraria.Utilities.Xna;
 using Terraria.DataStructures;
 
 #pragma warning disable CA1822 // Mark members as static
@@ -28,7 +31,9 @@ internal sealed class NPCTargeting : NPCComponent
 
 		if (!npc.HasValidTarget || ctx.ForceReset)
 		{
+			(int logicDir, int spriteDir) = (npc.direction, npc.spriteDirection);
 			Terraria.Utilities.NPCUtils.TargetClosestCommon(npc, faceTarget: false);
+			(npc.direction, npc.spriteDirection) = (logicDir, spriteDir);
 		}
 	}
 
@@ -48,6 +53,11 @@ internal sealed class NPCTargeting : NPCComponent
 			MathUtils.Damp(AimVector.Y, relativeTargetCenter.Y, AimLag.Y, deltaTime)
 		);
 		lastTickCount = tickCount;
+
+#if DRAW_GIZMOS
+		Vector2 point = npc.Center + AimVector;
+		DebugUtils.DrawRectInWorld(new Rectangle((int)point.X, (int)point.Y, 0, 0).Inflated(8, 8), Color.Aqua);
+#endif
 
 		return true;
 	}

@@ -1049,6 +1049,16 @@ Mudsquit: {
 // FallenShaman.DisplayName: Fallen Shaman
 // Shambling.DisplayName: Shambling
 
+InfernalBoss: {
+	// DisplayName: Pyralis The Fallen
+	// OverlayTitle1: Pyralis
+	// OverlayTitle2: Pyralis
+	// OverlaySubTitle1: The Fallen
+	// OverlaySubTitle2: The Cursed
+	// OverlayDefeatedTitle: Pyralis, The Fallen
+	// OverlayDefeatedSubTitle: Slain
+}
+
 Mossmother: {
 	// DisplayName: Younger Caracarcoss
 	// Entry: A relatively young - but strong - apex predator of the mossy, spore-fueled Swamp. The larger, older Caracarcosses have never been seen...or have been for only a short time.
