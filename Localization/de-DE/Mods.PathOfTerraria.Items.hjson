@@ -1560,3 +1560,8 @@ BloatingLeech: {
 		''' */
 	// AltUseDescription: "'Be glad it's on your side."
 }
+
+MetadataEntityPlacer: {
+	// DisplayName: Metadata Entity Placer
+	// Tooltip: Places tile entities that can be used to find specific positions in code"
+}

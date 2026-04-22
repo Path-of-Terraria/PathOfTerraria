@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.Utilities;
@@ -6,10 +7,12 @@ using Terraria.Utilities;
 
 namespace PathOfTerraria.Utilities.Terraria;
 
+public record struct WeightValuePair<TValue>(TValue Value, double Weight);
+
 /// <summary> An improved version of vanilla's WeightedRandom<T> collection. </summary>
-public struct WeightRand<TValue>
+public struct WeightRand<TValue> : IEnumerable<WeightValuePair<TValue>>
 {
-    public List<(TValue Value, double Weight)> Items { get; set; }
+    public List<WeightValuePair<TValue>> Items { get; set; }
     public UnifiedRandom Random { get; set; } = Main.rand;
     private bool isDirty = true;
     private double totalWeight;
@@ -18,10 +21,10 @@ public struct WeightRand<TValue>
     {
         Items = [];
     }
-    public WeightRand(params (TValue Value, double Weight)[] items) : this(Main.rand, items) { }
-    public WeightRand(List<(TValue Value, double Weight)> items) : this(Main.rand, items) { }
-    public WeightRand(UnifiedRandom random, params (TValue Value, double Weight)[] elements) : this(random, elements.ToList()) { }
-    public WeightRand(UnifiedRandom random, List<(TValue Value, double Weight)> elements)
+    public WeightRand(params WeightValuePair<TValue>[] items) : this(Main.rand, items) { }
+    public WeightRand(List<WeightValuePair<TValue>> items) : this(Main.rand, items) { }
+    public WeightRand(UnifiedRandom random, params WeightValuePair<TValue>[] elements) : this(random, elements.ToList()) { }
+    public WeightRand(UnifiedRandom random, List<WeightValuePair<TValue>> elements)
     {
         Random = random;
         Items = elements;
@@ -33,7 +36,7 @@ public struct WeightRand<TValue>
 
     public void Add(TValue element, double weight = 1.0)
     {
-        Items.Add((element, weight));
+        Items.Add(new(element, weight));
         isDirty = true;
     }
     public void MarkDirty()
@@ -88,4 +91,10 @@ public struct WeightRand<TValue>
         Items.RemoveAt(index);
         return value;
     }
+
+	readonly IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
+	public readonly IEnumerator<WeightValuePair<TValue>> GetEnumerator()
+	{
+		return Items.GetEnumerator();
+	}
 }
