@@ -896,10 +896,11 @@ internal class SwampArea : MappingWorld, IExplorationWorld
 
 	private static void PlaceEncounters()
 	{
-		foreach (Vector2 position in EncounterLocations)
-		{
-			Encounter encounter = EncounterIO.CreateEncounterFromModPath(PoTMod.Instance, "Content/Encounters/SwampMangrove");
-			encounter.MoveEverythingTo(position.ToPoint16());
-		}
+		// TODO: Add these
+		//foreach (Vector2 position in EncounterLocations)
+		//{
+		//	Encounter encounter = EncounterIO.CreateEncounterFromModPath(PoTMod.Instance, "Content/Encounters/SwampMangrove");
+		//	encounter.MoveEverythingTo(position.ToPoint16());
+		//}
 	}
 }

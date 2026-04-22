@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Content.Swamp.NPCs;
+﻿using PathOfTerraria.Content.Buffs;
+using PathOfTerraria.Content.Swamp.NPCs;
 using SubworldLibrary;
 using System.Collections.Generic;
 
@@ -22,6 +23,18 @@ internal class SwampSpawns : GlobalNPC
 				pool.Add(ModContent.NPCType<DragonFly>(), 1f);
 			}
 			// No natural spawning, enemies are either generated or come from encounters.
+		}
+	}
+
+	public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns)
+	{
+		spawnRate = (int)(spawnRate * 0.5f);
+		maxSpawns += 4;
+
+		if (player.HasBuff<SwampAlgaeBuff>())
+		{
+			maxSpawns += 8;
+			spawnRate = (int)(spawnRate * 0.7f);
 		}
 	}
 }
