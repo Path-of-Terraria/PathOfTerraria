@@ -2615,26 +2615,26 @@ internal sealed class InfernalBoss : ModNPC
 		}
 
 		var slashAnimation = new Gradient<BladeAnimKey>
-		([
-			new(0.00f, new(Pos: new(-096, +008), Angle: MathHelper.TwoPi * 0.25f)),
-			new(0.30f, new(Pos: new(+096, -128), Angle: MathHelper.TwoPi * 0.55f)),
-			new(0.80f, new(Pos: new(+112, -000), Angle: MathHelper.TwoPi * 1.15f)),
-			new(0.90f, new(Pos: new(+112, -016), Angle: MathHelper.TwoPi * 1.13f)),
-		]);
+		{
+			{ 0.00f, new(Pos: new(-096, +008), Angle: MathHelper.TwoPi * 0.25f) },
+			{ 0.30f, new(Pos: new(+096, -128), Angle: MathHelper.TwoPi * 0.55f) },
+			{ 0.80f, new(Pos: new(+112, -000), Angle: MathHelper.TwoPi * 1.15f) },
+			{ 0.90f, new(Pos: new(+112, -016), Angle: MathHelper.TwoPi * 1.13f) },
+		};
 		var reverseAnimation = new Gradient<BladeAnimKey>
-		([
-			new(0.00f, new(Pos: new(-096, +008), Angle: MathHelper.TwoPi * -0.25f)),
-			new(0.30f, new(Pos: new(+096, -128), Angle: MathHelper.TwoPi * -0.55f)),
-			new(0.80f, new(Pos: new(+112, -000), Angle: MathHelper.TwoPi * -1.15f)),
-			new(0.90f, new(Pos: new(+112, -016), Angle: MathHelper.TwoPi * -1.13f)),
-		]);
+		{
+			{ 0.00f, new(Pos: new(-096, +008), Angle: MathHelper.TwoPi * -0.25f) },
+			{ 0.30f, new(Pos: new(+096, -128), Angle: MathHelper.TwoPi * -0.55f) },
+			{ 0.80f, new(Pos: new(+112, -000), Angle: MathHelper.TwoPi * -1.15f) },
+			{ 0.90f, new(Pos: new(+112, -016), Angle: MathHelper.TwoPi * -1.13f) },
+		};
 		var stabAnimation = new Gradient<BladeAnimKey>
-		([
-			new(0.00f, new(Pos: new(-096, +008), Angle: MathHelper.TwoPi * 0.00f)),
-			new(0.30f, new(Pos: new(+096, -128), Angle: MathHelper.TwoPi * 0.00f)),
-			new(0.80f, new(Pos: new(+236, -000), Angle: MathHelper.TwoPi * 0.00f)),
-			new(0.90f, new(Pos: new(+220, -016), Angle: MathHelper.TwoPi * 0.00f)),
-		]);
+		{
+			{ 0.00f, new(Pos: new(-096, +008), Angle: MathHelper.TwoPi * 0.00f) },
+			{ 0.30f, new(Pos: new(+096, -128), Angle: MathHelper.TwoPi * 0.00f) },
+			{ 0.80f, new(Pos: new(+236, -000), Angle: MathHelper.TwoPi * 0.00f) },
+			{ 0.90f, new(Pos: new(+220, -016), Angle: MathHelper.TwoPi * 0.00f) },
+		};
 
 		static float AnimEasing(float x)
 		{
