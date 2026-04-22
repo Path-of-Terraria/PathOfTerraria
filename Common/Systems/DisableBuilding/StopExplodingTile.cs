@@ -22,4 +22,9 @@ internal class StopExplodingTile : GlobalTile
 	{
 		return SubworldSystem.Current is not MappingWorld;
 	}
+
+	public override void KillTile(int i, int j, int type, ref bool fail, ref bool effectOnly, ref bool noItem)
+	{
+		base.KillTile(i, j, type, ref fail, ref effectOnly, ref noItem);
+	}
 }

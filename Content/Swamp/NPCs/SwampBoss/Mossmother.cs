@@ -159,8 +159,6 @@ internal partial class Mossmother : ModNPC
 			return;
 		}
 
-		Item.NewItem(NPC.GetSource_Death(), NPC.Hitbox, Main.rand.NextBool() ? ModContent.ItemType<BloatingLeech>() : ModContent.ItemType<LogwoodPistol>());
-
 		Vector2 pos = new(SwampArea.ArenaMiddleX * 16, (SwampArea.FloorY - 20) * 16);
 		Projectile.NewProjectile(Terraria.Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 	}
@@ -214,10 +212,10 @@ internal partial class Mossmother : ModNPC
 
 	public override void ModifyNPCLoot(NPCLoot npcLoot)
 	{
-		//LeadingConditionRule rule = new(new LastMossmotherCondition());
-		//rule.OnSuccess(new OneFromOptionsDropRule(1, 1, ModContent.ItemType<BloatingLeech>(), ModContent.ItemType<LogwoodPistol>()));
+		LeadingConditionRule rule = new(new LastMossmotherCondition());
+		rule.OnSuccess(new OneFromOptionsDropRule(1, 1, ModContent.ItemType<BloatingLeech>(), ModContent.ItemType<LogwoodPistol>()));
 
-		//npcLoot.Add(rule);
+		npcLoot.Add(rule);
 	}
 
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)

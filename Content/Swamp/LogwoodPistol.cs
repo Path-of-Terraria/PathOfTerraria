@@ -124,6 +124,7 @@ internal class LogwoodPistol : Gear
 			if (_logWood)
 			{
  				binaryWriter.Write((byte)projectile.extraUpdates);
+ 				binaryWriter.Write((byte)_hits);
 			}
 		}
 
@@ -134,6 +135,7 @@ internal class LogwoodPistol : Gear
 			if (_logWood)
 			{
 				projectile.extraUpdates = binaryReader.ReadByte();
+				_hits = binaryReader.ReadByte();
 			}
 		}
 	}

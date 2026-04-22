@@ -2,6 +2,7 @@
 using MonoMod.Cil;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
+using PathOfTerraria.Common.Subworlds.MappingAreas;
 using SubworldLibrary;
 using System.Data;
 using Terraria.DataStructures;
@@ -53,14 +54,13 @@ internal class StopCuttingProjectile : GlobalProjectile
 
 	private bool CutCheck(On_DelegateMethods.orig_CutTiles orig, int x, int y)
 	{
-		bool vanilla = orig(x, y);
-
-		if (CuttingProjectile is not null && SubworldSystem.Current is BossDomainSubworld domain and not MoonLordDomain && Main.tile[x, y].HasTile && Main.tileCut[Main.tile[x, y].TileType])
+		if (CuttingProjectile is not null && (SubworldSystem.Current is (BossDomainSubworld or IExplorationWorld) and not MoonLordDomain) 
+			&& Main.tile[x, y].HasTile && Main.tileCut[Main.tile[x, y].TileType])
 		{
-			return vanilla && CanCutTile(CuttingProjectile, x, y);
+			return CanCutTile(CuttingProjectile, x, y) && orig(x, y);
 		}
 
-		return vanilla;
+		return orig(x, y);
 	}
 
 	private void AddCutCheck(On_Projectile.orig_CutTiles orig, Projectile self)

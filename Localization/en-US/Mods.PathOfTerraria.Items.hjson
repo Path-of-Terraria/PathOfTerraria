@@ -1545,7 +1545,7 @@ LogwoodPistol: {
 	Description:
 		'''
 		Always inflicts Poison
-		Buullets hitting already poisoned enemies will bounce between up to 5 other poisoned enemies
+		Bullets hitting already poisoned enemies will bounce between up to 5 other poisoned enemies
 		'''
 	Tooltip: "'Wet for safety reasons.'"
 }
@@ -1558,5 +1558,5 @@ BloatingLeech: {
 		Latches on to enemies, bloating with blood and exploding over time.
 		The leech bloats quicker on bleeding enemies
 		'''
-	AltUseDescription: Right click to detatch the leech from the victim, bursing the leech instantly with a smaller explosion
+	AltUseDescription: "'Be glad it's on your side."
 }
