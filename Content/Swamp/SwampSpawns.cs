@@ -22,12 +22,17 @@ internal class SwampSpawns : GlobalNPC
 			{
 				pool.Add(ModContent.NPCType<DragonFly>(), 1f);
 			}
-			// No natural spawning, enemies are either generated or come from encounters.
+			// TODO: Replace with encounters/pregenned enemies
 		}
 	}
 
 	public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns)
 	{
+		if (SubworldSystem.Current is not SwampArea || spawnRate == int.MinValue)
+		{
+			return;
+		}
+
 		spawnRate = (int)(spawnRate * 0.5f);
 		maxSpawns += 4;
 
