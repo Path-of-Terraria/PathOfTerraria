@@ -33,11 +33,11 @@ internal class PlayerStatInnerPanel : SmartUiElement
 			
 			if (isHeader)
 			{
-				this.TextColor = Color.Gold;
+				TextColor = Color.Gold;
 				scale = Math.Max(scale, 1.2f);
 				noColon = true; // Headers shouldn't have colons
         
-				this.MarginTop = 10;
+				MarginTop = 10;
 			}
 
 

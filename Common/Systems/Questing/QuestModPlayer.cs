@@ -184,14 +184,15 @@ public class QuestModPlayer : ModPlayer
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
-		if (target.life <= 0)
+	}
+
+	internal void OnKillNPC(NPC target, NPC.HitInfo hit, int damageDone)
+	{
+		foreach (Quest quest in QuestsByName.Values)
 		{
-			foreach (Quest quest in QuestsByName.Values)
+			if (quest.Active)
 			{
-				if (quest.Active)
-				{
-					quest.ActiveStep.OnKillNPC(Player, target, hit, damageDone); // Quests in enabledQuests are necessarily active
-				}
+				quest.ActiveStep.OnKillNPC(Player, target, hit, damageDone);
 			}
 		}
 	}
