@@ -7,6 +7,11 @@ DeveloperConfig: {
 	}
 
 	Headers.Graphics: Графический заголовок
+
+	SaveSubworlds: {
+		// Label: Save Subworlds
+		// Tooltip: ""
+	}
 }
 
 UIConfig: {

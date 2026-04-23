@@ -55,7 +55,7 @@ internal class PoisonShaderFunctionality : ModSystem
 							return false;
 						}
 					}
-					else if (mother.State == Mossmother.BehaviorState.IdleInWall)
+					else if (mother.State is Mossmother.BehaviorState.IdleInWall or Mossmother.BehaviorState.MoveToWall)
 					{
 						if (nearBoss)
 						{

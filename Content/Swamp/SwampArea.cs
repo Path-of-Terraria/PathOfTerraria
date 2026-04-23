@@ -851,11 +851,16 @@ internal class SwampArea : MappingWorld, IExplorationWorld
 	private static void SpawnArenaEntities()
 	{
 		List<float> xPositions = [];
+		Range range = SwampArenaGeneration.WidthAtWaterHeight;
+
+		if (range.Start.Value == 0 && range.End.Value == 0)
+		{
+			return;
+		}
 
 		for (int i = 0; i < 5; ++i)
 		{
 			Vector2 pos;
-			Range range = SwampArenaGeneration.WidthAtWaterHeight;
 
 			do
 			{

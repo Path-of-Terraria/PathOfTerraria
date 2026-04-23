@@ -1527,7 +1527,28 @@ MangroveLeavesItem: {
 	// Tooltip: ""
 }
 
+LogwoodPistol: {
+	// DisplayName: Logwood Pistol
+	/* Description:
+		'''
+		Always inflicts Poison
+		Bullets hitting already poisoned enemies will bounce between up to 5 other poisoned enemies
+		''' */
+	// Tooltip: "'Wet for safety reasons.'"
+}
+
+BloatingLeech: {
+	// DisplayName: Bloating Leech
+	// Tooltip: ""
+	/* Description:
+		'''
+		Latches on to enemies, bloating with blood and exploding over time.
+		The leech bloats quicker on bleeding enemies
+		''' */
+	// AltUseDescription: "'Be glad it's on your side."
+}
+
 MetadataEntityPlacer: {
 	// DisplayName: Metadata Entity Placer
-	// Tooltip: Places tile entities that can be used to find specific positions in code"
+	// Tooltip: Places tile entities that can be used to find specific positions in code
 }

@@ -7,7 +7,9 @@ public sealed class DeveloperConfig : ModConfig
 {
 	public override ConfigScope Mode => ConfigScope.ClientSide;
 
-	[Header("Graphics")]
 	[DefaultValue(true)]
 	public bool DrawUIBorders { get; set; } = true;
+
+	[DefaultValue(true)]
+	public bool SaveSubworlds { get; set; }
 }
