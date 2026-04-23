@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using PathOfTerraria.Common.Projectiles;
+using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
 
@@ -14,7 +15,7 @@ internal class PersistentMinionsPlayer : ModPlayer
 
 		public override bool AppliesToEntity(Projectile entity, bool lateInstantiation)
 		{
-			return entity.minion;
+			return entity.minion && !CustomProjectileSets.NonPersistentProjectiles[entity.type];
 		}
 
 		public override void OnSpawn(Projectile projectile, IEntitySource source)
@@ -32,11 +33,16 @@ internal class PersistentMinionsPlayer : ModPlayer
 		TagCompound projectiles = [];
 		int count = 0;
 
+		if (Main.gameMenu) // Skip this on the main menu, as it can't run properly
+		{
+			return;
+		}
+
 		foreach (Projectile projectile in Main.ActiveProjectiles)
 		{
-			if (projectile.owner == Player.whoAmI && projectile.minion)
+			if (projectile.owner == Player.whoAmI && projectile.TryGetGlobalProjectile(out PersistentMinionProjectile persist))
 			{
-				int damage = projectile.GetGlobalProjectile<PersistentMinionProjectile>().OriginalDamage;
+				int damage = persist.OriginalDamage;
 
 				projectiles.Add("projType_" + count, projectile.type);
 				projectiles.Add("projTime_" + count, projectile.timeLeft);

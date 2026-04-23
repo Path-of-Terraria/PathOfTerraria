@@ -8,13 +8,13 @@ using PathOfTerraria.Common.Systems.MobSystem;
 using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.Buffs;
-using PathOfTerraria.Content.Buffs.ElementalBuffs;
 using PathOfTerraria.Content.Dusts;
 using PathOfTerraria.Content.Gores;
 using SubworldLibrary;
 using System.IO;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.UI.BigProgressBar;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Swamp.NPCs;
@@ -155,6 +155,19 @@ internal class GiantEel : ModNPC
 		}
 	}
 
+	private class HiddenBossBar : IBigProgressBar
+	{
+		public void Draw(ref BigProgressBarInfo info, SpriteBatch spriteBatch)
+		{
+
+		}
+
+		public bool ValidateAndCollectNecessaryInfo(ref BigProgressBarInfo info)
+		{
+			return false;
+		}
+	}
+
 	private enum States
 	{
 		Roaming = 0,
@@ -209,6 +222,7 @@ internal class GiantEel : ModNPC
 		NPC.noGravity = true;
 		NPC.noTileCollide = true;
 		NPC.netAlways = true;
+		NPC.BossBar = new HiddenBossBar();
 
 		NPC.HitSound = new($"{nameof(PathOfTerraria)}/Assets/Sounds/HitEffects/FleshHit", 3) { MaxInstances = 5, Volume = 0.4f };
 		NPC.DeathSound = SoundID.NPCDeath23 with { Pitch = +0.1f, PitchVariance = 0.15f, Identifier = $"{Name}Death" };
