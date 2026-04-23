@@ -39,8 +39,9 @@ internal class ExplosionHitbox : ModProjectile
 	/// </param>
 	/// <param name="Sfx">Whether the sfx should play.</param>
 	/// <param name="GoreRange">Range of Gore ids to use.</param>
+	/// <param name="ForceDustVelocity">Forces the dust velocity after it's spawned. This may be more consistent for certain dusts which behave oddly.</param>
 	public readonly record struct VFXPackage(int GoreCount = 4, int SmokeDustCount = 20, int TorchDustCount = 10, bool Sfx = true, float Volume = 1f, Range? GoreRange = null,
-		int SmokeDustType = DustID.Smoke, int TorchDustType = DustID.Torch, float DustVelocityModifier = 1f)
+		int SmokeDustType = DustID.Smoke, int TorchDustType = DustID.Torch, float DustVelocityModifier = 1f, bool ForceDustVelocity = false)
 	{
 		public static readonly VFXPackage None = new(0, 0, 0, false, 0, null, 0, 0, 0);
 	}
@@ -101,6 +102,8 @@ internal class ExplosionHitbox : ModProjectile
 			int dust = Dust.NewDust(entity.position, entity.width, entity.height, value.SmokeDustType, 0f, 0f, 100, default, 1.5f);
 			Dust newDust = Main.dust[dust];
 			newDust.velocity *= 1.4f * value.DustVelocityModifier;
+
+			CheckForcedSpeed(value, newDust, 1.4f);
 		}
 		
 		for (int i = 0; i < value.TorchDustCount / 2; i++)
@@ -110,9 +113,13 @@ internal class ExplosionHitbox : ModProjectile
 			newDust.noGravity = true;
 			newDust.velocity *= 5f * value.DustVelocityModifier;
 
+			CheckForcedSpeed(value, newDust, 5);
+
 			dust = Dust.NewDust(entity.position, entity.width, entity.height, value.TorchDustType, 0f, 0f, 100, default, 1.5f);
 			newDust = Main.dust[dust];
 			newDust.velocity *= 3f * value.DustVelocityModifier;
+
+			CheckForcedSpeed(value, newDust, 3);
 		}
 
 		if (Main.dedServ)
@@ -137,6 +144,14 @@ internal class ExplosionHitbox : ModProjectile
 		static int RandomSmoke(Range range)
 		{
 			return Main.rand.Next(range.Start.Value, range.End.Value + 1);
+		}
+	}
+
+	private static void CheckForcedSpeed(VFXPackage value, Dust newDust, float baseModifier)
+	{
+		if (value.ForceDustVelocity)
+		{
+			newDust.velocity = Main.rand.NextVector2Circular(1, 1) * value.DustVelocityModifier * baseModifier;
 		}
 	}
 

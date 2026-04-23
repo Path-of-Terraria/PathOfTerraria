@@ -6,7 +6,10 @@ DeveloperConfig: {
 		Tooltip: Рисует границы вокруг элементов пользовательского интерфейса, упрощая отладку макета.
 	}
 
-	Headers.Graphics: Графический заголовок
+	SaveSubworlds: {
+		// Label: Save Subworlds
+		// Tooltip: If subworlds should save or not. This is useful for testing subworlds.
+	}
 }
 
 UIConfig: {

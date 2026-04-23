@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Content.Passives;
 using PathOfTerraria.Content.Passives.Misc;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -134,6 +135,7 @@ public abstract class Passive : Allocatable, ILoadable
 
 		return
 			Level < MaxLevel &&
+			this is not AnchorPassive &&
 			Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().Points > 0 &&
 			CountRequiredEdges(CollectionsMarshal.AsSpan(passivePlayer.Edges));
 	}

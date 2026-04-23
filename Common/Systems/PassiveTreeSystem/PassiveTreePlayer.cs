@@ -215,11 +215,16 @@ internal class PassiveTreePlayer : ModPlayer
 
 	public bool FullyLinkedWithout(Passive passive)
 	{
+		if (!AllAllocatedNodesMeetEdgeRequirementsWithout(passive))
+		{
+			return false;
+		}
+
 		HashSet<Allocatable> autoComplete = [];
 
 		foreach (Edge<Allocatable> e in Edges)
 		{
-			if (!e.Contains(passive) || e.Other(passive).Level <= 0)
+			if (!e.Contains(passive) || GetEffectiveLevel(e.Other(passive)) <= 0)
 			{
 				continue;
 			}
@@ -229,15 +234,6 @@ internal class PassiveTreePlayer : ModPlayer
 			if (!ret.Item1)
 			{
 				return false;
-			}
-
-			// Make sure that the other node will have enough nearby active edges to stay available.
-			if (e.Other(passive) is { RequiredAllocatedEdges: > 1 } other)
-			{
-				if (Edges.Count(e => e.End == other && e.Start.Level > 0) <= other.RequiredAllocatedEdges)
-				{
-					return false;
-				}
 			}
 
 			foreach (Allocatable p in ret.Item2)
@@ -250,6 +246,97 @@ internal class PassiveTreePlayer : ModPlayer
 		}
 
 		return true;
+	}
+
+	private bool AllAllocatedNodesMeetEdgeRequirementsWithout(Allocatable removed)
+	{
+		foreach (Passive node in ActiveNodes)
+		{
+			if (node == removed || GetEffectiveLevel(node) <= 0 || node.RequiredAllocatedEdges <= 1)
+			{
+				continue;
+			}
+
+			if (!HasEnoughAllocatedEdgesWithout(node, removed))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	private bool HasEnoughAllocatedEdgesWithout(Allocatable target, Allocatable removed)
+	{
+		int activeEdges = 0;
+
+		foreach (Edge<Allocatable> edge in Edges)
+		{
+			if (!edge.Contains(target))
+			{
+				continue;
+			}
+
+			Allocatable other = edge.Other(target);
+
+			if (other == removed || GetEffectiveLevel(other) <= 0)
+			{
+				continue;
+			}
+
+			if (!CountsTowardRequiredEdges(target, other))
+			{
+				continue;
+			}
+
+			activeEdges++;
+
+			if (activeEdges >= target.RequiredAllocatedEdges)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private static bool CountsTowardRequiredEdges(Allocatable target, Allocatable other)
+	{
+		// Hidden choice children should not count as surrounding prerequisites for their parent hub.
+		if (target is Passive { IsChoiceNode: true } && other is Passive { IsHidden: true })
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	private int GetEffectiveLevel(Allocatable allocatable)
+	{
+		if (allocatable.Level > 0)
+		{
+			return allocatable.Level;
+		}
+
+		if (allocatable is not Passive { IsChoiceNode: true } passive)
+		{
+			return 0;
+		}
+
+		foreach (Edge<Allocatable> edge in Edges)
+		{
+			if (edge.Start != passive || edge.End is not Passive { IsHidden: true } hiddenPassive)
+			{
+				continue;
+			}
+
+			if (hiddenPassive.Level > 0)
+			{
+				return hiddenPassive.Level;
+			}
+		}
+
+		return 0;
 	}
 
 	private Tuple<bool, HashSet<Allocatable>> CanFindAnchor(Allocatable from, HashSet<Allocatable> autoComplete, Allocatable removed)
@@ -270,7 +357,7 @@ internal class PassiveTreePlayer : ModPlayer
 				return new Tuple<bool, HashSet<Allocatable>>(true, passed);
 			}
 
-			IEnumerable<Allocatable> add = Edges.Where(e => e.Contains(p) && e.Other(p).Level > 0 && !passed.Contains(e.Other(p))).Select(e => e.Other(p));
+			IEnumerable<Allocatable> add = Edges.Where(e => e.Contains(p) && GetEffectiveLevel(e.Other(p)) > 0 && !passed.Contains(e.Other(p))).Select(e => e.Other(p));
 
 			if (add.Any(p => p.Name == "AnchorPassive"))
 			{
@@ -326,7 +413,7 @@ internal class PassiveTreePlayer : ModPlayer
 #if DEBUG
 		else
 		{
-			System.Diagnostics.Debug.Fail($"Deallocation ran on a passive with no allocation to begin with? {passive.Name}");
+			Debug.Fail($"Deallocation ran on a passive with no allocation to begin with? {passive.Name}");
 		}
 #endif
 

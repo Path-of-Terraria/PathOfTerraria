@@ -286,9 +286,19 @@ internal class SwampArea : MappingWorld, IExplorationWorld
 					Tile.SmoothSlope(i, j, false);
 				}
 
+				if (tile.HasTile && tile.TileType == ModContent.TileType<CypressLeaves>())
+				{
+					OpenFlags flags = OpenExtensions.GetOpenings(i, j, false);
+
+					if (flags == (OpenFlags)0b_1111)
+					{
+						tile.HasTile = false;
+					}
+				}
+
 				if (WorldUtilities.SolidUnslopedTile(i, j))
 				{
-					if (tile.TileType == TileID.LeafBlock)
+					if (tile.TileType == ModContent.TileType<MangroveLeaves>() || tile.TileType == ModContent.TileType<CypressLeaves>())
 					{
 						if (!WorldUtilities.SolidTile(i, j + 1))
 						{
@@ -304,11 +314,11 @@ internal class SwampArea : MappingWorld, IExplorationWorld
 
 								if (isWall)
 								{
-									GenPlacement.FastPlaceWall(i, j + v, WallID.LivingLeaf);
+									GenPlacement.FastPlaceWall(i, j + v, ModContent.WallType<SwampVineWall>());
 								}
-								else
+								else if (tile.TileType == ModContent.TileType<CypressLeaves>())
 								{
-									GenPlacement.FastPlaceTile(i, j + v, TileID.Vines);
+									GenPlacement.FastPlaceTile(i, j + v, ModContent.TileType<CypressVines>());
 								}
 							}
 						}
@@ -441,7 +451,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld
 				}
 
 				float str = MathF.Abs(j - vine.Length / 2) / (vine.Length / 2f);
-				GenPlacement.WallCircle(pos, baseStrength * str + 1.05f, WallID.LivingLeaf);
+				GenPlacement.WallCircle(pos, baseStrength * str + 1.05f, ModContent.WallType<SwampVineWall>());
 
 				if (Random.NextBool(10))
 				{
@@ -454,7 +464,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld
 
 					for (int v = 0; v < length; ++v)
 					{
-						GenPlacement.WallCircle(pos + new Vector2(0, v), 1.5f - v / length, WallID.LivingLeaf);
+						GenPlacement.WallCircle(pos + new Vector2(0, v), 1.5f - v / length, ModContent.WallType<SwampVineWall>());
 
 						if (Random.NextBool(8))
 						{
@@ -841,11 +851,16 @@ internal class SwampArea : MappingWorld, IExplorationWorld
 	private static void SpawnArenaEntities()
 	{
 		List<float> xPositions = [];
+		Range range = SwampArenaGeneration.WidthAtWaterHeight;
+
+		if (range.Start.Value == 0 && range.End.Value == 0)
+		{
+			return;
+		}
 
 		for (int i = 0; i < 5; ++i)
 		{
 			Vector2 pos;
-			Range range = SwampArenaGeneration.WidthAtWaterHeight;
 
 			do
 			{

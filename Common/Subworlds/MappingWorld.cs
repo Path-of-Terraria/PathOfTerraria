@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
+using PathOfTerraria.Common.Config;
 using PathOfTerraria.Common.Subworlds.Passes;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
@@ -19,7 +20,7 @@ namespace PathOfTerraria.Common.Subworlds;
 
 /// <summary>
 /// This is the base class for all mapping worlds. It sets the width and height of the world to 1000x1000 and disables world saving.<br/>
-/// Additionally, it also makes <see cref="StopBuildingPlayer"/> disable world modification, 
+/// Additionally, it also makes <see cref="StopBuildingPlayer"/> disable world modification,
 /// and enables <see cref="Systems.ModPlayers.LivesSystem.BossDomainLivesPlayer"/>'s life system.
 /// </summary>
 public abstract class MappingWorld : Subworld
@@ -30,9 +31,15 @@ public abstract class MappingWorld : Subworld
 	public override int Width => 1000;
 	public override int Height => 1000;
 
-	public override bool ShouldSave => false;
+	public override bool ShouldSave =>
+#if DEBUG
+		ModContent.GetInstance<DeveloperConfig>().SaveSubworlds;
+#else
+		true;
+#endif
+
 	public override bool NoPlayerSaving => false;
-	
+
 	/// <summary>
 	/// These tiles are allowed to be mined by the player using a pickaxe.
 	/// </summary>
@@ -80,6 +87,7 @@ public abstract class MappingWorld : Subworld
 	/// This is kept as the map tier is used for a couple of things, namely <see cref="MappingDomainSystem.Tracker"/>.
 	/// </summary>
 	public static int MapTier = 0;
+	internal static string LastSubworldSavePath { get; private set; }
 
 	public LocalizedText SubworldName { get; private set; }
 	public LocalizedText SubworldDescription { get; private set; }
@@ -109,6 +117,19 @@ public abstract class MappingWorld : Subworld
 	public override void OnEnter()
 	{
 		TimesEntered++;
+		LastSubworldSavePath = TryGetCurrentPath();
+	}
+
+	private static string TryGetCurrentPath()
+	{
+		try
+		{
+			return SubworldSystem.CurrentPath;
+		}
+		catch (NullReferenceException)
+		{
+			return null;
+		}
 	}
 
 	private void LoadLoadingScreens()
@@ -146,7 +167,7 @@ public abstract class MappingWorld : Subworld
 		WorldGen._genRandSeed = Main.rand.Next();
 
 		int rand = Main.rand.Next(10, 30);
-		
+
 		for (int i = 0; i < rand; ++i)
 		{
 			WorldGen.genRand.Next();
@@ -156,7 +177,6 @@ public abstract class MappingWorld : Subworld
 	public override void CopyMainWorldData()
 	{
 		base.CopyMainWorldData();
-
 		CopyConsistentInfo();
 	}
 
@@ -177,12 +197,16 @@ public abstract class MappingWorld : Subworld
 		TagCompound worldInfoTag = [];
 		worldInfoTag.Add("level", AreaLevel);
 		worldInfoTag.Add("tier", MapTier);
+		if (!string.IsNullOrWhiteSpace(LastSubworldSavePath))
+		{
+			worldInfoTag.Add("subworldSavePath", LastSubworldSavePath);
+		}
 
 		if (Affixes is not null && Affixes.Count > 0)
 		{
 			worldInfoTag.Add("affixes", (TagCompound[])[.. Affixes.Select(x => x.SaveAs())]);
 		}
-		
+
 		SubworldSystem.CopyWorldData("worldInfo", worldInfoTag);
 	}
 
@@ -215,6 +239,7 @@ public abstract class MappingWorld : Subworld
 		TagCompound worldInfoTag = SubworldSystem.ReadCopiedWorldData<TagCompound>("worldInfo");
 		AreaLevel = worldInfoTag.GetInt("level");
 		MapTier = worldInfoTag.GetInt("tier");
+		LastSubworldSavePath = worldInfoTag.TryGet("subworldSavePath", out string subworldSavePath) ? subworldSavePath : null;
 		Affixes = [];
 
 		if (worldInfoTag.TryGet("affixes", out TagCompound[] affixes))
@@ -238,6 +263,23 @@ public abstract class MappingWorld : Subworld
 	{
 		base.ReadCopiedSubworldData();
 		ReadConsistentInfo();
+	}
+
+	internal static void DeleteSavedSubworld()
+	{
+		if (LastSubworldSavePath is { Length: > 0 } path && System.IO.File.Exists(path))
+		{
+			try
+			{
+				System.IO.File.Delete(path);
+			}
+			catch
+			{
+				PoTMod.Instance.Logger.Error("[DeleteSavedSubworld] Failed to delete saved subworld.");
+			}
+		}
+
+		LastSubworldSavePath = null;
 	}
 
 	public override void DrawMenu(GameTime gameTime)
