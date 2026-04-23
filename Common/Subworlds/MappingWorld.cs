@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using PathOfTerraria.Common.Config;
 using PathOfTerraria.Common.Subworlds.Passes;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
@@ -32,7 +33,7 @@ public abstract class MappingWorld : Subworld
 
 	public override bool ShouldSave =>
 #if DEBUG
-		false;
+		ModContent.GetInstance<DeveloperConfig>().SaveSubworlds;
 #else
 		true;
 #endif
