@@ -23,7 +23,9 @@ using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Common.World.Utilities;
 using PathOfTerraria.Content.Gores;
+using PathOfTerraria.Content.Particles;
 using PathOfTerraria.Core.Camera;
+using PathOfTerraria.Core.Graphics.Particles;
 using PathOfTerraria.Core.IK;
 using PathOfTerraria.Core.Interface;
 using PathOfTerraria.Core.Lighting;
@@ -82,7 +84,7 @@ internal sealed class InfernalFlames : ModProjectile
 		set => (Projectile.ai[1], Projectile.ai[2]) = (value.X, value.Y);
 	}
 
-	public override string Texture => $"Terraria/Images/Projectile_{ProjectileID.Flames}";
+	public override string Texture => $"{PoTMod.ModName}/Assets/Particles/InfernalParticle";
 
 	public override void SetStaticDefaults()
 	{
@@ -113,8 +115,21 @@ internal sealed class InfernalFlames : ModProjectile
 		if (Progress >= 1f)
 		{
 			Projectile.Kill();
+			for(int i = 0; i < 32; i++)
+			{
+				InfernalParticle death_p = new(Projectile.Center, Main.rand.NextVector2CircularEdge(4, 4), 25, Main.rand.NextFromCollection(layerColors.ToList()), null, 16, 1);
+				ParticleSystem.Create(death_p);
+			}
+
 			return;
 		}
+
+		//Particles spawning
+		Vector2 pPos = Projectile.Center + Main.rand.NextVector2Circular(256, 256);
+		InfernalParticle p = new(pPos, pPos.DirectionTo(Projectile.Center) * 1, 42, Main.rand.NextFromCollection(layerColors.ToList()), Projectile.Center,16,1);
+
+		ParticleSystem.Create(p);
+		Projectile.rotation -= 0.2f;
 
 		if (StartPos == default) { StartPos = Projectile.Center; }
 
@@ -130,11 +145,6 @@ internal sealed class InfernalFlames : ModProjectile
 
 		int frameCount = Main.projFrames[Type];
 		Progress += TimeSystem.LogicDeltaTime / 8f;
-		Projectile.frame = (int)MathF.Floor(Progress / frameCount);
-
-		Projectile.rotation = Progress * 40f * MathHelper.TwoPi * (Projectile.whoAmI % 2 == 0 ? 1 : -1);
-		float radSnap = MathHelper.ToRadians(5f);
-		Projectile.rotation = MathF.Floor(Projectile.rotation * radSnap) / radSnap;
 
 		if (!Main.dedServ)
 		{
@@ -167,36 +177,51 @@ internal sealed class InfernalFlames : ModProjectile
 	];
 	public override bool PreDraw(ref Color lightColor)
 	{
-		// [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "DrawProj_Flamethrower")]
-		// static extern void DrawFlame(Main? main, Projectile p);
-		// DrawFlame(null, Projectile);
-
-		int numLayers = layerColors.Length;
-		int numFrames = Main.projFrames[Projectile.type];
-		int numLayeredFrames = numFrames + numLayers;
-
 		Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
 		Vector2 worldPos = Projectile.Center.ToPoint().ToVector2();
 		Vector2 screenPos = worldPos - Main.screenPosition;
 
-		const float animMul = 8f;
-		int baseFrame = (int)Utils.Remap(Progress, 0f, 1f, 0, numLayeredFrames * animMul);
+
+		SpriteBatchArgs args = Main.spriteBatch.GetArguments();
+		Main.spriteBatch.End();
+		Main.spriteBatch.Begin(args with { BlendState = BlendState.Additive});
+		for (int i = 0; i < 6; i++)
+		{
+			Main.EntitySpriteDraw(texture, screenPos, null, Color.OrangeRed, Projectile.rotation, texture.Size() * 0.5f, Projectile.scale * .5f * i / 2f, 0, 0f);
+			Main.EntitySpriteDraw(texture, screenPos, null, Color.White, Projectile.rotation + i / 6f * float.Tau, texture.Size() * 0.5f, Projectile.scale * .5f, 0, 0f);
+
+		}
+
+		Main.spriteBatch.End();
+		Main.spriteBatch.Begin(args);
+
+
+		// [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "DrawProj_Flamethrower")]
+		// static extern void DrawFlame(Main? main, Projectile p);
+		// DrawFlame(null, Projectile);
+
+		//int numLayers = layerColors.Length;
+		//int numFrames = Main.projFrames[Projectile.type];
+		//int numLayeredFrames = numFrames + numLayers;
+
+		//const float animMul = 8f;
+		//int baseFrame = (int)Utils.Remap(Progress, 0f, 1f, 0, numLayeredFrames * animMul);
 		// Loop/wrap up until a certain point.
-		if (baseFrame >= numFrames)
-		{
-			int loopEnd = (int)(numLayeredFrames * (animMul - 1));
-			baseFrame = baseFrame < loopEnd ? (2 + (baseFrame % 4) * 1) : (baseFrame - loopEnd + 2);
-		}
+		//if (baseFrame >= numFrames)
+		//{
+		//	int loopEnd = (int)(numLayeredFrames * (animMul - 1));
+		//	baseFrame = baseFrame < loopEnd ? (2 + (baseFrame % 4) * 1) : (baseFrame - loopEnd + 2);
+		//}
 
-		for (int i = 0; i < numLayers; i++)
-		{
-			int frame = baseFrame - i;
-			if (frame < 0 || frame >= numFrames) { continue; }
+		//for (int i = 0; i < numLayers; i++)
+		//{
+		//	int frame = baseFrame - i;
+		//	if (frame < 0 || frame >= numFrames) { continue; }
 
-			Color color = layerColors[i];
-			Rectangle srcRect = texture.Frame(verticalFrames: numFrames, frameY: frame);
-			Main.EntitySpriteDraw(texture, screenPos, srcRect, color, Projectile.rotation, srcRect.Size() * 0.5f, Projectile.scale, 0, 0f);
-		}
+		//	Color color = layerColors[i];
+		//	Rectangle srcRect = texture.Frame(verticalFrames: numFrames, frameY: frame);
+		//	Main.EntitySpriteDraw(texture, screenPos, srcRect, color, Projectile.rotation, srcRect.Size() * 0.5f, Projectile.scale, 0, 0f);
+		//}
 
 		return false;
 	}

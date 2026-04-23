@@ -70,15 +70,15 @@ public class BasePortalProjectile : ModProjectile
 		spawnPosition = Projectile.Center;
 		tweenScale = new Tween<Vector2>(Vector2.Lerp).TweenProperty(
 			[
-			new(new Vector2(2,0),new Vector2(.5f,1),false,TweenEaseType.CubicInOut,15),
-			new(new Vector2(.5f,1),new Vector2(1,1),false,TweenEaseType.CubicInOut,15),
+			new(new Vector2(2,0),new Vector2(.5f,1),false,TweenEaseType.CubicInOut,8),
+			new(new Vector2(.5f,1),new Vector2(1,1),false,TweenEaseType.CubicInOut,7),
 
 			]);
 		tweenFlash = new Tween<float>(MathHelper.Lerp).TweenProperty(
 			[
-			new(1,1,false,TweenEaseType.CubicInOut,15),
-			new(1,.5f,false,TweenEaseType.CubicInOut,15),
-			new(.5f,0f,false,TweenEaseType.CubicInOut,15)
+			new(1,1,false,TweenEaseType.CubicInOut,7),
+			new(1,.5f,false,TweenEaseType.CubicInOut,4),
+			new(.5f,0f,false,TweenEaseType.CubicInOut,3)
 			]);
 	}
 
@@ -86,13 +86,14 @@ public class BasePortalProjectile : ModProjectile
 	{
 		Projectile.rotation -= MathHelper.TwoPi / 129;
 		Projectile.Center = new Vector2(MathF.Floor(spawnPosition.X * 2f) / 2f, MathF.Floor(spawnPosition.Y * 2f) / 2f - 1); // the minus one here is important
-																															 //Projectile.velocity *= 0.96f;
-																															 //for(int i = 0; i < 1; i++) 
-																															 //{
-																															 //	Vector2 pos = Projectile.Center + new Vector2(300 , 0).RotatedByRandom(MathHelper.TwoPi);
-																															 //	MagicParticleGlows p = new(pos,pos.DirectionTo(Projectile.Center) * 6, 45, Color.Pink);
-																															 //	ParticleSystem.Create(p);
-																															 //}
+		Projectile.Center += new Vector2(0,MathF.Sin(Main.GameUpdateCount * 0.1f) * 1); // the minus one here is important
+		Projectile.velocity *= 0.89f;
+		//for (int i = 0; i < 1; i++)
+		//{
+		//	Vector2 pos = Projectile.Center + new Vector2(125, 0).RotatedByRandom(MathHelper.TwoPi);
+		//	MagicParticleGlows p = new(pos, pos.DirectionTo(Projectile.Center) * 5,6, Color.Turquoise);
+		//	ParticleSystem.Create(p);
+		//}
 
 		if (Projectile.ai[0] == 1)
 		{
@@ -122,17 +123,17 @@ public class BasePortalProjectile : ModProjectile
 		Vector2 scaleForPixelCalc = Vector2.Zero;
 		Effect effectBase = portalTailEffect.Value;
 
-		float pixelSize = 256 / 2f;
+		float pixelSize = 256 / 4f;
 		gd.Textures[1] = paletteTexture.Value;
 		gd.Textures[2] = ditherTexture.Value;
-		effectBase.Parameters["data"].SetValue(new Vector4(1, tweenFlash.CurrentProgress, 0.525f, 0.275f));
+		effectBase.Parameters["data"].SetValue(new Vector4(1, tweenFlash.CurrentProgress, 0.96f, 0.1f));
 		effectBase.Parameters["rotation"].SetValue(Projectile.rotation);
 		effectBase.Parameters["canvasSize"].SetValue(portalVortexTexture.Size());
 		effectBase.Parameters["pixelSize"].SetValue(pixelSize);
 		effectBase.Parameters["transform"].SetValue(Main.GameViewMatrix.NormalizedTransformationmatrix);
-		effectBase.Parameters["uTime"].SetValue((3));
+		effectBase.Parameters["uTime"].SetValue((Main.GameUpdateCount));
 		effectBase.Parameters["screenRes"].SetValue(Main.ScreenSize.ToVector2());
-		effectBase.Parameters["paletteColorsAmount"].SetValue(7f);
+		effectBase.Parameters["paletteColorsAmount"].SetValue(8f);
 
 		effectBase.Parameters["additionalScale"].SetValue(additionalScale.Length());
 

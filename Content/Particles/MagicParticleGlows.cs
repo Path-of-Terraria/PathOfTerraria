@@ -1,9 +1,12 @@
 ﻿using Daybreak.Common.Features.Hooks;
+using Humanizer.DateTimeHumanizeStrategy;
 using PathOfTerraria.Common.Utilities;
+using PathOfTerraria.Content.Passives.Magic.Masteries;
 using PathOfTerraria.Core.Graphics.Particles;
 using PathOfTerraria.Core.Tween;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -18,9 +21,11 @@ public class MagicParticleGlows : ForegroundParticle
 	readonly int duration = 15;
 	int currentDuration = 15;
 	Vector2 moveVelocityToTarget = Vector2.Zero;
+	readonly float customScale = 0;
+	readonly float velocityStretch = 15;
 	public override string Texture => $"{PoTMod.ModName}/Assets/Misc/MagicExplosion1";
 	
-	public MagicParticleGlows(Vector2 position, Vector2 velocity = default, int duration = 15, Color? color = null, Vector2? moveToTarget = null)
+	public MagicParticleGlows(Vector2 position, Vector2 velocity = default, int duration = 15, Color? color = null, Vector2? moveToTarget = null, float? startingScale = null, float? velocityStretch = null)
 	{
 		Position = position;
 		startingVelocity = velocity;
@@ -35,9 +40,15 @@ public class MagicParticleGlows : ForegroundParticle
 		{
 			moveVelocityToTarget = moveToTarget.Value;
 		}
+		if (startingScale.HasValue)
+		{
+			customScale = startingScale.Value;
+		}
+		if (velocityStretch.HasValue) 
+		{
+			this.velocityStretch = velocityStretch.Value;
+		}
 	}
-	public virtual Color MainColor => Color.White;
-	public virtual Color GlowColor => Color.White;
 	
 	public override void Create()
 	{
@@ -64,8 +75,8 @@ public class MagicParticleGlows : ForegroundParticle
 
 		Texture2D glowTexture = ModContent.Request<Texture2D>(Texture).Value;
 		Vector2 position = Position - Main.screenPosition;
-		Main.EntitySpriteDraw(glowTexture, position, null, Color * Opacity, Rotation,glowTexture.Size()/2f,new Vector2(MathHelper.Lerp(1,15, Velocity.Length() / startingVelocity.Length()),1) * Scale * 0.075f * new Vector2(1f, 0.5f), SpriteEffects.None);
-		Main.EntitySpriteDraw(glowTexture, position, null, Color * Opacity, Rotation,glowTexture.Size()/2f,new Vector2(MathHelper.Lerp(1,15, Velocity.Length() / startingVelocity.Length()),1) * Scale * 0.0125f * new Vector2(1f,0.5f),SpriteEffects.None);
+		Main.EntitySpriteDraw(glowTexture, position, null, Color * Opacity, Rotation,glowTexture.Size()/2f,new Vector2(MathHelper.Lerp(1,velocityStretch, Velocity.Length() / startingVelocity.Length()),1) * (Scale * customScale) * 0.075f * new Vector2(1f, 0.5f), SpriteEffects.None);
+		Main.EntitySpriteDraw(glowTexture, position, null, Color * Opacity, Rotation,glowTexture.Size()/2f,new Vector2(MathHelper.Lerp(1,velocityStretch, Velocity.Length() / startingVelocity.Length()),1) * (Scale * customScale) * 0.0125f * new Vector2(1f,0.5f),SpriteEffects.None);
 		
 
 	}

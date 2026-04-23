@@ -112,9 +112,12 @@ float4 PixelShaderFunction(VertexShaderOutput output) : COLOR0
 	float oneLevel = 1 / paletteColorsAmount; // the indexer of the palette texture
 	float2 uv = output.TextureCoordinates;
 	float2 pixelSizeBasedOnCanvasSize = pixelSize; // pixel size
-	uv = floor(uv * pixelSizeBasedOnCanvasSize) / pixelSizeBasedOnCanvasSize; // pixel effect uv
+	uv = ceil(uv * pixelSizeBasedOnCanvasSize) / pixelSizeBasedOnCanvasSize; // pixel effect uv
 	float4 col = 0; //  return value
 	float4 invertedCol = 0; //  return value
+	
+	//sin wave uv effect
+	uv = float2(uv.x + sin(uv.x + uTime * .05) * 0.01, uv.y + sin(uv.y + uTime * .05) * 0.01 );
 	
 	// draw the portal. then draw the dither texture which its pattern isnt visible when the alpha isnt equal to (index % 2 == 1)
 	float4 portalBase = tex2D(uImage0, Rotate(uv, rotation, float2(.5, .5)));
@@ -127,21 +130,21 @@ float4 PixelShaderFunction(VertexShaderOutput output) : COLOR0
 	
 	// setup dither Textures to be added to col
 	
-	float ditherAlpha = lerp(0, 1, toIndex(portalBase.r));
+	float ditherAlpha = lerp(1, 0, toIndex(portalBase.r));
 	
 	col += float4(currentColor * ditherPattern_Inverted,ditherPattern_NonInverted);
-	float alphaCut = step(oneLevel * .05, toIndex(ditherAlpha));
+	float alphaCut = smoothstep(.1 ,.995, toIndex(ditherAlpha));
 	float3 invertedDitherCol = lerp(portalBase.r, currentColor, alphaCut); //palette(saturate(toIndex(portalBase.r) - (oneLevel * (toIndex(ditherAlpha) % 2))));
 	invertedCol += float4(invertedDitherCol * ditherPattern_Inverted * alphaCut, alphaCut);
 	
 	//clean ups (remove flickering pixels bug, remove black pixels in both outside and inside the shader effect)
-	float4 finalCol = (col + invertedCol) * step(0, length(uv * 2 - 1) - data.w);
+	float4 finalCol = (col + invertedCol); //* step(0, length(uv * 2 - 1) - data.w);
 	finalCol *= step(length(uv * 2 - 1) - data.z,0);
 	
 	float4 blackHole = 0;
 	blackHole.a = smoothstep(.5, length(uv * 2 - 1) * 1.2 - data.w, data.w) * 2;
 	//finalCol += lerp(blackHole, finalCol, alphaCut);
-	finalCol = lerp(finalCol, blackHole.a, data.y);
+	finalCol = lerp(finalCol, step(0.1, finalCol.a), data.y);
 
 	return finalCol;
 }
