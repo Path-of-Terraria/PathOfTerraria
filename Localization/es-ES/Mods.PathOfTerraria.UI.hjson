@@ -414,3 +414,16 @@ MigrateRavencrest: {
 	// Note: (It may take a minute)
 	// Title: Migrate Ravencrest?
 }
+
+OnlineModPopup: {
+	// Title: Path of Terraria Online
+	/* Description:
+		'''
+		PathOfTerrariaOnline is available on the Steam Workshop and enables:
+		- Global Leaderboards
+		- Global Trade System
+		- Global Chat System
+		''' */
+	// OpenWorkshop: Open Steam Workshop Page
+	// Decline: I don't want
+}
