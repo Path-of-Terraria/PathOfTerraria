@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Threading;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
