@@ -197,6 +197,17 @@ public class QuestModPlayer : ModPlayer
 		}
 	}
 
+	internal void OnKillNPC(int targetType, int targetNetId, NPC.HitInfo hit, int damageDone)
+	{
+		NPC target = new()
+		{
+			type = targetType,
+			netID = targetNetId
+		};
+
+		OnKillNPC(target, hit, damageDone);
+	}
+
 	/// <summary>
 	/// Get the number of active quests for the current player.
 	/// </summary>
