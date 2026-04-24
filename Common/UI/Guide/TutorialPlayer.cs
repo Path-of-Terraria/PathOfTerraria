@@ -35,6 +35,7 @@ internal class TutorialPlayer : ModPlayer
 	/// <summary> Whether the player has completed the tutorial (<see cref="TutorialCheck.FinishedTutorial"/>). </summary>
 	public bool CompletedTutorial => TutorialChecks.Contains(TutorialCheck.FinishedTutorial);
 	public bool Restarted => TutorialChecks.Contains(TutorialCheck.RestartedTutorial);
+	public bool ReceivedTutorialLevelReward;
 
 	public HashSet<TutorialCheck> TutorialChecks = [];
 	public byte TutorialStep = 0;
@@ -54,6 +55,7 @@ internal class TutorialPlayer : ModPlayer
 	{
 		tag.Add("checks", TutorialChecks.Select(x => (byte)x).ToArray());
 		tag.Add("step", TutorialStep);
+		tag.Add(nameof(ReceivedTutorialLevelReward), ReceivedTutorialLevelReward);
 	}
 
 	public override void LoadData(TagCompound tag)
@@ -61,5 +63,6 @@ internal class TutorialPlayer : ModPlayer
 		TutorialChecks.Clear();
 		TutorialChecks = [.. tag.GetByteArray("checks").Select(x => (TutorialCheck)x)];
 		TutorialStep = tag.GetByte("step");
+		ReceivedTutorialLevelReward = tag.GetBool(nameof(ReceivedTutorialLevelReward));
 	}
 }
