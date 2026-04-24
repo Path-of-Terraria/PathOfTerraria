@@ -369,13 +369,13 @@ internal class CurrencyPouchUIState : UIState, IMutuallyExclusiveUI
 		}
 
 		lines.Add(new DrawableTooltipLine(
-			new TooltipLine(PoTMod.Instance, "ExtractOne", "Ctrl + Left Click: take 1 out"),
+			new TooltipLine(PoTMod.Instance, "ExtractOne", Language.GetTextValue("Mods.PathOfTerraria.UI.CurrencyPouch.ExtractOne")),
 			lines.Count, 0, 0, ItemTooltips.Colors.Positive) { BaseScale = new(0.9f) });
 		lines.Add(new DrawableTooltipLine(
-			new TooltipLine(PoTMod.Instance, "ExtractAll", "Ctrl + Shift + Left Click: take all out"),
+			new TooltipLine(PoTMod.Instance, "ExtractAll", Language.GetTextValue("Mods.PathOfTerraria.UI.CurrencyPouch.ExtractAll")),
 			lines.Count, 0, 0, ItemTooltips.Colors.Positive) { BaseScale = new(0.9f) });
 		lines.Add(new DrawableTooltipLine(
-			new TooltipLine(PoTMod.Instance, "StoreAll", "Shift + Left Click: store all from inventory"),
+			new TooltipLine(PoTMod.Instance, "StoreAll", Language.GetTextValue("Mods.PathOfTerraria.UI.CurrencyPouch.StoreAll")),
 			lines.Count, 0, 0, ItemTooltips.Colors.Positive) { BaseScale = new(0.9f) });
 
 		Tooltip.Create(new TooltipDescription
