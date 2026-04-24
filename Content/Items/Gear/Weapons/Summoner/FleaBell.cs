@@ -35,7 +35,7 @@ public class FleaBell : Gear
 
         PoTStaticItemData staticData = this.GetStaticData();
         staticData.DropChance = 1f;
-        staticData.MinDropItemLevel = 25;
+        staticData.MinDropItemLevel = 45;
         staticData.IsUnique = true;
         staticData.Description = this.GetLocalization("Description");
         staticData.AltUseDescription = this.GetLocalization("AltUseDescription");

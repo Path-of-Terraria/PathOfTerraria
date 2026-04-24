@@ -22,16 +22,13 @@ public class Ouroboros : Gear
 
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = 1f;
-		staticData.MinDropItemLevel = 15;
+		staticData.MinDropItemLevel = 75;
 		staticData.IsUnique = true;
 		staticData.Description = this.GetLocalization("Description");
 		staticData.AltUseDescription = this.GetLocalization("AltUseDescription");
 
 		ElementalWeaponSets.WeaponElementProportionsById[Type] = new Dictionary<ElementType, float>
 		{
-			{ ElementType.Fire, 0.0f },
-			{ ElementType.Cold, 0.0f },
-			{ ElementType.Lightning, 0.0f },
 			{ ElementType.Chaos, 1.0f }
 		};
 	}
@@ -40,7 +37,7 @@ public class Ouroboros : Gear
 	{
 		base.SetDefaults();
 
-		Item.damage = 24;
+		Item.damage = 99;
 		Item.DamageType = DamageClass.MeleeNoSpeed;
 		Item.width = 42;
 		Item.height = 38;

@@ -24,7 +24,7 @@ internal class PrismaticOrb : Gear
 	    staticData.IsUnique = true;
 	    staticData.Description = this.GetLocalization("Description");
 	    staticData.AltUseDescription = this.GetLocalization("AltUseDescription");
-	    staticData.MinDropItemLevel = 18;
+	    staticData.MinDropItemLevel = 40;
     
 	    ElementalWeaponSets.WeaponElementProportionsById[Type] = new Dictionary<ElementType, float>
 	    {
