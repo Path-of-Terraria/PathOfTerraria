@@ -1,3 +1,4 @@
+using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Content.Items.Gear.Armor.Helmet;
@@ -23,6 +24,8 @@ internal class CrystalVisors : Gear
 		}
 	}
 
+	protected override string GearLocalizationCategory => "Visors";
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
@@ -36,9 +39,9 @@ internal class CrystalVisors : Gear
 	public override void SetDefaults()
 	{
 		base.SetDefaults();
-		
-		//PoTInstanceItemData data = this.GetInstanceData();
-		//data.ItemType = ItemType.Helmet;
+
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = ItemType.Accessories;
 
 		Item.defense = 2;
 		Item.accessory = true;

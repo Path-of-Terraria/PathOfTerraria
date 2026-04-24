@@ -37,14 +37,15 @@ public enum ItemType : long
 	Talisman = 1 << 26,
 	Focus = 1 << 27,
 	Summon = 1 << 28,
-	TypeCount = 29,
+	Yoyo = 1 << 29,
+	TypeCount = 30,
 
 	Armor = Helmet | Chestplate | Leggings,
 	Accessories = Ring | Charm | Amulet,
 	Equipment = Armor | Accessories,
 	Offhand = Shield | Quiver | Talisman | Focus,
 
-	Melee = Sword | Spear | MeleeFlail | WarShield | Battleaxe,
+	Melee = Sword | Spear | MeleeFlail | WarShield | Battleaxe | Yoyo,
 	Magic = Staff | Tome | Wand,
 	Ranged = Bow | Gun | Boomerang | RangedFlail | Launcher | Javelin,
 	Summoner = Whip | Grimoire | Summon,

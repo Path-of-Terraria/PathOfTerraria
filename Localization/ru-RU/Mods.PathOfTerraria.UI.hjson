@@ -1,4 +1,4 @@
-// Confirm: Confirm
+Confirm: Подтвердить
 
 Gear: {
 	Buttons: {
@@ -23,10 +23,10 @@ Hotbar: {
 Slots: {
 	Head: Шлем
 	Body: Нагрудник
-	Legs: Поножи
+	Legs: Ноги
 	Weapon: Оружие
 	Necklace: Ожерелье
-	Offhand: Левая рука
+	// Offhand: Offhand
 	RingLeft: Левое кольцо
 	RingRight: Правое кольцо
 	Wings: Крылья
@@ -40,7 +40,7 @@ StatUI: {
 	// CharacterHeader: Progression
 	Level: Уровень
 	Experience: Опыт
-	// DefenseHeader: Defense
+	DefenseHeader: Защита
 	Life: Здоровье
 	// LifeRegen: Life Regen/s
 	Mana: Мана
@@ -52,17 +52,17 @@ StatUI: {
 	FireResistance: Сопротивление огню
 	ColdResistance: Сопротивление холоду
 	LightningResistance: Сопротивление молнии
-	// ChaosResistance: Chaos Resistance
+	ChaosResistance: Сопротивление хаосу
 	// OffenseHeader: Offense
-	// CriticalChance: Critical Strike Chance
-	// CriticalMultiplier: Critical Strike Multiplier
-	// ProjectileSpeed: Projectile Speed
-	// ProjectileCount: Additional Projectiles
-	// AttributesHeader: Attributes
+	CriticalChance: Шанс крит. удара
+	CriticalMultiplier: Множитель крит. удара
+	ProjectileSpeed: Скорость снарядов
+	ProjectileCount: Дополнительные снаряды
+	AttributesHeader: Аттрибуты
 	Strength: Сила
 	Dexterity: Ловкость
 	Intelligence: Интеллект
-	// ChargesHeader: Charges
+	ChargesHeader: Заряды
 	// HasteChargeChance: Haste Charge Chance On Kill
 	// FocusChargeChance: Focus Charge Chance On Kill
 	// AegisChargeChance: Aegis Charge Chance On Kill
@@ -107,8 +107,8 @@ SkillUI: {
 Guide: {
 	Next: Далее
 	Skip: Пропустить
-	SkipGuide: "{$Skip} Все"
-	SkipStep: "{$Skip} Шаг"
+	SkipGuide: "{$Skip} все"
+	SkipStep: "{$Skip} шаг"
 	Hide: Скрыть
 	Show: Показать
 	# Welcome/hello, explain purpose of tutorial
@@ -117,7 +117,7 @@ Guide: {
 		Привет! Добро пожаловать в Path of Terraria.
 		Этот мод значительно меняет игру.
 		Это руководство объяснит изменения, механики и важные моменты.
-		Если хочешь пропустить, то можешь в любой момент нажать «Пропустить руководство» или «Пропустить шаг».
+		Если хочешь пропустить, то можешь в любой момент нажать «Пропустить все» или «Пропустить шаг».
 		В ином случае — жми «Далее».
 		'''
 	# Explain EXP bar, click on exp bar
@@ -249,7 +249,7 @@ SubworldHelp: {
 Grimoire: {
 	Storage: Хранилище
 	ClickMe: Нажми на меня!
-	// HelpLine: Help
+	HelpLine: Помощь
 	// AnyMaterial: Any Material
 	// AnyMaterialDesc: Allow all materials to be displayed.
 	// MinionMaterial: Minion-Specific Materials
@@ -281,7 +281,7 @@ Grimoire: {
 
 QuestReminderTitles: {
 	Dialogue: Диалог
-	// Reminder: Reminder
+	Reminder: Напоминание
 }
 
 Tips: {
@@ -319,15 +319,16 @@ Tips: {
 	30: Всегда проверяй альтернативное применение оружия! Оно часто полезно не только для перемещения.
 }
 
-PointsRemaining: очков осталось
-// ResetPoints: Reset Points
+PointsRemaining: Очков осталось
+ResetPoints: Сброс очков
 ExpBarHover:
 	'''
 	Уровень {0}
 	Опыт: {1} / {2} ({3}%)
-	Нажми чтобы открыть дерево навыков
+
+	Нажмите чтобы открыть дерево талантов
 	'''
-// AreaLevel: Area Level:
+AreaLevel: Уровень области:
 // Waypoints.TutorialTip: In order to use the Home waypoint, you must have an Arcane Obelisk placed in the main world. Use the Return button in your settings menu to proceed.
 
 VirtualBag: {
@@ -344,18 +345,18 @@ CurrencyPouch: {
 	// Apply: Right click to apply to held item
 }
 
-PassiveTreeTab: Пассивные
-SkillTreeTab: Навыки
-QuestsAvailableTab: Доступный
-QuestsCompletedTab: Завершенный
-PlayerStatsTab: Статистика
+// PassiveTreeTab: Passives
+// SkillTreeTab: Skills
+// QuestsAvailableTab: Available
+// QuestsCompletedTab: Completed
+// PlayerStatsTab: Stats
 
 ClassPages: {
 	StarterClasses: {
-		// Melee: Melee
-		// Magic: Magic
-		// Ranged: Ranged
-		// Summon: Summon
+		Melee: Воин
+		Magic: Маг
+		Ranged: Стрелок
+		Summon: Призыватель
 	}
 
 	// PreferredWeapons: Preferred Weapons
@@ -402,8 +403,8 @@ ClassPages: {
 
 MapDevice: {
 	// MapSlot: Map Slot
-	// ActivatePortal: Open Portal
-	// DeactivatePortal: Close Portal
+	ActivatePortal: Открыть портал
+	DeactivatePortal: Закрыть портал
 	// AlreadyInUse: This map device is already in use!
 	// InjectResource: Inject Resource
 	// EjectResource: Eject Resource
@@ -414,9 +415,23 @@ MapDevice: {
 }
 
 MigrateRavencrest: {
-	// Yes: Yes
-	// No: No
+	Yes: Да
+	No: Нет
 	// Question: Ravencrest is outdated, and may have issues. Do you want to update your save?
 	// Note: (It may take a minute)
 	// Title: Migrate Ravencrest?
+}
+
+OnlineModPopup: {
+	// Title: Path of Terraria Online
+	/* Description:
+		'''
+		We recommend pairing Path of Terraria with the online mod
+		PathOfTerrariaOnline is available on the Steam Workshop and enables:
+		- Global Leaderboards
+		- Global Trade System
+		- Global Chat System
+		''' */
+	// OpenWorkshop: Open Steam Workshop Page
+	// Decline: Decline
 }

@@ -15,11 +15,11 @@ Tooltips: {
 	Axe: Мощность топора
 	Hammer: Мощность молота
 	ManaCost: Расход маны
-	// AttackSpeed: Attack Speed
+	AttackSpeed: Скорость атаки
 	// CastSpeed: Cast Speed
 	// BuildBlocked: Blocked by the energies in the domain
-	// ShootBlocked: Will be replaced by {0} [i:{1}] when shot
-	// WeaponNerfed: This weapon feels a little weaker
+	ShootBlocked: Будет заменен на {0} [i:{1}] при выстреле
+	WeaponNerfed: Это оружие ощущается чуть слабее
 }
 
 Influence: {
@@ -33,18 +33,18 @@ Chestplate: {
 
 	Prefixes: {
 		0: Выносливый
-		1: Рыцарь-Дредноут
-		2: Дракон
-		3: Голем
-		4: Смотритель
-		5: Защищено
+		1: Рыцаря-Дредноута
+		2: Дракона
+		3: Голема
+		4: Смотрителя
+		5: Защищенный
 	}
 
 	Suffixes: {
 		0: Основной
 		1: Сердце
-		2: Блюдце
-		3: Чешуя
+		2: Латный
+		3: Чешуйчатый
 		4: Эссенция
 	}
 }
@@ -61,7 +61,7 @@ Helmet: {
 	}
 
 	Suffixes: {
-		0: Пелена
+		0: Помятый
 		1: Купол
 		2: Мысль
 		3: Видение
@@ -74,9 +74,9 @@ Leggings: {
 
 	Prefixes: {
 		0: Орёл
-		1: Быстрый
-		2: Перистый
-		3: Шипастый
+		1: Быстрые
+		2: Перистые
+		3: Шипастые
 		4: Пристёгнутый
 	}
 
@@ -112,7 +112,7 @@ Battleaxe: {
 
 Boomerang: {
 	Name: Бумеранг
-	AltUse: ПКМ чтобы отправить бумеранг вокруг вас по спирали
+	AltUse: Правый клик, чтобы отправить бумеранг вокруг вас по спирали.
 
 	Prefixes: {
 		0: Вихревый
@@ -154,7 +154,7 @@ Bow: {
 
 Staff: {
 	Name: Посох
-	AltUse: Правый клик, чтобы перезарядить вашу ману на короткое время, вызывая снаряды в четыре раза быстрее и автоматически стреляя ими
+	AltUse: Правый клик, чтобы перезарядить вашу ману на короткое время, вызывая снаряды в четыре раза быстрее и автоматически стреляя ими.
 
 	Prefixes: {
 		0: Арканный
@@ -323,7 +323,7 @@ Grimoire: {
 
 WarShield: {
 	Name: Боевой щит
-	AltUse: ПКМ, чтобы блокировать или отразить снаряды и удары, возвращая урон обратно
+	AltUse: Правый клик, чтобы блокировать или отразить снаряды и удары, возвращая урон обратно.
 
 	Prefixes: {
 		0: Закалённый
@@ -365,14 +365,14 @@ Shield: {
 }
 
 Quiver: {
-	// Name: Quiver
+	Name: Колчан
 
 	Prefixes: {
-		// 0: Swift
+		0: Быстрый
 		// 1: Keen
 		// 2: Masterwork
 		// 3: Weathered
-		// 4: Elven
+		4: Эльфийский
 	}
 
 	Suffixes: {
@@ -385,13 +385,13 @@ Quiver: {
 }
 
 Talisman: {
-	// Name: Talisman
+	Name: Талисман
 
 	Prefixes: {
-		// 0: Summoner's
+		0: Призывателя
 		// 1: Conjuring
 		// 2: Binding
-		// 3: Ancient
+		3: Древний
 		// 4: Mystical
 	}
 
@@ -405,23 +405,23 @@ Talisman: {
 }
 
 Map.Name: Карта
-// ExplorableMap.Name: Explorable Map
-// BossMap.Name: Boss Map
+ExplorableMap.Name: Исследуемая карта
+BossMap.Name: Карта босса
 None.Name: Ничто
-Magic.Name: Магия
-Ranged.Name: Дистанционный
+Magic.Name: Магический
+Ranged.Name: Дальний
 Melee.Name: Рукопашный
 Accessory.Name: Аксессуар
 
 Ring: {
-	// Name: Ring
+	Name: Кольцо
 
 	Prefixes: {
-		// 0: Cursed
-		// 1: Hollow
-		// 2: Shattered
-		// 3: Sturdy
-		// 4: Reinforced
+		0: Проклятое
+		1: Полое
+		2: Разбитое
+		3: Крепкое
+		4: Усиленное
 	}
 
 	Suffixes: {
@@ -454,14 +454,14 @@ Focus: {
 }
 
 Amulet: {
-	// Name: Amulet
+	Name: Амулет
 
 	Prefixes: {
-		// 0: Lost
-		// 1: Coveted
-		// 2: Forgotten
+		0: Потерянный
+		1: Желанный
+		2: Забытый
 		// 3: Haunted
-		// 4: Empty
+		4: Пустой
 	}
 
 	Suffixes: {
@@ -512,3 +512,6 @@ Summon: {
 		// 4: of Absolution
 	}
 }
+
+// Visors.Name: Visor
+// Yoyo.Name: Yoyo

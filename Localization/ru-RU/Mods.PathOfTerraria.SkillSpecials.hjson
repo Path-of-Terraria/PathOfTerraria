@@ -31,7 +31,7 @@ PiercingPrecision: {
 }
 
 Flamethrower: {
-	// Name: Flamethrower
+	Name: Огнемёт
 	// Description: Conjure a fiery sentry that deals continuous damage to enemies in a cone
 }
 

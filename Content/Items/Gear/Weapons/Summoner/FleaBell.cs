@@ -4,7 +4,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.Items.Gear.Weapons;
+namespace PathOfTerraria.Content.Items.Gear.Weapons.Summoner;
 
 public class FleaBell : Gear
 {
@@ -23,7 +23,9 @@ public class FleaBell : Gear
 	    Pitch = -0.1f
     };
 
-    public override void SetStaticDefaults()
+	protected override string GearLocalizationCategory => "Summon";
+
+	public override void SetStaticDefaults()
     {
         base.SetStaticDefaults();
         
@@ -33,7 +35,7 @@ public class FleaBell : Gear
 
         PoTStaticItemData staticData = this.GetStaticData();
         staticData.DropChance = 1f;
-        staticData.MinDropItemLevel = 25;
+        staticData.MinDropItemLevel = 45;
         staticData.IsUnique = true;
         staticData.Description = this.GetLocalization("Description");
         staticData.AltUseDescription = this.GetLocalization("AltUseDescription");
@@ -45,8 +47,8 @@ public class FleaBell : Gear
 
         Item.damage = 40;
         Item.DamageType = DamageClass.Summon;
-        Item.width = 26;
-        Item.height = 34;
+        Item.width = 43;
+        Item.height = 42;
         Item.useTime = 36;
         Item.useAnimation = 36;
         Item.useStyle = ItemUseStyleID.Swing;
@@ -57,7 +59,10 @@ public class FleaBell : Gear
         Item.autoReuse = true;
         Item.buffType = ModContent.BuffType<FleaBellBuff>();
         Item.shoot = ModContent.ProjectileType<FleaBellMinion>();
-    }
+
+		PoTInstanceItemData data = Item.GetInstanceData();
+		data.ItemType = Common.Enums.ItemType.Summon;
+	}
 
     public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
     {
@@ -77,7 +82,7 @@ public class FleaBell : Gear
     {
 	    if (player.altFunctionUse == 2)
 	    {
-		    var altUsePlayer = player.GetModPlayer<AltUsePlayer>();
+			AltUsePlayer altUsePlayer = player.GetModPlayer<AltUsePlayer>();
 		    if (altUsePlayer.AltFunctionAvailable)
 		    {
 			    player.AddBuff(ModContent.BuffType<FleaBellEnhancedBuff>(), 5 * 60);
@@ -95,7 +100,6 @@ public class FleaBell : Gear
 	    player.AddBuff(Item.buffType, 2);
 	    return true;
     }
-
 }
 
 public class FleaBellBuff : ModBuff
@@ -161,11 +165,8 @@ public class FleaBellMinion : ModProjectile
 	private const float EnhancedSpeedMultiplier = 1.4f;
 	private const int EnhancedHitCooldown = 20;
     
-	private const float SpreadRadius = 80f;
-    
 	// Animation constants
-	private const int AnimationFrameCount = 5;
-	private const int AnimationSpeed = 8;
+	private const int AnimationFrameCount = 4;
 
 	// Properties
 	private AIState State
@@ -175,19 +176,14 @@ public class FleaBellMinion : ModProjectile
 	}
 
 	private ref float StateTimer => ref Projectile.ai[1];
-	private ref float TargetWhoAmI => ref Projectile.ai[2];
 	private ref float HoverTimer => ref Projectile.localAI[0];
 
 	private bool IsEnhanced => Main.player[Projectile.owner].HasBuff(ModContent.BuffType<FleaBellEnhancedBuff>());
-
 
 	// Fields
 	private bool hasBounceDestination = false;
 	private Vector2 personalOffset = Vector2.Zero;
 	private bool hasCalculatedOffset = false;
-	private int animationFrame = 0;
-	private int animationTimer = 0;
-
 
     public override void SetStaticDefaults()
     {
@@ -217,7 +213,10 @@ public class FleaBellMinion : ModProjectile
 
     private void CalculatePersonalOffset(Player owner)
     {
-	    if (hasCalculatedOffset) return;
+		if (hasCalculatedOffset) 
+		{
+			return; 
+		}
 
 	    int fleaIndex = 0;
 	    int totalFleas = 0;
@@ -236,7 +235,9 @@ public class FleaBellMinion : ModProjectile
 
 	    if (totalFleas > 1)
 	    {
-		    float angle = (MathHelper.TwoPi / totalFleas) * fleaIndex;
+			const float SpreadRadius = 80f;
+
+			float angle = MathHelper.TwoPi / totalFleas * fleaIndex;
 		    float radius = SpreadRadius * Math.Min(totalFleas / 3f, 1f);
 		    Vector2 direction = angle.ToRotationVector2();
 		    personalOffset = new Vector2(
@@ -263,7 +264,7 @@ public class FleaBellMinion : ModProjectile
 
         GeneralBehavior(owner, out Vector2 vectorToIdlePosition, out float distanceToIdlePosition);
         SearchForTargets(owner, out bool foundTarget, out float distanceFromTarget, out Vector2 targetCenter);
-        Movement(foundTarget, distanceFromTarget, targetCenter, distanceToIdlePosition, vectorToIdlePosition);
+        Movement(foundTarget, distanceFromTarget, targetCenter);
         Visuals();
     }
 
@@ -314,22 +315,31 @@ public class FleaBellMinion : ModProjectile
             Projectile.netUpdate = true;
         }
 
-        float overlapVelocity = 0.04f;
-        foreach (var other in Main.ActiveProjectiles)
+        const float OverlapVelocity = 0.04f;
+
+        foreach (Projectile other in Main.ActiveProjectiles)
         {
             if (other.whoAmI != Projectile.whoAmI && other.owner == Projectile.owner && 
                 Math.Abs(Projectile.position.X - other.position.X) + Math.Abs(Projectile.position.Y - other.position.Y) < Projectile.width)
             {
                 if (Projectile.position.X < other.position.X)
-                    Projectile.velocity.X -= overlapVelocity;
-                else
-                    Projectile.velocity.X += overlapVelocity;
+				{
+					Projectile.velocity.X -= OverlapVelocity;
+				}
+				else
+				{
+					Projectile.velocity.X += OverlapVelocity;
+				}
 
-                if (Projectile.position.Y < other.position.Y)
-                    Projectile.velocity.Y -= overlapVelocity;
-                else
-                    Projectile.velocity.Y += overlapVelocity;
-            }
+				if (Projectile.position.Y < other.position.Y)
+				{
+					Projectile.velocity.Y -= OverlapVelocity;
+				}
+				else
+				{
+					Projectile.velocity.Y += OverlapVelocity;
+				}
+			}
         }
     }
     
@@ -357,7 +367,7 @@ public class FleaBellMinion : ModProjectile
 
 	    if (!foundTarget)
 	    {
-		    foreach (var npc in Main.ActiveNPCs)
+		    foreach (NPC npc in Main.ActiveNPCs)
 		    {
 			    if (npc.CanBeChasedBy())
 			    {
@@ -368,7 +378,7 @@ public class FleaBellMinion : ModProjectile
 					    npc.position, npc.width, npc.height);
 				    bool closeThroughWall = betweenSq < 100f * 100f;
 
-				    if (((closest && inRange) || !foundTarget) && (lineOfSight || closeThroughWall))
+				    if ((closest && inRange || !foundTarget) && (lineOfSight || closeThroughWall))
 				    {
 					    distanceFromTarget = (float)Math.Sqrt(betweenSq);
 					    targetCenter = npc.Center;
@@ -392,8 +402,7 @@ public class FleaBellMinion : ModProjectile
 	    Projectile.velocity = direction * bounceSpeed;
 	}
 	
-	private void Movement(bool foundTarget, float distanceFromTarget, Vector2 targetCenter, 
-	    float distanceToIdlePosition, Vector2 vectorToIdlePosition)
+	private void Movement(bool foundTarget, float distanceFromTarget, Vector2 targetCenter)
 	{
 	    float speedMultiplier = IsEnhanced ? EnhancedSpeedMultiplier : 1f;
 	
@@ -410,7 +419,6 @@ public class FleaBellMinion : ModProjectile
 	        
 	        if (!foundTarget || distanceFromTarget > DetectionRange * 2f)
 	        {
-	            TargetWhoAmI = -1;
 	            State = AIState.Following;
 	            StateTimer = 0f;
 	            Projectile.friendly = false;
@@ -435,7 +443,6 @@ public class FleaBellMinion : ModProjectile
 	    }
 	    else if (State == AIState.Following)
 	    {
-	        TargetWhoAmI = -1;
 	        Projectile.friendly = false;
 	        
 	        Vector2 idlePosition = Main.player[Projectile.owner].Center;
@@ -476,7 +483,6 @@ public class FleaBellMinion : ModProjectile
 	    }
 	    else if (State == AIState.Bouncing)
 	    {
-	        TargetWhoAmI = -1;
 	        Projectile.friendly = false;
 	        
 	        StateTimer++;
@@ -532,7 +538,9 @@ public class FleaBellMinion : ModProjectile
     
     private void HandleAnimation()
     {
-	    animationTimer++;
+		const int AnimationSpeed = 8;
+
+		Projectile.frameCounter++;
         
 	    int currentAnimationSpeed = State switch
 	    {
@@ -542,18 +550,16 @@ public class FleaBellMinion : ModProjectile
 		    _ => AnimationSpeed
 	    };
 
-	    if (animationTimer >= currentAnimationSpeed)
+	    if (Projectile.frameCounter >= currentAnimationSpeed)
 	    {
-		    animationTimer = 0;
-		    animationFrame++;
+			Projectile.frameCounter = 0;
+		    Projectile.frame++;
             
-		    if (animationFrame >= AnimationFrameCount)
+		    if (Projectile.frame >= AnimationFrameCount)
 		    {
-			    animationFrame = 0;
+				Projectile.frame = 0;
 		    }
 	    }
-
-	    Projectile.frame = animationFrame;
     }
 
     public override bool? CanCutTiles()
@@ -572,6 +578,7 @@ public class FleaBellMinion : ModProjectile
         {
             return Color.Lerp(lightColor, Color.Yellow, 0.6f);
         }
+
         return base.GetAlpha(lightColor);
     }
 
