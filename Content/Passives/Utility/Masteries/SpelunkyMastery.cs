@@ -7,6 +7,12 @@ namespace PathOfTerraria.Content.Passives.Utility.Masteries;
 
 internal class SpelunkyMastery : Passive
 {
+	public override void BuffPlayer(Player player)
+	{
+		player.AddBuff(BuffID.Spelunker, 2);
+		player.AddBuff(BuffID.Mining, 2);
+	}
+
 	internal class SpelunkyPlayer : ModPlayer
 	{
 		public override void Load()
