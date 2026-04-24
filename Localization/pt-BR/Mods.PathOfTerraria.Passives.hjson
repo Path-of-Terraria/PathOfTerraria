@@ -1141,7 +1141,7 @@ FasterMiningPassive: {
 
 SpelunkyMastery: {
 	// Name: Spelunky
-	// Tooltip: Permanent Spelunker and Mining buffs
+	// Tooltip: Automatically mine out entire veins of ore when mining
 }
 
 CheaperShopsPassive: {
