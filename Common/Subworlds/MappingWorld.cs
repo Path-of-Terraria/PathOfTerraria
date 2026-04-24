@@ -25,6 +25,24 @@ namespace PathOfTerraria.Common.Subworlds;
 /// </summary>
 public abstract class MappingWorld : Subworld
 {
+	public class MappingWorldInfo : ModSystem
+	{
+		public override void SaveWorldData(TagCompound tag)
+		{
+			tag.Add("lastPath", LastSubworldSavePath);
+		}
+
+		public override void LoadWorldData(TagCompound tag)
+		{
+			LastSubworldSavePath = null;
+
+			if (tag.TryGet("lastPath", out string value))
+			{
+				LastSubworldSavePath = value;
+			}
+		}
+	}
+
 	/// <summary> How many times this subworld type has been started on this client or server. </summary>
 	public uint TimesEntered { get; private set; }
 
