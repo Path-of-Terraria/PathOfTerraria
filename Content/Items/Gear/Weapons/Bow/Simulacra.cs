@@ -16,7 +16,7 @@ public class Simulacra : Gear
 
         PoTStaticItemData staticData = this.GetStaticData();
         staticData.DropChance = 1f;
-        staticData.MinDropItemLevel = 15;
+        staticData.MinDropItemLevel = 55;
         staticData.IsUnique = true;
         staticData.Description = this.GetLocalization("Description");
         staticData.AltUseDescription = this.GetLocalization("AltUseDescription");
@@ -58,7 +58,7 @@ public class Simulacra : Gear
     {
         if (player.altFunctionUse == 2)
         {
-            var altUsePlayer = player.GetModPlayer<AltUsePlayer>();
+			AltUsePlayer altUsePlayer = player.GetModPlayer<AltUsePlayer>();
             if (altUsePlayer.AltFunctionAvailable)
             {
                 Vector2 cursorPosition = Main.MouseWorld;
@@ -112,12 +112,12 @@ public class SimulacraEcho : ModProjectile
     /// <summary>
     /// Gets the original position stored in the projectile's AI data
     /// </summary>
-    private Vector2 OriginalPosition => new Vector2(Projectile.ai[0], Projectile.ai[1]);
+    private Vector2 OriginalPosition => new(Projectile.ai[0], Projectile.ai[1]);
 
     /// <summary>
     /// Gets the original velocity stored in the projectile's AI data
     /// </summary>
-    private Vector2 OriginalVelocity => new Vector2(Projectile.ai[2], Projectile.localAI[0]);
+    private Vector2 OriginalVelocity => new(Projectile.ai[2], Projectile.localAI[0]);
 
     /// <summary>
     /// Gets the projectile type stored in the projectile's local AI data
@@ -185,10 +185,10 @@ public class SimulacraEcho : ModProjectile
     /// </summary>
     private void FireFromAllMirrors()
     {
-        var mirrorClones = GetAllActiveMirrorClones();
+		List<Projectile> mirrorClones = GetAllActiveMirrorClones();
         Vector2 originalVelocity = OriginalVelocity;
         
-        foreach (var mirror in mirrorClones)
+        foreach (Projectile mirror in mirrorClones)
         {
             Vector2 mirrorVelocity = CalculateMirrorVelocity(mirror.Center, originalVelocity);
             FireEchoProjectile(mirror.Center, mirrorVelocity);
@@ -242,7 +242,7 @@ public class SimulacraEcho : ModProjectile
         return mirrors;
     }
 
-    private Vector2 CalculateMirrorVelocity(Vector2 mirrorPosition, Vector2 originalVelocity)
+    private static Vector2 CalculateMirrorVelocity(Vector2 mirrorPosition, Vector2 originalVelocity)
     {
         Vector2 mousePos = Main.MouseWorld;
         Vector2 directionToCursor = (mousePos - mirrorPosition).SafeNormalize(Vector2.UnitX);
