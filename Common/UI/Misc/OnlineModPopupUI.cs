@@ -1,9 +1,10 @@
-using System.Diagnostics;
 using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Core.UI;
+using Steamworks;
 using Terraria.GameContent.UI.Elements;
 using Terraria.Localization;
 using Terraria.ModLoader.UI;
+using Terraria.Social;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.Misc;
@@ -85,11 +86,13 @@ internal class OnlineModPopupUI : UIState
 	{
 		try
 		{
-			Process.Start(new ProcessStartInfo
+			if (SocialAPI.Mode == SocialMode.Steam)
 			{
-				FileName = WorkshopUrl,
-				UseShellExecute = true
-			});
+				SteamFriends.ActivateGameOverlayToWebPage(WorkshopUrl);
+				return;
+			}
+
+			Utils.OpenToURL(WorkshopUrl);
 		}
 		catch (Exception exception)
 		{
