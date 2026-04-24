@@ -23,7 +23,7 @@ public class EntDust : ModDust
 
 		if (!dust.noLight)
 		{
-			Lighting.AddLight(dust.position, new Vector3(251, 242, 54) / 400f * (1 - dust.alpha / 255f));
+			Lighting.AddLight(dust.position, new Vector3(251, 242, 54) / 200f * (1 - dust.alpha / 255f));
 		}
 
 		return false;

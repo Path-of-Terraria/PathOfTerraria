@@ -132,6 +132,11 @@ internal class DesertArea : MappingWorld, IOverrideBiome, IExplorationWorld
 
 		progress.Set(1);
 		AddTrappers();
+
+		while (Collision.SolidCollision(new Vector2(Main.spawnTileX - 3, Main.spawnTileY - 3) * 16, 16 * 6, 16 * 6))
+		{
+			Main.spawnTileY--;
+		}
 	}
 
 	private static void AddTrappers()
@@ -852,8 +857,8 @@ internal class DesertArea : MappingWorld, IOverrideBiome, IExplorationWorld
 	public void OverrideBiome()
 	{
 		Main.bgStyle = 2;
-		Main.newMusic = MusicID.Desert;
-		Main.curMusic = MusicID.Desert;
+		//Main.newMusic = MusicID.Desert;
+		//Main.curMusic = MusicID.Desert;
 		Main.LocalPlayer.ZoneBeach = false;
 		Main.LocalPlayer.ZoneSandstorm = Sandstorm.Happening;
 	}

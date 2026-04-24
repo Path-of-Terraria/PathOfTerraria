@@ -103,13 +103,15 @@ internal sealed class BossTracker : ModSystem
 	{
 		bool isBoss = ContentSamples.NpcsByNetId[self.netID].boss || NPCID.Sets.ShouldBeCountedAsBoss[self.type];
 		bool isPillar = self.type is NPCID.LunarTowerNebula or NPCID.LunarTowerSolar or NPCID.LunarTowerStardust or NPCID.LunarTowerVortex;
+		int type = self.type;
+		bool oldBoss = self.boss;
 
 		if (SubworldSystem.Current is BossDomainSubworld or IExplorationWorld && isBoss && !isPillar)
 		{
 			// Spawns the Wall of Flesh's box around itself, which is overriden by this method
 			OnDeathNPC.OnDeathEffects(self);
 
-			if (CheckSpecialConditions(self, isBoss) && SubworldSystem.Current is not null)
+			if (CheckSpecialConditions(self, isBoss))
 			{
 				// Automatically add/send the boss downed cache/packet
 				AddDowned(self.netID, false, true, false);

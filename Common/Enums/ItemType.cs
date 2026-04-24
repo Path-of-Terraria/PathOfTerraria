@@ -36,7 +36,8 @@ public enum ItemType : long
 	Quiver = 1 << 25,
 	Talisman = 1 << 26,
 	Focus = 1 << 27,
-	TypeCount = 28,
+	Summon = 1 << 28,
+	TypeCount = 29,
 
 	Armor = Helmet | Chestplate | Leggings,
 	Accessories = Ring | Charm | Amulet,
@@ -46,7 +47,7 @@ public enum ItemType : long
 	Melee = Sword | Spear | MeleeFlail | WarShield | Battleaxe,
 	Magic = Staff | Tome | Wand,
 	Ranged = Bow | Gun | Boomerang | RangedFlail | Launcher | Javelin,
-	Summoner = Whip | Grimoire,
+	Summoner = Whip | Grimoire | Summon,
 	MeleeOrRanged = Melee | Ranged,
 	Weapon = Melee | Magic | Ranged | Whip,
 

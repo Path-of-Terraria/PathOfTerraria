@@ -413,7 +413,7 @@ internal class PassiveTreePlayer : ModPlayer
 #if DEBUG
 		else
 		{
-			System.Diagnostics.Debug.Fail($"Deallocation ran on a passive with no allocation to begin with? {passive.Name}");
+			Debug.Fail($"Deallocation ran on a passive with no allocation to begin with? {passive.Name}");
 		}
 #endif
 

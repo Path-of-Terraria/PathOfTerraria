@@ -69,7 +69,7 @@ internal class Mudsquit : ModNPC
 	public override void SetDefaults()
 	{
 		NPC.aiStyle = -1;
-		NPC.lifeMax = 300;
+		NPC.lifeMax = 900;
 		NPC.defense = 15;
 		NPC.damage = 5;
 		NPC.width = 42;
@@ -138,6 +138,8 @@ internal class Mudsquit : ModNPC
 		Context ctx = new(NPC);
 		ctx.Movement.ManualUpdate(new(NPC));
 
+		Lighting.AddLight(NPC.Center, new Vector3(0.45f, 0.1f, 0.1f));
+
 		if (Math.Abs(NPC.velocity.X) > 0.01f)
 		{
 			NPC.direction = Math.Sign(NPC.velocity.X);
@@ -191,7 +193,7 @@ internal class Mudsquit : ModNPC
 				var package = new ExplosionHitbox.VFXPackage(8, 30, 30, SmokeDustType: DustID.Blood, TorchDustType: DustID.RedTorch, DustVelocityModifier: 3f);
 				int damage = ModeUtils.ProjectileDamage(120, 170, 230, 300);
 				IEntitySource src = NPC.GetSource_Death();
-				ExplosionHitbox.QuickSpawn(src, NPC, damage, Main.myPlayer, new Vector2(200, 200), ExplosionSpawnInfo.HostileSpawn, package);
+				ExplosionHitbox.QuickSpawn(src, NPC, damage, Main.myPlayer, new Vector2(400, 400), ExplosionSpawnInfo.HostileSpawn, package);
 
 				if (Main.netMode != NetmodeID.MultiplayerClient)
 				{

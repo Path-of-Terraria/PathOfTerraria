@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
+﻿using PathOfTerraria.Common.Projectiles;
+using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Content.Projectiles.PassiveProjectiles;
 
 namespace PathOfTerraria.Content.Passives.Summon.Masteries;
@@ -13,7 +14,7 @@ internal class SymbioticPulseMastery : Passive
 
 		public override bool AppliesToEntity(Projectile entity, bool lateInstantiation)
 		{
-			return entity.minion;
+			return entity.minion && !CustomProjectileSets.MultisegmentMinionProjectiles[entity.type];
 		}
 
 		public override bool PreAI(Projectile projectile)

@@ -53,6 +53,7 @@ internal class PoisonedDebuff : ModBuff
 			time = (int)player.GetModPlayer<PoisonPlayer>().PoisonDuration.ApplyTo(time);
 			damage = player.GetModPlayer<PoisonPlayer>().PoisonDamage.ApplyTo(damage);
 			tickRate = player.GetModPlayer<PoisonPlayer>().PoisonTickRate.ApplyTo(tickRate);
+			DoTFunctionality.ApplyPlayerInteraction(npc, player);
 		}
 
 		npc.GetGlobalNPC<PoisonNPC>().AddStack(new PoisonNPC.PoisonStack(time, damage));

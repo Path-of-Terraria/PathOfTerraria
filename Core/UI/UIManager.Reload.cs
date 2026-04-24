@@ -39,7 +39,7 @@ public sealed partial class UIManager : ModSystem
 	{
 		for (int i = 0; i < Data.Count; i++)
 		{
-			UIManager.TryRefresh(Data[i].Identifier);
+			TryRefresh(Data[i].Identifier);
 		}	
 	}
 }

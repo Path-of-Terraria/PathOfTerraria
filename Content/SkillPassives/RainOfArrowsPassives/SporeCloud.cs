@@ -32,7 +32,7 @@ internal class SporeCloud : SkillProjectile<RainOfArrows>
 			if (npc.CanBeChasedBy() && npc.DistanceSQ(Projectile.Center) < 40 * 40)
 			{
 				// Add megatoxin buff directly to damage to simulate increase without having to pass values or check every frame
-				SporeNPC.AddSporeDebuff(npc, Projectile.damage * Projectile.GetOwner().GetPassiveStrength<RainOfArrowsTree, Megatoxin>(), 4 * 60, true);
+				SporeNPC.AddSporeDebuff(npc, Projectile.damage * Projectile.GetOwner().GetPassiveStrength<RainOfArrowsTree, Megatoxin>(), 4 * 60, true, Projectile.GetOwner());
 			}
 		}
 

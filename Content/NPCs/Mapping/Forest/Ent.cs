@@ -61,7 +61,7 @@ internal class Ent : ModNPC
 	{
 		NPC.Size = new Vector2(50, 124);
 		NPC.aiStyle = -1;
-		NPC.lifeMax = 450;
+		NPC.lifeMax = 9_500;
 		NPC.defense = 35;
 		NPC.damage = 65;
 		NPC.knockBackResist = 0.3f;

@@ -6,7 +6,10 @@ DeveloperConfig: {
 		// Tooltip: Draws borders around user interface elements to help with layout debugging.
 	}
 
-	// Headers.Graphics: Graphics Header
+	SaveSubworlds: {
+		// Label: Save Subworlds
+		// Tooltip: If subworlds should save or not. This is useful for testing subworlds.
+	}
 }
 
 UIConfig: {
