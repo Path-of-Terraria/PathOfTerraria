@@ -3,8 +3,8 @@
 	<!-- Import TML targets. -->
 	<Import Project="..\tModLoader.targets" />
 	<!-- Import shader compiler -->
-	<!--<Import Project="BuildTools\ShaderCompiler\KBOFXCTask.props" />
-	<Import Project="BuildTools\ShaderCompiler\KBOFXCTask.targets" />-->
+	<Import Project="BuildTools\ShaderCompiler\KBOFXCTask.props" />
+	<Import Project="BuildTools\ShaderCompiler\KBOFXCTask.targets" />
 
 	<!-- General -->
 	<PropertyGroup>
@@ -40,7 +40,6 @@
 		<Reference Include="NPCUtils" HintPath="lib\NPCUtils.dll" />
 		<Reference Include="HousingAPI" HintPath="lib\HousingAPI.dll" />
 		<Reference Include="Wayfarer" HintPath="lib\Wayfarer.dll" />
-		<Reference Include="Daybreak" HintPath="lib\Daybreak.dll" />
 	</ItemGroup>
 
 	<!-- Content -->
