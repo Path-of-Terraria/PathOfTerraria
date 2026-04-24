@@ -7,12 +7,12 @@ Popups: {
 }
 
 Bring: {
-	Collect: Собирите
+	Collect: Соберите
 	GiveItTo: и отдайте это в {0}
 }
 
-// Skip: Skip?
-// Sure: You sure?
+Skip: Пропустить?
+Sure: Вы уверены?
 TalkTo: Поговорите с {0}
 GiveThem: и дайте:
 Exploration.Ice: Исследуйте ледяной/снежный биом ({0}%)
@@ -20,7 +20,7 @@ Or: или
 
 Quest: {
 	TestQuest: {
-		Name: Текстовый квест
+		Name: Тестовый квест
 		Description: Используется для тестирования квестов.
 	}
 
@@ -32,13 +32,13 @@ Quest: {
 	BlacksmithStartQuest: {
 		Name: Ковка нового клинка
 		Description: ""
-		Kill.Zombies: Убейте {0} зомби
+		Kill.Zombies: Убейте ({0}/{1}) зомби
 	}
 
 	KingSlimeQuest: {
-		Name: Убейте короля слизней
+		Name: Убить короля
 		Description: ""
-		EnterDomain: Войдите во владения короля слизней
+		EnterDomain: Войдите во владения Короля слизней
 		ThanksDialogue: Я едва могу в это поверить. Что ж, ты преуспел там, где я потерпел неудачу, незнакомец. Мне лучше вернуться к делу; больше ты меня не превзойдешь. Однако ты заслужил мою благодарность.
 		Kill.KingSlime: Убейте Короля слизней
 	}
@@ -63,7 +63,7 @@ Quest: {
 	EoCQuest: {
 		Name: Восходящее предзнаменование
 		Description: ""
-		Kill.EoC: Победи Глаз Ктулху
+		Kill.EoC: Победите Глаз Ктулху
 	}
 
 	EoWQuest: {
@@ -71,7 +71,7 @@ Quest: {
 		Description: ""
 		MorvenRaven: Привести Морвена в Вороний пик
 		SmashOrbs: Разбейте 3 теневых шара
-		KillEoW: Победите Пожирателя Миров
+		KillEoW: Победите Пожирателя миров
 		// ReturnToOverworld: Return to the Overworld
 		// MorvenDialogue: Hm...oh. Hello, stranger. Thank you for getting me out of that bind. I'm afraid I went down here to track some Devourers I tagged...no matter. My trusty tools failed me, and somehow I'd become encased in this fetid stone. For a grueling few hours I've been here. Would you be so kind as to escort me out and bring me to the Raven Statue? I'll reward you greatly...or something.
 		// EnterEvilBiome: Find the Scientist in the Underground Corruption
@@ -88,18 +88,18 @@ Quest: {
 	QueenBeeQuest: {
 		Name: Королевские приключения
 		Description: ""
-		KillQueen: Убейте Королеву Пчел
+		KillQueen: Убейте Королеву пчел
 	}
 
 	DeerclopsQuest: {
 		Name: Холодное чудовище
 		Description: ""
-		KillDeerclops: Убейте циклоп-оленей
+		KillDeerclops: Убейте Циклопа-оленя
 		// GetAntlersOrShards: Strange Antlers or an Antler Shard
 	}
 
 	SkeletronQuest: {
-		Name: Остатки скелета
+		Name: Скелетные останки
 		Description: ""
 		EnterDomain: Войдите во владения Скелетрона
 		KillSkeletron: Убейте Скелетрона
@@ -113,15 +113,15 @@ Quest: {
 		ElaraHelp: Береги себя и возьми это. Я не какая-то там искусная оружейница, но Трейн помог мне с ним. Простота и надёжность. И ещё — глаза самое уязвимое место.
 		MorganaHelp: О...? Ба-ха-ха! Время пришло! Вот ты где — настоящий буфет с материалами для Гримуара! Элара помогала с этими существами... весьма сведущая девчонка, да Наслаждайся дарами! Ба-ха-ха!
 		WizardContinue: Вот ты где. Так, возьми это. Оно... да... взрывоопасно, но имеем что имеем. Честное слово. Брось это на пепел в Аду, чтобы открыть портал туда, где заключена Стена. Учти — у тебя будет только один шанс убить ее. Никаких ошибок. Также мы не знаем что произойдет после гибели Стены. Знаю только то, что она должна быть уничтожена. Ни пуха. Если понадобятся еще такие, могу наколдовать... за небольшую плату! Увы! Деньги лишними не бывают!
-		KillWall: Убить Стену Плоти
+		KillWall: Убейте Стену плоти
 		WizardFinish: Ты вернулся! Мы наблюдаем множество изменений, но земля больше не будет дрожать под нами. Готовься к грядущему — многое предстоит освоить. Особенно мне, ведь у меня… столько всего, что нужно опробовать.
 	}
 
 	FirstQuest: {
 		Name: Вход в Вороний пик
 		Description: ""
-		ApproachEntrance: Подойти к входу в Вороний пик
-		EnterRavencrest: Войти в Вороний пик
+		ApproachEntrance: Подойдите к входу в Вороний пик
+		EnterRavencrest: Войдите в Вороний пик
 	}
 
 	QueenSlimeQuest: {
