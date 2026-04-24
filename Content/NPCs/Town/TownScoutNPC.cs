@@ -133,12 +133,12 @@ public sealed class TownScoutNPC : ModNPC
 			}
 		}
 
-		if (!anyHealthyPlayer)
+		if (!anyHealthyPlayer && !forceQuestSpawn)
 		{
 			return 0;
 		}
 		
-		float chance = forceQuestSpawn ? 100f : NPC.downedGoblins ? 0.1f : 5;
+		float chance = forceQuestSpawn ? 100f : (NPC.downedGoblins ? 0.1f : 5);
 		bool spawnedScout = ModContent.GetInstance<RavencrestSystem>().SpawnedScout;
 
 		return SubworldSystem.Current is RavencrestSubworld && spawnInfo.SpawnTileX < 180 && !spawnedScout ? chance : 0;
