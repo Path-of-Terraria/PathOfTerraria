@@ -8,7 +8,9 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Bow;
 
 public class Simulacra : Gear
 {
-    public override void SetStaticDefaults()
+	protected override string GearLocalizationCategory => "Bow";
+
+	public override void SetStaticDefaults()
     {
         base.SetStaticDefaults();
 
@@ -37,7 +39,10 @@ public class Simulacra : Gear
         Item.shoot = ProjectileID.WoodenArrowFriendly;
         Item.useAmmo = AmmoID.Arrow;
         Item.noMelee = true;
-    }
+
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = Common.Enums.ItemType.Bow;
+	}
 
     public override bool AltFunctionUse(Player player)
     {

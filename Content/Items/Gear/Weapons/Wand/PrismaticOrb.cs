@@ -6,14 +6,16 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.Items.Gear.Weapons;
+namespace PathOfTerraria.Content.Items.Gear.Weapons.Wand;
 
 internal class PrismaticOrb : Gear
 {
 	private const int buffTime = 60 * 5;
 	private const int buffCooldown = 60 * 15;
 
-    public override void SetStaticDefaults()
+	protected override string GearLocalizationCategory => "Wand";
+
+	public override void SetStaticDefaults()
     {
 	    base.SetStaticDefaults();
 
@@ -35,7 +37,7 @@ internal class PrismaticOrb : Gear
 
     public override void SetDefaults()
     {
-        Item.damage = 25;
+        Item.damage = 18;
         Item.DamageType = DamageClass.Magic;
         Item.width = 40;
         Item.height = 40;
@@ -50,7 +52,11 @@ internal class PrismaticOrb : Gear
         Item.shootSpeed = 7f;
         Item.mana = 15;
         Item.noMelee = true;
-    }
+		Item.noUseGraphic = true;
+
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = Common.Enums.ItemType.Wand;
+	}
 
     public override bool AltFunctionUse(Player player)
     {
@@ -62,6 +68,7 @@ internal class PrismaticOrb : Gear
 	    if (player.altFunctionUse == 2)
 	    {
 			AltUsePlayer altUsePlayer = player.GetModPlayer<AltUsePlayer>();
+
 		    if (altUsePlayer.AltFunctionAvailable)
 		    {
 			    player.AddBuff(ModContent.BuffType<Buffs.PrismaticOrbBuff>(), buffTime);
@@ -127,7 +134,7 @@ internal class PrismaticOrb : Gear
         float bounceHeight = MathHelper.Lerp(8f, 6f, bounces / (float)MaxBounces);
         
         float impactAngleFactor = Math.Abs(oldVelocity.Y) / oldVelocity.Length();
-        bounceHeight *= (0.7f + impactAngleFactor * 0.5f); 
+        bounceHeight *= 0.7f + impactAngleFactor * 0.5f; 
         
         Projectile.velocity.Y = -bounceHeight;
 
@@ -163,7 +170,7 @@ internal class PrismaticOrb : Gear
 		    }
 	    }
     
-	    ElementType randomElement = (ElementType)Main.rand.Next(1, 4); 
+	    var randomElement = (ElementType)Main.rand.Next(1, 4); 
     
 	    for (int i = 0; i < 25; i++)
 	    {
@@ -187,7 +194,7 @@ internal class PrismaticOrb : Gear
     
     private void CreateExplosionProjectile()
     {
-	    Projectile explosion = Projectile.NewProjectileDirect(
+	    var explosion = Projectile.NewProjectileDirect(
 		    Projectile.GetSource_FromThis(),
 		    Projectile.Center,
 		    Vector2.Zero,
@@ -202,48 +209,49 @@ internal class PrismaticOrb : Gear
 	    SoundEngine.PlaySound(SoundID.Item14, Projectile.position);
     }
 
-    private int GetDustTypeForElement(ElementType element)
-    {
-        return element switch
-        {
-            ElementType.Fire => DustID.Torch,
-            ElementType.Cold => DustID.Ice,
-            ElementType.Lightning => DustID.Electric,
-            _ => DustID.RainbowMk2
-        };
-    }
+	private static int GetDustTypeForElement(ElementType element)
+	{
+		return element switch
+		{
+			ElementType.Fire => DustID.Torch,
+			ElementType.Cold => DustID.Ice,
+			ElementType.Lightning => DustID.Electric,
+			_ => DustID.RainbowMk2
+		};
+	}
 
-    public override Color? GetAlpha(Color lightColor)
+	public override Color? GetAlpha(Color lightColor)
     {
         return Color.White;
     }
 }
 
- public class PrismaticOrbExplosion : ModProjectile
- {
-	 public override void SetDefaults()
-	 {
-		 Projectile.width = 240;
-		 Projectile.height = 240;
-		 Projectile.friendly = true;
-		 Projectile.hostile = false;
-		 Projectile.timeLeft = 3; 
-		 Projectile.tileCollide = false;
-		 Projectile.penetrate = -1;
-		 Projectile.usesLocalNPCImmunity = true; 
-		 Projectile.localNPCHitCooldown = -1; 
-		 Projectile.ignoreWater = true;
-		 Projectile.DamageType = DamageClass.Magic;
-		 Projectile.alpha = 255;
-	 }
+public class PrismaticOrbExplosion : ModProjectile
+{
+	public override void SetDefaults()
+	{
+		Projectile.width = 240;
+		Projectile.height = 240;
+		Projectile.friendly = true;
+		Projectile.hostile = false;
+		Projectile.timeLeft = 3;
+		Projectile.tileCollide = false;
+		Projectile.penetrate = -1;
+		Projectile.usesLocalNPCImmunity = true;
+		Projectile.localNPCHitCooldown = -1;
+		Projectile.ignoreWater = true;
+		Projectile.DamageType = DamageClass.Magic;
+		Projectile.alpha = 255;
+		Projectile.ownerHitCheck = false;
+	}
 
-	 public override bool? CanHitNPC(NPC target)
-	 {
-		 return !target.friendly && target.CanBeChasedBy();
-	 }
+	public override bool? CanHitNPC(NPC target)
+	{
+		return !target.friendly && target.CanBeChasedBy();
+	}
 
-	 public override void AI()
-	 {
-		 Projectile.velocity = Vector2.Zero;
-	 }
- }
+	public override void AI()
+	{
+		Projectile.velocity = Vector2.Zero;
+	}
+}

@@ -1515,7 +1515,11 @@ SwampMap: {
 
 CrystalVisors: {
 	// DisplayName: Crystal Visors
-	// Tooltip: ""
+	/* Tooltip:
+		'''
+		Allows you to see into the half-dimension
+		'...and look awesome while doing it.'
+		''' */
 }
 
 PrismShardItem: {

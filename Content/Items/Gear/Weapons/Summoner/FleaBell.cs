@@ -23,7 +23,9 @@ public class FleaBell : Gear
 	    Pitch = -0.1f
     };
 
-    public override void SetStaticDefaults()
+	protected override string GearLocalizationCategory => "Summon";
+
+	public override void SetStaticDefaults()
     {
         base.SetStaticDefaults();
         
@@ -59,8 +61,8 @@ public class FleaBell : Gear
         Item.shoot = ModContent.ProjectileType<FleaBellMinion>();
 
 		PoTInstanceItemData data = Item.GetInstanceData();
-		//data.ItemType = Common.Enums.ItemType.Summon;
-    }
+		data.ItemType = Common.Enums.ItemType.Summon;
+	}
 
     public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
     {
@@ -163,8 +165,6 @@ public class FleaBellMinion : ModProjectile
 	private const float EnhancedSpeedMultiplier = 1.4f;
 	private const int EnhancedHitCooldown = 20;
     
-	private const float SpreadRadius = 80f;
-    
 	// Animation constants
 	private const int AnimationFrameCount = 4;
 
@@ -235,7 +235,9 @@ public class FleaBellMinion : ModProjectile
 
 	    if (totalFleas > 1)
 	    {
-		    float angle = MathHelper.TwoPi / totalFleas * fleaIndex;
+			const float SpreadRadius = 80f;
+
+			float angle = MathHelper.TwoPi / totalFleas * fleaIndex;
 		    float radius = SpreadRadius * Math.Min(totalFleas / 3f, 1f);
 		    Vector2 direction = angle.ToRotationVector2();
 		    personalOffset = new Vector2(
