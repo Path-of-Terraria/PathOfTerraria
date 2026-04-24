@@ -82,7 +82,7 @@ public class AffixRegistry : ILoadable
 	public static ItemAffixData? TryGetItemData(Type affixType, ItemType itemType)
 	{
 		if (itemType == 0) { return null; }
-		//Debug.Assert(BitOperations.PopCount((ulong)itemType) == 1);
+		Debug.Assert(BitOperations.PopCount((ulong)itemType) == 1);
 		return ByAffixAndItemType.TryGetValue((affixType, itemType), out ItemAffixData? result) ? result : null;
 	}
 
