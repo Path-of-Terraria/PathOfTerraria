@@ -48,10 +48,8 @@ internal class Mudsquit : ModNPC
 		BloatAndExplode
 	}
 
-	private static readonly SpriteAnimation animIdle = new() { Id = "idle", Frames = [0], Speed = 0 };
-	//private static readonly SpriteAnimation animStartGrab = new() { Id = "startGrab", Frames = [4, 5, 6, 7], Speed = 10, Loop = false };
-	//private static readonly SpriteAnimation animTryGrab = new() { Id = "tryGrab", Frames = [8, 9, 10, 11], Speed = 10 };
-	//private static readonly SpriteAnimation animCarry = new() { Id = "carry", Frames = [12, 13, 14, 15], Speed = 12 };
+	private static readonly SpriteAnimation animIdle = new() { Id = "idle", Frames = [0, 1, 2, 3], Speed = 8, Loop = true };
+	private static readonly SpriteAnimation animExplode = new() { Id = "explode", Frames = [4, 5, 6], Speed = 8, Loop = true };
 
 	private States State
 	{
@@ -65,7 +63,7 @@ internal class Mudsquit : ModNPC
 	{
 		NPCID.Sets.TeleportationImmune[Type] = true;
 		NPCID.Sets.SpecificDebuffImmunity[Type][BuffID.Shimmer] = true;
-		Main.npcFrameCount[Type] = 1;
+		Main.npcFrameCount[Type] = 7;
 	}
 
 	public override void SetDefaults()
@@ -83,11 +81,11 @@ internal class Mudsquit : ModNPC
 		NPC.HitSound = new($"{nameof(PathOfTerraria)}/Assets/Sounds/HitEffects/FleshHit", 3) { MaxInstances = 5, Volume = 0.4f };
 		NPC.DeathSound = SoundID.NPCDeath23 with { Pitch = +0.1f, PitchVariance = 0.15f, Identifier = $"{Name}Death" };
 
-		//NPC.TryEnableComponent<NPCAnimations>(e =>
-		//{
-		//	e.BaseFrame = new SpriteFrame(1, (byte)Main.npcFrameCount[Type]) with { PaddingX = 0, PaddingY = 0 };
-		//	e.SpriteOffset = new(0f, 0f);
-		//});
+		NPC.TryEnableComponent<NPCAnimations>(e =>
+		{
+			e.BaseFrame = new SpriteFrame(1, (byte)Main.npcFrameCount[Type]) with { PaddingX = 0, PaddingY = 2 };
+			e.SpriteOffset = new(0f, 0f);
+		});
 		NPC.TryEnableComponent<NPCMovement>(e =>
 		{
 			e.Data.Push = new() { RequiredNpcType = Type };
@@ -130,9 +128,9 @@ internal class Mudsquit : ModNPC
 
 	public override void FindFrame(int frameHeight)
 	{
-		//Context ctx = new(NPC);
-		//ctx.Animations.Advance();
-		//ctx.Animations.Set(PickAnimation(in ctx));
+		Context ctx = new(NPC);
+		ctx.Animations.Advance();
+		ctx.Animations.Set(PickAnimation(in ctx));
 	}
 
 	public override void AI()
@@ -233,31 +231,19 @@ internal class Mudsquit : ModNPC
 		}
 	}
 
-	// Placeholder for animations
 	private SpriteAnimation? PickAnimation(in Context ctx)
 	{
 		Vector2 vel = NPC.position - NPC.oldPosition;
 
-		//if (State == States.IdleFly && SwitchingToGrab)
-		//{
-			return animIdle;
-		//}
-
-		//return ctx.Animations.Current switch
-		//{
-		//	_ when State == States.ChaseFly || NPC.IsABestiaryIconDummy => animTryGrab with { Speed = 16 },
-		//	_ when State == States.IdleFly => animFly,
-		//	_ when State == States.CarryingPlayer && !HasLetGo => animCarry with { Speed = 12 + ShakeTimer / 5f },
-		//	_ when State == States.CarryingPlayer && HasLetGo => animFly,
-		//	_ => null,
-		//};
+		return ctx.Animations.Current switch
+		{
+			_ when State == States.Chase || NPC.IsABestiaryIconDummy => animIdle,
+			_ => animExplode with { Speed = MathF.Pow(Timer / 120f, 2) },
+		};
 	}
 
-	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+	public override Color? GetAlpha(Color drawColor)
 	{
-		Texture2D tex = TextureAssets.Npc[Type].Value;
-		Vector2 position = NPC.Center - screenPos;
-		SpriteEffects effects = NPC.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 		float redFactor = 0f;
 
 		if (State == States.BloatAndExplode)
@@ -265,7 +251,6 @@ internal class Mudsquit : ModNPC
 			redFactor = MathF.Abs(MathF.Sin(Timer * (0.15f + Timer * 0.001f)));
 		}
 
-		spriteBatch.Draw(tex, position, null, Color.Lerp(drawColor, new Color(255, 100, 100), redFactor), NPC.rotation, NPC.frame.Size() / 2f, 1f, effects, 0);
-		return false;
+		return Color.Lerp(drawColor, new Color(255, 50, 50), redFactor);
 	}
 }

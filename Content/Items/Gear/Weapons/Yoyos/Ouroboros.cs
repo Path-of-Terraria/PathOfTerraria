@@ -8,7 +8,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.Items.Gear.Weapons;
+namespace PathOfTerraria.Content.Items.Gear.Weapons.Yoyos;
 
 public class Ouroboros : Gear
 {
@@ -230,7 +230,7 @@ public class OuroborosProjectile : ModProjectile
 			    {
 				    Vector2 pullDirection = (Projectile.Center - npc.Center).SafeNormalize(Vector2.UnitX);
 				    float distance = (float)Math.Sqrt(distanceSquared);
-				    float pullForce = DevourPullStrength * (1f - (distance / DevourRange));
+				    float pullForce = DevourPullStrength * (1f - distance / DevourRange);
 				    npc.velocity += pullDirection * pullForce * 0.1f;
 			    }
 		    }
@@ -361,7 +361,7 @@ public class OuroborosPoisonGas : ModProjectile
 
     public override void AI()
     {
-	    Projectile.alpha = (int)MathHelper.Lerp(100, 255, 1f - (Projectile.timeLeft / (float)GasDuration));
+	    Projectile.alpha = (int)MathHelper.Lerp(100, 255, 1f - Projectile.timeLeft / (float)GasDuration);
 
 	    // another placeholder for visual fx
 	    if (Main.rand.NextBool(3))

@@ -12,6 +12,7 @@ internal class PrismaticOrb : Gear
 {
 	private const int buffTime = 60 * 5;
 	private const int buffCooldown = 60 * 15;
+
     public override void SetStaticDefaults()
     {
 	    base.SetStaticDefaults();
@@ -30,7 +31,6 @@ internal class PrismaticOrb : Gear
 		    { ElementType.Lightning, 0.33f },
 		    { ElementType.Chaos, 0.0f }
 	    };
-
     }
 
     public override void SetDefaults()
@@ -61,14 +61,16 @@ internal class PrismaticOrb : Gear
     {
 	    if (player.altFunctionUse == 2)
 	    {
-		    var altUsePlayer = player.GetModPlayer<AltUsePlayer>();
+			AltUsePlayer altUsePlayer = player.GetModPlayer<AltUsePlayer>();
 		    if (altUsePlayer.AltFunctionAvailable)
 		    {
 			    player.AddBuff(ModContent.BuffType<Buffs.PrismaticOrbBuff>(), buffTime);
 			    altUsePlayer.SetAltCooldown(buffCooldown); 
 		    }
+
 		    return false;
 	    }
+
 	    return true;
     }
 }
@@ -81,7 +83,6 @@ internal class PrismaticOrb : Gear
 	private Vector2 originalVelocity;
 	private float baseHorizontalSpeed;
 	private bool hasInitialized = false;
-
 
     public override void SetDefaults()
     {
