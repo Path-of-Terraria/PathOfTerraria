@@ -23,6 +23,8 @@ public sealed class ShockDebuff : ModBuff
 				return;
 			}
 
+			Common.Buffs.DoTFunctionality.ApplyPlayerInteraction(npc, attacker);
+
 			npc.GetGlobalNPC<ShockedNPC>().ShockStrength = effect;
 			npc.AddBuff(ModContent.BuffType<ShockDebuff>(), 2 * 60);
 		}

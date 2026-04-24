@@ -106,7 +106,7 @@ internal class WormLightning : ModNPC
 	public override void SetDefaults()
 	{
 		NPC.Size = new Vector2(22);
-		NPC.lifeMax = 100;
+		NPC.lifeMax = 6_000;
 		NPC.damage = 60;
 		NPC.aiStyle = -1;
 		NPC.noGravity = true;
@@ -118,7 +118,7 @@ internal class WormLightning : ModNPC
 
 	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 	{
-		NPC.lifeMax = ModeUtils.ByMode(300, 500, 800, 1200);
+		NPC.lifeMax = ModeUtils.ByMode(4000, 5000, 7000, 12000);
 	}
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)

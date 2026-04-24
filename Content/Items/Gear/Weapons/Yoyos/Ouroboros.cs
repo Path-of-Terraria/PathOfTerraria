@@ -1,33 +1,34 @@
-using System.Collections.Generic;
-using PathOfTerraria.Common.Projectiles;
+using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.ElementalDamage;
 using PathOfTerraria.Content.Buffs.ElementalBuffs;
 using PathOfTerraria.Core.Items;
+using PathOfTerraria.Utilities.Terraria;
+using ReLogic.Content;
+using System.Collections.Generic;
 using Terraria.Audio;
-using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.Items.Gear.Weapons;
+namespace PathOfTerraria.Content.Items.Gear.Weapons.Yoyos;
 
 public class Ouroboros : Gear
 {
+	protected override string GearLocalizationCategory => "Visors";
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
 
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = 1f;
-		staticData.MinDropItemLevel = 15;
+		staticData.MinDropItemLevel = 75;
 		staticData.IsUnique = true;
 		staticData.Description = this.GetLocalization("Description");
 		staticData.AltUseDescription = this.GetLocalization("AltUseDescription");
 
 		ElementalWeaponSets.WeaponElementProportionsById[Type] = new Dictionary<ElementType, float>
 		{
-			{ ElementType.Fire, 0.0f },
-			{ ElementType.Cold, 0.0f },
-			{ ElementType.Lightning, 0.0f },
 			{ ElementType.Chaos, 1.0f }
 		};
 	}
@@ -36,7 +37,7 @@ public class Ouroboros : Gear
 	{
 		base.SetDefaults();
 
-		Item.damage = 24;
+		Item.damage = 99;
 		Item.DamageType = DamageClass.MeleeNoSpeed;
 		Item.width = 42;
 		Item.height = 38;
@@ -51,6 +52,9 @@ public class Ouroboros : Gear
 		Item.channel = true;
 		Item.noMelee = true;
 		Item.noUseGraphic = true;
+
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = ItemType.Yoyo;
 	}
 
 	public override bool AltFunctionUse(Player player)
@@ -62,7 +66,7 @@ public class Ouroboros : Gear
 	{
 		if (Main.mouseRight && Main.mouseRightRelease && player.channel)
 		{
-			var altUsePlayer = player.GetModPlayer<AltUsePlayer>();
+			AltUsePlayer altUsePlayer = player.GetModPlayer<AltUsePlayer>();
 			if (altUsePlayer.AltFunctionAvailable)
 			{
 				foreach (Projectile proj in Main.ActiveProjectiles)
@@ -89,7 +93,9 @@ public class OuroborosProjectile : ModProjectile
     private const float DevourPullStrength = 8f;
     private const float DevourRangeSquared = DevourRange * DevourRange;
 
-    private int poisonGasTimer = 0;
+	private static Asset<Texture2D> stringTexture;
+
+	private int poisonGasTimer = 0;
     private bool devourActive = false;
     private int devourTimer = 0;
 
@@ -103,9 +109,9 @@ public class OuroborosProjectile : ModProjectile
     public override void SetDefaults()
     {
         Projectile.extraUpdates = 0;
-        Projectile.width = 16;
-        Projectile.height = 16;
-        Projectile.aiStyle = 99;
+        Projectile.width = 18;
+        Projectile.height = 18;
+        Projectile.aiStyle = ProjAIStyleID.Yoyo;
         Projectile.friendly = true;
         Projectile.penetrate = -1;
         Projectile.DamageType = DamageClass.MeleeNoSpeed;
@@ -204,7 +210,6 @@ public class OuroborosProjectile : ModProjectile
 		    return;
 	    }
 
-	    //placeholder visuals
 	    if (Main.rand.NextBool(2))
 	    {
 		    var dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.VenomStaff);
@@ -217,9 +222,13 @@ public class OuroborosProjectile : ModProjectile
 	    for (int i = 0; i < Main.maxNPCs; i++)
 	    {
 		    NPC npc = Main.npc[i];
-		    if (!npc.active || npc.life <= 0 || !npc.CanBeChasedBy()) continue;
 
-		    float distanceSquared = npc.DistanceSQ(Projectile.Center);
+		    if (!npc.active || npc.life <= 0 || !npc.CanBeChasedBy())
+			{
+				continue;
+			}
+
+			float distanceSquared = npc.DistanceSQ(Projectile.Center);
 		    if (distanceSquared <= DevourRangeSquared)
 		    {
 			    if ((float)npc.life / npc.lifeMax <= DevourExecuteThreshold)
@@ -230,15 +239,15 @@ public class OuroborosProjectile : ModProjectile
 			    {
 				    Vector2 pullDirection = (Projectile.Center - npc.Center).SafeNormalize(Vector2.UnitX);
 				    float distance = (float)Math.Sqrt(distanceSquared);
-				    float pullForce = DevourPullStrength * (1f - (distance / DevourRange));
-				    npc.velocity += pullDirection * pullForce * 0.1f;
+				    float pullForce = DevourPullStrength * (1f - distance / DevourRange);
+					npc.velocity += pullDirection * pullForce * 0.1f * npc.knockBackResist;
 			    }
 		    }
 	    }
     }
 
     /// <summary>
-    /// Instantly kills an enemy and creates dramatic effects
+    /// Instantly kills an enemy and creates dramatic effects.
     /// </summary>
     /// <param name="npc">The enemy to execute</param>
     private void ExecuteEnemy(NPC npc)
@@ -286,7 +295,7 @@ public class OuroborosProjectile : ModProjectile
     {
         if (mouseDirectlyOver && !devourActive)
         {
-            var altUsePlayer = player.GetModPlayer<AltUsePlayer>();
+			AltUsePlayer altUsePlayer = player.GetModPlayer<AltUsePlayer>();
             if (altUsePlayer.AltFunctionAvailable)
             {
                 ActivateDevour();
@@ -309,8 +318,8 @@ public class OuroborosProjectile : ModProjectile
 	    Vector2 distToProj = playerCenter - Projectile.Center;
 	    float projRotation = distToProj.ToRotation() - MathHelper.PiOver2;
 	    float distance = distToProj.Length();
-    
-	    var stringTexture = ModContent.Request<Texture2D>("PathOfTerraria/Content/Items/Gear/Weapons/OuroborosString");
+
+		Asset<Texture2D> stringTexture = AssetUtils.Immediate(Texture.Replace("Projectile", "") + "String", ref OuroborosProjectile.stringTexture);
     
 	    while (distance > 12f && !float.IsNaN(distance))
 	    {
@@ -321,7 +330,6 @@ public class OuroborosProjectile : ModProjectile
         
 		    Color drawColor = Lighting.GetColor((int)center.X / 16, (int)center.Y / 16);
 
-        
 		    Main.spriteBatch.Draw(
 			    stringTexture.Value,
 			    center - Main.screenPosition,
@@ -341,13 +349,18 @@ public class OuroborosProjectile : ModProjectile
 
 public class OuroborosPoisonGas : ModProjectile
 {
-    private const int GasDuration = 3 * 60;
+    private const int GasDuration = 1 * 90; // 1.5 seconds
     private const float GasRadius = 64f;
-    private const int PoisonTickInterval = 30; 
+    private const int PoisonTickInterval = 30;
+
+	public override void SetStaticDefaults()
+	{
+		Main.projFrames[Type] = 6;
+	}
 
     public override void SetDefaults()
     {
-	    Projectile.Size = new(GasRadius * 2); 
+	    Projectile.Size = new(GasRadius * 1.5f); 
         Projectile.friendly = true;
         Projectile.DamageType = DamageClass.MeleeNoSpeed;
         Projectile.timeLeft = GasDuration;
@@ -357,14 +370,15 @@ public class OuroborosPoisonGas : ModProjectile
         Projectile.penetrate = -1;
         Projectile.usesLocalNPCImmunity = true;
         Projectile.localNPCHitCooldown = PoisonTickInterval;
+		Projectile.rotation = Main.rand.NextFloat(MathHelper.TwoPi);
     }
 
     public override void AI()
     {
-	    Projectile.alpha = (int)MathHelper.Lerp(100, 255, 1f - (Projectile.timeLeft / (float)GasDuration));
-
-	    // another placeholder for visual fx
-	    if (Main.rand.NextBool(3))
+	    Projectile.alpha = (int)MathHelper.Lerp(100, 255, 1f - Projectile.timeLeft / (float)GasDuration);
+		Projectile.frame = (int)((1 - (Projectile.timeLeft / (float)GasDuration)) * Main.projFrames[Type]);
+	    
+		if (Main.rand.NextBool(14))
 	    {
 		    var dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.JungleSpore);
 		    dust.velocity *= 0.1f;
@@ -379,8 +393,13 @@ public class OuroborosPoisonGas : ModProjectile
 	    PoisonedDebuff.Apply(target, 5 * 60, Main.player[Projectile.owner]);
     }
 
-    public override bool PreDraw(ref Color lightColor)
-    {
-        return false;
-    }
+	public override bool PreDraw(ref Color lightColor)
+	{
+		Texture2D tex = TextureAssets.Projectile[Type].Value;
+		int frameHeight = tex.Height / Main.projFrames[Type];
+		var src = new Rectangle(0, Projectile.frame * frameHeight, tex.Width, frameHeight);
+		
+		Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, src, lightColor, Projectile.rotation, src.Size() / 2f, 1, SpriteEffects.None, 0);
+		return false;
+	}
 }

@@ -51,7 +51,7 @@ internal class FallingEntling : ModProjectile
 		}
 
 		Projectile.rotation += Projectile.velocity.Y * 0.005f;
-		Projectile.velocity.Y += 0.1f;
+		Projectile.velocity.Y += 0.15f;
 
 		if (!Projectile.tileCollide && !Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height))
 		{

@@ -25,6 +25,8 @@ internal class IgnitedDebuff : ModBuff
 				AddIgnitedStackHandler.Send(npc, hitDamage, time);
 			}
 
+			DoTFunctionality.ApplyPlayerInteraction(npc, attacker);
+
 			IgnitedNPC ignited = npc.GetGlobalNPC<IgnitedNPC>();
 			ignited.Stacks.Add(new IgnitedStack(time + 1, hitDamage));
 			ignited.Stacks = [.. ignited.Stacks.OrderByDescending(x => x.BaseDamage)];

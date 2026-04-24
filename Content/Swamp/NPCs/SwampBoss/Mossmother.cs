@@ -5,6 +5,7 @@ using PathOfTerraria.Content.Projectiles.Utility;
 using ReLogic.Content;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Swamp.NPCs.SwampBoss;
@@ -14,6 +15,24 @@ namespace PathOfTerraria.Content.Swamp.NPCs.SwampBoss;
 [AutoloadBossHead]
 internal partial class Mossmother : ModNPC
 {
+	public class LastMossmotherCondition : IItemDropRuleCondition
+	{
+		public bool CanDrop(DropAttemptInfo info)
+		{
+			return NPC.CountNPCS(ModContent.NPCType<Mossmother>()) == 1;
+		}
+
+		public bool CanShowItemDropInUI()
+		{
+			return true;
+		}
+
+		public string? GetConditionDescription()
+		{
+			return null;
+		}
+	}
+
 	public enum BehaviorState : byte
 	{
 		Huddled,
@@ -66,7 +85,7 @@ internal partial class Mossmother : ModNPC
 		NPCID.Sets.TrailCacheLength[Type] = TrailingIndex;
 		NPCID.Sets.TrailingMode[Type] = 1;
 
-		NPCID.Sets.NPCBestiaryDrawOffset[Type] = new NPCID.Sets.NPCBestiaryDrawModifiers() { PortraitPositionYOverride = -50, PortraitPositionXOverride = 4 };
+		NPCID.Sets.NPCBestiaryDrawOffset[Type] = new NPCID.Sets.NPCBestiaryDrawModifiers() { PortraitPositionYOverride = -30, PortraitPositionXOverride = 4 };
 
 		Face = ModContent.Request<Texture2D>(Texture + "_Face");
 	}
@@ -110,7 +129,7 @@ internal partial class Mossmother : ModNPC
 
 	public override bool CanHitPlayer(Player target, ref int cooldownSlot)
 	{
-		return State == BehaviorState.Desperation;
+		return State is BehaviorState.Desperation or BehaviorState.MoveToWall or BehaviorState.GasCrawl;
 	}
 
 	public override bool? CanBeHitByProjectile(Projectile projectile)
@@ -135,7 +154,7 @@ internal partial class Mossmother : ModNPC
 
 	public override void OnKill()
 	{
-		if (NPC.CountNPCS(Type) > 1)
+		if (NPC.CountNPCS(Type) > 1 || Main.netMode == NetmodeID.MultiplayerClient)
 		{
 			return;
 		}
@@ -191,6 +210,14 @@ internal partial class Mossmother : ModNPC
 		_animationSpeed += _animationSpeedTarget;
 	}
 
+	public override void ModifyNPCLoot(NPCLoot npcLoot)
+	{
+		LeadingConditionRule rule = new(new LastMossmotherCondition());
+		rule.OnSuccess(new OneFromOptionsDropRule(1, 1, ModContent.ItemType<BloatingLeech>(), ModContent.ItemType<LogwoodPistol>()));
+
+		npcLoot.Add(rule);
+	}
+
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
 		Texture2D tex = TextureAssets.Npc[Type].Value;
@@ -208,11 +235,11 @@ internal partial class Mossmother : ModNPC
 		DrawBackLimb(tex, basePosition, [new Vector2(24, -56), new(10, -4), new Vector2(14, 2)], drawColor, false, true); // Back limb
 		DrawBackLimb(tex, basePosition, [new Vector2(-24, -56), new(-6, -4), new Vector2(-8, -2)], drawColor, true, true); // Flipped back limb
 
-		DrawIndividualSegment(new Rectangle(0, 0, 136, 134), drawColor);
-		DrawIndividualSegment(new Rectangle(0, 136, 136, 134), Color.White * (MathF.Sin(_animationSpeed * 0.6f) * 0.25f + 0.75f));
+		DrawIndividualSegment(new Rectangle(0, 0, 136, 134), drawColor); // Body
+		DrawIndividualSegment(new Rectangle(0, 136, 136, 134), Color.White * (MathF.Sin(_animationSpeed * 0.6f) * 0.25f + 0.75f)); // Glowmask
 
 		var faceFrame = new Rectangle(82 * (int)(NPC.frameCounter % 8), (int)(84 * VisualVariant), 82, 84);
-		DrawIndividualSegment(faceFrame, drawColor, -new Vector2(0, 40), Face.Value);
+		DrawIndividualSegment(faceFrame, drawColor, -new Vector2(0, 40), Face.Value); // Face
 
 		return false;
 

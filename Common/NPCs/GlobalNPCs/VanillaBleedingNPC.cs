@@ -3,7 +3,8 @@
 namespace PathOfTerraria.Common.NPCs.GlobalNPCs;
 
 /// <summary>
-/// Adds in <see cref="BuffID.Bleeding"/> functionality for NPCs, which usually don't have it.
+/// Adds in <see cref="BuffID.Bleeding"/> functionality for NPCs, which usually don't have it.<br/>
+/// 1.4.5: Remove this, as NPCs can bleed then.
 /// </summary>
 internal class VanillaBleedingNPC : GlobalNPC
 {

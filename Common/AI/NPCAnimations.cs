@@ -136,6 +136,7 @@ internal sealed class NPCAnimations : NPCComponent
 		
 		Vector2 position = usedCenter - screenPos;
 		Color alphaColor = IgnoreAlpha ? Color.White : Color.White.MultiplyRGBA(new Color(Vector4.One * ((byte.MaxValue - npc.alpha) / (float)byte.MaxValue)));
-		Main.EntitySpriteDraw(texture, position, frame, drawColor.MultiplyRGBA(alphaColor), usedRotation, usedOrigin, npc.scale, npc.spriteDirection >= 0 ? (SpriteEffects)1 : 0, 0f);
+		Color finalColor = npc.GetAlpha(drawColor.MultiplyRGBA(alphaColor));
+		Main.EntitySpriteDraw(texture, position, frame, finalColor, usedRotation, usedOrigin, npc.scale, npc.spriteDirection >= 0 ? (SpriteEffects)1 : 0, 0f);
 	}
 }

@@ -5,6 +5,34 @@ namespace PathOfTerraria.Common.Buffs;
 
 internal class DoTFunctionality
 {
+	public static void ApplyPlayerInteraction(NPC npc, Entity attacker)
+	{
+		if (attacker is Player player)
+		{
+			npc.ApplyInteraction(player.whoAmI);
+		}
+	}
+
+	public static void ApplyPlayerInteraction(NPC npc, Player player)
+	{
+		npc.ApplyInteraction(player.whoAmI);
+	}
+
+	public static void ApplyPlayerInteraction(NPC npc, int playerWhoAmI)
+	{
+		if (playerWhoAmI is < 0 or >= Main.maxPlayers)
+		{
+			return;
+		}
+
+		Player player = Main.player[playerWhoAmI];
+
+		if (player.active)
+		{
+			npc.ApplyInteraction(playerWhoAmI);
+		}
+	}
+
 	public static void ApplyDoT(NPC npc, int damage, ref float elapsedDoT, Color? lightColor = null, Color? darkColor = null)
 	{
 		lightColor ??= Color.OrangeRed;

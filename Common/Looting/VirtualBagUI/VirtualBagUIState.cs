@@ -8,6 +8,8 @@ using PathOfTerraria.Core.UI;
 using PathOfTerraria.Core.UI.SmartUI;
 using SubworldLibrary;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
@@ -41,7 +43,7 @@ internal class VirtualBagUIState : UIState, IMutuallyExclusiveUI, IAutopauseUI
 		panel.Append(new UIText(Language.GetText(Path + "Title"), 0.6f, true) { Top = StyleDimension.FromPixels(6), Left = StyleDimension.FromPixels(6) });
 
 		string desc = Main.LocalPlayer.GetModPlayer<VirtualBagStoragePlayer>().ConfirmedExit ? "Review" : "Description";
-		panel.Append(new UIText(Language.GetText(Path + desc), 0.9f) { HAlign = 1f, Left = StyleDimension.FromPixels(-50), Top =	StyleDimension.FromPixels(6) });
+		panel.Append(new UIText(Language.GetText(Path + desc), 0.9f) { HAlign = 1f, Left = StyleDimension.FromPixels(-50), Top = StyleDimension.FromPixels(6) });
 
 		var close = new UIImageButton(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/CloseButton")) { HAlign = 1f };
 		close.SetVisibility(1, 0.6f);
@@ -55,6 +57,23 @@ internal class VirtualBagUIState : UIState, IMutuallyExclusiveUI, IAutopauseUI
 
 		_storageGrid = new UIGrid();
 		_storageGrid.SetDimensions((0, 0), (0, 0), (1, 0), (1, 0));
+
+		_storageGrid.ManualSortMethod = (list) => list.Sort((x, y) => // Manual sort fixes items shuffling almost completely every time the UI is opened, and also gives a consistent order
+		{
+			if (x is not UIItemIcon xItem)
+			{
+				return -1;
+			}
+			if (y is not UIItemIcon yItem)
+			{
+				return 1;
+			}
+
+			Item itemX = GetItem(xItem);
+			Item itemY = GetItem(yItem);
+			return itemX.type.CompareTo(itemY.type);
+		});
+
 		gridPanel.Append(_storageGrid);
 
 		UIScrollbar bar = new();
@@ -123,6 +142,9 @@ internal class VirtualBagUIState : UIState, IMutuallyExclusiveUI, IAutopauseUI
 			}
 		}
 	}
+
+	[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_item")]
+	public static extern ref Item GetItem(UIItemIcon icon);
 
 	private void Close(UIMouseEvent evt, UIElement listeningElement)
 	{

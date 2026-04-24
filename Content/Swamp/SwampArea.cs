@@ -67,7 +67,7 @@ internal class SwampArea : MappingWorld, IExplorationWorld
 		SkipActuationLocations.Clear();
 		BlockerPositions.Clear();
 
-		Main.spawnTileX = LeftSpawn ? 70 : Main.maxTilesX - 70;
+		Main.spawnTileX = LeftSpawn ? 90 : Main.maxTilesX - 90;
 		Main.spawnTileY = FloorY - 6;
 
 		FastNoiseLite noise = new(Random.Next());
@@ -851,11 +851,16 @@ internal class SwampArea : MappingWorld, IExplorationWorld
 	private static void SpawnArenaEntities()
 	{
 		List<float> xPositions = [];
+		Range range = SwampArenaGeneration.WidthAtWaterHeight;
+
+		if (range.Start.Value == 0 && range.End.Value == 0)
+		{
+			return;
+		}
 
 		for (int i = 0; i < 5; ++i)
 		{
 			Vector2 pos;
-			Range range = SwampArenaGeneration.WidthAtWaterHeight;
 
 			do
 			{
@@ -906,10 +911,11 @@ internal class SwampArea : MappingWorld, IExplorationWorld
 
 	private static void PlaceEncounters()
 	{
-		foreach (Vector2 position in EncounterLocations)
-		{
-			Encounter encounter = EncounterIO.CreateEncounterFromModPath(PoTMod.Instance, "Content/Encounters/SwampMangrove");
-			encounter.MoveEverythingTo(position.ToPoint16());
-		}
+		// TODO: Add these
+		//foreach (Vector2 position in EncounterLocations)
+		//{
+		//	Encounter encounter = EncounterIO.CreateEncounterFromModPath(PoTMod.Instance, "Content/Encounters/SwampMangrove");
+		//	encounter.MoveEverythingTo(position.ToPoint16());
+		//}
 	}
 }

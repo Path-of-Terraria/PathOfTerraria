@@ -101,7 +101,7 @@ Start here:
 - `Common/Systems/PassiveTreeSystem/PassiveTreePlayer.cs`
 - `Common/Systems/PassiveTreeSystem/Passive.cs`
 - `Common/Data/PassiveRegistry.cs`
-- `Common/Data/Passives/Passives.json` or `Passives-dev.json`
+- `Common/Data/Passives/Passives.json`
 
 Important patterns:
 

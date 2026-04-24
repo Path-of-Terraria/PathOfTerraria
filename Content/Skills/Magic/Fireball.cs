@@ -688,6 +688,7 @@ public class Fireball : Skill
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
+			Common.Buffs.DoTFunctionality.ApplyPlayerInteraction(target, Owner);
 			target.AddBuff(ModContent.BuffType<EverburningShadowflameDebuff>(), 2);
 			target.GetGlobalNPC<EverburningShadowflameDebuff.EverburningShadowflameNPC>().LastPlayerApplied = Owner.whoAmI;
 
