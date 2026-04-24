@@ -1,3 +1,6 @@
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
+using Terraria.ID;
+
 namespace PathOfTerraria.Common.Systems.Questing;
 
 internal sealed class QuestKillGlobalNPC : GlobalNPC
@@ -5,6 +8,11 @@ internal sealed class QuestKillGlobalNPC : GlobalNPC
 	public override void OnKill(NPC npc)
 	{
 		NPC.HitInfo hit = default;
+
+		if (Main.netMode == NetmodeID.MultiplayerClient)
+		{
+			return;
+		}
 
 		for (int i = 0; i < npc.playerInteraction.Length; i++)
 		{
@@ -20,7 +28,14 @@ internal sealed class QuestKillGlobalNPC : GlobalNPC
 				continue;
 			}
 
-			player.GetModPlayer<QuestModPlayer>().OnKillNPC(npc, hit, 0);
+			if (Main.netMode == NetmodeID.SinglePlayer)
+			{
+				player.GetModPlayer<QuestModPlayer>().OnKillNPC(npc, hit, 0);
+			}
+			else
+			{
+				SyncQuestKillCredit.Send((byte)i, npc.type, npc.netID);
+			}
 		}
 	}
 }

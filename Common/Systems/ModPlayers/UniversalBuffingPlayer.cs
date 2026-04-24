@@ -14,7 +14,7 @@ internal class UniversalBuffingPlayer : ModPlayer
 		modifiers.CritDamage *= critMultiplier;
 	}
 
-	public override void PostUpdateEquips()
+	public override void UpdateEquips()
 	{
 		int mainItem = Main.mouseItem.IsAir || Main.mouseItem.damage <= 0 ? 0 : 58;
 
@@ -23,6 +23,8 @@ internal class UniversalBuffingPlayer : ModPlayer
 			PoTItemHelper.ApplyAffixes(Player.inventory[mainItem], UniversalModifier, Player);
 		}
 
+		// Apply universal stat modifiers during equip updates so max life/mana are available
+		// before vanilla clamps current resources for the tick.
 		UniversalModifier.ApplyTo(Player);
 
 		Player.statLifeMax = Math.Min(400, Player.statLifeMax2);

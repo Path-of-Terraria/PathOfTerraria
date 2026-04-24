@@ -15,6 +15,7 @@ using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.UI;
+using Microsoft.Xna.Framework.Input;
 
 namespace PathOfTerraria.Common.Looting.CurrencyPouch;
 
@@ -148,9 +149,47 @@ internal class CurrencyPouchUIState : UIState, IMutuallyExclusiveUI
 			return "x" + amount.ToString();
 		}));
 
+		storageIcon.OnLeftClick += (_, _) => LeftClickItem(item);
 		storageIcon.OnRightClick += (_, _) => RightClickItem(item);
 
 		return storageIcon;
+	}
+
+	private void LeftClickItem(Item item)
+	{
+		bool isControlHeld = Main.keyState.IsKeyDown(Keys.LeftControl) || Main.keyState.IsKeyDown(Keys.RightControl);
+		bool isShiftHeld = Main.keyState.PressingShift();
+
+		if (isShiftHeld && !isControlHeld)
+		{
+			if (!TryStoreAllMatchingInventoryItems(item.type, out int stored))
+			{
+				return;
+			}
+
+			SoundEngine.PlaySound(SoundID.Grab);
+			return;
+		}
+
+		if (!isControlHeld)
+		{
+			return;
+		}
+
+		int amountToExtract = isShiftHeld ? Item.CommonMaxStack : 1;
+
+		if (!TryExtractItem(item, amountToExtract, out int extracted))
+		{
+			return;
+		}
+
+		SoundEngine.PlaySound(SoundID.Grab);
+
+		if (extracted > 0 && !Main.LocalPlayer.GetModPlayer<CurrencyPouchStoragePlayer>().StorageByType.ContainsKey(item.type))
+		{
+			Toggle();
+			Toggle();
+		}
 	}
 
 	private void RightClickItem(Item item)
@@ -178,6 +217,108 @@ internal class CurrencyPouchUIState : UIState, IMutuallyExclusiveUI
 			Toggle();
 			Toggle();
 		}
+	}
+
+	private static bool TryExtractItem(Item item, int requestedAmount, out int extracted)
+	{
+		extracted = 0;
+
+		Dictionary<int, int> storage = Main.LocalPlayer.GetModPlayer<CurrencyPouchStoragePlayer>().StorageByType;
+
+		if (!storage.TryGetValue(item.type, out int currentAmount) || currentAmount <= 0)
+		{
+			return false;
+		}
+
+		int remainingToInsert = Math.Min(requestedAmount, currentAmount);
+		Player player = Main.LocalPlayer;
+
+		for (int i = 0; i < Main.InventoryItemSlotsCount && remainingToInsert > 0; i++)
+		{
+			ref Item invItem = ref player.inventory[i];
+
+			if (invItem.type != item.type || invItem.stack >= invItem.maxStack)
+			{
+				continue;
+			}
+
+			int moved = Math.Min(invItem.maxStack - invItem.stack, remainingToInsert);
+			invItem.stack += moved;
+			remainingToInsert -= moved;
+			extracted += moved;
+		}
+
+		for (int i = 0; i < Main.InventoryItemSlotsCount && remainingToInsert > 0; i++)
+		{
+			ref Item invItem = ref player.inventory[i];
+
+			if (!invItem.IsAir)
+			{
+				continue;
+			}
+
+			invItem = item.Clone();
+			invItem.stack = Math.Min(item.maxStack, remainingToInsert);
+			remainingToInsert -= invItem.stack;
+			extracted += invItem.stack;
+		}
+
+		if (extracted <= 0)
+		{
+			return false;
+		}
+
+		storage[item.type] -= extracted;
+
+		if (storage[item.type] <= 0)
+		{
+			storage.Remove(item.type);
+		}
+
+		return true;
+	}
+
+	private static bool TryStoreAllMatchingInventoryItems(int itemType, out int stored)
+	{
+		stored = 0;
+
+		Player player = Main.LocalPlayer;
+		Dictionary<int, int> storage = player.GetModPlayer<CurrencyPouchStoragePlayer>().StorageByType;
+		storage.TryAdd(itemType, 0);
+
+		for (int i = 0; i < Main.InventoryItemSlotsCount; i++)
+		{
+			ref Item invItem = ref player.inventory[i];
+
+			if (invItem.type != itemType || invItem.IsAir)
+			{
+				continue;
+			}
+
+			int storageSpace = invItem.maxStack - storage[itemType];
+
+			if (storageSpace <= 0)
+			{
+				break;
+			}
+
+			int moved = Math.Min(invItem.stack, storageSpace);
+			storage[itemType] += moved;
+			invItem.stack -= moved;
+			stored += moved;
+
+			if (invItem.stack <= 0)
+			{
+				invItem.TurnToAir();
+			}
+		}
+
+		if (storage[itemType] <= 0)
+		{
+			storage.Remove(itemType);
+		}
+
+		return stored > 0;
 	}
 
 	private void Close(UIMouseEvent evt, UIElement listeningElement)
@@ -226,6 +367,16 @@ internal class CurrencyPouchUIState : UIState, IMutuallyExclusiveUI
 			int stack = Main.LocalPlayer.GetModPlayer<CurrencyPouchStoragePlayer>().StorageByType[item.type];
 			lines.Add(new DrawableTooltipLine(baseTip, lines.Count, 0, 0, color) { BaseScale = new(0.9f) });
 		}
+
+		lines.Add(new DrawableTooltipLine(
+			new TooltipLine(PoTMod.Instance, "ExtractOne", Language.GetTextValue("Mods.PathOfTerraria.UI.CurrencyPouch.ExtractOne")),
+			lines.Count, 0, 0, ItemTooltips.Colors.Positive) { BaseScale = new(0.9f) });
+		lines.Add(new DrawableTooltipLine(
+			new TooltipLine(PoTMod.Instance, "ExtractAll", Language.GetTextValue("Mods.PathOfTerraria.UI.CurrencyPouch.ExtractAll")),
+			lines.Count, 0, 0, ItemTooltips.Colors.Positive) { BaseScale = new(0.9f) });
+		lines.Add(new DrawableTooltipLine(
+			new TooltipLine(PoTMod.Instance, "StoreAll", Language.GetTextValue("Mods.PathOfTerraria.UI.CurrencyPouch.StoreAll")),
+			lines.Count, 0, 0, ItemTooltips.Colors.Positive) { BaseScale = new(0.9f) });
 
 		Tooltip.Create(new TooltipDescription
 		{

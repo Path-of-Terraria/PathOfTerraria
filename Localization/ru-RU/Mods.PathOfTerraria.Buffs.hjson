@@ -54,7 +54,7 @@ HardinessBuff: {
 }
 
 HasteBuff: {
-	DisplayName: Усиление скорости
+	DisplayName: Ускорение
 	Description:
 		'''
 		+20% скорости передвижения
@@ -63,7 +63,7 @@ HasteBuff: {
 }
 
 UnstoppableBuff: {
-	DisplayName: Неудержимый бафф
+	DisplayName: Неудержимый
 	Description:
 		'''
 		+50% к здоровью щита
@@ -143,7 +143,7 @@ FishingBuff: {
 
 ScorchingFlamesDebuff: {
 	// DisplayName: Scorching Flames
-	// Description: Ow burn
+	// Description: Reduced flame resistance
 }
 
 SingleFocusBuff: {

@@ -11,7 +11,7 @@ ThornyArmorAffix.Description: "{1}{0} отраженный прямой урон
 BaseLifeAffix.Description: "{1}{0} максимальное здоровье"
 AddedLifeAffix.Description: "{1}{0}% от максимального здоровья"
 LifeRegenAffix.Description: "{1}{0}% регенерации здоровья"
-LifeRegenMultiplierAffix.Description: "{1}{0}% множитель регенерации жизни"
+LifeRegenMultiplierAffix.Description: "{1}{0}% множитель регенерации здоровья"
 LifePotionPowerAffix.Description: "{1}{0}% более сильные лечебные зелья"
 LifePotionCapAffix.Description: "{1}{0} максимум зелий здоровья"
 LifePotionCooldownAffix.Description: "{1}{0}% перезарядки зелья маны"
@@ -23,19 +23,19 @@ ManaPotionCooldownAffix.Description: "{1}{0}% сокращено время во
 PiercingItemAffix.Description: "{1}{0}% пробитие защиты"
 AddedKnockbackItemAffix.Description: "{1}{0} отбрасывание"
 IncreasedKnockbackItemAffix.Description: "{1}{0}% отбрасывания"
-ChanceToApplyOnFireGearAffix.Description: '''{1}{0} шанс применить \"Огонь"\'''
-ChanceToApplyArmorShredGearAffix.Description: '''{1}{0} шанс применить \"Клочок брони"\'''
-ChanceToApplyBloodclotItemAffix.Description: '''{1}{0} шанс применить \"Сгусток крови"\'''
-ChanceToApplyPoisonItemAffix.Description: '''{1}{0}% шанс применить \"Отравление"\'''
+ChanceToApplyOnFireGearAffix.Description: "{1}{0} шанс применить «В огне!»"
+ChanceToApplyArmorShredGearAffix.Description: "{1}{0} шанс применить «Прореха в броне»"
+ChanceToApplyBloodclotItemAffix.Description: "{1}{0} шанс применить «Сгусток крови»"
+ChanceToApplyPoisonItemAffix.Description: "{1}{0}% шанс применить «Отравление»"
 BuffPoisonedHitsAffix.Description: "{1}{0}% урона отравленным врагам"
-MovementSpeedAffix.Description: "{1}{0}% скорость движения"
+MovementSpeedAffix.Description: "{1}{0}% скорость передвижения"
 HealOnKillingBurningEnemiesAffix.Description: "{1}{0} здоровья при убийстве горящего врага"
 IncreasedAttackSpeedAffix.Description: "{1}{0}% Увеличенная скорость атаки"
 AddedAttackSpeedAffix.Description: "{1}{0}% увеличение скорости атаки"
 AddedDamageAffix.Description: "{1}{0} увеличение урона"
-MoltenShellAffix.Description: "{1}{0} в Расплавленный панцирь"
-BloodSiphonAffix.Description: "{1}{0} в Кровавый вампиризм"
-FetidCarapaceAffix.Description: "{1}{0} к зловонному панцирю"
+MoltenShellAffix.Description: "{1}{0} к «Расплавленная оболочка»"
+BloodSiphonAffix.Description: "{1}{0} к «Переливание крови»"
+FetidCarapaceAffix.Description: "{1}{0} к «Гнилой панцирь»"
 
 NoFallDamageAffix: {
 	Description: Иммунитет к повреждениям от падений
@@ -66,13 +66,13 @@ MapIncreasedBehaviourAffix.Description: "{1}{0}% увеличена скорос
 // MapStealAegisChargeAffix.Description: Monsters steal an Aegis Charge on hit
 // MapStealFocusChargeAffix.Description: Monsters steal a Focus Charge on hit
 // MapStealHasteChargeAffix.Description: Monsters steal a Haste Charge on hit
-ColdAffix.Prefix: Замораживание
+ColdAffix.Prefix: Холодный
 LightningAffix.Prefix: Шокирующий
 FlamingAffix.Prefix: Пылающий
 StalwartAffix.Prefix: Стойкий
-FireResistItemAffix.Description: "{1}{0}% огнестойкость"
-ColdResistItemAffix.Description: "{1}{0}% устойчивость к холоду"
-LightningResistItemAffix.Description: "{1}{0} Электростойкость"
+FireResistItemAffix.Description: "{1}{0}% сопротивления к огню"
+ColdResistItemAffix.Description: "{1}{0}% сопротивления к холоду"
+LightningResistItemAffix.Description: "{1}{0}% сопротивления к молнии"
 // FocusChargeChanceOnKillAffix.Description: "{1}{0}% chance to gain a focus charge on kill"
 // HasteChargeChanceOnKillAffix.Description: "{1}{0}% chance to gain a haste charge on kill"
 // AegisChargeChanceOnKillAffix.Description: "{1}{0}% chance to gain a aegis charge on kill"
@@ -106,3 +106,9 @@ LightningResistItemAffix.Description: "{1}{0} Электростойкость"
 // MapColdConversionAffix.Description: "{1}{0}% of enemy damage converted to cold"
 // MapLightningConversionAffix.Description: "{1}{0}% of enemy damage converted to lightning"
 // IgniteChanceAffix.Description: "{1}{0}% chance to inflict Ignited"
+// CannotBeChilledAffix.Description: Cannot be Chilled
+// NearbyEnemiesScorchedAffix.Description: Nearby enemies are scorched
+// PermanentlyScorchedAffix.Description: You are permanently scorched
+// IncreasedIgniteEffectAffix.Description: "{1}{0}% increased effect of Ignite"
+// SpreadIgniteScorchOnKillAffix.Description: On kill, spread your Ignite and Scorch debuffs to all nearby targets
+// AllResistancesAffix.Description: "{1}{0}% to all resistances"

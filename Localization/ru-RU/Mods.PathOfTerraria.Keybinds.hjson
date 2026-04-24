@@ -3,12 +3,12 @@ UseSkill2.DisplayName: Использовать 2 способность
 UseSkill3.DisplayName: Использовать 3 способность
 UseSkill4.DisplayName: Использовать 4 способность
 UseSkill5.DisplayName: Использовать 5 способность
-CopyItemInfo.DisplayName: Копировать информацию о товаре
-StatUIKey.DisplayName: Переключить страницу статистики
-GearSwap.DisplayName: Обмен оружием
-QuestUIKey.DisplayName: Ключ квестового интерфейса
+CopyItemInfo.DisplayName: Копировать информацию о предмете
+StatUIKey.DisplayName: Статистика персонажа
+GearSwap.DisplayName: Смена оружия
+QuestUIKey.DisplayName: Список квестов
 DropTableKey.DisplayName: Клавиша сброса таблицы
-PassiveTreeUIKey.DisplayName: Ключ пользовательского интерфейса пассивного дерева
+PassiveTreeUIKey.DisplayName: Дерево пассивных навыков
 // ToggleQuestDebugging.DisplayName: Debug: Toggle Quest Debugging
 // ToggleEncounterDebugging.DisplayName: Debug: Toggle Encounter Debugging
 // VirtualBagHotkey.DisplayName: Toggle Sack of Holding

@@ -35,7 +35,7 @@ internal class KillCount(string id, Func<NPC, bool> includes, int count, Localiz
 
 	public override void OnKillNPC(Player player, NPC target, NPC.HitInfo hitInfo, int damageDone)
 	{
-		if (player.whoAmI == Main.myPlayer && countsAsKill(target))
+		if (countsAsKill(target))
 		{
 			_remaining--;
 		}

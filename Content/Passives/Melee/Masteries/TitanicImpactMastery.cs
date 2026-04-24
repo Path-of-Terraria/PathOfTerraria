@@ -10,7 +10,7 @@ internal class TitanicImpactMastery : Passive
 		public override void ModifyHitByItem(NPC npc, Player player, Item item, ref NPC.HitModifiers modifiers)
 		{
 			if (item.CountsAsClass(DamageClass.Melee) && player.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<TitanicImpactMastery>(out float value)
-				&& Main.rand.NextFloat() < value)
+				&& Main.rand.NextFloat() < value / 100f)
 			{
 				modifiers.Knockback *= 8;
 				modifiers.FinalDamage += DamageIncrease / 100f;

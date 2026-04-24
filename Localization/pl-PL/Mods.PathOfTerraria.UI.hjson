@@ -305,6 +305,9 @@ VirtualBag: {
 CurrencyPouch: {
 	// Title: Currency Pouch
 	// Apply: Right click to apply to held item
+	// ExtractOne: Ctrl + Left Click: take 1 out
+	// ExtractAll: Ctrl + Shift + Left Click: take all out
+	// StoreAll: Shift + Left Click: store all from inventory
 }
 
 PassiveTreeTab: Umiejętności bierne

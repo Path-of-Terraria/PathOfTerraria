@@ -37,7 +37,7 @@ GameplayConfig: {
 	// Headers.Gameplay: Gameplay
 
 	NearbyAuras: {
-		// Label: Nearby Auras
+		Label: Ауры рядом
 		// Tooltip: When enabled, minions will have a visible aura when using the Minion Damage Aura passive. This may include more auras in the future.
 	}
 }
