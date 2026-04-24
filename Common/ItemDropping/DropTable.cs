@@ -31,9 +31,9 @@ internal class DropTable
 		IEnumerable<ItemDatabase.ItemRecord> items = choice switch
 		{
 			//Gear
-			0 => ItemDatabase.GetItemByType<Gear>(),
+			0 => ItemDatabase.GetItemByType<Gear>().Where(x => MeetsMinDropItemLevel(x, itemLevel)),
 			//Currency
-			1 => ItemDatabase.GetItemByType<CurrencyShard>(),
+			1 => ItemDatabase.GetItemByType<CurrencyShard>().Where(x => MeetsMinDropItemLevel(x, itemLevel)),
 			//Maps
 			_ => GetMapPool(random),
 		};
@@ -179,12 +179,18 @@ internal class DropTable
 
 		foreach (ItemDatabase.ItemRecord item in filteredGear)
 		{
-			if (additionalCondition.Invoke(item))
+			if (MeetsMinDropItemLevel(item, itemLevel) && additionalCondition.Invoke(item))
 			{
 				selection.Add(item, ItemDatabase.ApplyDropRateModifiers(item, dropRarityModifier, itemRarityModifier, uniqueModifier));
 			}
 		}
 
 		return selection;
+	}
+
+	private static bool MeetsMinDropItemLevel(ItemDatabase.ItemRecord record, int itemLevel)
+	{
+		PoTStaticItemData staticData = record.Item.GetStaticData();
+		return staticData.MinDropItemLevel <= itemLevel;
 	}
 }
