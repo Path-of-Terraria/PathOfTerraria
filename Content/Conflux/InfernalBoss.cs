@@ -25,6 +25,7 @@ using PathOfTerraria.Common.World.Utilities;
 using PathOfTerraria.Content.Gores;
 using PathOfTerraria.Content.Particles;
 using PathOfTerraria.Core.Camera;
+using PathOfTerraria.Core.Graphics;
 using PathOfTerraria.Core.Graphics.Particles;
 using PathOfTerraria.Core.IK;
 using PathOfTerraria.Core.Interface;
@@ -102,6 +103,7 @@ internal sealed class InfernalFlames : ModProjectile
 		Projectile.aiStyle = -1;
 		Projectile.usesLocalNPCImmunity = true;
 		Projectile.localNPCHitCooldown = -1;
+		Projectile.rotation = Main.rand.NextFloatDirection();
 	}
 
 	public override bool OnTileCollide(Vector2 oldVelocity)
@@ -117,7 +119,7 @@ internal sealed class InfernalFlames : ModProjectile
 			Projectile.Kill();
 			for(int i = 0; i < 32; i++)
 			{
-				InfernalParticle death_p = new(Projectile.Center, Main.rand.NextVector2CircularEdge(4, 4), 25, Main.rand.NextFromCollection(layerColors.ToList()), null, 16, 1);
+				InfernalParticle death_p = new(Projectile.Center, Main.rand.NextVector2CircularEdge(4, 4), 25, Color.OrangeRed, null, 16, 1);
 				ParticleSystem.Create(death_p);
 			}
 
@@ -125,10 +127,10 @@ internal sealed class InfernalFlames : ModProjectile
 		}
 
 		//Particles spawning
-		Vector2 pPos = Projectile.Center + Main.rand.NextVector2Circular(256, 256);
-		InfernalParticle p = new(pPos, pPos.DirectionTo(Projectile.Center) * 1, 42, Main.rand.NextFromCollection(layerColors.ToList()), Projectile.Center,16,1);
+		//Vector2 pPos = Projectile.Center + Main.rand.NextVector2Circular(256, 256);
+		//InfernalParticle p = new(pPos, pPos.DirectionTo(Projectile.Center) * 1, 42, Main.rand.NextFromCollection(layerColors.ToList()), Projectile.Center,16,1);
 
-		ParticleSystem.Create(p);
+		//ParticleSystem.Create(p);
 		Projectile.rotation -= 0.2f;
 
 		if (StartPos == default) { StartPos = Projectile.Center; }
@@ -140,7 +142,7 @@ internal sealed class InfernalFlames : ModProjectile
 			Projectile.Center = Vector2.Lerp(StartPos, TargetPos, step);
 		}
 
-		Projectile.scale = Utils.Remap(Progress, 0.0f, 0.1f, 0.25f, 1.00f);
+		Projectile.scale = Utils.Remap(Progress, 0.0f, 0.05f, 0.05f, 1f);
 		Projectile.velocity *= 0.98f;
 
 		int frameCount = Main.projFrames[Type];
@@ -167,14 +169,6 @@ internal sealed class InfernalFlames : ModProjectile
 	{
 		target.AddBuff(BuffID.OnFire, 180);
 	}
-
-	private static readonly Color[] layerColors =
-	[
-		new(255, 80, 20, 200),
-		new(255, 255, 20, 070),
-		new(255, 80, 20, 100),
-		new(80, 80, 80, 100),
-	];
 	public override bool PreDraw(ref Color lightColor)
 	{
 		Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
@@ -185,17 +179,21 @@ internal sealed class InfernalFlames : ModProjectile
 		SpriteBatchArgs args = Main.spriteBatch.GetArguments();
 		Main.spriteBatch.End();
 		Main.spriteBatch.Begin(args with { BlendState = BlendState.Additive});
-		for (int i = 0; i < 6; i++)
+
+		for (int i = 0; i < 4; i++)
 		{
-			Main.EntitySpriteDraw(texture, screenPos, null, Color.OrangeRed, Projectile.rotation, texture.Size() * 0.5f, Projectile.scale * .5f * i / 2f, 0, 0f);
-			Main.EntitySpriteDraw(texture, screenPos, null, Color.White, Projectile.rotation + i / 6f * float.Tau, texture.Size() * 0.5f, Projectile.scale * .5f, 0, 0f);
+			Main.EntitySpriteDraw(texture, screenPos, null, new Color(35,1,35), Projectile.rotation + i / 6f * float.Tau, texture.Size() * 0.5f, Projectile.scale * 1f, 0, 0f);
 
 		}
+		for (int i = 0; i < 12; i++)
+		{
+			Main.EntitySpriteDraw(texture, screenPos, null, new Color(255, 55, 0), Projectile.rotation, texture.Size() * 0.5f, Projectile.scale * .5f * i * .25f, 0, 0f);
 
+		}
 		Main.spriteBatch.End();
 		Main.spriteBatch.Begin(args);
 
-
+		
 		// [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "DrawProj_Flamethrower")]
 		// static extern void DrawFlame(Main? main, Projectile p);
 		// DrawFlame(null, Projectile);
