@@ -1,5 +1,4 @@
-﻿using Daybreak.Common.Features.Hooks;
-using PathOfTerraria.Core.Graphics.Particles;
+﻿using PathOfTerraria.Core.Graphics.Particles;
 using PathOfTerraria.Core.Tween;
 using System;
 using System.Collections.Generic;
