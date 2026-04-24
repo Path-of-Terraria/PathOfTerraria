@@ -18,13 +18,13 @@ MoltenShieldBuff: {
 }
 
 BloodclotDebuff: {
-	// DisplayName: BloodclotDebuff
+	// DisplayName: Bloodclot
 	// Description: ""
 	// DeathText: "{0} couldn't stop the bleeding"
 }
 
 ArmorShredDebuff: {
-	// DisplayName: Armor Shred Debuff
+	// DisplayName: Armor Shred
 	// Description: ""
 }
 
@@ -34,22 +34,22 @@ ShockDebuff: {
 }
 
 RootedDebuff: {
-	// DisplayName: Rooted Debuff
+	// DisplayName: Rooted
 	// Description: You can't move!
 }
 
 GodlikeBuff: {
-	// DisplayName: Godlike Buff
+	// DisplayName: Godlike
 	// Description: You are immune to all direct damage
 }
 
 RestorationBuff: {
-	// DisplayName: Restoration Buff
+	// DisplayName: Restoration
 	// Description: Provides massive life regeneration
 }
 
 HardinessBuff: {
-	// DisplayName: Hardiness Buff
+	// DisplayName: Hardiness
 	/* Description:
 		'''
 		+10 defense
@@ -58,7 +58,7 @@ HardinessBuff: {
 }
 
 HasteBuff: {
-	// DisplayName: Haste Buff
+	// DisplayName: Haste
 	/* Description:
 		'''
 		+20% movement speed
@@ -67,7 +67,7 @@ HasteBuff: {
 }
 
 UnstoppableBuff: {
-	// DisplayName: Unstoppable Buff
+	// DisplayName: Unstoppable
 	/* Description:
 		'''
 		+50% shielding health
@@ -76,12 +76,12 @@ UnstoppableBuff: {
 }
 
 FrostflameDebuff: {
-	// DisplayName: Frostflame Debuff
+	// DisplayName: Frostflame
 	// Description: Mods.PathOfTerraria.Buffs.FrostflameDebuff.Description
 }
 
 SporeDebuff: {
-	// DisplayName: Spore Debuff
+	// DisplayName: Spore
 	// Description: Mods.PathOfTerraria.Buffs.SporeDebuff.Description
 }
 
@@ -147,7 +147,7 @@ FishingBuff: {
 
 ScorchingFlamesDebuff: {
 	// DisplayName: Scorching Flames
-	// Description: Ow burn
+	// Description: Reduced flame resistance
 }
 
 SingleFocusBuff: {

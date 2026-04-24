@@ -26,7 +26,7 @@ internal class AntlionTrapper : ModNPC
 	{
 		ItemID.Sets.KillsToBanner[Mod.Find<ModItem>(Name + "BannerItem").Type] = 20;
 
-		// This stops the NPC from being overwritten by another in multiplayer. Why does that happen? I don't know!
+		// This stops the NPC from being overwritten by another in multiplayer. Why does that happen? I don't know! - Gabe
 		NPCID.Sets.SpawnFromLastEmptySlot[Type] = true;
 	}
 
@@ -34,7 +34,7 @@ internal class AntlionTrapper : ModNPC
 	{
 		NPC.Size = new Vector2(34, 50);
 		NPC.aiStyle = -1;
-		NPC.lifeMax = 60;
+		NPC.lifeMax = 400;
 		NPC.defense = 0;
 		NPC.damage = 50;
 		NPC.HitSound = SoundID.NPCHit23;
@@ -183,7 +183,7 @@ internal class AntlionTrapper : ModNPC
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
 		Texture2D texture = TextureAssets.Npc[Type].Value;
-		Vector2 hitboxOffset = new Vector2(0, 20);
+		Vector2 hitboxOffset = new(0, 20);
 		var frame = new Rectangle(0, 0, 34, 50);
 		Color bodyColor = NPC.IsABestiaryIconDummy ? Color.White : Lighting.GetColor(NPC.Top.ToTileCoordinates());
 		Main.EntitySpriteDraw(texture, NPC.Center - screenPos + hitboxOffset, frame, bodyColor, 0f, frame.Size() / 2f, 1f, SpriteEffects.None, 0);

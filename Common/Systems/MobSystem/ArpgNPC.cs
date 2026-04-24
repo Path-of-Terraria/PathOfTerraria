@@ -143,7 +143,7 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 
 		// Calculate magic find
 		float magicFind = 0;
-		int itemLevel = 0;
+		int itemLevel = PoTMobHelper.GetAreaLevel();
 		float uniqueMod = 1f;
 
 		if (_lastPlayerHit != null)

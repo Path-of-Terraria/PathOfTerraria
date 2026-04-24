@@ -45,7 +45,7 @@ internal class Entling : ModNPC
 	{
 		NPC.Size = new Vector2(26, 32);
 		NPC.aiStyle = -1;
-		NPC.lifeMax = 80;
+		NPC.lifeMax = 800;
 		NPC.defense = 5;
 		NPC.damage = 35;
 		NPC.scale = Main.rand.NextFloat(0.8f, 1.2f);

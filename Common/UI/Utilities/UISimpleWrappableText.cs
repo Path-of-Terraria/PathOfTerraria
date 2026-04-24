@@ -104,9 +104,12 @@ public class UISimpleWrappableText : UIElement
 			return;
 		}
 
-		string[] lines = Wrappable
-			? WrapText(Font, _text, GetDimensions().Width, Scale).Split('\n')
-			: _text.Split('\n');
+		string normalizedText = _text.Replace("\r\n", "\n").Replace('\r', '\n');
+		float width = GetDimensions().Width;
+		string processedText = Wrappable
+			? width > 0f ? WrapText(Font, normalizedText, width, Scale) : normalizedText
+			: normalizedText;
+		string[] lines = processedText.Split('\n');
 		MaxPage = (lines.Length - 1) / MaxLines;
 		if (MaxPage < 0)
 		{
@@ -127,7 +130,7 @@ public class UISimpleWrappableText : UIElement
 		}
 		else
 		{
-			_pageText = _text;
+			_pageText = string.Join(Environment.NewLine, lines);
 		}
 
 		_array = ChatManager.ParseMessage(_pageText, Colour).ToArray();
@@ -136,9 +139,15 @@ public class UISimpleWrappableText : UIElement
 		if (Centered)
 		{
 			_drawOffsetX =
-				ChatManager.GetStringSize(Font, _array, new Vector2(Scale), Wrappable ? GetDimensions().Width : -1f).X *
+				ChatManager.GetStringSize(Font, _array, new Vector2(Scale), Wrappable && width > 0f ? width : -1f).X *
 				0.5f;
 		}
+	}
+
+	public override void Recalculate()
+	{
+		base.Recalculate();
+		UpdateText();
 	}
 
 	public static string WrapText(DynamicSpriteFont font, string text, float maxLineWidth, float fontScale = 1f)
@@ -148,6 +157,7 @@ public class UISimpleWrappableText : UIElement
 			return "";
 		}
 
+		text = text.Replace("\r\n", "\n").Replace('\r', '\n');
 		string[] lines = text.Split('\n');
 		string newText = "";
 		float currentWidth = 0f;

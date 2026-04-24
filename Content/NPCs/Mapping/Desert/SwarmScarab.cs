@@ -31,7 +31,7 @@ internal class SwarmScarab : ModNPC
 	{
 		NPC.Size = new Vector2(34, 30);
 		NPC.aiStyle = -1;
-		NPC.lifeMax = 60;
+		NPC.lifeMax = 600;
 		NPC.defense = 0;
 		NPC.damage = 50;
 		NPC.HitSound = SoundID.NPCHit23;

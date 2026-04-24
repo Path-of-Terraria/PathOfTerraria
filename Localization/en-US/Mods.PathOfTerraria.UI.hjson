@@ -336,6 +336,9 @@ VirtualBag: {
 CurrencyPouch: {
 	Title: Currency Pouch
 	Apply: Right click to apply to held item
+	ExtractOne: Ctrl + Left Click: take 1 out
+	ExtractAll: Ctrl + Shift + Left Click: take all out
+	StoreAll: Shift + Left Click: store all from inventory
 }
 
 PassiveTreeTab: Passives
@@ -413,4 +416,18 @@ MigrateRavencrest: {
 	Question: Ravencrest is outdated, and may have issues. Do you want to update your save?
 	Note: (It may take a minute)
 	Title: Migrate Ravencrest?
+}
+
+OnlineModPopup: {
+	Title: Path of Terraria Online
+	Description:
+		'''
+		We recommend pairing Path of Terraria with the online mod
+		PathOfTerrariaOnline is available on the Steam Workshop and enables:
+		- Global Leaderboards
+		- Global Trade System
+		- Global Chat System
+		'''
+	OpenWorkshop: Open Steam Workshop Page
+	Decline: Decline
 }

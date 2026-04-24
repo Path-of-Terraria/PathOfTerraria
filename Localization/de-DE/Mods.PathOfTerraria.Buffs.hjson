@@ -50,7 +50,7 @@ HardinessBuff: {
 }
 
 HasteBuff: {
-	// DisplayName: Haste Buff
+	// DisplayName: Haste
 	/* Description:
 		'''
 		+20% movement speed
@@ -59,7 +59,7 @@ HasteBuff: {
 }
 
 UnstoppableBuff: {
-	// DisplayName: Unstoppable Buff
+	// DisplayName: Unstoppable
 	/* Description:
 		'''
 		+50% shielding health
@@ -68,12 +68,12 @@ UnstoppableBuff: {
 }
 
 FrostflameDebuff: {
-	// DisplayName: Frostflame Debuff
+	// DisplayName: Frostflame
 	// Description: Mods.PathOfTerraria.Buffs.FrostflameDebuff.Description
 }
 
 SporeDebuff: {
-	// DisplayName: Spore Debuff
+	// DisplayName: Spore
 	// Description: Mods.PathOfTerraria.Buffs.SporeDebuff.Description
 }
 
@@ -139,7 +139,7 @@ FishingBuff: {
 
 ScorchingFlamesDebuff: {
 	// DisplayName: Scorching Flames
-	// Description: Ow burn
+	// Description: Reduced flame resistance
 }
 
 SingleFocusBuff: {

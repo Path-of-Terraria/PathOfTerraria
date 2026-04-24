@@ -1,6 +1,6 @@
 NoSwap: (Не с чем сравнивать)
-Swap: Если {0} оборудован:
+Swap: Если {0} надет:
 Shift: (Удерживайте клавишу Shift, чтобы сравнить характеристики)
-// NoDifferences: (No differences)
+NoDifferences: (Нет отличий)
 // TierXOfY: Tier {0} of {1}
-// AffixValueRange: Ranges {0} to {1}
+AffixValueRange: В пределах от {0} до {1}

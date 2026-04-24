@@ -4051,7 +4051,7 @@
 		"internalIdentifier": "PoisonedRangedAttacksPassive",
 		"referenceId": 242,
 		"maxLevel": 1,
-		"value": 10,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 243
@@ -7147,7 +7147,7 @@
 		"internalIdentifier": "PoisonedRangedAttacksPassive",
 		"referenceId": 1150,
 		"maxLevel": 1,
-		"value": 0,
+		"value": 5,
 		"position": {
 			"x": 820,
 			"y": 1019
@@ -7168,7 +7168,7 @@
 		"internalIdentifier": "IncreasedAttackSpeedPassive",
 		"referenceId": 1151,
 		"maxLevel": 1,
-		"value": 0,
+		"value": 5,
 		"position": {
 			"x": 584,
 			"y": 1224
