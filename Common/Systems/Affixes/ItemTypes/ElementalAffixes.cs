@@ -172,3 +172,23 @@ internal class IgniteChanceAffix : ItemAffix
 		player.GetModPlayer<IgnitedPlayer>().AddedIgniteChance += Value / 100f;
 	}
 }
+
+internal class IncreasedIgniteEffectAffix : ItemAffix
+{
+	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+	{
+		player.GetModPlayer<IgnitedPlayer>().IgniteDamage += Value / 100f;
+	}
+}
+
+internal class AllResistancesAffix : ItemAffix
+{
+	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+	{
+		foreach (ElementInstance element in player.GetModPlayer<ElementalPlayer>().Container)
+		{
+			element.Resistance += Value / 100f;
+		}
+	}
+}
+

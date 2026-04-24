@@ -10,8 +10,6 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
 internal class Cryobrand : Sword
 {
-	protected override bool CloneNewInstances => true;
-
 	public enum FormType
 	{
 		Sword,
@@ -22,6 +20,8 @@ internal class Cryobrand : Sword
 	private int _comboIndex = 0;
 	private int _comboResetTimer = 0;
 	private FormType[] _comboHistory = new FormType[3];
+
+	protected override bool CloneNewInstances => true;
 
 	public override ModItem Clone(Item newEntity)
 	{
@@ -103,8 +103,7 @@ internal class Cryobrand : Sword
 		return false;
 	}
 
-	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position,
-		Vector2 velocity, int type, int damage, float knockback)
+	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
 		return false;
 	}

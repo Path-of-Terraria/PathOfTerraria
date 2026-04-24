@@ -18,6 +18,14 @@ internal class IgnitedDebuff : ModBuff
 	/// </summary>
 	public static void ApplyTo(Entity attacker, Entity victim, int hitDamage, int time = 4 * 60, bool fromNet = false)
 	{
+		int stackDamage = hitDamage;
+		float tickRate = DefaultTickRate;
+
+		if (attacker is Player atkPlayer)
+		{
+			tickRate = atkPlayer.GetModPlayer<IgnitedPlayer>().IgniteDuration.ApplyTo(DefaultTickRate);
+		}
+		
 		if (victim is NPC npc)
 		{
 			if (Main.netMode == NetmodeID.MultiplayerClient && !fromNet)
@@ -26,11 +34,11 @@ internal class IgnitedDebuff : ModBuff
 			}
 
 			IgnitedNPC ignited = npc.GetGlobalNPC<IgnitedNPC>();
-			ignited.Stacks.Add(new IgnitedStack(time + 1, hitDamage));
+			ignited.Stacks.Add(new IgnitedStack(time + 1, stackDamage));
 			ignited.Stacks = [.. ignited.Stacks.OrderByDescending(x => x.BaseDamage)];
-			ignited.LastTickCount = attacker is Player player ? player.GetModPlayer<IgnitedPlayer>().IgniteDuration.ApplyTo(DefaultTickRate) : DefaultTickRate;
-
-			if (ignited.Stacks[0].BaseDamage == hitDamage)
+			ignited.LastTickCount = tickRate;
+			
+			if (ignited.Stacks[0].BaseDamage == stackDamage)
 			{
 				npc.AddBuff(ModContent.BuffType<IgnitedDebuff>(), time);
 			}
@@ -39,10 +47,10 @@ internal class IgnitedDebuff : ModBuff
 		{
 			// Todo: test multiplayer
 			IgnitedPlayer ignited = player.GetModPlayer<IgnitedPlayer>();
-			ignited.Stacks.Add(new IgnitedStack(time + 1, hitDamage));
+			ignited.Stacks.Add(new IgnitedStack(time + 1, stackDamage));
 			ignited.Stacks = [.. ignited.Stacks.OrderByDescending(x => x.BaseDamage)];
 
-			if (ignited.Stacks[0].BaseDamage == hitDamage)
+			if (ignited.Stacks[0].BaseDamage == stackDamage)
 			{
 				player.AddBuff(ModContent.BuffType<IgnitedDebuff>(), time);
 			}
@@ -178,12 +186,15 @@ internal class IgnitedNPC : GlobalNPC
 public class IgnitedPlayer : ModPlayer
 {
 	public StatModifier IgniteDuration = new();
+	public StatModifier IgniteDamage = new();
 	public float AddedIgniteChance = 0;
+
 	public List<IgnitedStack> Stacks = [];
 
 	public override void ResetEffects()
 	{
 		IgniteDuration = new();
+		IgniteDamage = new();
 		AddedIgniteChance = 0;
 	}
 

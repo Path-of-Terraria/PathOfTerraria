@@ -147,7 +147,7 @@ FishingBuff: {
 
 ScorchingFlamesDebuff: {
 	DisplayName: Scorching Flames
-	Description: Ow burn
+	Description: Reduced flame resistance
 }
 
 SingleFocusBuff: {

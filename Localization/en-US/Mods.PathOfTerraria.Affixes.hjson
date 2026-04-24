@@ -106,7 +106,6 @@ MapFireConversionAffix.Description: "{1}{0}% of enemy damage converted to fire"
 MapColdConversionAffix.Description: "{1}{0}% of enemy damage converted to cold"
 MapLightningConversionAffix.Description: "{1}{0}% of enemy damage converted to lightning"
 IgniteChanceAffix.Description: "{1}{0}% chance to inflict Ignited"
-
 CannotBeChilledAffix.Description: Cannot be Chilled
 NearbyEnemiesScorchedAffix.Description: Nearby enemies are scorched
 PermanentlyScorchedAffix.Description: You are permanently scorched

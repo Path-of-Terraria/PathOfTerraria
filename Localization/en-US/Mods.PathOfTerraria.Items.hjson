@@ -1551,7 +1551,7 @@ FirelordsWill: {
 }
 
 PyralisHeart: {
-	DisplayName: Pyralis' Heart
+	DisplayName: Heart of Pyralis
 	Tooltip: ""
 }
 
@@ -1561,7 +1561,7 @@ FallenKingsLegacy: {
 }
 
 ProlifRing: {
-	DisplayName: Prolif Ring
+	DisplayName: Ring of Proliferation
 	Tooltip: ""
 }
 

@@ -1531,3 +1531,38 @@ MetadataEntityPlacer: {
 	// DisplayName: Metadata Entity Placer
 	// Tooltip: Places tile entities that can be used to find specific positions in code"
 }
+
+FirelordsWill: {
+	// DisplayName: Firelord's Will
+	// Tooltip: ""
+}
+
+PyralisHeart: {
+	// DisplayName: Heart of Pyralis
+	// Tooltip: ""
+}
+
+FallenKingsLegacy: {
+	// DisplayName: Fallen King's Legacy
+	// Tooltip: ""
+}
+
+ProlifRing: {
+	// DisplayName: Ring of Proliferation
+	// Tooltip: ""
+}
+
+Cryobrand: {
+	// DisplayName: Cryobrand
+	// Tooltip: ""
+	// Description: Forged in the clash between fire and ice, Cryobrand wields both flame and frost.
+	/* AltUseDescription:
+		'''
+		Right click to switch between Sword (fire) and Shield (cold) forms.
+		Sword Form: 15% Increased Damage Done.
+		Shield Form: 15% Reduced Damage Taken.
+		Combos:
+		Sword-Sword-Shield: Fire slashes and spinning thrown shield.
+		Shield-Shield-Sword: Shield slams and a massive icy shockwave.
+		''' */
+}
