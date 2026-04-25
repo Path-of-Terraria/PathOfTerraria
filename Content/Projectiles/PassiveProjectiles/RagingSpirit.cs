@@ -36,7 +36,6 @@ internal class RagingSpirit : ModProjectile
 
 	public override void AI()
 	{
-		Main.NewText(Projectile.timeLeft + " " + Projectile.frameCounter);
 		Projectile.frameCounter++;
 		Projectile.frame = (int)(Projectile.frameCounter * 0.2f % 11);
 
