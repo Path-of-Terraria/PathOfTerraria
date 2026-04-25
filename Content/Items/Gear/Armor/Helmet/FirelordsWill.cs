@@ -13,7 +13,7 @@ internal class FirelordsWill : Helmet
 		base.SetStaticDefaults();
 
 		PoTStaticItemData staticData = this.GetStaticData();
-		staticData.DropChance = 0f;
+		staticData.DropChance = null;
 		staticData.IsUnique = true;
 	}
 
