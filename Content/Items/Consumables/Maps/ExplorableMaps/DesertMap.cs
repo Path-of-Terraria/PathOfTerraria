@@ -18,9 +18,9 @@ internal class DesertMap : ExplorableMap
 		staticData.DropChance = 1f;
 	}
 
-	protected override void OpenMapInternal()
+	internal override Subworld GetDestination()
 	{
-		SubworldSystem.Enter<DesertArea>();
+		return ModContent.GetInstance<DesertArea>();
 	}
 
 	public override string GenerateName(string defaultName)

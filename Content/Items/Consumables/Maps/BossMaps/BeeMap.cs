@@ -20,9 +20,9 @@ internal class BeeMap() : PreHardmodeBossMap(30, () => NPC.downedQueenBee)
 		Item.Size = new Vector2(36, 36);
 	}
 
-	protected override void OpenMapInternal()
+	internal override Subworld GetDestination()
 	{
-		SubworldSystem.Enter<QueenBeeDomain>();
+		return ModContent.GetInstance<QueenBeeDomain>();
 	}
 
 	public override string GenerateName(string defaultName)

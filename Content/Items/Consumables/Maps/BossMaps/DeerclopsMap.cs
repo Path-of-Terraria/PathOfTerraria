@@ -22,9 +22,9 @@ internal class DeerclopsMap() : PreHardmodeBossMap(35, () => NPC.downedDeerclops
 		Item.Size = new Vector2(30, 30);
 	}
 
-	protected override void OpenMapInternal()
+	internal override Subworld GetDestination()
 	{
-		SubworldSystem.Enter<DeerclopsDomain>();
+		return ModContent.GetInstance<DeerclopsDomain>();
 	}
 
 	public override string GenerateName(string defaultName)

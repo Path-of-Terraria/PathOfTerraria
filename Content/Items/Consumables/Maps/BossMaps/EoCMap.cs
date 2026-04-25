@@ -22,9 +22,9 @@ internal class EoCMap() : PreHardmodeBossMap(15, () => NPC.downedBoss1)
 		Item.Size = new Vector2(44, 30);
 	}
 
-	protected override void OpenMapInternal()
+	internal override Subworld GetDestination()
 	{
-		SubworldSystem.Enter<EyeDomain>();
+		return ModContent.GetInstance<EyeDomain>();
 	}
 
 	public override string GenerateName(string defaultName)

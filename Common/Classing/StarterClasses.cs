@@ -44,7 +44,7 @@ internal sealed class StarterClasses : ModSystem
 {
 	private static readonly StarterClassInfo[] infoByClass = new StarterClassInfo[(int)StarterClass.Count];
 
-	static StarterClasses()
+	public override void PostSetupContent()
 	{
 		infoByClass[(int)StarterClass.Melee] = new()
 		{

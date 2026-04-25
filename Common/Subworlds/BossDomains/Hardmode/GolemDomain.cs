@@ -360,8 +360,9 @@ internal class GolemDomain : BossDomainSubworld
 		TileEntity.UpdateEnd();
 
 		FightState state = FightTracker.UpdateState();
+		GetData().CheckDowned<GolemDomain>(NPCID.Golem);
 
-		if (state == FightState.NotStarted)
+		if (state == FightState.NotStarted && !GetData().BossDowned)
 		{
 			bool canSpawn = Main.CurrentFrameFlags.ActivePlayersCount > 0;
 			HashSet<int> who = [];

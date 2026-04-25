@@ -20,9 +20,9 @@ internal class CultistMap() : HardmodeBossMap(9, () => NPC.downedAncientCultist)
 		Item.Size = new Vector2(40);
 	}
 
-	protected override void OpenMapInternal()
+	internal override Subworld GetDestination()
 	{
-		SubworldSystem.Enter<CultistDomain>();
+		return ModContent.GetInstance<CultistDomain>();
 	}
 
 	public override string GenerateName(string defaultName)

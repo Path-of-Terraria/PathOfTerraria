@@ -37,7 +37,9 @@ internal class WizardStartQuest : Quest
 				RavencrestSystem.UpgradeBuilding("Library");
 				return true;
 			}),
+
 			new KillCount("KillScout", ModContent.NPCType<TownScoutNPC>(), 1, this.GetLocalization("KillScout")),
+
 			new InteractWithNPC("Start", ModContent.NPCType<WizardNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.Quest"),
 				Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.Quest2"),
 			[

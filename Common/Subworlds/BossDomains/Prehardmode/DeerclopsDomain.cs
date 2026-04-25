@@ -511,8 +511,9 @@ public class DeerclopsDomain : BossDomainSubworld, IOverrideBiome
 		}
 
 		FightState state = FightTracker.UpdateState();
+		GetData().CheckDowned<DeerclopsDomain>(NPCID.Deerclops);
 
-		if (state == FightState.NotStarted && playersOnSurface)
+		if (state == FightState.NotStarted && playersOnSurface && !GetData().BossDowned)
 		{
 			NPC.SpawnOnPlayer(0, NPCID.Deerclops);
 

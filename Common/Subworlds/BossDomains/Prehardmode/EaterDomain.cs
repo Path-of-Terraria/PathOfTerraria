@@ -575,8 +575,9 @@ public class EaterDomain : BossDomainSubworld
 		}
 
 		FightState state = FightTracker.UpdateState();
+		GetData().CheckDowned<EaterDomain>(NPCID.EaterofWorldsHead);
 
-		if (state == FightState.NotStarted && allInArena)
+		if (state == FightState.NotStarted && allInArena && !GetData().BossDowned)
 		{
 			for (int i = 0; i < 20; ++i)
 			{

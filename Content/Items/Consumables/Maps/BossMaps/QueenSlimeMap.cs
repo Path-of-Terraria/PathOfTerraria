@@ -20,9 +20,9 @@ internal class QueenSlimeMap() : HardmodeBossMap(1, () => NPC.downedQueenSlime)
 		Item.Size = new Vector2(34, 38);
 	}
 
-	protected override void OpenMapInternal()
+	internal override Subworld GetDestination()
 	{
-		SubworldSystem.Enter<QueenSlimeDomain>();
+		return ModContent.GetInstance<QueenSlimeDomain>();
 	}
 
 	public override string GenerateName(string defaultName)

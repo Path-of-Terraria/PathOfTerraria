@@ -14,7 +14,6 @@ using PathOfTerraria.Common.Subworlds.Tools;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Common.Systems.DisableBuilding;
-using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Utilities.Extensions;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
@@ -755,8 +754,9 @@ public class SkeletronDomain : BossDomainSubworld
 		}
 
 		FightState state = FightTracker.UpdateState();
+		GetData().CheckDowned<SkeletronDomain>(NPCID.SkeletronHead);
 
-		if (state == FightState.NotStarted && allInArena)
+		if (state == FightState.NotStarted && allInArena && !GetData().BossDowned)
 		{
 			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Arena.Center.X, Arena.Center.Y, NPCID.SkeletronHead, 1);
 
