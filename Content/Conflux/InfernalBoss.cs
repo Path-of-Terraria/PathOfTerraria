@@ -173,24 +173,16 @@ internal sealed class InfernalFlames : ModProjectile
 		Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
 		Vector2 worldPos = Projectile.Center.ToPoint().ToVector2();
 		Vector2 screenPos = worldPos - Main.screenPosition;
-		SpriteBatchArgs args = Main.spriteBatch.GetArguments();
-		Main.spriteBatch.End();
-		using SpriteBatchScope changeSb = Main.spriteBatch.Scope(args with { BlendState = BlendState.Additive });
 		for (int i = 0; i < 4; i++)
 		{
-			Main.EntitySpriteDraw(texture, screenPos, null, new Color(35, 1, 35), Projectile.rotation + i / 6f * float.Tau, texture.Size() * 0.5f, Projectile.scale * 1f, 0, 0f);
+			Main.EntitySpriteDraw(texture, screenPos, null, new Color(35, 1, 35,0), Projectile.rotation + i / 6f * float.Tau, texture.Size() * 0.5f, Projectile.scale * 1f, 0, 0f);
 		}
 		for (int i = 0; i < 12; i++)
 		{
-			Main.EntitySpriteDraw(texture, screenPos, null, new Color(255, 55, 0), Projectile.rotation, texture.Size() * 0.5f, Projectile.scale * .5f * i * .25f, 0, 0f);
+			Main.EntitySpriteDraw(texture, screenPos, null, new Color(255, 55, 0, 0), Projectile.rotation, texture.Size() * 0.5f, Projectile.scale * .5f * i * .25f, 0, 0f);
 		}
 
 		return false;
-	}
-	//dont restart spritebatch in predraw
-	public override void PostDraw(Color lightColor)
-	{
-		Main.spriteBatch.Begin(SpriteSortMode.Deferred,BlendState.AlphaBlend,Main.DefaultSamplerState,DepthStencilState.None,Main.Rasterizer,null,Main.Transform);
 	}
 }
 

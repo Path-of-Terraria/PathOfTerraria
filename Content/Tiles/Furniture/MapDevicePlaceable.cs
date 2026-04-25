@@ -23,11 +23,6 @@ using System.IO;
 using System.Linq;
 using Terraria;
 using SubworldLibrary;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Linq;
 using Terraria.Audio;
 using Terraria.Chat;
 using Terraria.DataStructures;
@@ -402,7 +397,7 @@ internal class MapDeviceEntity : ModTileEntity
 	private float portalSoundVolume;
 	private float engineSoundVolume;
 	private bool portalActive = false;
-	private int portalProjWhoAmI = -1;
+	public int PortalProjWhoAmI = -1;
 	public Item StoredMap { get; set; }
 	public Item[] Storage { get; set; }
 	public bool PortalActive { get => portalActive; set
@@ -412,9 +407,9 @@ internal class MapDeviceEntity : ModTileEntity
 			{
 				SpawnPortalProjectile();
 			}
-			else if(portalProjWhoAmI != -1)
+			else if(PortalProjWhoAmI != -1 && Main.projectile[PortalProjWhoAmI].type == ModContent.ProjectileType<BasePortalProjectile>())
 			{
-				Main.projectile[portalProjWhoAmI].ai[0] = 1; //kill animation 
+				Main.projectile[PortalProjWhoAmI].ai[0] = 1; //kill animation 
 			}
 		}
 	}
@@ -470,6 +465,13 @@ internal class MapDeviceEntity : ModTileEntity
 		if (!PortalActive && StoredMap is { IsAir: false })
 		{
 			Item.NewItem(new EntitySource_TileBreak(Position.X, Position.Y), Position.ToWorldCoordinates(), StoredMap);
+		}
+
+		//Portal handling
+		Projectile portal = Main.projectile[PortalProjWhoAmI];
+		if (portal.type == ModContent.ProjectileType<BasePortalProjectile>())
+		{
+			portal.ai[0] = 1;
 		}
 	}
 
@@ -895,7 +897,7 @@ internal class MapDeviceEntity : ModTileEntity
 	{
 		Point16 tilePoint = Position;
 		Vector2 worldCenter = tilePoint.ToWorldCoordinates(88, -20f);
-		portalProjWhoAmI = Projectile.NewProjectile(null, worldCenter, Vector2.Zero,ModContent.ProjectileType<BasePortalProjectile>(),0,0);
+		PortalProjWhoAmI = Projectile.NewProjectile(null, worldCenter, Vector2.Zero,ModContent.ProjectileType<BasePortalProjectile>(),0,0);
 	}
 
 	/// <summary>
