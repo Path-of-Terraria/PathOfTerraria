@@ -9,14 +9,21 @@ namespace PathOfTerraria.Content.Items.Gear.Armor.Leggings;
 [AutoloadEquip(EquipType.Legs)]
 internal class FallenKingsLegacy : Leggings
 {
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = null;
+		staticData.IsUnique = true;
+	}
+
 	public override void SetDefaults()
 	{
 		base.SetDefaults();
-
-		this.GetInstanceData().Rarity = ItemRarity.Magic;
 	}
 
-	public override List<ItemAffix> GenerateImplicits()
+	public override List<ItemAffix> GenerateAffixes()
 	{
 		return
 		[

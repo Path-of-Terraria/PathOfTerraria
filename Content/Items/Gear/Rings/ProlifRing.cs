@@ -8,16 +8,28 @@ namespace PathOfTerraria.Content.Items.Gear.Rings;
 
 public class ProlifRing : Ring
 {
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = null;
+		staticData.IsUnique = true;
+	}
+
 	public override void SetDefaults()
 	{
 		base.SetDefaults();
 
 		Item.value = Item.buyPrice(0, 1, 0, 0);
-
-		this.GetInstanceData().Rarity = ItemRarity.Rare;
 	}
 
 	public override List<ItemAffix> GenerateImplicits()
+	{
+		return [(ItemAffix)Affix.CreateAffix<BaseLifeAffix>(8, 12)];
+	}
+
+	public override List<ItemAffix> GenerateAffixes()
 	{
 		return
 		[
