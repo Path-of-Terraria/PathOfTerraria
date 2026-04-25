@@ -357,6 +357,34 @@ public class RavencrestSystem : ModSystem
 		ImprovableStructure structure = Structures[name];
 		level = level == -1 ? structure.StructureIndex + 1 : level;
 		structure.Change(level);
+
+		if (SubworldSystem.Current is RavencrestSubworld)
+		{
+			structure.Place();
+		}
+	}
+
+	internal static TagCompound SaveStructureState()
+	{
+		TagCompound tag = [];
+
+		foreach (KeyValuePair<string, ImprovableStructure> structure in Structures)
+		{
+			tag.Add(structure.Key, (byte)structure.Value.StructureIndex);
+		}
+
+		return tag;
+	}
+
+	internal static void LoadStructureState(TagCompound tag)
+	{
+		foreach (KeyValuePair<string, ImprovableStructure> structure in Structures)
+		{
+			if (tag.TryGet(structure.Key, out byte index))
+			{
+				structure.Value.Change(index);
+			}
+		}
 	}
 
 	public override void PostUpdateEverything()
