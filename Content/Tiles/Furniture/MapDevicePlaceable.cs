@@ -332,6 +332,11 @@ internal class MapDeviceEntity : ModTileEntity
 	{
 		public static void Send(string subworldName, bool reAdd)
 		{
+			if (Main.netMode == NetmodeID.SinglePlayer)
+			{
+				return;
+			}
+
 			ModPacket packet = Networking.GetPacket<ClearInfoHandler>();
 			BitsByte info = new(reAdd);
 			packet.Write(info);
