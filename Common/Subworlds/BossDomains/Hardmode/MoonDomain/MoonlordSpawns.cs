@@ -12,8 +12,7 @@ namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode.MoonDomain;
 [ReinitializeDuringResizeArrays]
 internal class MoonlordSpawns : GlobalNPC
 {
-	public static bool[] AllUnsafeArray = WallID.Sets.Factory.CreateBoolSet(false);
-	public static bool[] OldWallHouse = null;
+	public static bool[] AllUnsafeArray = [];
 
 	public override void Load()
 	{
@@ -23,18 +22,36 @@ internal class MoonlordSpawns : GlobalNPC
 
 	private static void HijackWallSafety(On_NPC.orig_SpawnNPC orig)
 	{
-		if (SubworldSystem.Current is MoonLordDomain)
+		if (SubworldSystem.Current is not MoonLordDomain)
 		{
-			OldWallHouse = Main.wallHouse;
-			Main.wallHouse = AllUnsafeArray;
+			orig();
+			return;
 		}
 
-		orig();
+		bool[] oldWallHouse = Main.wallHouse;
+		Main.wallHouse = GetAllUnsafeWallArray(oldWallHouse);
 
-		if (SubworldSystem.Current is MoonLordDomain)
+		try
 		{
-			Main.wallHouse = OldWallHouse;
+			orig();
 		}
+		finally
+		{
+			Main.wallHouse = oldWallHouse;
+		}
+	}
+
+	private static bool[] GetAllUnsafeWallArray(bool[] oldWallHouse)
+	{
+		int wallCount = Math.Max(oldWallHouse?.Length ?? 0, WallLoader.WallCount);
+
+		if (AllUnsafeArray.Length != wallCount)
+		{
+			AllUnsafeArray = new bool[wallCount];
+		}
+
+		Array.Clear(AllUnsafeArray);
+		return AllUnsafeArray;
 	}
 
 	private static int FixCrawltipedes(On_NPC.orig_NewNPC orig, IEntitySource src, int X, int Y, int Type, int Start, float ai0, float ai1, float ai2, float ai3, int t)
