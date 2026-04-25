@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.NPCs.BossDomain.EoLDomain;
 using PathOfTerraria.Content.Projectiles.Utility;
@@ -57,6 +58,7 @@ internal class EmpressDomain : BossDomainSubworld, IOverrideBiome
 
 	public override void Update()
 	{
+		GetData().CheckDowned<EmpressDomain>(NPCID.HallowBoss); // HallowBoss is EoL
 		DoWaveFunctionality();
 
 		FightState state = FightTracker.UpdateState();
@@ -79,8 +81,13 @@ internal class EmpressDomain : BossDomainSubworld, IOverrideBiome
 		}
 	}
 
-	private static void DoWaveFunctionality()
+	private void DoWaveFunctionality()
 	{
+		if (GetData().BossDowned) // Stop spawning things when EoL is dead
+		{
+			return;
+		}
+
 		int count = 0;
 
 		foreach (NPC npc in Main.ActiveNPCs)

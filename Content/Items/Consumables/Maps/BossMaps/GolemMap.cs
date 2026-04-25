@@ -20,9 +20,9 @@ internal class GolemMap() : HardmodeBossMap(6, () => NPC.downedGolemBoss)
 		Item.Size = new Vector2(40, 26);
 	}
 
-	protected override void OpenMapInternal()
+	internal override Subworld GetDestination()
 	{
-		SubworldSystem.Enter<GolemDomain>();
+		return ModContent.GetInstance<GolemDomain>();
 	}
 
 	public override string GenerateName(string defaultName)

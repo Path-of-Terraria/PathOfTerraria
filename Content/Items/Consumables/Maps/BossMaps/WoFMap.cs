@@ -22,9 +22,9 @@ internal class WoFMap() : PreHardmodeBossMap(45, () => Main.hardMode)
 		Item.Size = new Vector2(38, 36);
 	}
 
-	protected override void OpenMapInternal()
+	internal override Subworld GetDestination()
 	{
-		SubworldSystem.Enter<WallOfFleshDomain>();
+		return ModContent.GetInstance<WallOfFleshDomain>();
 	}
 
 	public override string GenerateName(string defaultName)

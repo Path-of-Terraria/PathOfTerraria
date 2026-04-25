@@ -5,7 +5,7 @@
 # The {0} is the value of the passive
 
 IncreasedMeleeDamagePassive: {
-	Name: Мастерство рукопашного боя
+	Name: Мастерство ближнего боя
 	Tooltip: Увеличивает ваш урон в ближнем бою на 5% за уровень
 }
 
@@ -305,8 +305,8 @@ HasteChargeMaxChargesPassive: {
 }
 
 ChanceToConsumeAmmoPassive: {
-	// Name: Ammo Reservation Chance
-	// Tooltip: +{0}% chance to reserve ammo
+	Name: Секретный отсек
+	Tooltip: Шанс сэкономить боеприпасы: +{0}% за уровень
 }
 
 IncreasedProjectileDamagePassive: {
@@ -1141,7 +1141,7 @@ FasterMiningPassive: {
 
 SpelunkyMastery: {
 	// Name: Spelunky
-	// Tooltip: Permanent Spelunker and Mining buffs
+	// Tooltip: Automatically mine out entire veins of ore when mining
 }
 
 CheaperShopsPassive: {

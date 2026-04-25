@@ -41,7 +41,7 @@ internal class MoonDomainSystem : ModSystem
 
 	public override void PreUpdateDusts()
 	{
-		if (SubworldSystem.Current is not MoonLordDomain)
+		if (SubworldSystem.Current is not MoonLordDomain moonDomain)
 		{
 			if (FightTracker.Started)
 			{
@@ -71,7 +71,9 @@ internal class MoonDomainSystem : ModSystem
 			}
 		}
 
-		if (state == FightState.NotStarted && allPlayersAtop && Main.CurrentFrameFlags.ActivePlayersCount > 0)
+		moonDomain.GetData().CheckDowned<MoonLordDomain>(NPCID.MoonLordCore);
+
+		if (state == FightState.NotStarted && allPlayersAtop && Main.CurrentFrameFlags.ActivePlayersCount > 0 && !moonDomain.GetData().BossDowned)
 		{
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{

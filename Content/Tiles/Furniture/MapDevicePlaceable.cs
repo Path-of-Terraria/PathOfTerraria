@@ -1,4 +1,5 @@
 ﻿using Mono.Cecil;
+using PathOfTerraria.Common.Conflux;
 using PathOfTerraria.Common.Mapping;
 using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Subworlds;
@@ -22,6 +23,11 @@ using System.IO;
 using System.Linq;
 using Terraria;
 using SubworldLibrary;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Linq;
 using Terraria.Audio;
 using Terraria.Chat;
 using Terraria.DataStructures;
@@ -344,6 +350,32 @@ public class MapDeviceTile : ModTile
 
 internal class MapDeviceEntity : ModTileEntity
 {
+	internal class ClearInfoHandler : Handler
+	{
+		public static void Send(string subworldName, bool reAdd)
+		{
+			ModPacket packet = Networking.GetPacket<ClearInfoHandler>();
+			BitsByte info = new(reAdd);
+			packet.Write(info);
+			packet.Write(subworldName);
+			packet.Send();
+		}
+
+		internal override void Receive(BinaryReader reader, byte sender)
+		{
+			BitsByte info = reader.ReadBitsByte();
+			string subworldName = reader.ReadString();
+			bool reAdd = info[0];
+
+			ResetPersistentMapInfo(subworldName, reAdd, true);
+
+			if (Main.netMode == NetmodeID.Server)
+			{
+				Send(subworldName, reAdd);
+			}
+		}
+	}
+
 	private static SoundStyle PortalSound = new($"{nameof(PathOfTerraria)}/Assets/Sounds/MapDevice/PortalLoop")
 	{
 		Volume = 0.4f,
@@ -802,6 +834,8 @@ internal class MapDeviceEntity : ModTileEntity
 
 		if (StoredMap is { IsAir: false, ModItem: Map map })
 		{
+			ResetPersistentMapInfo(map.GetDestination().FullName, true);
+
 			PortalUsesLeft = map.MaxUses;
 		}
 		else if (Injection is { } injection)
@@ -830,6 +864,23 @@ internal class MapDeviceEntity : ModTileEntity
 		}
 
 		return true;
+	}
+
+	private static void ResetPersistentMapInfo(string name, bool reAdd = false, bool fromNet = false)
+	{
+		if (!fromNet)
+		{
+			ClearInfoHandler.Send(name, reAdd);
+		}
+
+		MappingWorld.TimesEnteredByDomain.Remove(name);
+		MappingWorld.PersistentDomainInfo.Remove(name);
+
+		if (reAdd)
+		{
+			MappingWorld.TimesEnteredByDomain.Add(name, 0);
+			MappingWorld.PersistentDomainInfo.Add(name, new());
+		}
 	}
 
 	/// <summary>
@@ -867,6 +918,11 @@ internal class MapDeviceEntity : ModTileEntity
 		if (Main.netMode == NetmodeID.Server && netSender.HasValue && InteractingPlayer != netSender)
 		{
 			return false;
+		}
+
+		if (StoredMap.ModItem is Map map)
+		{
+			ResetPersistentMapInfo(map.GetDestination().FullName);
 		}
 
 		// The map is destroyed if the portal is ever closed.

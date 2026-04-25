@@ -16,6 +16,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using NPCUtils;
 using PathOfTerraria.Common.AI;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
@@ -24,6 +25,11 @@ using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Common.World.Utilities;
 using PathOfTerraria.Content.Gores;
 using PathOfTerraria.Content.Particles;
+using PathOfTerraria.Content.Items.Gear.Armor.Chestplate;
+using PathOfTerraria.Content.Items.Gear.Armor.Helmet;
+using PathOfTerraria.Content.Items.Gear.Armor.Leggings;
+using PathOfTerraria.Content.Items.Gear.Rings;
+using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using PathOfTerraria.Core.Camera;
 using PathOfTerraria.Core.Graphics;
 using PathOfTerraria.Core.Graphics.Particles;
@@ -480,6 +486,19 @@ internal sealed class InfernalBoss : ModNPC
 
 		// Initial cooldowns.
 		spawnCooldown = 60 * 3;
+	}
+
+	public override void ModifyNPCLoot(NPCLoot npcLoot)
+	{
+		int chanceCommon = (int)MathF.Ceiling(100f / 15f);
+		int chanceUncommon = (int)MathF.Ceiling(100f / 5f);
+		int chanceRare = (int)MathF.Ceiling(100f / 2f);
+		
+		npcLoot.AddCommon<FirelordsWill>(chanceCommon);
+		npcLoot.AddCommon<PyralisHeart>(chanceCommon);
+		npcLoot.AddCommon<FallenKingsLegacy>(chanceUncommon);
+		npcLoot.AddCommon<ProlifRing>(chanceRare);
+		npcLoot.AddCommon<Cryobrand>(chanceRare);
 	}
 
 	public override void SendExtraAI(BinaryWriter writer)

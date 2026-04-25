@@ -5,7 +5,6 @@ using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Content.Tiles.BossDomain.Mech;
 using System.Collections.Generic;
 using System.Linq;
-using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
@@ -941,8 +940,9 @@ internal class TwinsDomain : BossDomainSubworld
 		TileEntity.UpdateEnd();
 
 		FightState state = FightTracker.UpdateState();
+		GetData().CheckDowned<TwinsDomain>(NPCID.Retinazer, NPCID.Spazmatism);
 
-		if (state == FightState.NotStarted)
+		if (state == FightState.NotStarted && !GetData().BossDowned)
 		{
 			if (Main.netMode == NetmodeID.SinglePlayer)
 			{

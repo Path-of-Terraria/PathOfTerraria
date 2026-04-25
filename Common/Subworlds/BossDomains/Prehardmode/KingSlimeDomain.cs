@@ -11,7 +11,6 @@ using PathOfTerraria.Common.World.Generation;
 using Terraria.Localization;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
-using PathOfTerraria.Common.World.Generation.Tools;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 
@@ -260,8 +259,9 @@ public class KingSlimeDomain : BossDomainSubworld
 		}
 
 		FightState state = FightTracker.UpdateState();
+		GetData().CheckDowned<KingSlimeDomain>(NPCID.KingSlime);
 
-		if (state == FightState.NotStarted && allInArena)
+		if (state == FightState.NotStarted && allInArena && !GetData().BossDowned)
 		{
 			for (int i = -6; i < 11; ++i)
 			{

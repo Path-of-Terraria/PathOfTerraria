@@ -22,7 +22,7 @@ PlatinumGlaiveThrown.DisplayName: Платиновая глефа
 
 OwlSummon: {
 	DisplayName: Сова
-	Description: Летит к курсору. Наносит урон при контакте.
+	Description: Летит к курсору. Наносит урон при контакте
 }
 
 BatSummon: {
@@ -101,8 +101,8 @@ OobodopSummon: {
 }
 
 ExplosionHitbox.DisplayName: Взрыв
-ExplosionHitboxFriendly.DisplayName: Взрыв
-// Explosion.DisplayName: "{$Mods.PathOfTerraria.Projectiles.ExplosionHitbox.Name}"
+ExplosionHitboxFriendly.DisplayName: "{$Mods.PathOfTerraria.Projectiles.ExplosionHitbox.Name}"
+Explosion.DisplayName: "{$Mods.PathOfTerraria.Projectiles.ExplosionHitbox.Name}"
 
 DemonSummon: {
 	DisplayName: Демон
@@ -121,8 +121,8 @@ RunestoneBurst: {
 
 	DeathReasons: {
 		0: "{0} разорвало на части."
-		1: "{0} разорвало на части."
-		2: "{0} разорвало на части."
+		1: "{0} был сокрушен магической энергией."
+		2: "{0} не совладал с силой."
 	}
 }
 
@@ -200,9 +200,9 @@ ShadowflamePyreProjectile: {
 	// DisplayName: Shadowflame Pyre
 
 	DeathReason: {
-		// 0: "{0} burned to shadow."
-		// 1: "{0} was engulfed by the flames."
-		// 2: "{0} disappeared into embers and shade."
+		0: "{0} стал тенью."
+		1: "{0} был объят пламенем."
+		2: "{0} исчез в тлеющих углях и тени."
 	}
 }
 
@@ -221,9 +221,9 @@ UnderwaterRift: {
 	// DisplayName: Mysterious Rift
 
 	DeathReason: {
-		// 0: "{0} has become one with the void."
-		// 1: "{0} ventured beyond reality."
-		// 2: "{0} was not accepted by the other world."
+		0: "{0} стал одним целым с пустотой."
+		1: "{0} вышел за пределы реальности."
+		2: "{0} не был принят другим миром."
 	}
 }
 

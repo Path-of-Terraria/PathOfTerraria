@@ -22,9 +22,9 @@ internal class KingSlimeMap() : PreHardmodeBossMap(5, () => NPC.downedSlimeKing)
 		Item.Size = new Vector2(44, 36);
 	}
 
-	protected override void OpenMapInternal()
+	internal override Subworld GetDestination()
 	{
-		SubworldSystem.Enter<KingSlimeDomain>();
+		return ModContent.GetInstance<KingSlimeDomain>();
 	}
 
 	public override string GenerateName(string defaultName)

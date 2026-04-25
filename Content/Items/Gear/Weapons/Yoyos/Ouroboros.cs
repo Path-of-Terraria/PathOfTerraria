@@ -14,7 +14,7 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Yoyos;
 
 public class Ouroboros : Gear
 {
-	protected override string GearLocalizationCategory => "Visors";
+	protected override string GearLocalizationCategory => "Yoyo";
 
 	public override void SetStaticDefaults()
 	{

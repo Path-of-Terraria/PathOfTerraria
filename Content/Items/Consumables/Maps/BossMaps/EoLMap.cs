@@ -24,9 +24,9 @@ internal class EoLMap() : HardmodeBossMap(8, () => NPC.downedEmpressOfLight)
 		Item.Size = new Vector2(34, 38);
 	}
 
-	protected override void OpenMapInternal()
+	internal override Subworld GetDestination()
 	{
-		SubworldSystem.Enter<EmpressDomain>();
+		return ModContent.GetInstance<EmpressDomain>();
 	}
 
 	public override void ModifyCorruptionAffixes(WeightedRandom<ItemAffix> affixes)

@@ -20,9 +20,9 @@ internal class TwinsMap() : HardmodeBossMap(2, () => NPC.downedMechBoss2)
 		Item.Size = new Vector2(44, 30);
 	}
 
-	protected override void OpenMapInternal()
+	internal override Subworld GetDestination()
 	{
-		SubworldSystem.Enter<TwinsDomain>();
+		return ModContent.GetInstance<TwinsDomain>();
 	}
 
 	public override string GenerateName(string defaultName)
