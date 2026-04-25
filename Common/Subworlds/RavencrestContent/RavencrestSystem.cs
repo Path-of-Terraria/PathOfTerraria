@@ -3,12 +3,15 @@ using System.IO;
 using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.BoCDomain;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
+using PathOfTerraria.Common.Systems.Questing;
+using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Common.Systems.StructureImprovementSystem;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Common.Systems.VanillaModifications;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Common.UI.Misc;
 using PathOfTerraria.Common.World.Generation.Tools;
+using PathOfTerraria.Content.NPCs.Town;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Core.UI;
 using ReLogic.Graphics;
@@ -120,6 +123,7 @@ public class RavencrestSystem : ModSystem
 	public override void PreUpdateTime()
 	{
 		ReturnNativeNpcs();
+		CheckScoutSpawn();
 
 		if (NPC.downedBoss2 && !DisableOrbBreaking.CanBreakOrb)
 		{
@@ -295,6 +299,30 @@ public class RavencrestSystem : ModSystem
 		SpawnNativeNpcs(NPCSpawnTimeframe.WorldLoad, announceArrival: false);
 	}
 
+	private void CheckScoutSpawn()
+	{
+		if (Main.netMode == NetmodeID.MultiplayerClient || SubworldSystem.Current is not RavencrestSubworld || SpawnedScout)
+		{
+			return;
+		}
+
+		string questFullName = ModContent.GetInstance<WizardStartQuest>().FullName;
+
+		foreach (Player plr in Main.ActivePlayers)
+		{
+			QuestModPlayer questPlayer = plr.GetModPlayer<QuestModPlayer>();
+
+			if (questPlayer.QuestsByName.TryGetValue(questFullName, out Quest quest)
+				&& quest.Active
+				&& quest.ActiveStep.Id == "KillScout")
+			{
+				SpawnedScout = true;
+				NPC.NewNPC(Entity.GetSource_NaturalSpawn(), 30 * 16, 123 * 16, ModContent.NPCType<TownScoutNPC>());
+				break;
+			}
+		}
+	}
+
 	private static void ReturnNativeNpcs()
 	{
 		if (Main.netMode == NetmodeID.MultiplayerClient || SubworldSystem.Current is not RavencrestSubworld)
@@ -362,6 +390,10 @@ public class RavencrestSystem : ModSystem
 	public override void PostUpdateEverything()
 	{
 		if (SubworldSystem.Current is not RavencrestSubworld)
+		{
+			SpawnedScout = false;
+		}
+		else if (SpawnedScout && !NPC.AnyNPCs(ModContent.NPCType<TownScoutNPC>()))
 		{
 			SpawnedScout = false;
 		}
