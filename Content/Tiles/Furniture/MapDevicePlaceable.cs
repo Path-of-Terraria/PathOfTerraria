@@ -332,6 +332,11 @@ internal class MapDeviceEntity : ModTileEntity
 	{
 		public static void Send(string subworldName, bool reAdd)
 		{
+			if (Main.netMode == NetmodeID.SinglePlayer)
+			{
+				return;
+			}
+
 			ModPacket packet = Networking.GetPacket<ClearInfoHandler>();
 			BitsByte info = new(reAdd);
 			packet.Write(info);
@@ -752,8 +757,14 @@ internal class MapDeviceEntity : ModTileEntity
 
 		if (Main.netMode != NetmodeID.MultiplayerClient)
 		{
+			MappingWorld.SetActiveMapDevice(Position);
 			Player player = Main.netMode == NetmodeID.SinglePlayer ? Main.LocalPlayer : Main.player[netSender!.Value];
 			player.GetModPlayer<BossDomainLivesPlayer>().SetActiveMapDevice(Position);
+		}
+		else
+		{
+			MappingWorld.SetActiveMapDevice(Position);
+			Main.LocalPlayer.GetModPlayer<BossDomainLivesPlayer>().SetActiveMapDevice(Position);
 		}
 
 		return true;
@@ -791,15 +802,18 @@ internal class MapDeviceEntity : ModTileEntity
 			return false;
 		}
 
+		Subworld? destination = StoredMap is { IsAir: false, ModItem: Map storedMap } ? storedMap.GetDestination() : null;
+
 		// Ensure a newly opened portal starts from a fresh save.
-		MappingWorld.DeleteSavedSubworld();
+		MappingWorld.DeleteSavedSubworld(destination);
 
 		PortalActive = true;
 		PortalUsesLeft = int.MaxValue;
 
 		if (StoredMap is { IsAir: false, ModItem: Map map })
 		{
-			ResetPersistentMapInfo(map.GetDestination().FullName, true);
+			destination ??= map.GetDestination();
+			ResetPersistentMapInfo(destination.FullName, true);
 
 			PortalUsesLeft = map.MaxUses;
 		}
@@ -885,6 +899,7 @@ internal class MapDeviceEntity : ModTileEntity
 		PortalActive = false;
 		PortalUsesLeft = 0;
 		Injection = null;
+		MappingWorld.ClearActiveMapDevice();
 		MappingWorld.DeleteSavedSubworld();
 
 		// Broadcast the interaction.

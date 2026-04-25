@@ -166,6 +166,8 @@ internal class BossDomainLivesPlayer : ModPlayer
 
 	private void CloseTrackedMapDevicePortal()
 	{
+		MappingWorld.RequestCloseActiveMapDeviceAfterFailedRun();
+
 		if (!HasActiveMapDevice())
 		{
 			return;

@@ -174,7 +174,7 @@ Quest: {
 		Description: ""
 		EnterDomain: Enter Plantera's domain
 		Boss: Defeat Plantera
-		Plantera: Defeat ({0}/{1}) Strange Growth Monsters TODO: Change this name to the actual mob we make.
+		Plantera: Defeat ({0}/{1}) Strange Growth Monsters //TODO: Change this name to the actual mob we make.
 	}
 
 	GolemQuest: {
