@@ -337,26 +337,7 @@ public abstract class MappingWorld : Subworld
 
 	private static string? TryGetCurrentPath()
 	{
-		try
-		{
-			if (SubworldSystem.Current is null || SubworldSystem.Current.FileName is null)
-			{
-				return null;
-			}
-
-			WorldFileData main = GetMain(ModContent.GetInstance<SubworldSystem>());
-
-			if (main is null)
-			{
-				return null;
-			}
-
-			return SubworldSystem.CurrentPath;
-		}
-		catch (NullReferenceException)
-		{
-			return null;
-		}
+		return SubworldSystem.Current is null ? null : TryGetSavePath(SubworldSystem.Current);
 	}
 
 	[UnsafeAccessor(UnsafeAccessorKind.StaticField, Name = "main")]
@@ -536,6 +517,11 @@ public abstract class MappingWorld : Subworld
 	{
 		try
 		{
+			if (subworld.FileName is null)
+			{
+				return null;
+			}
+
 			WorldFileData main = GetMain(ModContent.GetInstance<SubworldSystem>()) ?? Main.ActiveWorldFileData;
 
 			if (main is null)
@@ -556,8 +542,10 @@ public abstract class MappingWorld : Subworld
 	{
 		DeleteSubworldFile(path);
 		DeleteSubworldFile(path + ".bak");
+		DeleteSubworldFile(path + ".bak2");
 		DeleteSubworldFile(Path.ChangeExtension(path, ".twld"));
 		DeleteSubworldFile(Path.ChangeExtension(path, ".twld") + ".bak");
+		DeleteSubworldFile(Path.ChangeExtension(path, ".twld") + ".bak2");
 	}
 
 	private static void DeleteSubworldFile(string path)
