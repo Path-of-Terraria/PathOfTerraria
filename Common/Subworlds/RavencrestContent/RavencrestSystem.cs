@@ -30,6 +30,12 @@ public class RavencrestSystem : ModSystem
 {
 	public const int RavencrestVersion = 1;
 
+	private const string KillScoutStepId = "KillScout";
+	private const int ScoutSpawnTileX = 30;
+	private const int ScoutSpawnTileY = 123;
+
+	private string _wizardQuestFullName;
+
 	/// <summary> Extra NPCs that do not spawn here by default. </summary>
 	public readonly HashSet<string> HasOverworldNPC = [];
 
@@ -92,6 +98,7 @@ public class RavencrestSystem : ModSystem
 		StaticStructureLocations.Add("Chamber", new Point16(652, 224));
 		StaticStructureLocations.Add("Port", new Point16(761, 163));
 
+		_wizardQuestFullName = ModContent.GetInstance<WizardStartQuest>().FullName;
 		MiscOverlayUI.DrawOverlay += DrawDistantMorvenDialogue;
 	}
 
@@ -306,18 +313,16 @@ public class RavencrestSystem : ModSystem
 			return;
 		}
 
-		string questFullName = ModContent.GetInstance<WizardStartQuest>().FullName;
-
 		foreach (Player plr in Main.ActivePlayers)
 		{
 			QuestModPlayer questPlayer = plr.GetModPlayer<QuestModPlayer>();
 
-			if (questPlayer.QuestsByName.TryGetValue(questFullName, out Quest quest)
+			if (questPlayer.QuestsByName.TryGetValue(_wizardQuestFullName, out Quest quest)
 				&& quest.Active
-				&& quest.ActiveStep.Id == "KillScout")
+				&& quest.ActiveStep.Id == KillScoutStepId)
 			{
 				SpawnedScout = true;
-				NPC.NewNPC(Entity.GetSource_NaturalSpawn(), 30 * 16, 123 * 16, ModContent.NPCType<TownScoutNPC>());
+				NPC.NewNPC(Entity.GetSource_NaturalSpawn(), ScoutSpawnTileX * 16, ScoutSpawnTileY * 16, ModContent.NPCType<TownScoutNPC>());
 				break;
 			}
 		}
