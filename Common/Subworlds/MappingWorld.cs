@@ -5,6 +5,7 @@ using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.DisableBuilding;
 using PathOfTerraria.Common.Systems.Synchronization;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Common.UI;
 using ReLogic.Content;
 using SubworldLibrary;
@@ -12,6 +13,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.Localization;
@@ -57,6 +59,24 @@ public abstract class MappingWorld : Subworld
 {
 	public class MappingWorldInfo : ModSystem
 	{
+		public override void PostUpdateEverything()
+		{
+			if (SubworldSystem.Current is not null || !CloseActiveMapDeviceAfterFailedRun)
+			{
+				return;
+			}
+
+			if (HasActiveMapDevice())
+			{
+				if (!CloseMapDevicePortalHandler.TryClosePortal(ActiveMapDevicePosition))
+				{
+					return;
+				}
+			}
+
+			ClearActiveMapDevice();
+		}
+
 		public override void SaveWorldData(TagCompound tag)
 		{
 			tag.Add("lastPath", LastSubworldSavePath);
@@ -179,6 +199,9 @@ public abstract class MappingWorld : Subworld
 
 	internal static string? LastSubworldSavePath { get; private set; }
 
+	private static Point16 ActiveMapDevicePosition = new(-1, -1);
+	private static bool CloseActiveMapDeviceAfterFailedRun;
+
 	/// <summary>
 	/// How many times a given subworld has been entered, indexed by <see cref="Mod.Name"/>/<see cref="Subworld"/>.GetType().Name.
 	/// </summary>
@@ -250,6 +273,28 @@ public abstract class MappingWorld : Subworld
 		return GetData(this);
 	}
 
+	internal static void SetActiveMapDevice(Point16 position)
+	{
+		ActiveMapDevicePosition = position;
+		CloseActiveMapDeviceAfterFailedRun = false;
+	}
+
+	internal static void RequestCloseActiveMapDeviceAfterFailedRun()
+	{
+		CloseActiveMapDeviceAfterFailedRun = true;
+	}
+
+	internal static void ClearActiveMapDevice()
+	{
+		ActiveMapDevicePosition = new(-1, -1);
+		CloseActiveMapDeviceAfterFailedRun = false;
+	}
+
+	private static bool HasActiveMapDevice()
+	{
+		return ActiveMapDevicePosition.X >= 0 && ActiveMapDevicePosition.Y >= 0;
+	}
+
 	public override void Load()
 	{
 		SubworldName = Language.GetOrRegister("Mods.PathOfTerraria.Subworlds." + GetType().Name + ".DisplayName", () => GetType().Name);
@@ -292,26 +337,7 @@ public abstract class MappingWorld : Subworld
 
 	private static string? TryGetCurrentPath()
 	{
-		try
-		{
-			if (SubworldSystem.Current is null || SubworldSystem.Current.FileName is null)
-			{
-				return null;
-			}
-
-			WorldFileData main = GetMain(ModContent.GetInstance<SubworldSystem>());
-
-			if (main is null)
-			{
-				return null;
-			}
-
-			return SubworldSystem.CurrentPath;
-		}
-		catch (NullReferenceException)
-		{
-			return null;
-		}
+		return SubworldSystem.Current is null ? null : TryGetSavePath(SubworldSystem.Current);
 	}
 
 	[UnsafeAccessor(UnsafeAccessorKind.StaticField, Name = "main")]
@@ -387,6 +413,17 @@ public abstract class MappingWorld : Subworld
 			worldInfoTag.Add("subworldSavePath", LastSubworldSavePath);
 		}
 
+		if (HasActiveMapDevice())
+		{
+			worldInfoTag.Add("activeMapDeviceX", ActiveMapDevicePosition.X);
+			worldInfoTag.Add("activeMapDeviceY", ActiveMapDevicePosition.Y);
+		}
+
+		if (CloseActiveMapDeviceAfterFailedRun)
+		{
+			worldInfoTag.Add("closeActiveMapDeviceAfterFailedRun", true);
+		}
+
 		if (Affixes is not null && Affixes.Count > 0)
 		{
 			worldInfoTag.Add("affixes", (TagCompound[])[.. Affixes.Select(x => x.SaveAs())]);
@@ -425,6 +462,10 @@ public abstract class MappingWorld : Subworld
 		AreaLevel = worldInfoTag.GetInt("level");
 		MapTier = worldInfoTag.GetInt("tier");
 		LastSubworldSavePath = worldInfoTag.TryGet("subworldSavePath", out string subworldSavePath) ? subworldSavePath : null;
+		CloseActiveMapDeviceAfterFailedRun = worldInfoTag.GetBool("closeActiveMapDeviceAfterFailedRun");
+		ActiveMapDevicePosition = worldInfoTag.TryGet("activeMapDeviceX", out short activeMapDeviceX) && worldInfoTag.TryGet("activeMapDeviceY", out short activeMapDeviceY)
+			? new Point16(activeMapDeviceX, activeMapDeviceY)
+			: new Point16(-1, -1);
 		Affixes = [];
 
 		if (worldInfoTag.TryGet("affixes", out TagCompound[] affixes))
@@ -450,20 +491,18 @@ public abstract class MappingWorld : Subworld
 		ReadConsistentInfo();
 	}
 
-	internal static void DeleteSavedSubworld()
+	internal static void DeleteSavedSubworld(Subworld? subworld = null)
 	{
 		if (Main.netMode != NetmodeID.MultiplayerClient)
 		{
-			if (LastSubworldSavePath is { Length: > 0 } path && File.Exists(path))
+			if (LastSubworldSavePath is { Length: > 0 } path)
 			{
-				try
-				{
-					File.Delete(path);
-				}
-				catch
-				{
-					PoTMod.Instance.Logger.Error("[DeleteSavedSubworld] Failed to delete saved subworld.");
-				}
+				DeleteSubworldFiles(path);
+			}
+
+			if (subworld is not null && TryGetSavePath(subworld) is { Length: > 0 } destinationPath && destinationPath != LastSubworldSavePath)
+			{
+				DeleteSubworldFiles(destinationPath);
 			}
 		}
 		else if (Main.netMode == NetmodeID.MultiplayerClient)
@@ -472,6 +511,58 @@ public abstract class MappingWorld : Subworld
 		}
 
 		LastSubworldSavePath = null;
+	}
+
+	private static string? TryGetSavePath(Subworld subworld)
+	{
+		try
+		{
+			if (subworld.FileName is null)
+			{
+				return null;
+			}
+
+			WorldFileData main = GetMain(ModContent.GetInstance<SubworldSystem>()) ?? Main.ActiveWorldFileData;
+
+			if (main is null)
+			{
+				return null;
+			}
+
+			string worldPath = main.IsCloudSave ? Main.CloudWorldPath : Main.WorldPath;
+			return Path.Combine(worldPath, main.UniqueId.ToString(), subworld.FileName + ".wld");
+		}
+		catch (NullReferenceException)
+		{
+			return null;
+		}
+	}
+
+	private static void DeleteSubworldFiles(string path)
+	{
+		DeleteSubworldFile(path);
+		DeleteSubworldFile(path + ".bak");
+		DeleteSubworldFile(path + ".bak2");
+		DeleteSubworldFile(Path.ChangeExtension(path, ".twld"));
+		DeleteSubworldFile(Path.ChangeExtension(path, ".twld") + ".bak");
+		DeleteSubworldFile(Path.ChangeExtension(path, ".twld") + ".bak2");
+	}
+
+	private static void DeleteSubworldFile(string path)
+	{
+		if (!File.Exists(path))
+		{
+			return;
+		}
+
+		try
+		{
+			File.Delete(path);
+		}
+		catch
+		{
+			PoTMod.Instance.Logger.Error($"[DeleteSavedSubworld] Failed to delete saved subworld file at '{path}'.");
+		}
 	}
 
 	public override void DrawMenu(GameTime gameTime)
