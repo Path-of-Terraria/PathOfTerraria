@@ -140,6 +140,7 @@ internal class MoonLordDomain : BossDomainSubworld
 
 	public override void Update()
 	{
+		base.Update();
 		Liquid.UpdateLiquid();
 		ModifySpawn();
 	}
@@ -148,6 +149,7 @@ internal class MoonLordDomain : BossDomainSubworld
 	{
 		int highestX = 0;
 		int highestY = Main.maxTilesY * 16;
+		bool foundPlayer = false;
 
 		foreach (Player plr in Main.ActivePlayers)
 		{
@@ -157,8 +159,14 @@ internal class MoonLordDomain : BossDomainSubworld
 				{
 					highestX = (int)plr.Center.X;
 					highestY = (int)plr.Center.Y;
+					foundPlayer = true;
 				}
 			}
+		}
+
+		if (!foundPlayer)
+		{
+			return;
 		}
 
 		ModifySpawnCutoff(highestX, highestY, MoonlordTerrainGen.DirtCutoff);
@@ -176,8 +184,8 @@ internal class MoonLordDomain : BossDomainSubworld
 	{
 		if (highestY < y * 16 && Main.spawnTileY > y)
 		{
-			Main.spawnTileX = highestX / 16;
-			Main.spawnTileY = highestY / 16;
+			Main.spawnTileX = Utils.Clamp(highestX / 16, 10, Main.maxTilesX - 10);
+			Main.spawnTileY = Utils.Clamp(highestY / 16, 10, Main.maxTilesY - 10);
 
 			if (Main.netMode == NetmodeID.Server)
 			{

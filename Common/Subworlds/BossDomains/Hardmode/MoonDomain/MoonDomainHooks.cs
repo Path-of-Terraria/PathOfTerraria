@@ -1,5 +1,6 @@
 ﻿using SubworldLibrary;
 using Terraria.DataStructures;
+using Terraria.Enums;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode.MoonDomain;
 
@@ -14,6 +15,28 @@ internal class MoonDomainHooks : ModSystem
 		On_WorldGen.KillTile += StopAllKillTileDrops;
 		On_WorldGen.TileFrame += On_WorldGen_TileFrame;
 		On_WorldGen.BiomeTileCheck += StopBiomeCheckInSubworld;
+		On_WorldGen.TrySpawningTownNPC += StopTownNPCSpawns;
+		On_WorldGen.SpawnTownNPC += StopTownNPCSpawns;
+	}
+
+	private void StopTownNPCSpawns(On_WorldGen.orig_TrySpawningTownNPC orig, int x, int y)
+	{
+		if (SubworldSystem.Current is MoonLordDomain)
+		{
+			return;
+		}
+
+		orig(x, y);
+	}
+
+	private TownNPCSpawnResult StopTownNPCSpawns(On_WorldGen.orig_SpawnTownNPC orig, int x, int y)
+	{
+		if (SubworldSystem.Current is MoonLordDomain)
+		{
+			return TownNPCSpawnResult.Blocked;
+		}
+
+		return orig(x, y);
 	}
 
 	private bool StopBiomeCheckInSubworld(On_WorldGen.orig_BiomeTileCheck orig, int x, int y)
