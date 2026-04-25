@@ -122,7 +122,7 @@ public sealed class TownScoutNPC : ModNPC
 
 			if (questPlayer.QuestsByName.TryGetValue(ModContent.GetInstance<WizardStartQuest>().FullName, out Quest quest)
 				&& quest.Active
-				&& quest.ActiveStep.Id == "KillScout")
+				&& quest.ActiveStep.Id == "Start")
 			{
 				forceQuestSpawn = true;
 			}

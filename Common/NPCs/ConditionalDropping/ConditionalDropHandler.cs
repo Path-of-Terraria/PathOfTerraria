@@ -9,10 +9,9 @@ internal class ConditionalDropHandler : GlobalNPC
 {
 	public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
 	{
-		if (npc.type is NPCID.GoblinArcher or NPCID.GoblinPeon or NPCID.GoblinScout 
-			or NPCID.GoblinSorcerer or NPCID.GoblinThief or NPCID.GoblinWarrior)
+		if (npc.type is NPCID.GoblinScout)
 		{
-			AddCountCondition(npcLoot, ModContent.ItemType<TomeOfTheElders>(), 8);
+			AddCountCondition(npcLoot, ModContent.ItemType<TomeOfTheElders>(), 1);
 		}
 		else if (NPCID.Sets.Zombies[npc.type] || NPCID.Sets.DemonEyes[npc.type])
 		{

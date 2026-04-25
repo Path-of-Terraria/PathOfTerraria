@@ -3950,7 +3950,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "QuickExplosionsPassive",
+		"internalIdentifier": "BiggerExplosivesPassive",
 		"referenceId": 236,
 		"maxLevel": 1,
 		"value": 2,
@@ -3961,7 +3961,7 @@
 		"connections": []
 	},
 	{
-		"internalIdentifier": "BiggerExplosivesPassive",
+		"internalIdentifier": "QuickExplosionsPassive",
 		"referenceId": 237,
 		"maxLevel": 1,
 		"value": 15,
