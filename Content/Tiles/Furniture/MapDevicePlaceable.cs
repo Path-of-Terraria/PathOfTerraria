@@ -231,11 +231,6 @@ public class MapDeviceTile : ModTile
 	/// <summary>
 	/// the portel itself is now a <see cref="PathOfTerraria.Common.Projectiles.BasePortalProjectile"/> 
 	/// </summary>
-	/// <param name="sb"></param>
-	/// <param name="tilePoint"></param>
-	/// <param name="worldCenter"></param>
-	/// <param name="entity"></param>
-	/// <param name="screenPosition"></param>
 	private void DrawItemTexture(SpriteBatch sb, Point16 tilePoint, Vector2 worldCenter, MapDeviceEntity entity, Vector2 screenPosition)
 	{
 		//Texture2D portalTexture = AssetUtils.ImmediateValue(PortalTexturePath, ref _portalTex);
