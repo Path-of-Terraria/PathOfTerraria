@@ -27,7 +27,7 @@ internal class TwinsQuest() : Quest
 		new ActionRewards((p, v) =>
 		{
 			p.GetModPlayer<ExpModPlayer>().Exp += 30000;
-			CompletionVisit = ModContent.GetInstance<RavencrestSubworld>().TimesEntered;
+			CompletionVisit = (uint)MappingWorld.GetTimesEntered<RavencrestSubworld>();
 		}, "30000 experience"),
 	];
 
@@ -84,6 +84,6 @@ internal class TwinsQuest() : Quest
 	{
 		Quest tinkerIntroQuest = GetLocalPlayerInstance<TinkerIntroQuest>();
 		RavencrestSubworld subworld = ModContent.GetInstance<RavencrestSubworld>();
-		return tinkerIntroQuest.Completed && NPC.downedQueenSlime && subworld.TimesEntered != TinkerIntroQuest.CompletionVisit;
+		return tinkerIntroQuest.Completed && NPC.downedQueenSlime && MappingWorld.GetTimesEntered<RavencrestSubworld>() != TinkerIntroQuest.CompletionVisit;
 	}
 }

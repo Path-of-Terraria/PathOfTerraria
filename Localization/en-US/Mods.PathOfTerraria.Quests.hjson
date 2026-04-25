@@ -57,7 +57,8 @@ Quest: {
 	WizardStartQuest: {
 		Name: Magical Returnal
 		Description: ""
-		KillScout: Kill a Goblin Surveyor in Ravencrest's outskirts
+		KillScout: Kill a Goblin Scout in the Overworld
+		KillSurveyor: Kill a Goblin Surveyor to the Left of Ravencrest
 	}
 
 	EoCQuest: {

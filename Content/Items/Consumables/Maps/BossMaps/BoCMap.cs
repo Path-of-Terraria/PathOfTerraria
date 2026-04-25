@@ -22,9 +22,9 @@ internal class BoCMap() : PreHardmodeBossMap(25, () => NPC.downedBoss2)
 		Item.Size = new Vector2(34, 28);
 	}
 
-	protected override void OpenMapInternal()
+	internal override Subworld GetDestination()
 	{
-		SubworldSystem.Enter<BrainDomain>();
+		return ModContent.GetInstance<BrainDomain>();
 	}
 
 	public override string GenerateName(string defaultName)

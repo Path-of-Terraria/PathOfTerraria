@@ -25,7 +25,7 @@ internal class DestroyerQuest() : Quest
 		new ActionRewards((p, v) =>
 		{
 			p.GetModPlayer<ExpModPlayer>().Exp += 30000;
-			CompletionVisit = ModContent.GetInstance<RavencrestSubworld>().TimesEntered;
+			CompletionVisit = (uint)MappingWorld.GetTimesEntered<RavencrestSubworld>();
 		},
 			"30000 experience"),
 	];
@@ -69,6 +69,6 @@ internal class DestroyerQuest() : Quest
 	{
 		Quest twinsQuest = GetLocalPlayerInstance<TwinsQuest>();
 		RavencrestSubworld subworld = ModContent.GetInstance<RavencrestSubworld>();
-		return twinsQuest.Completed && NPC.downedMechBoss2 && subworld.TimesEntered != TwinsQuest.CompletionVisit;
+		return twinsQuest.Completed && NPC.downedMechBoss2 && MappingWorld.GetTimesEntered<RavencrestSubworld>() != TwinsQuest.CompletionVisit;
 	}
 }

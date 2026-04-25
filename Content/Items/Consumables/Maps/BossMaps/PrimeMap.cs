@@ -20,9 +20,9 @@ internal class PrimeMap() : HardmodeBossMap(4, () => NPC.downedMechBoss3)
 		Item.Size = new Vector2(30, 34);
 	}
 
-	protected override void OpenMapInternal()
+	internal override Subworld GetDestination()
 	{
-		SubworldSystem.Enter<PrimeDomain>();
+		return ModContent.GetInstance<PrimeDomain>();
 	}
 
 	public override string GenerateName(string defaultName)

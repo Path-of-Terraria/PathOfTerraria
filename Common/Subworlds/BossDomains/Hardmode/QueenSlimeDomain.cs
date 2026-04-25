@@ -6,9 +6,6 @@ using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Core.Items;
 using System.Collections.Generic;
 using System.Linq;
-using PathOfTerraria.Common.Systems.Questing;
-using PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
-using PathOfTerraria.Content.Items.Quest;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
@@ -440,8 +437,9 @@ internal class QueenSlimeDomain : BossDomainSubworld
 		}
 
 		FightState state = FightTracker.UpdateState();
+		GetData().CheckDowned<QueenSlimeDomain>(NPCID.QueenSlimeBoss);
 
-		if (state == FightState.NotStarted)
+		if (state == FightState.NotStarted && !GetData().BossDowned)
 		{
 			bool canSpawnBoss = Main.CurrentFrameFlags.ActivePlayersCount > 0;
 

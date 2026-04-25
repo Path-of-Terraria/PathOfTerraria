@@ -8,6 +8,7 @@ using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Content.Tiles.Furniture;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI.SmartUI;
+using SubworldLibrary;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -98,10 +99,11 @@ public abstract class Map : ModItem, GenerateNameAffixes.IItem, GenerateAffixes.
 			SendMappingDomainInfoHandler.Send((short)WorldLevel, (short)Tier, collection);
 		}
 
-		OpenMapInternal();
+		Subworld sub = GetDestination();
+		SubworldSystem.Enter(sub.FullName);
 	}
 
-	protected abstract void OpenMapInternal();
+	internal abstract Subworld GetDestination();
 
 	public virtual int GetMapTier(int itemLevel)
 	{

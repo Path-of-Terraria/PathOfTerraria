@@ -18,6 +18,12 @@ internal class NearbyEnemiesScorchedAffix : ItemAffix
 		public override void PostUpdateBuffs()
 		{
 			const double timeInSeconds = 1.0;
+
+			if (!Active)
+			{
+				return;
+			}
+
 			Vector2 playerCenter = Player.Center;
 			Rectangle playerRect = Player.getRect();
 			int debuffType = ModContent.BuffType<ScorchingFlamesDebuff>();

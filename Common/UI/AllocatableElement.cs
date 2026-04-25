@@ -4,6 +4,7 @@ using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.UI;
 
 #nullable enable
@@ -116,6 +117,7 @@ internal abstract class AllocatableElement : SmartUiElement, IConnectedAllocatab
 	}
 
 	/// <summary> Draws the name and tooltip of <see cref="Node"/> when hovered over. </summary>
+	/// <summary> Draws the name and tooltip of <see cref="Node"/> when hovered over. </summary>
 	public virtual void DrawHoverTooltip(Allocatable node)
 	{
 		string name = node.DisplayName;
@@ -131,12 +133,21 @@ internal abstract class AllocatableElement : SmartUiElement, IConnectedAllocatab
 			name += $"\n{passive.TreePos} | ID: {passive.ReferenceId}";
 		}
 #endif
+	
+		string subtitle = node.DisplayTooltip;
+
+		if (node.RequiredAllocatedEdges > 1)
+		{
+			string requiredNodesLine = Language.GetTextValue("Mods.PathOfTerraria.UI.MasteryRequiredNodes", node.RequiredAllocatedEdges);
+			requiredNodesLine = "[c/888888:" + requiredNodesLine + "]"; // Light grey color
+			subtitle = string.IsNullOrEmpty(subtitle) ? requiredNodesLine : subtitle + "\n" + requiredNodesLine;
+		}
 
 		Tooltip.Create(new TooltipDescription
 		{
 			Identifier = GetType().Name,
 			SimpleTitle = name,
-			SimpleSubtitle = node.DisplayTooltip,
+			SimpleSubtitle = subtitle,
 		});
 	}
 

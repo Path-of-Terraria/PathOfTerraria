@@ -503,9 +503,7 @@ internal sealed class InfernalBoss : ModNPC
 		npcLoot.AddCommon<PyralisHeart>(chanceCommon);
 		npcLoot.AddCommon<FallenKingsLegacy>(chanceUncommon);
 		npcLoot.AddCommon<ProlifRing>(chanceRare);
-
-		//TODO: Enable this once the item is adequate & ready.
-		// npcLoot.AddCommon<Cryobrand>(chanceRare);
+		npcLoot.AddCommon<Cryobrand>(chanceRare);
 	}
 
 	public override void SendExtraAI(BinaryWriter writer)

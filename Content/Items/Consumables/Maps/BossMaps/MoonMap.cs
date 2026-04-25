@@ -20,9 +20,9 @@ internal class MoonMap() : HardmodeBossMap(10, () => NPC.downedMoonlord)
 		Item.Size = new Vector2(50, 38);
 	}
 
-	protected override void OpenMapInternal()
+	internal override Subworld GetDestination()
 	{
-		SubworldSystem.Enter<MoonLordDomain>();
+		return ModContent.GetInstance<MoonLordDomain>();
 	}
 
 	public override string GenerateName(string defaultName)

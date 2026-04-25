@@ -20,7 +20,7 @@ internal class HellEventSystem : ModSystem
 		EventOccuringInstant = false;
 
 		// Must not occur if the fight is over.
-		if (Main.hardMode || SubworldSystem.Current is not WallOfFleshDomain wofDomain || wofDomain.FightTracker.Completed)
+		if (Main.hardMode || (SubworldSystem.Current is WallOfFleshDomain wofDomain && wofDomain.FightTracker.Started))
 		{
 			EventStrength = 0;
 			return;

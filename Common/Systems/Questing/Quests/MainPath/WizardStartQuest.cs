@@ -9,6 +9,7 @@ using PathOfTerraria.Content.Items.Gear.Weapons.Staff;
 using PathOfTerraria.Content.Items.Quest;
 using PathOfTerraria.Content.NPCs.Town;
 using PathOfTerraria.Content.Skills.Magic;
+using Terraria.ID;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
@@ -37,7 +38,9 @@ internal class WizardStartQuest : Quest
 				RavencrestSystem.UpgradeBuilding("Library");
 				return true;
 			}),
-			new KillCount("KillScout", ModContent.NPCType<TownScoutNPC>(), 1, this.GetLocalization("KillScout")),
+
+			new KillCount("KillScout", npc => npc.type is NPCID.GoblinScout, 1, this.GetLocalization("KillScout")),
+
 			new InteractWithNPC("Start", ModContent.NPCType<WizardNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.Quest"),
 				Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.Quest2"),
 			[
@@ -48,7 +51,10 @@ internal class WizardStartQuest : Quest
 				Main.LocalPlayer.GetModPlayer<ConditionalDropPlayer>().RemoveId(ModContent.ItemType<TomeOfTheElders>());
 				RavencrestSystem.UpgradeBuilding("Library");
 				return true;
-			}) { CountsAsCompletedOnMarker = true },
+			}),
+			new KillCount("KillSurveyor", ModContent.NPCType<TownScoutNPC>(), 1, this.GetLocalization("KillSurveyor")),
+			new InteractWithNPC("End", ModContent.NPCType<WizardNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.Quest"),
+			Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.End")) { CountsAsCompletedOnMarker = true }, 
 		];
 	}
 

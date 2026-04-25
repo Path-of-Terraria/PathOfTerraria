@@ -20,9 +20,9 @@ internal class PlanteraMap() : HardmodeBossMap(5, () => NPC.downedPlantBoss)
 		Item.Size = new Vector2(38, 28);
 	}
 
-	protected override void OpenMapInternal()
+	internal override Subworld GetDestination()
 	{
-		SubworldSystem.Enter<PlanteraDomain>();
+		return ModContent.GetInstance<PlanteraDomain>();
 	}
 
 	public override string GenerateName(string defaultName)

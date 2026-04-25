@@ -450,8 +450,9 @@ internal class PrimeDomain : BossDomainSubworld
 		TileEntity.UpdateEnd();
 
 		FightState state = FightTracker.UpdateState();
+		GetData().CheckDowned<PrimeDomain>(NPCID.SkeletronPrime);
 
-		if (state == FightState.NotStarted)
+		if (state == FightState.NotStarted && !GetData().BossDowned)
 		{
 			bool canSpawn = Main.CurrentFrameFlags.ActivePlayersCount > 0;
 			HashSet<int> who = [];
