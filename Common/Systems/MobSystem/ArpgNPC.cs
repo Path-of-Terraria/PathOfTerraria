@@ -449,7 +449,11 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 		for (int i = 0; i < count; i++)
 		{
 			MobAffix affix = Affix.RecieveMobAffix(binaryReader);
-			Affixes.Add(affix);
+
+			if (affix is not null)
+			{
+				Affixes.Add(affix);
+			}
 		}
 
 		// TODO: Find cause of read overflow/underflow in subworlds
