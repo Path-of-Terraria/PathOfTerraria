@@ -4,6 +4,7 @@ using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.UI;
 
 #nullable enable
@@ -132,11 +133,19 @@ internal abstract class AllocatableElement : SmartUiElement, IConnectedAllocatab
 		}
 #endif
 
+		string subtitle = node.DisplayTooltip;
+
+		if (node.RequiredAllocatedEdges > 1)
+		{
+			string requiredNodesLine = Language.GetTextValue("Mods.PathOfTerraria.UI.MasteryRequiredNodes", node.RequiredAllocatedEdges);
+			subtitle = string.IsNullOrEmpty(subtitle) ? requiredNodesLine : subtitle + "\n" + requiredNodesLine;
+		}
+
 		Tooltip.Create(new TooltipDescription
 		{
 			Identifier = GetType().Name,
 			SimpleTitle = name,
-			SimpleSubtitle = node.DisplayTooltip,
+			SimpleSubtitle = subtitle,
 		});
 	}
 
