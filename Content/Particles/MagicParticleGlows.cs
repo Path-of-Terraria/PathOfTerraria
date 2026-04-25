@@ -1,22 +1,14 @@
-﻿using Humanizer.DateTimeHumanizeStrategy;
-using PathOfTerraria.Common.Utilities;
-using PathOfTerraria.Content.Passives.Magic.Masteries;
-using PathOfTerraria.Core.Graphics.Particles;
+﻿using PathOfTerraria.Core.Graphics.Particles;
 using PathOfTerraria.Core.Tween;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+
+#nullable enable
 
 namespace PathOfTerraria.Content.Particles;
 public class MagicParticleGlows : ForegroundParticle
 {
 	private int _currentDuration = 15;
-	private Tween<float> _ScaleTween;
-	private Tween<float> _OpacityTween;
+	private Tween<float> _ScaleTween = new(MathHelper.Lerp);
+	private Tween<float> _OpacityTween = new(MathHelper.Lerp);
 	private readonly Vector2 _startingVelocity = Vector2.Zero;
 	private readonly int _duration = 15;
 	private readonly Vector2 _moveVelocityToTarget = Vector2.Zero;
@@ -53,14 +45,14 @@ public class MagicParticleGlows : ForegroundParticle
 	{
 		base.Create();
 		
-		_ScaleTween = new Tween<float>(MathHelper.Lerp).TweenProperty([
+		_ScaleTween = new Tween<float>(MathHelper.Lerp).Start([
 			new(0,1,false,TweenEaseType.CubicInOut,_duration / 2),
 			new(1,0f,false,TweenEaseType.None,_duration / 2)
 			]);
 
 		_ScaleTween.OnFinsihed += (_) => Destroy();
 
-		_OpacityTween = new Tween<float>(MathHelper.Lerp).TweenProperty([
+		_OpacityTween = new Tween<float>(MathHelper.Lerp).Start([
 			new(4,1f,false,TweenEaseType.None,_duration / 2),
 			new(1f,1,false,TweenEaseType.CubicInOut,_duration / 2)
 			]);

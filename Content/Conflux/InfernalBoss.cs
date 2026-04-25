@@ -174,8 +174,6 @@ internal sealed class InfernalFlames : ModProjectile
 		Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
 		Vector2 worldPos = Projectile.Center.ToPoint().ToVector2();
 		Vector2 screenPos = worldPos - Main.screenPosition;
-
-
 		SpriteBatchArgs args = Main.spriteBatch.GetArguments();
 		Main.spriteBatch.End();
 		Main.spriteBatch.Begin(args with { BlendState = BlendState.Additive});
@@ -183,45 +181,19 @@ internal sealed class InfernalFlames : ModProjectile
 		for (int i = 0; i < 4; i++)
 		{
 			Main.EntitySpriteDraw(texture, screenPos, null, new Color(35,1,35), Projectile.rotation + i / 6f * float.Tau, texture.Size() * 0.5f, Projectile.scale * 1f, 0, 0f);
-
 		}
 		for (int i = 0; i < 12; i++)
 		{
 			Main.EntitySpriteDraw(texture, screenPos, null, new Color(255, 55, 0), Projectile.rotation, texture.Size() * 0.5f, Projectile.scale * .5f * i * .25f, 0, 0f);
-
 		}
-		Main.spriteBatch.End();
-		Main.spriteBatch.Begin(args);
-
-		
-		// [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "DrawProj_Flamethrower")]
-		// static extern void DrawFlame(Main? main, Projectile p);
-		// DrawFlame(null, Projectile);
-
-		//int numLayers = layerColors.Length;
-		//int numFrames = Main.projFrames[Projectile.type];
-		//int numLayeredFrames = numFrames + numLayers;
-
-		//const float animMul = 8f;
-		//int baseFrame = (int)Utils.Remap(Progress, 0f, 1f, 0, numLayeredFrames * animMul);
-		// Loop/wrap up until a certain point.
-		//if (baseFrame >= numFrames)
-		//{
-		//	int loopEnd = (int)(numLayeredFrames * (animMul - 1));
-		//	baseFrame = baseFrame < loopEnd ? (2 + (baseFrame % 4) * 1) : (baseFrame - loopEnd + 2);
-		//}
-
-		//for (int i = 0; i < numLayers; i++)
-		//{
-		//	int frame = baseFrame - i;
-		//	if (frame < 0 || frame >= numFrames) { continue; }
-
-		//	Color color = layerColors[i];
-		//	Rectangle srcRect = texture.Frame(verticalFrames: numFrames, frameY: frame);
-		//	Main.EntitySpriteDraw(texture, screenPos, srcRect, color, Projectile.rotation, srcRect.Size() * 0.5f, Projectile.scale, 0, 0f);
-		//}
 
 		return false;
+	}
+	public override void PostDraw(Color lightColor)
+	{
+		
+		Main.spriteBatch.End();
+		Main.spriteBatch.Begin(args with { BlendState = BlendState.AlphaBlend});
 	}
 }
 

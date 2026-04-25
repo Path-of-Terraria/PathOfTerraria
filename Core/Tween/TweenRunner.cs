@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+#nullable enable
+
 namespace PathOfTerraria.Core.Tween;
 
 public class TweenRunner : ModSystem

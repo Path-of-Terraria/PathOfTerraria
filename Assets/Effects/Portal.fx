@@ -9,6 +9,7 @@ float additionalScale;
 float2 screenRes;
 texture sampleTexture;
 float paletteColorsAmount;
+float ditherSize;
 sampler2D uImage0 : register(s0) = sampler_state
 {
 	texture = <sampleTexture>;
@@ -116,12 +117,14 @@ float4 PixelShaderFunction(VertexShaderOutput output) : COLOR0
 	float4 col = 0; //  return value
 	float4 invertedCol = 0; //  return value
 	
-	//sin wave uv effect
+	// wave uv effect
 	uv = float2(uv.x + sin(uv.x + uTime * .05) * 0.01, uv.y + sin(uv.y + uTime * .05) * 0.01 );
 	
 	// draw the portal. then draw the dither texture which its pattern isnt visible when the alpha isnt equal to (index % 2 == 1)
 	float4 portalBase = tex2D(uImage0, Rotate(uv, rotation, float2(.5, .5)));
-	float4 ditherPatternTexture = tex2D(uImage2, output.TextureCoordinates.xy * (pixelSizeBasedOnCanvasSize / 256));
+	float2 ditherUV = uv;
+	ditherUV *= ditherSize;
+	float4 ditherPatternTexture = tex2D(uImage2, ditherUV);
 	float ditherPattern_NonInverted = ditherPatternTexture.r;
 	float ditherPattern_Inverted = step(ditherPatternTexture.r, 1);
 	

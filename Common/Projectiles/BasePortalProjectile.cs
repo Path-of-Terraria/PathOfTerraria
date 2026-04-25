@@ -1,54 +1,26 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using MonoMod.Core.Platforms;
-using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
-using PathOfTerraria.Common.Systems.MapContent;
-using PathOfTerraria.Content.Items.Consumables.Maps;
-using PathOfTerraria.Content.Particles;
-using PathOfTerraria.Content.Projectiles.Utility;
-using PathOfTerraria.Core.Graphics;
-using PathOfTerraria.Core.Graphics.Particles;
-using PathOfTerraria.Core.Tween;
+﻿using PathOfTerraria.Core.Tween;
 using ReLogic.Content;
-using SubworldLibrary;
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.DataStructures;
-using Terraria.GameContent;
-using Terraria.Graphics.Shaders;
-using Terraria.ID;
-using Terraria.ModLoader.IO;
+using Microsoft.Xna.Framework;
+using PathOfTerraria.Common.Utilities;
+using PathOfTerraria.Utilities.Terraria;
+
+#nullable enable
 
 namespace PathOfTerraria.Common.Projectiles;
+
 public class BasePortalProjectile : ModProjectile
 {
-	private static Asset<Effect> portalTailEffect = null;
-	private static Asset<Texture2D> portalBaseTexture = null;
-	private static Asset<Texture2D> portalVortexTexture = null;
-	private static Asset<Texture2D> portalTailTexture = null;
-	private static Asset<Texture2D> paletteTexture = null;
-	private static Asset<Texture2D> ditherTexture = null;
+
 	private Vector2 spawnPosition = Vector2.Zero;
 
 	//animation tweens
-	private Tween<Vector2> tweenScale;
-	private Tween<float> tweenFlash;
+	private Tween<Vector2> tweenScale = new(Vector2.Lerp);
+	private Tween<float> tweenFlash = new(MathHelper.Lerp);
 
 	public override string Texture => $"{PoTMod.ModName}/Assets/Misc/VFX/PortalParts/PortalBase";
-	public override void SetStaticDefaults()
-	{
-		portalTailEffect = ModContent.Request<Effect>($"{PoTMod.ModName}/Assets/Effects/Portal");
-		portalBaseTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Misc/VFX/PortalParts/PortalBase");
-		portalVortexTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Misc/VFX/PortalParts/PortalVortex");
-		portalTailTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Misc/VFX/PortalParts/PortalTail");
-		paletteTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Palettes/Portal0Palette");
-		ditherTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Misc/BayerMatrix512x512");
 
-	}
 	public override void SetDefaults()
 	{
 		Projectile.friendly = false;
@@ -68,13 +40,13 @@ public class BasePortalProjectile : ModProjectile
 	public override void OnSpawn(IEntitySource source)
 	{
 		spawnPosition = Projectile.Center;
-		tweenScale = new Tween<Vector2>(Vector2.Lerp).TweenProperty(
+		tweenScale = new Tween<Vector2>(Vector2.Lerp).Start(
 			[
 			new(new Vector2(2,0),new Vector2(.5f,1),false,TweenEaseType.CubicInOut,8),
 			new(new Vector2(.5f,1),new Vector2(1,1),false,TweenEaseType.CubicInOut,7),
 
 			]);
-		tweenFlash = new Tween<float>(MathHelper.Lerp).TweenProperty(
+		tweenFlash = new Tween<float>(MathHelper.Lerp).Start(
 			[
 			new(1,1,false,TweenEaseType.CubicInOut,7),
 			new(1,.5f,false,TweenEaseType.CubicInOut,4),
@@ -86,46 +58,44 @@ public class BasePortalProjectile : ModProjectile
 	{
 		Projectile.rotation -= MathHelper.TwoPi / 129;
 		Projectile.Center = new Vector2(MathF.Floor(spawnPosition.X * 2f) / 2f, MathF.Floor(spawnPosition.Y * 2f) / 2f - 1); // the minus one here is important
-		Projectile.Center += new Vector2(0,MathF.Sin(Main.GameUpdateCount * 0.1f) * 1); // the minus one here is important
+		Projectile.Center += new Vector2(0, MathF.Sin(Main.GameUpdateCount * 0.1f) * 1); // the minus one here is important
 		Projectile.velocity *= 0.89f;
-		//for (int i = 0; i < 1; i++)
-		//{
-		//	Vector2 pos = Projectile.Center + new Vector2(125, 0).RotatedByRandom(MathHelper.TwoPi);
-		//	MagicParticleGlows p = new(pos, pos.DirectionTo(Projectile.Center) * 5,6, Color.Turquoise);
-		//	ParticleSystem.Create(p);
-		//}
 
 		if (Projectile.ai[0] == 1)
 		{
-			tweenScale = new Tween<Vector2>(Vector2.Lerp).TweenProperty(
+			tweenScale = new Tween<Vector2>(Vector2.Lerp).Start(
 			[
 				new(new Vector2(1,1),new Vector2(.5f,1),false,TweenEaseType.CubicInOut,7),
 				new(new Vector2(.5f,1),new Vector2(0,2),false,TweenEaseType.CubicInOut,7),
 
 			]);
 			tweenScale.OnFinsihed += (_) => Projectile.Kill();
-			tweenFlash = new Tween<float>(MathHelper.Lerp).TweenProperty(
+			tweenFlash = new Tween<float>(MathHelper.Lerp).Start(
 			[
 				new(0,1,false,TweenEaseType.CubicInOut,7),
 				new(1,1,false,TweenEaseType.CubicInOut,7),
 			]);
 			Projectile.ai[0] = 2;
 		}
-
 	}
-	private static GraphicsDevice gd => Main.graphics.GraphicsDevice;
+
 	public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
 	{
-		Vector2 additionalScale = tweenScale.CurrentProgress * 0.5f;
+		Effect effectBase = AssetUtils.ImmediateValue<Effect>($"{PoTMod.ModName}/Assets/Effects/Portal");
+		Texture2D portalBaseTexture = AssetUtils.ImmediateValue<Texture2D>($"{PoTMod.ModName}/Assets/Misc/VFX/PortalParts/PortalBase");
+		Texture2D portalVortexTexture = AssetUtils.ImmediateValue<Texture2D>($"{PoTMod.ModName}/Assets/Misc/VFX/PortalParts/PortalVortex");
+		Texture2D paletteTexture = AssetUtils.ImmediateValue<Texture2D>($"{PoTMod.ModName}/Assets/Palettes/Portal0Palette");
+		Texture2D ditherTexture = AssetUtils.ImmediateValue<Texture2D>($"{PoTMod.ModName}/Assets/Misc/BayerMatrix8x8");
 
+		Vector2 animScale = tweenScale.CurrentProgress;
+		float customScale = 0.275f;
+		float vanillaPixelScale = 2;
+		float pixelSize = portalVortexTexture.Size().Length() / (animScale.Length() / customScale) / vanillaPixelScale;
+		GraphicsDevice gd = Main.graphics.GraphicsDevice;
 		Main.spriteBatch.End();
-		Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
-		Vector2 scaleForPixelCalc = Vector2.Zero;
-		Effect effectBase = portalTailEffect.Value;
-
-		float pixelSize = 256 / 4f;
-		gd.Textures[1] = paletteTexture.Value;
-		gd.Textures[2] = ditherTexture.Value;
+		Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+		gd.Textures[1] = paletteTexture;
+		gd.Textures[2] = ditherTexture;
 		effectBase.Parameters["data"].SetValue(new Vector4(1, tweenFlash.CurrentProgress, 0.96f, 0.1f));
 		effectBase.Parameters["rotation"].SetValue(Projectile.rotation);
 		effectBase.Parameters["canvasSize"].SetValue(portalVortexTexture.Size());
@@ -134,12 +104,11 @@ public class BasePortalProjectile : ModProjectile
 		effectBase.Parameters["uTime"].SetValue((Main.GameUpdateCount));
 		effectBase.Parameters["screenRes"].SetValue(Main.ScreenSize.ToVector2());
 		effectBase.Parameters["paletteColorsAmount"].SetValue(8f);
-
-		effectBase.Parameters["additionalScale"].SetValue(additionalScale.Length());
-
+		effectBase.Parameters["ditherSize"].SetValue(8);
+		effectBase.Parameters["additionalScale"].SetValue(animScale.Length());
 		effectBase.CurrentTechnique.Passes[0].Apply();
-		Main.EntitySpriteDraw(portalBaseTexture.Value, Projectile.Center - Main.screenPosition, null, Color.White, 0, portalBaseTexture.Size() / 2f, additionalScale / 2f, SpriteEffects.None);
 
+		Main.EntitySpriteDraw(portalBaseTexture, Projectile.Center - Main.screenPosition, null, Color.White, 0, portalBaseTexture.Size() / 2f, animScale * customScale, SpriteEffects.None);
 		Main.spriteBatch.End();
 		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
@@ -148,11 +117,6 @@ public class BasePortalProjectile : ModProjectile
 	{
 		return false;
 	}
-	public override void PostDraw(Color lightColor)
-	{
-
-	}
-
 	public override Color? GetAlpha(Color lightColor)
 	{
 		return Color.White;

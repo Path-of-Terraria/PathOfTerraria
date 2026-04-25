@@ -1,12 +1,12 @@
 ﻿using PathOfTerraria.Core.Graphics.Particles;
 using PathOfTerraria.Core.Tween;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+#nullable enable
 
 namespace PathOfTerraria.Content.Particles;
+/// <summary>
+/// This should not be spammed beacuse of performance with Tweens
+/// </summary>
 public class MagicExplosionParticle : ForegroundParticle
 {
 	public override string Texture => $"{PoTMod.ModName}/Assets/Misc/MagicExplosion1";
@@ -17,21 +17,21 @@ public class MagicExplosionParticle : ForegroundParticle
 	}
 	public virtual Color MainColor => Color.White;
 	public virtual Color GlowColor => Color.White;
-	Tween<float> ScaleTween;
-	Tween<float> OpacityTween;
+	Tween<float> ScaleTween = new(MathHelper.Lerp);
+	Tween<float> OpacityTween = new(MathHelper.Lerp);
 	
 	public override void Create()
 	{
 		base.Create();
 
-		ScaleTween = new Tween<float>(MathHelper.Lerp).TweenProperty([
+		ScaleTween = new Tween<float>(MathHelper.Lerp).Start([
 			new(0,1,false,TweenEaseType.CubicInOut,28),
 			new(1,1.25f,false,TweenEaseType.None,2)
 			]);
 
 		ScaleTween.OnFinsihed += (_) => Destroy();
 
-		OpacityTween = new Tween<float>(MathHelper.Lerp).TweenProperty([
+		OpacityTween = new Tween<float>(MathHelper.Lerp).Start([
 			new(0,.5f,false,TweenEaseType.CubicInOut,7),
 			new(1f,0,false,TweenEaseType.CubicInOut,7)
 			]);

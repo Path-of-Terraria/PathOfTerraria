@@ -1,17 +1,15 @@
 ﻿using PathOfTerraria.Common.Utilities;
 using System.Collections.Generic;
+using Terraria.Graphics;
+
+#nullable enable
 
 namespace PathOfTerraria.Core.Tween;
 
 public enum TweenEaseType : byte
 {
-
 	None = 0,
 	CubicInOut = 1,
-	OutSine = 2,
-	InExpo = 3,
-	OutExpo = 4,
-	OutBack = 5,
 }
 
 public enum TweenState : byte
@@ -20,36 +18,38 @@ public enum TweenState : byte
 }
 
 /// <summary>
-/// A tweener almost exactly the same as godot's, call <see cref="TweenProperty(TweenCache{T}[])"/> inside anything like OnSpawn hooks and then assign its <see cref="CurrentProgress"/> to anything you want in an update hook
+/// A tweener almost exactly the same as godot's, call <see cref="Start"/> inside anything like OnSpawn hooks and then assign its <see cref="CurrentProgress"/> to anything you want in an update hook
 /// </summary>
 /// <typeparam name="T"></typeparam>
 public class Tween<T> : ITween where T : struct
 {
-	public List<TweenCache<T>> Cache = [];
-	public int CurrentDuration = 0;
-	public T CurrentProgress;
-	private float currentProgressPercentage = 0;
-	public Tween<T> OnFinishTween = null;
-	public TweenState State;
-	private float endDuration = 0;
-	public Action<Tween<T>> OnFinsihed;
-	public delegate T lerpFunction(T value1, T value2, float amount);
-	public lerpFunction Lerp;
-	public bool Active { get; set; }
-
-	public Tween(lerpFunction lerpFunc)
-	{
-		ModContent.GetInstance<TweenRunner>().Tweens.Add(this);
-		Lerp = lerpFunc;
-		Active = true;
-	}
-
 	public static implicit operator T(Tween<T> tween)
 	{
 		return tween.CurrentProgress;
 	}
+	public List<TweenCache<T>> Cache = [];
+	public int CurrentDuration = 0;
+	public T CurrentProgress;
+	public TweenState State;
+	public Action<Tween<T>> OnFinsihed = (_) => { };
+	public delegate T LerpFunction(T value1, T value2, float amount);
+	public LerpFunction LerpFunc { get; private set; }
+	private float _currentProgressPercentage = 0;
+	private float _endDuration = 0;
+	public bool Active { get; set; }
 
-	public Tween<T> TweenProperty(params TweenCache<T>[] cache)
+	public Tween(LerpFunction lerpFunc)
+	{
+		LerpFunc = lerpFunc;
+	}
+	public Tween<T> Start(params TweenCache<T>[] cache) 
+	{
+		ModContent.GetInstance<TweenRunner>().Tweens.Add(this);
+		Active = true;
+		TweenProperty(cache);
+		return this;
+	}
+	private Tween<T> TweenProperty(params TweenCache<T>[] cache)
 	{
 		this.Cache = [.. cache];
 		CurrentDuration = 0;
@@ -72,9 +72,9 @@ public class Tween<T> : ITween where T : struct
 		}
 
 		TweenCache<T> tween = Cache[0];
-		endDuration = tween.Duration;
+		_endDuration = tween.Duration;
 
-		if (CurrentDuration < endDuration) 
+		if (CurrentDuration < _endDuration) 
 		{
 			CurrentDuration++;
 		}
@@ -82,18 +82,18 @@ public class Tween<T> : ITween where T : struct
 		switch (tween.EaseType)
 		{
 			case TweenEaseType.None:
-				currentProgressPercentage = CurrentDuration / (float)endDuration;
+				_currentProgressPercentage = CurrentDuration / (float)_endDuration;
 				break;
 			case TweenEaseType.CubicInOut:
-				currentProgressPercentage = Easings.CubicInOut(CurrentDuration / (float)endDuration);
+				_currentProgressPercentage = Easings.CubicInOut(CurrentDuration / (float)_endDuration);
 				break;
 		}
 		if (tween.Pingpong) 
 		{
-			Utils.PingPongFrom01To010(currentProgressPercentage);
+			Utils.PingPongFrom01To010(_currentProgressPercentage);
 		}
-		CurrentProgress = Lerp(tween.Start, tween.End, currentProgressPercentage);
-		if (CurrentDuration == endDuration)
+		CurrentProgress = LerpFunc(tween.Start, tween.End, _currentProgressPercentage);
+		if (CurrentDuration == _endDuration)
 		{
 			this.Cache.RemoveAt(0);
 			CurrentDuration = 0;
