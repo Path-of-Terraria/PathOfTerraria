@@ -2,11 +2,6 @@
 
 public interface IParticle
 {
-
-	/// <summary>
-	///		Set particle's blendstate to Addtive instead of AlphaBlend
-	/// </summary>
-	bool IsBlendStateAddtive { get; }
     /// <summary>
     ///     Invoked every tick to update the particle.
     /// </summary>

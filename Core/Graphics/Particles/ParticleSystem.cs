@@ -5,8 +5,7 @@ namespace PathOfTerraria.Core.Graphics.Particles;
 [Autoload(Side = ModSide.Client)]
 public sealed class ParticleSystem : ModSystem
 {
-    private static List<IParticle> particlesAddtiveCache = [];
-    private static List<IParticle> particlesAlphaBlendCache = [];
+    private static List<IParticle> particles = [];
 
     public override void Load()
     {
@@ -19,38 +18,24 @@ public sealed class ParticleSystem : ModSystem
     {
         base.Unload();
         
-        particlesAlphaBlendCache?.Clear();
-        particlesAlphaBlendCache = null;
-
-        particlesAddtiveCache?.Clear();
-		particlesAddtiveCache = null;
+        particles?.Clear();
+        particles = null;
     }
 
     public override void PostUpdateWorld()
     {
         base.PostUpdateWorld();
 
-		for (var i = 0; i < particlesAlphaBlendCache.Count; i++)
+		for (int i = 0; i < particles.Count; i++)
 		{
-			particlesAlphaBlendCache[i].Update();
-		}
-
-		for (var i = 0; i < particlesAddtiveCache.Count; i++)
-		{
-			particlesAddtiveCache[i].Update();
+			particles[i].Update();
 		}
 	}
 
     public static T Create<T>(T particle) where T : IParticle
     {
-		if (particle.IsBlendStateAddtive)
-		{
-			particlesAddtiveCache.Add(particle);
-		}
-		else 
-		{
-			particlesAlphaBlendCache.Add(particle);
-		}
+
+		particles.Add(particle);
 
 		particle.Create();
 
@@ -59,42 +44,26 @@ public sealed class ParticleSystem : ModSystem
 
     public static bool Destroy<T>(T particle) where T : IParticle
     {
-		if (particle.IsBlendStateAddtive)
+
+		if (particles.Remove(particle))
 		{
-			if(particlesAddtiveCache.Remove(particle)) 
-			{
-				particle.Destroy();
-			}
+			particle.Destroy();
 		}
-		else
-		{
-			if (particlesAlphaBlendCache.Remove(particle))
-			{
-				particle.Destroy();
-			}
-		}
+
 		return false;
     }
 
-    public static IEnumerable<IParticle> Enumerate(bool addtiveBlendStateParticles = false)
+    public static IEnumerable<IParticle> Enumerate()
     {
-        return addtiveBlendStateParticles ? particlesAddtiveCache : particlesAlphaBlendCache;
+        return particles;
     }
     private static void DrawParticlesAlphaBlend()
     {
-        for (var i = 0; i < particlesAlphaBlendCache.Count; i++)
+        for (int i = 0; i < particles.Count; i++)
         {
-			particlesAlphaBlendCache[i].Draw();
+			particles[i].Draw();
         }
     }
-    
-	private static void DrawParticlesAddtive() 
-	{
-		for (var i = 0; i < particlesAddtiveCache.Count; i++)
-		{
-			particlesAddtiveCache[i].Draw();
-		}
-	}
     private static void Main_DrawDust_DrawParticles(On_Main.orig_DrawDust orig, Main self)
     {
         Main.spriteBatch.Begin
@@ -109,21 +78,6 @@ public sealed class ParticleSystem : ModSystem
         );
         
         DrawParticlesAlphaBlend();
-        
-        Main.spriteBatch.End();
-        
-        Main.spriteBatch.Begin
-        (
-            SpriteSortMode.Texture,
-            BlendState.Additive,
-            SamplerState.PointClamp,
-            DepthStencilState.None,
-            RasterizerState.CullNone,
-            default,
-            Main.GameViewMatrix.TransformationMatrix
-        );
-        
-        DrawParticlesAddtive();
         
         Main.spriteBatch.End();
         
