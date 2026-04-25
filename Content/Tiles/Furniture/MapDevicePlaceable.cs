@@ -172,7 +172,7 @@ public class MapDeviceTile : ModTile
 
 		if (entity.PortalActive)
 		{
-			DrawPortal(sb, tilePoint, worldCenter, entity, screenPosition);
+			DrawItemTexture(sb, tilePoint, worldCenter, entity, screenPosition);
 		}
 	}
 
@@ -241,7 +241,7 @@ public class MapDeviceTile : ModTile
 	/// <param name="worldCenter"></param>
 	/// <param name="entity"></param>
 	/// <param name="screenPosition"></param>
-	private void DrawPortal(SpriteBatch sb, Point16 tilePoint, Vector2 worldCenter, MapDeviceEntity entity, Vector2 screenPosition)
+	private void DrawItemTexture(SpriteBatch sb, Point16 tilePoint, Vector2 worldCenter, MapDeviceEntity entity, Vector2 screenPosition)
 	{
 		//Texture2D portalTexture = AssetUtils.ImmediateValue(PortalTexturePath, ref _portalTex);
 		Texture2D? itemTex = null;

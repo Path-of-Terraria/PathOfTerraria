@@ -69,7 +69,7 @@ public class BasePortalProjectile : ModProjectile
 				new(new Vector2(.5f,1),new Vector2(0,2),false,TweenEaseType.CubicInOut,7),
 
 			]);
-			tweenScale.OnFinsihed += (_) => Projectile.Kill();
+			tweenScale.OnFinished += (_) => Projectile.Kill();
 			tweenFlash = new Tween<float>(MathHelper.Lerp).Start(
 			[
 				new(0,1,false,TweenEaseType.CubicInOut,7),

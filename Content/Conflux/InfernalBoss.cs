@@ -24,7 +24,6 @@ using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Common.World.Utilities;
 using PathOfTerraria.Content.Gores;
-using PathOfTerraria.Content.Particles;
 using PathOfTerraria.Content.Items.Gear.Armor.Chestplate;
 using PathOfTerraria.Content.Items.Gear.Armor.Helmet;
 using PathOfTerraria.Content.Items.Gear.Armor.Leggings;
@@ -123,20 +122,14 @@ internal sealed class InfernalFlames : ModProjectile
 		if (Progress >= 1f)
 		{
 			Projectile.Kill();
-			for(int i = 0; i < 32; i++)
+			for(int i = 0; i < 48; i++)
 			{
-				InfernalParticle death_p = new(Projectile.Center, Main.rand.NextVector2CircularEdge(4, 4), 25, Color.OrangeRed, null, 16, 1);
-				ParticleSystem.Create(death_p);
+				Dust.NewDustPerfect(Projectile.Center, DustID.Torch, Main.rand.NextVector2CircularEdge(12, 12)).noGravity = true;
 			}
 
 			return;
 		}
 
-		//Particles spawning
-		//Vector2 pPos = Projectile.Center + Main.rand.NextVector2Circular(256, 256);
-		//InfernalParticle p = new(pPos, pPos.DirectionTo(Projectile.Center) * 1, 42, Main.rand.NextFromCollection(layerColors.ToList()), Projectile.Center,16,1);
-
-		//ParticleSystem.Create(p);
 		Projectile.rotation -= 0.2f;
 
 		if (StartPos == default) { StartPos = Projectile.Center; }
@@ -182,11 +175,10 @@ internal sealed class InfernalFlames : ModProjectile
 		Vector2 screenPos = worldPos - Main.screenPosition;
 		SpriteBatchArgs args = Main.spriteBatch.GetArguments();
 		Main.spriteBatch.End();
-		Main.spriteBatch.Begin(args with { BlendState = BlendState.Additive});
-
+		using SpriteBatchScope changeSb = Main.spriteBatch.Scope(args with { BlendState = BlendState.Additive });
 		for (int i = 0; i < 4; i++)
 		{
-			Main.EntitySpriteDraw(texture, screenPos, null, new Color(35,1,35), Projectile.rotation + i / 6f * float.Tau, texture.Size() * 0.5f, Projectile.scale * 1f, 0, 0f);
+			Main.EntitySpriteDraw(texture, screenPos, null, new Color(35, 1, 35), Projectile.rotation + i / 6f * float.Tau, texture.Size() * 0.5f, Projectile.scale * 1f, 0, 0f);
 		}
 		for (int i = 0; i < 12; i++)
 		{
@@ -195,11 +187,10 @@ internal sealed class InfernalFlames : ModProjectile
 
 		return false;
 	}
+	//dont restart spritebatch in predraw
 	public override void PostDraw(Color lightColor)
 	{
-		
-		Main.spriteBatch.End();
-		Main.spriteBatch.Begin(args with { BlendState = BlendState.AlphaBlend});
+		Main.spriteBatch.Begin(SpriteSortMode.Deferred,BlendState.AlphaBlend,Main.DefaultSamplerState,DepthStencilState.None,Main.Rasterizer,null,Main.Transform);
 	}
 }
 

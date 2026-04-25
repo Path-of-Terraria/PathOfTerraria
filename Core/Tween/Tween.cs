@@ -31,7 +31,7 @@ public class Tween<T> : ITween where T : struct
 	public int CurrentDuration = 0;
 	public T CurrentProgress;
 	public TweenState State;
-	public Action<Tween<T>> OnFinsihed = (_) => { };
+	public Action<Tween<T>> OnFinished = (_) => { };
 	public delegate T LerpFunction(T value1, T value2, float amount);
 	public LerpFunction LerpFunc { get; private set; }
 	private float _currentProgressPercentage = 0;
@@ -101,7 +101,7 @@ public class Tween<T> : ITween where T : struct
 			{
 				State = TweenState.Stopped;
 				Active = false;
-				OnFinsihed?.Invoke(this);
+				OnFinished?.Invoke(this);
 			}
 		}
 	}
