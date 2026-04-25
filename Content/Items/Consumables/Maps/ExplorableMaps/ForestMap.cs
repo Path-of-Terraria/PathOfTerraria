@@ -18,9 +18,9 @@ internal class ForestMap : ExplorableMap
 		staticData.DropChance = 1f;
 	}
 
-	protected override void OpenMapInternal()
+	internal override Subworld GetDestination()
 	{
-		SubworldSystem.Enter<ForestArea>();
+		return ModContent.GetInstance<ForestArea>();
 	}
 
 	public override string GenerateName(string defaultName)

@@ -22,7 +22,7 @@ internal class TinkerIntroQuest() : Quest
 		new ActionRewards((p, v) =>
 		{
 			p.GetModPlayer<ExpModPlayer>().Exp += 30000;
-			CompletionVisit = ModContent.GetInstance<RavencrestSubworld>().TimesEntered;
+			CompletionVisit = (uint)MappingWorld.GetTimesEntered<RavencrestSubworld>();
 		}, "30000 experience"),
 	];
 

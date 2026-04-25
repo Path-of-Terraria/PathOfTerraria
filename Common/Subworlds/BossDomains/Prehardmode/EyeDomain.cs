@@ -300,8 +300,9 @@ public class EyeDomain : BossDomainSubworld
 		}
 
 		FightState state = FightTracker.UpdateState();
+		GetData().CheckDowned<EyeDomain>(NPCID.EyeofCthulhu);
 
-		if (state == FightState.NotStarted && allInArena)
+		if (state == FightState.NotStarted && allInArena && !GetData().BossDowned)
 		{
 			for (int i = 0; i < 20; ++i)
 			{

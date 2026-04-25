@@ -20,9 +20,9 @@ internal class FishronMap() : HardmodeBossMap(7, () => NPC.downedFishron)
 		Item.Size = new Vector2(26, 30);
 	}
 
-	protected override void OpenMapInternal()
+	internal override Subworld GetDestination()
 	{
-		SubworldSystem.Enter<FishronDomain>();
+		return ModContent.GetInstance<FishronDomain>();
 	}
 
 	public override string GenerateName(string defaultName)

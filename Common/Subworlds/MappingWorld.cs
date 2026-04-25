@@ -1,15 +1,17 @@
-using System.Collections.Generic;
-using System.Linq;
 using PathOfTerraria.Common.Config;
 using PathOfTerraria.Common.Subworlds.Passes;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.DisableBuilding;
+using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Common.UI;
-using PathOfTerraria.Common.UI.SubworldHelp;
 using ReLogic.Content;
 using SubworldLibrary;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.Localization;
@@ -18,8 +20,36 @@ using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds;
 
+#nullable enable
+
 /// <summary>
-/// This is the base class for all mapping worlds. It sets the width and height of the world to 1000x1000 and disables world saving.<br/>
+/// Contains persistent data for subworlds to use. This, by default, contains only a <see cref="BossDowned"/> bool, used by most domains,<br/>
+/// but it is a class so it can be inherited to add arbitrary additional data.<br/><b>Most</b> of the code relating to this will not run on multiplayer clients,
+/// so be careful.
+/// </summary>
+public class PersistentData
+{
+	public bool BossDowned = false;
+
+	/// <summary>
+	/// Automatically checks if the corresponding boss(es) have been downed, and sets <see cref="BossDowned"/> to true if so.
+	/// </summary>
+	public void CheckDowned<T>(params int[] id) where T : BossDomainSubworld
+	{
+		if (id.Length == 0)
+		{
+			throw new ArgumentException("There must be at least 1 IDs passed to CheckDowned.");
+		}
+
+		if (BossTracker.DownedInDomain<T>(id))
+		{
+			BossDowned = true;
+		}
+	}
+}
+
+/// <summary>
+/// This is the base class for all mapping worlds. It sets the width and height of the world to 1000x1000 and enables world saving (or uses the configurable option in Debug).<br/>
 /// Additionally, it also makes <see cref="StopBuildingPlayer"/> disable world modification,
 /// and enables <see cref="Systems.ModPlayers.LivesSystem.BossDomainLivesPlayer"/>'s life system.
 /// </summary>
@@ -30,6 +60,8 @@ public abstract class MappingWorld : Subworld
 		public override void SaveWorldData(TagCompound tag)
 		{
 			tag.Add("lastPath", LastSubworldSavePath);
+			tag.Add("timesKeys", (string[])[.. TimesEnteredByDomain.Keys]);
+			tag.Add("timesValues", (int[])[.. TimesEnteredByDomain.Values]);
 		}
 
 		public override void LoadWorldData(TagCompound tag)
@@ -40,11 +72,50 @@ public abstract class MappingWorld : Subworld
 			{
 				LastSubworldSavePath = value;
 			}
+
+			if (SubworldSystem.Current is null && tag.TryGet("timesKeys", out string[] times))
+			{
+				TimesEnteredByDomain = [];
+				int[] values = tag.GetIntArray("timesValues");
+
+				for (int i = 0; i < times.Length; ++i)
+				{
+					TimesEnteredByDomain.Add(times[i], values[i]);
+				}
+			}
 		}
 	}
 
-	/// <summary> How many times this subworld type has been started on this client or server. </summary>
-	public uint TimesEntered { get; private set; }
+	internal class DeleteOnServerHandler : Handler
+	{
+		public static void Send()
+		{
+			ModPacket packet = Networking.GetPacket<DeleteOnServerHandler>();
+			packet.Send();
+		}
+
+		internal override void Receive(BinaryReader reader, byte sender)
+		{
+			DeleteSavedSubworld();
+		}
+	}
+
+	internal class SetLastSubworldPathHandler : Handler
+	{
+		public static void Send(string value)
+		{
+			ModPacket packet = Networking.GetPacket<SetLastSubworldPathHandler>();
+			packet.Write(value);
+			packet.Send();
+		}
+
+		internal override void Receive(BinaryReader reader, byte sender)
+		{
+			string value = reader.ReadString();
+
+			LastSubworldSavePath = value;
+		}
+	}
 
 	public override int Width => 1000;
 	public override int Height => 1000;
@@ -90,7 +161,7 @@ public abstract class MappingWorld : Subworld
 	/// </summary>
 	public virtual (int time, bool isDay) ForceTime => (-1, true);
 
-	public static List<MapAffix> Affixes = null;
+	public static List<MapAffix> Affixes = null!;
 
 	/// <summary>
 	/// The level of the world. This modifies a lot of things:<br/>
@@ -105,12 +176,20 @@ public abstract class MappingWorld : Subworld
 	/// This is kept as the map tier is used for a couple of things, namely <see cref="MappingDomainSystem.Tracker"/>.
 	/// </summary>
 	public static int MapTier = 0;
-	internal static string LastSubworldSavePath { get; private set; }
 
-	public LocalizedText SubworldName { get; private set; }
-	public LocalizedText SubworldDescription { get; private set; }
-	public LocalizedText SubworldMining { get; private set; }
-	public LocalizedText SubworldPlacing { get; private set; }
+	internal static string? LastSubworldSavePath { get; private set; }
+
+	/// <summary>
+	/// How many times a given subworld has been entered, indexed by <see cref="Mod.Name"/>/<see cref="Subworld"/>.GetType().Name.
+	/// </summary>
+	internal static Dictionary<string, int> TimesEnteredByDomain = [];
+
+	internal static Dictionary<string, PersistentData> PersistentDomainInfo = [];
+
+	public LocalizedText? SubworldName { get; private set; }
+	public LocalizedText? SubworldDescription { get; private set; }
+	public LocalizedText? SubworldMining { get; private set; }
+	public LocalizedText? SubworldPlacing { get; private set; }
 
 	/// <summary>
 	/// The loading backgrounds for this <see cref="MappingWorld"/>. Used by <see cref="SubworldLoadingScreen"/>.
@@ -118,6 +197,58 @@ public abstract class MappingWorld : Subworld
 	public Asset<Texture2D>[] LoadingBackgrounds = [];
 
 	private bool needsNetSync;
+
+	public static int GetTimesEntered<T>() where T : Subworld
+	{
+		return GetTimesEntered(ModContent.GetInstance<T>());
+	}
+
+	public static int GetTimesEntered(Subworld subworld)
+	{
+		if (TimesEnteredByDomain.TryGetValue(subworld.FullName, out int value))
+		{
+			return value;
+		}
+
+		return 0;
+	}
+
+	/// <summary>
+	/// Gets the amount of times this subworld has been entered.
+	/// </summary>
+	public int GetTimesEntered()
+	{
+		return GetTimesEntered(this);
+	}
+
+	public static PersistentData? GetData<T>() where T : Subworld
+	{
+		return GetData(ModContent.GetInstance<T>());
+	}
+
+	public static PersistentData? GetData(Subworld subworld)
+	{
+		if (PersistentDomainInfo.TryGetValue(subworld.FullName, out PersistentData? value))
+		{
+			return value;
+		}
+
+		if (SubworldSystem.IsActive(subworld.FullName))
+		{
+			PersistentDomainInfo.Add(subworld.FullName, new());
+			return PersistentDomainInfo[subworld.FullName];
+		}
+
+		return null;
+	}
+
+	/// <summary>
+	/// Gets the persistent data saved with this domain, if any. While a domain is active, this value should not be null.
+	/// </summary>
+	public PersistentData? GetData()
+	{
+		return GetData(this);
+	}
 
 	public override void Load()
 	{
@@ -134,14 +265,47 @@ public abstract class MappingWorld : Subworld
 
 	public override void OnEnter()
 	{
-		TimesEntered++;
-		LastSubworldSavePath = TryGetCurrentPath();
+
 	}
 
-	private static string TryGetCurrentPath()
+	public override void OnLoad()
+	{
+		if (SubworldSystem.Current is not null)
+		{
+			LastSubworldSavePath = TryGetCurrentPath();
+
+			if (!TimesEnteredByDomain.TryAdd(FullName, 1))
+			{
+				TimesEnteredByDomain[FullName]++;
+			}
+
+			if (Main.netMode == NetmodeID.Server && SubworldSystem.Current is not null)
+			{
+				ModPacket packet = Networking.GetPacket<SetLastSubworldPathHandler>();
+				packet.Write(LastSubworldSavePath!);
+				Networking.SendPacketToMainServer(packet);
+			}
+		}
+
+		Mod.Logger.Debug("Running" + " " + TimesEnteredByDomain[FullName]);
+	}
+
+	private static string? TryGetCurrentPath()
 	{
 		try
 		{
+			if (SubworldSystem.Current is null || SubworldSystem.Current.FileName is null)
+			{
+				return null;
+			}
+
+			WorldFileData main = GetMain(ModContent.GetInstance<SubworldSystem>());
+
+			if (main is null)
+			{
+				return null;
+			}
+
 			return SubworldSystem.CurrentPath;
 		}
 		catch (NullReferenceException)
@@ -149,6 +313,9 @@ public abstract class MappingWorld : Subworld
 			return null;
 		}
 	}
+
+	[UnsafeAccessor(UnsafeAccessorKind.StaticField, Name = "main")]
+	public static extern ref WorldFileData GetMain(SubworldSystem sys);
 
 	private void LoadLoadingScreens()
 	{
@@ -285,16 +452,23 @@ public abstract class MappingWorld : Subworld
 
 	internal static void DeleteSavedSubworld()
 	{
-		if (LastSubworldSavePath is { Length: > 0 } path && System.IO.File.Exists(path))
+		if (Main.netMode != NetmodeID.MultiplayerClient)
 		{
-			try
+			if (LastSubworldSavePath is { Length: > 0 } path && File.Exists(path))
 			{
-				System.IO.File.Delete(path);
+				try
+				{
+					File.Delete(path);
+				}
+				catch
+				{
+					PoTMod.Instance.Logger.Error("[DeleteSavedSubworld] Failed to delete saved subworld.");
+				}
 			}
-			catch
-			{
-				PoTMod.Instance.Logger.Error("[DeleteSavedSubworld] Failed to delete saved subworld.");
-			}
+		}
+		else if (Main.netMode == NetmodeID.MultiplayerClient)
+		{
+			DeleteOnServerHandler.Send();
 		}
 
 		LastSubworldSavePath = null;
