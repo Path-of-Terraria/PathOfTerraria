@@ -10,10 +10,11 @@ internal class BlastChainMastery : Passive
 	{
 		public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
 		{
-			if (projectile.TryGetOwner(out Player plr) && plr.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<BlastChainMastery>(out float value)
-				&& ProjectileID.Sets.Explosive[projectile.type] && npc.life <= 0)
+			bool willDie = npc.life - damageDone <= 0;
+			
+			if (projectile.TryGetOwner(out Player plr) && plr.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<BlastChainMastery>(out float value) && ProjectileID.Sets.Explosive[projectile.type] && willDie && value > 0)
 			{
-				ExplosionHitbox.QuickSpawn(npc.GetSource_Death(), npc, (int)(hit.Damage * value / 100f), projectile.owner, npc.Size * 1.5f, ExplosionSpawnInfo.PlayerOwned(projectile.owner));
+				ExplosionHitbox.QuickSpawn(npc.GetSource_Death(), npc, (int)(hit.Damage * value / 100f), projectile.owner, npc.Size * 4.5f, ExplosionSpawnInfo.PlayerOwned(projectile.owner));
 			}
 		}
 	}

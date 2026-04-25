@@ -12,14 +12,14 @@ internal class RavencrestBuildingIndex : Handler
 	{
 		ModPacket packet = Networking.GetPacket<RavencrestBuildingIndex>();
 		packet.Write(name);
-		packet.Write((byte)index);
+		packet.Write(index);
 		packet.Send();
 	}
 
 	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
 		string name = reader.ReadString();
-		byte index = reader.ReadByte();
+		int index = reader.ReadInt32();
 
 		RavencrestSystem.UpgradeBuilding(name, index);
 	}

@@ -226,6 +226,13 @@ public abstract class Affix : ILocalizedModType
 		if (t is null)
 		{
 			PoTMod.Instance.Logger.Error($"Could not load affix of internal id {aId}");
+
+			// MobAffix.NetSend writes three floats after the affix id. Keep the stream aligned
+			// even when the affix id is stale or invalid.
+			reader.ReadSingle();
+			reader.ReadSingle();
+			reader.ReadSingle();
+
 			return null;
 		}
 
@@ -333,11 +340,16 @@ internal class AffixHandler : ILoadable
 	}
 	public static Type MobAffixTypeFromIndex(int idx)
 	{
+		if (idx < 0 || idx >= _mobAffixes.Count)
+		{
+			return null;
+		}
+
 		return _mobAffixes[idx].GetType();
 	}
 	public static int IndexFromMobAffix(MobAffix affix)
 	{
-		MobAffix a = _mobAffixes.First(a => affix.GetType() == a.GetType());
+		MobAffix a = _mobAffixes.FirstOrDefault(a => affix.GetType() == a.GetType());
 
 		if (a is null)
 		{
