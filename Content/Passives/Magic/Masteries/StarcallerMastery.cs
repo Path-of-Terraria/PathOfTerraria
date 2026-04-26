@@ -59,7 +59,7 @@ internal class StarcallerMastery : Passive
 			{
 				IEntitySource src = Player.GetSource_OnHit(target);
 				Vector2 pos = target.Center - new Vector2(0, 800);
-				Projectile.NewProjectile(src, pos, new Vector2(0, 8), type, (int)(damageDone * value / 100f), 2, Player.whoAmI, target.whoAmI);
+				Projectile.NewProjectile(src, pos, new Vector2(0, 8), type, (int)(damageDone), 2, Player.whoAmI, target.whoAmI);
 			}
 		}
 
