@@ -54,7 +54,7 @@ public class ElementalPlayer : ModPlayer
 	{
 		if (proj.TryGetGlobalProjectile(out ElementalProjectile elemProj))
 		{
-			ElementModifyDamage(elemProj.Container, Container, ref modifiers.IncomingDamageMultiplier, ref modifiers.SourceDamage);
+			ElementModifyDamage(elemProj.Container, Container, ref modifiers.IncomingDamageMultiplier, ref modifiers.SourceDamage, ref modifiers.FinalDamage);
 		}
 	}
 
@@ -62,7 +62,7 @@ public class ElementalPlayer : ModPlayer
 	{
 		if (npc.TryGetGlobalNPC(out ElementalNPC elemNPC))
 		{
-			ElementModifyDamage(elemNPC.Container, Container, ref modifiers.IncomingDamageMultiplier, ref modifiers.SourceDamage);
+			ElementModifyDamage(elemNPC.Container, Container, ref modifiers.IncomingDamageMultiplier, ref modifiers.SourceDamage, ref modifiers.FinalDamage);
 		}
 	}
 
@@ -70,7 +70,7 @@ public class ElementalPlayer : ModPlayer
 	{
 		if (target.TryGetGlobalNPC(out ElementalNPC elemNPC))
 		{
-			ElementModifyDamage(Container, elemNPC.Container, ref Unsafe.NullRef<MultipliableFloat>(), ref modifiers.FinalDamage, true, item);
+			ElementModifyDamage(Container, elemNPC.Container, ref Unsafe.NullRef<MultipliableFloat>(), ref modifiers.FinalDamage, ref modifiers.FinalDamage, true, item);
 		}
 	}
 
@@ -79,11 +79,12 @@ public class ElementalPlayer : ModPlayer
 		if (target.TryGetGlobalNPC(out ElementalNPC elemNPC) && proj.TryGetGlobalProjectile(out ElementalProjectile elemProj))
 		{
 			Item? item = elemProj.SourceItem == -1 ? null : ContentSamples.ItemsByType[elemProj.SourceItem];
-			ElementModifyDamage(elemProj.Container, elemNPC.Container, ref Unsafe.NullRef<MultipliableFloat>(), ref modifiers.FinalDamage, true, item);
+			ElementModifyDamage(elemProj.Container, elemNPC.Container, ref Unsafe.NullRef<MultipliableFloat>(), ref modifiers.FinalDamage, ref modifiers.FinalDamage, true, item);
 		}
 	}
 
-	private static void ElementModifyDamage(ElementalContainer container, ElementalContainer other, ref MultipliableFloat preDefenseMultiplier, ref StatModifier sourceDamage, 
+	private static void ElementModifyDamage(ElementalContainer container, ElementalContainer other, ref MultipliableFloat preDefenseMultiplier, ref StatModifier conversionDamage, 
+		ref StatModifier flatDamage,
 		bool npcHit = false, Item? item = null)
 	{
 		float elementalDamageAdjustment = GetElementalDamageAdjustment(container, other, item);
@@ -96,13 +97,13 @@ public class ElementalPlayer : ModPlayer
 		else
 		{
 			// Replaces the converted part of the hit with its elemental result - only applies to NPCs
-			sourceDamage += elementalDamageAdjustment;
+			conversionDamage += elementalDamageAdjustment;
 		}
 		
 		// Apply flat extra damage (accounting for resistance)
 		foreach (ElementInstance element in container)
 		{
-			sourceDamage.Flat += element.GetFlatDamage(other) * element.Multiplier;
+			flatDamage.Flat += element.GetFlatDamage(other) * element.Multiplier;
 		}
 	
 		if (DebugMessages && (container.Any(x => x.DamageModifier.HasValues)))

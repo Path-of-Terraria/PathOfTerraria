@@ -46,17 +46,20 @@ internal class ElementalNPC : GlobalNPC
 				{
 					if (mobDamage.Fire != null)
 					{
-						Container[ElementType.Fire].DamageModifier.ApplyOverride(mobDamage.Fire.Added, mobDamage.Fire.Conversion);
+						ref ElementalDamage damageModifier = ref Container[ElementType.Fire].DamageModifier;
+						damageModifier = damageModifier.ApplyOverride(mobDamage.Fire.Added, mobDamage.Fire.Conversion);
 					}
 
 					if (mobDamage.Cold != null)
 					{
-						Container[ElementType.Cold].DamageModifier.ApplyOverride(mobDamage.Cold.Added, mobDamage.Cold.Conversion);
+						ref ElementalDamage damageModifier = ref Container[ElementType.Cold].DamageModifier;
+						damageModifier = damageModifier.ApplyOverride(mobDamage.Cold.Added, mobDamage.Cold.Conversion);
 					}
 
 					if (mobDamage.Lightning != null)
 					{
-						Container[ElementType.Lightning].DamageModifier.ApplyOverride(mobDamage.Lightning.Added, mobDamage.Lightning.Conversion);
+						ref ElementalDamage damageModifier = ref Container[ElementType.Lightning].DamageModifier;
+						damageModifier = damageModifier.ApplyOverride(mobDamage.Lightning.Added, mobDamage.Lightning.Conversion);
 					}
 
 					break;
