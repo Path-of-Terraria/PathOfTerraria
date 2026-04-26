@@ -57,7 +57,10 @@ internal sealed class MapResources : ModSystem, ISubworldSync
 			ModContent.GetInstance<MapResources>().NetSend(packet);
 			packet.Send();
 
-			if (sendToSubworlds) { SubworldSystem.SendToAllSubservers(PoTMod.Instance, Networking.GetFinalPacketBuffer(packet)); }
+			if (sendToSubworlds)
+			{
+				SubworldSystem.SendToAllSubservers(PoTMod.Instance, Networking.GetFinalPacketBuffer(packet));
+			}
 		}
 
 		internal override void Receive(BinaryReader reader, byte sender)
@@ -213,11 +216,11 @@ internal sealed class MapResources : ModSystem, ISubworldSync
 		// Short-circuit if unrecognized.
 		if (!resourcesByItem.TryGetValue(itemType, out int index)) { return; }
 
-		// Redirect to main server.
+		// Direct copy to main server.
 		if (Main.netMode == NetmodeID.Server && SubworldSystem.Current != null)
 		{
-			SubworldSystem.SendToMainServer(PoTMod.Instance, Networking.GetFinalPacketBuffer(ModifyValueMessage.Write(itemType, delta, discovery)));
-			return;
+			Networking.SendPacketToMainServer(ModifyValueMessage.Write(itemType, delta, discovery));
+			// return;
 		}
 
 		// Perform function.
@@ -232,7 +235,7 @@ internal sealed class MapResources : ModSystem, ISubworldSync
 		};
 
 		// Enqueue a full sync.
-		needsSync |= Main.netMode == NetmodeID.Server;
+		needsSync |= Main.netMode == NetmodeID.Server && SubworldSystem.Current == null;
 	}
 
 	public static bool AnyResourceDiscovered()

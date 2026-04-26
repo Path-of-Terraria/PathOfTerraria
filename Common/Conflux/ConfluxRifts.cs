@@ -135,7 +135,7 @@ internal sealed class ConfluxRifts : ModSystem
 				numSpawnsToAnnounce = Math.Max(0, numSpawnsToAnnounce + 1);
 
 #if DEBUG_LOG
-				DebugUtils.DebugLog("New conflux rift spawn pending.");
+				DebugUtils.DebugLog($"{GetType().Name}: New conflux rift spawn pending.");
 #endif
 			}
 		}
@@ -409,6 +409,8 @@ internal sealed class ConfluxRifts : ModSystem
 			{
 				break;
 			}
+
+			numSpawned++;
 			
 			if (maxSpawns > 0 && numSpawned >= maxSpawns)
 			{
