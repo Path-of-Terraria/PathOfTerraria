@@ -25,7 +25,14 @@ internal class ExplosiveSlugsMastery : Passive
 		{
 			if (_bullet && hit.Crit && proj.TryGetOwner(out Player plr) && plr.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<ExplosiveSlugsMastery>(out float value))
 			{
-				ExplosionHitbox.QuickSpawn(proj.GetSource_OnHit(target), proj, (int)(damageDone * value / 100f), proj.owner, new Vector2(60, 60), ExplosionSpawnInfo.PlayerOwned(proj.owner));
+				var explosionInfo = new ExplosionSpawnInfo(
+					Friendly: true,
+					Knockback: 3f,
+					Velocity: Vector2.Zero, 
+					CanSpawnProjectile: proj.owner == Main.myPlayer
+				);
+		
+				ExplosionHitbox.QuickSpawn(proj.GetSource_OnHit(target), proj, (int)(damageDone * 30f / 100f), proj.owner, new Vector2(60, 60), explosionInfo);
 			}
 		}
 	}
