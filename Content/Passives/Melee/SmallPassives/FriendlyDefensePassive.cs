@@ -26,6 +26,6 @@ internal class FriendlyDefensePassive : Passive
 
 	public override void BuffPlayer(Player player)
 	{
-		player.statDefense += Value;
+		player.statDefense += (int)Value;
 	}
 }

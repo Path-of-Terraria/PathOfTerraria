@@ -8,7 +8,7 @@ public class IncreasedDefenseWhileChanneling : Passive
 	{
 		if (player.channel)
 		{
-			player.statDefense += Value * Level;
+			player.statDefense += (int)(Value * Level);
 		}
 	}
 }

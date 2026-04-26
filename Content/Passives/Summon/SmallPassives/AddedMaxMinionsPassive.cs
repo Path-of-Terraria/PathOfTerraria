@@ -6,6 +6,6 @@ internal class AddedMaxMinionsPassive : Passive
 {
 	public override void BuffPlayer(Player player)
 	{
-		player.maxMinions += Value;
+		player.maxMinions += (int)Value;
 	}
 }

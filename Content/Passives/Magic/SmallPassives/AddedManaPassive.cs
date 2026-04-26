@@ -7,6 +7,6 @@ internal class AddedManaPassive : Passive
 {
 	public override void BuffPlayer(Player player)
 	{
-		player.statManaMax2 += Value * Level;
+		player.statManaMax2 += (int)(Value * Level);
 	}
 } 
