@@ -179,7 +179,7 @@ internal static class EnemySpawning
 			
 			if (Main.netMode == NetmodeID.Server)
 			{
-				NetMessage.SendData(MessageID.SyncNPC, npc.whoAmI);
+				NetMessage.SendData(MessageID.SyncNPC, number: npc.whoAmI);
 			}
 		}
 
