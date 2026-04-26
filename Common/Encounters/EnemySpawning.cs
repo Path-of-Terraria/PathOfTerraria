@@ -49,6 +49,10 @@ internal record struct EnemySpawn()
 	/// <summary> The encounter kill score given for killing this enemy. </summary>
 	[DefaultValue(1f)]
 	public float KillScore { get; set; } = 1f;
+
+	/// <summary> If true, the spawned NPC will not despawn when off-screen. </summary>
+	[DefaultValue(true)]
+	public bool NoDespawning { get; set; } = true;
 }
 
 /// <summary> A description used to calculate a placement for an enemy spawn. </summary>
@@ -167,9 +171,16 @@ internal static class EnemySpawning
 
 		npc = NPC.NewNPCDirect(source, spawnPosition, spawn.NpcType.Type);
 
-		if (npc.whoAmI == Main.maxNPCs)
+		if (npc.whoAmI >= Main.maxNPCs) { return false; }
+
+		if (spawn.NoDespawning)
 		{
-			return false;
+			npc.GetGlobalNPC<NPCDespawning>().NeverDespawn = true;
+			
+			if (Main.netMode == NetmodeID.Server)
+			{
+				NetMessage.SendData(MessageID.SyncNPC, npc.whoAmI);
+			}
 		}
 
 		SpawnEffects(npc, spawn.Effect, spawnPosition);

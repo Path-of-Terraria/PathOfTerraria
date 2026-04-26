@@ -1,4 +1,4 @@
-using PathOfTerraria.Common.Config;
+﻿using PathOfTerraria.Common.Config;
 using PathOfTerraria.Common.Subworlds.Passes;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
@@ -7,6 +7,7 @@ using PathOfTerraria.Common.Systems.DisableBuilding;
 using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Common.UI;
+using PathOfTerraria.Core.Subworlds;
 using ReLogic.Content;
 using SubworldLibrary;
 using System.Collections.Generic;
@@ -482,12 +483,14 @@ public abstract class MappingWorld : Subworld
 	public override void CopySubworldData()
 	{
 		base.CopySubworldData();
+		SubworldHooks.ExportSubworldData(this);
 		CopyConsistentInfo();
 	}
 
 	public override void ReadCopiedSubworldData()
 	{
 		base.ReadCopiedSubworldData();
+		SubworldHooks.ImportSubworldData(this);
 		ReadConsistentInfo();
 	}
 
