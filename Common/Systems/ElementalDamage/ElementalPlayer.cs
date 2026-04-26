@@ -86,44 +86,17 @@ public class ElementalPlayer : ModPlayer
 	private static void ElementModifyDamage(ElementalContainer container, ElementalContainer other, ref MultipliableFloat preDefenseMultiplier, ref StatModifier sourceDamage, 
 		bool npcHit = false, Item? item = null)
 	{
-		// Calculate base weapon elemental strength and additional conversion separately
-		float baseElementalStrength = 0f;
-		float additionalConversion = 0f;
-		
-		foreach (ElementInstance element in container)
-		{
-			float weaponStrength = (item is null ? 0 : ElementalWeaponSets.GetElementStrength(item.type, element.Type)) * (1 - other[element.Type].Resistance);
-			float playerConversion = element.GetTotalConversion(other);
-			
-			baseElementalStrength += weaponStrength;
-			additionalConversion += playerConversion;
-		}
-		
-		// Cap base elemental strength at 1.0 (can't be more than 100% elemental)
-		baseElementalStrength = MathF.Min(baseElementalStrength, 1f);
-	
-		float totalConversion = (baseElementalStrength + additionalConversion);
-		
-		// Apply multiplier to original damage BEFORE DEFENSE, by each element conversion percent (accounting for resistance) 
-		float totalMultiplier = MathF.Max(0f, MathF.Max(totalConversion, baseElementalStrength));
-
-		// Add in multipliers
-		foreach (ElementInstance element in container)
-		{
-			float conv = MathF.Min(element.GetTotalConversion(other) + (item is null ? 0 : ElementalWeaponSets.GetElementStrength(item.type, element.Type)), 1);
-			float bonus = (conv * element.Multiplier) - conv;
-			totalMultiplier += bonus * (1 - Math.Abs(other[element.Type].Resistance));
-		}
+		float elementalDamageAdjustment = GetElementalDamageAdjustment(container, other, item);
 
 		if (!npcHit)
 		{
-			// Adds X% damage to the hit, depending on the total conversion multiplier, before defense - only applies to players
-			preDefenseMultiplier *= 1 + totalMultiplier;
+			// Replaces the converted part of the hit with its elemental result before defense - only applies to players
+			preDefenseMultiplier *= MathF.Max(0f, 1 + elementalDamageAdjustment);
 		}
 		else
 		{
-			// Adds X% final damage to the hit, depending on the total conversion multiplier - only applies to NPCs
-			sourceDamage += totalMultiplier;
+			// Replaces the converted part of the hit with its elemental result - only applies to NPCs
+			sourceDamage += elementalDamageAdjustment;
 		}
 		
 		// Apply flat extra damage (accounting for resistance)
@@ -142,8 +115,42 @@ public class ElementalPlayer : ModPlayer
 				Main.NewText($"{element.Type}: Conversion: {mod.DamageConversion * 100}%, Flat: {mod.DamageBonus:0.##}, Resistance: {element.Resistance * 100}%");
 			}
 			
-			Main.NewText($"  Total Multiplier Applied: {totalMultiplier:0.####}");
+			Main.NewText($"  Elemental Damage Adjustment Applied: {elementalDamageAdjustment:0.####}");
 		}
+	}
+
+	public static float GetElementalDamageAdjustment(ElementalContainer container, ElementalContainer other, Item? item)
+	{
+		float totalConversion = 0f;
+
+		foreach (ElementInstance element in container)
+		{
+			totalConversion += GetRawConversion(element, item);
+		}
+
+		if (totalConversion <= 0f)
+		{
+			return 0f;
+		}
+
+		float conversionScale = totalConversion > 1f ? 1f / totalConversion : 1f;
+		float originalConvertedDamage = MathF.Min(totalConversion, 1f);
+		float elementalDamage = 0f;
+
+		foreach (ElementInstance element in container)
+		{
+			float conversion = GetRawConversion(element, item) * conversionScale;
+			float resistanceMultiplier = 1f - other[element.Type].Resistance;
+			elementalDamage += conversion * element.Multiplier * resistanceMultiplier;
+		}
+
+		return elementalDamage - originalConvertedDamage;
+	}
+
+	private static float GetRawConversion(ElementInstance element, Item? item)
+	{
+		float weaponConversion = item is null ? 0f : ElementalWeaponSets.GetElementStrength(item.type, element.Type);
+		return MathF.Max(0f, element.DamageModifier.DamageConversion + weaponConversion);
 	}
 
 	/// <inheritdoc cref="GetConversionMultiplier(ElementInstance, Item, float)"/>
