@@ -1,4 +1,6 @@
-﻿using PathOfTerraria.Content.NPCs.Town;
+﻿using PathOfTerraria.Common.Systems.Questing;
+using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
+using PathOfTerraria.Content.NPCs.Town;
 using SubworldLibrary;
 using System.Collections.Generic;
 using Terraria.ID;
@@ -13,6 +15,19 @@ internal class BoCDomainSystem : ModSystem
 	public byte LloydAttempts = 0;
 	public float DomainAtmosphere = 1;
 	public Vector2 LLoydReturnPos = Vector2.Zero;
+
+	internal static bool AnyActivePlayerNeedsLloyd()
+	{
+		foreach (Player player in Main.ActivePlayers)
+		{
+			if (Quest.PlayerHasQuest<BoCQuest>(player.whoAmI))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
 
 	public override void SaveWorldData(TagCompound tag)
 	{
@@ -49,35 +64,20 @@ internal class BoCDomainSystem : ModSystem
 
 			DomainAtmosphere = MathHelper.Lerp(DomainAtmosphere, strength, 0.02f);
 		}
+
+		if (SubworldSystem.Current is null && Main.netMode != NetmodeID.MultiplayerClient &&
+			Main.GameUpdateCount % 300 == 0 && NeedsLloydRespawn())
+		{
+			SpawnLloydNearCrimson();
+		}
 	}
 
 	internal void OneTimeCheck()
 	{
-		if (SubworldSystem.Current is null && NPC.downedBoss1 && !DontSpawnLloyd && WorldGen.crimson && !NPC.downedBoss2)
+		if (SubworldSystem.Current is null && NPC.downedBoss1 && WorldGen.crimson && !HasLloyd && !NPC.AnyNPCs(ModContent.NPCType<LloydNPC>()) &&
+			(!DontSpawnLloyd && !NPC.downedBoss2 || AnyActivePlayerNeedsLloyd()))
 		{
-			HashSet<int> types = [TileID.Crimstone, TileID.CrimsonGrass, TileID.Crimsand];
-
-			while (true)
-			{
-				int x = Main.rand.Next(Main.maxTilesX / 6, Main.maxTilesX / 6 * 5);
-				int y = (int)(Main.worldSurface * 0.35f);
-
-				while (!WorldGen.SolidTile(x, y))
-				{
-					y++;
-				}
-
-				Tile tile = Main.tile[x, y];
-
-				if (!tile.HasTile || !types.Contains(tile.TileType))
-				{
-					continue;
-				}
-
-				NPC.NewNPC(Entity.GetSource_NaturalSpawn(), x * 16, y * 16, ModContent.NPCType<LloydNPC>());
-				DontSpawnLloyd = true;
-				break;
-			}
+			SpawnLloydNearCrimson();
 		}
 
 		if (SubworldSystem.Current is null)
@@ -87,6 +87,39 @@ internal class BoCDomainSystem : ModSystem
 				NPC.NewNPC(Entity.GetSource_NaturalSpawn(), (int)LLoydReturnPos.X, (int)LLoydReturnPos.Y, ModContent.NPCType<LloydNPC>());
 				HasLloyd = false;
 			}
+		}
+	}
+
+	private bool NeedsLloydRespawn()
+	{
+		return NPC.downedBoss1 && WorldGen.crimson && !HasLloyd &&
+			AnyActivePlayerNeedsLloyd() && !NPC.AnyNPCs(ModContent.NPCType<LloydNPC>());
+	}
+
+	private void SpawnLloydNearCrimson()
+	{
+		HashSet<int> types = [TileID.Crimstone, TileID.CrimsonGrass, TileID.Crimsand];
+
+		for (int attempt = 0; attempt < 1000; attempt++)
+		{
+			int x = Main.rand.Next(Main.maxTilesX / 6, Main.maxTilesX / 6 * 5);
+			int y = (int)(Main.worldSurface * 0.35f);
+
+			while (y < Main.maxTilesY - 10 && !WorldGen.SolidTile(x, y))
+			{
+				y++;
+			}
+
+			Tile tile = Main.tile[x, y];
+
+			if (!tile.HasTile || !types.Contains(tile.TileType))
+			{
+				continue;
+			}
+
+			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), x * 16, y * 16, ModContent.NPCType<LloydNPC>());
+			DontSpawnLloyd = true;
+			break;
 		}
 	}
 }
