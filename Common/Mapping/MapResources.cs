@@ -100,6 +100,22 @@ internal sealed class MapResources : ModSystem
 		}
 	}
 
+	/// <summary>
+	/// Automatically requests a resource sync whenever a multiplayer client enters the main world
+	/// (including when returning from a subworld). This restores the conflux panel display after
+	/// a subworld session resets client-side resource state.
+	/// </summary>
+	internal sealed class WorldEnterSyncPlayer : ModPlayer
+	{
+		public override void OnEnterWorld()
+		{
+			if (Main.netMode == NetmodeID.MultiplayerClient && SubworldSystem.Current == null)
+			{
+				RequestMessage.Send();
+			}
+		}
+	}
+
 	/// <inheritdoc cref="ModifyValue"/>
 	internal sealed class ModifyValueMessage : Handler
 	{
@@ -112,12 +128,16 @@ internal sealed class MapResources : ModSystem
 			return packet;
 		}
 
-		internal override void Receive(BinaryReader reader, byte sender)
+		internal override void ServerReceive(BinaryReader reader, byte sender)
 		{
 			int itemId = reader.Read7BitEncodedInt();
 			int delta = reader.Read7BitEncodedInt();
 			var discovery = (ResourceDiscovery)reader.ReadByte();
-			ModifyValue(itemId, delta, discovery: discovery, netSender: sender);
+			// Do not forward the sender; this message is only sent by subworld servers
+			// (via SubworldSystem.SendToMainServer), which are assigned slot IDs < byte.MaxValue
+			// by SubworldLibrary. Passing the sender would trip the "only servers can send this"
+			// guard in ModifyValue and silently drop the modification.
+			ModifyValue(itemId, delta, discovery: discovery);
 		}
 	}
 
@@ -298,7 +318,7 @@ internal sealed class MapResources : ModSystem
 			{
 				ref MapResource resource = ref ResourcesMut[index];
 				resource.Value = value;
-				resource.Discovered = true;
+				resource.Discovered = discovered;
 			}
 		}
 	}
