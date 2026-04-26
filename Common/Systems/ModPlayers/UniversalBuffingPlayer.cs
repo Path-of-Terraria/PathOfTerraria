@@ -9,9 +9,10 @@ internal class UniversalBuffingPlayer : ModPlayer
 
 	public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 	{
-		float critMultiplier = Player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.CriticalMultiplier.ApplyTo(1f);
-		
-		modifiers.CritDamage *= critMultiplier;
+		EntityModifier modifier = Player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier;
+
+		modifiers.CritDamage *= modifier.CriticalMultiplier.ApplyTo(1f);
+		modifiers.CritDamage *= modifier.CriticalDamage.ApplyTo(1f);
 	}
 
 	public override void UpdateEquips()
