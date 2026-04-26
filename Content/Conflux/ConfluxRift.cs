@@ -141,6 +141,7 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile, 
 	private (SlotId Handle, float Volume) soundAwoken;
 	private ProjectileAudioTracker? audioTracker;
 	private bool approached;
+	private Flags lastFlags;
 
 	public uint EndTime { get; set; }
 	public Encounter Encounter { get; private set; }
@@ -313,9 +314,30 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile, 
 
 	private void UpdateEffects()
 	{
+		Flags newFlags = BitFlags;
+		Flags oldFlags = lastFlags;
+		lastFlags = newFlags;
+		
 		if (Main.dedServ) { return; }
 
 		VisualParams visuals = GetVisualParameters();
+
+		// Activation effects.
+		if (newFlags.HasFlag(Flags.Activated) && !oldFlags.HasFlag(Flags.Activated))
+		{
+			SoundEngine.PlaySound(SoundActivation, Projectile.Center);
+
+			for (int i = 0; i < 100; i++)
+			{
+				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(8f, 8f), visuals.DustId, Main.rand.NextVector2Circular(8f, 8f));
+			}
+		}
+
+		// Close effects.
+		if (newFlags.HasFlag(Flags.Closing) && !oldFlags.HasFlag(Flags.Closing))
+		{
+			SoundEngine.PlaySound(SoundDeactivation, Projectile.Center);
+		}
 
 		if (Main.rand.NextBool(10) && Activated && OpeningAnimation > 0.34f)
 		{
@@ -454,11 +476,11 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile, 
 		return false;
 	}
 
-	public void Activate(bool fromNet = false)
+	public void Activate()
 	{
 		if ((BitFlags & Flags.Activated) != 0) { return; }
 
-		if (Main.netMode == NetmodeID.MultiplayerClient && !fromNet)
+		if (Main.netMode == NetmodeID.MultiplayerClient)
 		{
 			Vector2 compareSpot = Main.LocalPlayer.Center;
 			if (!Main.LocalPlayer.IsProjectileInteractibleAndInInteractionRange(Projectile, ref compareSpot)) { return; }
@@ -471,42 +493,25 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile, 
 
 		if (Main.netMode == NetmodeID.Server)
 		{
-			RiftInteractionHandler.Send(Projectile.identity);
+			NetMessage.SendData(MessageID.SyncProjectile, number: Projectile.whoAmI);
 		}
 
 		if (Main.netMode != NetmodeID.MultiplayerClient)
 		{
 			ConfluxRifts.OnRiftActivated(this);
 		}
-
-		// Effects.
-		if (!Main.dedServ)
-		{
-			VisualParams visuals = GetVisualParameters();
-
-			SoundEngine.PlaySound(SoundActivation, Projectile.Center);
-
-			for (int i = 0; i < 100; i++)
-			{
-				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(8f, 8f), visuals.DustId, Main.rand.NextVector2Circular(8f, 8f));
-			}
-		}
 	}
 
 	public void Close()
 	{
-		if (Closing || Main.netMode == NetmodeID.MultiplayerClient) { return; }
+		if (Closing) { return; }
+		if (Main.netMode == NetmodeID.MultiplayerClient) { return; }
 
 		BitFlags |= Flags.Closing;
 
-		if (!Main.dedServ)
-		{
-			SoundEngine.PlaySound(SoundDeactivation, Projectile.Center);
-		}
-
 		if (Main.netMode == NetmodeID.Server)
 		{
-			NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, Projectile.whoAmI);
+			NetMessage.SendData(MessageID.SyncProjectile, number: Projectile.whoAmI);
 		}
 
 		UpdateProgress();
@@ -833,7 +838,7 @@ internal class RiftInteractionHandler : Handler
 	public static void Send(int riftIdentity)
 	{
 		ModPacket packet = Networking.GetPacket<RiftInteractionHandler>();
-		packet.Write(riftIdentity);
+		packet.Write((int)riftIdentity);
 		packet.Send();
 	}
 
@@ -842,16 +847,13 @@ internal class RiftInteractionHandler : Handler
 		ModPacket packet = Networking.GetPacket(Id);
 		int riftIdentity = reader.ReadInt32();
 
+		if (Main.netMode != NetmodeID.Server) { return; }
 		if (Main.projectile.FirstOrDefault(p => p.identity == riftIdentity) is not { ModProjectile: ConfluxRift rift }) { return; }
+		if (Main.player[sender] is not { active: true } player) { return; }
 
-		if (Main.netMode == NetmodeID.Server)
-		{
-			if (Main.player[sender] is not { active: true } player) { return; }
-
-			// Increased reach distance for synchronization grace.
-			Point tileTarget = rift.Projectile.Hitbox.ClosestPointInRect(player.Center).ToTileCoordinates();
-			if (!player.IsInTileInteractionRange(tileTarget.X, tileTarget.Y, TileReachCheckSettings.Simple with { TileRangeMultiplier = 2 })) { return; }
-		}
+		// Increased reach distance for synchronization grace.
+		Point tileTarget = rift.Projectile.Hitbox.ClosestPointInRect(player.Center).ToTileCoordinates();
+		if (!player.IsInTileInteractionRange(tileTarget.X, tileTarget.Y, TileReachCheckSettings.Simple with { TileRangeMultiplier = 2 })) { return; }
 
 		rift.Activate();
 	}
