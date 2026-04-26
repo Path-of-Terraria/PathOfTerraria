@@ -168,14 +168,14 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 		// Roll guaranteed rare/magic items first
 		if (Rarity is ItemRarity.Magic or ItemRarity.Rare)
 		{
-			drops.Add(DropTable.RollMobDrops(itemLevel, DropRarity * magicFind, gearChance: 0.8f, currencyChance: 0.15f, mapChance: 0.05f, null, Rarity, uniqueMod));
+			drops.Add(DropTable.RollMobDrops(itemLevel, DropRarity * magicFind, gearChance: 0.8f, currencyChance: 0.15f, mapChance: 0.05f, null, Rarity, uniqueMod, npc));
 		}
 
 		// Roll the remaining items normally
 		if (dropCount > 0)
 		{
 			drops.AddRange(DropTable.RollManyMobDrops(dropCount, itemLevel, DropRarity * magicFind,
-				gearChance: 0.8f, currencyChance: 0.15f, mapChance: 0.05f));
+				gearChance: 0.8f, currencyChance: 0.15f, mapChance: 0.05f, npc: npc));
 		}
 
 		// Spawn all items

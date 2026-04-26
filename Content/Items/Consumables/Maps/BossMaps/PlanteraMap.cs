@@ -20,6 +20,12 @@ internal class PlanteraMap() : HardmodeBossMap(5, () => NPC.downedPlantBoss)
 		Item.Size = new Vector2(38, 28);
 	}
 
+	public override float GetDropWeight(NPC npc)
+	{
+		Player player = GetClosestPlayer(npc);
+		return player.ZoneJungle && player.ZoneRockLayerHeight ? 3f : 1f;
+	}
+
 	internal override Subworld GetDestination()
 	{
 		return ModContent.GetInstance<PlanteraDomain>();

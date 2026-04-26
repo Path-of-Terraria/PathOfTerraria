@@ -20,6 +20,8 @@ internal class PrimeMap() : HardmodeBossMap(4, () => NPC.downedMechBoss3)
 		Item.Size = new Vector2(30, 34);
 	}
 
+	public override float GetDropWeight(NPC npc) => !Main.dayTime ? 3f : 1f;
+
 	internal override Subworld GetDestination()
 	{
 		return ModContent.GetInstance<PrimeDomain>();

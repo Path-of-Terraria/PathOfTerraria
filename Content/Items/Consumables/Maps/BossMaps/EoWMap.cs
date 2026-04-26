@@ -22,6 +22,8 @@ internal class EoWMap() : PreHardmodeBossMap(20, () => NPC.downedBoss2)
 		Item.Size = new Vector2(40, 30);
 	}
 
+	public override float GetDropWeight(NPC npc) => GetClosestPlayer(npc).ZoneCorrupt ? 3f : 1f;
+
 	internal override Subworld GetDestination()
 	{
 		return ModContent.GetInstance<EaterDomain>();

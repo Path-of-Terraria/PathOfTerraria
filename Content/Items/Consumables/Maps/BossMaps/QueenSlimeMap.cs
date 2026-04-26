@@ -20,6 +20,8 @@ internal class QueenSlimeMap() : HardmodeBossMap(1, () => NPC.downedQueenSlime)
 		Item.Size = new Vector2(34, 38);
 	}
 
+	public override float GetDropWeight(NPC npc) => GetClosestPlayer(npc).ZoneHallow ? 3f : 1f;
+
 	internal override Subworld GetDestination()
 	{
 		return ModContent.GetInstance<QueenSlimeDomain>();

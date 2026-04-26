@@ -20,6 +20,8 @@ internal class GolemMap() : HardmodeBossMap(6, () => NPC.downedGolemBoss)
 		Item.Size = new Vector2(40, 26);
 	}
 
+	public override float GetDropWeight(NPC npc) => GetClosestPlayer(npc).ZoneJungle ? 3f : 1f;
+
 	internal override Subworld GetDestination()
 	{
 		return ModContent.GetInstance<GolemDomain>();

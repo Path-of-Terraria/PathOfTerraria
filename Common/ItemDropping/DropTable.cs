@@ -18,8 +18,9 @@ internal class DropTable
 	/// <c>Maps:</c> Default 5%<br/>
 	/// </summary>
 	/// <param name="random">The random to 'seed' the choice with. Defaults to Main.rand.</param>
+	/// <param name="npc">The NPC being killed. When provided, map drop weights are adjusted based on biome/time context.</param>
 	public static ItemDatabase.ItemRecord RollMobDrops(int itemLevel, float dropRarityModifier, float gearChance = 0.8f, float currencyChance = 0.15f, float mapChance = 0.05f, 
-		UnifiedRandom random = null, ItemRarity forceRarity = ItemRarity.Invalid, float uniqueModifier = 1f)
+		UnifiedRandom random = null, ItemRarity forceRarity = ItemRarity.Invalid, float uniqueModifier = 1f, NPC npc = null)
 	{
 		random ??= Main.rand;
 		var chances = new WeightedRandom<int>(random);
@@ -28,14 +29,31 @@ internal class DropTable
 		chances.Add(2, mapChance);
 
 		int choice = chances.Get();
+
+		if (choice == 2)
+		{
+			WeightedRandom<ItemDatabase.ItemRecord> mapPool = GetWeightedMapPool(random, npc);
+			if (forceRarity != ItemRarity.Invalid)
+			{
+				WeightedRandom<ItemDatabase.ItemRecord> filtered = new(random);
+				foreach (var element in mapPool.elements)
+				{
+					if (element.Item1.Rarity == forceRarity)
+					{
+						filtered.Add(element.Item1, (float)element.Item2);
+					}
+				}
+				mapPool = filtered;
+			}
+			return mapPool.elements.Count == 0 ? ItemDatabase.InvalidItem : mapPool.Get();
+		}
+
 		IEnumerable<ItemDatabase.ItemRecord> items = choice switch
 		{
 			//Gear
 			0 => ItemDatabase.GetItemByType<Gear>().Where(x => MeetsMinDropItemLevel(x, itemLevel)),
 			//Currency
-			1 => ItemDatabase.GetItemByType<CurrencyShard>().Where(x => MeetsMinDropItemLevel(x, itemLevel)),
-			//Maps
-			_ => GetMapPool(random),
+			_ => ItemDatabase.GetItemByType<CurrencyShard>().Where(x => MeetsMinDropItemLevel(x, itemLevel)),
 		};
 
 		if (forceRarity != ItemRarity.Invalid)
@@ -66,15 +84,16 @@ internal class DropTable
 	/// </param>
 	/// <param name="random">The <see cref="UnifiedRandom"/> to use for randomization. Use <see cref="WorldGen.genRand"/> for generation, such as placing items in chests.</param>
 	/// <param name="forceRarity">The rarity that <b>must</b> drop from this, if any. Defaults to <see cref="ItemRarity.Invalid"/>, which will allow any rarity.</param>
+	/// <param name="npc">The NPC being killed. When provided, map drop weights are adjusted based on biome/time context.</param>
 	/// <returns></returns>
 	public static List<ItemDatabase.ItemRecord> RollManyMobDrops(int count, int itemLevel, float dropRarityModifier, float gearChance = 0.8f, float currencyChance = 0.15f, 
-		float mapChance = 0.05f, UnifiedRandom random = null, ItemRarity forceRarity = ItemRarity.Invalid, float itemRarityModifier = 0)
+		float mapChance = 0.05f, UnifiedRandom random = null, ItemRarity forceRarity = ItemRarity.Invalid, float itemRarityModifier = 0, NPC npc = null)
 	{
 		random ??= Main.rand;
 		var chances = new WeightedRandom<WeightedRandom<ItemDatabase.ItemRecord>>(random);
 		chances.Add(GetGearPool(itemLevel, ref dropRarityModifier, [.. ItemDatabase.GetItemByType<Gear>()], IsRecordValid, itemRarityModifier, random), gearChance);
 		chances.Add(GetGearPool(itemLevel, ref dropRarityModifier, [.. ItemDatabase.GetItemByType<CurrencyShard>()], IsRecordValid, itemRarityModifier, random), currencyChance);
-		chances.Add(GetWeightedMapPool(random), mapChance);
+		chances.Add(GetWeightedMapPool(random, npc), mapChance);
 
 		List<ItemDatabase.ItemRecord> items = [];
 
@@ -91,40 +110,7 @@ internal class DropTable
 		}
 	}
 
-	private static IEnumerable<ItemDatabase.ItemRecord> GetMapPool(UnifiedRandom random)
-	{
-		IEnumerable<ItemDatabase.ItemRecord> items;
-
-		if (Main.hardMode)
-		{
-			IEnumerable<ItemDatabase.ItemRecord> allMaps = ItemDatabase.GetItemByType<Map>().Where(x => ((Map)x.Item.ModItem).CanDrop);
-			IEnumerable<ItemDatabase.ItemRecord> itemRecords = allMaps as ItemDatabase.ItemRecord[] ?? [.. allMaps];
-			IEnumerable<ItemDatabase.ItemRecord> explorableMaps = itemRecords.Where(x => x.Item.ModItem is Content.Items.Consumables.Maps.ExplorableMaps.ExplorableMap);
-			IEnumerable<ItemDatabase.ItemRecord> bossMaps = itemRecords.Where(x => x.Item.ModItem is not Content.Items.Consumables.Maps.ExplorableMaps.ExplorableMap);
-
-			var mapTypeChances = new WeightedRandom<int>(random ?? Main.rand);
-			mapTypeChances.Add(0, 0.7f); //70% explorable maps
-			mapTypeChances.Add(1, 0.3f); //30% boss domain maps
-			int mapTypeChoice = mapTypeChances.Get();
-
-			if (mapTypeChoice == 0)
-			{
-				items = explorableMaps;
-			}
-			else
-			{
-				items = bossMaps;
-			}
-		}
-		else
-		{
-			items = ItemDatabase.GetItemByType<Map>().Where(x => (x.Item.ModItem as Map).CanDrop);
-		}
-
-		return items;
-	}
-
-	private static WeightedRandom<ItemDatabase.ItemRecord> GetWeightedMapPool(UnifiedRandom random)
+	private static WeightedRandom<ItemDatabase.ItemRecord> GetWeightedMapPool(UnifiedRandom random, NPC npc = null)
 	{
 		WeightedRandom<ItemDatabase.ItemRecord> items = new(random);
 
@@ -137,12 +123,12 @@ internal class DropTable
 
 			foreach (ItemDatabase.ItemRecord record in explorableMaps)
 			{
-				items.Add(record, 0.7f);
+				items.Add(record, 0.7f * GetMapDropWeight(record, npc));
 			}
 
 			foreach (ItemDatabase.ItemRecord record in bossMaps)
 			{
-				items.Add(record, 0.3f);
+				items.Add(record, 0.3f * GetMapDropWeight(record, npc));
 			}
 		}
 		else
@@ -151,11 +137,20 @@ internal class DropTable
 
 			foreach (ItemDatabase.ItemRecord record in list)
 			{
-				items.Add(record);
+				items.Add(record, GetMapDropWeight(record, npc));
 			}
 		}
 
 		return items;
+	}
+
+	/// <summary>
+	/// Returns the context-based drop weight for a map record, determined by the NPC being killed.
+	/// When <paramref name="npc"/> is <see langword="null"/> (e.g. chest loot), returns 1 (no adjustment).
+	/// </summary>
+	private static float GetMapDropWeight(ItemDatabase.ItemRecord record, NPC npc)
+	{
+		return npc != null ? ((Map)record.Item.ModItem).GetDropWeight(npc) : 1f;
 	}
 
 	private static ItemDatabase.ItemRecord RollList(int itemLevel, float rarityMod, List<ItemDatabase.ItemRecord> filteredGear, UnifiedRandom random = null, float uniqueModifier = 1f)

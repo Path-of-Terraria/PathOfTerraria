@@ -22,6 +22,8 @@ internal class SkeletronMap() : PreHardmodeBossMap(40, () => NPC.downedBoss3)
 		Item.Size = new Vector2(36, 28);
 	}
 
+	public override float GetDropWeight(NPC npc) => GetClosestPlayer(npc).ZoneDungeon ? 3f : 1f;
+
 	internal override Subworld GetDestination()
 	{
 		return ModContent.GetInstance<SkeletronDomain>();

@@ -22,6 +22,8 @@ internal class BoCMap() : PreHardmodeBossMap(25, () => NPC.downedBoss2)
 		Item.Size = new Vector2(34, 28);
 	}
 
+	public override float GetDropWeight(NPC npc) => GetClosestPlayer(npc).ZoneCrimson ? 3f : 1f;
+
 	internal override Subworld GetDestination()
 	{
 		return ModContent.GetInstance<BrainDomain>();

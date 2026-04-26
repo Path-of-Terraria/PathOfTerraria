@@ -20,6 +20,8 @@ internal class FishronMap() : HardmodeBossMap(7, () => NPC.downedFishron)
 		Item.Size = new Vector2(26, 30);
 	}
 
+	public override float GetDropWeight(NPC npc) => GetClosestPlayer(npc).ZoneBeach ? 3f : 1f;
+
 	internal override Subworld GetDestination()
 	{
 		return ModContent.GetInstance<FishronDomain>();

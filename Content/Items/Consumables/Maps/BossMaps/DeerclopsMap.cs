@@ -22,6 +22,8 @@ internal class DeerclopsMap() : PreHardmodeBossMap(35, () => NPC.downedDeerclops
 		Item.Size = new Vector2(30, 30);
 	}
 
+	public override float GetDropWeight(NPC npc) => GetClosestPlayer(npc).ZoneSnow ? 3f : 1f;
+
 	internal override Subworld GetDestination()
 	{
 		return ModContent.GetInstance<DeerclopsDomain>();

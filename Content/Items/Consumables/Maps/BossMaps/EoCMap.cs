@@ -22,6 +22,8 @@ internal class EoCMap() : PreHardmodeBossMap(15, () => NPC.downedBoss1)
 		Item.Size = new Vector2(44, 30);
 	}
 
+	public override float GetDropWeight(NPC npc) => !Main.dayTime ? 3f : 1f;
+
 	internal override Subworld GetDestination()
 	{
 		return ModContent.GetInstance<EyeDomain>();

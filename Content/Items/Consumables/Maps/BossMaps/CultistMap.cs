@@ -20,6 +20,8 @@ internal class CultistMap() : HardmodeBossMap(9, () => NPC.downedAncientCultist)
 		Item.Size = new Vector2(40);
 	}
 
+	public override float GetDropWeight(NPC npc) => GetClosestPlayer(npc).ZoneDungeon ? 3f : 1f;
+
 	internal override Subworld GetDestination()
 	{
 		return ModContent.GetInstance<CultistDomain>();

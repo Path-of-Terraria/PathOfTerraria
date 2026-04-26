@@ -22,6 +22,8 @@ internal class WoFMap() : PreHardmodeBossMap(45, () => Main.hardMode)
 		Item.Size = new Vector2(38, 36);
 	}
 
+	public override float GetDropWeight(NPC npc) => GetClosestPlayer(npc).ZoneUnderworldHeight ? 3f : 1f;
+
 	internal override Subworld GetDestination()
 	{
 		return ModContent.GetInstance<WallOfFleshDomain>();

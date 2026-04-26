@@ -139,6 +139,14 @@ public abstract class Map : ModItem, GenerateNameAffixes.IItem, GenerateAffixes.
 
 	public abstract string GenerateName(string defaultName);
 
+	/// <summary>
+	/// Returns a weight multiplier applied when selecting this map from the drop pool.
+	/// Override to boost this map's drop chance under specific conditions (e.g. biome or time of day).
+	/// </summary>
+	/// <param name="npc">The NPC being killed, used to determine location and context.</param>
+	/// <returns>Weight multiplier (1f = normal, 3f = 3× as likely).</returns>
+	public virtual float GetDropWeight(NPC npc) => 1f;
+
 	public virtual void ModifyCorruptionAffixes(WeightedRandom<ItemAffix> affixes)
 	{
 	}

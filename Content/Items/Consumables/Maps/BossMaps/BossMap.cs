@@ -30,6 +30,15 @@ internal abstract class BossMap(int tier, int level, Func<bool> defeatCondition,
 		// Hardmode boss maps can only drop with their own tier
 		return tier;
 	}
+
+	/// <summary>
+	/// Returns the closest active player to <paramref name="npc"/>.
+	/// Used by <see cref="GetDropWeight"/> implementations to check biome and time-of-day context.
+	/// </summary>
+	protected static Player GetClosestPlayer(NPC npc)
+	{
+		return Main.player[Player.FindClosest(npc.Center, 1, 1)];
+	}
 }
 
 internal abstract class PreHardmodeBossMap : BossMap

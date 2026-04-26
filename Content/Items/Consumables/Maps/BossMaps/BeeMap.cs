@@ -20,6 +20,8 @@ internal class BeeMap() : PreHardmodeBossMap(30, () => NPC.downedQueenBee)
 		Item.Size = new Vector2(36, 36);
 	}
 
+	public override float GetDropWeight(NPC npc) => GetClosestPlayer(npc).ZoneJungle ? 3f : 1f;
+
 	internal override Subworld GetDestination()
 	{
 		return ModContent.GetInstance<QueenBeeDomain>();
