@@ -990,6 +990,12 @@ internal sealed class InfernalBoss : ModNPC
 		return true;
 	}
 
+	// Prevent despawn in idle state.
+	public override bool CheckActive()
+	{
+		return false;
+	}
+
 	private void BodyMovement(in Context ctx)
 	{
 		NPC.GravityMultiplier = MultipliableFloat.One * 2.5f;
