@@ -6,7 +6,7 @@ internal class IncreasedEnemyAggressionPassive : Passive
 {
 	public override void BuffPlayer(Player player)
 	{
-		player.aggro += Value;
+		player.aggro += (int)Value;
 	}
 }
 

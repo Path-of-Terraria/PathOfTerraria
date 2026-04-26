@@ -6,6 +6,6 @@ internal class MaximumSentryPassive : Passive
 {
 	public override void BuffPlayer(Player player)
 	{
-		player.maxTurrets += Level * Value ;
+		player.maxTurrets += (int)(Level * Value);
 	}
 }
