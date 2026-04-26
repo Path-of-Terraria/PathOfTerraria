@@ -72,7 +72,7 @@ internal class PassiveTreePlayer : ModPlayer
 			{
 				if (oldLevel < passive.Level)
 				{
-					AllocatePassive(passive, passive.Level - oldLevel, false);
+					AllocatePassive(passive, passive.Value * (passive.Level - oldLevel), false);
 				}
 				else if (oldLevel > passive.Level)
 				{
@@ -408,7 +408,7 @@ internal class PassiveTreePlayer : ModPlayer
 
 		if (str > 0)
 		{
-			str = Math.Max(0, str - valueLoss);
+			str = Math.Max(0, str - valueLoss * pointRefund);
 		}
 #if DEBUG
 		else
