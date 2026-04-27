@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Systems.ElementalDamage;
+using PathOfTerraria.Content.Items.Currency;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
@@ -100,6 +101,10 @@ public sealed class ItemDatabase : ModSystem
 			if (staticData.IsUnique)
 			{
 				AddItem(dropChance, ItemRarity.Unique, i, item);
+			}
+			else if (item.ModItem is CurrencyShard)
+			{
+				AddItem(dropChance, ItemRarity.Normal, i, item);
 			}
 			else
 			{

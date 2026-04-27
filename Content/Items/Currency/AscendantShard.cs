@@ -10,10 +10,8 @@ namespace PathOfTerraria.Content.Items.Currency;
 /// </summary>
 public class AscendantShard : CurrencyShard
 {
-	public override void SetStaticDefaults()
+	protected override void SetStaticData()
 	{
-		base.SetStaticDefaults();
-
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = 500f;
 		staticData.MinDropItemLevel = 25;
