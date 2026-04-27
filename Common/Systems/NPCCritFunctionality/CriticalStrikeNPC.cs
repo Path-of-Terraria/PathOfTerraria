@@ -30,7 +30,7 @@ internal class CriticalStrikeNPC : GlobalNPC
 
 	public override void ModifyHitPlayer(NPC npc, Player player, ref Player.HurtModifiers modifiers)
 	{
-		if (Main.rand.NextFloat() < CriticalStrikeChance.Value * 3000)
+		if (Main.rand.NextFloat() < CriticalStrikeChance.Value)
 		{
 			modifiers.FinalDamage += 1.5f;
 			CurrentlyCritting = true;
