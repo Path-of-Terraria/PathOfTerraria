@@ -17,7 +17,10 @@ namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 
 internal class GolemDomain : BossDomainSubworld
 {
-	const int RoomCountPerTemple = 3;
+	/// <summary>
+	/// How many room *pairs* there are per domain.
+	/// </summary>
+	const int RoomCountPerTemple = 2;
 
 	private record PairingRoom(PlacedRoom Room, bool Exit, int PairingNumber);
 
@@ -78,7 +81,8 @@ internal class GolemDomain : BossDomainSubworld
 
 	private static void PairTeleporters()
 	{
-		for (int i = 0; i < RoomCountPerTemple + 3; ++i)
+		// I don't remember why, this needs to repeat RoomCountPerTemple * 2 times (to match each room on each side I think?)
+		for (int i = 0; i < RoomCountPerTemple * 2; ++i)
 		{
 			PairingRoom exit = Rooms.Find(x => x.Exit && x.PairingNumber == i);
 			PairingRoom entrance = Rooms.Find(x => !x.Exit && x.PairingNumber == i);

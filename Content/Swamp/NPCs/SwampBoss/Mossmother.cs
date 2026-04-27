@@ -106,7 +106,7 @@ internal partial class Mossmother : ModNPC
 	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 	{
 		NPC.damage = ModeUtils.ByMode(60, 75, 100, 150);
-		NPC.lifeMax = 40_000;
+		NPC.lifeMax = 120_000;
 	}
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)

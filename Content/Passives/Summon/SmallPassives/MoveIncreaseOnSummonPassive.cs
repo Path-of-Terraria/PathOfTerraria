@@ -1,6 +1,5 @@
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Content.Buffs;
-using PathOfTerraria.Content.Passives.Summon.Masteries;
 using Terraria.DataStructures;
 
 namespace PathOfTerraria.Content.Passives;
