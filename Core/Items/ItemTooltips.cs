@@ -361,19 +361,43 @@ public sealed partial class ItemTooltips : GlobalItem
 			float baseMinDamage = minDamage;
 			float baseMaxDamage = maxDamage;
 			
+			ElementalContainer playerElements = player.GetModPlayer<ElementalPlayer>().Container;
+			
 			// Calculate total flat damage to add to main tooltip
-			float totalFlatDamage = player.GetModPlayer<ElementalPlayer>().Container.Sum(x => x.GetFlatDamage(0));
+			float totalFlatDamage = playerElements.Sum(x => x.GetFlatDamage(0) * x.Multiplier);
+			float totalRawConversion = 0f;
+
+			foreach (ElementInstance instance in playerElements)
+			{
+				float baseWeaponConversion = item?.type > ItemID.None ? ElementalWeaponSets.GetElementStrength(item.type, instance.Type) : 0f;
+				totalRawConversion += MathF.Max(0f, baseWeaponConversion + instance.GetTotalConversion(0));
+			}
+
+			float conversionScale = totalRawConversion > 1f ? 1f / totalRawConversion : 1f;
 			
 			// We are doing calcs and storing it here, so tooltip placement order isnt messed up, and the final damage tooltip is accurate
 			List<TooltipLine> elementLines = [];
 
-			foreach (ElementInstance instance in player.GetModPlayer<ElementalPlayer>().Container)
+			float baseDamageProportion = MathF.Max(0f, 1f - MathF.Min(totalRawConversion, 1f));
+			float baseDamageMin = minDamage * baseDamageProportion;
+			float baseDamageMax = maxDamage * baseDamageProportion;
+
+			if (baseDamageMax > 0f)
 			{
-				int flat = (int)Math.Round(instance.GetFlatDamage(0));
+				string baseDamageText = baseDamageMin == baseDamageMax ? $"[{Math.Round(baseDamageMin, 2)}]" : $"[{Math.Round(baseDamageMin, 2)}-{Math.Round(baseDamageMax, 2)}]";
+				string highlightedBaseDamage = HighlightNumbers(baseDamageText);
+				string damageTypeName = item.DamageType.DisplayName.Value.Trim().ToLower();
+
+				elementLines.Add(new TooltipLine(Mod, "DamageBase", $"    {ColoredDot(Colors.StatsAccent)} {highlightedBaseDamage} base {damageTypeName} damage"));
+			}
+
+			foreach (ElementInstance instance in playerElements)
+			{
+				float flat = instance.GetFlatDamage(0) * instance.Multiplier;
 				string elementName = Language.GetTextValue("Mods.PathOfTerraria.Misc.Damage", instance.ElementDisplayName.Value.ToLower().Trim());
 				float baseWeaponConversion = item?.type > ItemID.None ? ElementalWeaponSets.GetElementStrength(item.type, instance.Type) : 0f;
 
-				float elementDamage = finalDamage * (baseWeaponConversion + instance.GetTotalConversion(0)) * instance.Multiplier;
+				float elementDamage = finalDamage * MathF.Max(0f, baseWeaponConversion + instance.GetTotalConversion(0)) * conversionScale * instance.Multiplier;
 
 				float eleMinDamage = (elementDamage * 0.85f) + flat;
 				float eleMaxDamage = (elementDamage * 1.15f) + flat;
@@ -390,8 +414,8 @@ public sealed partial class ItemTooltips : GlobalItem
 				}
 			}
 
-			// Elemental multiplier for the weapon's base damage
-			float totalMultiplier = 1 + player.GetModPlayer<ElementalPlayer>().Container.Sum(x => x.GetTotalConversion(0));
+			// Elemental conversion replaces base damage instead of adding another copy of it.
+			float totalMultiplier = 1 + ElementalPlayer.GetElementalDamageAdjustment(playerElements, new ElementalContainer(), item);
 			string topHighlightNumbers = HighlightNumbers(
 				$"[{Math.Round((minDamage * totalMultiplier) + totalFlatDamage, 2)}-{Math.Round((maxDamage * totalMultiplier) + totalFlatDamage, 2)}] {item.DamageType.DisplayName.Value.Trim()}"
 			);

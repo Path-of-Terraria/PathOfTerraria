@@ -72,7 +72,7 @@ internal class PassiveTreePlayer : ModPlayer
 			{
 				if (oldLevel < passive.Level)
 				{
-					AllocatePassive(passive, passive.Level - oldLevel, false);
+					AllocatePassive(passive, passive.Value * (passive.Level - oldLevel), false);
 				}
 				else if (oldLevel > passive.Level)
 				{
@@ -373,7 +373,7 @@ internal class PassiveTreePlayer : ModPlayer
 		return new(false, []);
 	}
 
-	internal void AllocatePassive(Passive passive, int strength = 1, bool save = true)
+	internal void AllocatePassive(Passive passive, float strength = 1, bool save = true)
 	{
 		if (passive is MasteryPassive) // Hardcode for this, which doesn't work the same as any other passive
 		{
@@ -391,7 +391,7 @@ internal class PassiveTreePlayer : ModPlayer
 		}
 	}
 
-	internal void DeallocatePassive(Passive passive, int valueLoss, int pointRefund, bool save = true)
+	internal void DeallocatePassive(Passive passive, float valueLoss, int pointRefund, bool save = true)
 	{
 		if (passive is MasteryPassive)
 		{
@@ -408,7 +408,7 @@ internal class PassiveTreePlayer : ModPlayer
 
 		if (str > 0)
 		{
-			str = Math.Max(0, str - valueLoss);
+			str = Math.Max(0, str - valueLoss * pointRefund);
 		}
 #if DEBUG
 		else

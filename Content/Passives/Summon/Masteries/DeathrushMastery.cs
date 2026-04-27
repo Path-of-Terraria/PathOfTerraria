@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Passives.Summon.Masteries;
 
@@ -33,4 +34,6 @@ internal class DeathrushMastery : Passive
 		// Player movement speed bonus: (Value / 1000) per minion (capped at 10 minions).
 		player.moveSpeed += MathF.Min(player.slotsMinions, 10) * Value / 1000f;
 	}
+
+	public override string DisplayTooltip => Language.GetText($"Mods.PathOfTerraria.Passives.{Name}.Tooltip").Format(Value / 100f);
 }

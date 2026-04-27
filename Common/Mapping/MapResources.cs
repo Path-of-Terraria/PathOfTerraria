@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using PathOfTerraria.Common.Systems.Synchronization;
+using PathOfTerraria.Core.Subworlds;
 using SubworldLibrary;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
@@ -45,7 +46,7 @@ internal enum ResourceDiscovery : byte
 }
 
 /// <summary> Tracks and synchronizes <see cref="MapResource"/>s across servers and clients. </summary>
-internal sealed class MapResources : ModSystem
+internal sealed class MapResources : ModSystem, ISubworldSync
 {
 	/// <summary> Synchronizes all resource values. Can only be sent by servers. </summary>
 	internal sealed class SynchronizeMessage : Handler
@@ -56,7 +57,10 @@ internal sealed class MapResources : ModSystem
 			ModContent.GetInstance<MapResources>().NetSend(packet);
 			packet.Send();
 
-			if (sendToSubworlds) { SubworldSystem.SendToAllSubservers(PoTMod.Instance, Networking.GetFinalPacketBuffer(packet)); }
+			if (sendToSubworlds)
+			{
+				SubworldSystem.SendToAllSubservers(PoTMod.Instance, Networking.GetFinalPacketBuffer(packet));
+			}
 		}
 
 		internal override void Receive(BinaryReader reader, byte sender)
@@ -212,11 +216,11 @@ internal sealed class MapResources : ModSystem
 		// Short-circuit if unrecognized.
 		if (!resourcesByItem.TryGetValue(itemType, out int index)) { return; }
 
-		// Redirect to main server.
+		// Direct copy to main server.
 		if (Main.netMode == NetmodeID.Server && SubworldSystem.Current != null)
 		{
-			SubworldSystem.SendToMainServer(PoTMod.Instance, Networking.GetFinalPacketBuffer(ModifyValueMessage.Write(itemType, delta, discovery)));
-			return;
+			Networking.SendPacketToMainServer(ModifyValueMessage.Write(itemType, delta, discovery));
+			// return;
 		}
 
 		// Perform function.
@@ -231,7 +235,7 @@ internal sealed class MapResources : ModSystem
 		};
 
 		// Enqueue a full sync.
-		needsSync |= Main.netMode == NetmodeID.Server;
+		needsSync |= Main.netMode == NetmodeID.Server && SubworldSystem.Current == null;
 	}
 
 	public static bool AnyResourceDiscovered()
@@ -271,6 +275,22 @@ internal sealed class MapResources : ModSystem
 				}
 			}
 		}
+	}
+
+	// Only used in Singleplayer.
+    void ISubworldSync.ExportSharedData()
+	{
+		if (Main.netMode != NetmodeID.SinglePlayer) { return; }
+		
+		var tag = new TagCompound();
+		SaveWorldData(tag);
+		SubworldSystem.CopyWorldData("mapResources", tag);
+	}
+    void ISubworldSync.ImportSharedData()
+	{
+		if (Main.netMode != NetmodeID.SinglePlayer) { return; }
+		
+		LoadWorldData(SubworldSystem.ReadCopiedWorldData<TagCompound>("mapResources"));
 	}
 
 	public override void NetSend(BinaryWriter writer)

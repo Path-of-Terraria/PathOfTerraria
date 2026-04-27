@@ -13,7 +13,7 @@ internal class MasterBuilderMastery : Passive
 	{
 		if (player.velocity.LengthSquared() < 0.1f)
 		{
-			player.blockRange += Value;
+			player.blockRange += (int)Value;
 			player.tileSpeed += TileSpeedBoost / 100f;
 		}
 	}

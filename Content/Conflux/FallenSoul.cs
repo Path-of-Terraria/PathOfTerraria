@@ -27,6 +27,7 @@ internal sealed class FallenSoul : ModProjectile
 		Projectile.Size = new(16);
 		Projectile.aiStyle = -1;
 		Projectile.timeLeft = 60 * 30;
+		Projectile.netImportant = true;
 	}
 
 	public override void AI()
