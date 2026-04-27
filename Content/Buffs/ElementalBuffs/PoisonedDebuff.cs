@@ -60,6 +60,7 @@ internal class PoisonedDebuff : ModBuff
 		ref float tick = ref npc.GetGlobalNPC<PoisonNPC>().LastTickRate;
 		tick = MathF.Min(tickRate, tick);
 		npc.AddBuff(ModContent.BuffType<PoisonedDebuff>(), time);
+		npc.GetGlobalNPC<PoisonNPC>().RefreshStackTimes();
 	}
 
 	public override void SetStaticDefaults()
@@ -180,5 +181,13 @@ internal class PoisonNPC : GlobalNPC
 		spriteBatch.Draw(PoisonIcon.Value, position, null, drawColor, 0f, PoisonIcon.Size() / 2f, 1f, SpriteEffects.None, 0);
 		string stacks = "x" + _stacks.Count;
 		ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, stacks, position + new Vector2(8, -2), drawColor, 0f, Vector2.Zero, new(0.8f));
+	}
+
+	internal void RefreshStackTimes()
+	{
+		foreach (ref PoisonStack stack in CollectionsMarshal.AsSpan(_stacks))
+		{
+			stack.Time = stack.MaxTime;
+		}
 	}
 }
