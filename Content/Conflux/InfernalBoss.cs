@@ -23,6 +23,7 @@ using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Common.World.Utilities;
+using PathOfTerraria.Content.Buffs.ElementalBuffs;
 using PathOfTerraria.Content.Gores;
 using PathOfTerraria.Content.Items.Gear.Armor.Chestplate;
 using PathOfTerraria.Content.Items.Gear.Armor.Helmet;
@@ -157,11 +158,15 @@ internal sealed class InfernalFlames : ModProjectile
 
 	public override void OnHitPlayer(Player target, Player.HurtInfo info)
 	{
-		target.AddBuff(BuffID.OnFire, 180);
+		IgnitedDebuff.ApplyTo(Projectile, target, info.Damage);
 	}
-	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+
+	public override void ModifyHitPlayer(Player target, ref Player.HurtModifiers modifiers)
 	{
-		target.AddBuff(BuffID.OnFire, 180);
+		if (target.HasBuff<IgnitedDebuff>())
+		{
+			modifiers.FinalDamage *= 1.3f;
+		}
 	}
 
 	private static readonly Color[] layerColors =
@@ -403,12 +408,12 @@ internal sealed class InfernalBoss : ModNPC
 	{
 		NPC.BossBar = ModContent.GetInstance<InfernalBossBar>();
 		NPC.aiStyle = -1;
-		NPC.lifeMax = 75000;
+		NPC.lifeMax = 225000;
 #if LOW_HEALTH
 		NPC.lifeMax = 5000;
 #endif
 		NPC.defense = 90;
-		NPC.damage = 50;
+		NPC.damage = 150;
 		NPC.width = 125;
 		NPC.height = 125;
 		NPC.knockBackResist = 0.0f;
@@ -498,12 +503,20 @@ internal sealed class InfernalBoss : ModNPC
 		int chanceCommon = (int)MathF.Ceiling(100f / 15f);
 		int chanceUncommon = (int)MathF.Ceiling(100f / 5f);
 		int chanceRare = (int)MathF.Ceiling(100f / 2f);
-		
+
 		npcLoot.AddCommon<FirelordsWill>(chanceCommon);
 		npcLoot.AddCommon<PyralisHeart>(chanceCommon);
 		npcLoot.AddCommon<FallenKingsLegacy>(chanceUncommon);
 		npcLoot.AddCommon<ProlifRing>(chanceRare);
 		npcLoot.AddCommon<Cryobrand>(chanceRare);
+	}
+
+	public override void ModifyHitPlayer(Player target, ref Player.HurtModifiers modifiers)
+	{
+		if (target.HasBuff<IgnitedDebuff>())
+		{
+			modifiers.FinalDamage *= 1.3f;
+		}
 	}
 
 	public override void SendExtraAI(BinaryWriter writer)
@@ -565,6 +578,7 @@ internal sealed class InfernalBoss : ModNPC
 		UpdateBlade(in ctx);
 		ShootFireballs(in ctx);
 		SpreadTileFlames(in ctx);
+		UpdateHeatAura(in ctx);
 		LimbWielding(in ctx);
 		LimbGrabbing(in ctx);
 		LimbMovement(in ctx);
@@ -1685,7 +1699,7 @@ internal sealed class InfernalBoss : ModNPC
 				Vector2 projPos = origin;
 				Vector2 projVel = default;
 				float ai0 = Main.rand.NextFloat(0.00f, 0.05f);
-				var proj = Projectile.NewProjectileDirect(null, projPos, projVel, projType, 30, 0f, ai0: ai0, ai1: point.X, ai2: point.Y);
+				var proj = Projectile.NewProjectileDirect(null, projPos, projVel, projType, 150, 0f, ai0: ai0, ai1: point.X, ai2: point.Y);
 				proj.friendly = false;
 				proj.hostile = true;
 				proj.timeLeft = 3000;
@@ -1712,6 +1726,91 @@ internal sealed class InfernalBoss : ModNPC
 		bool tileSurrounded = uFull & dFull & lFull & rFull;
 		bool tileOrphaned = !uFull & !dFull & !lFull & !rFull;
 		return !tileSurrounded & !tileOrphaned;
+	}
+
+	private const int HeatAuraBuildTicks = 360;
+	private const int HeatAuraCooldownTicks = 180;
+	private const int HeatAuraTotalTicks = HeatAuraBuildTicks + HeatAuraCooldownTicks;
+	private const float HeatAuraRadius = 240f;
+
+	private void UpdateHeatAura(in Context ctx)
+	{
+		if (Phase is PhaseType.Idle || CutsceneActive) { return; }
+
+		int cyclePos = (int)(globalCounter % HeatAuraTotalTicks);
+		bool building = cyclePos < HeatAuraBuildTicks;
+
+		if (!building)
+		{
+			return;
+		}
+
+		float buildFactor = cyclePos / (float)HeatAuraBuildTicks;
+
+		if (!Main.dedServ)
+		{
+			float intensity = MathF.Pow(buildFactor, 1.5f);
+			Lighting.AddLight(ctx.Center, new Vector3(1.0f, 0.45f, 0.10f) * intensity * 2.5f);
+
+			int dustChance = Math.Max(1, (int)(18 - buildFactor * 16));
+			if (Main.rand.NextBool(dustChance))
+			{
+				float radius = HeatAuraRadius * buildFactor * Main.rand.NextFloat(0.85f, 1.0f);
+				float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+				Vector2 dustPos = ctx.Center + angle.ToRotationVector2() * radius;
+				Vector2 dustVel = (ctx.Center - dustPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(0.5f, 1.5f);
+				Dust dust = Dust.NewDustPerfect(dustPos, DustID.Torch, dustVel, Scale: 0.6f + buildFactor * 1.4f);
+				dust.noGravity = true;
+			}
+		}
+
+		if (Main.netMode == NetmodeID.MultiplayerClient) { return; }
+
+		if (cyclePos == HeatAuraBuildTicks - 1)
+		{
+			TriggerHeatAuraBurst(in ctx);
+		}
+		else if (cyclePos % 30 == 0 && buildFactor > 0.2f)
+		{
+			int stackDamage = (int)MathHelper.Lerp(8, 28, buildFactor);
+			foreach (Player p in Main.ActivePlayers)
+			{
+				if (!p.dead && p.WithinRange(ctx.Center, HeatAuraRadius))
+				{
+					IgnitedDebuff.ApplyTo(NPC, p, stackDamage, time: 120);
+				}
+			}
+		}
+	}
+
+	private void TriggerHeatAuraBurst(in Context ctx)
+	{
+		SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot with { Volume = 1.2f, Pitch = -0.4f, PitchVariance = 0.1f }, ctx.Center);
+		SoundEngine.PlaySound(SoundID.Item74 with { Volume = 1.0f, Pitch = -0.2f }, ctx.Center);
+
+		if (!Main.dedServ)
+		{
+			var punch = new PunchCameraModifier(ctx.Center, Vector2.UnitY, 6f, 4f, 30, 1500f, "PyralisHeatBurst");
+			Main.instance.CameraModifiers.Add(punch);
+		}
+
+		var source = (IEntitySource)NPC.GetSource_FromThis();
+		int projType = ModContent.ProjectileType<InfernalFlames>();
+		const int numFlames = 18;
+		for (int i = 0; i < numFlames; i++)
+		{
+			float ang = i / (float)numFlames * MathHelper.TwoPi + Main.rand.NextFloat(-0.05f, 0.05f);
+			Vector2 vel = ang.ToRotationVector2() * Main.rand.NextFloat(7f, 10f);
+			Projectile.NewProjectile(source, ctx.Center, vel, projType, 120, 0f);
+		}
+
+		foreach (Player p in Main.ActivePlayers)
+		{
+			if (!p.dead && p.WithinRange(ctx.Center, HeatAuraRadius * 1.5f))
+			{
+				IgnitedDebuff.ApplyTo(NPC, p, 70, time: 4 * 60);
+			}
+		}
 	}
 
 	private void SetupLimbs(in Context ctx)
