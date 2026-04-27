@@ -23,7 +23,7 @@ internal class SunsoulStaffItem : Staff
 		base.SetDefaults();
 
 		Item.shoot = ModContent.ProjectileType<SunsoulHead>();
-		Item.damage = 285;
+		Item.damage = 335;
 		Item.knockBack = 1;
 		Item.value = Item.buyPrice(0, 5, 0, 0);
 	}
