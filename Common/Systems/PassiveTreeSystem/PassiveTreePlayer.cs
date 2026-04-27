@@ -16,7 +16,7 @@ using System.Runtime.InteropServices;
 namespace PathOfTerraria.Common.Systems.PassiveTreeSystem;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-internal class PassiveTreePlayer : ModPlayer
+public class PassiveTreePlayer : ModPlayer
 {
 	/// <summary>
 	/// This should be equal to your level + any extra points you have.
@@ -30,7 +30,7 @@ internal class PassiveTreePlayer : ModPlayer
 
 	public float[] StrengthByPassive = new float[Passive.MaxId];
 	public List<Passive> ActiveNodes = [];
-	public List<Edge<Allocatable>> Edges = [];
+	internal List<Edge<Allocatable>> Edges = [];
 
 	private TagCompound _saveData = [];
 
@@ -153,6 +153,27 @@ internal class PassiveTreePlayer : ModPlayer
 		tag["extraPoints"] = ExtraPoints;
 
 		_saveData = (TagCompound)tag.Clone();
+	}
+
+	public PassiveTreeSnapshot GetSnapshot()
+	{
+		List<PassiveTreeNodeSnapshot> allocatedNodes = ActiveNodes
+			.Where(passive => passive is not null && passive.Level > 0)
+			.Select(passive => new PassiveTreeNodeSnapshot
+			{
+				ReferenceId = passive.ReferenceId,
+				InternalIdentifier = passive.Name,
+				Level = passive.Level
+			})
+			.OrderBy(passive => passive.ReferenceId)
+			.ToList();
+
+		return new PassiveTreeSnapshot
+		{
+			Points = Points,
+			ExtraPoints = ExtraPoints,
+			AllocatedNodes = allocatedNodes
+		};
 	}
 
 	public void ResetAllNodes()
