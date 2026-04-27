@@ -1,9 +1,8 @@
 ﻿using PathOfTerraria.Content.Projectiles.Utility;
+using PathOfTerraria.Utilities;
 using SubworldLibrary;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Terraria.DataStructures;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 
@@ -80,5 +79,15 @@ internal class LunaticStartEventNPC : GlobalNPC
 		pool.Add(NPCID.CultistArcherBlue, 1);
 		pool.Add(NPCID.CultistArcherWhite, 1);
 		pool.Add(NPCID.CultistDragonHead, 0.1f);
+	}
+
+	public override bool PreAI(NPC npc)
+	{
+		if (SubworldSystem.Current is CultistDomain && npc.type is NPCID.CultistArcherBlue or NPCID.CultistArcherWhite)
+		{
+			npc.chaseable = true;
+		}
+
+		return true;
 	}
 }
