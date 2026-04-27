@@ -131,7 +131,7 @@ internal class DragonFly : ModNPC, IGrabberNPC
 	public override void SetDefaults()
 	{
 		NPC.aiStyle = -1;
-		NPC.lifeMax = 4_000;
+		NPC.lifeMax = 1_000;
 		NPC.defense = 15;
 		NPC.damage = 5;
 		NPC.width = 92;
