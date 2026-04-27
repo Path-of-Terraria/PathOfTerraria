@@ -96,7 +96,7 @@ public class SubworldHelpInvButton : SmartUiState
 			AddLine(lines, "RateMod", Language.GetTextValue("Mods.PathOfTerraria.UI.SubworldHelp.DropRateBoost") + (rateModifier * 100f).ToString("#0.###") + "%", scale);
 
 			float rarityModifier = ArpgNPC.DomainRarityBoost(totalStrength);
-			AddLine(lines, "RarityMod", Language.GetTextValue("Mods.PathOfTerraria.UI.SubworldHelp.DropRarityBoost") + rarityModifier.ToString("#0.##") + "%", scale);
+			AddLine(lines, "RarityMod", Language.GetTextValue("Mods.PathOfTerraria.UI.SubworldHelp.DropRarityBoost") + (rarityModifier * 100f).ToString("#0.##") + "%", scale);
 		}
 
 		CurrentWorld.ModifyHelpTooltips(lines, scale);

@@ -26,8 +26,10 @@ public sealed class ItemDatabase : ModSystem
 		}
 	}
 
-	private const float MagicDropChance = 0.85f;
-	private const float RareDropChance = 0.15f;
+	private const float NormalDropChance = 0.67f;
+	private const float MagicDropChance = 0.30f;
+	private const float RareDropChance = 0.03f;
+	private const float UniqueDropChanceMultiplier = 0.20f;
 
 	/// <summary>
 	///		An item record within the database.
@@ -101,6 +103,7 @@ public sealed class ItemDatabase : ModSystem
 			}
 			else
 			{
+				AddItem(dropChance * NormalDropChance, ItemRarity.Normal, i, item);
 				AddItem(dropChance * MagicDropChance, ItemRarity.Magic, i, item);
 				AddItem(dropChance * RareDropChance, ItemRarity.Rare, i, item);
 			}
@@ -142,7 +145,7 @@ public sealed class ItemDatabase : ModSystem
 
 		if (item.Rarity == ItemRarity.Unique)
 		{
-			mod *= uniqueModifier;
+			mod *= uniqueModifier * UniqueDropChanceMultiplier;
 		}
 
 		return mod;

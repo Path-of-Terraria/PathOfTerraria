@@ -68,12 +68,12 @@ internal class DropTable
 	/// <param name="forceRarity">The rarity that <b>must</b> drop from this, if any. Defaults to <see cref="ItemRarity.Invalid"/>, which will allow any rarity.</param>
 	/// <returns></returns>
 	public static List<ItemDatabase.ItemRecord> RollManyMobDrops(int count, int itemLevel, float dropRarityModifier, float gearChance = 0.8f, float currencyChance = 0.15f, 
-		float mapChance = 0.05f, UnifiedRandom random = null, ItemRarity forceRarity = ItemRarity.Invalid, float itemRarityModifier = 0)
+		float mapChance = 0.05f, UnifiedRandom random = null, ItemRarity forceRarity = ItemRarity.Invalid, float itemRarityModifier = 0, float uniqueModifier = 1f)
 	{
 		random ??= Main.rand;
 		var chances = new WeightedRandom<WeightedRandom<ItemDatabase.ItemRecord>>(random);
-		chances.Add(GetGearPool(itemLevel, ref dropRarityModifier, [.. ItemDatabase.GetItemByType<Gear>()], IsRecordValid, itemRarityModifier, random), gearChance);
-		chances.Add(GetGearPool(itemLevel, ref dropRarityModifier, [.. ItemDatabase.GetItemByType<CurrencyShard>()], IsRecordValid, itemRarityModifier, random), currencyChance);
+		chances.Add(GetGearPool(itemLevel, ref dropRarityModifier, [.. ItemDatabase.GetItemByType<Gear>()], IsRecordValid, itemRarityModifier, random, uniqueModifier), gearChance);
+		chances.Add(GetGearPool(itemLevel, ref dropRarityModifier, [.. ItemDatabase.GetItemByType<CurrencyShard>()], IsRecordValid, itemRarityModifier, random, uniqueModifier), currencyChance);
 		chances.Add(GetWeightedMapPool(random), mapChance);
 
 		List<ItemDatabase.ItemRecord> items = [];
@@ -174,7 +174,7 @@ internal class DropTable
 		Func<ItemDatabase.ItemRecord, bool> additionalCondition, float itemRarityModifier, UnifiedRandom random = null, float uniqueModifier = 1f)
 	{
 		random ??= Main.rand;
-		dropRarityModifier += itemLevel / 10f; // Higher levels have a higher likelihood of being Magic, Rare or Unique
+		dropRarityModifier += itemLevel / 250f; // Higher levels have a higher likelihood of being Magic, Rare or Unique
 		WeightedRandom<ItemDatabase.ItemRecord> selection = new(random);
 
 		foreach (ItemDatabase.ItemRecord item in filteredGear)
