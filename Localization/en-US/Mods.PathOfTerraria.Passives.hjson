@@ -516,7 +516,7 @@ OverloadingEnergyMastery: {
 
 ReverberationMastery: {
 	Name: Reverberation
-	Tooltip: Magic projectiles have a {0}% chance to be spawned twice at 70% damage, costing 50% of the original attack's damage
+	Tooltip: Magic projectiles have a {0}% chance to be spawned twice at 70% damage, costing 50% of the original attack's mana
 }
 
 SkillfulMagicMastery: {
