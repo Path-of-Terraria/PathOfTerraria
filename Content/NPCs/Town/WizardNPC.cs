@@ -173,7 +173,7 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 			return;
 		}
 		
-		Quest quest = DetermineNewestQuest();
+		Quest quest = QuestUnlockManager.CanStartQuest<WizardStartQuest>() ? Quest.GetLocalPlayerInstance<WizardStartQuest>() : Quest.GetLocalPlayerInstance<EoLQuest>();
 
 		switch (quest)
 		{
