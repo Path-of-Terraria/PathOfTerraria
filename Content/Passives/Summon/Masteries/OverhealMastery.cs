@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
+﻿using PathOfTerraria.Common.Projectiles;
+using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Content.Projectiles.PassiveProjectiles;
 
 namespace PathOfTerraria.Content.Passives.Summon.Masteries;
@@ -29,7 +30,7 @@ internal class OverhealMastery : Passive
 
 			foreach (Projectile proj in Main.ActiveProjectiles)
 			{
-				if (proj.owner == self.whoAmI && proj.minion)
+				if (proj.owner == self.whoAmI && proj.minion && !CustomProjectileSets.MultisegmentMinionProjectiles[proj.type])
 				{
 					int damage = (int)self.GetDamage(DamageClass.Summon).ApplyTo(damageBase * proj.damage);
 					Projectile.NewProjectile(proj.GetSource_FromThis(), proj.Center, Vector2.Zero, ModContent.ProjectileType<OverhealPulseAura>(), damage, 0, self.whoAmI);
