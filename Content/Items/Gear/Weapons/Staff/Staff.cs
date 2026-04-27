@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Systems;
+﻿using PathOfTerraria.Common.Items;
+using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Core.Items;
 using Terraria.DataStructures;
@@ -24,6 +25,7 @@ internal abstract class Staff : Gear
 		staticData.AltUseDescription = Language.GetText("Mods.PathOfTerraria.Gear.Staff.AltUse");
 
 		Item.staff[Type] = true;
+		CustomItemSets.VisualChannelOnly[Type] = true;
 	}
 
 	public override void SetDefaults()
