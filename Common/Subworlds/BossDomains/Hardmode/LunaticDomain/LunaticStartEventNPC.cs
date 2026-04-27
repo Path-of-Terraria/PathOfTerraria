@@ -24,7 +24,10 @@ internal class LunaticStartEventNPC : GlobalNPC
 		else if (Main.netMode != NetmodeID.MultiplayerClient)
 		{ 
 			int type = ModContent.ProjectileType<MLPortal>();
-			Projectile.NewProjectile(new EntitySource_SpawnNPC(), new Vector2(Main.spawnTileX, Main.spawnTileY - 15) * 16, Vector2.Zero, type, 0, 0, Main.myPlayer);
+			Projectile.NewProjectile(new EntitySource_SpawnNPC(), new Vector2(Main.spawnTileX, Main.spawnTileY - 10) * 16, Vector2.Zero, type, 0, 0, Main.myPlayer);
+
+			type = ModContent.ProjectileType<ExitPortal>();
+			Projectile.NewProjectile(new EntitySource_SpawnNPC(), new Vector2(Main.spawnTileX, Main.spawnTileY - 22) * 16, Vector2.Zero, type, 0, 0, Main.myPlayer);
 
 			WorldGen.BroadcastText(NetworkText.FromKey("Mods.PathOfTerraria.Misc.ImpendingDoom"), 50, 255, 130);
 
