@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using Terraria.DataStructures;
+using Terraria.ID;
 
 namespace PathOfTerraria.Content.Passives;
 
@@ -9,7 +10,9 @@ internal class ExplosiveKnockbackPassive : Passive
 	{
 		public override void OnSpawn(Projectile projectile, IEntitySource source)
 		{
-			if (source is EntitySource_ItemUse_WithAmmo ammo && ammo.Player.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<StrongerExplosivesPassive>(out float value))
+			if (ProjectileID.Sets.Explosive[projectile.type] 
+			    && source is EntitySource_ItemUse itemUse
+			    && itemUse.Player.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<ExplosiveKnockbackPassive>(out float value))
 			{
 				projectile.knockBack *= 1 + (value / 100f);
 			}

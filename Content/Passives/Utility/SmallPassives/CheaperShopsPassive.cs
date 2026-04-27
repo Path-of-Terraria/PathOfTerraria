@@ -13,9 +13,9 @@ internal class CheaperShopsPassive : Passive
 	{
 		orig(self, item, out calcForSelling, out calcForBuying);
 
-		if (self.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<ValuableSalesPassive>(out float value))
+		if (self.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<CheaperShopsPassive>(out float value))
 		{
-			calcForBuying = (long)(calcForSelling * (1 - value / 100f));
+			calcForBuying = (long)(calcForBuying * (1 - value / 100f));
 		}
 	}
 }
