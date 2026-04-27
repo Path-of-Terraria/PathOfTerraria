@@ -11,8 +11,6 @@ namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.BoCDomain;
 internal class BoCDomainSystem : ModSystem
 {
 	public bool HasLloyd = false;
-	public bool DontSpawnLloyd = false;
-	public byte LloydAttempts = 0;
 	public float DomainAtmosphere = 1;
 	public Vector2 LLoydReturnPos = Vector2.Zero;
 
@@ -36,11 +34,6 @@ internal class BoCDomainSystem : ModSystem
 			tag.Add("hasLloyd", HasLloyd);
 		}
 
-		if (DontSpawnLloyd)
-		{
-			tag.Add("spawnLloyd", DontSpawnLloyd);
-		}
-
 		tag.Add("lloydReturnPosX", LLoydReturnPos.X);
 		tag.Add("lloydReturnPosY", LLoydReturnPos.Y);
 	}
@@ -48,7 +41,7 @@ internal class BoCDomainSystem : ModSystem
 	public override void LoadWorldData(TagCompound tag)
 	{
 		HasLloyd = tag.ContainsKey("hasLloyd");
-		DontSpawnLloyd = tag.ContainsKey("spawnLloyd");
+		LLoydReturnPos = new Vector2(tag.GetFloat("lloydReturnPosX"), tag.GetFloat("lloydReturnPosY"));
 	}
 
 	public override void PreUpdateTime()
@@ -64,36 +57,63 @@ internal class BoCDomainSystem : ModSystem
 
 			DomainAtmosphere = MathHelper.Lerp(DomainAtmosphere, strength, 0.02f);
 		}
+	}
 
-		if (SubworldSystem.Current is null && Main.netMode != NetmodeID.MultiplayerClient &&
-			Main.GameUpdateCount % 300 == 0 && NeedsLloydRespawn())
+	public override void PreUpdateWorld()
+	{
+		if (Main.netMode == NetmodeID.MultiplayerClient)
 		{
-			SpawnLloydNearCrimson();
+			return;
 		}
+
+		UpdateOverworldLloyd();
 	}
 
 	internal void OneTimeCheck()
 	{
-		if (SubworldSystem.Current is null && NPC.downedBoss1 && WorldGen.crimson && !HasLloyd && !NPC.AnyNPCs(ModContent.NPCType<LloydNPC>()) &&
-			(!DontSpawnLloyd && !NPC.downedBoss2 || AnyActivePlayerNeedsLloyd()))
+		if (SubworldSystem.Current is not null || !HasLloyd)
+		{
+			return;
+		}
+
+		NPC.NewNPC(Entity.GetSource_NaturalSpawn(), (int)LLoydReturnPos.X, (int)LLoydReturnPos.Y, ModContent.NPCType<LloydNPC>());
+		HasLloyd = false;
+	}
+
+	private void UpdateOverworldLloyd()
+	{
+		if (SubworldSystem.Current is not null || HasLloyd)
+		{
+			return;
+		}
+
+		bool lloydShouldExist = NPC.downedBoss1 && WorldGen.crimson && (!NPC.downedBoss2 || AnyActivePlayerNeedsLloyd());
+		NPC existingLloyd = null;
+
+		foreach (NPC npc in Main.ActiveNPCs)
+		{
+			if (npc.type == ModContent.NPCType<LloydNPC>())
+			{
+				existingLloyd = npc;
+				break;
+			}
+		}
+
+		bool lloydExists = existingLloyd != null;
+		if (lloydExists == lloydShouldExist)
+		{
+			return;
+		}
+
+		if (lloydShouldExist)
 		{
 			SpawnLloydNearCrimson();
 		}
-
-		if (SubworldSystem.Current is null)
+		else
 		{
-			if (HasLloyd)
-			{
-				NPC.NewNPC(Entity.GetSource_NaturalSpawn(), (int)LLoydReturnPos.X, (int)LLoydReturnPos.Y, ModContent.NPCType<LloydNPC>());
-				HasLloyd = false;
-			}
+			existingLloyd.active = false;
+			existingLloyd.netUpdate = true;
 		}
-	}
-
-	private bool NeedsLloydRespawn()
-	{
-		return NPC.downedBoss1 && WorldGen.crimson && !HasLloyd &&
-			AnyActivePlayerNeedsLloyd() && !NPC.AnyNPCs(ModContent.NPCType<LloydNPC>());
 	}
 
 	private void SpawnLloydNearCrimson()
@@ -118,7 +138,6 @@ internal class BoCDomainSystem : ModSystem
 			}
 
 			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), x * 16, y * 16, ModContent.NPCType<LloydNPC>());
-			DontSpawnLloyd = true;
 			break;
 		}
 	}

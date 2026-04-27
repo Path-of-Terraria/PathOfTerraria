@@ -19,7 +19,6 @@ using SubworldLibrary;
 using Terraria.Chat;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
-using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.BoCDomain;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
 namespace PathOfTerraria.Content.NPCs.Town;
@@ -109,11 +108,6 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 		else if (Main.netMode == NetmodeID.Server)
 		{
 			ChatHelper.BroadcastChatMessage(NetworkText.FromKey($"Mods.{PoTMod.ModName}.Misc.NPCLeftWithoutDying", NPC.FullName), color);
-		}
-
-		if (Main.netMode != NetmodeID.MultiplayerClient)
-		{
-			ModContent.GetInstance<BoCDomainSystem>().DontSpawnLloyd = false;
 		}
 
 		return false;
