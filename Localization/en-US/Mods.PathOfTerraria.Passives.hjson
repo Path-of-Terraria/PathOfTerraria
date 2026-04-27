@@ -726,7 +726,7 @@ AddedMaxMinionsPassive: {
 
 MoveIncreaseOnSummonPassive: {
 	Name: Movement Buff after Summoning
-	Tooltip: Gain 100% movement speed for {0} after summoning
+	Tooltip: Gain 100% movement speed for {0} seconds after summoning
 }
 
 HealingGrimoireMastery: {
