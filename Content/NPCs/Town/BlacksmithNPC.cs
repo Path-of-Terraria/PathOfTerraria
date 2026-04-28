@@ -5,12 +5,14 @@ using PathOfTerraria.Common.NPCs.Dialogue;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.NPCs.OverheadDialogue;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
+using PathOfTerraria.Common.Quests;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 using PathOfTerraria.Common.Utilities.Extensions;
+using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using PathOfTerraria.Content.Items.Placeable.Mapping;
@@ -154,6 +156,12 @@ public class BlacksmithNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOv
 		                         QuestUnlockManager.CanStartQuest<GolemQuest>();
 
 		button2 = hasAvailableQuest ? Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest") : "";
+
+		if (QuestUtils.ShouldRegrantQuestItem<GolemQuest>(Main.LocalPlayer, ModContent.ItemType<GolemMap>(), 3, 4))
+		{
+			button2 = this.GetLocalization("AnotherMap").Value;
+			Main.npcChatCornerItem = ModContent.ItemType<GolemMap>();
+		}
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -163,7 +171,14 @@ public class BlacksmithNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOv
 			shopName = "Shop";
 			return;
 		}
-		
+
+		if (QuestUtils.ShouldRegrantQuestItem<GolemQuest>(Main.LocalPlayer, ModContent.ItemType<GolemMap>(), 3, 4))
+		{
+			QuestUtils.GiftQuestItem(NPC, ModContent.ItemType<GolemMap>());
+			Main.npcChatText = this.GetLocalization("Dialogue.GetGolemMapAgain").Value;
+			return;
+		}
+
 		if (QuestUnlockManager.CanStartQuest<BlacksmithStartQuest>())
 		{
 			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest");

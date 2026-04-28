@@ -26,4 +26,38 @@ internal static class QuestUtils
 	{
 		return _ => BossTracker.TotalBossesDowned.Contains(npcId);
 	}
+
+	/// <summary>
+	/// Returns true when the player should be offered a free re-grant of <paramref name="itemType"/>
+	/// from a quest-giver: the quest is active, the player no longer holds the item, and the
+	/// quest's <see cref="Quest.CurrentStep"/> is between the giveaway step and the step that
+	/// counts as the boss being defeated. Once the player advances past <paramref name="lastActiveStep"/>
+	/// (i.e. the boss has been killed) the regrant disappears so players have to farm maps instead.
+	/// </summary>
+	public static bool ShouldRegrantQuestItem<TQuest>(Player player, int itemType, int firstActiveStep, int lastActiveStep)
+		where TQuest : Quest
+	{
+		string questName = ModContent.GetInstance<TQuest>().FullName;
+
+		if (!player.GetModPlayer<QuestModPlayer>().QuestsByName.TryGetValue(questName, out Quest quest))
+		{
+			return false;
+		}
+
+		return quest.Active
+			&& quest.CurrentStep >= firstActiveStep
+			&& quest.CurrentStep <= lastActiveStep
+			&& !player.HasItem(itemType);
+	}
+
+	/// <summary> Spawns and syncs a quest item gift from <paramref name="npc"/>. </summary>
+	public static void GiftQuestItem(NPC npc, int itemType)
+	{
+		int item = Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, itemType, noGrabDelay: true);
+
+		if (Main.netMode == NetmodeID.MultiplayerClient)
+		{
+			NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
+		}
+	}
 }

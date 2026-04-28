@@ -4,10 +4,12 @@ using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Dialogue;
 using PathOfTerraria.Common.NPCs.OverheadDialogue;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
+using PathOfTerraria.Common.Quests;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 using PathOfTerraria.Common.Utilities.Extensions;
+using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
@@ -89,12 +91,28 @@ public class TinkerNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnIn
 	{
 		button = Language.GetTextValue("LegacyInterface.28"); // Shop
 
-		bool hasAvailableQuest = QuestUnlockManager.CanStartQuest<TinkerIntroQuest>() || 
-		                         QuestUnlockManager.CanStartQuest<TwinsQuest>() || 
-		                         QuestUnlockManager.CanStartQuest<DestroyerQuest>() || 
+		bool hasAvailableQuest = QuestUnlockManager.CanStartQuest<TinkerIntroQuest>() ||
+		                         QuestUnlockManager.CanStartQuest<TwinsQuest>() ||
+		                         QuestUnlockManager.CanStartQuest<DestroyerQuest>() ||
 		                         QuestUnlockManager.CanStartQuest<SkelePrimeQuest>();
 
 		button2 = hasAvailableQuest ? Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest") : "";
+
+		if (QuestUtils.ShouldRegrantQuestItem<TwinsQuest>(Main.LocalPlayer, ModContent.ItemType<TwinsMap>(), 5, 6))
+		{
+			button2 = this.GetLocalization("AnotherMap").Value;
+			Main.npcChatCornerItem = ModContent.ItemType<TwinsMap>();
+		}
+		else if (QuestUtils.ShouldRegrantQuestItem<DestroyerQuest>(Main.LocalPlayer, ModContent.ItemType<DestroyerMap>(), 3, 4))
+		{
+			button2 = this.GetLocalization("AnotherMap").Value;
+			Main.npcChatCornerItem = ModContent.ItemType<DestroyerMap>();
+		}
+		else if (QuestUtils.ShouldRegrantQuestItem<SkelePrimeQuest>(Main.LocalPlayer, ModContent.ItemType<PrimeMap>(), 2, 3))
+		{
+			button2 = this.GetLocalization("AnotherMap").Value;
+			Main.npcChatCornerItem = ModContent.ItemType<PrimeMap>();
+		}
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -102,6 +120,27 @@ public class TinkerNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnIn
 		if (firstButton)
 		{
 			shopName = "Shop";
+			return;
+		}
+
+		if (QuestUtils.ShouldRegrantQuestItem<TwinsQuest>(Main.LocalPlayer, ModContent.ItemType<TwinsMap>(), 5, 6))
+		{
+			QuestUtils.GiftQuestItem(NPC, ModContent.ItemType<TwinsMap>());
+			Main.npcChatText = this.GetLocalization("Dialogue.GetTwinsMapAgain").Value;
+			return;
+		}
+
+		if (QuestUtils.ShouldRegrantQuestItem<DestroyerQuest>(Main.LocalPlayer, ModContent.ItemType<DestroyerMap>(), 3, 4))
+		{
+			QuestUtils.GiftQuestItem(NPC, ModContent.ItemType<DestroyerMap>());
+			Main.npcChatText = this.GetLocalization("Dialogue.GetDestroyerMapAgain").Value;
+			return;
+		}
+
+		if (QuestUtils.ShouldRegrantQuestItem<SkelePrimeQuest>(Main.LocalPlayer, ModContent.ItemType<PrimeMap>(), 2, 3))
+		{
+			QuestUtils.GiftQuestItem(NPC, ModContent.ItemType<PrimeMap>());
+			Main.npcChatText = this.GetLocalization("Dialogue.GetPrimeMapAgain").Value;
 			return;
 		}
 

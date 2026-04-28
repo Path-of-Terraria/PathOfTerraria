@@ -182,6 +182,11 @@ public abstract class Quest : ModType, ILocalizedModType
 		}
 
 		state = State.InProgress;
+
+		for (int i = 0; i < QuestSteps.Count; i++)
+		{
+			QuestSteps[i].IsDone = i < CurrentStep;
+		}
 	}
 
 	public void Complete(Player player)

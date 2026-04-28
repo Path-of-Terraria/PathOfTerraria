@@ -179,6 +179,18 @@ public sealed class QuestDebugState : SmartUiState
 		StringBuilder stringBuilder = new();
 		QuestModPlayer playerQuests = Main.LocalPlayer.GetModPlayer<QuestModPlayer>();
 
+		void AdvanceQuestForDebug(Quest quest, int delta)
+		{
+			if (delta > 0 && !quest.Active)
+			{
+				int targetStep = Math.Min(delta - 1, quest.QuestSteps.Count);
+				playerQuests.StartQuest(quest.FullName, targetStep);
+				return;
+			}
+
+			quest.Advance(Main.LocalPlayer, delta);
+		}
+
 		foreach (Quest quest in playerQuests.QuestsByName.Values.OrderBy(q => q.Name))
 		{
 			if (!string.IsNullOrEmpty(SearchBar.CurrentValue) && !quest.Name.Contains(SearchBar.CurrentValue, StringComparison.InvariantCultureIgnoreCase))
@@ -228,7 +240,7 @@ public sealed class QuestDebugState : SmartUiState
 						return;
 					}
 
-					quest.Advance(Main.LocalPlayer, delta: -1);
+					AdvanceQuestForDebug(quest, delta: -1);
 					SmartUiLoader.GetUiState<QuestsUIState>().Refresh();
 				};
 
@@ -244,7 +256,7 @@ public sealed class QuestDebugState : SmartUiState
 						return;
 					}
 
-					quest.Advance(Main.LocalPlayer, delta: -2);
+					AdvanceQuestForDebug(quest, delta: -2);
 					SmartUiLoader.GetUiState<QuestsUIState>().Refresh();
 				};
 
@@ -260,7 +272,7 @@ public sealed class QuestDebugState : SmartUiState
 
 				e.SetDimensions(x: (0.0f, +buttonX), y: (0.0f, +24), width: (0.0f, +128), height: (0f, +32));
 				e.AddComponent(new UIDynamicText(x => quest.Completed ? "Completed" : (quest.Active ? $"Stage {quest.CurrentStep + 1} of {quest.QuestSteps.Count}" : "Inactive")));
-
+				
 				buttonX += e.Width.Pixels;
 			});
 			// Advance '+' button.
@@ -283,14 +295,7 @@ public sealed class QuestDebugState : SmartUiState
 						return;
 					}
 
-					if (!quest.Active)
-					{
-						Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest(quest.FullName);
-					}
-					else
-					{
-						quest.Advance(Main.LocalPlayer, delta: 1);
-					}
+					AdvanceQuestForDebug(quest, delta: 1);
 
 					SmartUiLoader.GetUiState<QuestsUIState>().Refresh();
 				};
@@ -302,14 +307,7 @@ public sealed class QuestDebugState : SmartUiState
 						return;
 					}
 
-					if (!quest.Active)
-					{
-						Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest(quest.FullName);
-					}
-					else
-					{
-						quest.Advance(Main.LocalPlayer, delta: 2);
-					}
+					AdvanceQuestForDebug(quest, delta: 2);
 
 					SmartUiLoader.GetUiState<QuestsUIState>().Refresh();
 				};

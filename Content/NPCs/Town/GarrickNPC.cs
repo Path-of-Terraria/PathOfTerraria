@@ -4,6 +4,7 @@ using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.NPCs.OverheadDialogue;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
+using PathOfTerraria.Common.Quests;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
@@ -126,6 +127,11 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 			button2 = this.GetLocalization("AnotherMap").Value;
 			Main.npcChatCornerItem = ModContent.ItemType<KingSlimeMap>();
 		}
+		else if (QuestUtils.ShouldRegrantQuestItem<QueenSlimeQuest>(Main.LocalPlayer, ModContent.ItemType<QueenSlimeMap>(), 3, 4))
+		{
+			button2 = this.GetLocalization("AnotherMap").Value;
+			Main.npcChatCornerItem = ModContent.ItemType<QueenSlimeMap>();
+		}
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -149,6 +155,13 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 				}
 
 				Main.npcChatText = this.GetLocalization("Dialogue.GetKingMapAgain").Value;
+				return;
+			}
+
+			if (QuestUtils.ShouldRegrantQuestItem<QueenSlimeQuest>(Main.LocalPlayer, ModContent.ItemType<QueenSlimeMap>(), 3, 4))
+			{
+				QuestUtils.GiftQuestItem(NPC, ModContent.ItemType<QueenSlimeMap>());
+				Main.npcChatText = this.GetLocalization("Dialogue.GetQueenSlimeMapAgain").Value;
 				return;
 			}
 

@@ -4,10 +4,12 @@ using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Dialogue;
 using PathOfTerraria.Common.NPCs.OverheadDialogue;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
+using PathOfTerraria.Common.Quests;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 using PathOfTerraria.Common.Utilities.Extensions;
+using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
@@ -87,9 +89,15 @@ public class FishermanNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpaw
 		button = Language.GetTextValue("LegacyInterface.28"); // Shop
 
 		bool hasAvailableQuest = QuestUnlockManager.CanStartQuest<FishronQuest>();
-		//                         QuestUnlockManager.CanStartQuest<TwinsQuest>() || 
+		//                         QuestUnlockManager.CanStartQuest<TwinsQuest>() ||
 
 		button2 = hasAvailableQuest ? Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest") : "";
+
+		if (QuestUtils.ShouldRegrantQuestItem<FishronQuest>(Main.LocalPlayer, ModContent.ItemType<FishronMap>(), 3, 4))
+		{
+			button2 = this.GetLocalization("AnotherMap").Value;
+			Main.npcChatCornerItem = ModContent.ItemType<FishronMap>();
+		}
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -97,6 +105,13 @@ public class FishermanNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpaw
 		if (firstButton)
 		{
 			shopName = "Shop";
+			return;
+		}
+
+		if (QuestUtils.ShouldRegrantQuestItem<FishronQuest>(Main.LocalPlayer, ModContent.ItemType<FishronMap>(), 3, 4))
+		{
+			QuestUtils.GiftQuestItem(NPC, ModContent.ItemType<FishronMap>());
+			Main.npcChatText = this.GetLocalization("Dialogue.GetFishronMapAgain").Value;
 			return;
 		}
 

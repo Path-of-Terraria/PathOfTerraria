@@ -13,6 +13,7 @@ BlacksmithNPC: {
 		Quest2: Отлично! Я быстро приведу старую кузницу в порядок. Вот, возьми этот меч. Выковал его прямо перед атакой — пробный вариант. Хочу, чтобы ты испытал его на зомби: с этими тварями возни больше всего. Если не затруднит, принеси ещё материалов. Тогда, думаю, мы сможем вернуть Железную Наковальню в строй!
 		Quest3: Ты почти пробил меня на слезу. Железная кузница почти готова к работе! Держи, вот тебе урок, который я вынес из своего боевого прошлого: иногда надо сойти с ума. Только будь осторожен! И возвращайся, когда захочешь - ты мне здорово помог!
 		OldManDialogue: Привет, путешественник!... что ты сказал? Кто-то направил тебя ко мне? Хм... я помню человека, закутанного в красное, он был здесь... некоторое время назад. Не могу сказать, сколько прошло времени, но довольно давно. Он просил кое-что конкретное... книгу зла, две свечи и слиток зла. Он говорил что-то о том, чтобы посыпать книгу порошком зла... но... это всё, что я могу сказать. Не уверен, о чём он говорил.
+		// GetGolemMapAgain: Lost the temple map, did you? No shame in it. Lihzahrd craft is strange, and these old notes are stranger still. Here, take another and give that beast a proper wallop.
 
 		Golem: {
 			// Intro: Ah! Grand adventurer. I've been looking for more smithwork, but with all these new events I've got my eye on something. There's a temple deep in the jungle that may have some interesting new metalsmithing...bricksmithing? I've yet to figure it out. It's guarded, so be wary!
@@ -49,6 +50,7 @@ BlacksmithNPC: {
 	}
 
 	Entry: Весёлый гном, Трейн любит весёлые беседы, хороший напиток и изготовление лучшего оружия, которое вы когда-либо видели. Обычно его можно найти в его кузне, изготавливающем оружие.
+	// AnotherMap: Map
 	// DownedForest: After beating the Forest domain
 	// Census.SpawnCondition: Spawns by default in Ravencrest. Home is the Forge.
 }
@@ -161,6 +163,7 @@ GarrickNPC: {
 		TradeLunarLiquid: А, я тренировался для этого. Но будь осторожен, эти не для случайного приключения.
 		CantTradeLiquid: О, потерял Жидкость? Мне понадобится несколько Лунных Осколков, чтобы переделать её, боюсь. Вернись ко мне с 5 или более.
 		GetKingMapAgain: А, не справился? Потерял карту или что-то ещё? В любом случае, вот она. Тебе повезло, что я ношу картографическое оборудование везде... на случай, если что.
+		// GetQueenSlimeMapAgain: Another royal appointment, then? Take this map and mind your footing. Slime royalty has a way of making the ground itself disagree with you.
 
 		QueenSlime: {
 			// 0: Do you feel it, explorer? The land itself has shifted, and something unnatural radiates from the creatures in that new glowing area. I need you to gather this energy. Bring it back to me so we can understand what power we're truly dealing with.
@@ -232,6 +235,9 @@ WizardNPC: {
 			// 1: Curious crystals...yes. Their power rivals most - not mine - and belies a world most cannot see - NOT including myself. I see into all realms, [plrclass/l:l]. I simply choose not to act on it. Huzzah! Your curious map device should handle this parchment well.
 			// 2: Hmm...the Empress of Light, so you say? An old rival of mine. Not on my caliber, of course. She'd marvel at the explo- spells I can cast! Regardless, thank you. I almost though I'd have to...use my substantial and unending power for once. Not that I don't use it.
 		}
+
+		// GetEoLMapAgain: Misplaced the parchment? Worry not. I have conjured, copied, and quite possibly improved another. The Empress awaits, and so does my inevitable vindication.
+		// GetCrystalVisorsAgain: Ah, the visors have vanished? A minor inconvenience for a wizard of my magnitude. Wear these, and try not to lose sight of them again.
 	}
 
 	BubbleDialogue: {
@@ -261,6 +267,8 @@ WizardNPC: {
 	}
 
 	Entry: Возможно, самый могущественный волшебник всех времён, Аларик всё ещё ведёт себя так, будто притворяется самым могущественным волшебником всех времён. Если ему весело, он может вызвать настоящую и мгновенную катастрофу.
+	// AnotherMap: Map
+	// AnotherCrystalVisors: Crystal Visors
 	// Census.SpawnCondition: Spawns by default in Ravencrest. Home is the Library.
 }
 
@@ -593,9 +601,12 @@ MorganaNPC: {
 			// 1: Hm, hm, hm. Yes! Such is Her growth, Her splendor. Thank you for the boons, [plrclass/l,1:l]! But - you must fight Her! Plantera has risen! I need to study the vicious plant, for it bears...peculiarities beyond reknown. Go, go!
 			// 2: What a treacherous boon, obtained by a strong adventurer! Oh, this'll serve us all well, I'm sure...thank you, kind fellow. I must...toil over my labors. Perhaps I can give you a boon in due time, in return. Yes! I shall, I shall!
 		}
+
+		// GetPlanteraMapAgain: The bloom still calls, yes? Then take another map and go, go! Plants regrow, paths twist, and experiments require persistence!
 	}
 
 	Entry: Соберите 2 пера совы и 1 пару крыльев летучей мыши.
+	// AnotherMap: Map
 	// Census.SpawnCondition: Spawns by default in Ravencrest. Home is the Burrow.
 }
 
@@ -897,6 +908,9 @@ TinkerNPC: {
 		// TinkerSkeletronPrimeDialogue1: Adventurer, my instruments are once again spiking with a new signal, one even darker than before. It is radiating from the old dungeon, where Skeletron once kept his vigil. The signature is thick with both necrotic and mechanical energy. Whoever forged the Twins and the Destroyer has not stopped. They have rebuilt the dungeon's guardian itself into something far worse. I will need souls steeped in shadow, a good supply of bones, and any mechanical scraps from the dungeon you can find to finish my calibrations.
 		// TinkerSkeletronPrimeDialogue2: Yes, these materials are perfect! The readings are clear now. The creature waiting below is Skeletron Prime, a reconstruction of the cursed guardian, enhanced with gears, cannons, and blades. It is more machine than bone now. The teleporter is ready whenever you are, but be prepared. This will surely be your toughest battle yet.
 		// TinkerSkeletronPrimeDialogue3: Oh! The readings go silent. Well done, this means one of two things: my job is finished, or I have to make a new scanner...go! I've got to get to work on this new machine.
+		// GetTwinsMapAgain: Lost the Twins coordinates? No problem. I saved a backup, a backup of the backup, and one that may be slightly singed. Take this one.
+		// GetDestroyerMapAgain: The Destroyer's signal is hard to miss, but apparently maps are easier to lose. Here, I printed another route for you.
+		// GetPrimeMapAgain: Skeletron Prime is still broadcasting clear as day. Here is another calibrated map. Try not to let the dungeon keep this one.
 	}
 
 	BubbleDialogue: {
@@ -920,6 +934,7 @@ TinkerNPC: {
 	}
 
 	// Entry: Todo:
+	// AnotherMap: Map
 	// Census.SpawnCondition: Conditions unknown
 }
 
@@ -935,6 +950,7 @@ FishermanNPC: {
 		// FishermanFishronDialogue2: So you saw it, didn't you? That tear in the seabed... the Rift. Never thought I'd live to see the ocean split open like a wound. The water around it stinks of death, and the fish you caught seemed to react poorly when near it. Whatever waits inside that dark hollow, it's no natural beast. If my hunch is right, the Rift's calling for one thing... the reclusive Truffle Worm. Bring me one, adventurer, and we'll have our answer.
 		// FishermanFishronDialogue3: You've got the worm... by the tides... I don't envy you for holding that thing, it writhes like it knows where it's headed. The ocean's Rift is hungry, and this bait is the key. Cast it into the Rift's maw, and what stirs will come for you. Duke Fishron, the abyssal tyrant... he'll rise to defend his throne. Steel yourself, adventurer. This is no fishing trip. It's a reckoning.
 		// FishermanFishronDialogue4: You went in... and somehow lived to tell the tale. I can scarcely believe it. The Rift shook with fury when you fought him. I felt it from the shore. And then, silence. The Duke's reign is broken, if only for now. Still, the Rift remains... a scar at the ocean's floor, watching and waiting. You've proven stronger than this tide, adventurer, but never forget, the sea always takes back what it's owed.
+		// GetFishronMapAgain: The sea swallowed your route, did it? Happens more than sailors admit. Take another map, and keep it dry until the Rift takes you.
 	}
 
 	BubbleDialogue: {
@@ -958,6 +974,7 @@ FishermanNPC: {
 	}
 
 	// Entry: Todo:
+	// AnotherMap: Map
 	// Census.SpawnCondition: Conditions unknown
 }
 

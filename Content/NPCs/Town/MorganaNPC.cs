@@ -4,11 +4,13 @@ using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Dialogue;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
+using PathOfTerraria.Common.Quests;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 using PathOfTerraria.Common.Utilities.Extensions;
+using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using PathOfTerraria.Content.Items.Gear.Weapons.Grimoire;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -93,6 +95,12 @@ public class MorganaNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC
 		                         QuestUnlockManager.CanStartQuest<QueenBeeQuest>();
 
 		button2 = hasAvailableQuest ? Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest") : "";
+
+		if (QuestUtils.ShouldRegrantQuestItem<PlanteraQuest>(Main.LocalPlayer, ModContent.ItemType<PlanteraMap>(), 2, 3))
+		{
+			button2 = this.GetLocalization("AnotherMap").Value;
+			Main.npcChatCornerItem = ModContent.ItemType<PlanteraMap>();
+		}
 	}
 
 	//TODO: This should probably be a base NPC functionality as many NPC's will have multiple quests. 
@@ -118,6 +126,13 @@ public class MorganaNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC
 		if (firstButton)
 		{
 			shopName = "Shop";
+			return;
+		}
+
+		if (QuestUtils.ShouldRegrantQuestItem<PlanteraQuest>(Main.LocalPlayer, ModContent.ItemType<PlanteraMap>(), 2, 3))
+		{
+			QuestUtils.GiftQuestItem(NPC, ModContent.ItemType<PlanteraMap>());
+			Main.npcChatText = this.GetLocalization("Dialogue.GetPlanteraMapAgain").Value;
 			return;
 		}
 

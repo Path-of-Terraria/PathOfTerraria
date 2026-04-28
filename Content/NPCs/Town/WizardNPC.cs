@@ -5,11 +5,13 @@ using PathOfTerraria.Common.NPCs.Dialogue;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.NPCs.OverheadDialogue;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
+using PathOfTerraria.Common.Quests;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 using PathOfTerraria.Common.Utilities.Extensions;
+using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using PathOfTerraria.Content.Items.Currency;
 using PathOfTerraria.Content.Items.Gear.Armor.Helmet;
 using PathOfTerraria.Content.Items.Gear.Weapons.Wand;
@@ -158,11 +160,22 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
-		
+
 		bool hasAvailableQuest = QuestUnlockManager.CanStartQuest<WizardStartQuest>() ||
 		    QuestUnlockManager.CanStartQuest<EoLQuest>();
 
 		button2 = hasAvailableQuest ? Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest") : "";
+
+		if (QuestUtils.ShouldRegrantQuestItem<EoLQuest>(Main.LocalPlayer, ModContent.ItemType<EoLMap>(), 2, 3))
+		{
+			button2 = this.GetLocalization("AnotherMap").Value;
+			Main.npcChatCornerItem = ModContent.ItemType<EoLMap>();
+		}
+		else if (QuestUtils.ShouldRegrantQuestItem<EoLQuest>(Main.LocalPlayer, ModContent.ItemType<CrystalVisors>(), 0, 3))
+		{
+			button2 = this.GetLocalization("AnotherCrystalVisors").Value;
+			Main.npcChatCornerItem = ModContent.ItemType<CrystalVisors>();
+		}
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -172,7 +185,21 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 			shopName = "Shop";
 			return;
 		}
-		
+
+		if (QuestUtils.ShouldRegrantQuestItem<EoLQuest>(Main.LocalPlayer, ModContent.ItemType<EoLMap>(), 2, 3))
+		{
+			QuestUtils.GiftQuestItem(NPC, ModContent.ItemType<EoLMap>());
+			Main.npcChatText = this.GetLocalization("Dialogue.GetEoLMapAgain").Value;
+			return;
+		}
+
+		if (QuestUtils.ShouldRegrantQuestItem<EoLQuest>(Main.LocalPlayer, ModContent.ItemType<CrystalVisors>(), 0, 3))
+		{
+			QuestUtils.GiftQuestItem(NPC, ModContent.ItemType<CrystalVisors>());
+			Main.npcChatText = this.GetLocalization("Dialogue.GetCrystalVisorsAgain").Value;
+			return;
+		}
+
 		Quest quest = QuestUnlockManager.CanStartQuest<WizardStartQuest>() ? Quest.GetLocalPlayerInstance<WizardStartQuest>() : Quest.GetLocalPlayerInstance<EoLQuest>();
 
 		switch (quest)
