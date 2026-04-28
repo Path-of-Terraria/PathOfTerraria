@@ -61,13 +61,19 @@ internal class TwinsQuest() : Quest
 				Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerTwinsDialogue2"),
 				onSuccess: _ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<TwinsMap>())), //TODO: THIS WILL BE SOME TELEPORTER FEATURE IN THE FUTURE
 			
-			new ConditionCheck("Domain", _ => SubworldSystem.Current is TwinsDomain, 1, this.GetLocalization("EnterDomain")),
-			
+			new ConditionCheck("Domain", _ => SubworldSystem.Current is TwinsDomain, 1, this.GetLocalization("EnterDomain"))
+			{
+				RecoveryItem = ModContent.ItemType<TwinsMap>()
+			},
+
 			new ParallelQuestStep("Kill", [
 				new ConditionCheck("Retinazer", _ => BossTracker.DownedInDomain<TwinsDomain>(NPCID.Retinazer), 1, this.GetLocalization("Boss1")),
 				new ConditionCheck("Spazmatism", _ => BossTracker.DownedInDomain<TwinsDomain>(NPCID.Spazmatism), 1, this.GetLocalization("Boss2")),
-			], this.GetLocalization("EnterDomain")),
-	
+			], this.GetLocalization("EnterDomain"))
+			{
+				RecoveryItem = ModContent.ItemType<TwinsMap>()
+			},
+
 			new InteractWithNPC("Finish", NPCQuestGiver, this.GetLocalization("Boss1"), Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerTwinsDialogue3"))
 			{
 				CountsAsCompletedOnMarker = true

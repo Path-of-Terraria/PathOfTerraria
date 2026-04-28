@@ -175,6 +175,7 @@ public sealed partial class ItemTooltips : GlobalItem
 			case "SwapNotice":
 			case "BuildBlocked":
 			case "ShootBlocked":
+			case "Temporary":
 				yOffset = 2;
 				line.BaseScale = new Vector2(0.8f);
 				return true;
@@ -644,6 +645,11 @@ public sealed partial class ItemTooltips : GlobalItem
 		{
 			priceLine.OverrideColor = Color.LightGray;
 			tooltips.Add(priceLine);
+		}
+
+		if (item.ModItem is ITemporaryItem)
+		{
+			AddNewTooltipLine(item, tooltips, new TooltipLine(Mod, "Temporary", "[c/7F8FCC:(Ephemeral)]"));
 		}
 	}
 

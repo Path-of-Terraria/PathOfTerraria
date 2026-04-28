@@ -1599,3 +1599,8 @@ Cryobrand: {
 		Shield-Shield-Sword: Shield slams and a massive icy shockwave.
 		''' */
 }
+
+MapRecoveryItem: {
+	// DisplayName: Map Recovery Item
+	// Tooltip: ""
+}

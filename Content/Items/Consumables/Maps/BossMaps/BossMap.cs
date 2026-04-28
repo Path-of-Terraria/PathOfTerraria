@@ -1,11 +1,9 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
+﻿using PathOfTerraria.Common.Items;
 using PathOfTerraria.Core.Items;
-using SubworldLibrary;
-using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal abstract class BossMap(int tier, int level, Func<bool> defeatCondition, bool hardMode) : Map
+internal abstract class BossMap(int tier, int level, Func<bool> defeatCondition, bool hardMode) : Map, ITemporaryItem
 {
 	public override int MaxUses => GetBossUseCount();
 	public override int WorldLevel => level;
@@ -18,9 +16,11 @@ internal abstract class BossMap(int tier, int level, Func<bool> defeatCondition,
 			{
 				return false;
 			}
+
 			return defeatCondition();
 		}
 	}
+
 	public override int GetMapTier(int _)
 	{
 		if (!hardMode)
@@ -30,16 +30,17 @@ internal abstract class BossMap(int tier, int level, Func<bool> defeatCondition,
 		// Hardmode boss maps can only drop with their own tier
 		return tier;
 	}
+
+	bool ITemporaryItem.DespawnCondition()
+	{
+		return CanDrop;
+	}
 }
 
-internal abstract class PreHardmodeBossMap : BossMap
+internal abstract class PreHardmodeBossMap(int level, Func<bool> defeatCondition) : BossMap(tier: 1, level: level, defeatCondition, hardMode: false)
 {
-	public PreHardmodeBossMap(int level, Func<bool> defeatCondition)
-		: base(tier: 1, level: level, defeatCondition, hardMode: false) { }
 }
 
-internal abstract class HardmodeBossMap : BossMap
+internal abstract class HardmodeBossMap(int tier, Func<bool> defeatCondition) : BossMap(tier: tier, level: WorldLevelBasedOnTier(tier) + 1, defeatCondition, hardMode: true)
 {
-	public HardmodeBossMap(int tier, Func<bool> defeatCondition)
-		: base(tier: tier, level: WorldLevelBasedOnTier(tier) + 1, defeatCondition, hardMode: true) { }
 }

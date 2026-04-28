@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework.Input;
+using PathOfTerraria.Common.Items;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Common.UI.Quests;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.Audio;
+using Terraria.DataStructures;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
@@ -16,6 +19,8 @@ public class QuestModPlayer : ModPlayer
 {
 	// ReSharper disable once InconsistentNaming
 	internal static ModKeybind ToggleQuestUIKey;
+
+	public bool HasAnyRecoveryItem { get; private set; }
 
 	/// <summary>
 	/// A non-synced list of every quest this player can have.
@@ -152,6 +157,7 @@ public class QuestModPlayer : ModPlayer
 	public override void PostUpdateMiscEffects()
 	{
 		MarkerTypeByLocation.Clear();
+		HasAnyRecoveryItem = false;
 
 		foreach (Quest quest in QuestsByName.Values)
 		{
@@ -161,6 +167,11 @@ public class QuestModPlayer : ModPlayer
 			}
 
 			quest.Update(Player);
+
+			if (!HasAnyRecoveryItem && quest.ActiveStep.RecoveryItem != -1)
+			{
+				HasAnyRecoveryItem = true;
+			}
 
 			if (!quest.Completed)
 			{
@@ -179,6 +190,50 @@ public class QuestModPlayer : ModPlayer
 					MarkerTypeByLocation[quest.MarkerLocation()] = marker;
 				}
 			}
+		}
+	}
+
+	/// <summary>
+	/// Spawns all recovery items the player can obtain. Runs only on the client (not server).<br/>
+	/// Can also be used to get the list of item
+	/// </summary>
+	public void SpawnRecoveryItems(int i, int j, bool onlyReport, out int emblematicItemToDisplay)
+	{
+		int[] ids = new int[QuestsByName.Count];
+		int current = 0;
+
+		foreach (Quest quest in QuestsByName.Values)
+		{
+			if (!quest.Active)
+			{
+				continue;
+			}
+
+			int type = quest.ActiveStep.RecoveryItem;
+
+			if (type != -1 && !Player.HasItem(type))
+			{
+				if (!onlyReport)
+				{
+					Item item = Main.item[Item.NewItem(new EntitySource_Misc("RecoveryItem"), new Vector2(i, j).ToWorldCoordinates(), type)];
+					
+					if (item.TryGetGlobalItem(out ITemporaryItem.TemporaryGlobalItem temp))
+					{
+						temp.IsTemporary = true;
+					}
+				}
+
+				ids[current++] = type;
+			}
+		}
+
+		if (current == 0)
+		{
+			emblematicItemToDisplay = -1;
+		}
+		else
+		{
+			emblematicItemToDisplay = ids[(int)(Main.GameUpdateCount * 0.02f % current)];
 		}
 	}
 

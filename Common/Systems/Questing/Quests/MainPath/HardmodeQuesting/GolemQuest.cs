@@ -43,10 +43,16 @@ internal class GolemQuest() : Quest
 				Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Golem.1"),
 				onSuccess: _ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<GolemMap>())),
 			
-			new ConditionCheck("Domain", _ => SubworldSystem.Current is GolemDomain, 1, this.GetLocalization("EnterDomain")),
-			
-			new ConditionCheck("Boss", _ => BossTracker.DownedInDomain<GolemDomain>(NPCID.Golem), 1, this.GetLocalization("Boss")),
-	
+			new ConditionCheck("Domain", _ => SubworldSystem.Current is GolemDomain, 1, this.GetLocalization("EnterDomain"))
+			{
+				RecoveryItem = ModContent.ItemType<GolemMap>()
+			},
+
+			new ConditionCheck("Boss", _ => BossTracker.DownedInDomain<GolemDomain>(NPCID.Golem), 1, this.GetLocalization("Boss"))
+			{
+				RecoveryItem = ModContent.ItemType<GolemMap>()
+			},
+
 			new InteractWithNPC("Finish", NPCQuestGiver, this.GetLocalization("Boss"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Golem.2"))
 		];

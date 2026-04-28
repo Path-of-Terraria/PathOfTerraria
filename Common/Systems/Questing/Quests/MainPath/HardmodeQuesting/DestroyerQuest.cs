@@ -48,10 +48,16 @@ internal class DestroyerQuest() : Quest
 				Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerDestroyerDialogue2"),
 				onSuccess: _ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<DestroyerMap>())), //TODO: THIS WILL BE SOME TELEPORTER FEATURE IN THE FUTURE
 			
-			new ConditionCheck("Domain", _ => SubworldSystem.Current is DestroyerDomain, 1, this.GetLocalization("EnterDomain")),
-			
-			new ConditionCheck("Boss", _ => BossTracker.DownedInDomain<DestroyerDomain>(NPCID.TheDestroyer), 1, this.GetLocalization("Boss")),
-	
+			new ConditionCheck("Domain", _ => SubworldSystem.Current is DestroyerDomain, 1, this.GetLocalization("EnterDomain"))
+			{
+				RecoveryItem = ModContent.ItemType<DestroyerMap>()
+			},
+
+			new ConditionCheck("Boss", _ => BossTracker.DownedInDomain<DestroyerDomain>(NPCID.TheDestroyer), 1, this.GetLocalization("Boss"))
+			{
+				RecoveryItem = ModContent.ItemType<DestroyerMap>()
+			},
+
 			new InteractWithNPC("Finish", NPCQuestGiver, this.GetLocalization("Boss"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerDestroyerDialogue3"))
 			{

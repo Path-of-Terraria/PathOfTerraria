@@ -1,11 +1,12 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
+﻿using PathOfTerraria.Common.Items;
+using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using PathOfTerraria.Core.Items;
 using SubworldLibrary;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class FishronMap() : HardmodeBossMap(7, () => NPC.downedFishron)
+internal class FishronMap() : HardmodeBossMap(7, () => NPC.downedFishron), ITemporaryItem
 {
 	public override void SetStaticDefaults()
 	{

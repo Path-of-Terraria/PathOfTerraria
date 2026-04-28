@@ -37,9 +37,15 @@ internal class EoLQuest() : Quest
 				_ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<EoLMap>())),
 		
 			// Enter the rift (Enter the Empress domain)
-			new ConditionCheck("Domain", _ => SubworldSystem.Current is EmpressDomain, 1, this.GetLocalization("EnterDomain")),
-		
-			new ConditionCheck("Boss", _ => BossTracker.DownedInDomain<EmpressDomain>(NPCID.HallowBoss), 1, this.GetLocalization("Boss")),
+			new ConditionCheck("Domain", _ => SubworldSystem.Current is EmpressDomain, 1, this.GetLocalization("EnterDomain"))
+			{
+				RecoveryItem = ModContent.ItemType<EoLMap>()
+			},
+
+			new ConditionCheck("Boss", _ => BossTracker.DownedInDomain<EmpressDomain>(NPCID.HallowBoss), 1, this.GetLocalization("Boss")) 
+			{
+				RecoveryItem = ModContent.ItemType<EoLMap>()
+			},
 		
 			new InteractWithNPC("Finish", NPCQuestGiver, this.GetLocalization("Boss"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.EoL.2"))

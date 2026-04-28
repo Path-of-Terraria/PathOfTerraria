@@ -43,9 +43,16 @@ internal class QueenSlimeQuest() : Quest
 				Language.GetText("Mods.PathOfTerraria.NPCs.GarrickNPC.Dialogue.QueenSlime.1"),
 				onSuccess: _ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<QueenSlimeMap>())),
 
-			new ConditionCheck("Domain", _ => SubworldSystem.Current is QueenSlimeDomain, 1, this.GetLocalization("EnterDomain")),
-			new ConditionCheck("Boss", _ => BossTracker.DownedInDomain<QueenSlimeDomain>(NPCID.QueenSlimeBoss), 1, this.GetLocalization("Boss")),
-			
+			new ConditionCheck("Domain", _ => SubworldSystem.Current is QueenSlimeDomain, 1, this.GetLocalization("EnterDomain"))
+			{
+				RecoveryItem = ModContent.ItemType<QueenSlimeMap>()
+			},
+
+			new ConditionCheck("Boss", _ => BossTracker.DownedInDomain<QueenSlimeDomain>(NPCID.QueenSlimeBoss), 1, this.GetLocalization("Boss"))
+			{
+				RecoveryItem = ModContent.ItemType<QueenSlimeMap>()
+			},
+
 			new InteractWithNPC("Finish", NPCQuestGiver, this.GetLocalization("TalkToGarrick"), Language.GetText("Mods.PathOfTerraria.NPCs.GarrickNPC.Dialogue.QueenSlime.2"), 
 				[new GiveItem(1, ModContent.ItemType<RoyalJellyCore>())], true) 
 			{
