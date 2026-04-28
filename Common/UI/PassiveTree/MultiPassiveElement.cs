@@ -68,6 +68,13 @@ internal class MultiPassiveElement : PassiveElement
 		return (distance + 120 * 120) * zoom * zoom;
 	}
 
+	public override bool AppearsAsAllocated(Allocatable? nodeOverride = null)
+	{
+		// MasteryPassive.OnAllocate intentionally skips Level increment, so Node.Allocated is always false.
+		// Use the active inner choice as the authoritative "is this mastery allocated" signal instead.
+		return nodeOverride is not null ? base.AppearsAsAllocated(nodeOverride) : ActivePassive is not null;
+	}
+
 	protected override void DrawSelf(SpriteBatch spriteBatch)
 	{
 		base.DrawSelf(spriteBatch);
@@ -84,7 +91,7 @@ internal class MultiPassiveElement : PassiveElement
 
 		if (Children.Any())
 		{
-			AllocatableInnerPanel.DrawEdgeConnections(spriteBatch, _extraEdges);
+			AllocatableInnerPanel.DrawEdgeConnections(spriteBatch, _extraEdges, GetZoom());
 		}
 
 		DrawChildren(spriteBatch);

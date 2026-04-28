@@ -47,12 +47,12 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 	protected override void DrawChildren(SpriteBatch spriteBatch)
 	{
 		// Drawing connections here means it gets clipped by OverflowHidden correctly
-		DrawEdgeConnections(spriteBatch, CollectionsMarshal.AsSpan(Connections));
+		DrawEdgeConnections(spriteBatch, CollectionsMarshal.AsSpan(Connections), Zoom);
 
 		base.DrawChildren(spriteBatch);
 	}
 
-	public static void DrawEdgeConnections(SpriteBatch spriteBatch, ReadOnlySpan<Edge<IConnectedAllocatableNode>> connections)
+	public static void DrawEdgeConnections(SpriteBatch spriteBatch, ReadOnlySpan<Edge<IConnectedAllocatableNode>> connections, float scale = 1f)
 	{
 		Vector2 center = default;
 		Texture2D chainTex = _chainTex.Value;
@@ -89,10 +89,12 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 
 			if (!edge.Flags.HasFlag(EdgeFlags.EffectsOnly))
 			{
-				for (float k = 0; k <= 1; k += 1 / (Vector2.Distance(startPos, endPos) / 16))
+				// Step size keeps link count constant regardless of zoom; each link is drawn at the current scale.
+				float linkSize = 16 * scale;
+				for (float k = 0; k <= 1; k += 1 / (Vector2.Distance(startPos, endPos) / linkSize))
 				{
 					Vector2 pos = center + Vector2.Lerp(startPos, endPos, k);
-					spriteBatch.Draw(chainTex, pos, null, color, startPos.DirectionTo(endPos).ToRotation(), chainTex.Size() / 2, 1, 0, 0);
+					spriteBatch.Draw(chainTex, pos, null, color, startPos.DirectionTo(endPos).ToRotation(), chainTex.Size() / 2, scale, 0, 0);
 				}
 			}
 
@@ -109,11 +111,11 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 				{
 					float dist = Vector2.Distance(startPos, endPos);
 					float len = (40 + rand.Next(120)) * dist / 50;
-					float scale = 0.05f + rand.Next(10000) / 10000f * 0.15f;
+					float particleScale = 0.05f + rand.Next(10000) / 10000f * 0.15f;
 
 					float progress = (Main.GameUpdateCount + 15 * k) % len / len;
 					Vector2 pos = center + Vector2.SmoothStep(startPos, endPos, progress);
-					float scale2 = (float)Math.Sin(progress * 3.14f) * (0.4f - scale);
+					float scale2 = (float)Math.Sin(progress * 3.14f) * (0.4f - particleScale) * scale;
 
 					spriteBatch.Draw(glow, pos, null, glowColor * scale2, 0, glow.Size() / 2f, scale2, 0, 0);
 				}
