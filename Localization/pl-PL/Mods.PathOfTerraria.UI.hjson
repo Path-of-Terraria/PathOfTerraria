@@ -371,6 +371,7 @@ MapDevice: {
 	// MapSlot: Map Slot
 	// ActivatePortal: Open Portal
 	// DeactivatePortal: Close Portal
+	// ConfirmClosePortal: Confirm Close
 	// AlreadyInUse: This map device is already in use!
 	// InjectResource: Inject Resource
 	// EjectResource: Eject Resource
