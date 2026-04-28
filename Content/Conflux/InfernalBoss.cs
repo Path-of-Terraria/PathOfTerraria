@@ -1731,7 +1731,8 @@ internal sealed class InfernalBoss : ModNPC
 	private const int HeatAuraBuildTicks = 360;
 	private const int HeatAuraCooldownTicks = 180;
 	private const int HeatAuraTotalTicks = HeatAuraBuildTicks + HeatAuraCooldownTicks;
-	private const float HeatAuraRadius = 240f;
+	private const float HeatAuraRadius = 336f;
+	private const float HeatAuraBurstRadius = HeatAuraRadius * 1.4f;
 
 	private void UpdateHeatAura(in Context ctx)
 	{
@@ -1749,19 +1750,7 @@ internal sealed class InfernalBoss : ModNPC
 
 		if (!Main.dedServ)
 		{
-			float intensity = MathF.Pow(buildFactor, 1.5f);
-			Lighting.AddLight(ctx.Center, new Vector3(1.0f, 0.45f, 0.10f) * intensity * 2.5f);
-
-			int dustChance = Math.Max(1, (int)(18 - buildFactor * 16));
-			if (Main.rand.NextBool(dustChance))
-			{
-				float radius = HeatAuraRadius * buildFactor * Main.rand.NextFloat(0.85f, 1.0f);
-				float angle = Main.rand.NextFloat(MathHelper.TwoPi);
-				Vector2 dustPos = ctx.Center + angle.ToRotationVector2() * radius;
-				Vector2 dustVel = (ctx.Center - dustPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(0.5f, 1.5f);
-				Dust dust = Dust.NewDustPerfect(dustPos, DustID.Torch, dustVel, Scale: 0.6f + buildFactor * 1.4f);
-				dust.noGravity = true;
-			}
+			DrawHeatAuraVisuals(ctx.Center, buildFactor);
 		}
 
 		if (Main.netMode == NetmodeID.MultiplayerClient) { return; }
@@ -1783,6 +1772,50 @@ internal sealed class InfernalBoss : ModNPC
 		}
 	}
 
+	private static void DrawHeatAuraVisuals(Vector2 center, float buildFactor)
+	{
+		float intensity = MathF.Pow(buildFactor, 1.3f);
+		Vector3 lightColor = new Vector3(1.0f, 0.45f, 0.10f) * intensity * 2.0f;
+
+		// Distribute lights around the ring perimeter so the boss sprite doesn't hide them.
+		const int LightPoints = 16;
+		for (int i = 0; i < LightPoints; i++)
+		{
+			float ang = (i / (float)LightPoints) * MathHelper.TwoPi;
+			Vector2 lightPos = center + ang.ToRotationVector2() * HeatAuraRadius;
+			Lighting.AddLight(lightPos, lightColor);
+		}
+
+		// Boundary ring — always at full radius so the player sees the danger zone clearly.
+		// Density and size grow with buildFactor for the "intensifying" feel.
+		int boundaryDustCount = 2 + (int)(buildFactor * 8f);
+		for (int i = 0; i < boundaryDustCount; i++)
+		{
+			float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+			float radius = HeatAuraRadius * Main.rand.NextFloat(0.92f, 1.05f);
+			Vector2 dustPos = center + angle.ToRotationVector2() * radius;
+			Vector2 tangent = angle.ToRotationVector2().RotatedBy(MathHelper.PiOver2);
+			Vector2 dustVel = tangent * Main.rand.NextFloat(-1.5f, 1.5f) - (dustPos - center).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(0.0f, 0.5f);
+
+			Dust dust = Dust.NewDustPerfect(dustPos, DustID.Torch, dustVel, Scale: 1.2f + buildFactor * 1.8f);
+			dust.noGravity = true;
+		}
+
+		// Inward-streaking embers that telegraph rising heat.
+		int emberSpawns = buildFactor > 0.3f ? (1 + (int)(buildFactor * 3f)) : 0;
+		for (int e = 0; e < emberSpawns; e++)
+		{
+			float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+			Vector2 spawnPos = center + angle.ToRotationVector2() * HeatAuraRadius * Main.rand.NextFloat(0.85f, 1.0f);
+			Vector2 dir = (center - spawnPos).SafeNormalize(Vector2.Zero);
+			Vector2 vel = dir * Main.rand.NextFloat(2f, 4.5f) * buildFactor;
+
+			Dust ember = Dust.NewDustPerfect(spawnPos, DustID.Torch, vel, Scale: 1.4f + buildFactor);
+			ember.noGravity = true;
+			ember.fadeIn = 1.2f;
+		}
+	}
+
 	private void TriggerHeatAuraBurst(in Context ctx)
 	{
 		SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot with { Volume = 1.2f, Pitch = -0.4f, PitchVariance = 0.1f }, ctx.Center);
@@ -1792,9 +1825,23 @@ internal sealed class InfernalBoss : ModNPC
 		{
 			var punch = new PunchCameraModifier(ctx.Center, Vector2.UnitY, 6f, 4f, 30, 1500f, "PyralisHeatBurst");
 			Main.instance.CameraModifiers.Add(punch);
+
+			// Outward-radiating shockwave of torch dust to make the burst pop visually.
+			const int BurstDustCount = 192;
+			for (int i = 0; i < BurstDustCount; i++)
+			{
+				float ang = (i / (float)BurstDustCount) * MathHelper.TwoPi + Main.rand.NextFloat(-0.05f, 0.05f);
+				Vector2 dir = ang.ToRotationVector2();
+				Vector2 spawnPos = ctx.Center + dir * HeatAuraRadius * Main.rand.NextFloat(0.85f, 1.0f);
+				Vector2 vel = dir * Main.rand.NextFloat(8f, 14f);
+
+				Dust dust = Dust.NewDustPerfect(spawnPos, DustID.Torch, vel, Scale: Main.rand.NextFloat(2.0f, 3.2f));
+				dust.noGravity = true;
+				dust.fadeIn = 1.5f;
+			}
 		}
 
-		var source = (IEntitySource)NPC.GetSource_FromThis();
+		IEntitySource source = NPC.GetSource_FromThis();
 		int projType = ModContent.ProjectileType<InfernalFlames>();
 		const int numFlames = 18;
 		for (int i = 0; i < numFlames; i++)
@@ -1806,7 +1853,7 @@ internal sealed class InfernalBoss : ModNPC
 
 		foreach (Player p in Main.ActivePlayers)
 		{
-			if (!p.dead && p.WithinRange(ctx.Center, HeatAuraRadius * 1.5f))
+			if (!p.dead && p.WithinRange(ctx.Center, HeatAuraBurstRadius))
 			{
 				IgnitedDebuff.ApplyTo(NPC, p, 70, time: 4 * 60);
 			}
