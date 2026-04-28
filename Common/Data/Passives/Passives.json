@@ -4120,7 +4120,7 @@
 		"internalIdentifier": "FasterPoisonTickPassive",
 		"referenceId": 246,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 245
