@@ -13,6 +13,7 @@ internal class MultiPassiveElement : PassiveElement
 {
 
 	private readonly Edge<IConnectedAllocatableNode>[] _extraEdges;
+	private AllocatableInnerPanel _parentPanel;
 
 	public int AnimationTime { get; set; }
 	public int AnimationTimeMax => 60;
@@ -62,7 +63,9 @@ internal class MultiPassiveElement : PassiveElement
 			distance = MathF.Max(distance, center.DistanceSQ(target));
 		}
 
-		return distance + 120 * 120;
+		_parentPanel ??= Parent as AllocatableInnerPanel;
+		float zoom = _parentPanel?.Zoom ?? 1f;
+		return (distance + 120 * 120) * zoom * zoom;
 	}
 
 	protected override void DrawSelf(SpriteBatch spriteBatch)

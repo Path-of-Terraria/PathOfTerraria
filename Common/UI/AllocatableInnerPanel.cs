@@ -13,6 +13,17 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 	private static readonly Asset<Texture2D> _chainTex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Link");
 
 	private readonly HashSet<UIElement> _draggable = [];
+	private readonly Dictionary<UIElement, (float OrigLeft, float OrigTop, float OrigWidth, float OrigHeight)> _origPositions = [];
+
+	private const float ZoomMin = 0.5f;
+	private const float ZoomMax = 2f;
+	private const float ZoomStep = 0.1f;
+
+	/// <summary> Whether this panel supports scroll-wheel zoom. Override in a subclass to enable. </summary>
+	protected virtual bool EnableZoom => false;
+
+	/// <summary> Current zoom level. 1 is the default; range is [<see cref="ZoomMin"/>, <see cref="ZoomMax"/>]. </summary>
+	public float Zoom { get; private set; } = 1f;
 
 	protected Vector2 DragOffset;
 	protected Vector2 DragCenter;
@@ -30,6 +41,7 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 	{
 		Append(e);
 		_draggable.Add(e);
+		_origPositions[e] = (e.Left.Pixels, e.Top.Pixels, e.Width.Pixels, e.Height.Pixels);
 	}
 
 	protected override void DrawChildren(SpriteBatch spriteBatch)
@@ -129,5 +141,46 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 
 			Recalculate();
 		}
+	}
+
+	public override void SafeScrollWheel(UIScrollWheelEvent evt)
+	{
+		if (!EnableZoom || !ContainsPoint(Main.MouseScreen))
+		{
+			return;
+		}
+
+		float oldZoom = Zoom;
+		float delta = evt.ScrollWheelValue > 0 ? ZoomStep : -ZoomStep;
+		float newZoom = Math.Clamp(oldZoom + delta, ZoomMin, ZoomMax);
+
+		if (newZoom == oldZoom)
+		{
+			return;
+		}
+
+		// Zoom toward the mouse cursor so the point under the cursor stays fixed.
+		CalculatedStyle dims = GetDimensions();
+		var panelCenter = new Vector2(dims.X + dims.Width * 0.5f, dims.Y + dims.Height * 0.5f);
+		Vector2 mouseRelCenter = Main.MouseScreen - panelCenter;
+
+		float ratio = newZoom / oldZoom;
+		DragCenter = mouseRelCenter * (1f - ratio) + DragCenter * ratio;
+
+		foreach (UIElement c in _draggable)
+		{
+			if (!_origPositions.TryGetValue(c, out var orig))
+			{
+				continue;
+			}
+
+			c.Left.Pixels = orig.OrigLeft * newZoom + DragCenter.X;
+			c.Top.Pixels = orig.OrigTop * newZoom + DragCenter.Y;
+			c.Width.Pixels = orig.OrigWidth * newZoom;
+			c.Height.Pixels = orig.OrigHeight * newZoom;
+		}
+
+		Zoom = newZoom;
+		Recalculate();
 	}
 }
