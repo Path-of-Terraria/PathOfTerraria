@@ -293,7 +293,8 @@ internal class DropTableUIState : CloseableSmartUi
 
 	private string GetCategoryButtonText()
 	{
-		return "Category: " + _categoryFilter;
+		string category = Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.Categories." + _categoryFilter);
+		return Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.Category", category);
 	}
 
 	private void ToggleCategoryDropdown(UIMouseEvent evt, UIElement listeningElement)
@@ -370,8 +371,9 @@ internal class DropTableUIState : CloseableSmartUi
 		}
 
 		GetCategoryRates(out float gearRate, out float currencyRate, out float mapRate);
-		List<ItemDatabase.ItemRecord> items = DropTable.RollManyMobDrops(count, itemLevel, (float)_rarityMod.Value, gearRate, currencyRate, 
-			mapRate, null, ItemRarity.Invalid, (float)_rateMod.Value, applyAreaLevelCategoryScaling: false);
+		var weights = new DropTable.DropCategoryWeights(gearRate, currencyRate, mapRate);
+		List<ItemDatabase.ItemRecord> items = DropTable.RollManyMobDrops(count, itemLevel, (float)_rarityMod.Value, weights, 
+			itemRarityModifier: (float)_rateMod.Value, applyAreaLevelCategoryScaling: false);
 
 		for (int i = 0; i < count; ++i)
 		{
