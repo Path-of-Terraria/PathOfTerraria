@@ -74,7 +74,7 @@ internal class MultiPassiveElement : PassiveElement
 
 		if (ActivePassive is { } inner)
 		{
-			DrawNode(inner, spriteBatch, GetDimensions().Center());
+			DrawNode(inner, spriteBatch, GetDimensions().Center(), GetZoom());
 		}
 	}
 
@@ -156,6 +156,7 @@ internal class PassiveRadialElement : PassiveElement
 {
 	private readonly Vector2 _startOffset;
 	private readonly Vector2 _targetOffset;
+	private readonly Vector2 _origSize;
 
 	public MultiPassiveElement? Handler => Parent is MultiPassiveElement e ? e : null;
 
@@ -167,6 +168,7 @@ internal class PassiveRadialElement : PassiveElement
 
 		Debug.Assert(size.X > 1 && size.Y > 1);
 
+		_origSize = size.ToVector2();
 		_startOffset = startOffset;
 		_targetOffset = targetOffset;
 
@@ -180,6 +182,12 @@ internal class PassiveRadialElement : PassiveElement
 	{
 		base.SafeUpdate(gameTime);
 
+		float zoom = (Handler?.Parent as AllocatableInnerPanel)?.Zoom ?? 1f;
+
+		// Keep element bounds in sync with zoom so hit detection is accurate.
+		Width.Pixels = _origSize.X * zoom;
+		Height.Pixels = _origSize.Y * zoom;
+
 		static float EaseOutElastic(float x)
 		{
 			// https://easings.net/#easeOutElastic
@@ -189,7 +197,7 @@ internal class PassiveRadialElement : PassiveElement
 
 		float animationProgress = Progress;
 		float lerpStep = EaseOutElastic(animationProgress);
-		var newPos = Vector2.Lerp(_startOffset, _targetOffset, lerpStep);
+		var newPos = Vector2.Lerp(_startOffset, _targetOffset * zoom, lerpStep);
 
 		Left.Set(newPos.X - Width.Pixels * 0.5f, 0.5f);
 		Top.Set(newPos.Y - Height.Pixels * 0.5f, 0.5f);

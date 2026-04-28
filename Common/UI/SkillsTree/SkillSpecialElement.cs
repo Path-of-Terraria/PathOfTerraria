@@ -11,7 +11,7 @@ internal class SkillSpecialElement : SkillElement
 		Special = node;
 	}
 
-	public override void DrawNode(Allocatable node, SpriteBatch spriteBatch, Vector2 center)
+	public override void DrawNode(Allocatable node, SpriteBatch spriteBatch, Vector2 center, float scale = 1f)
 	{
 		var special = (SkillSpecial)node;
 		Texture2D texture = node.Texture.Value;
@@ -27,7 +27,7 @@ internal class SkillSpecialElement : SkillElement
 			color = Color.White;
 		}
 
-		spriteBatch.Draw(texture, center, null, color, 0, texture.Size() / 2, 1, default, 0);
+		spriteBatch.Draw(texture, center, null, color, 0, texture.Size() / 2, scale, default, 0);
 
 		if (special.Tree.Specialization == special)
 		{
@@ -35,10 +35,10 @@ internal class SkillSpecialElement : SkillElement
 
 			Texture2D glow = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/GlowAlpha").Value;
 			var glowColor = new Color(255, 230, 150) { A = 0 };
-			spriteBatch.Draw(glow, center, null, glowColor * pulse, 0, glow.Size() / 2, 1, default, 0);
+			spriteBatch.Draw(glow, center, null, glowColor * pulse, 0, glow.Size() / 2, scale, default, 0);
 
 			Texture2D outline = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/SpecialFrame_Outline").Value;
-			spriteBatch.Draw(outline, center, null, Color.White * pulse, 0, outline.Size() / 2, 1, default, 0);
+			spriteBatch.Draw(outline, center, null, Color.White * pulse, 0, outline.Size() / 2, scale, default, 0);
 		}
 	}
 }
