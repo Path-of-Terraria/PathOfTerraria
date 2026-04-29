@@ -333,6 +333,8 @@ VirtualBag: {
 	// Review: Review your items (Closing this will exit the subworld)
 	// Conflux: Conflux
 	// ConfluxTooltip: Conflux gained from this domain
+	// CurrencyShards: Currency Shards
+	// CurrencyShardsTooltip: Currency shards gained from this domain
 }
 
 CurrencyPouch: {
