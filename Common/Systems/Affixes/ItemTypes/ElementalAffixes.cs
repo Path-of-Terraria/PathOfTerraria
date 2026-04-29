@@ -45,7 +45,8 @@ internal class FireConversionDamage : ItemAffix
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		ref ElementalDamage.ElementalDamage damage = ref player.GetModPlayer<ElementalPlayer>().Container[ElementType.Fire].DamageModifier;
-		damage = damage.AddModifiers(null, Value / 100f);
+		float bonus = player.GetWeaponDamage(item) * (Value / 100f);
+		damage = damage.AddModifiers((int)Math.Round(bonus), null);
 	}
 }
 
@@ -54,7 +55,8 @@ internal class ColdConversionDamage : ItemAffix
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		ref ElementalDamage.ElementalDamage damage = ref player.GetModPlayer<ElementalPlayer>().Container[ElementType.Cold].DamageModifier;
-		damage = damage.AddModifiers(null, Value / 100f);
+		float bonus = player.GetWeaponDamage(item) * (Value / 100f);
+		damage = damage.AddModifiers((int)Math.Round(bonus), null);
 	}
 }
 
@@ -63,7 +65,8 @@ internal class LightningConversionDamage : ItemAffix
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		ref ElementalDamage.ElementalDamage damage = ref player.GetModPlayer<ElementalPlayer>().Container[ElementType.Lightning].DamageModifier;
-		damage = damage.AddModifiers(null, Value / 100f);
+		float bonus = player.GetWeaponDamage(item) * (Value / 100f);
+		damage = damage.AddModifiers((int)Math.Round(bonus), null);
 	}
 }
 
@@ -72,7 +75,8 @@ internal class ChaosConversionDamage : ItemAffix
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		ref ElementalDamage.ElementalDamage damage = ref player.GetModPlayer<ElementalPlayer>().Container[ElementType.Chaos].DamageModifier;
-		damage = damage.AddModifiers(null, Value / 100f);
+		float bonus = player.GetWeaponDamage(item) * (Value / 100f);
+		damage = damage.AddModifiers((int)Math.Round(bonus), null);
 	}
 }
 
