@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.UI.Components;
+using PathOfTerraria.Common.UI.Elements;
 using PathOfTerraria.Common.UI.Guide;
 using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Core.UI;
@@ -177,6 +178,22 @@ public class QuestsUIState : CloseableSmartUi, IMutuallyExclusiveUI
 				Height = StyleDimension.FromPixels(step.LineCount * 22)
 			};
 			_questDetails.Add(stepUI);
+
+			if (quest.QuestSteps[i].RecoveryItem != -1)
+			{
+				Asset<Texture2D> recovTex = UISelectableQuestStep.RecoveryTex ??= ModContent.Request<Texture2D>("PathOfTerraria/Assets/UI/RecoveryAvailable");
+
+				var image = new UIHoverTooltipImage(recovTex, "Mods.PathOfTerraria.UI.RecoveryAvailable")
+				{
+					HAlign = 1,
+					Top = StyleDimension.FromPixels(-12),
+					Left = StyleDimension.FromPixels(-20),
+					Width = StyleDimension.FromPixels(20),
+					Height = StyleDimension.FromPixels(20)
+				};
+
+				stepUI.Append(image);
+			}
 
 			if (quest.CurrentStep == i && step.SkipCheck?.Invoke(step) == true)
 			{

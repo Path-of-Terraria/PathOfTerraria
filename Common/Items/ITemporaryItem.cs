@@ -1,4 +1,6 @@
 ﻿using PathOfTerraria.Common.Utilities;
+using System.IO;
+using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Items;
 
@@ -45,6 +47,26 @@ internal interface ITemporaryItem
 		public override Color? GetAlpha(Item item, Color lightColor)
 		{
 			return IsTemporary ? Color.Lerp(lightColor, new Color(0.5f, 0.7f, 1f), MathUtils.Sin01(Main.GameUpdateCount * 0.08f)) * 0.5f : null;
+		}
+
+		public override void NetSend(Item item, BinaryWriter writer)
+		{
+			writer.Write(IsTemporary);
+		}
+
+		public override void NetReceive(Item item, BinaryReader reader)
+		{
+			IsTemporary = reader.ReadBoolean();
+		}
+
+		public override void SaveData(Item item, TagCompound tag)
+		{
+			tag.Add("temp", IsTemporary);
+		}
+
+		public override void LoadData(Item item, TagCompound tag)
+		{
+			IsTemporary = tag.GetBool("temp");
 		}
 	}
 

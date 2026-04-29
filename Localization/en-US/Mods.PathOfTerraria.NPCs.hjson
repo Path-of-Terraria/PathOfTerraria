@@ -222,6 +222,7 @@ WizardNPC: {
 		Common2: I've seen the throughline of your destiny, [plrclass/l:l]. I cannot, for the life of me, put it to words.
 		Common3: Ah! I almost turned you into a mole the size of a god. Beware my strength!
 		Common4: I am a...merchant of sorts. Bewildering, ancient shards alongside astonishing majickal materials! It boggles the mind, surely!
+		Common5: If you ever lose an item, I could be of use! Hahaha! I just won't burn them this time.
 		Quest: Hm. You saw the damage everywhere. Alas! My powers cannot reconstitute the world. I'm far busier on...my...projects. Yes! Alas, I have something more pressing. A goblin burglar took one of my tomes. Powerful as it is, it has to be harnessed by a strong wizard. I suspect they are looking through the tome to learn its secrets...so with haste, return it! I will grant you powers beyond imagination. I will be here, individually placing books on shelves with the strength of magic.
 		Quest2: Aha! Thank you kindly. Your kindness will be rewarded greatly... eventually, I promise! One more thing before you go... I've heard rumors of a goblin lurking to the left of our town... Will you check that out for me? He should be eliminated at all costs if he poses a threat. Make haste, adventurer!
 		End: By Merlin's beard! You've slewn the horde of goblins! Here, take a mote of power; a Nova is but a portion of my strength! As for the Library...my strength renewed, it will be repaired by the time you return! Books organized like you've never seen before! Behold it and weep...soon!
@@ -262,6 +263,13 @@ WizardNPC: {
 
 	Entry: Perhaps the most powerful wizard of all time, Alaric still acts like someone who's pretending to be the most powerful wizard of all time. If he's feeling funny, he might cause true and instant catastrophe.
 	Census.SpawnCondition: Spawns by default in Ravencrest. Home is the Library.
+	Recover: Recover
+
+	RecoverDialogue: {
+		0: Lost some items? Here they are...haha! I've found them hidden within your mind. Note their frailty; I have much other use of my strength!
+		1: Seems like the world's stolen your items? Reminds me of some goblins...thousands of years of work...ultimately, couldn't save her...oh! Anyway, those items are temporary. Be careful!
+		2: Boom! Hah. Just kidding! There you are. Don't rely on them - they won't last you forever!
+	}
 }
 
 EldricNPC: {

@@ -279,6 +279,8 @@ Tips: {
 	// 28: Fear controls the Deerclops' domain. Keep in the light.
 	// 29: '''"If you're ever given the choice, choose explosives every time." - Alaric'''
 	// 30: Always check the alt use of your weapons! They're very diverse, and often useful outside of combat.
+	// 31: Missing quest items? Talk to Alaric, he'll get them for you.
+	// 32: If you're stuck on a quest, ask around Ravencrest! Always good to check in.
 }
 
 // PointsRemaining: Points Remaining
@@ -401,3 +403,5 @@ OnlineModPopup: {
 	// OpenWorkshop: Open Steam Workshop Page
 	// Decline: Decline
 }
+
+// RecoveryAvailable: Quest items can be recovered if lost

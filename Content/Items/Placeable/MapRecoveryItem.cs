@@ -1,7 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems.Questing;
 using Terraria.GameContent.ObjectInteractions;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ObjectData;
 
 namespace PathOfTerraria.Content.Items.Placeable;
@@ -58,7 +57,7 @@ public class MapRecoveryItem : ModItem
 		{
 			if (Main.LocalPlayer.GetModPlayer<QuestModPlayer>().HasAnyRecoveryItem)
 			{
-				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().SpawnRecoveryItems(i, j, false, out int emblematicItemToDisplay);
+				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().SpawnRecoveryItems(new Vector2(i, j).ToWorldCoordinates(), false, out int emblematicItemToDisplay);
 				return true;
 			}
 
@@ -68,7 +67,7 @@ public class MapRecoveryItem : ModItem
 		public override void MouseOver(int i, int j)
 		{
 			Player player = Main.LocalPlayer;
-			player.GetModPlayer<QuestModPlayer>().SpawnRecoveryItems(i, j, true, out int emblematicItemToDisplay);
+			player.GetModPlayer<QuestModPlayer>().SpawnRecoveryItems(new Vector2(i, j).ToWorldCoordinates(), true, out int emblematicItemToDisplay);
 
 			if (emblematicItemToDisplay == -1)
 			{

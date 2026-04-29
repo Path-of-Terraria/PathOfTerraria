@@ -8,7 +8,6 @@ using PathOfTerraria.Common.UI.Quests;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.GameContent.ItemDropRules;
 using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
@@ -195,9 +194,9 @@ public class QuestModPlayer : ModPlayer
 
 	/// <summary>
 	/// Spawns all recovery items the player can obtain. Runs only on the client (not server).<br/>
-	/// Can also be used to get the list of item
+	/// Can also be used to check if the items can actually spawn, by checking <paramref name="itemToDisplay"/> == -1.
 	/// </summary>
-	public void SpawnRecoveryItems(int i, int j, bool onlyReport, out int emblematicItemToDisplay)
+	public void SpawnRecoveryItems(Vector2 position, bool onlyReport, out int itemToDisplay)
 	{
 		int[] ids = new int[QuestsByName.Count];
 		int current = 0;
@@ -211,11 +210,11 @@ public class QuestModPlayer : ModPlayer
 
 			int type = quest.ActiveStep.RecoveryItem;
 
-			if (type != -1 && !Player.HasItem(type))
+			if (type != -1 && !Player.HasItem(type) && !ItemInWorld(type))
 			{
 				if (!onlyReport)
 				{
-					Item item = Main.item[Item.NewItem(new EntitySource_Misc("RecoveryItem"), new Vector2(i, j).ToWorldCoordinates(), type)];
+					Item item = Main.item[Item.NewItem(new EntitySource_Misc("RecoveryItem"), position, type)];
 					
 					if (item.TryGetGlobalItem(out ITemporaryItem.TemporaryGlobalItem temp))
 					{
@@ -229,12 +228,28 @@ public class QuestModPlayer : ModPlayer
 
 		if (current == 0)
 		{
-			emblematicItemToDisplay = -1;
+			itemToDisplay = -1;
 		}
 		else
 		{
-			emblematicItemToDisplay = ids[(int)(Main.GameUpdateCount * 0.02f % current)];
+			itemToDisplay = ids[(int)(Main.GameUpdateCount * 0.02f % current)];
 		}
+	}
+
+	/// <summary>
+	/// Checks if the item is dropped in-world.
+	/// </summary>
+	private static bool ItemInWorld(int type)
+	{
+		foreach (Item item in Main.ActiveItems)
+		{
+			if (item.type == type)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)

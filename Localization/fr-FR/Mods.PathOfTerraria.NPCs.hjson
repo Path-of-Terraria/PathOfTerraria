@@ -222,6 +222,7 @@ WizardNPC: {
 		Common2: J'ai vu le fil conducteur de votre destin. Je ne parviens pas, pour l'amour de Dieu, à le mettre en mots.
 		Common3: Ah ! J'ai failli te transformer en taupe de la taille d'un dieu. Méfie-toi de ma force !
 		// Common4: I am a...merchant of sorts. Bewildering, ancient shards alongside astonishing majickal materials! It boggles the mind, surely!
+		// Common5: If you ever lose an item, I could be of use! Hahaha! I just won't burn them this time.
 		Quest: Hum. Vous avez vu les dégâts partout. Hélas ! Mes pouvoirs ne peuvent pas reconstituer le monde. Je suis bien trop occupé par... mes... projets. Oui ! Hélas, j'ai quelque chose de plus urgent à faire. Un gobelin voleur a pris l'un de mes grimoires. Aussi puissant soit-il, il doit être maîtrisé par un sorcier puissant. Je soupçonne qu'ils sont en train de parcourir le grimoire pour en découvrir les secrets... alors dépêchez-vous de le rapporter ! Je vous accorderai des pouvoirs au-delà de l'imagination. Je serai ici, à ranger les livres sur les étagères un par un grâce à la puissance de la magie.
 		Quest2: Ah ah ! Merci beaucoup. Ta gentillesse sera largement récompensée ! Mes pouvoirs te pousseront toujours vers l'avant. Tiens, prends une parcelle de mon pouvoir ; une Nova n'est qu'une partie de ma force ! Quant à la bibliothèque... ma force renouvelée, elle sera réparée à ton retour ! Des livres organisés comme tu n'en as jamais vu ! Contemple-la et pleure... bientôt !
 		// End: By Merlin's beard! You've slewn the horde of goblins! Here, take a mote of power; a Nova is but a portion of my strength! As for the Library...my strength renewed, it will be repaired by the time you return! Books organized like you've never seen before! Behold it and weep...soon!
@@ -262,6 +263,13 @@ WizardNPC: {
 
 	Entry: Peut-être le sorcier le plus puissant de tous les temps, Alaric continue d'agir comme quelqu'un qui prétend être le sorcier le plus puissant de tous les temps. S'il est d'humeur capricieuse, il peut provoquer une véritable catastrophe instantanée.
 	// Census.SpawnCondition: Spawns by default in Ravencrest. Home is the Library.
+	// Recover: Recover
+
+	RecoverDialogue: {
+		// 0: Lost some items? Here they are...haha! I've found them hidden within your mind. Note their frailty; I have much other use of my strength!
+		// 1: Seems like the world's stolen your items? Reminds me of some goblins...thousands of years of work...ultimately, couldn't save her...oh! Anyway, those items are temporary. Be careful!
+		// 2: Boom! Hah. Just kidding! There you are. Don't rely on them - they won't last you forever!
+	}
 }
 
 EldricNPC: {
