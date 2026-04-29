@@ -56,11 +56,14 @@ internal class PoisonedDebuff : ModBuff
 			DoTFunctionality.ApplyPlayerInteraction(npc, player);
 		}
 
+		npc.AddBuff(ModContent.BuffType<PoisonedDebuff>(), time);
+		return;
+
 		npc.GetGlobalNPC<PoisonNPC>().AddStack(new PoisonNPC.PoisonStack(time, damage));
+		npc.GetGlobalNPC<PoisonNPC>().RefreshStackTimes();
+
 		ref float tick = ref npc.GetGlobalNPC<PoisonNPC>().LastTickRate;
 		tick = MathF.Min(tickRate, tick);
-		npc.AddBuff(ModContent.BuffType<PoisonedDebuff>(), time);
-		npc.GetGlobalNPC<PoisonNPC>().RefreshStackTimes();
 	}
 
 	public override void SetStaticDefaults()
@@ -70,7 +73,7 @@ internal class PoisonedDebuff : ModBuff
 
 	public override void Update(NPC npc, ref int buffIndex)
 	{
-		if (npc.GetGlobalNPC<PoisonNPC>().Stacks.Length == 0)
+		if (false && npc.GetGlobalNPC<PoisonNPC>().Stacks.Length == 0)
 		{
 			npc.DelBuff(buffIndex);
 			buffIndex--;
@@ -128,6 +131,7 @@ internal class PoisonNPC : GlobalNPC
 
 	public override bool PreAI(NPC npc)
 	{
+		return true;
 		for (int i = 0; i < _stacks.Count; i++)
 		{
 			PoisonStack stack = _stacks[i];
@@ -166,6 +170,7 @@ internal class PoisonNPC : GlobalNPC
 
 	public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
+		return;
 		if (npc.GetGlobalNPC<FreezeNPC>().Frozen || _stacks.Count <= 0)
 		{
 			return;
