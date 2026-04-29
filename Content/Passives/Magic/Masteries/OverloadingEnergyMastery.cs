@@ -28,10 +28,10 @@ internal class OverloadingEnergyMastery : Passive
 					}
 				}
 
-				if (Player.statMana == Player.statManaMax2)
-				{
-					Player.GetDamage(DamageClass.Generic) += 0.15f;
-				}
+				float manaPercentage = (float)Player.statMana / Player.statManaMax2;
+				float damageBonus = (1f - manaPercentage) * 0.4f;
+				
+				Player.GetDamage(DamageClass.Generic) += damageBonus;
 			}
 		}
 	}

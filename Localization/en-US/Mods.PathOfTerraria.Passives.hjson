@@ -510,8 +510,8 @@ CenterOfTheUniverseMastery: {
 }
 
 OverloadingEnergyMastery: {
-	Name: Overloading Energy
-	Tooltip: Gain 5% of your max mana every {0} seconds. At max mana, deal 15% more damage
+	Name: Desperate Power
+	Tooltip: Gain 5% of your max mana every {0} seconds. Deal more damage based on your current mana, the lower the mana, the more damage. Up to 40%.
 }
 
 ReverberationMastery: {
