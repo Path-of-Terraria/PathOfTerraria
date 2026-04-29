@@ -6,127 +6,127 @@
 
 IncreasedMeleeDamagePassive: {
 	Name: Increased Melee Damage
-	Tooltip: Increases your melee damage by {0}%
+	Tooltip: {0}% increased Melee Damage
 }
 
 IncreasedRangedDamagePassive: {
 	Name: Increased Ranged Damage
-	Tooltip: Increases your ranged damage by {0}%
+	Tooltip: {0}% increased Ranged Damage
 }
 
 IncreasedMagicDamagePassive: {
 	Name: Increased Magic Damage
-	Tooltip: Increases your magic damage by {0}%
+	Tooltip: {0}% increased Magic Damage
 }
 
 AddedLifePassive: {
-	Name: Added Life
-	Tooltip: Increases your maximum life by {0}
+	Name: Added Maximum Life
+	Tooltip: +{0} to maximum Life
 }
 
 AddedManaPassive: {
-	Name: Added Mana
-	Tooltip: Increases your maximum mana by {0}
+	Name: Added Maximum Mana
+	Tooltip: +{0} to maximum Mana
 }
 
 LongRangePassive: {
-	Name: Increased Damage Against Distant Enemies
-	Tooltip: Increases your damage against distant enemies by {0}%
+	Name: Increased Damage against Distant Enemies
+	Tooltip: {0}% increased Damage against Distant Enemies
 }
 
 CloseRangePassive: {
-	Name: Increased Damage Against Nearby Enemies
-	Tooltip: Increases your damage against nearby enemies by 10%
+	Name: Increased Damage against Nearby Enemies
+	Tooltip: {0}% increased Damage against Nearby Enemies
 }
 
 ChanceToBleedPassive: {
-	Name: Added Chance to Bleed
-	Tooltip: Your melee attacks inflict bleeding, dealing 5 damage per second, for two + level seconds.
+	Name: Chance to cause Bleeding
+	Tooltip: Melee Attacks have a chance to cause Bleeding
 }
 
 DamageReductionPassive: {
-	Name: Added Damage Reduction
-	Tooltip: Gain {0}% damage reduction
+	Name: Damage Reduction
+	Tooltip: {0}% reduced Damage taken
 }
 
 DamageReflectionPassive: {
-	Name: Added Damage Reflection
-	Tooltip: Reflect {0} more damage to enemies that deal contact damage
+	Name: Damage Reflection
+	Tooltip: Reflect {0} Damage to Attackers
 }
 
 StartPassive: {
 	Name: Magic Path
-	Tooltip: Your magic journey starts here
+	Tooltip: Your magical journey starts here
 }
 
 IncreasedSummonDamagePassive: {
-	Name: Increased Summon Damage
-	Tooltip: Increases all summon damage by {0}%
+	Name: Increased Minion Damage
+	Tooltip: {0}% increased Minion Damage
 }
 
 IncreasedSentryDamagePassive: {
 	Name: Increased Sentry Damage
-	Tooltip: Increases your sentries' damage by {0}%
+	Tooltip: {0}% increased Sentry Damage
 }
 
 JewelSocket: {
-	Name: JewelSocket
+	Name: Jewel Socket
 	Tooltip: ""
 }
 
 LifeRegenPassive: {
-	Name: Added Life Regeneration
-	Tooltip: Increase life regeneration by {0}
+	Name: Life Regeneration
+	Tooltip: +{0} Life Regenerated per second
 }
 
 DecreasedManaCostPassive: {
 	Name: Reduced Mana Cost
-	Tooltip: Decreases mana cost by {0}%
+	Tooltip: {0}% reduced Mana Cost
 }
 
 AddedCriticalStrikeChance: {
 	Name: Added Critical Strike Chance
-	Tooltip: Adds {0}% flat critical strike chance
+	Tooltip: +{0}% to Critical Strike Chance
 }
 
 IncreasedCriticalStrikeChance: {
 	Name: Increased Critical Strike Chance
-	Tooltip: Adds {0}% increased critical strike chance
+	Tooltip: {0}% increased Critical Strike Chance
 }
 
 IncreasedCriticalStrikeMultiplier: {
-	Name: Increased Critical Strike Multiplier
-	Tooltip: Adds {0}% critical strike multiplier
+	Name: Critical Strike Multiplier
+	Tooltip: +{0}% to Critical Strike Multiplier
 }
 
 ArmorPenetrationPassive: {
-	Name: Increased Armor Penetration
-	Tooltip: Adds {0}% more armor penetration
+	Name: Armor Penetration
+	Tooltip: {0}% more Armor Penetration
 }
 
 AnchorPassive: {
 	Name: Anchor
-	Tooltip: The journey starts here.
+	Tooltip: The journey starts here
 }
 
 StrongerChillPassive: {
 	Name: Increased Chill Effect
-	Tooltip: Chilled debuff slows down enemies 10% more.
+	Tooltip: Chilled Enemies are Slowed by an additional 10%
 }
 
 ShockChancePassive: {
-	Name: Added Shock Chance
-	Tooltip: Adds an additional 5% chance to afflict an enemy with Shock
+	Name: Chance to Shock
+	Tooltip: 5% chance to Shock Enemies on Hit
 }
 
 IncreasedMinionDamagePassive: {
 	Name: Increased Minion Damage
-	Tooltip: Increases your minions' damage by {0}%
+	Tooltip: {0}% increased Minion Damage
 }
 
 AddedAggressionPassive: {
-	Name: Added Aggression
-	Tooltip: Adds an additional point of aggro
+	Name: Increased Enemy Aggression
+	Tooltip: +1 to Enemy Aggression Towards You
 }
 
 GlancingBlowsPassive: {
@@ -135,1036 +135,1036 @@ GlancingBlowsPassive: {
 }
 
 IncreasedBlockChancePassive: {
-	Name: Increased Block Chance
-	Tooltip: +10% chance to block an attack
+	Name: Block Chance
+	Tooltip: +10% Chance to Block Attacks
 }
 
 AddedIntelligencePassive: {
 	Name: Added Intelligence
-	Tooltip: Adds +{0} points to intelligence
+	Tooltip: +{0} to Intelligence
 }
 
 AddedStrengthPassive: {
 	Name: Added Strength
-	Tooltip: Adds +{0} points to strength
+	Tooltip: +{0} to Strength
 }
 
 AddedDexterityPassive: {
 	Name: Added Dexterity
-	Tooltip: Adds +{0} points to dexterity
+	Tooltip: +{0} to Dexterity
 }
 
 AddedIntelligenceStrengthPassive: {
 	Name: Added Intelligence and Strength
-	Tooltip: Adds +{0} points to intelligence and strength
+	Tooltip: +{0} to Intelligence and Strength
 }
 
 AddedIntelligenceDexterityPassive: {
 	Name: Added Intelligence and Dexterity
-	Tooltip: Adds +{0} points to intelligence and dexterity
+	Tooltip: +{0} to Intelligence and Dexterity
 }
 
 AddedDexterityStrengthPassive: {
 	Name: Added Dexterity and Strength
-	Tooltip: Adds +{0} points to dexterity and strength
+	Tooltip: +{0} to Dexterity and Strength
 }
 
 IncreasedPotionRecoveryPassive: {
-	Name: Increased Potion Recovery
-	Tooltip: Adds +{0}% additional healing from Healing Potions
+	Name: Increased Potion Effect
+	Tooltip: {0}% increased Life Recovery from Potions
 }
 
 IncreasedMoveSpeedPassive: {
 	Name: Increased Movement Speed
-	Tooltip: +{0}% increased movement speed
+	Tooltip: {0}% increased Movement Speed
 }
 
 IncreasedJumpHeight: {
 	Name: Increased Jump Speed
-	Tooltip: +{0}% faster jump speed.
+	Tooltip: {0}% increased Jump Speed
 }
 
 PercentIncreasedMaximumManaPassive: {
 	Name: Increased Maximum Mana
-	Tooltip: +{0}% Increased Maximum Mana
+	Tooltip: {0}% increased Maximum Mana
 }
 
 IncreasedMagicAndSummonDamagePassive: {
 	Name: Increased Magic and Summon Damage
-	Tooltip: +{0}% increased magic and summon damage
+	Tooltip: {0}% increased Magic and Summon Damage
 }
 
 AddedFireResistancePassive: {
-	Name: Added Fire Resistance
-	Tooltip: +{0}% fire resistance
+	Name: Fire Resistance
+	Tooltip: +{0}% to Fire Resistance
 }
 
 AddedColdResistancePassive: {
-	Name: Added Cold Resistance
-	Tooltip: +{0}% cold resistance
+	Name: Cold Resistance
+	Tooltip: +{0}% to Cold Resistance
 }
 
 AddedLightningResistancePassive: {
-	Name: Added Lightning Resistance
-	Tooltip: +{0}% lightning resistance
+	Name: Lightning Resistance
+	Tooltip: +{0}% to Lightning Resistance
 }
 
 AddedAllResistancePassive: {
-	Name: Added All Resistances
-	Tooltip: +{0}% to all resistances
+	Name: All Resistances
+	Tooltip: +{0}% to all Resistances
 }
 
 IncreasedAttackSpeedPassive: {
 	Name: Increased Attack Speed
-	Tooltip: +{0}% attack speed
+	Tooltip: {0}% increased Attack Speed
 }
 
 IncreasedManaRegenerationRatePassive: {
 	Name: Increased Mana Regeneration Rate
-	Tooltip: +{0}% mana regeneration rate
+	Tooltip: {0}% increased Mana Regeneration Rate
 }
 
 IncreasedProjectileCountPassive: {
-	Name: Added Projectile Count
-	Tooltip: +{0} projectiles fired
+	Name: Additional Projectiles
+	Tooltip: Skills fire {0} additional Projectiles
 }
 
 IncreasedProjectileSpeedPassive: {
 	Name: Increased Projectile Speed
-	Tooltip: +{0}% increased projectile speed
+	Tooltip: {0}% increased Projectile Speed
 }
 
 IncreasedChannelingDamagePassive: {
-	Name: Increased Damage While Channeling
-	Tooltip: +{0}% increased damage while channeling
+	Name: Increased Damage while Channeling
+	Tooltip: {0}% increased Damage while Channeling
 }
 
 IncreasedDefenseWhileChanneling: {
-	Name: Increased Defense While Channeling
-	Tooltip: +{0} defense while channeling
+	Name: Added Defense while Channeling
+	Tooltip: +{0} Defense while Channeling
 }
 
 ReducedManaCostWhileChannelingPassive: {
-	Name: Reduced Mana Cost While Channeling
-	Tooltip: +{0}% reduced mana cost while channeling
+	Name: Reduced Mana Cost while Channeling
+	Tooltip: {0}% reduced Mana Cost while Channeling
 }
 
 MasteryPassive: {
 	Name: Mastery
-	Tooltip: Choose a mastery
+	Tooltip: Choose a Mastery
 }
 
 AddedChaosResistancePassive: {
-	Name: Added Chaos Resistance
-	Tooltip: +{0}% Chaos Resistance
+	Name: Chaos Resistance
+	Tooltip: +{0}% to Chaos Resistance
 }
 
 AegisChargeChanceOnKillPassive: {
-	Name: Added Aegis Charge Chance
-	Tooltip: +{0}% chance to gain an Aegis Charge on Kill
+	Name: Chance to gain Aegis Charge on Kill
+	Tooltip: {0}% chance to gain an Aegis Charge on Kill
 }
 
 AegisChargePercentMaxHealthPassive: {
-	Name: Increased Health per Aegis Charge
-	Tooltip: +{0}% Max Health per Aegis Charge
+	Name: Increased Life per Aegis Charge
+	Tooltip: {0}% increased maximum Life per Aegis Charge
 }
 
 AegisChargeMaxChargesPassive: {
-	Name: Added Maximum Aegis Charges
-	Tooltip: +{0} to Maximum Aegis Charges
+	Name: Maximum Aegis Charges
+	Tooltip: +{0} to maximum Aegis Charges
 }
 
 FocusChargeChanceOnKillPassive: {
-	Name: Added Focus Charge Chance
-	Tooltip: +{0}% chance to gain a Focus Charge on kill
+	Name: Chance to gain Focus Charge on Kill
+	Tooltip: {0}% chance to gain a Focus Charge on Kill
 }
 
 FocusChargeDamageBonusPassive: {
 	Name: Increased Damage per Focus Charge
-	Tooltip: +{0}% damage per Focus Charge
+	Tooltip: {0}% increased Damage per Focus Charge
 }
 
 FocusChargeMaxChargesPassive: {
-	Name: Added Maximum Focus Charges
-	Tooltip: +{0} maximum Focus Charges
+	Name: Maximum Focus Charges
+	Tooltip: +{0} to maximum Focus Charges
 }
 
 HasteChargeChanceOnKillPassive: {
-	Name: Added Haste Charge Chance
-	Tooltip: +{0}% chance to gain a Haste Charge on kill
+	Name: Chance to gain Haste Charge on Kill
+	Tooltip: {0}% chance to gain a Haste Charge on Kill
 }
 
 HasteChargeProjectileSpeedPassive: {
 	Name: Increased Projectile Speed per Haste Charge
-	Tooltip: +{0}% projectile speed per Haste Charge
+	Tooltip: {0}% increased Projectile Speed per Haste Charge
 }
 
 HasteChargeMaxChargesPassive: {
-	Name: Added Maximum Haste Charges
-	Tooltip: +{0} maximum Haste Charges
+	Name: Maximum Haste Charges
+	Tooltip: +{0} to maximum Haste Charges
 }
 
 ChanceToConsumeAmmoPassive: {
-	Name: Ammo Reservation Chance
-	Tooltip: +{0}% chance to reserve ammo
+	Name: Chance to not consume Ammo
+	Tooltip: {0}% chance to not consume Ammo
 }
 
 IncreasedProjectileDamagePassive: {
 	Name: Increased Projectile Damage
-	Tooltip: +{0}% projectile damage
+	Tooltip: {0}% increased Projectile Damage
 }
 
 IncreasedWhipDamagePassive: {
 	Name: Increased Whip Damage
-	Tooltip: +{0}% increased whip damage.
+	Tooltip: {0}% increased Whip Damage
 }
 
 IncreasedWhipSpeedPassive: {
 	Name: Increased Whip Speed
-	Tooltip: +{0}% increased whip speed.
+	Tooltip: {0}% increased Whip Attack Speed
 }
 
 WhipCritDamageMastery: {
 	Name: Branded
-	Tooltip: Enemies hit by your whip take {0}% increased critical damage from your minions for 3 seconds.
+	Tooltip: Enemies Hit by your Whips take {0}% increased Critical Strike Damage from your Minions for 3 seconds
 }
 
 WhipDoubleStrikeMastery: {
 	Name: Lightning Strikes Twice
-	Tooltip: Whip attacks hit an additional time for {0}% damage.
+	Tooltip: Whip Attacks Hit an additional time for {0}% Damage
 }
 
 WhipReachMastery: {
 	Name: Crackling Reach
-	Tooltip: "{0}% Increased Whip range, but attack {1}% slower."
+	Tooltip: {0}% increased Whip Range\n{1}% less Attack Speed
 }
 
 ReducedSkillCooldownPassive: {
-	Name: Reduced Skill Cooldown
-	Tooltip: +{0}% reduced skill cooldown
+	Name: Skill Cooldown Recovery
+	Tooltip: {0}% increased Cooldown Recovery Speed
 }
 
 AddedFireDamageConversionPassive: {
-	Name: Added Fire Damage Conversion
-	Tooltip: +{0}% fire damage conversion
+	Name: Fire Damage Conversion
+	Tooltip: {0}% of Damage Converted to Fire Damage
 }
 
 AddedColdDamageConversionPassive: {
-	Name: Added Cold Damage Conversion
-	Tooltip: +{0}% cold damage conversion
+	Name: Cold Damage Conversion
+	Tooltip: {0}% of Damage Converted to Cold Damage
 }
 
 AddedLightningDamageConversionPassive: {
-	Name: Added Lightning Damage Conversion
-	Tooltip: +{0}% lightning damage conversion
+	Name: Lightning Damage Conversion
+	Tooltip: {0}% of Damage Converted to Lightning Damage
 }
 
 ChanceToChillPassive: {
 	Name: Chance to Chill
-	Tooltip: +{0}% chance to apply Chilled
+	Tooltip: {0}% chance to Chill on Hit
 }
 
 ChanceToFreezePassive: {
 	Name: Chance to Freeze
-	Tooltip: +{0}% chance to roll Freeze
+	Tooltip: {0}% chance to Freeze on Hit
 }
 
 ChanceToIgnitePassive: {
 	Name: Chance to Ignite
-	Tooltip: +{0}% chance to apply Ignited
+	Tooltip: {0}% chance to Ignite on Hit
 }
 
 PercentStrongManaPotionsPassive: {
-	Name: Stronger Mana Potions
-	Tooltip: +{0}% stronger mana potions
+	Name: Increased Mana Flask Effect
+	Tooltip: {0}% increased Mana Recovery from Flasks
 }
 
 FishingPowerPassive: {
 	Name: Increased Fishing Power
-	Tooltip: +{0} fishing power
+	Tooltip: +{0} to Fishing Power
 }
 
 AddedFishingLineMastery: {
 	Name: Multifishing
-	Tooltip: Fishing rods cast an additional line
+	Tooltip: Fishing Rods cast an additional Line
 }
 
 FishingCatchBuffMastery: {
 	Name: Bountiful Bobbers
-	Tooltip: Catching a fish adds a stackable 10 fishing strength for 10 seconds, caps at 5 stacks
+	Tooltip: Catching a Fish grants 10 Fishing Power for 10 seconds\nMaximum of 5 stacks
 }
 
 MagicFindBoost: {
-	Name: Increased Magic Find
-	Tooltip: +{0}% higher chance to find Magic or Rare items
+	Name: Increased Item Rarity
+	Tooltip: {0}% increased Rarity of Items found
 }
 
 BossDownIncreaseItemRarityMastery: {
 	Name: Magical Bleed
-	Tooltip: For every boss killed at least once in a world, increase magic find by 0.5%. Current:
+	Tooltip: 0.5% increased Rarity of Items found per Boss defeated at least once
 }
 
 MoreUniquesMastery: {
 	Name: Eye for Uniques
-	Tooltip: +{0}% increased Unique item drop chance
+	Tooltip: {0}% increased Unique Item drop chance
 }
 
 ItemDropRatePassive: {
 	Name: Increased Item Drop Rate
-	Tooltip: +{0}% item drops from enemies
+	Tooltip: {0}% increased Quantity of Items found
 }
 
 AfterburnMastery: {
 	Name: Afterburning
-	Tooltip: +{0}% fire damage multiplier, +{1}% damage taken multiplier
+	Tooltip: {0}% more Fire Damage\n{1}% increased Damage taken
 }
 
 AddedFireDamageMultiplierPassive: {
-	Name: Increased Fire Damage Multiplier
-	Tooltip: +{0}% fire damage multiplier
+	Name: Fire Damage
+	Tooltip: {0}% more Fire Damage
 }
 
 AddedColdDamageMultiplierPassive: {
-	Name: Increased Cold Damage Multiplier
-	Tooltip: +{0} cold damage multiplier
+	Name: Cold Damage
+	Tooltip: {0}% more Cold Damage
 }
 
 AddedLightningDamageMultiplierPassive: {
-	Name: Increased Lightning Damage Multiplier
-	Tooltip: +{0} lightning damage multiplier
+	Name: Lightning Damage
+	Tooltip: {0}% more Lightning Damage
 }
 
 ScorchingFlamesMastery: {
 	Name: Scorching Flames
-	Tooltip: +{0}% chance to inflict Scorching Flames, which reduces enemy Fire resistance by 30%
+	Tooltip: {0}% chance to inflict Scorching Flames on Hit\nScorching Flames reduces Fire Resistance by 30%
 }
 
 BurstingFuryMastery: {
 	Name: Bursting Fury
-	Tooltip: Killing an enemy with Fire damage causes it to explode, dealing {0}% of the original damage done
+	Tooltip: Enemies Killed by Fire Damage explode, dealing {0}% of the Damage that Killed them
 }
 
 DeepPoolsMastery: {
 	Name: Deep Pools
-	Tooltip: Gain {0}% max mana, gain 1% all damage per 25 max mana you have
+	Tooltip: {0}% increased maximum Mana\n1% increased Damage per 25 maximum Mana
 }
 
 ManaBombMastery: {
 	Name: Starbombs
-	Tooltip: Every 100 mana spent sends out some chasing mana bombs, dealing {0} magic damage, with additional damage scaling on max mana
+	Tooltip: Every 100 Mana spent creates chasing Mana Bombs\nMana Bombs deal {0} Magic Damage, with additional Damage based on maximum Mana
 }
 
 MagicGuardMastery: {
 	Name: Magic Guard
-	Tooltip: When above 50% mana, take {0}% less health - otherwise, deal {1}% more damage
+	Tooltip: {0}% less Damage taken while above 50% Mana\n{1}% more Damage while at or below 50% Mana
 }
 
 ThunderbootsMastery: {
 	Name: Thunderboots
-	Tooltip: Spawn a small Lightning Nova under yourself when you jump, which inflicts maximum Shocked on enemies it hits
+	Tooltip: Spawn a Lightning Nova when you Jump\nLightning Nova inflicts maximum Shock
 }
 
 ElectrostaticAttractionMastery: {
 	Name: Electrostatic Charge
-	Tooltip: Dealing Lightning damage will give a stacking, very short term multiplier to Lightning damage, capping at a 50% multiplier
+	Tooltip: Lightning Damage grants Lightning Damage Multiplier\nMaximum of 50% Lightning Damage Multiplier
 }
 
 ChannelingBurstMastery: {
 	Name: Channeling Burst
-	Tooltip: Deal more Magic damage and use more mana the further your mouse is from yourself when channeling
+	Tooltip: Magic Damage and Mana Cost scale with distance from cursor while Channeling
 }
 
 EnergySurgeMastery: {
 	Name: Energy Surge
-	Tooltip: For the first two seconds of channeling, deal {0}% more damage
+	Tooltip: {0}% more Damage for the first 2 seconds of Channeling
 }
 
 SingleFocusMastery: {
 	Name: Singular Focus
-	Tooltip: While channeling, gain 3% increased damage every 0.5 seconds, up to 10 stacks
+	Tooltip: 3% increased Damage every 0.5 seconds while Channeling\nMaximum of 10 stacks
 }
 
 ChainLightningMastery: {
 	Name: Chain Lightning
-	Tooltip: Lightning damage has a {0}% chance to chain to another enemy
+	Tooltip: Lightning Damage has {0}% chance to Chain to another Enemy
 }
 
 CriticalOverloadMastery: {
 	Name: Critical Overload
-	Tooltip: Increase critical strike chance by {0}% for every hit that isn't a crit. Resets on crits
+	Tooltip: {0}% increased Critical Strike Chance per non-Critical Hit\nResets on Critical Strike
 }
 
 AnticipatedStrikeMastery: {
 	Name: Anticipated Strike
-	Tooltip: If you haven't used a skill in 10 seconds, your next skill is used twice
+	Tooltip: Skills used after 10 seconds without using a Skill are used twice
 }
 
 StarcallerMastery: {
 	Name: Starcaller
-	Tooltip: Your magic critical hits spawn a star to do {0}% of the original hit's damage, once a second per enemy
+	Tooltip: Critical Strikes with Magic spawn a Star dealing {0}% of Hit Damage\nMaximum of one Star per second per Enemy
 }
 
 CenterOfTheUniverseMastery: {
 	Name: Center of the Universe
-	Tooltip: Your magic hits have a {0}% chance to spawn an orbiting planet (10 max), which deal 20% of the hit's damage and heal 5 mana on hit
+	Tooltip: Magic Hits have {0}% chance to create an Orbiting Planet\nOrbiting Planets deal 20% of Hit Damage and restore 5 Mana on Hit\nMaximum of 10 Orbiting Planets
 }
 
 OverloadingEnergyMastery: {
 	Name: Overloading Energy
-	Tooltip: Gain 5% of your max mana every {0} seconds. At max mana, deal 15% more damage
+	Tooltip: Gain 5% of maximum Mana every {0} seconds\n15% more Damage while at maximum Mana
 }
 
 ReverberationMastery: {
 	Name: Reverberation
-	Tooltip: Magic projectiles have a {0}% chance to be spawned twice at 70% damage, costing 50% of the original attack's mana
+	Tooltip: Magic Projectiles have {0}% chance to be fired twice at 70% Damage\nDuplicated Projectiles cost 50% of original Mana Cost
 }
 
 SkillfulMagicMastery: {
 	Name: Skillful Magic
-	Tooltip: Using a skill gives {0} seconds of increased crit damage and movement speed
+	Tooltip: Using a Skill grants {0} seconds of increased Critical Strike Damage and Movement Speed
 }
 
 AutomagicMissileMastery: {
 	Name: Automagic Missile
-	Tooltip: Magic hits have a {0}% chance to spawn a Magic Missile which deals 50% of the original hit's damage and homes in on enemies
+	Tooltip: Magic Hits have {0}% chance to create a Homing Magic Missile\nMagic Missiles deal 50% of original Hit Damage
 }
 
 SharpenedSpellsMastery: {
 	Name: Sharpened Spells
-	Tooltip: Enemies frozen by you will take 25% more damage from all direct sources
+	Tooltip: Frozen Enemies take 25% more Damage from Direct Hits
 }
 
 AbsoluteZeroMastery: {
 	Name: Absolute Zero
-	Tooltip: Chilled is {0}% stronger and freeze lasts {1}% longer
+	Tooltip: {0}% increased Chill Effect\n{1}% increased Freeze Duration
 }
 
 BludgeoningBlowMastery: {
 	Name: Bludgeoning Blow
-	Tooltip: Killing a frozen enemy will shatter it for {0}% of the killing blow's damage
+	Tooltip: Killing a Frozen Enemy causes it to Shatter for {0}% of the Killing Blow's Damage
 }
 
 YoyoDamagePassive: {
 	Name: Increased Yoyo Damage
-	Tooltip: +{0}% increased yoyo damage
+	Tooltip: {0}% increased Yoyo Damage
 }
 
 YoyoDurationPassive: {
-	Name: Doubled Yoyo Duration
-	Tooltip: +{0}% increased yoyo duration
+	Name: Increased Yoyo Duration
+	Tooltip: {0}% increased Yoyo Duration
 }
 
 YoyoRangePassive: {
 	Name: Increased Yoyo Range
-	Tooltip: +{0}% increased yoyo range
+	Tooltip: {0}% increased Yoyo Range
 }
 
 YoyoSpeedPassive: {
 	Name: Increased Yoyo Speed
-	Tooltip: +{0}% increased yoyo speed
+	Tooltip: {0}% increased Yoyo Speed
 }
 
 IncreasedWhipReachPassive: {
-	Name: Increased Whip Reach
-	Tooltip: +{0}% increased whip reach
+	Name: Increased Whip Range
+	Tooltip: {0}% increased Whip Range
 }
 
 IncreasedTagCritPassive: {
-	Name: Increased Tag Critical Chance
-	Tooltip: +{0}% increased crit chance against tagged enemies
+	Name: Increased Critical Strike Chance against Tagged Enemies
+	Tooltip: {0}% increased Critical Strike Chance against Tagged Enemies
 }
 
 LifeRegenRatePassive: {
 	Name: Increased Life Regeneration Rate
-	Tooltip: +{0}% life regeneration rate
+	Tooltip: {0}% increased Life Regeneration Rate
 }
 
 LifeRegenCountPassive: {
-	Name: Increased Life Regeneration Strength
-	Tooltip: +{0} life regenerated per second
+	Name: Life Regeneration
+	Tooltip: +{0} Life Regenerated per second
 }
 
 LifeOnKillPassive: {
-	Name: Life Recovery
-	Tooltip: +{0}% chance to recover {1}% life on kill
+	Name: Life gained on Kill
+	Tooltip: {0}% chance to recover {1}% of Life on Kill
 }
 
 ArcaneSurgeMastery: {
 	Name: Arcane Surge
-	Tooltip: Using skills or magic attacks 5 times in 4 seconds grants Arcane Surge, boosting magic damage by 15% and mana regeneration by 2/second
+	Tooltip: Using 5 Skills or Magic Attacks within 4 seconds grants Arcane Surge\nArcane Surge grants 15% increased Magic Damage and +2 Mana Regenerated per second
 }
 
 AddedSummonCritChancePassive: {
-	Name: Increased Summon Critical Strike Chance
-	Tooltip: Summon damage has a +{0}% chance to crit
+	Name: Minion Critical Strike Chance
+	Tooltip: +{0}% to Minion Critical Strike Chance
 }
 
 OpportuneStrikeMastery: {
 	Name: Opportune Strike
-	Tooltip: Every critical hit from a minion reduces all summoner skill cooldowns by {0}% (1 second cooldown)
+	Tooltip: Minion Critical Strikes reduce Skill Cooldowns by {0}%\n1 second Cooldown
 }
 
 UndeadLegionMastery: {
 	Name: Undead Legion
-	Tooltip: +{0}% increased summon damage. This increases by 3% with each maximum minion slot you have.
+	Tooltip: {0}% increased Minion Damage\n3% increased Minion Damage per Maximum Minion
 }
 
 OverrunMastery: {
 	Name: Empowerment
-	Tooltip: +{0}% increased minion movement & behaviour speed
+	Tooltip: {0}% increased Minion Movement and Attack Speed
 }
 
 MinionDamageAuraPassive: {
 	Name: Minion Damage Aura
-	Tooltip: Minions gain an aura that gives [mechanic/shift:Nearby] players +{0}% damage
+	Tooltip: Minions grant {0}% increased Damage to Nearby Allies
 }
 
 MinionManaRegenAuraPassive: {
 	Name: Minion Mana Regeneration Aura
-	Tooltip: Minions gain an aura that gives [mechanic/shift:Nearby] players +{0} mana regeneration per second
+	Tooltip: Minions grant +{0} Mana Regenerated per second to Nearby Allies
 }
 
 HeartySummonsPassive: {
-	Name: Healthy Summon Damage Boost
-	Tooltip: +{0}% summon damage when above 90% health
+	Name: Healthy Minion Damage
+	Tooltip: {0}% increased Minion Damage while on Full Life
 }
 
 SymbioticPulseMastery: {
 	Name: Symbiotic Summons
-	Tooltip: Every 30 seconds, your summons drop a healing orb that, when collected, heals {0}% of your max health
+	Tooltip: Minions drop a Healing Orb every 30 seconds\nHealing Orbs restore {0}% of maximum Life when collected
 }
 
 SwiftPlacementsMastery: {
 	Name: Swift Placements
-	Tooltip: When placing a sentry, gain 25% movement speed and 15% increased summon damage for {0} seconds
+	Tooltip: 25% increased Movement Speed and 15% increased Minion Damage for {0} seconds after placing a Sentry
 }
 
 WitheringBoltsMastery: {
 	Name: Withering Bolts
-	Tooltip: Enemies hit by your sentries are slowed by 40% (15% for bosses) for {0} seconds
+	Tooltip: Enemies Hit by Sentries are Slowed by 40% for {0} seconds\n15% Slow for Bosses
 }
 
 MaximumSentryPassive: {
-	Name: Added Maximum Sentries
-	Tooltip: Increase your maximum summoned sentries by {0}
+	Name: Maximum Sentries
+	Tooltip: +{0} to maximum number of Sentries
 }
 
 IncreasedSentryKnockbackPassive: {
 	Name: Increased Sentry Knockback
-	Tooltip: Increase your sentry knockback by {0}%
+	Tooltip: {0}% increased Sentry Knockback
 }
 
 SentryDuplicatedProjectilePassive: {
-	Name: Additional Sentry Projectile Chance
-	Tooltip: +{0}% chance for sentries to fire an additional projectile
+	Name: Sentry Additional Projectile Chance
+	Tooltip: {0}% chance for Sentries to fire an additional Projectile
 }
 
 SacrificialSummonsMastery: {
 	Name: Sacrificial Summons
-	Tooltip: When you or anyone [mechanic/shift:Nearby] you dies, sacrifice {0} summons to cheat death and return to 100 health (5 minute cooldown)
+	Tooltip: When you or a Nearby Ally would die, sacrifice {0} Minions to prevent death and restore to 100 Life\n5 minute Cooldown
 }
 
 OverhealMastery: {
 	Name: Overheal Pulse
-	Tooltip: When overhealing, emit a pulse of damage from every minion you have, damage scaling with how much you've overhealed (capping at {0}%)
+	Tooltip: Overhealing causes all Minions to pulse Damage\nDamage scales with Overheal amount, maximum {0}%
 }
 
 StrongerDebuffsPassive: {
-	Name: Stronger Debuffs
-	Tooltip: "[mechanic/shift:Nearby] enemies have {0}% longer lasting debuffs"
+	Name: Debuff Duration
+	Tooltip: Debuffs on Nearby Enemies last {0}% longer
 }
 
 FasterMinionsPassive: {
-	Name: Faster Minions
-	Tooltip: Minions behave {0}% faster
+	Name: Increased Minion Speed
+	Tooltip: {0}% increased Minion Attack and Movement Speed
 }
 
 FasterGrimoirePassive: {
-	Name: Faster Grimoire Conjurations
-	Tooltip: Grimoire summons move and behave {0}% quicker
+	Name: Increased Grimoire Speed
+	Tooltip: {0}% increased Grimoire Summon Movement and Attack Speed
 }
 
 IncreasedGrimoireDamagePassive: {
 	Name: Increased Grimoire Damage
-	Tooltip: Grimoire summons deal {0}% more damage
+	Tooltip: {0}% increased Grimoire Summon Damage
 }
 
 IncreasedGrimoireCritPassive: {
-	Name: Increased Grimoire Crit Chance
-	Tooltip: Grimoire summons have +{0}% crit chance
+	Name: Grimoire Critical Strike Chance
+	Tooltip: +{0}% to Grimoire Summon Critical Strike Chance
 }
 
 SniperMastery: {
 	Name: Sniper
-	Tooltip: Enemies that are [mechanic/shift:Far] away take {0}% more Ranged damage
+	Tooltip: {0}% more Ranged Damage against Distant Enemies
 }
 
 PinningShotMastery: {
 	Name: Pinning Shot
-	Tooltip: Ranged projectiles have a {0}% chance to inflict Rooted, and deal {1}% more damage to Rooted enemies
+	Tooltip: {0}% chance for Ranged Projectiles to inflict Rooted\n{1}% more Damage against Rooted Enemies
 }
 
 LimitedEntranceMastery: {
 	Name: Limited Opening
-	Tooltip: For {0} seconds after spawning, summons deal 30% more damage
+	Tooltip: Minions deal 30% more Damage for {0} seconds after being Summoned
 }
 
 DeathrushMastery: {
 	Name: Deathrush
-	Tooltip: For every minion (max 10), you gain [mechanic/shift=0;2:MovementSpeed] and your minions gain {0}% [mechanic/shift=1;2:BehaviorSpeed]
+	Tooltip: {0}% increased Movement Speed per Minion\n{1}% increased Minion Attack Speed per Minion\nMaximum of 10 Minions
 }
 
 ShatteredBondMastery: {
 	Name: Shattered Bond
-	Tooltip: Every time a summon despawns (except Grimoire summons), it explodes for {0}% damage
+	Tooltip: Minions explode for {0}% Damage when they expire\nExcludes Grimoire Summons
 }
 
 AddedMaxMinionsPassive: {
-	Name: Increased Max Minions
-	Tooltip: Maximum minions increased by {0}
+	Name: Maximum Minions
+	Tooltip: +{0} to maximum number of Minions
 }
 
 MoveIncreaseOnSummonPassive: {
-	Name: Movement Buff after Summoning
-	Tooltip: Gain 100% movement speed for {0} seconds after summoning
+	Name: Movement Speed after Summoning
+	Tooltip: 100% increased Movement Speed for {0} seconds after Summoning
 }
 
 HealingGrimoireMastery: {
 	Name: Blessed Knowledge
-	Tooltip: Grimoire summons pulse an aura that heals {0} health every {1} {^1:second;seconds}
+	Tooltip: Grimoire Summons have an Aura that Regenerates {0} Life every {1} {^1:second;seconds}
 }
 
 ManaLeechMastery: {
 	Name: Mana Leech
-	Tooltip: Grimoire summons constantly increase in damage but consume more and more mana
+	Tooltip: Grimoire Summons gain Damage over time but consume increasing amounts of Mana
 }
 
 TwinPowerMastery: {
 	Name: Twin Power
-	Tooltip: Using the Grimoire spawns two summons at {0}% damage
+	Tooltip: Grimoire Skills Summon two Minions at {0}% Damage
 }
 
 TowerDefenseMastery: {
 	Name: Tower Defense
-	Tooltip: Sentries have an area-of-effect damage aura for base weapon damage every {0} seconds
+	Tooltip: Sentries have a Damage Aura that pulses every {0} seconds\nAura Damage equals base Weapon Damage
 }
 
 SoulReaveMastery: {
 	Name: Soul Reave
-	Tooltip: Summon damage has a {0}% chance to apply a stack of Soul Reave, which heals {1}% max health and deals {2}% original hit damage on expiration
+	Tooltip: {0}% chance for Minion Damage to apply Soul Reave\nSoul Reave heals {1}% of maximum Life and deals {2}% of original Hit Damage when it expires
 }
 
 RagingSpiritsMastery: {
 	Name: Raging Spirits
-	Tooltip: Minions have a {0}% chance to spawn a Raging Spirit, which counts as a summon
+	Tooltip: {0}% chance for Minions to spawn a Raging Spirit on Hit\nRaging Spirits count as Minions
 }
 
 ChaoticReverberationMastery: {
 	Name: Chaotic Reverberation
-	Tooltip: "{0}% of your damage is echoed as Chaos damage"
+	Tooltip: {0}% of Damage is Echoed as Chaos Damage
 }
 
 StrongerPotionsPassive: {
-	Name: Stronger Potions
-	Tooltip: All potions (including food) have {0}% increased buff duration
+	Name: Increased Flask Duration
+	Tooltip: {0}% increased Flask Effect Duration
 }
 
 MorePickupPotionsPassive: {
-	Name: More Pickup Potions
-	Tooltip: +{0} health and mana potions
+	Name: Flask Charges Gained
+	Tooltip: +{0} to Flask Charges gained
 }
 
 AlchemistMastery: {
 	Name: Alchemist
-	Tooltip: Mana and health potion cooldowns reduced by {0}%
+	Tooltip: {0}% increased Flask Charge Recovery
 }
 
 BurstingBottlesMastery: {
 	Name: Bursting Bottles
-	Tooltip: When using a mana or healing potion, deal minor damage and push away [mechanic/shift:Nearby] enemies for {0}% knockback
+	Tooltip: Using a Flask deals Damage and Knockback to Nearby Enemies\n{0}% increased Knockback
 }
 
 IncreasedSkillDamagePassive: {
 	Name: Increased Skill Damage
-	Tooltip: Skills deal {0}% more damage
+	Tooltip: {0}% increased Skill Damage
 }
 
 ProlongingSkillMastery: {
-	Name: Prolonging Skill
-	Tooltip: +{0}% skill duration
+	Name: Skill Duration
+	Tooltip: {0}% increased Skill Duration
 }
 
 SurplusVitalityMastery: {
 	Name: Surplus Vitality
-	Tooltip: Using a skill gives [mechanic/shift:Nearby] players {0}% of their max health as overhealth
+	Tooltip: Using a Skill grants Nearby Allies {0}% of their maximum Life as Overheal
 }
 
 PseudoicarianMastery: {
 	Name: Pseudoicarian
-	Tooltip: +{0}% jump height and permanent Featherfall
+	Tooltip: {0}% increased Jump Height\nYou are affected by Featherfall
 }
 
 HermesBoonMastery: {
 	Name: Hermes Boon
-	Tooltip: When out of combat, gain {0}% movement speed and increase jump speed massively
+	Tooltip: {0}% increased Movement Speed while out of Combat\nMassive Jump Speed increase while out of Combat
 }
 
 FasterPlacementPassive: {
-	Name: Faster Placement
-	Tooltip: Objects are placed {0}% faster
+	Name: Increased Placement Speed
+	Tooltip: {0}% increased Tile Placement Speed
 }
 
 ExtendedTileRangePassive: {
-	Name: Extended Tile Reach
-	Tooltip: Objects can be placed up to {0} tiles further away
+	Name: Increased Tile Range
+	Tooltip: +{0} to Tile Reach Range
 }
 
 JourneymanMastery: {
 	Name: Journeyman
-	Tooltip: Mining is {0}% faster and strong tiles are easier to break when directly below you
+	Tooltip: {0}% increased Mining Speed\nHard Tiles are easier to break when directly below you
 }
 
 MasterBuilderMastery: {
 	Name: Master Builder
-	Tooltip: When stationary, gain {0} tile range and {1}% tile placement speed
+	Tooltip: +{0} to Tile Range while Stationary\n{1}% increased Tile Placement Speed while Stationary
 }
 
 BloodroundMastery: {
 	Name: Bloodrounds
-	Tooltip: Killing a bleeding or burning enemy adds a 50% chance to not consume ammo
+	Tooltip: 50% chance to not consume Ammo when Killing a Bleeding or Burning Enemy
 }
 
 BouncingAmmoMastery: {
 	Name: Bouncing Ammo
-	Tooltip: Ammo-based projectiles bounce off of enemies once
+	Tooltip: Projectiles fired with Ammo Pierce through one Enemy
 }
 
 TracerShotsMastery: {
 	Name: Tracing Shots
-	Tooltip: Ammo shot speed is {0}% higher, hit enemies are identified for {1} seconds
+	Tooltip: {0}% increased Projectile Speed for Ammo-based Attacks\nEnemies Hit by Ammo-based Attacks are Identified for {1} seconds
 }
 
 HairTriggerMastery: {
 	Name: Hair Trigger
-	Tooltip: Gain {0}% ranged attack speed but reduce accuracy
+	Tooltip: {0}% increased Ranged Attack Speed\nReduced Attack Accuracy
 }
 
 ExplosiveSlugsMastery: {
 	Name: Explosive Slugs
-	Tooltip: Critical strikes with bullets explode, dealing {0}% of base damage
+	Tooltip: Critical Strikes with Bullets cause Explosions dealing {0}% of base Damage
 }
 
 AdvantageShotMastery: {
 	Name: Advantage Shot
-	Tooltip: Standing still for {0} seconds grants {1}% increased ranged damage
+	Tooltip: {1}% increased Ranged Damage after Standing Still for {0} seconds
 }
 
 IgnitingProjectilesPassive: {
 	Name: Chance for Projectiles to Ignite
-	Tooltip: +{0}% chance for projectiles to deal Ignite
+	Tooltip: {0}% chance for Projectiles to Ignite on Hit
 }
 
 ChanceForAdditionalProjectilePassive: {
-	Name: Chance for Additional Projectile
-	Tooltip: +{0}% chance for an additional projectile to be fired
+	Name: Additional Projectile Chance
+	Tooltip: {0}% chance to fire an additional Projectile
 }
 
 PoisonedRangedAttacksPassive: {
-	Name: Chance for Poison
-	Tooltip: +{0}% chance to inflict a stack of Poison on-hit
+	Name: Chance to Poison
+	Tooltip: {0}% chance to Poison on Hit
 }
 
 LongerPoisonPassive: {
-	Name: Longer Poison
-	Tooltip: Poison stacks last {0}% longer
+	Name: Poison Duration
+	Tooltip: {0}% increased Poison Duration
 }
 
 StrongerPoisonPassive: {
-	Name: Stronger Poison
-	Tooltip: Poison deals {0}% more damage
+	Name: Poison Damage
+	Tooltip: {0}% more Poison Damage
 }
 
 FasterPoisonTickPassive: {
-	Name: Faster Acting Poison
-	Tooltip: Poison tick rate is {0}% faster
+	Name: Faster Poison
+	Tooltip: {0}% faster Poison Damage Rate
 }
 
 ContagionBurstMastery: {
 	Name: Contagion Burst
-	Tooltip: Enemies killed spread {0}% of their Poison stacks to [mechanic/shift:Nearby] enemies
+	Tooltip: Enemies Killed spread {0}% of their Poison Stacks to Nearby Enemies
 }
 
 CorrosiveTouchMastery: {
 	Name: Corrosive Touch
-	Tooltip: Every {0} hits on a poisoned enemy will 'pop' one of the stacks, instantly applying all damage it would deal
+	Tooltip: Every {0} Hits on a Poisoned Enemy instantly applies all Damage from one Poison Stack
 }
 
 LethalDoseMastery: {
 	Name: Lethal Dose
-	Tooltip: Enemies hit by you take {0}% more damage per poison stack (max {1}%)
+	Tooltip: {0}% increased Damage taken per Poison Stack on Enemy\nMaximum {1}% increased Damage taken
 }
 
 QuickExplosionsPassive: {
-	Name: Quicker Explosives
-	Tooltip: Explosives explode {0}% faster
+	Name: Faster Explosives
+	Tooltip: {0}% faster Explosive Detonation
 }
 
 StrongerExplosivesPassive: {
-	Name: Stronger Explosives
-	Tooltip: Explosives deal {0}% more damage
+	Name: Increased Explosive Damage
+	Tooltip: {0}% increased Explosive Damage
 }
 
 BlastProtectionPassive: {
 	Name: Blast Protection
-	Tooltip: You take no self-damage from your own explosives
+	Tooltip: Immune to Damage from your own Explosives
 }
 
 ExplosiveKnockbackPassive: {
-	Name: Higher Explosive Knockback
-	Tooltip: Explosives deal {0}% more knockback
+	Name: Increased Explosive Knockback
+	Tooltip: {0}% increased Explosive Knockback
 }
 
 BiggerExplosivesPassive: {
-	Name: Bigger Explosions
-	Tooltip: Explosives are {0}% larger
+	Name: Increased Area of Effect
+	Tooltip: {0}% increased Explosive Area of Effect
 }
 
 DemolitionsExpertMastery: {
 	Name: Demolitions Expert
-	Tooltip: Explosions are {0}% larger and deal {1}% more damage
+	Tooltip: {0}% increased Explosive Area of Effect\n{1}% increased Explosive Damage
 }
 
 ShrapnelStormMastery: {
 	Name: Shrapnel Storm
-	Tooltip: Explosives burst into shrapnel, which deal {0}% damage per shard
+	Tooltip: Explosives create Shrapnel dealing {0}% Damage per Shard
 }
 
 BlastChainMastery: {
 	Name: Blast Chain
-	Tooltip: Killing an enemy with an explosion will blow up the enemy for {0}% damage
+	Tooltip: Enemies Killed by Explosions explode for {0}% of the Damage that Killed them
 }
 
 ReturningProjectilesMastery: {
 	Name: Returning Bullets
-	Tooltip: Bullets return to their spawn location after {0} seconds
+	Tooltip: Bullets return to origin after {0} seconds
 }
 
 MarksmanMastery: {
 	Name: Marksman
-	Tooltip: Close enemies can be Marked. Marked enemies deal {0}% of the damage they take to [mechanic/shift:Nearby] enemies
+	Tooltip: Nearby Enemies can be Marked\nMarked Enemies take Damage equal to {0}% of Damage they receive from Nearby Enemies
 }
 
 FatBulletsMastery: {
 	Name: Fat Bullets
-	Tooltip: Ranged projectiles are {0}% stronger and bigger, but have damage and speed falloff quickly
+	Tooltip: {0}% larger and stronger Ranged Projectiles\nProjectiles have Damage and Speed decay over Distance
 }
 
 StillDamagePassive: {
-	Name: Damage Increased when Stationary
-	Tooltip: Standing still increases all damage by {0}%
+	Name: Damage while Stationary
+	Tooltip: {0}% increased Damage while Stationary
 }
 
 MeleeSizePassive: {
-	Name: Increased Melee Size
-	Tooltip: +{0}% increased melee weapon size
+	Name: Increased Melee Weapon Size
+	Tooltip: {0}% increased Melee Weapon Area of Effect
 }
 
 TitanicImpactMastery: {
 	Name: Titanic Impact
-	Tooltip: "{0}% chance for melee strikes to deal massive knockback and {1}% increased damage"
+	Tooltip: {0}% chance for Melee Hits to deal {1}% increased Damage and massive Knockback
 }
 
 FatalFocusMastery: {
 	Name: Fatal Focus
-	Tooltip: +{0}% critical strike damage, but -{1}% critical strike chance
+	Tooltip: +{0}% to Critical Strike Multiplier\n{1}% less Critical Strike Chance
 }
 
 WideSwingsMastery: {
 	Name: Wide Swings
-	Tooltip: Critical hits with melee strikes increases melee weapon size by {0}% (max {1} stacks)
+	Tooltip: Critical Strikes increase Melee Weapon Size by {0}%\nMaximum of {1} stacks
 }
 
 RangerMeleeChanceToBleedPassive: {
-	Name: Ranged/Melee Chance to Bleed
-	Tooltip: +{0}% chance for ranged or melee hits to inflict Bleeding
+	Name: Chance to cause Bleeding
+	Tooltip: {0}% chance for Ranged and Melee Hits to cause Bleeding
 }
 
 BleedEffectivenessPassive: {
-	Name: Increased Bleed Damage
-	Tooltip: +{0}% bleed damage
+	Name: Bleeding Damage
+	Tooltip: {0}% increased Bleeding Damage
 }
 
 BleedTimePassive: {
-	Name: Increased Bleed Time
-	Tooltip: +{0}% bleed time
+	Name: Bleeding Duration
+	Tooltip: {0}% increased Bleeding Duration
 }
 
 BleedTickPassive: {
-	Name: Faster Bleed Ticks
-	Tooltip: +{0}% faster bleed ticks
+	Name: Faster Bleeding
+	Tooltip: {0}% faster Bleeding Damage Rate
 }
 
 HemorrhageMastery: {
 	Name: Hemorrhage
-	Tooltip: Double your max bleed stacks
+	Tooltip: Double Maximum Bleeding Stacks
 }
 
 ExsanguinateMastery: {
 	Name: Exsanguination
-	Tooltip: Killing a bleeding enemy will deal {0}% of the enemy's remaining bleed damage in an area
+	Tooltip: Killing a Bleeding Enemy deals {0}% of remaining Bleeding Damage in an Area
 }
 
 BloodbenderMastery: {
 	Name: Bloodbender
-	Tooltip: Critting a bleeding enemy siphons {0}% of the damage done, scaling with bleed stacks
+	Tooltip: Critical Strikes against Bleeding Enemies Leech {0}% of Damage dealt\nLeech scales with Bleeding Stacks
 }
 
 HealOnKillPassive: {
-	Name: Chance to Heal on Kill
-	Tooltip: "{1}% chance to heal for {0} health on killing any enemy"
+	Name: Life gained on Kill
+	Tooltip: {0}% chance to recover {1} Life on Kill
 }
 
 BloodRushMastery: {
 	Name: Blood Rush
-	Tooltip: "{0}% chance to [mechanic/shift:Siphon] {1}% of your max health on kill"
+	Tooltip: {0}% chance to Leech {1}% of maximum Life on Kill
 }
 
 HeartAndMindMastery: {
 	Name: Heart and Mind
-	Tooltip: "{0}% of life regeneration is added to mana regeneration"
+	Tooltip: {0}% of Life Regeneration Rate applies to Mana Regeneration Rate
 }
 
 PainTransferenceMastery: {
 	Name: Pain Transference
-	Tooltip: "{0}% of life regeneration or life healed is dealt as damage to [mechanic/shift:Nearby] enemies"
+	Tooltip: {0}% of Life Regenerated or Healed is dealt as Damage to Nearby Enemies
 }
 
 PuppeteerMastery: {
 	Name: Puppeteer
-	Tooltip: Hitting an enemy with a yoyo will tie it to the yoyo, pulling it towards your yoyo and taking {0}% damage any time you deal damage to anything
+	Tooltip: Enemies Hit by Yoyos are Tethered\nTethered Enemies are pulled toward the Yoyo and take {0}% of Damage you deal to any Enemy
 }
 
 TranslucentTricksMastery: {
 	Name: Translucent Tricks
-	Tooltip: Yoyo damage and speed is increased by {0}%, yoyos can go through tiles
+	Tooltip: {0}% increased Yoyo Damage and Speed\nYoyos Pass through Tiles
 }
 
 SpoolbreakerMastery: {
 	Name: Spoolbreaker
-	Tooltip: Hitting an enemy with a yoyo will make the yoyo grow, until it explodes, dealing {0}% damage
+	Tooltip: Yoyos grow when Hitting Enemies until they explode for {0}% Damage
 }
 
 FriendlyDefensePassive: {
-	Name: Friendly Defense Increase
-	Tooltip: +{0} defense, +{1} defense for nearby allied players
+	Name: Defensive Aura
+	Tooltip: +{0} to your Defense\n+{1} to Defense of Nearby Allies
 }
 
 IncreasedEnemyAggressionPassive: {
-	Name: Increased Enemy Aggression
-	Tooltip: Aggro is increased by {0}
+	Name: Increased Enemy Attention
+	Tooltip: +{0} to Enemy Attention
 }
 
 UndyingGraspMastery: {
 	Name: Undying Grasp
-	Tooltip: Heal {0}% of the damage done after {1} seconds
+	Tooltip: Recover {0}% of Damage dealt after {1} seconds
 }
 
 WillingSacrificeMastery: {
 	Name: Willing Sacrifice
-	Tooltip: Gain {1} defense and knockback immunity, take {0}% of closeby allied player's damage for them
+	Tooltip: +{1} Defense and Knockback Immunity\nYou take {0}% of Damage dealt to Nearby Allies
 }
 
 ReprisalMastery: {
 	Name: Reprisal
-	Tooltip: Reflect {0}% of damage back on successful blocks as a large slash.
+	Tooltip: Reflect {0}% of Damage from Blocked Hits as a Slash Attack
 }
 
 ImmolationStrideMastery: {
 	Name: Immolation Stride
-	Tooltip: Unused.
+	Tooltip: Unused
 }
 
 ShortFuseMastery: {
 	Name: Short Fuse
-	Tooltip: Unused.
+	Tooltip: Unused
 }
 
 AddRagePassive: {
-	Name: Add Rage
-	Tooltip: Gain {0} {^0:stack;stacks} of rage per enemy hit, which fades quickly if not refreshed
+	Name: Rage on Hit
+	Tooltip: +{0} Rage per Enemy Hit
 }
 
 AddMaxRagePassive: {
-	Name: Add Max Rage
-	Tooltip: Max rage is increased by {0}
+	Name: Maximum Rage
+	Tooltip: +{0} to maximum Rage
 }
 
 AddRageCritPassive: {
-	Name: Rage Critical Strike Chance
-	Tooltip: Gain {0}% critical strike chance per rage stack
+	Name: Critical Strike Chance per Rage
+	Tooltip: +{0}% to Critical Strike Chance per Rage
 }
 
 SlowRageDecayPassive: {
-	Name: Slower Rage Decay
-	Tooltip: Rage hold time increased by {0}%
+	Name: Rage Duration
+	Tooltip: {0}% increased Rage Duration
 }
 
 RageResistancePassive: {
-	Name: Raging Resistance
-	Tooltip: When at one or more rage stacks, gain {0}% damage reduction
+	Name: Damage Reduction per Rage
+	Tooltip: {0}% reduced Damage taken per Rage
 }
 
 BurningRageMastery: {
 	Name: Burning Rage
-	Tooltip: Gain {0}% max health per rage stack. Gain 100% fire type damage conversion at max rage
+	Tooltip: +{0}% to maximum Life per Rage\n100% of Damage Converted to Fire Damage while at maximum Rage
 }
 
 FuriousSiphonMastery: {
 	Name: Furious Siphon
-	Tooltip: When at max rage, [mechanic/shift:Siphon] 1% of melee or ranged damage
+	Tooltip: Leech 1% of Melee and Ranged Damage while at maximum Rage
 }
 
 RagingSpeedMastery: {
 	Name: Raging Speed
-	Tooltip: Gain {0}% attack speed per rage stack. At max rage, gain a {1}% chance for hits to apply twice
+	Tooltip: +{0}% to Attack Speed per Rage\n{1}% chance for Hits to apply twice while at maximum Rage
 }
 
 RockAndStoneMastery: {
 	Name: Rock and Stone
-	Tooltip: Every {0} blocks broken, gain a buff that increases mining speed by {1}% for {2} seconds
+	Tooltip: +{1}% increased Mining Speed for {2} seconds per {0} Blocks mined
 }
 
 FasterMiningPassive: {
-	Name: Faster Mining
-	Tooltip: +{0}% increased mining speed
+	Name: Increased Mining Speed
+	Tooltip: {0}% increased Mining Speed
 }
 
 SpelunkyMastery: {
 	Name: Spelunky
-	Tooltip: Automatically mine out entire veins of ore when mining
+	Tooltip: Mining Ore automatically mines connected Ore
 }
 
 CheaperShopsPassive: {
-	Name: Cheaper Shops
-	Tooltip: Buy prices are {0}% lower
+	Name: Reduced Shop Prices
+	Tooltip: {0}% reduced Shop Prices
 }
 
 ValuableSalesPassive: {
-	Name: Increased Sell Value
-	Tooltip: Sell prices are {0}% higher
+	Name: Increased Sell Prices
+	Tooltip: {0}% increased Sell Prices
 }
 
 ExtraStockMastery: {
 	Name: Extra Stock
-	Tooltip: Reroll the Traveling Merchant's stock once per visit
+	Tooltip: Reroll Traveling Merchant Stock once per visit
 }
 
 MoneySpeedMastery: {
 	Name: Haste of Avarice
-	Tooltip: Picking up a coin grants you increased movement for {0} seconds.
+	Tooltip: Increased Movement Speed for {0} seconds when picking up Coins
 }
 
 DangerMiningPassive: {
 	Name: Panic Digging
-	Tooltip: "{0}% increased mining speed when enemies are [mechanic/shift:Nearby]."
+	Tooltip: {0}% increased Mining Speed while Enemies are Nearby
 }
