@@ -162,14 +162,19 @@ internal class BranchTreeMicrobiome : MicroBiome
 		miscChestLoot.Add((AutomaticItemContent.AutoItemType<PurpleClouds>(), 9..15), 1f);
 		miscChestLoot.Add((AutomaticItemContent.AutoItemType<DeepMoss>(), 9..15), 1f);
 
+		using SmartLoot.Scope _ = SmartLoot.Begin();
+
 		Tile tile = Main.tile[chest.x, chest.y];
-		List<ItemDatabase.ItemRecord> drops = DropTable.RollManyMobDrops(3, PoTItemHelper.PickItemLevel(), 1f, random: WorldGen.genRand);
+		List<ItemDatabase.ItemRecord> drops = MapChestLoot.RollMobDrops();
 
 		if (tile.HasTile && TileID.Sets.BasicChest[tile.TileType])
 		{
-			for (int k = 0; k < 5; ++k)
+			int mobDropSlots = drops.Count;
+			int totalSlots = mobDropSlots + 2;
+
+			for (int k = 0; k < totalSlots && k < chest.item.Length; ++k)
 			{
-				if (k < 3)
+				if (k < mobDropSlots)
 				{
 					ItemDatabase.ItemRecord drop = drops[k];
 					chest.item[k] = new Item(drop.ItemId, drop.Item.stack);

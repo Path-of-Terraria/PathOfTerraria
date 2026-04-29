@@ -94,6 +94,15 @@ DropVisualizer: {
 	// RateMod: +Rate
 	// Run: Run
 	SortBy: Sortuj według:
+	// Category: Category: {0}
+
+	Categories: {
+		// All: All
+		// Gear: Gear
+		// Currency: Currency
+		// Maps: Maps
+	}
+
 	UniqueItem: (Unikalny Przedmiot)
 }
 
@@ -300,6 +309,8 @@ VirtualBag: {
 	// Review: Review your items (Closing this will exit the subworld)
 	// Conflux: Conflux
 	// ConfluxTooltip: Conflux gained from this domain
+	// CurrencyShards: Currency Shards
+	// CurrencyShardsTooltip: Currency shards gained from this domain
 }
 
 CurrencyPouch: {
@@ -371,6 +382,7 @@ MapDevice: {
 	// MapSlot: Map Slot
 	// ActivatePortal: Open Portal
 	// DeactivatePortal: Close Portal
+	// ConfirmClosePortal: Confirm Close
 	// AlreadyInUse: This map device is already in use!
 	// InjectResource: Inject Resource
 	// EjectResource: Eject Resource
