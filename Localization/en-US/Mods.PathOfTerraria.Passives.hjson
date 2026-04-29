@@ -116,7 +116,7 @@ StrongerChillPassive: {
 
 ShockChancePassive: {
 	Name: Added Shock Chance
-	Tooltip: Adds an additional 5% chance to afflict an enemy with Shock
+	Tooltip: 5% chance to apply Shock
 }
 
 IncreasedMinionDamagePassive: {
@@ -426,12 +426,12 @@ AddedFireDamageMultiplierPassive: {
 
 AddedColdDamageMultiplierPassive: {
 	Name: Increased Cold Damage Multiplier
-	Tooltip: +{0} cold damage multiplier
+	Tooltip: +{0}% cold damage multiplier
 }
 
 AddedLightningDamageMultiplierPassive: {
 	Name: Increased Lightning Damage Multiplier
-	Tooltip: +{0} lightning damage multiplier
+	Tooltip: +{0}% lightning damage multiplier
 }
 
 ScorchingFlamesMastery: {

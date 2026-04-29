@@ -4965,7 +4965,7 @@
 		"internalIdentifier": "ChaoticReverberationMastery",
 		"referenceId": 1003,
 		"maxLevel": 1,
-		"value": 20,
+		"value": 15,
 		"position": {
 			"x": -9,
 			"y": -1170
@@ -6593,7 +6593,7 @@
 		"internalIdentifier": "FatalFocusMastery",
 		"referenceId": 1113,
 		"maxLevel": 1,
-		"value": 30,
+		"value": 40,
 		"position": {
 			"x": -647,
 			"y": 70
