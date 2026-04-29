@@ -33,11 +33,11 @@ UIConfig: {
 }
 
 GameplayConfig: {
-	// DisplayName: Gameplay Configuration
-	// Headers.Gameplay: Gameplay
+	DisplayName: Konfiguracja Rozgrywki
+	Headers.Gameplay: Rozgrywka
 
 	NearbyAuras: {
-		// Label: Nearby Auras
-		// Tooltip: When enabled, minions will have a visible aura when using the Minion Damage Aura passive. This may include more auras in the future.
+		Label: Pobliższe aury
+		Tooltip: Po włączeniu, przywołańcy będą mieli widoczną aurę podczas korzystania z pasywa Aury Obrażenia Przywołań. W przyszłości może to obejmować więcej aur.
 	}
 }

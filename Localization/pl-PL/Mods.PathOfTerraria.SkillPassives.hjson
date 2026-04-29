@@ -39,7 +39,11 @@ VolatileNova: {
 
 FlashFire: {
 	Name: Błysk z ognia
-	Tooltip: Czas odnowienia jest skrócony o połowę\nZadaje {0}% mniej obrażeń
+	Tooltip:
+		'''
+		Czas odnowienia jest skrócony o połowę
+		Zadaje {0}% mniej obrażeń
+		'''
 }
 
 Combustive: {

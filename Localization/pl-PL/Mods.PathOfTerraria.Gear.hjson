@@ -15,11 +15,11 @@ Tooltips: {
 	Axe: Moc topora
 	Hammer: Moc młota
 	ManaCost: Koszt many
-	// AttackSpeed: Attack Speed
-	// CastSpeed: Cast Speed
-	// BuildBlocked: Blocked by the energies in the domain
+	AttackSpeed: Szybkość Ataku
+	CastSpeed: Szybkość Czarowania
+	BuildBlocked: Zablokowany przez energie w domenie
 	// ShootBlocked: Will be replaced by {0} [i:{1}] when shot
-	// WeaponNerfed: This weapon feels a little weaker
+	WeaponNerfed: Ta broń wydaje się trochę słabsza
 }
 
 Influence: {
@@ -111,19 +111,19 @@ Battleaxe: {
 }
 
 Boomerang: {
-	// Name: Boomerang
-	// AltUse: Right-click to send the boomerang in a quick spiral around you.
+	Name: Bumerang
+	AltUse: Kliknij prawym przyciskiem myszy, aby wysłać bumerang w szybki spiralny ruch wokół ciebie.
 
 	Prefixes: {
-		// 0: Spiraling
-		// 1: Quick
-		// 2: Razor
-		// 3: Enchanted
-		// 4: Storm
+		0: Wirujący
+		1: Szybki
+		2: Ostry
+		3: Zaczarowany
+		4: Burzowy
 	}
 
 	Suffixes: {
-		// 0: Return
+		0: Powracający
 		// 1: Slice
 		// 2: Glide
 		// 3: Arc
@@ -405,8 +405,8 @@ Talisman: {
 }
 
 Map.Name: Mapa
-ExplorableMap.Name: Mapa Eksploracyjna
-BossMap.Name: Mapa Bossa
+// ExplorableMap.Name: Explorable Map
+// BossMap.Name: Boss Map
 None.Name: Żadne
 Magic.Name: Magiczny
 Ranged.Name: Dystansowe
