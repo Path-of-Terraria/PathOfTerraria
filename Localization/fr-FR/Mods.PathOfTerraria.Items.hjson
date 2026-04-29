@@ -614,6 +614,15 @@ UnfoldingShard: {
 		'''
 }
 
+RegalShard: {
+	// DisplayName: Regal Shard
+	/* Tooltip:
+		'''
+		Upgrades a Magic item to Rare, keeping its affixes and adding one more
+		'Power refined into crystalline form'
+		''' */
+}
+
 LunarLiquid: {
 	DisplayName: Liquide lunaire
 	Tooltip:

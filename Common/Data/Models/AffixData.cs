@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.ItemDropping;
 
 namespace PathOfTerraria.Common.Data.Models;
 
@@ -50,19 +51,36 @@ public class ItemAffixData
 			return null;
 		}
 
-		float totalWeight = eligibleTiers.Sum(t => t.Weight);
+		// Smart-loot bias: re-weights eligible tiers toward higher indices, where index 0 is the
+		// lowest tier the item level qualifies for. Inactive (bias == 0) outside chest population.
+		float bias = SmartLoot.TierBias;
+		float[] weights = new float[eligibleTiers.Count];
+		float totalWeight = 0f;
+
+		for (int i = 0; i < eligibleTiers.Count; i++)
+		{
+			float w = eligibleTiers[i].Weight;
+
+			if (bias > 0f)
+			{
+				w *= MathF.Pow(1f + bias, i);
+			}
+
+			weights[i] = w;
+			totalWeight += w;
+		}
 
 		float randomWeight = (float)Main.rand.NextDouble() * totalWeight;
 		float cumulativeWeight = 0;
 
-		foreach (TierData tier in eligibleTiers)
+		for (int i = 0; i < eligibleTiers.Count; i++)
 		{
-			cumulativeWeight += tier.Weight;
+			cumulativeWeight += weights[i];
 
 			if (randomWeight <= cumulativeWeight)
 			{
-				tierIndex = eligibleTiers.IndexOf(tier);
-				return tier;
+				tierIndex = i;
+				return eligibleTiers[i];
 			}
 		}
 
