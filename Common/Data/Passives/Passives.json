@@ -4965,7 +4965,7 @@
 		"internalIdentifier": "ChaoticReverberationMastery",
 		"referenceId": 1003,
 		"maxLevel": 1,
-		"value": 20,
+		"value": 15,
 		"position": {
 			"x": -9,
 			"y": -1170
@@ -5336,7 +5336,7 @@
 		"internalIdentifier": "AnticipatedStrikeMastery",
 		"referenceId": 1029,
 		"maxLevel": 1,
-		"value": 10,
+		"value": 5,
 		"position": {
 			"x": 627,
 			"y": -86
@@ -5395,7 +5395,7 @@
 		"internalIdentifier": "CenterOfTheUniverseMastery",
 		"referenceId": 1033,
 		"maxLevel": 1,
-		"value": 10,
+		"value": 30,
 		"position": {
 			"x": 955,
 			"y": 432
@@ -6593,7 +6593,7 @@
 		"internalIdentifier": "FatalFocusMastery",
 		"referenceId": 1113,
 		"maxLevel": 1,
-		"value": 30,
+		"value": 40,
 		"position": {
 			"x": -647,
 			"y": 70
