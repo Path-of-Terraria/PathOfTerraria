@@ -18,7 +18,7 @@ internal class UniversalBuffingPlayer : ModPlayer
 
 	public override void UpdateEquips()
 	{
-		int mainItem = Main.mouseItem.IsAir || Main.mouseItem.damage <= 0 ? 0 : 58;
+		int mainItem = Main.mouseItem.IsAir || Main.mouseItem.damage <= 0 ? Player.selectedItem : 58;
 
 		if (!Player.inventory[mainItem].IsAir)
 		{

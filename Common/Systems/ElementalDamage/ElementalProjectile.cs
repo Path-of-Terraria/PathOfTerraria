@@ -44,19 +44,15 @@ internal class ElementalProjectile : GlobalProjectile
 			}
 		}
 
-		if (source is EntitySource_ItemUse_WithAmmo { Item: Item item })
+		if (source is EntitySource_ItemUse_WithAmmo itemUseSource)
 		{
-			//Keeping track of the original weapon for elemental debuff purposes
-			SourceItem = item.type;
+			SourceItem = itemUseSource.Item.type;
 
-			//if (ElementalWeaponSets.GetElementalProportions(item.type, out Dictionary<ElementType, float> value))
-			//{
-			//	foreach (KeyValuePair<ElementType, float> pair in value)
-			//	{
-			//		ref ElementalDamage mod = ref Container[pair.Key].DamageModifier;
-			//		mod = mod.AddModifiers(null, pair.Value);
-			//	}
-			//}
+			if (Main.myPlayer == projectile.owner && itemUseSource.Player.TryGetModPlayer(out ElementalPlayer elemItemPlayer))
+			{
+				Container = elemItemPlayer.Container.Clone();
+				projectile.netUpdate = true;
+			}
 		}
 	}
 
