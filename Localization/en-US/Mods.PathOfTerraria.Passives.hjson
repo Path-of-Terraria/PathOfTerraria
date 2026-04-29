@@ -870,8 +870,8 @@ ChanceForAdditionalProjectilePassive: {
 }
 
 PoisonedRangedAttacksPassive: {
-	Name: Chance for Ranged Poison
-	Tooltip: +{0}% chance for a Ranged projectile to inflict a stack of Poison
+	Name: Chance for Poison
+	Tooltip: +{0}% chance to inflict a stack of Poison on-hit
 }
 
 LongerPoisonPassive: {
