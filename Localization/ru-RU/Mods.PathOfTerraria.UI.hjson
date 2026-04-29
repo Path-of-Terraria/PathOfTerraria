@@ -94,6 +94,15 @@ DropVisualizer: {
 	// RateMod: +Rate
 	Run: Запуск
 	SortBy: Сортировать по:
+	// Category: Category: {0}
+
+	Categories: {
+		// All: All
+		// Gear: Gear
+		// Currency: Currency
+		// Maps: Maps
+	}
+
 	UniqueItem: (Уникальный предмет)
 }
 

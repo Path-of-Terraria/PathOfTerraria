@@ -12,7 +12,7 @@ public class GlimmeringShard : CurrencyShard
 	protected override void SetStaticData()
 	{
 		PoTStaticItemData staticData = this.GetStaticData();
-		staticData.DropChance = 10000f;
+		staticData.DropChance = 5000f;
 	}
 
 	public override bool CanUseInPouch(Item slotItem, [NotNullWhen(false)] out string failKey)

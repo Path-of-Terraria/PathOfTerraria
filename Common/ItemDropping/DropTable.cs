@@ -11,6 +11,18 @@ namespace PathOfTerraria.Common.ItemDropping;
 
 internal class DropTable
 {
+	public readonly record struct DropCategoryWeights(float Gear, float Currency, float Map);
+
+	private const float DefaultGearChance = 0.8f;
+	private const float DefaultCurrencyChance = 0.15f;
+	private const float DefaultMapChance = 0.05f;
+	private static readonly DropCategoryWeights DefaultCategoryWeights = new(DefaultGearChance, DefaultCurrencyChance, DefaultMapChance);
+
+	public static DropCategoryWeights GetDefaultDropCategoryWeights(int itemLevel)
+	{
+		return ApplyAreaLevelDropCategoryScaling(itemLevel, DefaultCategoryWeights);
+	}
+
 	/// <summary>
 	/// Drops an item based off of the following table:<br/>
 	/// <c>Gear:</c> Default 80%<br/>
@@ -18,14 +30,21 @@ internal class DropTable
 	/// <c>Maps:</c> Default 5%<br/>
 	/// </summary>
 	/// <param name="random">The random to 'seed' the choice with. Defaults to Main.rand.</param>
-	public static ItemDatabase.ItemRecord RollMobDrops(int itemLevel, float dropRarityModifier, float gearChance = 0.8f, float currencyChance = 0.15f, float mapChance = 0.05f, 
-		UnifiedRandom random = null, ItemRarity forceRarity = ItemRarity.Invalid, float uniqueModifier = 1f)
+	public static ItemDatabase.ItemRecord RollMobDrops(int itemLevel, float dropRarityModifier, DropCategoryWeights? categoryWeights = null, UnifiedRandom random = null, 
+		ItemRarity forceRarity = ItemRarity.Invalid, float uniqueModifier = 1f, bool applyAreaLevelCategoryScaling = true)
 	{
 		random ??= Main.rand;
+		DropCategoryWeights weights = categoryWeights ?? DefaultCategoryWeights;
+		
+		if (applyAreaLevelCategoryScaling)
+		{
+			weights = ApplyAreaLevelDropCategoryScaling(itemLevel, weights);
+		}
+
 		var chances = new WeightedRandom<int>(random);
-		chances.Add(0, gearChance);
-		chances.Add(1, currencyChance);
-		chances.Add(2, mapChance);
+		chances.Add(0, weights.Gear);
+		chances.Add(1, weights.Currency);
+		chances.Add(2, weights.Map);
 
 		int choice = chances.Get();
 		IEnumerable<ItemDatabase.ItemRecord> items = choice switch
@@ -58,23 +77,31 @@ internal class DropTable
 	/// The rarity modifier of the drops. 100 = 100% increase for both Rare and Unique drops, taken out of Magic's pool.<br/>
 	/// For exampe, if we have Magic at 90%, Rare at 7% and Unique at 3%, 100% <paramref name="dropRarityModifier"/> would turn it into Magic 80%, Rare 14% and Unique 6%.
 	/// </param>
-	/// <param name="gearChance">Drop rate for <see cref="Gear"/>. Defaults to 80%.</param>
-	/// <param name="currencyChance">Drop rate for <see cref="CurrencyShard"/>s. Defaults to 15%.</param>
-	/// <param name="mapChance">
-	/// Drop rate for <see cref="Map"/>s. Defaults to 5%.<br/>
+	/// <param name="categoryWeights">
+	/// Drop rates for <see cref="Gear"/>, <see cref="CurrencyShard"/>s and <see cref="Map"/>s. Defaults to 80%, 15% and 5%.<br/>
 	/// Note that in <see cref="Main.hardMode"/>, this is split into 70% Explorable maps, and 30% boss maps.
 	/// </param>
 	/// <param name="random">The <see cref="UnifiedRandom"/> to use for randomization. Use <see cref="WorldGen.genRand"/> for generation, such as placing items in chests.</param>
 	/// <param name="forceRarity">The rarity that <b>must</b> drop from this, if any. Defaults to <see cref="ItemRarity.Invalid"/>, which will allow any rarity.</param>
 	/// <returns></returns>
-	public static List<ItemDatabase.ItemRecord> RollManyMobDrops(int count, int itemLevel, float dropRarityModifier, float gearChance = 0.8f, float currencyChance = 0.15f, 
-		float mapChance = 0.05f, UnifiedRandom random = null, ItemRarity forceRarity = ItemRarity.Invalid, float itemRarityModifier = 0)
+	public static List<ItemDatabase.ItemRecord> RollManyMobDrops(int count, int itemLevel, float dropRarityModifier, DropCategoryWeights? categoryWeights = null, 
+		UnifiedRandom random = null, ItemRarity forceRarity = ItemRarity.Invalid, float itemRarityModifier = 0, float uniqueModifier = 1f, 
+		bool applyAreaLevelCategoryScaling = true)
 	{
 		random ??= Main.rand;
+		DropCategoryWeights weights = categoryWeights ?? DefaultCategoryWeights;
+		
+		if (applyAreaLevelCategoryScaling)
+		{
+			weights = ApplyAreaLevelDropCategoryScaling(itemLevel, weights);
+		}
+
 		var chances = new WeightedRandom<WeightedRandom<ItemDatabase.ItemRecord>>(random);
-		chances.Add(GetGearPool(itemLevel, ref dropRarityModifier, [.. ItemDatabase.GetItemByType<Gear>()], IsRecordValid, itemRarityModifier, random), gearChance);
-		chances.Add(GetGearPool(itemLevel, ref dropRarityModifier, [.. ItemDatabase.GetItemByType<CurrencyShard>()], IsRecordValid, itemRarityModifier, random), currencyChance);
-		chances.Add(GetWeightedMapPool(random), mapChance);
+		float gearRarityModifier = dropRarityModifier;
+		float currencyRarityModifier = dropRarityModifier;
+		chances.Add(GetGearPool(itemLevel, ref gearRarityModifier, [.. ItemDatabase.GetItemByType<Gear>()], IsRecordValid, itemRarityModifier, random, uniqueModifier), weights.Gear);
+		chances.Add(GetGearPool(itemLevel, ref currencyRarityModifier, [.. ItemDatabase.GetItemByType<CurrencyShard>()], IsRecordValid, itemRarityModifier, random, uniqueModifier), weights.Currency);
+		chances.Add(GetWeightedMapPool(random), weights.Map);
 
 		List<ItemDatabase.ItemRecord> items = [];
 
@@ -174,7 +201,7 @@ internal class DropTable
 		Func<ItemDatabase.ItemRecord, bool> additionalCondition, float itemRarityModifier, UnifiedRandom random = null, float uniqueModifier = 1f)
 	{
 		random ??= Main.rand;
-		dropRarityModifier += itemLevel / 10f; // Higher levels have a higher likelihood of being Magic, Rare or Unique
+		dropRarityModifier += itemLevel / 250f; // Higher levels have a higher likelihood of being Magic, Rare or Unique
 		WeightedRandom<ItemDatabase.ItemRecord> selection = new(random);
 
 		foreach (ItemDatabase.ItemRecord item in filteredGear)
@@ -186,6 +213,12 @@ internal class DropTable
 		}
 
 		return selection;
+	}
+
+	private static DropCategoryWeights ApplyAreaLevelDropCategoryScaling(int itemLevel, DropCategoryWeights weights)
+	{
+		float progress = MathHelper.Clamp((itemLevel - 1f) / 84f, 0f, 1f);
+		return weights with { Currency = weights.Currency * MathHelper.Lerp(0.5f, 0.2f, progress) };
 	}
 
 	private static bool MeetsMinDropItemLevel(ItemDatabase.ItemRecord record, int itemLevel)
