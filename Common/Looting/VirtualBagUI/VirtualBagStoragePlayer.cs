@@ -26,11 +26,20 @@ internal class VirtualBagStoragePlayer : ModPlayer
 
 	private static Hook ExitSubworldHook = null;
 
-	public List<Item> Storage = [];
+	public List<Item> MatchedStorage = [];
+	public List<Item> FilteredOutStorage = [];
+	/// <summary>
+	///		Name of the filter that was active when items most recently entered storage. Empty when no
+	///		filter has been applied this session. Shown in the Sack of Holding header.
+	/// </summary>
+	public string LastFilterName = string.Empty;
+
 	public bool UsesVirtualBag = true;
 	public bool ConfirmedExit = false;
 	public Dictionary<int, int> ConfluxResourcesCollected = [];
 	public Dictionary<int, int> CurrencyShardsCollected = [];
+
+	public bool HasAnyStorage => MatchedStorage.Count > 0 || FilteredOutStorage.Count > 0;
 
 	private static bool IsVirtualBagActiveContext()
 	{
@@ -72,7 +81,7 @@ internal class VirtualBagStoragePlayer : ModPlayer
 		ref bool confirmed = ref storagePlayer.ConfirmedExit;
 
 		if (Main.netMode == NetmodeID.Server || !storagePlayer.UsesVirtualBag || !IsVirtualBagActiveContext() ||
-		    confirmed || storagePlayer.Storage.Count == 0)
+		    confirmed || !storagePlayer.HasAnyStorage)
 		{
 			orig();
 			return;
@@ -99,7 +108,9 @@ internal class VirtualBagStoragePlayer : ModPlayer
 
 		ConfluxResourcesCollected.Clear();
 		CurrencyShardsCollected.Clear();
-		Storage.Clear();
+		MatchedStorage.Clear();
+		FilteredOutStorage.Clear();
+		LastFilterName = string.Empty;
 	}
 
 	public void RecordConfluxResource(int itemType, int amount)
@@ -131,7 +142,7 @@ internal class VirtualBagStoragePlayer : ModPlayer
 		if (UIManager.TryGet(VirtualBagUIState.Identifier, out UIManager.UIStateData data) && data.Enabled &&
 		    VirtualBagAllowed(inv[slot], Main.LocalPlayer) && clicked)
 		{
-			Main.LocalPlayer.GetModPlayer<VirtualBagStoragePlayer>().Storage.Add(inv[slot].Clone());
+			Main.LocalPlayer.GetModPlayer<VirtualBagStoragePlayer>().MatchedStorage.Add(inv[slot].Clone());
 			(data.Value as VirtualBagUIState).RefreshStorage();
 			inv[slot].TurnToAir();
 

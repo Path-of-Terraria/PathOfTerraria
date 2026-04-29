@@ -1,3 +1,4 @@
+using PathOfTerraria.Common.Looting.ItemFiltering;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Common.UI.Components;
@@ -23,7 +24,15 @@ namespace PathOfTerraria.Common.Looting.VirtualBagUI;
 internal class VirtualBagUIState : UIState, IMutuallyExclusiveUI, IAutopauseUI
 {
 	public const string Identifier = "Virtual Bag UI";
+
+	private const string MatchedTab = "matched";
+	private const string FilteredOutTab = "filteredOut";
+
 	private UIGrid _storageGrid;
+	private string _activeTab = MatchedTab;
+	private UIPanelTab _matchedTab;
+	private UIPanelTab _filteredOutTab;
+	private UIText _filterLabel;
 
 	public override void OnActivate()
 	{
@@ -51,8 +60,39 @@ internal class VirtualBagUIState : UIState, IMutuallyExclusiveUI, IAutopauseUI
 		close.OnLeftClick += Close;
 		panel.Append(close);
 
+		const int TabBarHeight = 32;
+		const int FilterLabelHeight = 22;
+
+		_matchedTab = new UIPanelTab(MatchedTab, Language.GetText(Path + "TabMatched"), 0.85f);
+		_matchedTab.SetPadding(6);
+		_matchedTab.Top = StyleDimension.FromPixels(GridBuffer);
+		_matchedTab.Left = StyleDimension.FromPixels(0);
+		_matchedTab.BackgroundColor.A = 255;
+		_matchedTab.OnLeftClick += (_, _) => SetActiveTab(MatchedTab);
+		panel.Append(_matchedTab);
+
+		_filteredOutTab = new UIPanelTab(FilteredOutTab, Language.GetText(Path + "TabFilteredOut"), 0.85f);
+		_filteredOutTab.SetPadding(6);
+		_filteredOutTab.Top = StyleDimension.FromPixels(GridBuffer);
+		_filteredOutTab.BackgroundColor.A = 255;
+		_filteredOutTab.OnLeftClick += (_, _) => SetActiveTab(FilteredOutTab);
+		panel.Append(_filteredOutTab);
+
+		// Position the second tab after the first one once it has measured itself.
+		_matchedTab.Recalculate();
+		_filteredOutTab.Left = StyleDimension.FromPixels(_matchedTab.GetDimensions().Width + 8);
+		_filteredOutTab.Recalculate();
+
+		_filterLabel = new UIText(BuildFilterLabel(), 0.85f)
+		{
+			Top = StyleDimension.FromPixels(GridBuffer + 4),
+			HAlign = 1f,
+			Left = StyleDimension.FromPixels(-8),
+		};
+		panel.Append(_filterLabel);
+
 		UIPanel gridPanel = new(ModContent.Request<Texture2D>(TexturePath + "Background"), ModContent.Request<Texture2D>(TexturePath + "Outline"));
-		gridPanel.SetDimensions((0, 0), (0, GridBuffer), (1, -30), (1, -GridBuffer));
+		gridPanel.SetDimensions((0, 0), (0, GridBuffer + TabBarHeight + FilterLabelHeight), (1, -30), (1, -(GridBuffer + TabBarHeight + FilterLabelHeight)));
 		panel.Append(gridPanel);
 
 		_storageGrid = new UIGrid();
@@ -76,12 +116,15 @@ internal class VirtualBagUIState : UIState, IMutuallyExclusiveUI, IAutopauseUI
 
 		gridPanel.Append(_storageGrid);
 
+		int gridTopOffset = GridBuffer + TabBarHeight + FilterLabelHeight;
+
 		UIScrollbar bar = new();
-		bar.SetDimensions((0, 0), (0, GridBuffer), (0, 20), (1, -GridBuffer));
+		bar.SetDimensions((0, 0), (0, gridTopOffset), (0, 20), (1, -gridTopOffset));
 		bar.HAlign = 1f;
 		_storageGrid.SetScrollbar(bar);
 		panel.Append(bar);
 
+		SetActiveTab(_activeTab);
 		RefreshStorage();
 
 		if (Main.LocalPlayer.TryGetModPlayer(out VirtualBagStoragePlayer plr))
@@ -207,11 +250,52 @@ internal class VirtualBagUIState : UIState, IMutuallyExclusiveUI, IAutopauseUI
 		}
 	}
 
+	private void SetActiveTab(string tab)
+	{
+		_activeTab = tab;
+
+		if (_matchedTab is not null)
+		{
+			_matchedTab.TextColor = tab == MatchedTab ? Color.Yellow : Color.White;
+		}
+
+		if (_filteredOutTab is not null)
+		{
+			_filteredOutTab.TextColor = tab == FilteredOutTab ? Color.Yellow : Color.White;
+		}
+
+		SoundEngine.PlaySound(SoundID.MenuTick);
+		RefreshStorage();
+	}
+
+	private static LocalizedText BuildFilterLabel()
+	{
+		const string Path = "Mods.PathOfTerraria.UI.VirtualBag.";
+
+		string filterName = Main.LocalPlayer.GetModPlayer<VirtualBagStoragePlayer>().LastFilterName;
+
+		return string.IsNullOrEmpty(filterName)
+			? Language.GetText(Path + "NoFilter")
+			: Language.GetText(Path + "FilterLabel").WithFormatArgs(filterName);
+	}
+
+	private List<Item> GetActiveStorage(VirtualBagStoragePlayer player)
+	{
+		return _activeTab == FilteredOutTab ? player.FilteredOutStorage : player.MatchedStorage;
+	}
+
 	internal void RefreshStorage()
 	{
 		_storageGrid.Clear();
 
-		foreach (Item item in Main.LocalPlayer.GetModPlayer<VirtualBagStoragePlayer>().Storage)
+		VirtualBagStoragePlayer player = Main.LocalPlayer.GetModPlayer<VirtualBagStoragePlayer>();
+
+		if (_filterLabel is not null)
+		{
+			_filterLabel.SetText(BuildFilterLabel());
+		}
+
+		foreach (Item item in GetActiveStorage(player))
 		{
 			var storageIcon = new UIItemIcon(item, false)
 			{
@@ -278,7 +362,13 @@ internal class VirtualBagUIState : UIState, IMutuallyExclusiveUI, IAutopauseUI
 			return;
 		}
 
-		plr.GetModPlayer<VirtualBagStoragePlayer>().Storage.Remove(item);
+		VirtualBagStoragePlayer storage = plr.GetModPlayer<VirtualBagStoragePlayer>();
+
+		if (!storage.MatchedStorage.Remove(item))
+		{
+			storage.FilteredOutStorage.Remove(item);
+		}
+
 		RefreshStorage();
 		SoundEngine.PlaySound(SoundID.Grab);
 	}

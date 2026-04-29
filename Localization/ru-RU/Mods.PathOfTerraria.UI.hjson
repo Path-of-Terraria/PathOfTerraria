@@ -349,6 +349,36 @@ VirtualBag: {
 	// ConfluxTooltip: Conflux gained from this domain
 	// CurrencyShards: Currency Shards
 	// CurrencyShardsTooltip: Currency shards gained from this domain
+	// TabMatched: Matched
+	// TabFilteredOut: Filtered Out
+	// FilterLabel: Filter: {0}
+	// NoFilter: No active filter
+}
+
+ItemFilter: {
+	// Title: Item Filters
+	// New: New
+	// Duplicate: Duplicate
+	// Delete: Delete
+	// SetActive: Set Active
+	// ClearActive: Clear Active
+	// ActiveMarker: "[Active] {0}"
+	// DefaultName: New Filter
+	// EmptyHint: Create or select a filter to begin editing.
+	// Name: Name
+	// ItemLevel: Item Level (min - max)
+	// Any: Any
+	// Rarity: Rarity (any if none selected)
+	// BaseTypes: Base Types (any if none selected)
+
+	Rarities: {
+		// Normal: Normal
+		// Magic: Magic
+		// Rare: Rare
+		// Unique: Unique
+	}
+
+	// BaseType.Fallback: "{0}"
 }
 
 CurrencyPouch: {
