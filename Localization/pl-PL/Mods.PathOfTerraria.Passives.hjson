@@ -15,8 +15,8 @@ IncreasedRangedDamagePassive: {
 }
 
 IncreasedMagicDamagePassive: {
-	// Name: Increased Magic Damage
-	// Tooltip: Increases your magic damage by {0}%
+	Name: Mistrzostwo Arkanów
+	Tooltip: Zwiększa twoje obrażenia magiczne o 5% za każdy poziom
 }
 
 AddedLifePassive: {
@@ -31,7 +31,7 @@ AddedManaPassive: {
 
 LongRangePassive: {
 	Name: Snajper
-	// Tooltip: Increases your damage against distant enemies by {0}%
+	Tooltip: Zwiększa obrażenia zadawane odległym wrogom o 10% za każdy poziom
 }
 
 CloseRangePassive: {
@@ -50,23 +50,23 @@ DamageReductionPassive: {
 }
 
 DamageReflectionPassive: {
-	// Name: Added Damage Reflection
-	// Tooltip: Reflect {0} more damage to enemies that deal contact damage
+	Name: Kolczasty Pancerz
+	Tooltip: Odbija o 10 więcej obrażeń na poziom wrogom zadającym obrażenia kontaktowe.
 }
 
 StartPassive: {
-	// Name: Magic Path
-	// Tooltip: Your magic journey starts here
+	Name: Kotwica
+	Tooltip: Twoja podróż zaczyna się tutaj
 }
 
 IncreasedSummonDamagePassive: {
-	// Name: Increased Summon Damage
-	// Tooltip: Increases all summon damage by {0}%
+	Name: Wzmocniona Horda
+	Tooltip: Zwiększa obrażenia od przyzywania o 10% za każdy poziom
 }
 
 IncreasedSentryDamagePassive: {
-	// Name: Increased Sentry Damage
-	// Tooltip: Increases your sentries' damage by {0}%
+	Name: Niezłomne Straże
+	Tooltip: Zwiększa obrażenia twoich strażników o 10% za każdy poziom
 }
 
 JewelSocket: {
@@ -305,8 +305,8 @@ HasteChargeMaxChargesPassive: {
 }
 
 ChanceToConsumeAmmoPassive: {
-	// Name: Ammo Reservation Chance
-	// Tooltip: +{0}% chance to reserve ammo
+	Name: Tajny Magazynek
+	Tooltip: 5% szansy na niewykorzystanie amunicji za każdy poziom
 }
 
 IncreasedProjectileDamagePassive: {
