@@ -39,7 +39,7 @@ public static class PoTMobHelper
 
 	public static float GetStatScaling()
 	{
-		float progress = MathHelper.Clamp((GetAreaLevel() - 1f) / 84f, 0f, 1f);
+		float progress = MathHelper.Clamp((GetAreaLevel() - 1f) / 80f, 0f, 1f);
 		return progress * progress * (3f - 2f * progress);
 	}
 }

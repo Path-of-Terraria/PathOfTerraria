@@ -217,7 +217,7 @@ internal class DropTable
 
 	private static DropCategoryWeights ApplyAreaLevelDropCategoryScaling(int itemLevel, DropCategoryWeights weights)
 	{
-		float progress = MathHelper.Clamp((itemLevel - 1f) / 84f, 0f, 1f);
+		float progress = MathHelper.Clamp((itemLevel - 1f) / 80f, 0f, 1f);
 		return weights with { Currency = weights.Currency * MathHelper.Lerp(0.5f, 0.2f, progress) };
 	}
 

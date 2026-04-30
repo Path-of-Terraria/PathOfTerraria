@@ -9,7 +9,7 @@ using Terraria.Utilities;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class EoLMap() : HardmodeBossMap(8, () => NPC.downedEmpressOfLight)
+internal class EoLMap() : HardmodeBossMap(8, 70, () => NPC.downedEmpressOfLight)
 {
 	public override void SetStaticDefaults()
 	{
