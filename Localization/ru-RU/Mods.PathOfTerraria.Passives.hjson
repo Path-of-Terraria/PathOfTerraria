@@ -986,17 +986,17 @@ WideSwingsMastery: {
 
 RangerMeleeChanceToBleedPassive: {
 	// Name: Ranged/Melee Chance to Bleed
-	// Tooltip: +{0}% chance for ranged or melee hits to inflict Bleeding
+	// Tooltip: +{0}% chance for ranged or melee hits to apply Bleed
 }
 
 BleedEffectivenessPassive: {
 	// Name: Increased Bleed Damage
-	// Tooltip: +{0}% bleed damage
+	// Tooltip: +{0}% increased bleed damage
 }
 
 BleedTimePassive: {
 	// Name: Increased Bleed Time
-	// Tooltip: +{0}% bleed time
+	// Tooltip: +{0}% increased bleed duration
 }
 
 BleedTickPassive: {
