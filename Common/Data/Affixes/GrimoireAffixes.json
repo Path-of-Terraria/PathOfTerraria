@@ -1,7 +1,7 @@
 ﻿[
 	{
 		"affixType": "ChanceToApplyPoisonItemAffix",
-		"equipTypes": "Grimoire",
+		"equipTypes": "Grimoire Summoner",
 		"influences": "None",
 		"tiers": [
 			{
@@ -62,7 +62,7 @@
 	},
 	{
 		"affixType": "AddedDamageAffix",
-		"equipTypes": "Melee Grimoire",
+		"equipTypes": "Melee Grimoire Summoner",
 		"tiers": [
 			{
 				"minValue": 1,
