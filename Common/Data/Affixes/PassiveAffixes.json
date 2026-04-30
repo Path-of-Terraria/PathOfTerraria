@@ -151,7 +151,7 @@
 	},
 	{
 		"affixType": "AddedSummonCritAffix",
-		"equipTypes": "Talisman",
+		"equipTypes": "Talisman Summoner Grimoire",
 		"tiers": [
 			{
 				"minValue": 2,
