@@ -1173,3 +1173,8 @@ OneMinionArmyKeystone: {
 	// Name: OneMinionArmyKeystone
 	// Tooltip: You are limited to one maximum minion, but gain {0}% increased damage per maximum minion slot.
 }
+
+DirectShotKeystone: {
+	// Name: DirectShotKeystone
+	// Tooltip: Your Projectiles deal up to +50% more Damage at Nearby range, but deal up to 50% less Damage at Far range"
+}

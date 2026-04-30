@@ -7508,5 +7508,20 @@
 				"referenceId": 72
 			}
 		]
+	},
+	{
+		"internalIdentifier": "DirectShotKeystone",
+		"referenceId": 1171,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": -10,
+			"y": 1410
+		},
+		"connections": [
+			{
+				"referenceId": 56
+			}
+		]
 	}
 ]
