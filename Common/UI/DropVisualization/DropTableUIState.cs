@@ -2,8 +2,10 @@
 using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.ItemDropping;
+using PathOfTerraria.Common.Systems.MobSystem;
 using PathOfTerraria.Common.UI.Elements;
 using PathOfTerraria.Common.UI.Utilities;
+using PathOfTerraria.Content.Items.Currency;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.GameContent.UI.Elements;
@@ -59,13 +61,21 @@ internal class DropResult(int count)
 
 internal class DropTableUIState : CloseableSmartUi
 {
-	public static readonly Point MainPanelSize = new(1160, 760);
+	public static readonly Point MainPanelSize = new(1320, 900);
 
 	private enum SortMode
 	{
 		None,
 		Count,
 		Alphabetical
+	}
+
+	private enum CategoryFilter
+	{
+		All,
+		Gear,
+		Currency,
+		Maps
 	}
 
 	protected override bool IsCentered => true;
@@ -78,8 +88,11 @@ internal class DropTableUIState : CloseableSmartUi
 	private UIEditableValue _rarityMod = null;
 	private UIEditableValue _rateMod = null;
 	private UIButton<string> _sortButton = null;
+	private UIButton<string> _categoryButton = null;
+	private UIPanel _categoryDropdown = null;
 	private UIList _resultList = null;
 	private SortMode _sort = SortMode.None;
+	private CategoryFilter _categoryFilter = CategoryFilter.All;
 
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{
@@ -116,7 +129,7 @@ internal class DropTableUIState : CloseableSmartUi
 		var bottomPanel = new UIPanel()
 		{
 			Width = StyleDimension.Fill,
-			Height = StyleDimension.FromPixelsAndPercent(-84, 1),
+			Height = StyleDimension.FromPixelsAndPercent(-184, 1),
 			VAlign = 1f
 		};
 
@@ -177,21 +190,24 @@ internal class DropTableUIState : CloseableSmartUi
 		var topPanel = new UIPanel()
 		{
 			Width = StyleDimension.Fill,
-			Height = StyleDimension.FromPixels(80),
+			Height = StyleDimension.FromPixels(180),
 		};
 
 		panel.Append(topPanel);
 
-		_gearRate = new(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.Gear"), 0.80f, false);
+		int defaultItemLevel = PoTMobHelper.GetAreaLevel();
+		DropTable.DropCategoryWeights weights = DropTable.GetDefaultDropCategoryWeights(defaultItemLevel);
+
+		_gearRate = new(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.Gear"), weights.Gear, false);
 		topPanel.Append(_gearRate);
 
-		_currencyRate = new(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.Currency"), 0.15f, false)
+		_currencyRate = new(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.Currency"), weights.Currency, false)
 		{
 			Left = StyleDimension.FromPixels(120)
 		};
 		topPanel.Append(_currencyRate);
 
-		_mapRate = new(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.Map"), 0.05f, false)
+		_mapRate = new(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.Map"), weights.Map, false)
 		{
 			Left = StyleDimension.FromPixels(256)
 		};
@@ -213,7 +229,7 @@ internal class DropTableUIState : CloseableSmartUi
 		};
 		topPanel.Append(_count);
 
-		_level = new(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.Level"), 0.05f, false, 0.01, false)
+		_level = new(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.Level"), defaultItemLevel / 100f, false, 0.01, false)
 		{
 			Left = StyleDimension.FromPixels(598)
 		};
@@ -250,6 +266,16 @@ internal class DropTableUIState : CloseableSmartUi
 
 		_sortButton.OnLeftClick += ChangeSort;
 		topPanel.Append(_sortButton);
+
+		_categoryButton = new UIButton<string>(GetCategoryButtonText())
+		{
+			Width = StyleDimension.FromPixels(150),
+			Height = StyleDimension.FromPixels(60),
+			Left = StyleDimension.FromPixels(1108)
+		};
+
+		_categoryButton.OnLeftClick += ToggleCategoryDropdown;
+		topPanel.Append(_categoryButton);
 	}
 
 	private void ChangeSort(UIMouseEvent evt, UIElement listeningElement)
@@ -263,6 +289,58 @@ internal class DropTableUIState : CloseableSmartUi
 
 		_sortButton.SetText(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.SortBy") + _sort);
 		_resultList.UpdateOrder();
+	}
+
+	private string GetCategoryButtonText()
+	{
+		string category = Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.Categories." + _categoryFilter);
+		return Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.Category", category);
+	}
+
+	private void ToggleCategoryDropdown(UIMouseEvent evt, UIElement listeningElement)
+	{
+		if (_categoryDropdown is not null)
+		{
+			_categoryDropdown.Remove();
+			_categoryDropdown = null;
+			return;
+		}
+
+		_categoryDropdown = new UIPanel
+		{
+			Width = StyleDimension.FromPixels(150),
+			Height = StyleDimension.FromPixels(112),
+			Left = StyleDimension.FromPixels(1108),
+			Top = StyleDimension.FromPixels(64)
+		};
+
+		AddCategoryOption(CategoryFilter.All, 0);
+		AddCategoryOption(CategoryFilter.Gear, 28);
+		AddCategoryOption(CategoryFilter.Currency, 56);
+		AddCategoryOption(CategoryFilter.Maps, 84);
+
+		listeningElement.Parent.Append(_categoryDropdown);
+	}
+
+	private void AddCategoryOption(CategoryFilter filter, int top)
+	{
+		var button = new UIButton<string>(filter.ToString())
+		{
+			Width = StyleDimension.Fill,
+			Height = StyleDimension.FromPixels(26),
+			Top = StyleDimension.FromPixels(top)
+		};
+
+		button.OnLeftClick += (_, _) => SelectCategory(filter);
+		_categoryDropdown.Append(button);
+	}
+
+	private void SelectCategory(CategoryFilter filter)
+	{
+		_categoryFilter = filter;
+		_categoryButton.SetText(GetCategoryButtonText());
+		_categoryDropdown.Remove();
+		_categoryDropdown = null;
 	}
 
 	private void RunDatabase(UIMouseEvent evt, UIElement listeningElement)
@@ -284,8 +362,18 @@ internal class DropTableUIState : CloseableSmartUi
 
 	private void RollDatabase(int count, Dictionary<int, DropResult> resultsById)
 	{
-		List<ItemDatabase.ItemRecord> items = DropTable.RollManyMobDrops(count, 0, (float)_rarityMod.Value, (float)_gearRate.Value, (float)_currencyRate.Value, 
-			(float)_mapRate.Value, null, ItemRarity.Invalid, (float)_rateMod.Value);
+		int itemLevel = (int)Math.Round(_level.Value * 100);
+
+		if (_categoryFilter == CategoryFilter.Currency)
+		{
+			RollCurrencyDatabase(count, itemLevel, resultsById);
+			return;
+		}
+
+		GetCategoryRates(out float gearRate, out float currencyRate, out float mapRate);
+		var weights = new DropTable.DropCategoryWeights(gearRate, currencyRate, mapRate);
+		List<ItemDatabase.ItemRecord> items = DropTable.RollManyMobDrops(count, itemLevel, (float)_rarityMod.Value, weights, 
+			itemRarityModifier: (float)_rateMod.Value, applyAreaLevelCategoryScaling: false);
 
 		for (int i = 0; i < count; ++i)
 		{
@@ -297,21 +385,66 @@ internal class DropTableUIState : CloseableSmartUi
 				continue;
 			}
 
-			if (!resultsById.TryGetValue(record.ItemId, out DropResult result))
+			AddResult(resultsById, record);
+		}
+	}
+
+	private void RollCurrencyDatabase(int count, int itemLevel, Dictionary<int, DropResult> resultsById)
+	{
+		List<ItemDatabase.ItemRecord> currency = [.. ItemDatabase.GetItemByType<CurrencyShard>()];
+
+		for (int i = 0; i < count; ++i)
+		{
+			ItemDatabase.ItemRecord record = DropTable.RollList(itemLevel, (float)_rarityMod.Value, currency, _ => true, (float)_rateMod.Value);
+
+			if (record == ItemDatabase.InvalidItem)
 			{
-				resultsById.Add(record.ItemId, result = new DropResult(0));
+				continue;
 			}
 
-			result.Count++;
+			AddResult(resultsById, record);
+		}
+	}
 
-			if (record.Rarity == ItemRarity.Unique)
-			{
-				result.IsUnique = true;
-			}
-			else
-			{
-				result.IncrementRarityCount(record.Rarity);
-			}
+	private static void AddResult(Dictionary<int, DropResult> resultsById, ItemDatabase.ItemRecord record)
+	{
+		if (!resultsById.TryGetValue(record.ItemId, out DropResult result))
+		{
+			resultsById.Add(record.ItemId, result = new DropResult(0));
+		}
+
+		result.Count++;
+
+		if (record.Rarity == ItemRarity.Unique)
+		{
+			result.IsUnique = true;
+		}
+		else
+		{
+			result.IncrementRarityCount(record.Rarity);
+		}
+	}
+
+	private void GetCategoryRates(out float gearRate, out float currencyRate, out float mapRate)
+	{
+		gearRate = (float)_gearRate.Value;
+		currencyRate = (float)_currencyRate.Value;
+		mapRate = (float)_mapRate.Value;
+
+		switch (_categoryFilter)
+		{
+			case CategoryFilter.Gear:
+				currencyRate = 0;
+				mapRate = 0;
+				break;
+			case CategoryFilter.Currency:
+				gearRate = 0;
+				mapRate = 0;
+				break;
+			case CategoryFilter.Maps:
+				gearRate = 0;
+				currencyRate = 0;
+				break;
 		}
 	}
 

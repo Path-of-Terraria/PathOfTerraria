@@ -21,16 +21,16 @@ Hotbar: {
 }
 
 Slots: {
-	Head: Hełm
-	Body: Klatka piersiowa
-	Legs: Nogi
-	Weapon: Broń
-	Necklace: Naszyjnik
-	Offhand: Poboczne
-	RingLeft: Lewy pierścień
-	RingRight: Prawy pierścień
-	Wings: Skrzydła
-	NumberedAccessory: Akcesorium {0}
+	// Head: Helmet
+	// Body: Chest
+	// Legs: Legs
+	// Weapon: Weapon
+	// Necklace: Necklace
+	// Offhand: Offhand
+	// RingLeft: Left Ring
+	// RingRight: Right Ring
+	// Wings: Wings
+	// NumberedAccessory: Accessory {0}
 }
 
 BaseDamage: Bazowe Obrażenia: {0}
@@ -94,6 +94,15 @@ DropVisualizer: {
 	// RateMod: +Rate
 	// Run: Run
 	SortBy: Sortuj według:
+	// Category: Category: {0}
+
+	Categories: {
+		// All: All
+		// Gear: Gear
+		// Currency: Currency
+		// Maps: Maps
+	}
+
 	UniqueItem: (Unikalny Przedmiot)
 }
 
@@ -112,50 +121,81 @@ Guide: {
 	Hide: Ukryj
 	Show: Pokaż
 	# Welcome/hello, explain purpose of tutorial
-	0: Cześć! Witaj w Path of Terraria.\nTa modyfikacja znacznie zmienia gre.\nW zwiazku z tym, ten poradnik wytłumaczy ci zmiany, mechaniki oraz na co warto wypatrywać.\nJeśli chcesz pominąć, kliknij klawisz Pomiń Wszystko lub Pomiń krok w każdym momencie.\nW przeciwnym razie, kliknij Następny
+	0:
+		'''
+		Cześć! Witaj w Path of Terraria.
+		Ta modyfikacja znacznie zmienia gre.
+		W zwiazku z tym, ten poradnik wytłumaczy ci zmiany, mechaniki oraz na co warto wypatrywać.
+		Jeśli chcesz pominąć, kliknij klawisz Pomiń Wszystko lub Pomiń krok w każdym momencie.
+		W przeciwnym razie, kliknij Następny
+		'''
 	# Explain EXP bar, click on exp bar
-	1: Po pierwsze, pasek doświadczenia. Znajduje się on bezpośrednio nad tym oknem dialogowym. \nWrogowie pozostawiają po sobie doświadczenie, zazwyczaj zależy ono od ich siły, co pozwala ci awansować na kolejne poziomy.\nZa zdobywanie kolejnych poziomów otrzymujesz punkty pasywne i punkty umiejętności. \nKliknij na pasek doświadczenia, aby otworzyć drzewko umiejętności pasywnych.
+	1:
+		'''
+		Po pierwsze, pasek doświadczenia. Znajduje się on bezpośrednio nad tym oknem dialogowym. 
+		Wrogowie pozostawiają po sobie doświadczenie, zazwyczaj zależy ono od ich siły, co pozwala ci awansować na kolejne poziomy.
+		Za zdobywanie kolejnych poziomów otrzymujesz punkty pasywne i punkty umiejętności. 
+		Kliknij na pasek doświadczenia, aby otworzyć drzewko umiejętności pasywnych.
+		'''
 	# Explain Passive tree, ask to [de]allocate.
-	2: Tutaj znajduje się drzewko umiejętności pasywnych.\n Jeżeli posiadasz punkty umiejętności pasywnych, możesz je przydzielić do wybranych umiejętności . \n Te umiejętności zapewniają bonusy do różnych efektów, takich jak dodatkowe życie, obrażenia lub prędkość. \n Kliknij dowolną umiejętność, aby ją przydzielić, a prawym przyciskiem myszy, aby ją cofnąć.
+	2:
+		'''
+		Tutaj znajduje się drzewko umiejętności pasywnych.
+		 Jeżeli posiadasz punkty umiejętności pasywnych, możesz je przydzielić do wybranych umiejętności . 
+		 Te umiejętności zapewniają bonusy do różnych efektów, takich jak dodatkowe życie, obrażenia lub prędkość. 
+		 Kliknij dowolną umiejętność, aby ją przydzielić, a prawym przyciskiem myszy, aby ją cofnąć.
+		'''
 	# Click on skill tab.
 	3: Teraz kliknij na zakładkę „Umiejętności” w lewym górnym rogu.
 	# Explain the skills tab, select a skill
-	4: Oto zakładka (debug) Umiejętności.\nTutaj można zaznaczyć lub odznaczyć określone umiejętności, co pozwala znacznie zmienić styl gry.\nW przyszłości umiejętności będą dostępne wraz z postępem w grze zamiast z tego menu.\nKliknij dowolną umiejętność, aby ją zaznaczyć.
+	4:
+		'''
+		Oto zakładka (debug) Umiejętności.
+		Tutaj można zaznaczyć lub odznaczyć określone umiejętności, co pozwala znacznie zmienić styl gry.
+		W przyszłości umiejętności będą dostępne wraz z postępem w grze zamiast z tego menu.
+		Kliknij dowolną umiejętność, aby ją zaznaczyć.
+		'''
 	# Explain skills, close menu
-	5: Wybrane umiejętności zostaną wyświetlone na pasku szybkiego dostępu.\nUmiejętności mają czas odnowienia po użyciu, którego długość zależy od danej umiejętności.\nNiektóre umiejętności są odblokowywane poprzez posiadanie określonych przedmiotów.\nZamknij menu drzewka (naciśnij klawisz Escape lub kliknij czerwony znak X w prawym górnym rogu).
+	5:
+		'''
+		Wybrane umiejętności zostaną wyświetlone na pasku szybkiego dostępu.
+		Umiejętności mają czas odnowienia po użyciu, którego długość zależy od danej umiejętności.
+		Niektóre umiejętności są odblokowywane poprzez posiadanie określonych przedmiotów.
+		Zamknij menu drzewka (naciśnij klawisz Escape lub kliknij czerwony znak X w prawym górnym rogu).
+		'''
 	# Explain weapon requirements, use skill
-	/* 6:
+	6:
 		'''
-		Now, hit the hotkey under your given skill to use it.
-		If nothing appears under the skill, choose a hotkey in Settings -> Controls -> Use Skill 1 - 3.
-		Some abilities require a specific held item. For example, the Nova skill requires holding a Magic weapon.
-		Hovering over the skill will describe any conditions it needs.
-		''' */
+		Teraz naciśnij klawisz skrótu przypisany do danej umiejętności, aby jej użyć.
+		Jeśli pod umiejętnością nie ma żadnego klawisza, wybierz skrót w Ustawieniach -> Sterowanie -> Użyj Umiejętności 1-3.
+		Niektóre zdolności wymagają trzymania określonego przedmiotu. Na przykład umiejętność Nova wymaga trzymania magicznej broni.
+		Najedź kursorem na umiejętność, aby zobaczyć, jakie warunki musi spełniać.
+		'''
 	# Explain inventory
-	/* 7:
+	7:
 		'''
-		Next up, the hotbar has changed substantially as well.
-		You'll see that when the first hotbar slot is selected, the hotbar is in Combat mode.
-		It shows your skills, weapon and potions. 
-		When off of the first slot, Normal mode is shown, showing the rest of your hotbar normally.
-		Hit the "Next" button when ready.
-		''' */
+		Kolejna zmiana dotyczy paska szybkiego dostępu, który również uległ znacznym modyfikacjom.
+		Zauważysz, że gdy wybrany jest pierwszy slot paska, włącza się tryb walki.
+		Wyświetlane są wtedy twoje umiejętności, broń i mikstury.
+		Gdy nie masz wybranego pierwszego slotu, włączony jest tryb normalny, pokazujący resztę paska szybkiego dostępu w standardowy sposób.
+		Naciśnij przycisk \"Dalej\”, gdy będziesz gotowy.
+		'''
 	# Explain inventory pt2, hotswapping
-	/* 8:
+	8:
 		'''
-		Weapons can only be equipped in the first hotbar slot. Additionally, weapons can be hotswapped.
-		Equip a weapon to the first slot, and press your Weapon Swap hotkey (defaults Z).
-		This should swap out your weapon with either air (allowing you to equip another) or the old swapped weapon.
-		Use the Weapon Swap hotkey to swap a weapon. Swap back and forth as you wish.
-		''' */
+		Bronie można wyposażyć tylko w pierwszym slocie paska szybkiego dostępu. Dodatkowo bronie można szybko wymieniać.
+		Wyposaż broń w pierwszy slot i naciśnij klawisz skrótu do zmiany broni (domyślnie Z).
+		To powinno zamienić twoją broń na pusty slot (pozwalając wyposażyć inną) lub na wcześniej wymienioną broń.
+		Użyj klawisza skrótu do zmiany broni, aby wymienić broń. Przełączaj się między nimi, jak chcesz.
+		'''
 	# Character sheet
-	/* 9:
+	9:
 		'''
-		Moving on, your character has a few additional stats in Path of Terraria.
-		These can all be found in the Character Sheet, which displays all of your stats such as life and experience.
-		You can open the Sheet with the Toggle Stat Page hotkey (defaults V), or click the paper icon next to your minimap.
-		Open the character sheet and look around. Close it when you want to continue.
-		''' */
+		Przechodząc dalej, twoja postać w Path of Terraria ma kilka dodatkowych statystyk.
+		Wszystkie można znaleźć w Karcie Postaci, która wyświetla wszystkie twoje statystyki, takie jak życie i doświadczenie.
+		Kartę możesz otworzyć za pomocą klawisza skrótu do przełączania strony statystyk (domyślnie V) lub klikając ikonę kartki obok minimapy.
+		Otwórz kartę postaci i rozejrzyj się. Zamknij ją, gdy będziesz gotowy, aby kontynuować.
+		'''
 	# Explain the Quest Book
 	/* 10:
 		'''
@@ -183,14 +223,14 @@ Guide: {
 		This quest will complete once you return to the overworld.
 		''' */
 	# Finish
-	/* 13:
+	13:
 		'''
-		Well done! That is everything about Path of Terraria you need to know.
-		You can now play freely (once you hit "Next").
-		Good luck and enjoy!
+		Brawo! To wszystko, co musisz wiedzieć o Path of Terraria.
+		Możesz teraz grać swobodnie (po kliknięciu „Dalej”).
+		Powodzenia i baw się dobrze!
 
-		PS: Don't forget to use the Arcane Obelisk!
-		''' */
+		PS: Nie zapomnij użyć Tajemnego Obelisku!
+		'''
 }
 
 # For the various inventory buttons. NoGrimoire is only if the Grimoire isn't in the player's inventory.
@@ -300,6 +340,8 @@ VirtualBag: {
 	// Review: Review your items (Closing this will exit the subworld)
 	// Conflux: Conflux
 	// ConfluxTooltip: Conflux gained from this domain
+	// CurrencyShards: Currency Shards
+	// CurrencyShardsTooltip: Currency shards gained from this domain
 }
 
 CurrencyPouch: {
@@ -310,12 +352,12 @@ CurrencyPouch: {
 	// StoreAll: Shift + Left Click: store all from inventory
 }
 
-PassiveTreeTab: Umiejętności bierne
+// PassiveTreeTab: Passives
 // MasteryRequiredNodes: Requires {0} connected nodes to allocate
-SkillTreeTab: Umiejętności
-QuestsAvailableTab: Dostępne
-QuestsCompletedTab: Zakończone powodzeniem
-PlayerStatsTab: Statystyki
+// SkillTreeTab: Skills
+// QuestsAvailableTab: Available
+// QuestsCompletedTab: Completed
+// PlayerStatsTab: Stats
 
 ClassPages: {
 	StarterClasses: {
@@ -371,6 +413,7 @@ MapDevice: {
 	// MapSlot: Map Slot
 	// ActivatePortal: Open Portal
 	// DeactivatePortal: Close Portal
+	// ConfirmClosePortal: Confirm Close
 	// AlreadyInUse: This map device is already in use!
 	// InjectResource: Inject Resource
 	// EjectResource: Eject Resource

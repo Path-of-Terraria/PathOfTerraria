@@ -51,9 +51,10 @@ internal class GrimoirePlayer : ModPlayer
 	{
 		Storage.RemoveAll(x => x.IsAir || x.type == ItemID.None || x.stack == 0);
 
-		if (CurrentSummonId != -1)
+		if (CurrentSummonId != -1 && ContentSamples.ProjectilesByType.TryGetValue(CurrentSummonId, out Projectile summonProjectile) &&
+			summonProjectile.ModProjectile is GrimoireSummon grimoireSummon)
 		{
-			tag.Add("currentSummon", CurrentSummonId);
+			tag.Add("currentSummon", grimoireSummon.FullName);
 		}
 
 		tag.Add("hasGrimoire", HasObtainedGrimoire);
@@ -79,7 +80,7 @@ internal class GrimoirePlayer : ModPlayer
 	public override void LoadData(TagCompound tag)
 	{
 		HasObtainedGrimoire = tag.TryGet("hasGrimoire", out bool hasGrimoire) && hasGrimoire;
-		CurrentSummonId = tag.TryGet("currentSummon", out int summon) && ContentSamples.ProjectilesByType[summon].ModProjectile is GrimoireSummon ? summon : -1;
+		CurrentSummonId = LoadCurrentSummonId(tag);
 
 		int count = tag.GetInt("count");
 
@@ -94,6 +95,27 @@ internal class GrimoirePlayer : ModPlayer
 		}
 
 		FirstOpenMenagerie = tag.ContainsKey("firstOpen");
+	}
+
+	private static int LoadCurrentSummonId(TagCompound tag)
+	{
+		if (!tag.ContainsKey("currentSummon"))
+		{
+			return -1;
+		}
+
+		object currentSummon = tag["currentSummon"];
+
+		if (currentSummon is string summonName && ModContent.TryFind(summonName, out ModProjectile modProjectile) && modProjectile is GrimoireSummon)
+		{
+			return modProjectile.Type;
+		}
+
+		return currentSummon is int summon &&
+			ContentSamples.ProjectilesByType.TryGetValue(summon, out Projectile projectile) &&
+			projectile.ModProjectile is GrimoireSummon
+				? summon
+				: -1;
 	}
 
 	/// <returns> The types and stacks of all items in <see cref="StoredParts"/>. </returns>

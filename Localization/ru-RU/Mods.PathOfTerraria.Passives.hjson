@@ -426,12 +426,12 @@ AddedFireDamageMultiplierPassive: {
 
 AddedColdDamageMultiplierPassive: {
 	// Name: Increased Cold Damage Multiplier
-	// Tooltip: +{0} cold damage multiplier
+	// Tooltip: +{0}% cold damage multiplier
 }
 
 AddedLightningDamageMultiplierPassive: {
 	// Name: Increased Lightning Damage Multiplier
-	// Tooltip: +{0} lightning damage multiplier
+	// Tooltip: +{0}% lightning damage multiplier
 }
 
 ScorchingFlamesMastery: {
@@ -510,8 +510,8 @@ CenterOfTheUniverseMastery: {
 }
 
 OverloadingEnergyMastery: {
-	// Name: Overloading Energy
-	// Tooltip: Gain 5% of your max mana every {0} seconds. At max mana, deal 15% more damage
+	// Name: Desperate Power
+	// Tooltip: Gain 5% of your max mana every {0} seconds. Deal more damage based on your current mana, the lower the mana, the more damage. Up to 40%.
 }
 
 ReverberationMastery: {
@@ -591,7 +591,7 @@ LifeOnKillPassive: {
 
 ArcaneSurgeMastery: {
 	// Name: Arcane Surge
-	// Tooltip: Using skills or magic attacks 5 times in 4 seconds grants Arcane Surge, boosting magic damage by 15% and mana regeneration by 2/second
+	// Tooltip: Using skills or magic attacks 5 times in 4 seconds grants Arcane Surge, boosting magic damage by +{0}% and mana regeneration by 2/second
 }
 
 AddedSummonCritChancePassive: {
@@ -870,8 +870,8 @@ ChanceForAdditionalProjectilePassive: {
 }
 
 PoisonedRangedAttacksPassive: {
-	// Name: Chance for Ranged Poison
-	// Tooltip: +{0}% chance for a Ranged projectile to inflict a stack of Poison
+	// Name: Chance for Poison
+	// Tooltip: +{0}% chance to inflict a stack of Poison on-hit
 }
 
 LongerPoisonPassive: {
@@ -986,17 +986,17 @@ WideSwingsMastery: {
 
 RangerMeleeChanceToBleedPassive: {
 	// Name: Ranged/Melee Chance to Bleed
-	// Tooltip: +{0}% chance for ranged or melee hits to inflict Bleeding
+	// Tooltip: +{0}% chance for ranged or melee hits to apply Bleed
 }
 
 BleedEffectivenessPassive: {
 	// Name: Increased Bleed Damage
-	// Tooltip: +{0}% bleed damage
+	// Tooltip: +{0}% increased bleed damage
 }
 
 BleedTimePassive: {
 	// Name: Increased Bleed Time
-	// Tooltip: +{0}% bleed time
+	// Tooltip: +{0}% increased bleed duration
 }
 
 BleedTickPassive: {

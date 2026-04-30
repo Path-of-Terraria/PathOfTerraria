@@ -3,11 +3,12 @@ using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Buffs.ElementalBuffs;
+
+#nullable enable
 
 internal class IgnitedDebuff : ModBuff
 {
@@ -16,7 +17,7 @@ internal class IgnitedDebuff : ModBuff
 	/// <summary>
 	/// Applies this buff to a given entity (Player or NPC). If victim is an <see cref="NPC"/>, attacker is a <see cref="Player"/>. NPCs cannot apply this buff to other NPCs at this time.
 	/// </summary>
-	public static void ApplyTo(Entity attacker, Entity victim, int hitDamage, int time = 4 * 60, bool fromNet = false)
+	public static void ApplyTo(Entity? attacker, Entity victim, int hitDamage, int time = 4 * 60, bool fromNet = false)
 	{
 		int stackDamage = hitDamage;
 		float tickRate = DefaultTickRate;

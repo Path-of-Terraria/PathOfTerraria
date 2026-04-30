@@ -14,6 +14,7 @@ internal class MultiPassiveElement : PassiveElement
 
 	private readonly Edge<IConnectedAllocatableNode>[] _extraEdges;
 
+	private AllocatableInnerPanel _parentPanel;
 	public int AnimationTime { get; set; }
 	public int AnimationTimeMax => 60;
 	public Passive[] InnerPassives { get; }
@@ -62,7 +63,16 @@ internal class MultiPassiveElement : PassiveElement
 			distance = MathF.Max(distance, center.DistanceSQ(target));
 		}
 
-		return distance + 120 * 120;
+		_parentPanel ??= Parent as AllocatableInnerPanel;
+		float zoom = _parentPanel?.Zoom ?? 1f;
+		return (distance + 120 * 120) * zoom * zoom;	
+	}
+
+	public override bool AppearsAsAllocated(Allocatable? nodeOverride = null)
+	{
+		// MasteryPassive.OnAllocate intentionally skips Level increment, so Node.Allocated is always false.
+		// Use the active inner choice as the authoritative "is this mastery allocated" signal instead.
+		return nodeOverride is not null ? base.AppearsAsAllocated(nodeOverride) : ActivePassive is not null;
 	}
 
 	protected override void DrawSelf(SpriteBatch spriteBatch)
@@ -71,7 +81,7 @@ internal class MultiPassiveElement : PassiveElement
 
 		if (ActivePassive is { } inner)
 		{
-			DrawNode(inner, spriteBatch, GetDimensions().Center());
+			DrawNode(inner, spriteBatch, GetDimensions().Center(), GetZoom());
 		}
 	}
 
@@ -81,7 +91,7 @@ internal class MultiPassiveElement : PassiveElement
 
 		if (Children.Any())
 		{
-			AllocatableInnerPanel.DrawEdgeConnections(spriteBatch, _extraEdges);
+			AllocatableInnerPanel.DrawEdgeConnections(spriteBatch, _extraEdges, GetZoom());
 		}
 
 		DrawChildren(spriteBatch);
@@ -153,7 +163,8 @@ internal class PassiveRadialElement : PassiveElement
 {
 	private readonly Vector2 _startOffset;
 	private readonly Vector2 _targetOffset;
-
+	private readonly Vector2 _origSize;
+	
 	public MultiPassiveElement? Handler => Parent is MultiPassiveElement e ? e : null;
 
 	private float Progress => Handler is { } handler ? (float)Handler.AnimationTime / Handler.AnimationTimeMax : 0f;
@@ -164,6 +175,7 @@ internal class PassiveRadialElement : PassiveElement
 
 		Debug.Assert(size.X > 1 && size.Y > 1);
 
+		_origSize = size.ToVector2();
 		_startOffset = startOffset;
 		_targetOffset = targetOffset;
 
@@ -176,6 +188,12 @@ internal class PassiveRadialElement : PassiveElement
 	public override void SafeUpdate(GameTime gameTime)
 	{
 		base.SafeUpdate(gameTime);
+		
+		float zoom = (Handler?.Parent as AllocatableInnerPanel)?.Zoom ?? 1f;
+
+		// Keep element bounds in sync with zoom so hit detection is accurate.
+		Width.Pixels = _origSize.X * zoom;
+		Height.Pixels = _origSize.Y * zoom;
 
 		static float EaseOutElastic(float x)
 		{
@@ -186,8 +204,8 @@ internal class PassiveRadialElement : PassiveElement
 
 		float animationProgress = Progress;
 		float lerpStep = EaseOutElastic(animationProgress);
-		var newPos = Vector2.Lerp(_startOffset, _targetOffset, lerpStep);
-
+		var newPos = Vector2.Lerp(_startOffset, _targetOffset * zoom, lerpStep);
+		
 		Left.Set(newPos.X - Width.Pixels * 0.5f, 0.5f);
 		Top.Set(newPos.Y - Height.Pixels * 0.5f, 0.5f);
 	}

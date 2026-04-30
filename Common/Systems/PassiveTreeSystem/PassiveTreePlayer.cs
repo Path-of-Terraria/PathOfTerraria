@@ -199,6 +199,7 @@ public class PassiveTreePlayer : ModPlayer
 	{
 		_saveData = tag;
 		ExtraPoints = tag.GetInt("extraPoints");
+		StrengthByPassive = new float[Passive.MaxId];
 
 		ResetNodes();
 		SetTree(true);
@@ -209,7 +210,10 @@ public class PassiveTreePlayer : ModPlayer
 	/// </summary>
 	internal float GetCumulativeValue<T>() where T : Passive
 	{
-		return StrengthByPassive[ModContent.GetInstance<T>().ID];
+		int id = ModContent.GetInstance<T>().ID;
+		EnsureStrengthCapacity(id);
+
+		return StrengthByPassive[id];
 	}
 
 	/// <summary>
@@ -404,6 +408,7 @@ public class PassiveTreePlayer : ModPlayer
 		Points--;
 		Player.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.AllocatedPassive);
 		int id = Passive.PassiveNameToId[passive.Name];
+		EnsureStrengthCapacity(id);
 		StrengthByPassive[id] += strength;
 
 		if (save)
@@ -421,6 +426,7 @@ public class PassiveTreePlayer : ModPlayer
 		}
 
 		int id = Passive.PassiveNameToId[passive.Name];
+		EnsureStrengthCapacity(id);
 
 		Points += pointRefund;
 		Player.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.DeallocatedPassive);
@@ -441,6 +447,16 @@ public class PassiveTreePlayer : ModPlayer
 		if (save)
 		{
 			SaveData([]);
+		}
+	}
+
+	private void EnsureStrengthCapacity(int id)
+	{
+		int requiredLength = Math.Max(Passive.MaxId, id + 1);
+
+		if (StrengthByPassive.Length < requiredLength)
+		{
+			Array.Resize(ref StrengthByPassive, requiredLength);
 		}
 	}
 
@@ -540,6 +556,7 @@ public class PassiveTreePlayer : ModPlayer
 		if (setStrengths && passive is not MasteryPassive)
 		{
 			int id = Passive.PassiveNameToId[passive.Name];
+			EnsureStrengthCapacity(id);
 			StrengthByPassive[id] = Math.Max(0, StrengthByPassive[id] - removedLevels);
 		}
 	}
