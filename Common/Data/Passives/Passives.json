@@ -7493,5 +7493,20 @@
 				"referenceId": 139
 			}
 		]
+	},
+	{
+		"internalIdentifier": "OneMinionArmyKeystone",
+		"referenceId": 1170,
+		"maxLevel": 1,
+		"value": 80,
+		"position": {
+			"x": -10,
+			"y": -1460
+		},
+		"connections": [
+			{
+				"referenceId": 72
+			}
+		]
 	}
 ]

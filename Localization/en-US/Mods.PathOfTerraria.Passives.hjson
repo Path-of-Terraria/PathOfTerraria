@@ -1168,3 +1168,8 @@ DangerMiningPassive: {
 	Name: Panic Digging
 	Tooltip: "{0}% increased mining speed when enemies are [mechanic/shift:Nearby]."
 }
+
+OneMinionArmyKeystone: {
+	Name: OneMinionArmyKeystone
+	Tooltip: You are limited to one maximum minion, but gain {0}% increased damage per maximum minion slot.
+}
