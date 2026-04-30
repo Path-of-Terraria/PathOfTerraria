@@ -96,7 +96,7 @@ public abstract class Passive : Allocatable, ILoadable
 			PassiveNameToId.Add(instance.Name, instance.ID);
 		}
 
-		MaxId = id - 1;
+		MaxId = id;
 	}
 
 	public static Passive GetPassiveFromData(PassiveData data)
