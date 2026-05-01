@@ -601,7 +601,7 @@ AddedSummonCritChancePassive: {
 
 OpportuneStrikeMastery: {
 	Name: Opportune Strike
-	Tooltip: Every critical hit from a minion reduces all summoner skill cooldowns by {0}% (1 second cooldown)
+	Tooltip: Every critical hit from a minion reduces all summoner skill cooldowns by {0}% [1 sec cooldown]
 }
 
 UndeadLegionMastery: {
@@ -661,7 +661,7 @@ SentryDuplicatedProjectilePassive: {
 
 SacrificialSummonsMastery: {
 	Name: Sacrificial Summons
-	Tooltip: When you or anyone [mechanic/shift:Nearby] you dies, sacrifice {0} summons to cheat death and return to 100 health (5 minute cooldown)
+	Tooltip: When you or anyone [mechanic/shift:Nearby] you dies, sacrifice {0} summons to cheat death and return to 100 health [5 minute cooldown]
 }
 
 OverhealMastery: {
@@ -1016,7 +1016,7 @@ ExsanguinateMastery: {
 
 BloodbenderMastery: {
 	Name: Bloodbender
-	Tooltip: Critting a bleeding enemy siphons {0}% of the damage done per stack of bleed. [0.5 sec CD]
+	Tooltip: Critting a bleeding enemy, siphons {0}% of the damage done per stack of bleed. [0.5 sec cooldown]
 }
 
 HealOnKillPassive: {
