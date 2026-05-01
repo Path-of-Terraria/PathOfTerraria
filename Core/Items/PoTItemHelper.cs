@@ -250,7 +250,12 @@ public static class PoTItemHelper
 		}
 
 		// Evil Boss: either Eater of Worlds OR Brain of Cthulhu satisfies the milestone.
-		if (EventTracker.HasFlagsAnywhere(EventFlags.DefeatedEaterOfWorlds) || EventTracker.HasFlagsAnywhere(EventFlags.DefeatedBrainOfCthulhu))
+		// NPC.downedBoss2 is the vanilla flag set by either kill, and it's what external tools
+		// (DragonLens, etc.) toggle. The EventTracker flags are also checked so prog-aware code
+		// that flips them directly without going through vanilla still counts.
+		if (NPC.downedBoss2
+			|| EventTracker.HasFlagsAnywhere(EventFlags.DefeatedEaterOfWorlds)
+			|| EventTracker.HasFlagsAnywhere(EventFlags.DefeatedBrainOfCthulhu))
 		{
 			level = 15;
 		}
