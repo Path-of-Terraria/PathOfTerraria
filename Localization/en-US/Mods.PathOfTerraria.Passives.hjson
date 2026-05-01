@@ -1178,3 +1178,8 @@ DirectShotKeystone: {
 	Name: DirectShotKeystone
 	Tooltip: Your Projectiles deal up to +50% more Damage at [mechanic/shift:Nearby] range, but deal up to 50% less Damage at Far range"
 }
+
+BloodMagicKeystone: {
+	Name: BloodMagicKeystone
+	Tooltip: All of your mana costs become life costs. Gain {0}% of the damage done as life back on all damage, scaling with your max hp.
+}

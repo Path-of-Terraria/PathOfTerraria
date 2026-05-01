@@ -7523,5 +7523,20 @@
 				"referenceId": 56
 			}
 		]
+	},
+	{
+		"internalIdentifier": "BloodMagicKeystone",
+		"referenceId": 1172,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": 1130,
+			"y": -10
+		},
+		"connections": [
+			{
+				"referenceId": 90
+			}
+		]
 	}
 ]
