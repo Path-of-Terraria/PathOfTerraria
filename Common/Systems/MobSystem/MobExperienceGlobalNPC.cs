@@ -33,7 +33,7 @@ public class MobExperienceGlobalNPC : GlobalNPC
 		}
 #endif
 		
-		int amount = npcSystem.Experience ?? (int)Math.Max(1, npc.lifeMax * 0.25f);
+		int amount = (int)Math.Max(1, npc.lifeMax * 0.25f);
 
 		amount = npcSystem.Rarity
 			switch //We will need to evaluate this as magic/rare natively get more HP. So we do even want this? Was just POC, maybe just change amount evaluation?
