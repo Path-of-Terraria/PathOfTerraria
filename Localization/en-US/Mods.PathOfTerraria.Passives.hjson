@@ -96,7 +96,7 @@ IncreasedCriticalStrikeChance: {
 
 IncreasedCriticalStrikeMultiplier: {
 	Name: More Critical Strike Damage
-	Tooltip: Adds {0}% more critical strike Damage
+	Tooltip: "{0}% more critical strike Damage"
 }
 
 ArmorPenetrationPassive: {
@@ -601,7 +601,7 @@ AddedSummonCritChancePassive: {
 
 OpportuneStrikeMastery: {
 	Name: Opportune Strike
-	Tooltip: Every critical hit from a minion reduces all summoner skill cooldowns by {0}% [1 sec cooldown]
+	Tooltip: Every critical hit from a minion reduces all summoner skill cooldowns by {0}% [1 second cooldown]
 }
 
 UndeadLegionMastery: {
