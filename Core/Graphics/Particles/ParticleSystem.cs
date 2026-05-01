@@ -25,45 +25,45 @@ public sealed class ParticleSystem : ModSystem
     public override void PostUpdateWorld()
     {
         base.PostUpdateWorld();
-        
-        for (var i = 0; i < particles.Count; i++)
-        {
-            particles[i].Update();
-        }
-    }
+
+		for (int i = 0; i < particles.Count; i++)
+		{
+			particles[i].Update();
+		}
+	}
 
     public static T Create<T>(T particle) where T : IParticle
     {
-        particles.Add(particle);
-        
-        particle.Create();
+
+		particles.Add(particle);
+
+		particle.Create();
 
         return particle;
     }
 
     public static bool Destroy<T>(T particle) where T : IParticle
     {
-        if (particles.Remove(particle))
-        {
-            particle.Destroy();
-        }
 
-        return false;
+		if (particles.Remove(particle))
+		{
+			particle.Destroy();
+		}
+
+		return false;
     }
 
     public static IEnumerable<IParticle> Enumerate()
     {
         return particles;
     }
-
-    private static void DrawParticles()
+    private static void DrawParticlesAlphaBlend()
     {
-        for (var i = 0; i < particles.Count; i++)
+        for (int i = 0; i < particles.Count; i++)
         {
-            particles[i].Draw();
+			particles[i].Draw();
         }
     }
-    
     private static void Main_DrawDust_DrawParticles(On_Main.orig_DrawDust orig, Main self)
     {
         Main.spriteBatch.Begin
@@ -77,7 +77,7 @@ public sealed class ParticleSystem : ModSystem
             Main.GameViewMatrix.TransformationMatrix
         );
         
-        DrawParticles();
+        DrawParticlesAlphaBlend();
         
         Main.spriteBatch.End();
         

@@ -31,6 +31,8 @@ using PathOfTerraria.Content.Items.Gear.Armor.Leggings;
 using PathOfTerraria.Content.Items.Gear.Rings;
 using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using PathOfTerraria.Core.Camera;
+using PathOfTerraria.Core.Graphics;
+using PathOfTerraria.Core.Graphics.Particles;
 using PathOfTerraria.Core.IK;
 using PathOfTerraria.Core.Interface;
 using PathOfTerraria.Core.Lighting;
@@ -89,7 +91,7 @@ internal sealed class InfernalFlames : ModProjectile
 		set => (Projectile.ai[1], Projectile.ai[2]) = (value.X, value.Y);
 	}
 
-	public override string Texture => $"Terraria/Images/Projectile_{ProjectileID.Flames}";
+	public override string Texture => $"{PoTMod.ModName}/Assets/Particles/InfernalParticle";
 
 	public override void SetStaticDefaults()
 	{
@@ -107,6 +109,7 @@ internal sealed class InfernalFlames : ModProjectile
 		Projectile.aiStyle = -1;
 		Projectile.usesLocalNPCImmunity = true;
 		Projectile.localNPCHitCooldown = -1;
+		Projectile.rotation = Main.rand.NextFloatDirection();
 	}
 
 	public override bool OnTileCollide(Vector2 oldVelocity)
@@ -120,8 +123,15 @@ internal sealed class InfernalFlames : ModProjectile
 		if (Progress >= 1f)
 		{
 			Projectile.Kill();
+			for(int i = 0; i < 48; i++)
+			{
+				Dust.NewDustPerfect(Projectile.Center, DustID.Torch, Main.rand.NextVector2CircularEdge(12, 12)).noGravity = true;
+			}
+
 			return;
 		}
+
+		Projectile.rotation -= 0.2f;
 
 		if (StartPos == default) { StartPos = Projectile.Center; }
 
@@ -132,16 +142,11 @@ internal sealed class InfernalFlames : ModProjectile
 			Projectile.Center = Vector2.Lerp(StartPos, TargetPos, step);
 		}
 
-		Projectile.scale = Utils.Remap(Progress, 0.0f, 0.1f, 0.25f, 1.00f);
+		Projectile.scale = Utils.Remap(Progress, 0.0f, 0.05f, 0.05f, 1f);
 		Projectile.velocity *= 0.98f;
 
 		int frameCount = Main.projFrames[Type];
 		Progress += TimeSystem.LogicDeltaTime / 8f;
-		Projectile.frame = (int)MathF.Floor(Progress / frameCount);
-
-		Projectile.rotation = Progress * 40f * MathHelper.TwoPi * (Projectile.whoAmI % 2 == 0 ? 1 : -1);
-		float radSnap = MathHelper.ToRadians(5f);
-		Projectile.rotation = MathF.Floor(Projectile.rotation * radSnap) / radSnap;
 
 		if (!Main.dedServ)
 		{
@@ -168,45 +173,18 @@ internal sealed class InfernalFlames : ModProjectile
 			modifiers.FinalDamage *= 1.3f;
 		}
 	}
-
-	private static readonly Color[] layerColors =
-	[
-		new(255, 80, 20, 200),
-		new(255, 255, 20, 070),
-		new(255, 80, 20, 100),
-		new(80, 80, 80, 100),
-	];
 	public override bool PreDraw(ref Color lightColor)
 	{
-		// [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "DrawProj_Flamethrower")]
-		// static extern void DrawFlame(Main? main, Projectile p);
-		// DrawFlame(null, Projectile);
-
-		int numLayers = layerColors.Length;
-		int numFrames = Main.projFrames[Projectile.type];
-		int numLayeredFrames = numFrames + numLayers;
-
 		Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
 		Vector2 worldPos = Projectile.Center.ToPoint().ToVector2();
 		Vector2 screenPos = worldPos - Main.screenPosition;
-
-		const float animMul = 8f;
-		int baseFrame = (int)Utils.Remap(Progress, 0f, 1f, 0, numLayeredFrames * animMul);
-		// Loop/wrap up until a certain point.
-		if (baseFrame >= numFrames)
+		for (int i = 0; i < 4; i++)
 		{
-			int loopEnd = (int)(numLayeredFrames * (animMul - 1));
-			baseFrame = baseFrame < loopEnd ? (2 + (baseFrame % 4) * 1) : (baseFrame - loopEnd + 2);
+			Main.EntitySpriteDraw(texture, screenPos, null, new Color(35, 1, 35,0), Projectile.rotation + i / 6f * float.Tau, texture.Size() * 0.5f, Projectile.scale * 1f, 0, 0f);
 		}
-
-		for (int i = 0; i < numLayers; i++)
+		for (int i = 0; i < 12; i++)
 		{
-			int frame = baseFrame - i;
-			if (frame < 0 || frame >= numFrames) { continue; }
-
-			Color color = layerColors[i];
-			Rectangle srcRect = texture.Frame(verticalFrames: numFrames, frameY: frame);
-			Main.EntitySpriteDraw(texture, screenPos, srcRect, color, Projectile.rotation, srcRect.Size() * 0.5f, Projectile.scale, 0, 0f);
+			Main.EntitySpriteDraw(texture, screenPos, null, new Color(255, 55, 0, 0), Projectile.rotation, texture.Size() * 0.5f, Projectile.scale * .5f * i * .25f, 0, 0f);
 		}
 
 		return false;
