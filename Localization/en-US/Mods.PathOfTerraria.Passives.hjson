@@ -756,7 +756,7 @@ SoulReaveMastery: {
 
 RagingSpiritsMastery: {
 	Name: Raging Spirits
-	Tooltip: Minions have a {0}% chance to spawn a Raging Spirit, which counts as a summon
+	Tooltip: Minions have a {0}% chance to spawn a Raging Spirit, which counts as a summon. This cannot critically strike.
 }
 
 ChaoticReverberationMastery: {
