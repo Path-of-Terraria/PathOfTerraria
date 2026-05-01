@@ -172,7 +172,7 @@ internal class PlayerStatInnerPanel : SmartUiElement
 		{
 			UniversalBuffingPlayer buffingPlayer = player.GetModPlayer<UniversalBuffingPlayer>();
 			float critMultiplier = (1+ buffingPlayer.UniversalModifier.CriticalDamage.Base) * buffingPlayer.UniversalModifier.CriticalMultiplier.Multiplicative * 100f;
-			return $"{critMultiplier:0.00}%";
+			return $"{critMultiplier:#0.##}%";
 		}));
 		list.Add(new PlayerStatUI(Localize("ProjectileSpeed"), player => 
 		{
