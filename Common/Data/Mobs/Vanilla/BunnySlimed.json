@@ -1,6 +1,7 @@
 {
   "netId": 303,
   "friendlyName": "Bunny Slimed",
+  "damage": null,
   "entries": [
     {
       "scale": null,
@@ -11,7 +12,8 @@
         "experience": 5
       },
       "affixes": null,
-      "requirements": "PreHardmodeSurface"
+      "requirements": "PreHardmodeSurface",
+      "damageOverrides": null
     }
   ]
 }

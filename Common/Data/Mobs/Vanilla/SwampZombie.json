@@ -1,6 +1,17 @@
 {
   "netId": 188,
   "friendlyName": "Swamp Zombie",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": null,
+      "lightning": null,
+      "cold": {
+        "added": 25,
+        "conversion": 0.5
+      }
+    }
+  ],
   "entries": [
     {
       "scale": null,
@@ -11,7 +22,8 @@
         "experience": 3
       },
       "affixes": null,
-      "requirements": "PreHardmodeSurface"
+      "requirements": "PreHardmodeSurface",
+      "damageOverrides": null
     }
   ]
 }

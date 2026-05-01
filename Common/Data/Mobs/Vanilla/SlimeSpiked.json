@@ -1,6 +1,7 @@
 {
   "netId": 535,
   "friendlyName": "Slime Spiked",
+  "damage": null,
   "entries": [
     {
       "scale": null,
@@ -11,7 +12,8 @@
         "experience": 10
       },
       "affixes": null,
-      "requirements": "PreHardmodeSurface"
+      "requirements": "PreHardmodeSurface",
+      "damageOverrides": null
     }
   ]
 }

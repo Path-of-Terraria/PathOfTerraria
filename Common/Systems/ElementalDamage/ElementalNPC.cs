@@ -61,6 +61,12 @@ internal class ElementalNPC : GlobalNPC
 						ref ElementalDamage damageModifier = ref Container[ElementType.Lightning].DamageModifier;
 						damageModifier = damageModifier.ApplyOverride(mobDamage.Lightning.Added, mobDamage.Lightning.Conversion);
 					}
+					
+					if (mobDamage.Chaos != null)
+					{
+						ref ElementalDamage damageModifier = ref Container[ElementType.Chaos].DamageModifier;
+						damageModifier = damageModifier.ApplyOverride(mobDamage.Chaos.Added, mobDamage.Lightning.Conversion);
+					}
 
 					break;
 				}

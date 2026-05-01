@@ -1,5 +1,16 @@
 {
   "netId": 154,
   "friendlyName": "Ice Tortoise",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": null,
+      "lightning": null,
+      "cold": {
+        "added": 40,
+        "conversion": 0.5
+      }
+    }
+  ],
   "entries": []
 }

@@ -1,5 +1,16 @@
 {
   "netId": 249,
   "friendlyName": "Golem Head Free",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": {
+        "added": 40,
+        "conversion": 0.6
+      },
+      "lightning": null,
+      "cold": null
+    }
+  ],
   "entries": []
 }

@@ -1,5 +1,16 @@
 {
   "netId": 407,
   "friendlyName": "Stardust Jellyfish Big",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": null,
+      "lightning": null,
+      "cold": {
+        "added": 50,
+        "conversion": 0.75
+      }
+    }
+  ],
   "entries": []
 }

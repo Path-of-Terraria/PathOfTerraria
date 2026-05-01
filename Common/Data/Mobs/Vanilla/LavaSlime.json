@@ -1,6 +1,26 @@
 {
   "netId": 59,
   "friendlyName": "Lava Slime",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": {
+        "added": 15,
+        "conversion": 0.5
+      },
+      "lightning": null,
+      "cold": null
+    },
+    {
+      "minLevel": 45,
+      "fire": {
+        "added": 25,
+        "conversion": 0.75
+      },
+      "lightning": null,
+      "cold": null
+    }
+  ],
   "entries": [
     {
       "scale": null,
@@ -11,7 +31,8 @@
         "experience": 5
       },
       "affixes": null,
-      "requirements": "PreHardmodeSurface"
+      "requirements": "PreHardmodeSurface",
+      "damageOverrides": null
     }
   ]
 }

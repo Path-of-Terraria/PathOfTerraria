@@ -1,5 +1,17 @@
 {
 	"friendlyName": "Fire Maw",
+	"damage": [
+		{
+			"minLevel": 1,
+			"fire": {
+				"added": 60,
+				"conversion": 0.5
+			},
+			"lightning": null,
+			"cold": null,
+			"chaos": null,
+		}
+	],
 	"entries": [
 		{
 			"scale": null,

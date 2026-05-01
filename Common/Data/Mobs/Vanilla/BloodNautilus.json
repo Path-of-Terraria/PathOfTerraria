@@ -1,5 +1,16 @@
 {
   "netId": 618,
   "friendlyName": "Blood Nautilus",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": null,
+      "lightning": null,
+      "cold": {
+        "added": 20,
+        "conversion": 0.33
+      }
+    }
+  ],
   "entries": []
 }

@@ -1,5 +1,16 @@
 {
   "netId": 156,
   "friendlyName": "Red Devil",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": {
+        "added": 35,
+        "conversion": 0.5
+      },
+      "lightning": null,
+      "cold": null
+    }
+  ],
   "entries": []
 }

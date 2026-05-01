@@ -1,5 +1,16 @@
 {
   "netId": 150,
   "friendlyName": "Ice Bat",
+  "damage": [
+    {
+      "minLevel": 45,
+      "fire": null,
+      "lightning": null,
+      "cold": {
+        "added": 20,
+        "conversion": 0.5
+      }
+    }
+  ],
   "entries": []
 }

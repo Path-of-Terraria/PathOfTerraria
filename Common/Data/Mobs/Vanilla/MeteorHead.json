@@ -1,5 +1,16 @@
 {
   "netId": 23,
   "friendlyName": "Meteor Head",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": {
+        "added": 20,
+        "conversion": 1
+      },
+      "lightning": null,
+      "cold": null
+    }
+  ],
   "entries": []
 }

@@ -1,6 +1,7 @@
 {
   "netId": 257,
   "friendlyName": "Anomura Fungus",
+  "damage": null,
   "entries": [
     {
       "scale": null,
@@ -11,7 +12,8 @@
         "experience": 12
       },
       "affixes": [],
-      "requirements": "PreHardmodeSurface"
+      "requirements": "PreHardmodeSurface",
+      "damageOverrides": null
     }
   ]
 }

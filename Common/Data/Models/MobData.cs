@@ -38,6 +38,7 @@ public class MobDamage
 	public MobElementStats Fire { get; set; }
 	public MobElementStats Cold { get; set; }
 	public MobElementStats Lightning { get; set; }
+	public MobElementStats Chaos  { get; set; } 
 }
 
 public class MobElementStats

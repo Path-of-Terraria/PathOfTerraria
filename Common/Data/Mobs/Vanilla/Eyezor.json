@@ -1,6 +1,17 @@
 {
   "netId": 251,
   "friendlyName": "Eyezor",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": {
+        "added": 25,
+        "conversion": 0.5
+      },
+      "lightning": null,
+      "cold": null
+    }
+  ],
   "entries": [
     {
       "scale": null,
@@ -11,7 +22,8 @@
         "experience": 15
       },
       "affixes": null,
-      "requirements": "PreHardmodeSurface"
+      "requirements": "PreHardmodeSurface",
+      "damageOverrides": null
     }
   ]
 }

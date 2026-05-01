@@ -1,5 +1,16 @@
 {
   "netId": 404,
   "friendlyName": "Stardust Worm Tail",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": null,
+      "lightning": null,
+      "cold": {
+        "added": 35,
+        "conversion": 0.75
+      }
+    }
+  ],
   "entries": []
 }

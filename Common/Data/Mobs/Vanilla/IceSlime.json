@@ -4,15 +4,19 @@
   "damage": [
     {
       "minLevel": 1,
+      "fire": null,
+      "lightning": null,
       "cold": {
-        "added": 2,
+        "added": 5,
         "conversion": 0.5
       }
     },
     {
-      "minLevel": 20,
+      "minLevel": 45,
+      "fire": null,
+      "lightning": null,
       "cold": {
-        "added": 10,
+        "added": 20,
         "conversion": 0.5
       }
     }
@@ -31,6 +35,8 @@
       "damageOverrides": [
         {
           "minLevel": 10,
+          "fire": null,
+          "lightning": null,
           "cold": {
             "added": 15,
             "conversion": 0.75

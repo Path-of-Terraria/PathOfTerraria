@@ -1,6 +1,17 @@
 {
   "netId": 537,
   "friendlyName": "Sand Slime",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": null,
+      "lightning": {
+        "added": 10,
+        "conversion": 0.5
+      },
+      "cold": null
+    }
+  ],
   "entries": [
     {
       "scale": null,
@@ -11,7 +22,8 @@
         "experience": 3
       },
       "affixes": null,
-      "requirements": "PreHardmodeSurface"
+      "requirements": "PreHardmodeSurface",
+      "damageOverrides": null
     }
   ]
 }

@@ -1,5 +1,16 @@
 {
   "netId": 243,
   "friendlyName": "Ice Golem",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": null,
+      "lightning": null,
+      "cold": {
+        "added": 20,
+        "conversion": 0.5
+      }
+    }
+  ],
   "entries": []
 }

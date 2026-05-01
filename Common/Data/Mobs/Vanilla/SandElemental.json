@@ -1,5 +1,16 @@
 {
   "netId": 541,
   "friendlyName": "Sand Elemental",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": null,
+      "lightning": {
+        "added": 25,
+        "conversion": 0.5
+      },
+      "cold": null
+    }
+  ],
   "entries": []
 }

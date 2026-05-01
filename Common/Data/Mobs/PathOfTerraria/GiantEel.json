@@ -1,5 +1,17 @@
 {
 	"friendlyName": "Mammoth Moss-Eel",
+	"damage": [
+		{
+			"minLevel": 1,
+			"cold": {
+				"added": 100,
+				"conversion": 0.5
+			},
+			"lightning": null,
+			"fire": null,
+			"chaos": null,
+		}
+	],
 	"entries": [
 		{
 			"scale": null,
