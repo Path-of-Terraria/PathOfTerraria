@@ -5,10 +5,6 @@
 			"scale": null,
 			"prefix": null,
 			"weight": 1,
-			"stats": {
-				"level": 1,
-				"experience": 1100
-			},
 			"affixes": [
 				{
 					"name": "FlamingAffix"

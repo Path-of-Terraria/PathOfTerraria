@@ -1,17 +1,5 @@
 {
   "netId": -1,
   "friendlyName": "Slimeling",
-  "entries": [
-    {
-      "scale": null,
-      "prefix": null,
-      "weight": 1,
-      "stats": {
-        "level": 3,
-        "experience": 1
-      },
-      "affixes": null,
-      "requirements": "PreHardmodeSurface"
-    }
-  ]
+  "entries": []
 }

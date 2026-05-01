@@ -25,23 +25,17 @@ public class MobExperienceGlobalNPC : GlobalNPC
 		{
 			return;
 		}
-		
-#if DEBUG
-		if (npcSystem.Experience == null)
-		{
-			Main.NewText($"No experience entry for {npc.TypeName} - {npc.netID}");
-		}
-#endif
-		
-		int amount = npcSystem.Experience ?? (int)Math.Max(1, npc.lifeMax * 0.25f);
 
-		amount = npcSystem.Rarity
-			switch //We will need to evaluate this as magic/rare natively get more HP. So we do even want this? Was just POC, maybe just change amount evaluation?
-			{
-				ItemRarity.Rare => (int)(amount * 1.1f), //Rare mobs give 10% increase xp
-				ItemRarity.Magic => (int)(amount * 1.05f), //Magic mobs give 5% increase xp
-				_ => amount
-			};
+		// Use base HP so affix HP buffs don't inflate XP; fall back if SetDefaults was bypassed.
+		int baseLife = npcSystem.BaseLifeMax >= 0 ? npcSystem.BaseLifeMax : npc.lifeMax;
+		int amount = (int)Math.Max(1, baseLife * 0.25f);
+
+		amount = npcSystem.Rarity switch
+		{
+			ItemRarity.Rare => (int)(amount * 1.1f), //Rare mobs give 10% increase xp
+			ItemRarity.Magic => (int)(amount * 1.05f), //Magic mobs give 5% increase xp
+			_ => amount
+		};
 
 		if (SubworldSystem.Current is MappingWorld world)
 		{

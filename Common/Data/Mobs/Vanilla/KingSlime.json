@@ -1,17 +1,5 @@
 {
   "netId": 50,
   "friendlyName": "King Slime",
-  "entries": [
-    {
-      "scale": null,
-      "prefix": null,
-      "weight": 1,
-      "stats": {
-        "level": 20,
-        "experience": 150
-      },
-      "affixes": null,
-      "requirements": "PreHardmodeSurface"
-    }
-  ]
+  "entries": []
 }
