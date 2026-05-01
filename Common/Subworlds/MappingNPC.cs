@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Common.Systems.MobSystem;
 using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
@@ -15,6 +16,9 @@ internal class MappingNPC : GlobalNPC
 {
 	public override void SetDefaults(NPC entity)
 	{
+		// Capture before our scaling below, in case this hook runs before ArpgNPC.SetDefaults.
+		entity.GetGlobalNPC<ArpgNPC>().CaptureBaseLifeMax(entity);
+
 		if (SubworldSystem.Current is MappingWorld && MappingWorld.Affixes is not null)
 		{
 			foreach (MapAffix affix in MappingWorld.Affixes)

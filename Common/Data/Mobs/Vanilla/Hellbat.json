@@ -21,10 +21,6 @@
   {
     "weight": 0.75,
     "prefix": "Electric",
-    "stats": {
-      "level": 3,
-      "experience": 5
-    },
     "damageOverrides": [
       {
         "minLevel": 1,

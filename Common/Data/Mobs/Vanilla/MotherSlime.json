@@ -1,17 +1,5 @@
 {
   "netId": 16,
   "friendlyName": "Mother Slime",
-  "entries": [
-    {
-      "scale": null,
-      "prefix": null,
-      "weight": 1,
-      "stats": {
-        "level": 5,
-        "experience": 5
-      },
-      "affixes": null,
-      "requirements": "PreHardmodeSurface"
-    }
-  ]
+  "entries": []
 }
