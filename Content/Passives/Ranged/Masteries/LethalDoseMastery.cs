@@ -27,5 +27,5 @@ internal class LethalDoseMastery : Passive
 	
 	const float MaxDamageBoost = 40;
 
-	public override string DisplayTooltip => Language.GetText($"Mods.PathOfTerraria.Passives.{Name}.Tooltip").Format(Value, 30);
+	public override string DisplayTooltip => Language.GetText($"Mods.PathOfTerraria.Passives.{Name}.Tooltip").Format(Value, MaxDamageBoost);
 }
