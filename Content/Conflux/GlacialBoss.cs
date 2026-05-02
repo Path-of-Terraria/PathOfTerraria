@@ -11,6 +11,7 @@
 // #define LOW_HEALTH
 
 using System.IO;
+using System.Linq;
 using MonoMod.Cil;
 using PathOfTerraria.Common.AI;
 using PathOfTerraria.Common.NPCs.Components;
@@ -113,26 +114,70 @@ internal static class GlacialBossCollision
 		{
 			if (npc.ModNPC is not GlacialBoss boss) { continue; }
 		
+			const float lowFactor = 0.45f;
 			Rectangle npcRect = npc.getRect();
 			Rectangle entityRect = new((int)entity.position.X, (int)entity.position.Y, entity.width, entity.height);
-			Rectangle lowRect = entityRect with { Height = entity.height / 2, Y = (int)entity.position.Y + entity.height / 2 };
+			Rectangle lowRect = entityRect with
+			{
+				Height = (int)(entity.height * lowFactor),
+				Y = (int)(entity.position.Y + entity.height * (1f - lowFactor)),
+			};
 
 			if (!lowRect.Intersects(npcRect)) { continue; }
 
-			foreach (ref readonly GlacialBoss.Segment segment in boss.segments.AsSpan())
+			const int numInterSteps = 4;
+			// foreach (ref readonly GlacialBoss.Segment segment in boss.segments.AsSpan())
+			// foreach (GlacialBoss.Segment segment in boss.segments.OrderByDescending(s => s.Position.Y))
+			for (int pointIdx = 0; pointIdx < boss.segments.Length * numInterSteps; pointIdx++)
 			{
-				Rectangle segAabb = segment.GetAabb();
+				int segmentIdx = pointIdx / numInterSteps;
+				GlacialBoss.Segment segment = boss.segments[segmentIdx];
+				GlacialBoss.Segment nextSegment = segmentIdx < boss.segments.Length - 1 ? boss.segments[segmentIdx + 1] : segment;
+				float interStep = (pointIdx % numInterSteps) / (float)numInterSteps;
+
+				if (segmentIdx == 0) { interStep = 0; }
+
+				Rectangle aabbA = segment.GetAabb();
+				Rectangle aabbB = nextSegment.GetAabb();
+				Rectangle segAabb = aabbA;
+				segAabb.X = (int)MathHelper.Lerp(aabbA.X, aabbB.X, interStep);
+				segAabb.Y = (int)MathHelper.Lerp(aabbA.Y, aabbB.Y, interStep);
+				
+#if DEBUG && DEBUG_GIZMOS
+				if (entity == Main.LocalPlayer)
+				{
+					DebugUtils.DrawRectInWorld(segAabb, Color.Red);
+				}
+#endif
 				if (segment.Depth < DepthCutoff) { continue; }
+
+				if (segment.ContactDamageFactor > 0f && segment.Depth > 0.15f)
+				{
+					if (entityRect.Intersects(segAabb))
+					{
+						if (typeof(T) == typeof(Player))
+						{
+							player.Hurt(PlayerDeathReason.ByNPC(npc.whoAmI), (int)(npc.damage * segment.ContactDamageFactor), 1);
+						}
+						continue;
+					}
+				}
+
+				
 				if (!lowRect.Intersects(segAabb)) { continue; }
 
 				int standY = (segAabb.Top - entity.height) + 16;
 				Vector2 oldPos = entity.position;
 				Vector2 newPos = (oldPos with { Y = Math.Min(entity.position.Y, standY) }) + segment.Velocity;
+				float yDelta = newPos.Y - oldPos.Y;
+
+				if (yDelta < -30) { continue; }
 			
 				if (!Collision.SolidCollision(newPos, entity.width, entity.height))
 				{
 					entity.position = newPos;
 					entity.velocity.Y = 0;
+					
 					lastSegmentVelocity = segment.Velocity;
 					ridingSegment = true;
 
@@ -148,14 +193,15 @@ internal static class GlacialBossCollision
 		if (!ridingSegment && lastSegmentVelocity is Vector2 vel && vel.Floor() != default)
 		{
 			const float maxSpeed = 10;
-
-			var direction = Vector2.Normalize(vel);
-			entity.velocity = MovementUtils.DirAccel(entity.velocity, direction, vel.Length(), vel.Length());
-			
 			if (vel.Length() > maxSpeed)
 			{
 				vel = Vector2.Normalize(vel) * maxSpeed;
 			}
+
+			var direction = Vector2.Normalize(vel);
+			Vector2 oldVel = entity.velocity;
+			entity.velocity = MovementUtils.DirAccel(entity.velocity, direction, vel.Length(), vel.Length());
+			entity.velocity.Y = MathF.Min(entity.velocity.Y, oldVel.Y);
 		
 			// entity.velocity += vel;
 			lastSegmentVelocity = null;
@@ -194,12 +240,15 @@ internal sealed class GlacialBoss : ModNPC
 		public float Depth;
 		public float BaseRotation;
 		public float Rotation;
+		public float ContactDamageFactor;
 		public bool WasSubmerged;
 
 		public readonly Rectangle GetAabb()
 		{
-			float length = Length * 1.5f;
-			return new Rectangle((int)(Position.X - length), (int)(Position.Y - length), (int)length, (int)length);
+			float full = Length * 1.0f;
+			float half = full * 0.5f;
+			float vert = full * 0.5f;
+			return new Rectangle((int)(Position.X - half), (int)(Position.Y - half), (int)full, (int)vert);
 		}
 	}
 
@@ -414,7 +463,7 @@ internal sealed class GlacialBoss : ModNPC
 		NPC.Center = Main.MouseWorld;
 #endif
 
-		NPC.scale = 2.0f; //1.5f;
+		NPC.scale = 1.0f; //1.5f;
 
 		// Reset overrides.
 		ctx.Movement.Data.TargetOverride = null;
@@ -834,6 +883,8 @@ internal sealed class GlacialBoss : ModNPC
 
 		foreach (ref Segment segment in segments.AsSpan())
 		{
+			if (segment.Depth < 0f) { continue; }
+			
 			var segAabb = new Rectangle
 			(
 				(int)(segment.Position.X - segment.Length),
@@ -1258,7 +1309,8 @@ internal sealed class GlacialBoss : ModNPC
 		
 		Vector2 nextPosition = segments.Length == 0 ? NPC.Center : segments[0].Position;
 		
-		segments = new Segment[200];
+		const int numSegments = 200;
+		segments = new Segment[numSegments];
 		
 		for (int segmentIndex = 0; segmentIndex < segments.Length; segmentIndex++)
 		{
@@ -1272,24 +1324,28 @@ internal sealed class GlacialBoss : ModNPC
 					Frame = new SpriteFrame(1, 1) { PaddingX = 0, PaddingY = 0 },
 					Position = nextPosition,
 					BaseRotation = MathHelper.ToRadians(30),
-					Length = 30,
+					Length = 160,
 				};
 			}
 			else
 			{
+				float segFactor = segmentIndex / (float)numSegments;
+				bool isSpiked = segmentIndex % 8 == 0;
+				bool isLast = segmentIndex == numSegments - 1;
+				byte sizeIndex = (byte)(segFactor < 0.8f ? 0 : (!isLast ? 1 : 2));
+				string sizeName = sizeIndex switch { 0 => "Large", 1 => "Medium", 2 => "Small", _ => throw null! };
+				string suffix = isSpiked ? "_Iced" : string.Empty;
+				int length = sizeIndex switch { 0 => 80, 1 => 60, 2 => 40, _ => throw null! };
+				
 				segment = new()
 				{
-					TexturePath = $"{Texture}_Body",
-					Frame = new SpriteFrame(1, 2) { PaddingX = 0, PaddingY = 0 },
+					TexturePath = $"{Texture}_Body_{sizeName}{suffix}",
+					Frame = new SpriteFrame(1, 1) { PaddingX = 0, PaddingY = 0 },
 					Position = nextPosition,
 					BaseRotation = -MathHelper.PiOver2,
-					Length = 30,
+					Length = length,
+					ContactDamageFactor = isSpiked ? 1f : 0f,
 				};
-
-				if (segmentIndex >= segments.Length * 0.85f)
-				{
-					segment.Frame.CurrentRow = 1;
-				}
 			}
 
 			nextPosition += new Vector2(0, segment.Length);
@@ -1374,10 +1430,12 @@ internal sealed class GlacialBoss : ModNPC
 			
 		for (int segmentIndex = 0; segmentIndex < segments.Length; segmentIndex++)
 		{
-			float timeOffset = segmentIndex * -1.8f;
+			ref Segment segment = ref segments[segmentIndex];
+
+			float timeOffset = segmentIndex * -2.1f * (segment.Length / 80);
 			float GetStep(uint tick)
 			{
-				return MathUtils.Modulo((tick * 10f * TimeSystem.LogicDeltaTime) + timeOffset, testPath.Range.Max);
+				return MathUtils.Modulo((tick * 04f * TimeSystem.LogicDeltaTime) + timeOffset, testPath.Range.Max);
 			}
 
 			float prevStep = GetStep(globalCounter - 1);
@@ -1385,7 +1443,6 @@ internal sealed class GlacialBoss : ModNPC
 			AnimationKey prevSample = path.GetValue(prevStep);
 			AnimationKey currSample = path.GetValue(currStep);
 
-			ref Segment segment = ref segments[segmentIndex];
 			segment.Position = arenaCenter + prevSample.Position;
 			segment.Velocity = currSample.Position - prevSample.Position;
 			segment.Depth = currSample.Depth;
@@ -1528,13 +1585,23 @@ internal sealed class GlacialBoss : ModNPC
 
 		bool drawingBackground = NPCUtil.GetCachedDrawContext() == NPCCachedDraw.BehindWalls;
 
+		// RenderSegments(in ctx, screenPos, filter: s => s.Depth >= 0f && (!drawingBackground || s.Depth > -0.05f));
+		// RenderSegments(in ctx, screenPos, filter: s => s.Depth < 0f && (drawingBackground || s.Depth < 0.05f));
+		RenderSegments(in ctx, screenPos, filter: s => s.Depth >= 0f && !drawingBackground);
+		RenderSegments(in ctx, screenPos, filter: s => s.Depth < 0f && drawingBackground);
+		return false;
+	}
+
+	private void RenderSegments(in Context ctx, Vector2 screenPos, Predicate<Segment>? filter = null)
+	{
+		filter ??= static _ => true;
+		
 		// Render segments back-to-front.
 		for (int segmentIndex = segments.Length - 1; segmentIndex >= 0; segmentIndex--)
 		{
 			ref Segment segment = ref segments[segmentIndex];
 
-			bool isBackground = segment.Depth < 0f;
-			if (isBackground != drawingBackground) { continue; }
+			if (!filter(segment)) { continue; }
 
 			if (!AssetUtils.AsyncValue(segment.TexturePath, ref segment.TextureCache, out Texture2D segTex)) { continue; }
 
@@ -1556,8 +1623,6 @@ internal sealed class GlacialBoss : ModNPC
 				ctx.Animations.Render(NPC, segGlow, segFrame, screenPos, Color.White, center: segPos, origin: segOrigin, rotation: segment.Rotation);
 			}
 		}
-
-		return false;
 	}
 
 	// Hide 'name: life/lifeMax' mousetext.
