@@ -124,7 +124,7 @@ internal class StopBuildingPlayer : ModPlayer
 
 		if (SubworldSystem.Current is MappingWorld and not MoonLordDomain)
 		{
-			ConstantStopBuilding = true;
+			// ConstantStopBuilding = true;
 		}
 	}
 

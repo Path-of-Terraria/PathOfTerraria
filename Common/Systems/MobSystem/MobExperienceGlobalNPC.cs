@@ -29,7 +29,7 @@ public class MobExperienceGlobalNPC : GlobalNPC
 #if DEBUG
 		if (npcSystem.Experience == null)
 		{
-			Main.NewText($"No experience entry for {npc.TypeName} - {npc.netID}");
+			// Main.NewText($"No experience entry for {npc.TypeName} - {npc.netID}");
 		}
 #endif
 		

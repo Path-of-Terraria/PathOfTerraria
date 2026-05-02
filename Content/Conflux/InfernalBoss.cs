@@ -557,9 +557,9 @@ internal sealed class InfernalBoss : ModNPC
 		InitiateAttacks(in ctx);
 		ctx.Teleports.ManualUpdate(new(NPC)
 		{
-			IsBusy = Phase is PhaseType.Idle || CutsceneActive
+			IsBusy = (Phase is PhaseType.Idle || CutsceneActive)
 #if NO_TELEPORTS
-			&& false
+			|| true
 #endif
 		});
 		ctx.Attacking.ManualUpdate(new(NPC));

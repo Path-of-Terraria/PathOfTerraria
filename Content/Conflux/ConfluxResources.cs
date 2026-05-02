@@ -296,6 +296,7 @@ internal sealed class GlacialConflux : ConfluxResource
 			Cost = 100,
 			AssociatedItem = Type,
 			AccentColor = Color.Cyan,
+			PortalDestination = $"{nameof(PathOfTerraria)}/{nameof(GlacialRealm)}",
 			CanisterLiquidTexture = $"{nameof(PathOfTerraria)}/Assets/UI/MapDevice/Liquid_{GetType().Name}",
 		};
 	}

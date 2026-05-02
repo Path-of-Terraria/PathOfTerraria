@@ -15,6 +15,17 @@ public static class MathUtils
 	{
 		return (Math.Sin(value) + 1) / 2;
 	}
+	
+	/// <summary> Short-hand for '(Cos(value) + 1) / 2'. </summary>
+	public static float Cos01(float value)
+	{
+		return (MathF.Cos(value) + 1) / 2;
+	}
+	/// <inheritdoc cref="Cos01(float)"/>
+	public static double Cos01(double value)
+	{
+		return (Math.Cos(value) + 1) / 2;
+	}
 
 	/// <summary> Short-hand for Clamp(value, 0, 1). </summary>
 	public static float Clamp01(float value)
@@ -63,6 +74,19 @@ public static class MathUtils
 	public static float MinAbs(float a, float b)
 	{
 		return Math.Abs(a) <= Math.Abs(b) ? a : b;
+	}
+	
+	/// <summary> Modulos the value by <paramref name="length"/>, wrapping it in a linearly bouncing range. </summary>
+	public static float PingPong(float value, float length)
+	{
+		float mod = Modulo(value, length);
+		return mod > (length / 2) ? ((length * 2) - (mod * 2)) : (mod * 2);
+	}
+	/// <inheritdoc cref="PingPong"/>
+	public static double PingPong(double value, double length)
+	{
+		double mod = Modulo(value, length);
+		return mod > (length / 2) ? ((length * 2) - (mod * 2)) : (mod * 2);
 	}
 
 	// Linear Interpolation

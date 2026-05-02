@@ -1055,7 +1055,17 @@ InfernalBoss: {
 	// OverlayTitle2: Pyralis
 	// OverlaySubTitle1: The Fallen
 	// OverlaySubTitle2: The Cursed
-	// OverlayDefeatedTitle: Pyralis, The Fallen
+	// OverlayDefeatedTitle: Pyralis The Fallen
+	// OverlayDefeatedSubTitle: Slain
+}
+
+GlacialBoss: {
+	// DisplayName: Yryoth The Betrayed
+	// OverlayTitle1: Yryoth
+	// OverlayTitle2: Yryoth
+	// OverlaySubTitle1: The Betrayed
+	// OverlaySubTitle2: The Betrayed
+	// OverlayDefeatedTitle: Yryoth The Betrayed
 	// OverlayDefeatedSubTitle: Slain
 }
 

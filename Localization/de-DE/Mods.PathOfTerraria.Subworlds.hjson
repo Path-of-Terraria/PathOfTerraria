@@ -165,3 +165,10 @@ InfernalRealm: {
 	// Mining: "[i:1] Only torches and ropes can be mined"
 	// Placing: "[i:2] Only torches and ropes can be placed"
 }
+
+GlacialRealm: {
+	// DisplayName: GlacialRealm
+	// Description: GlacialRealm
+	// Mining: "[i:1] Only torches and ropes can be mined"
+	// Placing: "[i:2] Only torches and ropes can be placed"
+}

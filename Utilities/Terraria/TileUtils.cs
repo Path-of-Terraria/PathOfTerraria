@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using PathOfTerraria.Utilities.Xna;
+using Terraria.DataStructures;
 
 namespace PathOfTerraria.Utilities.Terraria;
 
@@ -12,6 +13,13 @@ internal static class TileUtils
 	public const float PixelSizeInUnits = 1f / TileSizeInPixels;
 
 	// Tilemap utilities.
+	
+	/// <summary> Inlined method that checks for HasTile && tileSolid && !tileSolidTop. </summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+	public static bool InWorld(Point16 point)
+	{
+		return point.X >= 0 && point.Y >= 0 && point.X < Main.maxTilesX && point.Y < Main.maxTilesY;
+	}
 
 	/// <summary> Inlined method that checks for HasTile && tileSolid && !tileSolidTop. </summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
