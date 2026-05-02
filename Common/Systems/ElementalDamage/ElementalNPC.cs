@@ -4,82 +4,107 @@ using System.Linq;
 using PathOfTerraria.Common.Data;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Core.Items;
+using Terraria;
+using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
+using Terraria.DataStructures;
 
 namespace PathOfTerraria.Common.Systems.ElementalDamage;
 
-/// <summary>
-/// Stores elemental info for NPCs, namely their individual <see cref="ElementalContainer"/> instance.
-/// </summary>
 internal class ElementalNPC : GlobalNPC
 {
 	public override bool InstancePerEntity => true;
 
+	public int Level;
 	public ElementalContainer Container { get; private set; } = new();
 
-	/// <summary>
-	/// Applies <see cref="ElementalDamage"/>s to this <paramref name="npc"/> from its associated <see cref="MobData.Damage"/> data. 
-	/// <br/> If the <paramref name="entry"/> parameter is provided, it will apply the matching <see cref="MobEntry.DamageOverrides"/> instead. </summary>
+	private bool _initialized = false;
+
+
+	// On Spawn assign the element 
+	public override void OnSpawn(NPC npc, IEntitySource source)
+	{
+		// Prevent double initialization (important for weird spawns)
+		if (_initialized)
+			return;
+
+		_initialized = true;
+
+		// Reset container once
+		Container.Reset(false);
+
+		// Roll level 
+		Level = PoTItemHelper.PickItemLevel();
+
+		// Apply elemental data
+		ApplyDamageTypes(npc);
+	}
+
+	// =========================
+	// ELEMENTAL APPLICATION
+	// =========================
 	public void ApplyDamageTypes(NPC npc, MobEntry entry = null)
 	{
 		List<MobDamage> elementalDamages = null;
 
-		// Apply entry overrides if evaluating an entry and overrides are available
-		bool fromEntry = entry != null && entry.DamageOverrides != null;
-		if (fromEntry)
+		// Entry override (affixes etc.)
+		if (entry != null && entry.DamageOverrides != null)
 		{
 			elementalDamages = entry.DamageOverrides;
 		}
-		// Otherwise, try get the root (common) data for this type
+		// Base mob data
 		else if (MobRegistry.TryGetMobData(npc.type, out MobData mobData))
 		{
 			elementalDamages = mobData.Damage;
 		}
 
-		if (elementalDamages != null && elementalDamages.Count > 0)
+		if (elementalDamages == null || elementalDamages.Count == 0)
+			return;
+		
+
+		foreach (MobDamage mobDamage in elementalDamages.OrderByDescending(d => d.MinLevel))
 		{
-			int level = PoTItemHelper.PickItemLevel();
-
-			foreach (MobDamage mobDamage in elementalDamages.OrderByDescending(d => d.MinLevel))
+			if (Level >= mobDamage.MinLevel)
 			{
-				if (level >= mobDamage.MinLevel)
+				if (mobDamage.Fire != null)
 				{
-					if (mobDamage.Fire != null)
-					{
-						ref ElementalDamage damageModifier = ref Container[ElementType.Fire].DamageModifier;
-						damageModifier = damageModifier.ApplyOverride(mobDamage.Fire.Added, mobDamage.Fire.Conversion);
-					}
-
-					if (mobDamage.Cold != null)
-					{
-						ref ElementalDamage damageModifier = ref Container[ElementType.Cold].DamageModifier;
-						damageModifier = damageModifier.ApplyOverride(mobDamage.Cold.Added, mobDamage.Cold.Conversion);
-					}
-
-					if (mobDamage.Lightning != null)
-					{
-						ref ElementalDamage damageModifier = ref Container[ElementType.Lightning].DamageModifier;
-						damageModifier = damageModifier.ApplyOverride(mobDamage.Lightning.Added, mobDamage.Lightning.Conversion);
-					}
-
-					break;
+					ref ElementalDamage dmg = ref Container[ElementType.Fire].DamageModifier;
+					dmg = dmg.ApplyOverride(mobDamage.Fire.Added, mobDamage.Fire.Conversion);
 				}
+
+				if (mobDamage.Cold != null)
+				{
+					ref ElementalDamage dmg = ref Container[ElementType.Cold].DamageModifier;
+					dmg = dmg.ApplyOverride(mobDamage.Cold.Added, mobDamage.Cold.Conversion);
+				}
+
+				if (mobDamage.Lightning != null)
+				{
+					ref ElementalDamage dmg = ref Container[ElementType.Lightning].DamageModifier;
+					dmg = dmg.ApplyOverride(mobDamage.Lightning.Added, mobDamage.Lightning.Conversion);
+				}
+
+				if (mobDamage.Chaos != null)
+				{
+					ref ElementalDamage dmg = ref Container[ElementType.Chaos].DamageModifier;
+					dmg = dmg.ApplyOverride(mobDamage.Chaos.Added, mobDamage.Chaos.Conversion);
+				}
+
+				break;
 			}
 		}
 	}
-
-	public override void ResetEffects(NPC npc)
-	{
-		Container.Reset(false);
-	}
-
+	
+	// Multiplayer Sync? 
 	public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
 	{
+		binaryWriter.Write(Level);
 		Container.WriteTo(bitWriter, binaryWriter);
 	}
 
 	public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
 	{
+		Level = binaryReader.ReadInt32();
 		Container.ReadFrom(bitReader, binaryReader);
 	}
 }
