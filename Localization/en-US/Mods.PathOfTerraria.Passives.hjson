@@ -756,7 +756,7 @@ SoulReaveMastery: {
 
 RagingSpiritsMastery: {
 	Name: Raging Spirits
-	Tooltip: Minion hits have a {0}% chance to spawn a Raging Spirit for a short duration, dealing Summon Damage based on the minions hit.
+	Tooltip: Minion hits have a {0}% chance to spawn a Raging Spirit for a short duration, dealing 50% of the minions damage.
 }
 
 ChaoticReverberationMastery: {
