@@ -60,7 +60,11 @@ internal class MechCapsule : ModTile
 	public override IEnumerable<Item> GetItemDrops(int i, int j)
 	{
 		ItemDatabase.ItemRecord drop = DropTable.RollMobDrops(PoTItemHelper.PickItemLevel(), 1f, random: Main.rand);
-		yield return new Item(drop.ItemId, drop.Item.stack);
+
+		if (drop.Item is not null)
+		{
+			yield return new Item(drop.ItemId, drop.Item.stack);
+		}
 	}
 
 	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)

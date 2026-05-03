@@ -92,6 +92,9 @@ internal sealed class ItemFilterUIState : UIState, IMutuallyExclusiveUI, IAutopa
 			ItemFilterPlayer player = Main.LocalPlayer.GetModPlayer<ItemFilterPlayer>();
 			player.Filters.Add(new ItemFilter { Name = Language.GetTextValue(Path + "DefaultName") });
 			_selectedIndex = player.Filters.Count - 1;
+			// Auto-activate the new filter so the player doesn't have to remember to hit Set Active to
+			// see their filter take effect.
+			player.ActiveFilterIndex = _selectedIndex;
 			RebuildFilterList();
 			RebuildEditor();
 		});
