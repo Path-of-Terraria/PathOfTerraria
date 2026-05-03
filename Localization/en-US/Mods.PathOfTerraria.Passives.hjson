@@ -31,12 +31,12 @@ AddedManaPassive: {
 
 LongRangePassive: {
 	Name: Increased Damage Against Distant Enemies
-	Tooltip: Increases your damage against distant enemies by {0}%
+	Tooltip: +{0}% Increased damage against [mechanic/shift:Far] Enemies
 }
 
 CloseRangePassive: {
 	Name: Increased Damage Against Nearby Enemies
-	Tooltip: Increases your damage against nearby enemies by 10%
+	Tooltip: +{0}% increased damage against nearby Enemies
 }
 
 ChanceToBleedPassive: {
@@ -61,12 +61,12 @@ StartPassive: {
 
 IncreasedSummonDamagePassive: {
 	Name: Increased Summon Damage
-	Tooltip: Increases all summon damage by {0}%
+	Tooltip: Increases summon damage by {0}%
 }
 
 IncreasedSentryDamagePassive: {
 	Name: Increased Sentry Damage
-	Tooltip: Increases your sentries' damage by {0}%
+	Tooltip: "{0}% increased damage with Sentries"
 }
 
 JewelSocket: {
@@ -95,8 +95,8 @@ IncreasedCriticalStrikeChance: {
 }
 
 IncreasedCriticalStrikeMultiplier: {
-	Name: Increased Critical Strike Multiplier
-	Tooltip: Adds {0}% critical strike multiplier
+	Name: More Critical Strike Damage
+	Tooltip: "{0}% more critical strike Damage"
 }
 
 ArmorPenetrationPassive: {
@@ -121,7 +121,7 @@ ShockChancePassive: {
 
 IncreasedMinionDamagePassive: {
 	Name: Increased Minion Damage
-	Tooltip: Increases your minions' damage by {0}%
+	Tooltip: "{0}% increased Minion Damage"
 }
 
 AddedAggressionPassive: {
@@ -136,7 +136,7 @@ GlancingBlowsPassive: {
 
 IncreasedBlockChancePassive: {
 	Name: Increased Block Chance
-	Tooltip: +10% chance to block an attack
+	Tooltip: +10% increased Block Chance
 }
 
 AddedIntelligencePassive: {
@@ -366,7 +366,7 @@ ChanceToChillPassive: {
 
 ChanceToFreezePassive: {
 	Name: Chance to Freeze
-	Tooltip: +{0}% chance to roll Freeze
+	Tooltip: +{0}% chance to apply Freeze
 }
 
 ChanceToIgnitePassive: {
@@ -416,22 +416,22 @@ ItemDropRatePassive: {
 
 AfterburnMastery: {
 	Name: Afterburning
-	Tooltip: +{0}% fire damage multiplier, +{1}% damage taken multiplier
+	Tooltip: +{0}% more Fire Damage, +{1}% more Damage taken
 }
 
 AddedFireDamageMultiplierPassive: {
-	Name: Increased Fire Damage Multiplier
-	Tooltip: +{0}% fire damage multiplier
+	Name: More Fire Damage
+	Tooltip: +{0}% more fire Damage
 }
 
 AddedColdDamageMultiplierPassive: {
-	Name: Increased Cold Damage Multiplier
-	Tooltip: +{0}% cold damage multiplier
+	Name: More Cold Damage
+	Tooltip: +{0}% more Cold Damage
 }
 
 AddedLightningDamageMultiplierPassive: {
-	Name: Increased Lightning Damage Multiplier
-	Tooltip: +{0}% lightning damage multiplier
+	Name: More Lightning Damage
+	Tooltip: +{0}% more Lighting Damage
 }
 
 ScorchingFlamesMastery: {
@@ -446,7 +446,7 @@ BurstingFuryMastery: {
 
 DeepPoolsMastery: {
 	Name: Deep Pools
-	Tooltip: Gain {0}% max mana, gain 1% all damage per 25 max mana you have
+	Tooltip: Gain {0}% max mana, gain 1% increase damage per 25 max mana you have
 }
 
 ManaBombMastery: {
@@ -456,7 +456,7 @@ ManaBombMastery: {
 
 MagicGuardMastery: {
 	Name: Magic Guard
-	Tooltip: When above 50% mana, take {0}% less health - otherwise, deal {1}% more damage
+	Tooltip: While above 50% mana, take {0}% less damage - otherwise, deal {1}% increased damage
 }
 
 ThunderbootsMastery: {
@@ -466,7 +466,7 @@ ThunderbootsMastery: {
 
 ElectrostaticAttractionMastery: {
 	Name: Electrostatic Charge
-	Tooltip: Dealing Lightning damage will give a stacking, very short term multiplier to Lightning damage, capping at a 50% multiplier
+	Tooltip: Dealing Lightning damage will give a stacking Lightning damage Buff, capping at 50% more Lightning Damage
 }
 
 ChannelingBurstMastery: {
@@ -486,7 +486,7 @@ SingleFocusMastery: {
 
 ChainLightningMastery: {
 	Name: Chain Lightning
-	Tooltip: Lightning damage has a {0}% chance to chain to another enemy
+	Tooltip: Lightning damage has a {0}% chance to make your damage chain to another [mechanic/shift:Nearby] enemy 
 }
 
 CriticalOverloadMastery: {
@@ -601,7 +601,7 @@ AddedSummonCritChancePassive: {
 
 OpportuneStrikeMastery: {
 	Name: Opportune Strike
-	Tooltip: Every critical hit from a minion reduces all summoner skill cooldowns by {0}% (1 second cooldown)
+	Tooltip: Every critical hit from a minion reduces all summoner skill cooldowns by {0}% [1 second cooldown]
 }
 
 UndeadLegionMastery: {
@@ -626,7 +626,7 @@ MinionManaRegenAuraPassive: {
 
 HeartySummonsPassive: {
 	Name: Healthy Summon Damage Boost
-	Tooltip: +{0}% summon damage when above 90% health
+	Tooltip: +{0}% increased summon damage while above 90% health
 }
 
 SymbioticPulseMastery: {
@@ -661,12 +661,12 @@ SentryDuplicatedProjectilePassive: {
 
 SacrificialSummonsMastery: {
 	Name: Sacrificial Summons
-	Tooltip: When you or anyone [mechanic/shift:Nearby] you dies, sacrifice {0} summons to cheat death and return to 100 health (5 minute cooldown)
+	Tooltip: When you or anyone [mechanic/shift:Nearby] you dies, sacrifice {0} summons to cheat death and return to 100 health [5 minute cooldown]
 }
 
 OverhealMastery: {
 	Name: Overheal Pulse
-	Tooltip: When overhealing, emit a pulse of damage from every minion you have, damage scaling with how much you've overhealed (capping at {0}%)
+	Tooltip: When overhealing, emit a pulse of damage from every minion you have, based on the minions base damage. Increased by overheal amount. [0.2 cooldown]
 }
 
 StrongerDebuffsPassive: {
@@ -686,7 +686,7 @@ FasterGrimoirePassive: {
 
 IncreasedGrimoireDamagePassive: {
 	Name: Increased Grimoire Damage
-	Tooltip: Grimoire summons deal {0}% more damage
+	Tooltip: Grimoire summons deal {0}% increased damage
 }
 
 IncreasedGrimoireCritPassive: {
@@ -706,7 +706,7 @@ PinningShotMastery: {
 
 LimitedEntranceMastery: {
 	Name: Limited Opening
-	Tooltip: For {0} seconds after spawning, summons deal 30% more damage
+	Tooltip: Summons deal 30% more damage for {0} seconds after spawning.
 }
 
 DeathrushMastery: {
@@ -736,7 +736,7 @@ HealingGrimoireMastery: {
 
 ManaLeechMastery: {
 	Name: Mana Leech
-	Tooltip: Grimoire summons constantly increase in damage but consume more and more mana
+	Tooltip: Grimoire summons drain increasingly more mana to deal increased damage
 }
 
 TwinPowerMastery: {
@@ -756,7 +756,7 @@ SoulReaveMastery: {
 
 RagingSpiritsMastery: {
 	Name: Raging Spirits
-	Tooltip: Minions have a {0}% chance to spawn a Raging Spirit, which counts as a summon. This cannot critically strike.
+	Tooltip: Minion hits have a {0}% chance to spawn a Raging Spirit for a short duration, dealing 50% of the minions damage.
 }
 
 ChaoticReverberationMastery: {
@@ -786,12 +786,12 @@ BurstingBottlesMastery: {
 
 IncreasedSkillDamagePassive: {
 	Name: Increased Skill Damage
-	Tooltip: Skills deal {0}% more damage
+	Tooltip: Skills deal {0}% increased damage
 }
 
 ProlongingSkillMastery: {
 	Name: Prolonging Skill
-	Tooltip: +{0}% skill duration
+	Tooltip: +{0}% increased skill duration
 }
 
 SurplusVitalityMastery: {
@@ -836,7 +836,7 @@ BloodroundMastery: {
 
 BouncingAmmoMastery: {
 	Name: Bouncing Ammo
-	Tooltip: Ammo-based projectiles bounce off of enemies once
+	Tooltip: Ammo-based projectiles ricochet towards another enemy on hit
 }
 
 TracerShotsMastery: {
@@ -851,7 +851,7 @@ HairTriggerMastery: {
 
 ExplosiveSlugsMastery: {
 	Name: Explosive Slugs
-	Tooltip: Critical strikes with bullets explode, dealing {0}% of base damage
+	Tooltip: Critical strikes with bullets explode, dealing {0}% of the damage dealt.
 }
 
 AdvantageShotMastery: {
@@ -861,7 +861,7 @@ AdvantageShotMastery: {
 
 IgnitingProjectilesPassive: {
 	Name: Chance for Projectiles to Ignite
-	Tooltip: +{0}% chance for projectiles to deal Ignite
+	Tooltip: +{0}% chance for projectiles to inflict an Ignite
 }
 
 ChanceForAdditionalProjectilePassive: {
@@ -881,7 +881,7 @@ LongerPoisonPassive: {
 
 StrongerPoisonPassive: {
 	Name: Stronger Poison
-	Tooltip: Poison deals {0}% more damage
+	Tooltip: Poison deals {0}% increased damage
 }
 
 FasterPoisonTickPassive: {
@@ -901,7 +901,7 @@ CorrosiveTouchMastery: {
 
 LethalDoseMastery: {
 	Name: Lethal Dose
-	Tooltip: Enemies hit by you take {0}% more damage per poison stack (max {1}%)
+	Tooltip: Enemies hit by you take {0}% increased damage per poison stack (max {1}%)
 }
 
 QuickExplosionsPassive: {
@@ -946,7 +946,7 @@ BlastChainMastery: {
 
 ReturningProjectilesMastery: {
 	Name: Returning Bullets
-	Tooltip: Bullets return to their spawn location after {0} seconds
+	Tooltip: Bullets return to their start location after {0} seconds
 }
 
 MarksmanMastery: {
@@ -956,12 +956,12 @@ MarksmanMastery: {
 
 FatBulletsMastery: {
 	Name: Fat Bullets
-	Tooltip: Ranged projectiles are {0}% stronger and bigger, but have damage and speed falloff quickly
+	Tooltip: Ranged projectiles deal {0}% increased Damage and are larger. They lose this bonus as they travel and are heavier
 }
 
 StillDamagePassive: {
-	Name: Damage Increased when Stationary
-	Tooltip: Standing still increases all damage by {0}%
+	Name: Increased Damage when Stationary
+	Tooltip: +{0}% increased Damage while standing still
 }
 
 MeleeSizePassive: {
@@ -1016,7 +1016,7 @@ ExsanguinateMastery: {
 
 BloodbenderMastery: {
 	Name: Bloodbender
-	Tooltip: Critting a bleeding enemy siphons {0}% of the damage done, scaling with bleed stacks
+	Tooltip: Critting a bleeding enemy, siphons {0}% of the damage done per stack of bleed. [0.5 sec cooldown]
 }
 
 HealOnKillPassive: {
@@ -1066,7 +1066,7 @@ IncreasedEnemyAggressionPassive: {
 
 UndyingGraspMastery: {
 	Name: Undying Grasp
-	Tooltip: Heal {0}% of the damage done after {1} seconds
+	Tooltip: Heal {0}% of the damage taken after {1} seconds
 }
 
 WillingSacrificeMastery: {
@@ -1116,7 +1116,7 @@ RageResistancePassive: {
 
 BurningRageMastery: {
 	Name: Burning Rage
-	Tooltip: Gain {0}% max health per rage stack. Gain 100% fire type damage conversion at max rage
+	Tooltip: Gain {0}% max health per rage stack. Gain 100% fire damage conversion at max rage
 }
 
 FuriousSiphonMastery: {
