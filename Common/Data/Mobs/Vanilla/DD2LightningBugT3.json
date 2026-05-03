@@ -1,5 +1,16 @@
 {
   "netId": 578,
   "friendlyName": "D D2 Lightning Bug T3",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": null,
+      "lightning": {
+        "added": 20,
+        "conversion": 0.75
+      },
+      "cold": null
+    }
+  ],
   "entries": []
 }

@@ -1,5 +1,17 @@
 {
 	"friendlyName": "Fallen Tyrant",
+	"damage": [
+		{
+			"minLevel": 1,
+			"fire": {
+				"added": 50,
+				"conversion": 0.5
+			},
+			"lightning": null,
+			"cold": null,
+			"chaos": null
+		}
+	],
 	"entries": [
 		{
 			"scale": null,

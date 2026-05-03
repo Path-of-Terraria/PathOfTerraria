@@ -1,5 +1,22 @@
 {
   "netId": 398,
   "friendlyName": "Moon Lord Core",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": {
+        "added": 25,
+        "conversion": 0.25
+      },
+      "lightning": {
+        "added": 25,
+        "conversion": 0.25
+      },
+      "cold": {
+        "added": 25,
+        "conversion": 0.25
+      }
+    }
+  ],
   "entries": []
 }

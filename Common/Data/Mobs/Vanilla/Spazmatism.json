@@ -1,5 +1,16 @@
 {
   "netId": 126,
   "friendlyName": "Spazmatism",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": {
+        "added": 15,
+        "conversion": 0.33
+      },
+      "lightning": null,
+      "cold": null
+    }
+  ],
   "entries": []
 }

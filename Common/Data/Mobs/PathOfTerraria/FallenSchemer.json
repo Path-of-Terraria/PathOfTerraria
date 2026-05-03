@@ -1,5 +1,17 @@
 {
 	"friendlyName": "Fallen Schemer",
+	"damage": [
+		{
+			"minLevel": 1,
+			"fire": {
+				"added": 5,
+				"conversion": 0.5
+			},
+			"lightning": null,
+			"cold": null,
+			"chaos": null
+		}
+	],
 	"entries": [
 		{
 			"scale": null,

@@ -1,5 +1,16 @@
 {
   "netId": 425,
   "friendlyName": "Vortex Rifleman",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": null,
+      "lightning": {
+        "added": 60,
+        "conversion": 0.75
+      },
+      "cold": null
+    }
+  ],
   "entries": []
 }

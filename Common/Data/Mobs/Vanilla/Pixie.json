@@ -1,5 +1,22 @@
 {
   "netId": 75,
   "friendlyName": "Pixie",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": {
+        "added": 10,
+        "conversion": 0.25
+      },
+      "lightning": {
+        "added": 10,
+        "conversion": 0.25
+      },
+      "cold": {
+        "added": 10,
+        "conversion": 0.25
+      }
+    }
+  ],
   "entries": []
 }

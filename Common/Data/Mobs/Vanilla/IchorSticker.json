@@ -1,5 +1,19 @@
 {
   "netId": 268,
   "friendlyName": "Ichor Sticker",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": {
+        "added": 15,
+        "conversion": 0.33
+      },
+      "lightning": {
+        "added": 15,
+        "conversion": 0.33
+      },
+      "cold": null
+    }
+  ],
   "entries": []
 }

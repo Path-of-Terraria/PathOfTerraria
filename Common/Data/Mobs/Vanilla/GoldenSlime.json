@@ -1,5 +1,19 @@
 {
   "netId": 667,
   "friendlyName": "Golden Slime",
-  "entries": []
+  "damage": null,
+  "entries": [
+    {
+      "scale": null,
+      "prefix": null,
+      "weight": 1,
+      "stats": {
+        "level": 1,
+        "experience": 20
+      },
+      "affixes": null,
+      "requirements": "PreHardmodeSurface",
+      "damageOverrides": null
+    }
+  ]
 }

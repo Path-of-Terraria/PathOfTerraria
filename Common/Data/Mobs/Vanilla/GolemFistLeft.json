@@ -1,5 +1,16 @@
 {
   "netId": 247,
   "friendlyName": "Golem Fist Left",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": {
+        "added": 40,
+        "conversion": 0.6
+      },
+      "lightning": null,
+      "cold": null
+    }
+  ],
   "entries": []
 }

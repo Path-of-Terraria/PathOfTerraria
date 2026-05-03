@@ -1,5 +1,16 @@
 {
   "netId": 136,
   "friendlyName": "The Destroyer Tail",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": {
+        "added": 20,
+        "conversion": 0.5
+      },
+      "lightning": null,
+      "cold": null
+    }
+  ],
   "entries": []
 }

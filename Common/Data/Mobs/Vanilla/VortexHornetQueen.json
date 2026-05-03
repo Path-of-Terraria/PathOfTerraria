@@ -1,5 +1,16 @@
 {
   "netId": 426,
   "friendlyName": "Vortex Hornet Queen",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": null,
+      "lightning": {
+        "added": 50,
+        "conversion": 0.75
+      },
+      "cold": null
+    }
+  ],
   "entries": []
 }
