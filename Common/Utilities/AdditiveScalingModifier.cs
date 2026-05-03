@@ -11,7 +11,7 @@ public static class AdditiveScalingModifier
 		if (player == null || projectile == null)
 			return;
 
-		// --- Get all additives from player based on type of damage of the projectile ---
+		// --- Get all additives from player ---
 		float additive = player.GetDamage(DamageClass.Generic).Additive -1;
 
 		if (projectile.DamageType.CountsAsClass(DamageClass.Melee))
@@ -35,7 +35,7 @@ public static class AdditiveScalingModifier
 		if (player == null || item == null)
 			return;
 
-		// --- Get all additives from player based on type of damage of the hit ---
+		// --- Get all additives from player ---
 		float additive = player.GetDamage(DamageClass.Generic).Additive -1;
 
 		if (item.DamageType.CountsAsClass(DamageClass.Melee))
