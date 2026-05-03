@@ -1,19 +1,5 @@
 {
   "netId": 677,
   "friendlyName": "Shimmerfly",
-  "damage": null,
-  "entries": [
-    {
-      "scale": null,
-      "prefix": null,
-      "weight": 1,
-      "stats": {
-        "level": 5,
-        "experience": 5
-      },
-      "affixes": null,
-      "requirements": "PreHardmodeSurface",
-      "damageOverrides": null
-    }
-  ]
+  "entries": []
 }

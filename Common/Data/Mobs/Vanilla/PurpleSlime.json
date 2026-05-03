@@ -1,19 +1,5 @@
 {
   "netId": -7,
   "friendlyName": "Purple Slime",
-  "damage": null,
-  "entries": [
-    {
-      "scale": null,
-      "prefix": null,
-      "weight": 1,
-      "stats": {
-        "level": 2,
-        "experience": 2
-      },
-      "affixes": null,
-      "requirements": "PreHardmodeSurface",
-      "damageOverrides": null
-    }
-  ]
+  "entries": []
 }

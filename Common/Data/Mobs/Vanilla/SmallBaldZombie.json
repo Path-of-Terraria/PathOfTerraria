@@ -1,19 +1,5 @@
 {
   "netId": -28,
   "friendlyName": "Small Bald Zombie",
-  "damage": null,
-  "entries": [
-    {
-      "scale": null,
-      "prefix": null,
-      "weight": 1,
-      "stats": {
-        "level": 2,
-        "experience": 2
-      },
-      "affixes": null,
-      "requirements": "PreHardmodeSurface",
-      "damageOverrides": null
-    }
-  ]
+  "entries": []
 }

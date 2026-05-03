@@ -1,28 +1,4 @@
 {
 	"friendlyName": "Ash Wraith",
-	"damage": [
-		{
-			"minLevel": 1,
-			"fire": {
-				"added": 60,
-				"conversion": 0.5
-			},
-			"lightning": null,
-			"cold": null,
-			"chaos": null
-		}
-	],
-	"entries": [
-		{
-			"scale": null,
-			"prefix": null,
-			"weight": 1,
-			"stats": {
-				"level": 1,
-				"experience": 35
-			},
-			"affixes": null,
-			"requirements": "Underworld"
-		}
-	]
+	"entries": []
 }

@@ -1,28 +1,4 @@
 {
 	"friendlyName": "Swarm Scarab",
-	"damage": [
-		{
-			"minLevel": 1,
-			"cold": {
-				"added": 60,
-				"conversion": 0.5
-			},
-			"lightning": null,
-			"fire": null,
-			"chaos": null
-		}
-	],
-	"entries": [
-		{
-			"scale": null,
-			"prefix": null,
-			"weight": 1,
-			"stats": {
-				"level": 1,
-				"experience": 120
-			},
-			"affixes": null,
-			"requirements": "Desert"
-		}
-	]
+	"entries": []
 }

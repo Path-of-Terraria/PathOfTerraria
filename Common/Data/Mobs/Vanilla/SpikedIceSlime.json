@@ -1,29 +1,5 @@
 {
   "netId": 184,
   "friendlyName": "Spiked Ice Slime",
-  "damage": [
-    {
-      "minLevel": 1,
-      "fire": null,
-      "lightning": null,
-      "cold": {
-        "added": 5,
-        "conversion": 0.5
-      }
-    }
-  ],
-  "entries": [
-    {
-      "scale": null,
-      "prefix": null,
-      "weight": 1,
-      "stats": {
-        "level": 5,
-        "experience": 5
-      },
-      "affixes": null,
-      "requirements": "PreHardmodeSurface",
-      "damageOverrides": null
-    }
-  ]
+  "entries": []
 }

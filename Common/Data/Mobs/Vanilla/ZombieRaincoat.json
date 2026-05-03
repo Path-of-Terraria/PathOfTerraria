@@ -1,29 +1,5 @@
 {
   "netId": 223,
   "friendlyName": "Zombie Raincoat",
-  "damage": [
-    {
-      "minLevel": 1,
-      "fire": null,
-      "lightning": null,
-      "cold": {
-        "added": 10,
-        "conversion": 0.5
-      }
-    }
-  ],
-  "entries": [
-    {
-      "scale": null,
-      "prefix": null,
-      "weight": 1,
-      "stats": {
-        "level": 1,
-        "experience": 2
-      },
-      "affixes": null,
-      "requirements": "PreHardmodeSurface",
-      "damageOverrides": null
-    }
-  ]
+  "entries": []
 }

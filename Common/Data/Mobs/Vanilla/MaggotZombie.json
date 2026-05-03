@@ -1,19 +1,5 @@
 {
   "netId": 632,
   "friendlyName": "Maggot Zombie",
-  "damage": null,
-  "entries": [
-    {
-      "scale": null,
-      "prefix": null,
-      "weight": 1,
-      "stats": {
-        "level": 5,
-        "experience": 3
-      },
-      "affixes": null,
-      "requirements": "PreHardmodeSurface",
-      "damageOverrides": null
-    }
-  ]
+  "entries": []
 }

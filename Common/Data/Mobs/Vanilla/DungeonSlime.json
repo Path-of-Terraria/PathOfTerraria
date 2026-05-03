@@ -1,29 +1,5 @@
 {
   "netId": 71,
   "friendlyName": "Dungeon Slime",
-  "damage": [
-    {
-      "minLevel": 1,
-      "fire": null,
-      "lightning": null,
-      "cold": {
-        "added": 15,
-        "conversion": 0.5
-      }
-    }
-  ],
-  "entries": [
-    {
-      "scale": null,
-      "prefix": null,
-      "weight": 1,
-      "stats": {
-        "level": 15,
-        "experience": 10
-      },
-      "affixes": null,
-      "requirements": "PreHardmodeSurface",
-      "damageOverrides": null
-    }
-  ]
+  "entries": []
 }

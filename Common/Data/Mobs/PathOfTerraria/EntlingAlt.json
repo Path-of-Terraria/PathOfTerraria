@@ -1,16 +1,4 @@
 {
 	"friendlyName": "Entling",
-	"entries": [
-		{
-			"scale": null,
-			"prefix": null,
-			"weight": 1,
-			"stats": {
-				"level": 1,
-				"experience": 20
-			},
-			"affixes": null,
-			"requirements": "Surface"
-		}
-	]
+	"entries": []
 }

@@ -32,7 +32,8 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 
 	public override bool InstancePerEntity => true;
 
-	public int? Experience;
+	/// <summary>Snapshot of lifeMax before rarity/map/area scaling, used for HP-scaled XP. -1 = not captured.</summary>
+	public int BaseLifeMax = -1;
 	public ItemRarity Rarity = ItemRarity.Normal;
 	public List<MobAffix> Affixes = [];
 
@@ -117,6 +118,15 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 	{
 		float progress = MathHelper.Clamp((areaLevel - 1f) / 84f, 0f, 1f);
 		return MathHelper.Lerp(0.2f, 0.15f, progress);
+	}
+
+	// First caller wins so later SetDefaults modifiers (rarity, map affixes, area scaling) don't pollute the snapshot.
+	internal void CaptureBaseLifeMax(NPC npc)
+	{
+		if (BaseLifeMax < 0)
+		{
+			BaseLifeMax = npc.lifeMax;
+		}
 	}
 
 	public override void OnKill(NPC npc)
@@ -223,6 +233,8 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 		{
 			return;
 		}
+
+		CaptureBaseLifeMax(npc);
 
 		// We only want to trigger these changes on hostile non-boss, mortal & damageable non-critter NPCs that aren't in NoAffixesSet
 		if (npc.IsABestiaryIconDummy || npc.friendly || npc.boss || Main.gameMenu || npc.immortal || npc.dontTakeDamage || NPCID.Sets.ProjectileNPC[npc.type]
@@ -360,8 +372,6 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 
 	private void ApplyMobEntry(NPC npc, MobEntry entry)
 	{
-		Experience = entry.Stats.Experience;
-
 		if (!string.IsNullOrEmpty(entry.Prefix))
 		{
 			npc.GivenName = $"{Language.GetTextValue($"Mods.{PoTMod.ModName}.EnemyPrefixes." + entry.Prefix)} {npc.GivenOrTypeName}";

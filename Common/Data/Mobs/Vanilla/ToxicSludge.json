@@ -1,29 +1,5 @@
 {
   "netId": 141,
   "friendlyName": "Toxic Sludge",
-  "damage": [
-    {
-      "minLevel": 45,
-      "fire": null,
-      "lightning": null,
-      "cold": {
-        "added": 10,
-        "conversion": 0.33
-      }
-    }
-  ],
-  "entries": [
-    {
-      "scale": null,
-      "prefix": null,
-      "weight": 1,
-      "stats": {
-        "level": 8,
-        "experience": 10
-      },
-      "affixes": null,
-      "requirements": "PreHardmodeSurface",
-      "damageOverrides": null
-    }
-  ]
+  "entries": []
 }

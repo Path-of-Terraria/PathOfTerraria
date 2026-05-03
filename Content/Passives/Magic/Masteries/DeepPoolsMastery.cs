@@ -10,7 +10,7 @@ internal class DeepPoolsMastery : Passive
 		{
 			if (Player.GetModPlayer<PassiveTreePlayer>().HasNode<DeepPoolsMastery>())
 			{
-				Player.GetDamage(DamageClass.Magic) += Player.statManaMax2 / 2500f;
+				Player.GetDamage(DamageClass.Generic) += Player.statManaMax2 / 2500f;
 			}
 		}
 	}
