@@ -103,6 +103,11 @@ internal sealed class BossLootExplosion : GlobalNPC
 			return false;
 		}
 
+		if (!ShouldCountBossKill(npc))
+		{
+			return false;
+		}
+
 		// Lunar pillars aren't the climax — Cultist and Moon Lord are.
 		if (npc.type is NPCID.LunarTowerNebula or NPCID.LunarTowerSolar or NPCID.LunarTowerStardust or NPCID.LunarTowerVortex)
 		{
@@ -111,6 +116,17 @@ internal sealed class BossLootExplosion : GlobalNPC
 
 		// Boss domains and exploration maps only — skip Ravencrest hub and the overworld.
 		return SubworldSystem.Current is BossDomainSubworld or MappingWorld;
+	}
+
+	private static bool ShouldCountBossKill(NPC npc)
+	{
+		return npc.type switch
+		{
+			NPCID.Retinazer => !NPC.AnyNPCs(NPCID.Spazmatism),
+			NPCID.Spazmatism => !NPC.AnyNPCs(NPCID.Retinazer),
+			NPCID.GolemFistLeft or NPCID.GolemFistRight or NPCID.GolemHead or NPCID.GolemHeadFree => false,
+			_ => true,
+		};
 	}
 
 	private static int ComputeBurstCount(int areaLevel)

@@ -115,7 +115,7 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 
 	private static float GetProgressionDropRateScale(int areaLevel)
 	{
-		float progress = MathHelper.Clamp((areaLevel - 1f) / 80f, 0f, 1f);
+		float progress = MathHelper.Clamp((areaLevel - 1f) / PoTMobHelper.AreaLevelScalingCap, 0f, 1f);
 		return MathHelper.Lerp(0.2f, 0.15f, progress);
 	}
 
