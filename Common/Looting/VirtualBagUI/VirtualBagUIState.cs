@@ -272,7 +272,12 @@ internal class VirtualBagUIState : UIState, IMutuallyExclusiveUI, IAutopauseUI
 	{
 		const string Path = "Mods.PathOfTerraria.UI.VirtualBag.";
 
-		string filterName = Main.LocalPlayer.GetModPlayer<VirtualBagStoragePlayer>().LastFilterName;
+		// Prefer the player's currently active filter (so the label reflects the live state even before
+		// any item has been processed). Fall back to LastFilterName for the historical record on items
+		// that were filtered with a previous selection.
+		ItemFilter active = Main.LocalPlayer.GetModPlayer<ItemFilterPlayer>().ActiveFilter;
+		string filterName = active?.Name
+			?? Main.LocalPlayer.GetModPlayer<VirtualBagStoragePlayer>().LastFilterName;
 
 		return string.IsNullOrEmpty(filterName)
 			? Language.GetText(Path + "NoFilter")
