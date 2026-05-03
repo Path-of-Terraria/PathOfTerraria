@@ -1,8 +1,9 @@
 ﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
+using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Content.Buffs.ElementalBuffs;
 using Terraria.Localization;
 
-namespace PathOfTerraria.Content.Passives;
+namespace PathOfTerraria.Content.Passives.Ranged.Masteries;
 
 internal class LethalDoseMastery : Passive
 {
@@ -12,7 +13,7 @@ internal class LethalDoseMastery : Passive
 		{
 			if (player.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<LethalDoseMastery>(out float value))
 			{
-				modifiers.FinalDamage += MathF.Min(npc.GetGlobalNPC<PoisonNPC>().Stacks.Length * value / 100f, MaxDamageBoost / 100f);
+				AdditiveScalingModifier.ApplyAdditiveLikeScalingItem(player, item, ref modifiers, MathF.Min(npc.GetGlobalNPC<PoisonNPC>().Stacks.Length * value / 100f, MaxDamageBoost / 100f));
 			}
 		}
 
@@ -20,7 +21,8 @@ internal class LethalDoseMastery : Passive
 		{
 			if (projectile.TryGetOwner(out Player player) && projectile.friendly && player.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<LethalDoseMastery>(out float value))
 			{
-				modifiers.FinalDamage += MathF.Min(npc.GetGlobalNPC<PoisonNPC>().Stacks.Length * value / 100f, MaxDamageBoost / 100f);
+				Player projOwner = Main.player[projectile.owner];
+				AdditiveScalingModifier.ApplyAdditiveLikeScalingProjectile(projOwner, projectile, ref modifiers, MathF.Min(npc.GetGlobalNPC<PoisonNPC>().Stacks.Length * value / 100f, MaxDamageBoost / 100f));
 			}
 		}
 	}

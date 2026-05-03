@@ -33,9 +33,9 @@ HealOnKillingBurningEnemiesAffix.Description: "{1}{0} health gained on killing a
 IncreasedAttackSpeedAffix.Description: "{1}{0}% increased attack speed"
 AddedAttackSpeedAffix.Description: "{1}{0} added attack speed"
 AddedDamageAffix.Description: "{1}{0} added damage"
-MoltenShellAffix.Description: "{1}{0} to Molten Shell"
-BloodSiphonAffix.Description: "{1}{0} to Blood Siphon"
-FetidCarapaceAffix.Description: "{1}{0} to Fetid Carapace"
+MoltenShellAffix.Description: "+{1}{0} Level of Molten Shell"
+BloodSiphonAffix.Description: "+{1}{0}  Level of Blood Siphon"
+FetidCarapaceAffix.Description: "+{1}{0} Level of Fetid Carapace"
 
 NoFallDamageAffix: {
 	Description: Immunity to fall damage
@@ -43,11 +43,11 @@ NoFallDamageAffix: {
 }
 
 PercentageIncreasedCriticalStrikeChanceAffix.Description: "{1}{0}% increased critical strike chance"
-PercentageCriticalStrikeMultiplierAffix.Description: "{1}{0}% critical strike multiplier"
+PercentageCriticalStrikeMultiplierAffix.Description: "{1}{0}% more critical strike damage"
 FlatCriticalStrikeChanceAffix.Description: "{1}{0} added critical strike chance"
 PercentageIncreasedCriticalStrikeDamageAffix.Description: "{1}{0}% increased critical strike damage"
 ChanceToApplyShockGearAffix.Description: "{1}{0}% chance to apply shock"
-BuffShockedEffectAffix.Description: "{1}{0}% multiplier to shock effect"
+BuffShockedEffectAffix.Description: "{1}{0}% increased shock effect"
 IncreaseBlockAffix.Description: "{1}{0}% increased block chance"
 StrengthItemAffix.Description: "{1}{0} strength"
 DexterityItemAffix.Description: "{1}{0} dexterity"
@@ -92,8 +92,8 @@ ExtraColdDamage.Description: "{1}{0}% added damage as cold"
 ExtraChaosDamage.Description: "{1}{0}% added damage as chaos"
 ChanceToApplyBleedingItemAffix.Description: "{1}{0}% chance to apply a stack of Bleed on hit"
 AddedBleedStackAffix.Description: "{1}{0} max Bleed stacks"
-BetterBleedAffix.Description: "{1}{0}% more damage used for Bleed"
-EoLDaylightAffix.Description: Fight in the daylight
+BetterBleedAffix.Description: "{1}{0}% increased Bleed damage"
+EoLDaylightAffix.Description: Fight in the Daylight
 AmmoReservationAffix.Description: "{1}{0}% chance to reserve ammo"
 IncreasedSummonDamageAffix.Description: "{1}{0}% increased summon damage"
 IncreasedMeleeDamageAffix.Description: "{1}{0}% increased melee damage"
