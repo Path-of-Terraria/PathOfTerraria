@@ -13,4 +13,5 @@ PassiveTreeUIKey.DisplayName: Klawisz UI Drzewka Pasywnego
 // ToggleEncounterDebugging.DisplayName: Debug: Toggle Encounter Debugging
 // VirtualBagHotkey.DisplayName: Toggle Sack of Holding
 // CurrencyPouchHotkey.DisplayName: Toggle Currency Pouch
+// ItemFilterHotkey.DisplayName: Toggle Item Filter Editor
 // ItemCreatorKey.DisplayName: Item Creator Key
