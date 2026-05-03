@@ -5,7 +5,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class EoWMap() : PreHardmodeBossMap(20, () => NPC.downedBoss2)
+internal class EoWMap() : PreHardmodeBossMap(15, () => NPC.downedBoss2)
 {
 	public override void SetStaticDefaults()
 	{

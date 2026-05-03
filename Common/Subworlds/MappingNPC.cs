@@ -26,9 +26,9 @@ internal class MappingNPC : GlobalNPC
 				affix.ModifyNewNPC(entity);
 			}
 
-			if (MappingWorld.AreaLevel > 50 && entity.lifeMax > 5)
+			if (MappingWorld.AreaLevel > Content.Items.Consumables.Maps.Map.MaxOverworldLevel && entity.lifeMax > 5)
 			{
-				float modifier = 1 + (MappingWorld.AreaLevel - 50) / 20f;
+				float modifier = 1 + (MappingWorld.AreaLevel - Content.Items.Consumables.Maps.Map.MaxOverworldLevel) / 20f;
 				entity.life = entity.lifeMax = (int)(entity.lifeMax * modifier);
 				entity.defDamage = entity.damage = (int)(entity.damage * modifier);
 			}
@@ -100,7 +100,7 @@ internal class MappingNPC : GlobalNPC
 
 	public override void OnKill(NPC npc)
 	{
-		if (npc.boss && SubworldSystem.Current is MappingWorld world and not BossDomainSubworld && Main.hardMode && PoTItemHelper.PickItemLevel() >= 45)
+		if (npc.boss && SubworldSystem.Current is MappingWorld world and not BossDomainSubworld && Main.hardMode && MappingWorld.AreaLevel > Content.Items.Consumables.Maps.Map.MaxOverworldLevel)
 		{
 			MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
 
