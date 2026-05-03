@@ -1,5 +1,16 @@
 {
   "netId": 571,
   "friendlyName": "D D2 Drakin T3",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": {
+        "added": 30,
+        "conversion": 0.75
+      },
+      "lightning": null,
+      "cold": null
+    }
+  ],
   "entries": []
 }

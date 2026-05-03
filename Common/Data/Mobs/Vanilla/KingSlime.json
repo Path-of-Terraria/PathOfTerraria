@@ -1,5 +1,29 @@
 {
   "netId": 50,
   "friendlyName": "King Slime",
-  "entries": []
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": null,
+      "lightning": null,
+      "cold": {
+        "added": 15,
+        "conversion": 0.5
+      }
+    }
+  ],
+  "entries": [
+    {
+      "scale": null,
+      "prefix": null,
+      "weight": 1,
+      "stats": {
+        "level": 20,
+        "experience": 150
+      },
+      "affixes": null,
+      "requirements": "PreHardmodeSurface",
+      "damageOverrides": null
+    }
+  ]
 }

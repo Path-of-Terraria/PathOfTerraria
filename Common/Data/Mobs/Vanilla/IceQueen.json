@@ -1,5 +1,16 @@
 {
   "netId": 345,
   "friendlyName": "Ice Queen",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": null,
+      "lightning": null,
+      "cold": {
+        "added": 100,
+        "conversion": 1
+      }
+    }
+  ],
   "entries": []
 }

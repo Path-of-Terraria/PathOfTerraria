@@ -1,5 +1,16 @@
 {
   "netId": 167,
   "friendlyName": "Undead Viking",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": null,
+      "lightning": null,
+      "cold": {
+        "added": 25,
+        "conversion": 0.5
+      }
+    }
+  ],
   "entries": []
 }

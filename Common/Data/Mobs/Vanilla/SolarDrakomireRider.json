@@ -1,5 +1,16 @@
 {
   "netId": 416,
   "friendlyName": "Solar Drakomire Rider",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": {
+        "added": 70,
+        "conversion": 0.75
+      },
+      "lightning": null,
+      "cold": null
+    }
+  ],
   "entries": []
 }
