@@ -7,7 +7,11 @@ Common: {
 
 Tavern: {
 	DisplayName: Tawerna
-	Description: Musi zajmować conajmniej 100 kratek\nPotrzebuje 3 stolików, 3 krzeseł, 3 stołków barowych, beczki, znaku, drzwi, i źródła światła
+	Description:
+		'''
+		Musi zajmować conajmniej 100 kratek
+		Potrzebuje 3 stolików, 3 krzeseł, 3 stołków barowych, beczki, znaku, drzwi, i źródła światła
+		'''
 
 	Error: {
 		Tables: 3 stoły

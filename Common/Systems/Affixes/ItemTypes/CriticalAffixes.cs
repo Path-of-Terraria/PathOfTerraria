@@ -4,7 +4,7 @@ internal class PercentageIncreasedCriticalStrikeChanceAffix : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		modifier.CriticalChance.Base *= 1 + Value / 100;
+		modifier.CriticalChance *= 1f + Value / 100f;
 	}
 }
 
@@ -12,7 +12,7 @@ internal class PercentageCriticalStrikeMultiplierAffix : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		modifier.CriticalMultiplier *= 1f + Value / 100;
+		modifier.CriticalMultiplier *= 1f + Value / 100f;
 	}
 }
 

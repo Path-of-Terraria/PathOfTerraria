@@ -1,5 +1,16 @@
 {
   "netId": 180,
   "friendlyName": "Pigron Crimson",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": null,
+      "lightning": null,
+      "cold": {
+        "added": 20,
+        "conversion": 0.33
+      }
+    }
+  ],
   "entries": []
 }

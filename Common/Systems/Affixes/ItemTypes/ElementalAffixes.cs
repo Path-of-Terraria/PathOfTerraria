@@ -136,10 +136,12 @@ internal class ExtraFireDamage : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
+		modifier.Damage += Value / 100f;
+		
 		ref ElementalDamage.ElementalDamage damage = ref player.GetModPlayer<ElementalPlayer>().Container[ElementType.Fire].DamageModifier;
-		float bonus = player.GetWeaponDamage(item) * (Value / 100f);
-
-		damage = damage.AddModifiers((int)Math.Round(bonus), null);
+		
+		float conversionAmount = Value / 100f;
+		damage = damage.AddModifiers(null, conversionAmount);
 	}
 }
 
@@ -147,10 +149,12 @@ internal class ExtraLightningDamage : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
+		modifier.Damage += Value / 100f;
+		
 		ref ElementalDamage.ElementalDamage damage = ref player.GetModPlayer<ElementalPlayer>().Container[ElementType.Lightning].DamageModifier;
-		float bonus = player.GetWeaponDamage(item) * (Value / 100f);
-
-		damage = damage.AddModifiers((int)Math.Round(bonus), null);
+		
+		float conversionAmount = Value / 100f;
+		damage = damage.AddModifiers(null, conversionAmount);
 	}
 }
 
@@ -158,10 +162,25 @@ internal class ExtraColdDamage : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
+		modifier.Damage += Value / 100f;
+		
 		ref ElementalDamage.ElementalDamage damage = ref player.GetModPlayer<ElementalPlayer>().Container[ElementType.Cold].DamageModifier;
-		float bonus = player.GetWeaponDamage(item) * (Value / 100f);
+		
+		float conversionAmount = Value / 100f;
+		damage = damage.AddModifiers(null, conversionAmount);
+	}
+}
 
-		damage = damage.AddModifiers((int)Math.Round(bonus), null);
+internal class ExtraChaosDamage : ItemAffix
+{
+	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+	{
+		modifier.Damage += Value / 100f;
+		
+		ref ElementalDamage.ElementalDamage damage = ref player.GetModPlayer<ElementalPlayer>().Container[ElementType.Chaos].DamageModifier;
+		
+		float conversionAmount = Value / 100f;
+		damage = damage.AddModifiers(null, conversionAmount);
 	}
 }
 

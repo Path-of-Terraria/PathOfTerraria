@@ -1,17 +1,5 @@
 {
   "netId": -35,
   "friendlyName": "Big Swamp Zombie",
-  "entries": [
-    {
-      "scale": null,
-      "prefix": null,
-      "weight": 1,
-      "stats": {
-        "level": 3,
-        "experience": 3
-      },
-      "affixes": null,
-      "requirements": "PreHardmodeSurface"
-    }
-  ]
+  "entries": []
 }

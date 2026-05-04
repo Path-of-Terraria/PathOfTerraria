@@ -9,11 +9,11 @@ MechBiome: {
 }
 
 SwampBiome: {
-	// DisplayName: Swamp Biome
-	// TownNPCDialogueName: the Swamp Biome
+	DisplayName: Biom Bagienny
+	TownNPCDialogueName: w Biomie Bagiennym
 }
 
 LunaticDungeonBiome: {
-	// DisplayName: Lunatic Dungeon Biome
-	// TownNPCDialogueName: the Lunatic Dungeon Biome
+	DisplayName: Biom Lunatycznego Podziemia
+	TownNPCDialogueName: Biom Lunatycznego Podziemia
 }

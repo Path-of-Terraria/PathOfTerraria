@@ -1,5 +1,16 @@
 {
   "netId": 494,
   "friendlyName": "Crawdad",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": null,
+      "lightning": null,
+      "cold": {
+        "added": 10,
+        "conversion": 0.5
+      }
+    }
+  ],
   "entries": []
 }

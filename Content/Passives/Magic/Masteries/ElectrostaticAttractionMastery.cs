@@ -9,7 +9,7 @@ internal class ElectrostaticAttractionMastery : Passive
 {
 	internal class ElectrostaticPlayer : ModPlayer, ElementalPlayerHooks.IElementalOnHitPlayer
 	{
-		private const int Duration = 50;
+		private const int Duration = 90;
 
 		internal int StackCount => stacks.Count;
 

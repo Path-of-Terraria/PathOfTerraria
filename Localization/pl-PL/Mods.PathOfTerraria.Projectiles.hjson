@@ -178,7 +178,7 @@ RunestoneBurst: {
 // PrecisionSpawnerProjectile.DisplayName: Spawner
 // WhipBaseProjectile.DisplayName: Whip Base Projectile
 // AntlerShardProj.DisplayName: Antler Shard Proj
-FlameSentryFireball.DisplayName: "{$ProjectileName.CultistBossFireBall}"
+// FlameSentryFireball.DisplayName: "{$ProjectileName.CultistBossFireBall}"
 // FlamethrowerSentryFlame.DisplayName: Flamethrower Sentry Flame
 // MoltenSentryAura.DisplayName: Molten Sentry Aura
 // FlamethrowerFlame.DisplayName: Flamethrower Flame

@@ -1,17 +1,5 @@
 {
   "netId": -4,
   "friendlyName": "Pinky",
-  "entries": [
-    {
-      "scale": null,
-      "prefix": null,
-      "weight": 1,
-      "stats": {
-        "level": 1,
-        "experience": 25
-      },
-      "affixes": null,
-      "requirements": "PreHardmodeSurface"
-    }
-  ]
+  "entries": []
 }

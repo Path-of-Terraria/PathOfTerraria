@@ -1,5 +1,22 @@
 {
   "netId": 676,
   "friendlyName": "Shimmer Slime",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": {
+        "added": 10,
+        "conversion": 0.25
+      },
+      "lightning": {
+        "added": 10,
+        "conversion": 0.25
+      },
+      "cold": {
+        "added": 10,
+        "conversion": 0.25
+      }
+    }
+  ],
   "entries": []
 }
