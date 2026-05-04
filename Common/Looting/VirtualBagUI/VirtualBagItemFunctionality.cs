@@ -1,5 +1,4 @@
 using PathOfTerraria.Common.Looting.ItemFiltering;
-using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI;
 using SubworldLibrary;
@@ -32,12 +31,18 @@ internal class VirtualBagItemFunctionality : GlobalItem, PostRoll.IGlobal
 	/// <summary>
 	///		With <see cref="InstancePerEntity"/> on, this would otherwise allocate per-instance state
 	///		for every <see cref="Item"/> in the world. Restrict to items the bag could ever care about
-	///		(modded gear or anything carrying PoT-specific item data) so we don't pay that cost on
-	///		blocks, ammo, materials, etc.
+	///		so we don't pay that cost on blocks, ammo, materials, etc. The predicate mirrors
+	///		<see cref="PoTGlobalItem.AppliesToEntity"/> — i.e. exactly the items that carry PoT data —
+	///		using raw fields rather than <c>TryGetGlobalItem</c> because <c>AppliesToEntity</c> runs
+	///		during <c>SetDefaults</c>, before global-type lookups are built.
 	/// </summary>
 	public override bool AppliesToEntity(Item entity, bool lateInstantiation)
 	{
-		return entity.ModItem is Gear || entity.TryGetGlobalItem(out PoTGlobalItem _);
+		bool anyValidTrait = entity.damage > 0 || entity.defense > 0 || entity.accessory ||
+		                     entity.headSlot > 0 || entity.bodySlot > 0 || entity.legSlot > 0 ||
+		                     entity.ModItem is IPoTGlobalItem;
+
+		return anyValidTrait && !entity.vanity && !entity.IsACoin;
 	}
 
 	public override bool ItemSpace(Item item, Player player)
