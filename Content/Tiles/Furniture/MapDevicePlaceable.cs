@@ -1,5 +1,6 @@
 ﻿using Mono.Cecil;
 using PathOfTerraria.Common.Conflux;
+using PathOfTerraria.Common.Items;
 using PathOfTerraria.Common.Mapping;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.ModPlayers.LivesSystem;
@@ -10,6 +11,7 @@ using PathOfTerraria.Content.Items.Placeable;
 using PathOfTerraria.Core.Audio;
 using PathOfTerraria.Core.Camera;
 using PathOfTerraria.Core.Time;
+using PathOfTerraria.Core.UI.SmartUI;
 using PathOfTerraria.Utilities;
 using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
@@ -440,6 +442,12 @@ internal class MapDeviceEntity : ModTileEntity
 
 	public override void Update()
 	{
+		// Force temporary maps to despawn if completed
+		if (StoredMap is Item storedMap && storedMap.ModItem is ITemporaryItem temp && storedMap.GetGlobalItem<ITemporaryItem.TemporaryGlobalItem>().IsTemporary && !temp.DespawnCondition())
+		{
+			MapDeviceState.ClosePortalIfAvailable(this, null, true);
+		}
+
 		// If the local player has the map device open.
 		if (InteractingPlayer.HasValue && Main.player[InteractingPlayer.Value] is { } player)
 		{
