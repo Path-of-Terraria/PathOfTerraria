@@ -1,8 +1,5 @@
-﻿using MonoMod.Cil;
-using ReLogic.Graphics;
+﻿using ReLogic.Graphics;
 using System.Reflection;
-using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
 using Terraria.GameContent;
 using Terraria.Localization;
 using Terraria.UI.Chat;
@@ -11,6 +8,9 @@ namespace PathOfTerraria.Common.NPCs;
 
 #nullable enable
 
+/// <summary>
+/// Allows NPCs to have more than the two (excluding Close) chat buttons, right-aligned.
+/// </summary>
 public interface IChatButton
 {
 	public class ChatButton(string localization, Action<NPC> onClick, Action<NPC>? onHover = null, Func<bool>? displays = null)
@@ -58,9 +58,15 @@ public interface IChatButton
 
 	public class ChatButtonHooks : ILoadable
 	{
+		private static FieldInfo? TextDisplay = null;
+		private static MethodInfo? LineAmount = null;
+
 		public void Load(Mod mod)
 		{
 			On_Main.GUIChatDrawInner += DrawInnerChat;
+
+			TextDisplay = typeof(Main).GetField("_textDisplayCache", BindingFlags.NonPublic | BindingFlags.Instance);
+			LineAmount = typeof(Main).GetNestedType("TextDisplayCache", BindingFlags.NonPublic)?.GetProperty("AmountOfLines")?.GetGetMethod();
 		}
 
 		private void DrawInnerChat(On_Main.orig_GUIChatDrawInner orig, Main self)
@@ -95,18 +101,18 @@ public interface IChatButton
 			LastHadMouse = Main.mouseLeft;
 		}
 
-		[MethodImpl(MethodImplOptions.NoInlining)]
+		/// <summary>
+		/// Method used to retrieve the line count of the current NPC dialogue box, which is hidden.
+		/// </summary>
+		/// <returns></returns>
 		public static int GetNumLines()
 		{
-			FieldInfo? textDisplay = typeof(Main).GetField("_textDisplayCache", BindingFlags.NonPublic | BindingFlags.Instance);
-			MethodInfo? lineAmount = typeof(Main).GetNestedType("TextDisplayCache", BindingFlags.NonPublic)?.GetProperty("AmountOfLines")?.GetGetMethod();
-
-			if (lineAmount is null || textDisplay is null)
+			if (LineAmount is null || TextDisplay is null)
 			{
 				return 0;
 			}
 
-			return (int)(lineAmount.Invoke(textDisplay.GetValue(Main.instance), []) ?? 0);
+			return (int)(LineAmount.Invoke(TextDisplay.GetValue(Main.instance), []) ?? 0);
 		}
 
 		public void Unload()
@@ -114,7 +120,13 @@ public interface IChatButton
 		}
 	}
 
+	/// <summary>
+	/// Simple workaround bool used for clicking the new chat buttons.
+	/// </summary>
 	private static bool LastHadMouse = false;
 
+	/// <summary>
+	/// Reports the chat buttons this NPC adds. Can be dynamic if desired.
+	/// </summary>
 	public ChatButton[] ReportButtons();
 }

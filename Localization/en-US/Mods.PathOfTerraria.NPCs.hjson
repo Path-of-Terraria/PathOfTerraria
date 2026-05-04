@@ -268,7 +268,7 @@ WizardNPC: {
 	RecoverDialogue: {
 		0: Lost some items? Here they are...haha! I've found them hidden within your mind. Note their frailty; I have much other use of my strength!
 		1: Seems like the world's stolen your items? Reminds me of some goblins...thousands of years of work...ultimately, couldn't save her...oh! Anyway, those items are temporary. Be careful!
-		2: Boom! Hah. Just kidding! There you are. Don't rely on them - they won't last you forever!
+		2: Boom! Hah. Just kidding! There you are. Don't overrely on them - they won't last you forever!
 	}
 }
 
