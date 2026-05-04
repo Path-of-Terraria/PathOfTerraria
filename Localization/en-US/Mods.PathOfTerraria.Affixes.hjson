@@ -33,9 +33,9 @@ HealOnKillingBurningEnemiesAffix.Description: "{1}{0} health gained on killing a
 IncreasedAttackSpeedAffix.Description: "{1}{0}% increased attack speed"
 AddedAttackSpeedAffix.Description: "{1}{0} added attack speed"
 AddedDamageAffix.Description: "{1}{0} added damage"
-MoltenShellAffix.Description: "+{1}{0} Level of Molten Shell"
-BloodSiphonAffix.Description: "+{1}{0}  Level of Blood Siphon"
-FetidCarapaceAffix.Description: "+{1}{0} Level of Fetid Carapace"
+MoltenShellAffix.Description: +{1}{0} Level of Molten Shell
+BloodSiphonAffix.Description: +{1}{0}  Level of Blood Siphon
+FetidCarapaceAffix.Description: +{1}{0} Level of Fetid Carapace
 
 NoFallDamageAffix: {
 	Description: Immunity to fall damage
