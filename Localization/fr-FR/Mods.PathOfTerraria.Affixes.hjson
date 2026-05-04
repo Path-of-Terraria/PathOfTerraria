@@ -92,8 +92,8 @@ LightningResistItemAffix.Description: "{1}{0} de résistance à la foudre"
 // ExtraChaosDamage.Description: "{1}{0}% added damage as chaos"
 // ChanceToApplyBleedingItemAffix.Description: "{1}{0}% chance to apply a stack of Bleed on hit"
 // AddedBleedStackAffix.Description: "{1}{0} max Bleed stacks"
-// BetterBleedAffix.Description: "{1}{0}% more damage used for Bleed"
-// EoLDaylightAffix.Description: Fight in the daylight
+// BetterBleedAffix.Description: "{1}{0}% increased Bleed damage"
+// EoLDaylightAffix.Description: Fight in the Daylight
 // AmmoReservationAffix.Description: "{1}{0}% chance to reserve ammo"
 // IncreasedSummonDamageAffix.Description: "{1}{0}% increased summon damage"
 // IncreasedMeleeDamageAffix.Description: "{1}{0}% increased melee damage"

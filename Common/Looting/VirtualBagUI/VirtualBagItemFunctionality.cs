@@ -1,3 +1,4 @@
+using PathOfTerraria.Common.Config;
 using PathOfTerraria.Common.Looting.ItemFiltering;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI;
@@ -110,12 +111,17 @@ internal class VirtualBagItemFunctionality : GlobalItem, PostRoll.IGlobal
 	}
 
 	/// <summary>
-	///		Surfaces what the filter actually saw for an item. Logged via chat so the player can verify
-	///		the filter is reading the rarity / item type / level they expect, then via
-	///		<see cref="Mod.Logger"/> for offline inspection.
+	///		Surfaces what the filter actually saw for an item via chat (filter, item, failed condition)
+	///		and via <see cref="Mod.Logger"/>. Gated on <see cref="DeveloperConfig.LogFilterRejections"/>,
+	///		which is itself only present in <c>DEBUG</c> builds — so this no-ops in release regardless.
 	/// </summary>
 	private static void LogFilterRejection(Item item, ItemFilter filter, string source, LocalizedText reason)
 	{
+		if (!DeveloperConfig.ShouldLogFilterRejections)
+		{
+			return;
+		}
+
 		string visible = Language.GetTextValue(
 			"Mods.PathOfTerraria.UI.ItemFilter.RejectionChat",
 			filter.Name,
