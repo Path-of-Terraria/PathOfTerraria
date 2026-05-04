@@ -486,7 +486,7 @@ SingleFocusMastery: {
 
 ChainLightningMastery: {
 	Name: Chain Lightning
-	Tooltip: Lightning damage has a {0}% chance to make your damage chain to another [mechanic/shift:Nearby] enemy 
+	Tooltip: Lightning damage has a {0}% chance to make your damage chain to another [mechanic/shift:Nearby] enemy
 }
 
 CriticalOverloadMastery: {
