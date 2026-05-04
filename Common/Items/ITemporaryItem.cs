@@ -71,7 +71,7 @@ internal interface ITemporaryItem
 	}
 
 	/// <summary>
-	/// Controls when this temporary item expires.
+	/// Controls when this temporary item expires. Returning true will despawn the item.
 	/// </summary>
 	public bool DespawnCondition();
 }

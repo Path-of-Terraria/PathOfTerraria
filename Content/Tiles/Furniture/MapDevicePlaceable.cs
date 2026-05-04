@@ -443,7 +443,7 @@ internal class MapDeviceEntity : ModTileEntity
 	public override void Update()
 	{
 		// Force temporary maps to despawn if completed
-		if (StoredMap is Item storedMap && storedMap.ModItem is ITemporaryItem temp && storedMap.GetGlobalItem<ITemporaryItem.TemporaryGlobalItem>().IsTemporary && !temp.DespawnCondition())
+		if (StoredMap is Item storedMap && storedMap.ModItem is ITemporaryItem temp && storedMap.GetGlobalItem<ITemporaryItem.TemporaryGlobalItem>().IsTemporary && temp.DespawnCondition())
 		{
 			MapDeviceState.ClosePortalIfAvailable(this, null, true);
 		}
