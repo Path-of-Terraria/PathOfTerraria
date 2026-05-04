@@ -346,6 +346,7 @@ VirtualBag: {
 	TabFilteredOut: Filtered Out
 	FilterLabel: Filter: {0}
 	NoFilter: No active filter
+	EditFilter: Edit Filter
 }
 
 ItemFilter: {
@@ -372,6 +373,17 @@ ItemFilter: {
 	}
 
 	BaseType.Fallback: "{0}"
+
+	Reason: {
+		ItemMissing: item is null or air
+		MissingData: no PoT data
+		LevelBelowMin: "Level {0} < Min {1}"
+		LevelAboveMax: "Level {0} > Max {1}"
+		RarityNotAllowed: "Rarity {0} not in {{{1}}}"
+		BaseTypeNotAllowed: "BaseType {0} not in {1}"
+	}
+
+	RejectionChat: "Filter '{0}' rejected '{1}' — {2}"
 }
 
 CurrencyPouch: {

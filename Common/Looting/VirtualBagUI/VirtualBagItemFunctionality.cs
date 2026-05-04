@@ -1,9 +1,11 @@
 using PathOfTerraria.Common.Looting.ItemFiltering;
+using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI;
 using SubworldLibrary;
 using Terraria.GameContent.UI.States;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Looting.VirtualBagUI;
 
@@ -27,16 +29,29 @@ internal class VirtualBagItemFunctionality : GlobalItem, PostRoll.IGlobal
 	private bool _filterEvaluated;
 	private int _ticksSinceSpawn;
 
+	/// <summary>
+	///		With <see cref="InstancePerEntity"/> on, this would otherwise allocate per-instance state
+	///		for every <see cref="Item"/> in the world. Restrict to items the bag could ever care about
+	///		(modded gear or anything carrying PoT-specific item data) so we don't pay that cost on
+	///		blocks, ammo, materials, etc.
+	/// </summary>
+	public override bool AppliesToEntity(Item entity, bool lateInstantiation)
+	{
+		return entity.ModItem is Gear || entity.TryGetGlobalItem(out PoTGlobalItem _);
+	}
+
 	public override bool ItemSpace(Item item, Player player)
 	{
 		return IsInAPlaceForPickup && VirtualBagStoragePlayer.VirtualBagAllowed(item, player);
 	}
 
 	/// <summary>
-	///		Fires after a roll, after <see cref="GlobalItem.LoadData"/>, and after
-	///		<see cref="GlobalItem.NetReceive"/> — i.e. every time PoT-specific item data may have
-	///		changed. Resetting the evaluation flag here means we only ever read rarity / level / base
-	///		type once the data is stable.
+	///		Schedules a fresh filter evaluation. PoT's <c>PostRoll</c> hook fires after every path that
+	///		mutates PoT-specific item data: <c>PoTItemHelper.Roll</c>, <c>LoadData</c>, and
+	///		<c>NetReceive</c>. Each of those can change the values the filter reads (rarity, level, base
+	///		type), so we clear our "already checked" state here and let <see cref="Update"/> re-run the
+	///		filter once the data has settled. This does not directly route an item anywhere; the actual
+	///		matched / filtered-out decision still lives in <see cref="Update"/>.
 	/// </summary>
 	void PostRoll.IGlobal.PostRoll(Item item)
 	{
@@ -70,7 +85,7 @@ internal class VirtualBagItemFunctionality : GlobalItem, PostRoll.IGlobal
 
 		ItemFilter filter = player.GetModPlayer<ItemFilterPlayer>().ActiveFilter;
 
-		if (filter is null || filter.Evaluate(item, out string reason))
+		if (filter is null || filter.Evaluate(item, out LocalizedText reason))
 		{
 			return;
 		}
@@ -94,12 +109,17 @@ internal class VirtualBagItemFunctionality : GlobalItem, PostRoll.IGlobal
 	///		the filter is reading the rarity / item type / level they expect, then via
 	///		<see cref="Mod.Logger"/> for offline inspection.
 	/// </summary>
-	private static void LogFilterRejection(Item item, ItemFilter filter, string source, string reason)
+	private static void LogFilterRejection(Item item, ItemFilter filter, string source, LocalizedText reason)
 	{
-		string msg = $"[ItemFilter:{source}] '{filter.Name}' rejected '{item.Name}' — {reason}";
+		string visible = Language.GetTextValue(
+			"Mods.PathOfTerraria.UI.ItemFilter.RejectionChat",
+			filter.Name,
+			item.Name,
+			reason?.Value ?? string.Empty);
 
-		Main.NewText(msg, Color.Orange);
-		PoTMod.Instance?.Logger?.Info(msg);
+		Main.NewText(visible, Color.Orange);
+		// Logger gets the technical source tag (Update / OnPickup) for offline diagnosis.
+		PoTMod.Instance?.Logger?.Info($"[ItemFilter:{source}] {visible}");
 	}
 
 	public override bool OnPickup(Item item, Player player)
@@ -112,7 +132,7 @@ internal class VirtualBagItemFunctionality : GlobalItem, PostRoll.IGlobal
 		var storage = player.GetModPlayer<VirtualBagStoragePlayer>();
 		ItemFilter filter = player.GetModPlayer<ItemFilterPlayer>().ActiveFilter;
 
-		if (filter is null || filter.Evaluate(item, out string reason))
+		if (filter is null || filter.Evaluate(item, out LocalizedText reason))
 		{
 			storage.MatchedStorage.Add(item);
 

@@ -3,6 +3,7 @@ using PathOfTerraria.Core.Items;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Terraria.Localization;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Looting.ItemFiltering;
@@ -27,16 +28,18 @@ public sealed class ItemFilter
 	}
 
 	/// <summary>
-	///		Like <see cref="Matches"/>, but on rejection also returns the human-readable reason for the
-	///		first condition that failed. Useful for surfacing why a specific item was filtered out.
+	///		Like <see cref="Matches"/>, but on rejection also returns a localized reason for the first
+	///		condition that failed. Useful for surfacing why a specific item was filtered out.
 	/// </summary>
-	public bool Evaluate(Item item, out string reason)
+	public bool Evaluate(Item item, out LocalizedText reason)
 	{
+		const string Path = "Mods.PathOfTerraria.UI.ItemFilter.Reason.";
+
 		reason = null;
 
 		if (item is null || item.IsAir)
 		{
-			reason = "item is null/air";
+			reason = Language.GetText(Path + "ItemMissing");
 			return false;
 		}
 
@@ -44,31 +47,31 @@ public sealed class ItemFilter
 
 		if (data is null)
 		{
-			reason = "no PoT data";
+			reason = Language.GetText(Path + "MissingData");
 			return false;
 		}
 
 		if (MinItemLevel is { } min && data.RealLevel < min)
 		{
-			reason = $"Level {data.RealLevel} < Min {min}";
+			reason = Language.GetText(Path + "LevelBelowMin").WithFormatArgs(data.RealLevel, min);
 			return false;
 		}
 
 		if (MaxItemLevel is { } max && data.RealLevel > max)
 		{
-			reason = $"Level {data.RealLevel} > Max {max}";
+			reason = Language.GetText(Path + "LevelAboveMax").WithFormatArgs(data.RealLevel, max);
 			return false;
 		}
 
 		if (Rarities.Count > 0 && !Rarities.Contains(data.Rarity))
 		{
-			reason = $"Rarity {data.Rarity} not in {{{string.Join(", ", Rarities)}}}";
+			reason = Language.GetText(Path + "RarityNotAllowed").WithFormatArgs(data.Rarity, string.Join(", ", Rarities));
 			return false;
 		}
 
 		if (BaseTypes != ItemType.None && (BaseTypes & data.ItemType) == 0)
 		{
-			reason = $"BaseType {data.ItemType} not in {BaseTypes}";
+			reason = Language.GetText(Path + "BaseTypeNotAllowed").WithFormatArgs(data.ItemType, BaseTypes);
 			return false;
 		}
 

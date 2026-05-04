@@ -16,6 +16,7 @@ using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.UI;
 using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
 
@@ -87,9 +88,26 @@ internal class VirtualBagUIState : UIState, IMutuallyExclusiveUI, IAutopauseUI
 		{
 			Top = StyleDimension.FromPixels(GridBuffer + 4),
 			HAlign = 1f,
-			Left = StyleDimension.FromPixels(-8),
+			Left = StyleDimension.FromPixels(-128),
 		};
 		panel.Append(_filterLabel);
+
+		// Discoverable entry point to the filter editor — clicking this on the bag's header opens
+		// ItemFilterUIState. Mirrors the keybind so players don't have to know about it.
+		var editFilterButton = new UIButton<LocalizedText>(Language.GetText(Path + "EditFilter"))
+		{
+			Width = StyleDimension.FromPixels(112),
+			Height = StyleDimension.FromPixels(28),
+			Top = StyleDimension.FromPixels(GridBuffer + 1),
+			Left = StyleDimension.FromPixels(-12),
+			HAlign = 1f,
+		};
+		editFilterButton.OnLeftClick += (_, _) =>
+		{
+			SoundEngine.PlaySound(SoundID.MenuTick);
+			UIManager.TryToggleOrRegister(ItemFilterUIState.Identifier, "Vanilla: Mouse Text", new ItemFilterUIState(), 0, InterfaceScaleType.UI);
+		};
+		panel.Append(editFilterButton);
 
 		UIPanel gridPanel = new(ModContent.Request<Texture2D>(TexturePath + "Background"), ModContent.Request<Texture2D>(TexturePath + "Outline"));
 		gridPanel.SetDimensions((0, 0), (0, GridBuffer + TabBarHeight + FilterLabelHeight), (1, -30), (1, -(GridBuffer + TabBarHeight + FilterLabelHeight)));

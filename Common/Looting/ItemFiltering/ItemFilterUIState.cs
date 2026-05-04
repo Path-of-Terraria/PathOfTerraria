@@ -8,6 +8,7 @@ using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.Localization;
+using Terraria.ModLoader.UI;
 using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
 
@@ -171,16 +172,24 @@ internal sealed class ItemFilterUIState : UIState, IMutuallyExclusiveUI, IAutopa
 
 	private static void AppendActionButton(UIElement parent, string textKey, float leftPx, float bottomPx, int width, Action onClick, bool alignRight = false)
 	{
-		var button = new UIPanelButton(Language.GetText(textKey), onClick);
-		button.Width = StyleDimension.FromPixels(width);
-		button.Height = StyleDimension.FromPixels(36);
-		button.Left = StyleDimension.FromPixels(leftPx);
-		button.Top = new StyleDimension(bottomPx, 1f);
+		var button = new UIButton<LocalizedText>(Language.GetText(textKey))
+		{
+			Width = StyleDimension.FromPixels(width),
+			Height = StyleDimension.FromPixels(36),
+			Left = StyleDimension.FromPixels(leftPx),
+			Top = new StyleDimension(bottomPx, 1f),
+		};
 
 		if (alignRight)
 		{
 			button.HAlign = 1f;
 		}
+
+		button.OnLeftClick += (_, _) =>
+		{
+			SoundEngine.PlaySound(SoundID.MenuTick);
+			onClick();
+		};
 
 		parent.Append(button);
 	}
@@ -380,6 +389,10 @@ internal sealed class ItemFilterUIState : UIState, IMutuallyExclusiveUI, IAutopa
 		{
 			return Language.GetText(key);
 		}
+
+		// In debug, surface missing localization keys loudly so the gap gets fixed rather than
+		// silently slipping through. In release, keep showing the enum name so the UI is still usable.
+		Debug.Fail($"Missing localization for base type '{type}' (expected key '{key}'). Add it to Localization/en-US/Mods.PathOfTerraria.Gear.hjson.");
 
 		return Language.GetText(Path + "BaseType.Fallback").WithFormatArgs(type.ToString());
 	}
