@@ -254,6 +254,12 @@ public class PassiveTreePlayer : ModPlayer
 				continue;
 			}
 
+			// Hidden inner passives are removed together with their mastery hub - don't treat them as orphaned nodes.
+			if (e.Other(passive) is Passive { IsHidden: true })
+			{
+				continue;
+			}
+
 			Tuple<bool, HashSet<Allocatable>> ret = CanFindAnchor(e.Other(passive), autoComplete, passive);
 
 			if (!ret.Item1)
