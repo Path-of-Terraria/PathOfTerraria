@@ -56,11 +56,12 @@ internal class PoisonedDebuff : ModBuff
 			DoTFunctionality.ApplyPlayerInteraction(npc, player);
 		}
 
+		npc.AddBuff(ModContent.BuffType<PoisonedDebuff>(), time);
 		npc.GetGlobalNPC<PoisonNPC>().AddStack(new PoisonNPC.PoisonStack(time, damage));
+		npc.GetGlobalNPC<PoisonNPC>().RefreshStackTimes();
+
 		ref float tick = ref npc.GetGlobalNPC<PoisonNPC>().LastTickRate;
 		tick = MathF.Min(tickRate, tick);
-		npc.AddBuff(ModContent.BuffType<PoisonedDebuff>(), time);
-		npc.GetGlobalNPC<PoisonNPC>().RefreshStackTimes();
 	}
 
 	public override void SetStaticDefaults()
@@ -70,7 +71,7 @@ internal class PoisonedDebuff : ModBuff
 
 	public override void Update(NPC npc, ref int buffIndex)
 	{
-		if (npc.GetGlobalNPC<PoisonNPC>().Stacks.Length == 0)
+		if (false && npc.GetGlobalNPC<PoisonNPC>().Stacks.Length == 0)
 		{
 			npc.DelBuff(buffIndex);
 			buffIndex--;

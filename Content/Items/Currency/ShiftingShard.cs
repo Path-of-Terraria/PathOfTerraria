@@ -15,7 +15,7 @@ public class ShiftingShard : CurrencyShard
 	protected override void SetStaticData()
 	{
 		PoTStaticItemData staticData = this.GetStaticData();
-		staticData.DropChance = 350f;
+		staticData.DropChance = 550f;
 		staticData.MinDropItemLevel = 1;
 	}
 

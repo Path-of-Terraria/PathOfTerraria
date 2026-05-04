@@ -1,5 +1,16 @@
 {
   "netId": 516,
   "friendlyName": "Solar Flare",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": {
+        "added": 25,
+        "conversion": 0.75
+      },
+      "lightning": null,
+      "cold": null
+    }
+  ],
   "entries": []
 }

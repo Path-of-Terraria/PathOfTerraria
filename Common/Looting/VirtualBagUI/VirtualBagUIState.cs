@@ -1,4 +1,3 @@
-﻿using PathOfTerraria.Common.Mapping;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Common.UI.Components;
@@ -15,6 +14,7 @@ using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.Localization;
+using Terraria.ModLoader;
 using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
 
@@ -86,60 +86,97 @@ internal class VirtualBagUIState : UIState, IMutuallyExclusiveUI, IAutopauseUI
 
 		if (Main.LocalPlayer.TryGetModPlayer(out VirtualBagStoragePlayer plr))
 		{
-			List<UIText> textsToAdd = [];
-			int topOffset = 32;
+			UIElement summaryPanel = BuildLootSummaryPanel(plr, Path);
 
-			foreach (MapResource resource in MapResources.Resources)
+			if (summaryPanel is not null)
 			{
-				int id = resource.AssociatedItem;
+				panel.Append(summaryPanel);
+			}
+		}
+	}
 
-				if (plr.ConfluxResourcesCache.TryGetValue(id, out int value) && value < resource.Value)
+	private static UIPanel BuildLootSummaryPanel(VirtualBagStoragePlayer plr, string localizationPath)
+	{
+		List<UIElement> elements = [];
+		int topOffset = 0;
+
+		AddLootSection(elements, plr.ConfluxResourcesCollected, localizationPath + "Conflux", localizationPath + "ConfluxTooltip", ref topOffset);
+		AddLootSection(elements, plr.CurrencyShardsCollected, localizationPath + "CurrencyShards", localizationPath + "CurrencyShardsTooltip", ref topOffset);
+
+		if (elements.Count == 0)
+		{
+			return null;
+		}
+
+		UIPanel lootPanel = new()
+		{
+			HAlign = 1,
+			Left = StyleDimension.FromPixels(148),
+			Width = StyleDimension.FromPixels(132),
+			Height = StyleDimension.FromPixels(topOffset + 16),
+			Top = StyleDimension.FromPixels(-12)
+		};
+
+		foreach (UIElement element in elements)
+		{
+			lootPanel.Append(element);
+		}
+
+		return lootPanel;
+	}
+
+	private static void AddLootSection(List<UIElement> elements, Dictionary<int, int> loot, string titleKey, string tooltipKey, ref int topOffset)
+	{
+		if (loot.Count == 0)
+		{
+			return;
+		}
+
+		if (elements.Count > 0)
+		{
+			topOffset += 8;
+		}
+
+		var textUI = new UIText(Language.GetText(titleKey), 1.1f)
+		{
+			Top = StyleDimension.FromPixels(topOffset)
+		};
+
+		textUI.OnUpdate += (self) =>
+		{
+			if (self.ContainsPoint(Main.MouseScreen))
+			{
+				Tooltip.Create(new TooltipDescription()
 				{
-					textsToAdd.Add(new UIText($"[i:{resource.AssociatedItem}]: {(resource.Value - value)}x")
-					{
-						HAlign = 0,
-						VAlign = 0,
-						Top = StyleDimension.FromPixels(topOffset)
-					});
+					Identifier = tooltipKey,
+					SimpleSubtitle = Language.GetTextValue(tooltipKey)
+				});
+			}
+		};
 
-					topOffset += 28;
-				}
+		elements.Add(textUI);
+		topOffset += 24;
+
+		elements.Add(new UIImageFramed(TextureAssets.MagicPixel, new Rectangle(0, 0, 70, 2))
+		{
+			Top = StyleDimension.FromPixels(topOffset - 4)
+		});
+
+		foreach (KeyValuePair<int, int> entry in loot.OrderBy(x => x.Key))
+		{
+			if (!ContentSamples.ItemsByType.ContainsKey(entry.Key))
+			{
+				continue;
 			}
 
-			if (textsToAdd.Count > 0)
+			elements.Add(new UIText($"[i:{entry.Key}]: {entry.Value}x")
 			{
-				UIPanel confluxPanel = new()
-				{
-					HAlign = 1,
-					Left = StyleDimension.FromPixels(110),
-					Width = StyleDimension.FromPixels(94),
-					Height = StyleDimension.FromPixels(topOffset + 16),
-					Top = StyleDimension.FromPixels(-12)
-				};
-				panel.Append(confluxPanel);
+				HAlign = 0,
+				VAlign = 0,
+				Top = StyleDimension.FromPixels(topOffset)
+			});
 
-				var textUI = new UIText(Language.GetText(Path + "Conflux"), 1.1f);
-
-				textUI.OnUpdate += (self) =>
-				{
-					if (self.ContainsPoint(Main.MouseScreen))
-					{
-						Tooltip.Create(new TooltipDescription()
-						{
-							Identifier = "ConfluxTooltip",
-							SimpleSubtitle = Language.GetTextValue(Path + "ConfluxTooltip")
-						});
-					}
-				};
-
-				confluxPanel.Append(textUI);
-				confluxPanel.AddElement(new UIImageFramed(TextureAssets.MagicPixel, new Rectangle(0, 0, 70, 2)), x => x.Top = StyleDimension.FromPixels(20));
-
-				foreach (UIText text in textsToAdd)
-				{
-					confluxPanel.Append(text);
-				}
-			}
+			topOffset += 28;
 		}
 	}
 

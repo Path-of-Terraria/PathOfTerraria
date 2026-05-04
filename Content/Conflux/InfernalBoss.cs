@@ -23,6 +23,7 @@ using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Common.World.Utilities;
+using PathOfTerraria.Content.Buffs.ElementalBuffs;
 using PathOfTerraria.Content.Gores;
 using PathOfTerraria.Content.Items.Gear.Armor.Chestplate;
 using PathOfTerraria.Content.Items.Gear.Armor.Helmet;
@@ -157,11 +158,15 @@ internal sealed class InfernalFlames : ModProjectile
 
 	public override void OnHitPlayer(Player target, Player.HurtInfo info)
 	{
-		target.AddBuff(BuffID.OnFire, 180);
+		IgnitedDebuff.ApplyTo(Projectile, target, info.Damage);
 	}
-	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+
+	public override void ModifyHitPlayer(Player target, ref Player.HurtModifiers modifiers)
 	{
-		target.AddBuff(BuffID.OnFire, 180);
+		if (target.HasBuff<IgnitedDebuff>())
+		{
+			modifiers.FinalDamage *= 1.3f;
+		}
 	}
 
 	private static readonly Color[] layerColors =
@@ -403,12 +408,12 @@ internal sealed class InfernalBoss : ModNPC
 	{
 		NPC.BossBar = ModContent.GetInstance<InfernalBossBar>();
 		NPC.aiStyle = -1;
-		NPC.lifeMax = 75000;
+		NPC.lifeMax = 225000;
 #if LOW_HEALTH
 		NPC.lifeMax = 5000;
 #endif
 		NPC.defense = 90;
-		NPC.damage = 50;
+		NPC.damage = 150;
 		NPC.width = 125;
 		NPC.height = 125;
 		NPC.knockBackResist = 0.0f;
@@ -498,12 +503,20 @@ internal sealed class InfernalBoss : ModNPC
 		int chanceCommon = (int)MathF.Ceiling(100f / 15f);
 		int chanceUncommon = (int)MathF.Ceiling(100f / 5f);
 		int chanceRare = (int)MathF.Ceiling(100f / 2f);
-		
+
 		npcLoot.AddCommon<FirelordsWill>(chanceCommon);
 		npcLoot.AddCommon<PyralisHeart>(chanceCommon);
 		npcLoot.AddCommon<FallenKingsLegacy>(chanceUncommon);
 		npcLoot.AddCommon<ProlifRing>(chanceRare);
 		npcLoot.AddCommon<Cryobrand>(chanceRare);
+	}
+
+	public override void ModifyHitPlayer(Player target, ref Player.HurtModifiers modifiers)
+	{
+		if (target.HasBuff<IgnitedDebuff>())
+		{
+			modifiers.FinalDamage *= 1.3f;
+		}
 	}
 
 	public override void SendExtraAI(BinaryWriter writer)
@@ -1685,7 +1698,7 @@ internal sealed class InfernalBoss : ModNPC
 				Vector2 projPos = origin;
 				Vector2 projVel = default;
 				float ai0 = Main.rand.NextFloat(0.00f, 0.05f);
-				var proj = Projectile.NewProjectileDirect(null, projPos, projVel, projType, 30, 0f, ai0: ai0, ai1: point.X, ai2: point.Y);
+				var proj = Projectile.NewProjectileDirect(null, projPos, projVel, projType, 150, 0f, ai0: ai0, ai1: point.X, ai2: point.Y);
 				proj.friendly = false;
 				proj.hostile = true;
 				proj.timeLeft = 3000;

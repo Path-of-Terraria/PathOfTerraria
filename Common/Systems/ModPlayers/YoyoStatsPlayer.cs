@@ -59,7 +59,10 @@ public sealed class YoyoStatsPlayer : ModPlayer
 		Player owner = Main.player[projectile.owner];
 		if (owner.TryGetModPlayer(out YoyoStatsPlayer modPlayer))
 		{
-			lifeTime = modPlayer.YoyoLifeTime.ApplyTo(lifeTime);
+			if (lifeTime != -1f)
+			{
+				lifeTime = modPlayer.YoyoLifeTime.ApplyTo(lifeTime);
+			}
 		}
 	}
 

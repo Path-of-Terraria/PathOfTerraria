@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Common.Systems.MobSystem;
 using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
@@ -15,6 +16,9 @@ internal class MappingNPC : GlobalNPC
 {
 	public override void SetDefaults(NPC entity)
 	{
+		// Capture before our scaling below, in case this hook runs before ArpgNPC.SetDefaults.
+		entity.GetGlobalNPC<ArpgNPC>().CaptureBaseLifeMax(entity);
+
 		if (SubworldSystem.Current is MappingWorld && MappingWorld.Affixes is not null)
 		{
 			foreach (MapAffix affix in MappingWorld.Affixes)
@@ -22,9 +26,9 @@ internal class MappingNPC : GlobalNPC
 				affix.ModifyNewNPC(entity);
 			}
 
-			if (MappingWorld.AreaLevel > 50 && entity.lifeMax > 5)
+			if (MappingWorld.AreaLevel > Content.Items.Consumables.Maps.Map.MaxOverworldLevel && entity.lifeMax > 5)
 			{
-				float modifier = 1 + (MappingWorld.AreaLevel - 50) / 20f;
+				float modifier = 1 + (MappingWorld.AreaLevel - Content.Items.Consumables.Maps.Map.MaxOverworldLevel) / 20f;
 				entity.life = entity.lifeMax = (int)(entity.lifeMax * modifier);
 				entity.defDamage = entity.damage = (int)(entity.damage * modifier);
 			}
@@ -96,7 +100,7 @@ internal class MappingNPC : GlobalNPC
 
 	public override void OnKill(NPC npc)
 	{
-		if (npc.boss && SubworldSystem.Current is MappingWorld world and not BossDomainSubworld && Main.hardMode && PoTItemHelper.PickItemLevel() >= 45)
+		if (npc.boss && SubworldSystem.Current is MappingWorld world and not BossDomainSubworld && Main.hardMode && MappingWorld.AreaLevel > Content.Items.Consumables.Maps.Map.MaxOverworldLevel)
 		{
 			MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
 

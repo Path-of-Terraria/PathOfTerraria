@@ -1,5 +1,16 @@
 {
   "netId": 185,
   "friendlyName": "Snow Flinx",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": null,
+      "lightning": null,
+      "cold": {
+        "added": 15,
+        "conversion": 0.5
+      }
+    }
+  ],
   "entries": []
 }

@@ -1,5 +1,16 @@
 {
   "netId": 518,
   "friendlyName": "Solar Spearman",
+  "damage": [
+    {
+      "minLevel": 45,
+      "fire": {
+        "added": 70,
+        "conversion": 0.75
+      },
+      "lightning": null,
+      "cold": null
+    }
+  ],
   "entries": []
 }

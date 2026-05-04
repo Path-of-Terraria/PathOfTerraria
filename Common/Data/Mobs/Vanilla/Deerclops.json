@@ -1,5 +1,16 @@
 {
   "netId": 668,
   "friendlyName": "Deerclops",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": null,
+      "lightning": null,
+      "cold": {
+        "added": 15,
+        "conversion": 0.5
+      }
+    }
+  ],
   "entries": []
 }

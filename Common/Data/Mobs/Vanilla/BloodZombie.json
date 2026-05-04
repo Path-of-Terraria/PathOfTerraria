@@ -1,17 +1,5 @@
 {
   "netId": 489,
   "friendlyName": "Blood Zombie",
-  "entries": [
-    {
-      "scale": null,
-      "prefix": null,
-      "weight": 1,
-      "stats": {
-        "level": 7,
-        "experience": 5
-      },
-      "affixes": null,
-      "requirements": "PreHardmodeSurface"
-    }
-  ]
+  "entries": []
 }

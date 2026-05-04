@@ -1,5 +1,16 @@
 {
   "netId": 454,
   "friendlyName": "Cultist Dragon Head",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": null,
+      "lightning": {
+        "added": 50,
+        "conversion": 0.75
+      },
+      "cold": null
+    }
+  ],
   "entries": []
 }

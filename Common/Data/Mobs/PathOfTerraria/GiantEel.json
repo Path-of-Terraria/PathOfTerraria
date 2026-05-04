@@ -1,16 +1,4 @@
 {
 	"friendlyName": "Mammoth Moss-Eel",
-	"entries": [
-		{
-			"scale": null,
-			"prefix": null,
-			"weight": 1,
-			"stats": {
-				"level": 1,
-				"experience": 1000000
-			},
-			"affixes": null,
-			"requirements": "Surface"
-		}
-	]
+	"entries": []
 }

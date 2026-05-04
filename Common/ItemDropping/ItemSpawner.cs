@@ -18,10 +18,11 @@ internal class ItemSpawner
 	/// <param name="pos">Position to spawn the item on.</param>
 	/// <param name="itemLevel">Level of the item spawned. Defaults to 0, which rolls at the current world level.</param>
 	/// <param name="dropRarityModifier">Drop modifier. Higher = more likely to get rare items.</param>
-	public static int SpawnMobKillItem(Vector2 pos, int itemLevel = 0, float dropRarityModifier = 0, float gearChance = 0.8f, float curChance = 0.15f, 
+	public static int SpawnMobKillItem(Vector2 pos, int itemLevel = 0, float dropRarityModifier = 0, float gearChance = 0.8f, float curChance = 0.15f,
 		float mapChance = 0.05f, ItemRarity forceRarity = ItemRarity.Invalid)
 	{
-		ItemDatabase.ItemRecord item = DropTable.RollMobDrops(itemLevel, dropRarityModifier, gearChance, curChance, mapChance, null, forceRarity);
+		var weights = new DropTable.DropCategoryWeights(gearChance, curChance, mapChance);
+		ItemDatabase.ItemRecord item = DropTable.RollMobDrops(itemLevel, dropRarityModifier, weights, null, forceRarity);
 
 		if (item == ItemDatabase.InvalidItem)
 		{
@@ -169,7 +170,7 @@ internal class ItemSpawner
 	/// <param name="pos"></param>
 	public static void SpawnMap(Vector2 pos, int tier)
 	{
-		int type = DropTable.RollMobDrops(tier, 0, 0, 0, 1).Item.type;
+		int type = DropTable.RollMobDrops(tier, 0, new DropTable.DropCategoryWeights(0, 0, 1)).Item.type;
 
 		SpawnItem(type, pos, tier);
 	}

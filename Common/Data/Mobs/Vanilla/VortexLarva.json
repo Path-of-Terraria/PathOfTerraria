@@ -1,5 +1,16 @@
 {
   "netId": 428,
   "friendlyName": "Vortex Larva",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": null,
+      "lightning": {
+        "added": 40,
+        "conversion": 0.75
+      },
+      "cold": null
+    }
+  ],
   "entries": []
 }

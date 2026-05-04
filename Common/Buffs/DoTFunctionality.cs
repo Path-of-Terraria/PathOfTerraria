@@ -68,7 +68,8 @@ internal class DoTFunctionality
 			info.HideCombatText = true;
 			info.Damage = 1;
 			info.DamageType = DamageClass.Default;
-			npc.StrikeNPC(info);
+			npc.StrikeNPC(info, false, true);
+
 
 			if (Main.dedServ)
 			{

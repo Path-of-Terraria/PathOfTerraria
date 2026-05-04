@@ -1,9 +1,9 @@
 {
-  "ItemType": "Summoner",
+  "ItemType": "Summon",
   "ElementProportions": {
-    "Fire": 0,
-    "Cold": 0,
-    "Lightning": 0,
-    "Chaos": 0
+    "Fire": 0.25,
+    "Cold": 0.25,
+    "Lightning": 0.25,
+    "Chaos": 0.25
   }
 }

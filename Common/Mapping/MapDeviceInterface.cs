@@ -316,6 +316,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 	private (float Speed, float Rotation, Vector2 Offset, SlotId Sound) gear;
 	private (int NonWrappedSelection, float Center, float Visibility, float EjectVisibility, float InjectionAnimation, SlotId Sound) canisters;
 	private SpriteFrame buttonLockFrame = new(1, 18);
+	private ulong? closeConfirmExpires;
 	private (Color? Injection, Color? Burst, SpriteFrame Frame) activationEffect = (null, null, new(4, 3));
 	private (StyleDimension X, StyleDimension Y) storagePositionSrc;
 	private (StyleDimension X, StyleDimension Y) storagePositionDst;
@@ -464,6 +465,16 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 			}
 		}
 
+		// Expire pending close confirmation, reverting button text.
+		if (closeConfirmExpires is { } expires && TimeSystem.UpdateCount >= expires)
+		{
+			closeConfirmExpires = null;
+			if (isPortalActive)
+			{
+				ActionButtonInner?.SetText(Language.GetTextValue($"Mods.{nameof(PathOfTerraria)}.UI.MapDevice.DeactivatePortal"));
+			}
+		}
+
 		// Prevent button interaction during lock animations.
 		ActionButton!.IgnoresMouseInteraction = buttonLockFrame.CurrentRow != buttonTargetRow || buttonLockFrame.CurrentRow == ButtonFrameClosed;
 
@@ -558,6 +569,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		openingAnimation = 0f;
 		closingAnimation = 0f;
 		buttonLockFrame = buttonLockFrame.With(0, 0);
+		closeConfirmExpires = null;
 		gear.Speed = 0f;
 		activationEffect.Burst = null;
 		activationEffect.Injection = null;
@@ -1165,15 +1177,26 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 				// Cycle the button lock - lock & unlock.
 				buttonLockFrame.CurrentRow = (byte)((buttonLockFrame.CurrentRow + 1) % buttonLockFrame.RowCount);
 			}
-		}
-		else
-		{
-			entity.TryClosingPortal();
 
-			state.activationEffect.Burst = ColorUtils.FromHexRgb(0x958982);
-			state.activationEffect.Injection = null;
-			state.activationEffect.Frame = state.activationEffect.Frame.With(0, 0);
+			return;
 		}
+
+		// Closing the portal requires a second click within a short window.
+		const int CloseConfirmDurationTicks = 3 * 60;
+
+		if (state.closeConfirmExpires is not { } pendingExpires || TimeSystem.UpdateCount >= pendingExpires)
+		{
+			state.closeConfirmExpires = TimeSystem.UpdateCount + CloseConfirmDurationTicks;
+			state.ActionButtonInner?.SetText(Language.GetTextValue($"Mods.{nameof(PathOfTerraria)}.UI.MapDevice.ConfirmClosePortal"));
+			return;
+		}
+
+		state.closeConfirmExpires = null;
+		entity.TryClosingPortal();
+
+		state.activationEffect.Burst = ColorUtils.FromHexRgb(0x958982);
+		state.activationEffect.Injection = null;
+		state.activationEffect.Frame = state.activationEffect.Frame.With(0, 0);
 	}
 
 	private void SetActivationEffect(MapDeviceEntity entity)

@@ -41,6 +41,8 @@ internal abstract class PreHardmodeBossMap(int level, Func<bool> defeatCondition
 {
 }
 
-internal abstract class HardmodeBossMap(int tier, Func<bool> defeatCondition) : BossMap(tier: tier, level: WorldLevelBasedOnTier(tier) + 1, defeatCondition, hardMode: true)
+internal abstract class HardmodeBossMap : BossMap
 {
+	public HardmodeBossMap(int tier, int level, Func<bool> defeatCondition)
+		: base(tier: tier, level: level, defeatCondition, hardMode: true) { }
 }

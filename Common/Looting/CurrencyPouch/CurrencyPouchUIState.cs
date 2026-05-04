@@ -100,6 +100,7 @@ internal class CurrencyPouchUIState : UIState, IMutuallyExclusiveUI
 		TryAppendSingleItem<SeveranceShard>(backdrop, new Vector2(294, 72));
 		TryAppendSingleItem<RadiantShard>(backdrop, new Vector2(290, 12));
 		TryAppendSingleItem<EchoingShard>(backdrop, new Vector2(342, 14));
+		TryAppendSingleItem<RegalShard>(backdrop, new Vector2(70, 72));
 	}
 
 	private void TryAppendSingleItem<T>(CurrencyPouchBackUI backdrop, Vector2 position) where T : CurrencyShard

@@ -46,9 +46,20 @@ internal class StarcallerMastery : Passive
 
 	internal class StarcallerPlayer : ModPlayer
 	{
+		private int starcallerCooldown = 0;
+		private const int STARCALLER_COOLDOWN_DURATION = 12; // 0.2 seconds
+		
+		public override void PostUpdate()
+		{
+			if (starcallerCooldown > 0)
+			{
+				starcallerCooldown--;
+			}
+		}
+
 		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (!hit.DamageType.CountsAsClass(DamageClass.Magic))
+			if (!hit.DamageType.CountsAsClass(DamageClass.Magic) || starcallerCooldown > 0)
 			{
 				return;
 			}
@@ -60,17 +71,24 @@ internal class StarcallerMastery : Passive
 				IEntitySource src = Player.GetSource_OnHit(target);
 				Vector2 pos = target.Center - new Vector2(0, 800);
 				Projectile.NewProjectile(src, pos, new Vector2(0, 8), type, (int)(damageDone), 2, Player.whoAmI, target.whoAmI);
+				starcallerCooldown = STARCALLER_COOLDOWN_DURATION;
 			}
 		}
 
 		public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (hit.DamageType.CountsAsClass(DamageClass.Magic) && Player.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<StarcallerMastery>(out float value) && hit.Crit)
+			if (!hit.DamageType.CountsAsClass(DamageClass.Magic) || starcallerCooldown > 0)
+			{
+				return;
+			}
+
+			if (Player.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<StarcallerMastery>(out float value) && hit.Crit)
 			{
 				IEntitySource src = Player.GetSource_OnHit(target);
 				Vector2 pos = target.Center - new Vector2(0, 800);
 				int type = ModContent.ProjectileType<StarcallerStar>();
 				Projectile.NewProjectile(src, pos, new Vector2(0, 8), type, (int)(damageDone * value / 100f), 2, Player.whoAmI, target.whoAmI);
+				starcallerCooldown = STARCALLER_COOLDOWN_DURATION;
 			}
 		}
 	}

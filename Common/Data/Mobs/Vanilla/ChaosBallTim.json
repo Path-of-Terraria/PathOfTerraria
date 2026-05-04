@@ -1,5 +1,37 @@
 {
   "netId": 665,
   "friendlyName": "Chaos Ball Tim",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": {
+        "added": 5,
+        "conversion": 0.25
+      },
+      "lightning": {
+        "added": 5,
+        "conversion": 0.25
+      },
+      "cold": {
+        "added": 5,
+        "conversion": 0.25
+      }
+    },
+    {
+      "minLevel": 45,
+      "fire": {
+        "added": 10,
+        "conversion": 0.25
+      },
+      "lightning": {
+        "added": 10,
+        "conversion": 0.25
+      },
+      "cold": {
+        "added": 10,
+        "conversion": 0.25
+      }
+    }
+  ],
   "entries": []
 }

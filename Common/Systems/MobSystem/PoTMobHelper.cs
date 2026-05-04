@@ -7,6 +7,8 @@ namespace PathOfTerraria.Common.Systems.MobSystem;
 
 public static class PoTMobHelper
 {
+	public const float AreaLevelScalingCap = 80f;
+
 	public static int GetAffixCount(ItemRarity rarity, int areaLevel)
 	{
 		(int min, int max) = rarity switch
@@ -39,7 +41,7 @@ public static class PoTMobHelper
 
 	public static float GetStatScaling()
 	{
-		float progress = MathHelper.Clamp((GetAreaLevel() - 1f) / 84f, 0f, 1f);
+		float progress = MathHelper.Clamp((GetAreaLevel() - 1f) / AreaLevelScalingCap, 0f, 1f);
 		return progress * progress * (3f - 2f * progress);
 	}
 }

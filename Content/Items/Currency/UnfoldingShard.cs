@@ -12,7 +12,7 @@ public class UnfoldingShard : CurrencyShard
 	protected override void SetStaticData()
 	{
 		PoTStaticItemData staticData = this.GetStaticData();
-		staticData.DropChance = 20000f;
+		staticData.DropChance = 10000f;
 	}
 
 	public override bool CanUseInPouch(Item slotItem, [NotNullWhen(false)] out string failKey)

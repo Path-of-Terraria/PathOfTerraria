@@ -121,6 +121,8 @@ internal class QueenSlimeDomain : BossDomainSubworld
 		miscChestLoot.Add((ItemID.Dragonfruit, 1..3), 0.1f);
 		miscChestLoot.Add((ItemID.Starfruit, 1..3), 0.1f);
 
+		using SmartLoot.Scope _ = SmartLoot.Begin();
+
 		for (int i = 0; i < Main.maxChests; ++i)
 		{
 			Chest chest = Main.chest[i];
@@ -131,14 +133,16 @@ internal class QueenSlimeDomain : BossDomainSubworld
 			}
 
 			Tile tile = Main.tile[chest.x, chest.y];
-			List<ItemDatabase.ItemRecord> drops =
-				DropTable.RollManyMobDrops(3, PoTItemHelper.PickItemLevel(), 1f, random: WorldGen.genRand);
+			List<ItemDatabase.ItemRecord> drops = MapChestLoot.RollMobDrops();
 
 			if (tile.HasTile && TileID.Sets.BasicChest[tile.TileType])
 			{
-				for (int k = 0; k < 8; ++k)
+				int mobDropSlots = drops.Count;
+				int totalSlots = mobDropSlots + 5;
+
+				for (int k = 0; k < totalSlots && k < chest.item.Length; ++k)
 				{
-					if (k < 3)
+					if (k < mobDropSlots)
 					{
 						ItemDatabase.ItemRecord drop = drops[k];
 						if (drop.Item != null)

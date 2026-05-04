@@ -1,5 +1,7 @@
 ﻿using PathOfTerraria.Common.Mapping;
 using PathOfTerraria.Common.Utilities;
+using PathOfTerraria.Common.Looting.VirtualBagUI;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Content.Dusts;
 using PathOfTerraria.Core.Time;
 using PathOfTerraria.Utilities;
@@ -31,6 +33,7 @@ internal abstract class ConfluxResource : ModItem
 
 	protected byte MergeProgress;
 	protected SlotId Sound;
+	private bool recordedCollection;
 
 	public override string Texture => base.Texture + (Item.stack >= 4 ? "_Large" : (Item.stack >= 2 ? "_Medium" : "_Small"));
 
@@ -173,7 +176,9 @@ internal abstract class ConfluxResource : ModItem
 		if (Item.position.Y <= 0f || Time.Remaining <= -60)
 		{
 			// Convert to resource.
-			MapResources.ModifyValue(Item.netID, Math.Max(1, Item.stack));
+			int amount = Math.Max(1, Item.stack);
+			RecordCollection(amount);
+			MapResources.ModifyValue(Item.netID, amount);
 			Item.active = false;
 		}
 
@@ -192,6 +197,46 @@ internal abstract class ConfluxResource : ModItem
 
 		// Cause the next update frame to not do collision logic.
 		Item.beingGrabbed = true;
+	}
+
+	private void RecordCollection(int amount)
+	{
+		if (recordedCollection)
+		{
+			return;
+		}
+
+		Player player = null;
+		float closestDistance = float.MaxValue;
+
+		foreach (Player activePlayer in Main.ActivePlayers)
+		{
+			float distance = activePlayer.DistanceSQ(Item.Center);
+
+			if (distance >= closestDistance)
+			{
+				continue;
+			}
+
+			player = activePlayer;
+			closestDistance = distance;
+		}
+
+		if (player is null)
+		{
+			return;
+		}
+
+		if (Main.netMode == NetmodeID.Server)
+		{
+			VirtualBagSessionLootHandler.SendConfluxResource((byte)player.whoAmI, Item.type, amount);
+		}
+		else if (Main.netMode == NetmodeID.SinglePlayer && player.whoAmI == Main.myPlayer)
+		{
+			player.GetModPlayer<VirtualBagStoragePlayer>().RecordConfluxResource(Item.type, amount);
+		}
+
+		recordedCollection = true;
 	}
 
 	public virtual void DespawnEffects()

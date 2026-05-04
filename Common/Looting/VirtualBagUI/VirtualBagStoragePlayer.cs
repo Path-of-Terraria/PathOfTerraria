@@ -11,7 +11,6 @@ using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.UI;
 using PathOfTerraria.Common.Subworlds;
-using PathOfTerraria.Common.Mapping;
 
 namespace PathOfTerraria.Common.Looting.VirtualBagUI;
 
@@ -30,7 +29,8 @@ internal class VirtualBagStoragePlayer : ModPlayer
 	public List<Item> Storage = [];
 	public bool UsesVirtualBag = true;
 	public bool ConfirmedExit = false;
-	public Dictionary<int, int> ConfluxResourcesCache = [];
+	public Dictionary<int, int> ConfluxResourcesCollected = [];
+	public Dictionary<int, int> CurrencyShardsCollected = [];
 
 	private static bool IsVirtualBagActiveContext()
 	{
@@ -97,13 +97,30 @@ internal class VirtualBagStoragePlayer : ModPlayer
 			UIManager.TryDisable(VirtualBagUIState.Identifier);
 		}
 
-		ConfluxResourcesCache.Clear();
+		ConfluxResourcesCollected.Clear();
+		CurrencyShardsCollected.Clear();
 		Storage.Clear();
+	}
 
-		foreach (MapResource resource in MapResources.Resources)
+	public void RecordConfluxResource(int itemType, int amount)
+	{
+		RecordSessionLoot(ConfluxResourcesCollected, itemType, amount);
+	}
+
+	public void RecordCurrencyShard(int itemType, int amount)
+	{
+		RecordSessionLoot(CurrencyShardsCollected, itemType, amount);
+	}
+
+	private static void RecordSessionLoot(Dictionary<int, int> storage, int itemType, int amount)
+	{
+		if (itemType <= ItemID.None || amount <= 0)
 		{
-			ConfluxResourcesCache.Add(resource.AssociatedItem, resource.Value);
+			return;
 		}
+
+		storage.TryAdd(itemType, 0);
+		storage[itemType] += amount;
 	}
 
 	private void OverrideRightClickForVirtualBag(On_ItemSlot.orig_RightClick_ItemArray_int_int orig, Item[] inv,

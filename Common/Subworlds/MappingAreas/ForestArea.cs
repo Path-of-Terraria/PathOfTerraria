@@ -336,6 +336,8 @@ internal class ForestArea : MappingWorld, IOverrideBiome, IExplorationWorld
 			}
 		}
 
+		using SmartLoot.Scope _ = SmartLoot.Begin();
+
 		for (int i = 0; i < Main.maxChests; ++i)
 		{
 			Chest chest = Main.chest[i];
@@ -346,11 +348,11 @@ internal class ForestArea : MappingWorld, IOverrideBiome, IExplorationWorld
 			}
 
 			Tile tile = Main.tile[chest.x, chest.y];
-			List<ItemDatabase.ItemRecord> drops = DropTable.RollManyMobDrops(3, PoTItemHelper.PickItemLevel(), 1f, random: WorldGen.genRand);
+			List<ItemDatabase.ItemRecord> drops = MapChestLoot.RollMobDrops();
 
 			if (tile.HasTile && TileID.Sets.BasicChest[tile.TileType])
 			{
-				for (int k = 0; k < 3; ++k)
+				for (int k = 0; k < drops.Count && k < chest.item.Length; ++k)
 				{
 					ItemDatabase.ItemRecord drop = drops[k];
 					chest.item[k] = new Item(drop.ItemId, drop.Item.stack);
