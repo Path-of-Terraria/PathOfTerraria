@@ -2,7 +2,6 @@
 using PathOfTerraria.Common.UI.Components;
 using PathOfTerraria.Common.UI.Elements;
 using PathOfTerraria.Common.UI.Guide;
-using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Core.UI;
 using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
@@ -10,7 +9,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.GameContent;
-using Terraria.GameContent.ItemDropRules;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.Localization;
@@ -25,8 +23,10 @@ public class QuestsUIState : CloseableSmartUi, IMutuallyExclusiveUI
 
 	public static string ViewedQuest { get; private set; }
 
-	private UIImageButton _closeButton;
+	// Placeholder workaround for hoverable elements not working
+	private readonly Dictionary<UIImage, int> _workaroundRetrievalsElements = [];
 
+	private UIImageButton _closeButton;
 	private UIList _questDetails;
 	private UIList _questList;
 	private UIList _completedQuestList;
@@ -46,6 +46,25 @@ public class QuestsUIState : CloseableSmartUi, IMutuallyExclusiveUI
 	
 	protected override void DrawSelf(SpriteBatch spriteBatch)
 	{
+		// This entire thing is a mega bruteforce workaround because the hover element refuses to work properly.
+		// This simply allows all of the hoverable elements to show the "Recovery Available" text when hovered. - Gabe
+		foreach (KeyValuePair<UIImage, int> pair in _workaroundRetrievalsElements)
+		{
+			Rectangle rectangle = pair.Key.GetDimensions().ToRectangle() with { Height = 20 };
+
+			if (rectangle.Contains(Main.MouseScreen.ToPoint()))
+			{
+				Tooltip.Create(new TooltipDescription()
+				{
+					Identifier = "Retrievables",
+					SimpleSubtitle = Language.GetTextValue("Mods.PathOfTerraria.UI.RecoveryAvailable") + $": [i:{pair.Value}]",
+					VisibilityTimeInTicks = 1,
+				});
+
+				break;
+			}
+		}
+
 		base.DrawSelf(spriteBatch);
 #if DEBUG
 		GUIDebuggingTools.DrawGuiBorder(spriteBatch, this, Color.Green);
@@ -163,6 +182,7 @@ public class QuestsUIState : CloseableSmartUi, IMutuallyExclusiveUI
 	private void PopulateQuestSteps(Quest quest)
 	{
 		_questDetails.Clear();
+		_workaroundRetrievalsElements.Clear();
 
 		for (int i = 0; i < quest.QuestSteps.Count; i++)
 		{
@@ -179,11 +199,11 @@ public class QuestsUIState : CloseableSmartUi, IMutuallyExclusiveUI
 			};
 			_questDetails.Add(stepUI);
 
-			if (quest.QuestSteps[i].RecoveryItem != -1)
+			if (step.RecoveryItem != -1)
 			{
 				Asset<Texture2D> recovTex = UISelectableQuestStep.RecoveryTex ??= ModContent.Request<Texture2D>("PathOfTerraria/Assets/UI/RecoveryAvailable");
 
-				var image = new UIHoverTooltipImage(recovTex, "Mods.PathOfTerraria.UI.RecoveryAvailable")
+				var image = new UIImage(recovTex)
 				{
 					HAlign = 1,
 					Top = StyleDimension.FromPixels(-12),
@@ -191,6 +211,15 @@ public class QuestsUIState : CloseableSmartUi, IMutuallyExclusiveUI
 					Width = StyleDimension.FromPixels(20),
 					Height = StyleDimension.FromPixels(20)
 				};
+
+				if (quest.CurrentStep < i)
+				{
+					image.Color = Color.White * 0.15f;
+				}
+				else
+				{
+					_workaroundRetrievalsElements.Add(image, step.RecoveryItem);
+				}
 
 				stepUI.Append(image);
 			}

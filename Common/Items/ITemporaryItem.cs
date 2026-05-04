@@ -70,5 +70,8 @@ internal interface ITemporaryItem
 		}
 	}
 
+	/// <summary>
+	/// Controls when this temporary item expires.
+	/// </summary>
 	public bool DespawnCondition();
 }
