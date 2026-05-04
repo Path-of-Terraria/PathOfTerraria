@@ -1183,3 +1183,8 @@ BloodMagicKeystone: {
 	// Name: BloodMagicKeystone
 	// Tooltip: All of your mana costs become life costs. Gain {0}% of the damage done as life back on all damage, scaling with your max hp.
 }
+
+CinderBastionMastery: {
+	// Name: CinderBastionMastery
+	// Tooltip: Gain a 1% increase to Ignite damage per 10 maximum life. When moving, apply a {0}% max life Ignite to yourself.
+}

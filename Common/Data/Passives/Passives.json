@@ -7538,5 +7538,20 @@
 				"referenceId": 90
 			}
 		]
+	},
+	{
+		"internalIdentifier": "CinderBastionMastery",
+		"referenceId": 1173,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": -1320,
+			"y": -9
+		},
+		"connections": [
+			{
+				"referenceId": 186
+			}
+		]
 	}
 ]
