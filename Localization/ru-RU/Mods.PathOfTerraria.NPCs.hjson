@@ -264,11 +264,18 @@ WizardNPC: {
 	Entry: Возможно, самый могущественный волшебник всех времён, Аларик всё ещё ведёт себя так, будто притворяется самым могущественным волшебником всех времён. Если ему весело, он может вызвать настоящую и мгновенную катастрофу.
 	// Census.SpawnCondition: Spawns by default in Ravencrest. Home is the Library.
 	// Recover: Recover
+	// Rebuild: Rebuild
 
 	RecoverDialogue: {
 		// 0: Lost some items? Here they are...haha! I've found them hidden within your mind. Note their frailty; I have much other use of my strength!
 		// 1: Seems like the world's stolen your items? Reminds me of some goblins...thousands of years of work...ultimately, couldn't save her...oh! Anyway, those items are temporary. Be careful!
 		// 2: Boom! Hah. Just kidding! There you are. Don't overrely on them - they won't last you forever!
+	}
+
+	RebuildDialogue: {
+		// 0: Oh? Has my library gone into disarray? ...no? Huh. Thanks for the concern regardless, [prclass/l,1:l];
+		// 1: Tada! Feast before your eyes, a library that's not seen hardship! I grant you a strong thought of appreciation for your input.
+		// 2: ...aha! As you can see, the library is restored. Why did I not do this the first time? ...I was busy around then.
 	}
 }
 
