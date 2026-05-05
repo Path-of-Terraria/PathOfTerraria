@@ -35,11 +35,16 @@ internal class WizardStartQuest : Quest
 			new ActionStep((player, _) => 
 			{
 				Main.LocalPlayer.GetModPlayer<ConditionalDropPlayer>().AddId(ModContent.ItemType<TomeOfTheElders>());
-				RavencrestSystem.UpgradeBuilding("Library");
 				return true;
 			}),
 
 			new KillCount("KillScout", npc => npc.type is NPCID.GoblinScout, 1, this.GetLocalization("KillScout")),
+
+			new ActionStep((_, _) => 
+			{
+				RavencrestSystem.UpgradeBuilding("Library");
+				return true;
+			}),
 
 			new InteractWithNPC("Start", ModContent.NPCType<WizardNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.Quest"),
 				Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.Quest2"),
