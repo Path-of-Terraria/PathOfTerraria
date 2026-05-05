@@ -167,7 +167,7 @@ internal static class SubworldLoadingScreen
 	/// </summary>
 	private static void SetTip(string text = null)
 	{
-		const int MaxTips = 31;
+		const int MaxTips = 33;
 
 		_tip = text ?? Language.GetTextValue("Mods.PathOfTerraria.UI.Tips." + Main.rand.Next(MaxTips));
 

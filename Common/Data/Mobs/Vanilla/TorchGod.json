@@ -1,5 +1,16 @@
 {
   "netId": 664,
   "friendlyName": "Torch God",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": {
+        "added": 0,
+        "conversion": 1
+      },
+      "lightning": null,
+      "cold": null
+    }
+  ],
   "entries": []
 }

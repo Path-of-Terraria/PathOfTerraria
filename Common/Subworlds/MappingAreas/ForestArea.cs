@@ -355,7 +355,11 @@ internal class ForestArea : MappingWorld, IOverrideBiome, IExplorationWorld
 				for (int k = 0; k < drops.Count && k < chest.item.Length; ++k)
 				{
 					ItemDatabase.ItemRecord drop = drops[k];
-					chest.item[k] = new Item(drop.ItemId, drop.Item.stack);
+
+					if (drop.Item is not null)
+					{
+						chest.item[k] = new Item(drop.ItemId, drop.Item.stack);
+					}
 				}
 			}
 		}

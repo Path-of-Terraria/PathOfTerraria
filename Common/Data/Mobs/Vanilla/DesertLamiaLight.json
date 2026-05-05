@@ -1,5 +1,16 @@
 {
   "netId": 528,
   "friendlyName": "Desert Lamia Light",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": null,
+      "lightning": {
+        "added": 25,
+        "conversion": 0.5
+      },
+      "cold": null
+    }
+  ],
   "entries": []
 }

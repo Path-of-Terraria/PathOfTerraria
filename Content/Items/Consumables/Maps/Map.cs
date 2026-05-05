@@ -143,27 +143,25 @@ public abstract class Map : ModItem, GenerateNameAffixes.IItem, GenerateAffixes.
 	{
 	}
 
+	/// <summary>
+	/// The overworld caps at level 70. Tier 1 maps start one level above that and increase by 1 per tier.
+	/// </summary>
+	public const int MaxOverworldLevel = 70;
+	public const int MaxMapTier = 11;
+
 	public static int WorldLevelBasedOnTier(int tier)
 	{
-		return Math.Clamp(48 + tier * 2, 50, 72);
+		return Math.Clamp(MaxOverworldLevel + tier, MaxOverworldLevel + 1, MaxOverworldLevel + MaxMapTier);
 	}
 
 	public static int TierBasedOnWorldLevel(int area)
 	{
-		if (area < 45)
+		if (area <= MaxOverworldLevel)
 		{
 			return 0;
 		}
 
-		// Return 1 if we're post-WoF due to the gap of 45-48 in the formula below.
-		if (area >= 45 && area <= 48)
-		{
-			return 1;
-		}
-
-		// area is adjusted by 48 instead of 50 to increase the level by 1 per stage;
-		// i.e. a level 50 area gives a tier 1 map, which gives a level 52 area, which gives a tier 2...
-		return Math.Clamp((area - 48) / 2, 0, 11) + 1;
+		return Math.Clamp(area - MaxOverworldLevel, 1, MaxMapTier);
 	}
 
 	/// <summary>
@@ -203,11 +201,11 @@ public abstract class Map : ModItem, GenerateNameAffixes.IItem, GenerateAffixes.
 
 	void SetItemLevel.IItem.SetItemLevel(int level, ref int realLevel)
 	{
-		//You can find maps 1 tier lower, on your current tier, and 1 tier higher with the below. 
+		//You can find maps 1 tier lower, on your current tier, and 1 tier higher with the below.
 		//So if youre in tier 2, you can find tier 1 maps, tier 2 maps, and tier 3 maps.
-		if (level == PoTItemHelper.PickItemLevel() && level >= 50)
+		if (level == PoTItemHelper.PickItemLevel() && level > MaxOverworldLevel)
 		{
-			level = Main.rand.Next(level - 3, level + 1);
+			level = Main.rand.Next(level - 1, level + 2);
 		}
 
 		realLevel = level;

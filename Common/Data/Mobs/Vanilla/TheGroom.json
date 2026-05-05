@@ -1,17 +1,5 @@
 {
   "netId": 53,
   "friendlyName": "The Groom",
-  "entries": [
-    {
-      "scale": null,
-      "prefix": null,
-      "weight": 1,
-      "stats": {
-        "level": 5,
-        "experience": 3
-      },
-      "affixes": null,
-      "requirements": "PreHardmodeSurface"
-    }
-  ]
+  "entries": []
 }

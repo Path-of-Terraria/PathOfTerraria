@@ -465,12 +465,12 @@ MossHornetTriggerItem: {
 
 RoyalJelly: {
 	DisplayName: Gelée royale
-	// Tooltip: ""
+	// Tooltip: Consume this to challenge The Queen
 }
 
 RoyalJellyClump: {
 	DisplayName: Agrégat de gelée royale
-	// Tooltip: ""
+	// Tooltip: Combine two of these to make the Royal Jelly
 }
 
 RoyalJellyClumpPlacer: {
@@ -1607,4 +1607,9 @@ Cryobrand: {
 		Sword-Sword-Shield: Fire slashes and spinning thrown shield.
 		Shield-Shield-Sword: Shield slams and a massive icy shockwave.
 		''' */
+}
+
+MapRecoveryItem: {
+	// DisplayName: Map Recovery Item
+	// Tooltip: ""
 }

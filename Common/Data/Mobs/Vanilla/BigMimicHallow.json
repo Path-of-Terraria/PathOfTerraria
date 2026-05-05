@@ -1,5 +1,22 @@
 {
   "netId": 475,
   "friendlyName": "Big Mimic Hallow",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": {
+        "added": 15,
+        "conversion": 0.25
+      },
+      "lightning": {
+        "added": 15,
+        "conversion": 0.25
+      },
+      "cold": {
+        "added": 15,
+        "conversion": 0.25
+      }
+    }
+  ],
   "entries": []
 }

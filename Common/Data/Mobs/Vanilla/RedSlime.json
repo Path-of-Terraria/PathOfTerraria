@@ -1,17 +1,5 @@
 {
   "netId": -8,
   "friendlyName": "Red Slime",
-  "entries": [
-    {
-      "scale": null,
-      "prefix": null,
-      "weight": 1,
-      "stats": {
-        "level": 2,
-        "experience": 2
-      },
-      "affixes": null,
-      "requirements": "PreHardmodeSurface"
-    }
-  ]
+  "entries": []
 }

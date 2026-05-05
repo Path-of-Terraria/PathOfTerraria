@@ -489,7 +489,11 @@ internal class DesertArea : MappingWorld, IOverrideBiome, IExplorationWorld
 					if (k < mobDropSlots)
 					{
 						ItemDatabase.ItemRecord drop = drops[k];
-						chest.item[k] = new Item(drop.ItemId, drop.Item.stack);
+
+						if (drop.Item is not null)
+						{
+							chest.item[k] = new Item(drop.ItemId, drop.Item.stack);
+						}
 					}
 					else
 					{

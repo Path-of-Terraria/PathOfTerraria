@@ -1,5 +1,16 @@
 {
   "netId": 622,
   "friendlyName": "Blood Eel Body",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": null,
+      "lightning": {
+        "added": 20,
+        "conversion": 0.33
+      },
+      "cold": null
+    }
+  ],
   "entries": []
 }

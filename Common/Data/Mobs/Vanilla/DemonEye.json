@@ -1,17 +1,5 @@
 {
   "netId": 2,
   "friendlyName": "Demon Eye",
-  "entries": [
-    {
-      "scale": null,
-      "prefix": null,
-      "weight": 1,
-      "stats": {
-        "level": 2,
-        "experience": 1
-      },
-      "affixes": null,
-      "requirements": "PreHardmodeSurface"
-    }
-  ]
+  "entries": []
 }

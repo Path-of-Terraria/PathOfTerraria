@@ -9,12 +9,13 @@ using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
+using PathOfTerraria.Common.Systems.StructureImprovementSystem;
 using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Content.Items.Currency;
 using PathOfTerraria.Content.Items.Gear.Armor.Helmet;
-using PathOfTerraria.Content.Items.Gear.Weapons.Wand;
 using PathOfTerraria.Content.Items.Quest;
 using PathOfTerraria.Content.Tiles.BossDomain;
+using PathOfTerraria.Content.Tiles.Town;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
@@ -24,10 +25,17 @@ using Terraria.Localization;
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverheadDialogueNPC
+public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverheadDialogueNPC, IChatButton
 {
+	internal static IChatButton.ChatButton[] Buttons;
+
 	Point16 ISpawnInRavencrestNPC.TileSpawn => (RavencrestSystem.Structures["Library"].Position + new Point(50, 40)).ToPoint16();
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
+
+	IChatButton.ChatButton[] IChatButton.ReportButtons()
+	{
+		return Buttons;
+	}
 
 	public override void SetStaticDefaults()
 	{
@@ -46,6 +54,58 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 			Velocity = 1f
 		};
 		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
+
+		LocalizedText text = this.GetLocalization("Recover");
+		LocalizedText build = this.GetLocalization("Rebuild");
+
+		Buttons = [
+			// Recover button
+			new IChatButton.ChatButton(text.Key, RecoverItems, null, () => 
+			{ 
+				QuestModPlayer questModPlayer = Main.LocalPlayer.GetModPlayer<QuestModPlayer>();
+				questModPlayer.SpawnRecoveryItems(Vector2.Zero, true, out int id);
+				return questModPlayer.HasAnyRecoveryItem && id != -1; 
+			}), 
+
+			// Rebuild button - workaround for players having to bomb their Ravencrest, instead allowing instant rebuild
+			new IChatButton.ChatButton(build.Key, _ => 
+			{
+				RavencrestSystem.UpgradeBuilding("Library", 2);
+				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.WizardNPC.RebuildDialogue." + Main.rand.Next(3));
+			}, null, () => 
+			{
+				ImprovableStructure library = RavencrestSystem.Structures["Library"];
+				return Main.hardMode && !CheckHiddenBookshelf();
+			})
+		];
+	}
+
+	private static bool CheckHiddenBookshelf()
+	{
+		Point pos = RavencrestSystem.Structures["Library"].Position;
+		Tile tile = Main.tile[pos.X + 56, pos.Y + 50];
+		return tile.HasTile && tile.TileType == ModContent.TileType<HiddenBookcase>();
+	}
+
+	public static void RecoverItems(NPC self)
+	{
+		if (Main.LocalPlayer.GetModPlayer<QuestModPlayer>().HasAnyRecoveryItem)
+		{
+			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().SpawnRecoveryItems(self.Center, false, out int emblematicItemToDisplay);
+
+			if (emblematicItemToDisplay == -1)
+			{
+				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.WizardNPC.NoRecoverDialogue." + Main.rand.Next(3));
+			}
+			else
+			{
+				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.WizardNPC.RecoverDialogue." + Main.rand.Next(3));
+			}
+		}
+		else
+		{
+			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.WizardNPC.NoRecoverDialogue." + Main.rand.Next(3));
+		}
 	}
 
 	public override void SetDefaults()
@@ -81,6 +141,7 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 				c.AddDialogue(new NPCTownDialogue.DialogueEntry($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common2"));
 				c.AddDialogue(new NPCTownDialogue.DialogueEntry($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common3"));
 				c.AddDialogue(new NPCTownDialogue.DialogueEntry($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common4"));
+				c.AddDialogue(new NPCTownDialogue.DialogueEntry($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common5"));
 			}
 		);
 	}
