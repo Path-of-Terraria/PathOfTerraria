@@ -39,6 +39,11 @@ internal class SpelunkyMastery : Passive
 			WorldGen.KillTile(x, y);
 			takenPositions.Add(new Point16(x, y));
 
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				NetMessage.SendData(MessageID.TileManipulation, -1, -1, null, 0, x, y);
+			}
+
 			TryMine(x, y - 1);
 			TryMine(x, y + 1);
 			TryMine(x + 1, y);
