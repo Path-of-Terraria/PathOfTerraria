@@ -5,10 +5,18 @@ using Terraria.ObjectData;
 
 namespace PathOfTerraria.Content.Items.Placeable;
 
+/// <summary>
+/// Disabled for now, but kept for posterity. May be useful for vanity or functionality in the future.
+/// </summary>
 public class MapRecoveryItem : ModItem
 {
 	public class MapRecoveryTile : ModTile
 	{
+		public override bool IsLoadingEnabled(Mod mod)
+		{
+			return false;
+		}
+
 		public override void SetStaticDefaults()
 		{
 			Main.tileFrameImportant[Type] = true;
@@ -78,6 +86,11 @@ public class MapRecoveryItem : ModItem
 			player.noThrow = 2;
 			player.cursorItemIconEnabled = true;
 		}
+	}
+
+	public override bool IsLoadingEnabled(Mod mod)
+	{
+		return false;
 	}
 
 	public override void SetDefaults()
