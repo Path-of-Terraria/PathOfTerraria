@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework.Input;
+using PathOfTerraria.Common.Items;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Common.UI.Components;
@@ -20,6 +21,7 @@ using ReLogic.Utilities;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
 using Terraria.ID;
@@ -1181,22 +1183,37 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 			return;
 		}
 
+		ClosePortalIfAvailable(entity, state);
+	}
+
+	internal static void ClosePortalIfAvailable(MapDeviceEntity entity, MapDeviceState? state, bool skipConfirmation = false)
+	{
 		// Closing the portal requires a second click within a short window.
 		const int CloseConfirmDurationTicks = 3 * 60;
 
-		if (state.closeConfirmExpires is not { } pendingExpires || TimeSystem.UpdateCount >= pendingExpires)
+		if (state is not null && (state.closeConfirmExpires is not { } pendingExpires || TimeSystem.UpdateCount >= pendingExpires && !skipConfirmation))
 		{
 			state.closeConfirmExpires = TimeSystem.UpdateCount + CloseConfirmDurationTicks;
 			state.ActionButtonInner?.SetText(Language.GetTextValue($"Mods.{nameof(PathOfTerraria)}.UI.MapDevice.ConfirmClosePortal"));
 			return;
 		}
 
-		state.closeConfirmExpires = null;
+		if (state != null)
+		{
+			state.closeConfirmExpires = null;
+		}
+
 		entity.TryClosingPortal();
+
+		if (state is null)
+		{ 
+			return;
+		}
 
 		state.activationEffect.Burst = ColorUtils.FromHexRgb(0x958982);
 		state.activationEffect.Injection = null;
 		state.activationEffect.Frame = state.activationEffect.Frame.With(0, 0);
+		return;
 	}
 
 	private void SetActivationEffect(MapDeviceEntity entity)
