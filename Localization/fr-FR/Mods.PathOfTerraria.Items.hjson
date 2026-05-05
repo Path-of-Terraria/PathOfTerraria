@@ -465,12 +465,12 @@ MossHornetTriggerItem: {
 
 RoyalJelly: {
 	DisplayName: Gelée royale
-	// Tooltip: ""
+	// Tooltip: Consume this to challenge The Queen
 }
 
 RoyalJellyClump: {
 	DisplayName: Agrégat de gelée royale
-	// Tooltip: ""
+	// Tooltip: Combine two of these to make the Royal Jelly
 }
 
 RoyalJellyClumpPlacer: {
