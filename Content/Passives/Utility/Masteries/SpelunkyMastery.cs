@@ -31,6 +31,11 @@ internal class SpelunkyMastery : Passive
 
 		private static void RecursiveMine(int x, int y, int tileType, HashSet<Point16> takenPositions)
 		{
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				NetMessage.SendData(MessageID.TileManipulation, -1, -1, null, 0, x, y);
+			}
+			
 			WorldGen.KillTile(x, y);
 			takenPositions.Add(new Point16(x, y));
 
