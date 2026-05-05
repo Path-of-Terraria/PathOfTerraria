@@ -15,18 +15,12 @@ internal class MoveIncreaseOnSummonPassive : Passive
 
 		public override void OnSpawn(Projectile projectile, IEntitySource source)
 		{
-			if (source is EntitySource_Parent { Entity: Player plr })
+			if (projectile.owner is < 0 or >= Main.maxPlayers)
 			{
-				TryFunctionality(plr);
+				return;
 			}
-			else if (source is EntitySource_Parent { Entity: Projectile proj } && proj.TryGetOwner(out Player projOwner))
-			{
-				TryFunctionality(projOwner);
-			}
-		}
 
-		private static void TryFunctionality(Player plr)
-		{
+			Player plr = Main.player[projectile.owner];
 			if (plr.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<MoveIncreaseOnSummonPassive>(out float value))
 			{
 				plr.AddBuff(ModContent.BuffType<HastySummonBuff>(), (int)(value * 60), false);
