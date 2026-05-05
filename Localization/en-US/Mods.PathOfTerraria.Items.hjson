@@ -473,12 +473,12 @@ MossHornetTriggerItem: {
 
 RoyalJelly: {
 	DisplayName: Royal Jelly
-	Tooltip: ""
+	Tooltip: Consume this to challenge The Queen
 }
 
 RoyalJellyClump: {
 	DisplayName: Royal Jelly Clump
-	Tooltip: ""
+	Tooltip: Combine two of these to make the Royal Jelly
 }
 
 RoyalJellyClumpPlacer: {
