@@ -93,8 +93,8 @@ public interface IChatButton
 						continue;
 					}
 
-					buttons[i].Draw(basePosition, Main.LocalPlayer.TalkNPC, out float width);
-					drawPosition.X -= width + 6;
+					buttons[i].Draw(drawPosition, Main.LocalPlayer.TalkNPC, out float width);
+					drawPosition.X -= width + 20;
 				}
 			}
 
