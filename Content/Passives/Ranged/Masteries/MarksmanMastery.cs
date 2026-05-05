@@ -12,7 +12,7 @@ internal class MarksmanMastery : Passive
 		private static readonly Asset<Texture2D> Icon = ModContent.Request<Texture2D>("PathOfTerraria/Assets/Misc/VFX/MarkedIcon");
 
 		[ThreadStatic]
-		private static bool _markedDamage = false;
+		private static bool _markedDamage;
 
 		public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
 		{
@@ -21,7 +21,8 @@ internal class MarksmanMastery : Passive
 				return;
 			}
 
-			if (projectile.TryGetOwner(out Player plr) && projectile.friendly && plr.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<MarksmanMastery>(out float value))
+			if (projectile.TryGetOwner(out Player plr) && projectile.friendly && plr.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<MarksmanMastery>(out float value)
+				&& plr.GetModPlayer<MarkedPlayer>().TargetNpc == npc.whoAmI)
 			{
 				damageDone = (int)(damageDone * value / 100f);
 

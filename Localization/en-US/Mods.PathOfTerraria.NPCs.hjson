@@ -943,6 +943,12 @@ TinkerNPC: {
 			1: Moisture and machinery... usually a disaster. Tonight, maybe a spectacle!
 			2: The storm stirs more than just water... it awakens the thrill of invention!
 		}
+
+		Goblins: {
+			0: Tsk. Harm my inventions and I shall rain down electric fury!
+			1: Hmm...a perfect time to test my...more unstable creations.
+			2: Calibration is SO much harder with all this ruckus...
+		}
 	}
 
 	Entry: Todo:
