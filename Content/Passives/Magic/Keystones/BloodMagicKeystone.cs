@@ -78,7 +78,7 @@ public class BloodMagicKeystone : Passive
 					{
 						Player.statLife = Math.Min(Player.statLife + lifeSteal, Player.statLifeMax2);
 						Player.HealEffect(lifeSteal);
-						lifeStealCooldown = 3;
+						lifeStealCooldown = 30;
 					}
 				};
 			}
