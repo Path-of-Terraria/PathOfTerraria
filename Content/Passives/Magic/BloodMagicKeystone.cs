@@ -14,6 +14,24 @@ public class BloodMagicKeystone : Passive
 			{
 				lifeStealCooldown--;
 			}
+	
+			// Handle channeling life drain
+			if (Player.channel && Player.HeldItem.channel && 
+			    Player.GetModPlayer<PassiveTreePlayer>().HasNode<BloodMagicKeystone>() &&
+			    Player.HeldItem.mana > 0)
+			{
+				int lifeDrainPerTick = Math.Max(1, Player.HeldItem.mana / 60);
+		
+				if (Player.statLife > lifeDrainPerTick)
+				{
+					Player.statLife -= lifeDrainPerTick;
+				}
+				else
+				{
+					// Stop channeling if not enough life
+					Player.channel = false;
+				}
+			}
 		}
 
 		public override void PostUpdateEquips()
