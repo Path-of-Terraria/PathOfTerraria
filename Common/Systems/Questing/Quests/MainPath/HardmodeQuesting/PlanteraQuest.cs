@@ -45,10 +45,16 @@ internal class PlanteraQuest() : HardmodeQuest(5)
 				Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.Plantera.1"),
 				onSuccess: _ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<PlanteraMap>())),
 			
-			new ConditionCheck("Domain", _ => SubworldSystem.Current is PlanteraDomain, 1, this.GetLocalization("EnterDomain")),
-			
-			new ConditionCheck("Boss", _ => BossTracker.DownedInDomain<PlanteraDomain>(NPCID.Plantera), 1, this.GetLocalization("Boss")),
-	
+			new ConditionCheck("Domain", _ => SubworldSystem.Current is PlanteraDomain, 1, this.GetLocalization("EnterDomain"))
+			{
+				RecoveryItem = ModContent.ItemType<PlanteraMap>()
+			},
+
+			new ConditionCheck("Boss", _ => BossTracker.DownedInDomain<PlanteraDomain>(NPCID.Plantera), 1, this.GetLocalization("Boss"))
+			{
+				RecoveryItem = ModContent.ItemType<PlanteraMap>()
+			},
+
 			new InteractWithNPC("Finish", NPCQuestGiver,this.GetLocalization("Boss"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.Plantera.2"))
 			{

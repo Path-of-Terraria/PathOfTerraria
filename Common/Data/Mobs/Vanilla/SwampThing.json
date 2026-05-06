@@ -1,5 +1,16 @@
 {
   "netId": 166,
   "friendlyName": "Swamp Thing",
+  "damage": [
+    {
+      "minLevel": 45,
+      "fire": null,
+      "lightning": null,
+      "cold": {
+        "added": 30,
+        "conversion": 0.5
+      }
+    }
+  ],
   "entries": []
 }

@@ -1,5 +1,16 @@
 {
   "netId": 134,
   "friendlyName": "The Destroyer",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": {
+        "added": 30,
+        "conversion": 0.5
+      },
+      "lightning": null,
+      "cold": null
+    }
+  ],
   "entries": []
 }

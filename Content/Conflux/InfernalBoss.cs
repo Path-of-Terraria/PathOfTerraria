@@ -18,6 +18,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using NPCUtils;
 using PathOfTerraria.Common.AI;
+using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Utilities;
@@ -1447,7 +1448,7 @@ internal sealed class InfernalBoss : ModNPC
 				float projSpeed = (float)(baseSpeed + Main.rand.NextFloat(0, 10));
 				var projVel = (Vector2)((baseAngle + (iFactor * MathHelper.TwoPi)).ToRotationVector2() * projSpeed);
 				int projType = ModContent.ProjectileType<InfernalFlames>();
-				Projectile.NewProjectileDirect(source, projPos, projVel, projType, 1, 1f);
+				Projectile.NewProjectileDirect(source, projPos, projVel, projType, ModeUtils.ProjectileDamage(300), 1f);
  			}
 		}
 	}
@@ -1698,7 +1699,7 @@ internal sealed class InfernalBoss : ModNPC
 				Vector2 projPos = origin;
 				Vector2 projVel = default;
 				float ai0 = Main.rand.NextFloat(0.00f, 0.05f);
-				var proj = Projectile.NewProjectileDirect(null, projPos, projVel, projType, 150, 0f, ai0: ai0, ai1: point.X, ai2: point.Y);
+				var proj = Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), projPos, projVel, projType, ModeUtils.ProjectileDamage(300), 0f, ai0: ai0, ai1: point.X, ai2: point.Y);
 				proj.friendly = false;
 				proj.hostile = true;
 				proj.timeLeft = 3000;

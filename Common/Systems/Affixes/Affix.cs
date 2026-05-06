@@ -248,6 +248,11 @@ public abstract class Affix : ILocalizedModType
 		clone.MinValue = MinValue;
 		clone.MaxValue = MaxValue;
 		clone.Value = Value;
+		clone.Duration = Duration;
+		clone.IsCorruptedAffix = IsCorruptedAffix;
+		clone.IsImplicit = IsImplicit;
+		clone.Round = Round;
+		clone.Tier = Tier;
 
 		return clone;
 	}

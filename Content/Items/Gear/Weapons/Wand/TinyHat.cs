@@ -38,6 +38,7 @@ internal class TinyHat : Wand
 		Item.UseSound = SoundID.Item7;
 		Item.value = Item.buyPrice(0, 15, 0, 0);
 		Item.noUseGraphic = true;
+		Item.DamageType = DamageClass.Magic;
 	}
 
 	public override void HoldItem(Player player)

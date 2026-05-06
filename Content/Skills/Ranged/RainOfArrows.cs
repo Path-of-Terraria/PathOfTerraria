@@ -138,6 +138,12 @@ public class RainOfArrows : Skill
 			return false;
 		}
 
+		if (Main.LocalPlayer.HeldItem.channel)
+		{
+			failReason = new SkillFailure(SkillFailReason.Other, "BadChanneled");
+			return false;
+		}
+
 		return base.CanUseSkill(player, ref failReason, true) && Main.myPlayer == player.whoAmI;
 	}
 

@@ -253,6 +253,11 @@ public class PassiveTreePlayer : ModPlayer
 			{
 				continue;
 			}
+			
+			if (e.Other(passive) is Passive { IsHidden: true })
+			{
+				continue;
+			}
 
 			Tuple<bool, HashSet<Allocatable>> ret = CanFindAnchor(e.Other(passive), autoComplete, passive);
 

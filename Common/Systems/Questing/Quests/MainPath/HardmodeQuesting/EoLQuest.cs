@@ -10,6 +10,7 @@ using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using Terraria.ID;
 using Terraria.Localization;
 using PathOfTerraria.Content.Items.BossDomain;
+using PathOfTerraria.Content.Items.Gear.Armor.Helmet;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 
@@ -30,16 +31,28 @@ internal class EoLQuest() : Quest
 	{
 		return
 		[
-			new CollectCount("Start", ModContent.ItemType<PrismShardItem>(), 10, Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.EoL.0")),
+			new CollectCount("Start", ModContent.ItemType<PrismShardItem>(), 10, Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.EoL.0"))
+			{
+				RecoveryItem = ModContent.ItemType<CrystalVisors>()
+			},
 		
 			new InteractWithNPC("Talk", NPCQuestGiver, LocalizedText.Empty,
 				Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.EoL.1"), [new GiveItem(10, ModContent.ItemType<PrismShardItem>())], true,
-				_ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<EoLMap>())),
+				_ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<EoLMap>())) 
+			{
+				RecoveryItem = ModContent.ItemType<CrystalVisors>()
+			},
 		
 			// Enter the rift (Enter the Empress domain)
-			new ConditionCheck("Domain", _ => SubworldSystem.Current is EmpressDomain, 1, this.GetLocalization("EnterDomain")),
-		
-			new ConditionCheck("Boss", _ => BossTracker.DownedInDomain<EmpressDomain>(NPCID.HallowBoss), 1, this.GetLocalization("Boss")),
+			new ConditionCheck("Domain", _ => SubworldSystem.Current is EmpressDomain, 1, this.GetLocalization("EnterDomain"))
+			{
+				RecoveryItem = ModContent.ItemType<EoLMap>()
+			},
+
+			new ConditionCheck("Boss", _ => BossTracker.DownedInDomain<EmpressDomain>(NPCID.HallowBoss), 1, this.GetLocalization("Boss")) 
+			{
+				RecoveryItem = ModContent.ItemType<EoLMap>()
+			},
 		
 			new InteractWithNPC("Finish", NPCQuestGiver, this.GetLocalization("Boss"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.EoL.2"))

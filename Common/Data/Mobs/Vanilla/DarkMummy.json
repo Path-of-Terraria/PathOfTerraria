@@ -1,5 +1,16 @@
 {
   "netId": 79,
   "friendlyName": "Dark Mummy",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": null,
+      "lightning": {
+        "added": 15,
+        "conversion": 0.33
+      },
+      "cold": null
+    }
+  ],
   "entries": []
 }

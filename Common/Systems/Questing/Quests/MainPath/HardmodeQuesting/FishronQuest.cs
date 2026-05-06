@@ -57,12 +57,18 @@ internal class FishronQuest() : Quest
 				[
 					new GiveItem(1, ItemID.TruffleWorm),
 				],
-				//TODO: This needs to be changed to the rift in the ocean, throwing a truffle worm in it will drag you into it, teleporting to the fishrom map.
+				//TODO: This needs to be changed to the rift in the ocean, throwing a truffle worm in it will drag you into it, teleporting to the fishron map.
 				onSuccess: _ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<FishronMap>())),
 
-			new ConditionCheck("Domain", _ => SubworldSystem.Current is FishronDomain, 1, this.GetLocalization("EnterDomain")),
+			new ConditionCheck("Domain", _ => SubworldSystem.Current is FishronDomain, 1, this.GetLocalization("EnterDomain"))
+			{
+				RecoveryItem = ModContent.ItemType<FishronMap>()
+			},
 			
-			new ConditionCheck("Boss", _ => BossTracker.DownedInDomain<FishronDomain>(NPCID.DukeFishron), 1, this.GetLocalization("Boss")),
+			new ConditionCheck("Boss", _ => BossTracker.DownedInDomain<FishronDomain>(NPCID.DukeFishron), 1, this.GetLocalization("Boss")) 
+			{
+				RecoveryItem = ModContent.ItemType<FishronMap>()
+			},
 	
 			new InteractWithNPC("Finish", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.FishermanNPC.Dialogue.FishermanFishronDialogue4"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.FishermanNPC.Dialogue.FishermanFishronDialogue4"))

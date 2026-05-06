@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Systems.Affixes;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Core.Items;
@@ -37,10 +38,10 @@ public sealed class PoTInstanceItemData : GlobalItem
 		clone.Influence = Influence;
 		clone.ImplicitCount = ImplicitCount;
 		clone.RealLevel = RealLevel;
-		clone.Affixes = Affixes;
+		clone.Affixes = [.. Affixes.Select(a => a.Clone<ItemAffix>())];
 		clone.Corrupted = Corrupted;
 		clone.Cloned = Cloned;
-		clone.NameAffix = NameAffix;
+		clone.NameAffix = new NameAffixes(NameAffix.Prefix, NameAffix.Suffix);
 		return clone;
 	}
 

@@ -1,6 +1,9 @@
-﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
+﻿using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.Systems.ModPlayers.LivesSystem;
+using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.Projectiles.PassiveProjectiles;
+using SubworldLibrary;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -38,6 +41,12 @@ internal class SacrificialSummonsMastery : Passive
 
 				Player.statLife = 100;
 				Player.SetImmuneTimeForAllTypes(120);
+
+				if (SubworldSystem.Current is MappingWorld) // Counteract the default life loss, since this runs after BossDomainLivesPlayer's PreKill
+				{
+					Player.GetModPlayer<BossDomainLivesPlayer>().LivesLost--;
+				}
+
 				return false;
 			}
 
