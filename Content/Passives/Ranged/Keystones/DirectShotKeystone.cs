@@ -13,7 +13,8 @@ public class DirectShotKeystone : Passive
 			    projectile.friendly)
 			{
 				float distanceSquared = player.DistanceSQ(target.Center);
-
+				
+				// Nearby felt way too short for this math, so multiplying by 4 to make it feel more generous.
 				if (distanceSquared <= PoTMod.NearbyDistanceSq * 4) 
 				{
 					float nearbyRatio = 1f - (distanceSquared / (PoTMod.NearbyDistanceSq * 4));
