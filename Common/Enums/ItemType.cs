@@ -38,11 +38,12 @@ public enum ItemType : long
 	Focus = 1 << 27,
 	Summon = 1 << 28,
 	Yoyo = 1 << 29,
-	TypeCount = 30,
+	Accessory = 1 << 30,
+	TypeCount = 31,
 
 	Armor = Helmet | Chestplate | Leggings,
-	Accessories = Ring | Charm | Amulet,
-	Equipment = Armor | Accessories,
+	Accessories = Accessory,
+	Equipment = Armor | Ring | Charm | Amulet | Accessories,
 	Offhand = Shield | Quiver | Talisman | Focus,
 
 	Melee = Sword | Spear | MeleeFlail | WarShield | Battleaxe | Yoyo,

@@ -28,11 +28,6 @@ internal class VanillaItemDataExporter : ModSystem
 			if (item.accessory && !item.vanity)
 			{
 				type = ItemType.Accessories;
-
-				if (item.shieldSlot > 0)
-				{
-					type = ItemType.Shield;
-				}
 			}
 			else if (item.defense > 0 && !item.vanity)
 			{
