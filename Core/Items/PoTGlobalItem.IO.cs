@@ -41,7 +41,7 @@ partial class PoTGlobalItem : GlobalItem
 	{
 		PoTInstanceItemData data = item.GetInstanceData();
 
-		data.ItemType = (ItemType)tag.GetInt("type");
+		data.ItemType = NormalizeLoadedItemType(item, (ItemType)tag.GetInt("type"));
 		data.Rarity = (ItemRarity)tag.GetInt("rarity");
 		data.Influence = (Influence)tag.GetInt("influence");
 
@@ -95,7 +95,7 @@ partial class PoTGlobalItem : GlobalItem
 	{
 		PoTInstanceItemData data = item.GetInstanceData();
 
-		data.ItemType = (ItemType)reader.ReadInt64();
+		data.ItemType = NormalizeLoadedItemType(item, (ItemType)reader.ReadInt64());
 		data.Rarity = (ItemRarity)reader.ReadByte();
 		data.Influence = (Influence)reader.ReadByte();
 		data.ImplicitCount = reader.ReadByte();
@@ -113,5 +113,15 @@ partial class PoTGlobalItem : GlobalItem
 		}
 
 		PostRoll.Invoke(item);
+	}
+
+	private static ItemType NormalizeLoadedItemType(Item item, ItemType itemType)
+	{
+		if (item.ModItem is null && item.accessory && !item.vanity)
+		{
+			return ItemType.Accessories;
+		}
+
+		return itemType;
 	}
 }
