@@ -214,7 +214,7 @@ internal class DropTable
 
 		foreach (ItemDatabase.ItemRecord item in filteredGear)
 		{
-			if (MeetsMinDropItemLevel(item, itemLevel) && additionalCondition.Invoke(item))
+			if (CanDropAtItemLevel(item, itemLevel) && additionalCondition.Invoke(item))
 			{
 				selection.Add(item, ItemDatabase.ApplyDropRateModifiers(item, dropRarityModifier, itemRarityModifier, uniqueModifier));
 			}
@@ -229,9 +229,9 @@ internal class DropTable
 		return weights with { Currency = weights.Currency * MathHelper.Lerp(0.5f, 0.2f, progress) };
 	}
 
-	private static bool MeetsMinDropItemLevel(ItemDatabase.ItemRecord record, int itemLevel)
+	public static bool CanDropAtItemLevel(ItemDatabase.ItemRecord record, int itemLevel)
 	{
 		PoTStaticItemData staticData = record.Item.GetStaticData();
-		return staticData.MinDropItemLevel <= itemLevel;
+		return staticData.CanDropAtItemLevel(itemLevel);
 	}
 }

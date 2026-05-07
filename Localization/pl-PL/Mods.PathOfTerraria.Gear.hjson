@@ -11,6 +11,7 @@ Tooltips: {
 	Tier: Poziom
 	Level: Poziom przedmiotu
 	Defense: Obrona
+	// EnergyShield: Energy Shield
 	Pickaxe: Moc kilofa
 	Axe: Moc topora
 	Hammer: Moc młota

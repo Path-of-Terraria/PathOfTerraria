@@ -105,6 +105,81 @@ Treads: {
 	Tooltip: ""
 }
 
+ApprenticeCap: {
+	// DisplayName: Apprentice Cap
+	// Tooltip: ""
+}
+
+AcolyteHood: {
+	// DisplayName: Acolyte Hood
+	// Tooltip: ""
+}
+
+MysticCirclet: {
+	// DisplayName: Mystic Circlet
+	// Tooltip: ""
+}
+
+SpectralVeil: {
+	// DisplayName: Spectral Veil
+	// Tooltip: ""
+}
+
+EtherealDiadem: {
+	// DisplayName: Ethereal Diadem
+	// Tooltip: ""
+}
+
+ApprenticeRobe: {
+	// DisplayName: Apprentice Robe
+	// Tooltip: ""
+}
+
+AcolyteVestment: {
+	// DisplayName: Acolyte Vestment
+	// Tooltip: ""
+}
+
+MysticGarb: {
+	// DisplayName: Mystic Garb
+	// Tooltip: ""
+}
+
+SpectralShroud: {
+	// DisplayName: Spectral Shroud
+	// Tooltip: ""
+}
+
+EtherealMantle: {
+	// DisplayName: Ethereal Mantle
+	// Tooltip: ""
+}
+
+ApprenticeSlippers: {
+	// DisplayName: Apprentice Slippers
+	// Tooltip: ""
+}
+
+AcolyteSandals: {
+	// DisplayName: Acolyte Sandals
+	// Tooltip: ""
+}
+
+MysticBoots: {
+	// DisplayName: Mystic Boots
+	// Tooltip: ""
+}
+
+SpectralStriders: {
+	// DisplayName: Spectral Striders
+	// Tooltip: ""
+}
+
+EtherealGreaves: {
+	// DisplayName: Ethereal Greaves
+	// Tooltip: ""
+}
+
 Codex: {
 	DisplayName: Кодекс
 	Tooltip: ""

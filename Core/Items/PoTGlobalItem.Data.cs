@@ -116,6 +116,31 @@ public sealed class PoTStaticItemData
 	public int MinDropItemLevel { get; set; }
 
 	/// <summary>
+	///		Optional bounded item-level range this item can drop in. Items without this range are not bounded by it.
+	/// </summary>
+	public (int Min, int Max)? DropItemLevelRange { get; set; }
+
+	public void SetDropItemLevelRange(int min, int max)
+	{
+		if (min > max)
+		{
+			throw new ArgumentException("Drop item level range minimum cannot be greater than maximum.", nameof(min));
+		}
+
+		DropItemLevelRange = (min, max);
+	}
+
+	public bool CanDropAtItemLevel(int itemLevel)
+	{
+		if (MinDropItemLevel > itemLevel)
+		{
+			return false;
+		}
+
+		return DropItemLevelRange is not { } range || itemLevel >= range.Min && itemLevel <= range.Max;
+	}
+
+	/// <summary>
 	///		The item's description.
 	/// </summary>
 	public LocalizedText Description { get; set; } = LocalizedText.Empty;

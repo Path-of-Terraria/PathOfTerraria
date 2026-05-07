@@ -5,6 +5,7 @@ using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Items;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.DisableBuilding;
+using PathOfTerraria.Common.Systems.EnergyShield;
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Content.Items.Consumables.Maps.ExplorableMaps;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
@@ -509,6 +510,16 @@ public sealed partial class ItemTooltips : GlobalItem
 		{
 			var def = new TooltipLine(Mod, "Defense", $"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"+{item.defense} {Localize("Defense")}")}");
 			AddNewTooltipLine(item, tooltips, def);
+		}
+
+		if (item.ModItem is IEnergyShieldItem)
+		{
+			int energyShield = EnergyShieldItem.GetLocalEnergyShield(item);
+			if (energyShield > 0)
+			{
+				var energyShieldLine = new TooltipLine(Mod, "EnergyShield", $"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"{energyShield} {Localize("EnergyShield")}")}");
+				AddNewTooltipLine(item, tooltips, energyShieldLine);
+			}
 		}
 
 		if (item.pick > 0)

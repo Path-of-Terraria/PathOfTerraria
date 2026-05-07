@@ -11,6 +11,7 @@ Tooltips: {
 	Tier: Тир:
 	Level: Уровень предмета:
 	Defense: Защита
+	// EnergyShield: Energy Shield
 	Pickaxe: Мощность кирки
 	Axe: Мощность топора
 	Hammer: Мощность молота

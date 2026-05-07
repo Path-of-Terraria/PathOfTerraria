@@ -42,6 +42,7 @@ StatUI: {
 	Experience: Doświadczenie
 	// DefenseHeader: Defense
 	Life: Życie
+	// EnergyShield: Energy Shield
 	// LifeRegen: Life Regen/s
 	Mana: Mana
 	// ManaRegen: Mana Regen/s

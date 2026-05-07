@@ -3,6 +3,7 @@ using PathOfTerraria.Common.Systems.BlockSystem;
 using PathOfTerraria.Common.Classing;
 using PathOfTerraria.Common.Systems.Charges;
 using PathOfTerraria.Common.Systems.ElementalDamage;
+using PathOfTerraria.Common.Systems.EnergyShield;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
@@ -149,6 +150,12 @@ internal class PlayerStatInnerPanel : SmartUiElement
 		{
 			float lifePercent = Main.LocalPlayer.statLife / Main.LocalPlayer.statLifeMax2 * 100;
 			return $"{Main.LocalPlayer.statLife}/{Main.LocalPlayer.statLifeMax2} ({lifePercent:#0.##}%)";
+		}));
+		list.Add(new PlayerStatUI(Localize("EnergyShield"), player =>
+		{
+			EnergyShieldPlayer energyShield = Main.LocalPlayer.GetModPlayer<EnergyShieldPlayer>();
+			float energyShieldPercent = energyShield.MaximumEnergyShield <= 0 ? 0 : energyShield.CurrentEnergyShield / energyShield.MaximumEnergyShield * 100;
+			return $"{energyShield.CurrentEnergyShieldRounded}/{energyShield.MaximumEnergyShield} ({energyShieldPercent:#0.##}%)";
 		}));
 		list.Add(new PlayerStatUI(Localize("LifeRegen"), player => $"{Main.LocalPlayer.lifeRegen}"));
 		list.Add(new PlayerStatUI(Localize("Mana"), player =>

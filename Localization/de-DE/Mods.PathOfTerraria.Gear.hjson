@@ -11,6 +11,7 @@ Tooltips: {
 	Tier: Stufe
 	Level: Level
 	Defense: Verteidigung
+	// EnergyShield: Energy Shield
 	Pickaxe: Spitzhacken Stärke
 	Axe: Axt Stärke
 	Hammer: Hammer Stärke
