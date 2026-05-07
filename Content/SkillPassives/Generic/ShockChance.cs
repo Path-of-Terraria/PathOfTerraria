@@ -5,8 +5,8 @@ namespace PathOfTerraria.Content.SkillPassives.Generic;
 
 internal class ShockChance : SkillPassive
 {
-	public const float Chance = 0.02f;
-	public override object[] TooltipArguments => ["5"];
+	public const float Chance = 0.05f;
+	public override object[] TooltipArguments => [(Chance * 100).ToString()];
 
 	public ShockChance(SkillTree tree) : base(tree)
 	{
