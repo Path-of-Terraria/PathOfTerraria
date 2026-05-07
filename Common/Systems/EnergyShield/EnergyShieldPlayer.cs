@@ -2,6 +2,7 @@ using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Core.Items;
+using Terraria.Audio;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.EnergyShield;
@@ -14,6 +15,7 @@ internal sealed class EnergyShieldPlayer : ModPlayer
 {
 	private const int BaseRechargeDelayTicks = 4 * 60;
 	private const float BaseRechargeRatePerSecond = 0.33f;
+	public const int ShatterDurationTicks = 30;
 
 	private float armorEnergyShield;
 	private float globalFlatEnergyShield;
@@ -21,10 +23,15 @@ internal sealed class EnergyShieldPlayer : ModPlayer
 	private float rechargeRateIncrease;
 	private float fasterRechargeStart;
 	private int ticksSinceDamage = BaseRechargeDelayTicks;
+	private int shatterTicksRemaining;
 
 	public int MaximumEnergyShield { get; private set; }
 	public float CurrentEnergyShield { get; private set; }
 	public int CurrentEnergyShieldRounded => CurrentEnergyShield <= 0 ? 0 : (int)MathF.Ceiling(CurrentEnergyShield);
+
+	public float ShieldFraction => MaximumEnergyShield <= 0 ? 0f : MathHelper.Clamp(CurrentEnergyShield / MaximumEnergyShield, 0f, 1f);
+	public bool IsShatterPlaying => shatterTicksRemaining > 0;
+	public float ShatterProgress => 1f - shatterTicksRemaining / (float)ShatterDurationTicks;
 
 	public override void ResetEffects()
 	{
@@ -78,6 +85,11 @@ internal sealed class EnergyShieldPlayer : ModPlayer
 
 	public override void PostUpdateEquips()
 	{
+		if (shatterTicksRemaining > 0)
+		{
+			shatterTicksRemaining--;
+		}
+
 		int oldMax = MaximumEnergyShield;
 		MaximumEnergyShield = Math.Max(0, (int)MathF.Round((armorEnergyShield + globalFlatEnergyShield) * (1 + globalIncreasedEnergyShield / 100f)));
 
@@ -125,6 +137,13 @@ internal sealed class EnergyShieldPlayer : ModPlayer
 		Player.AddImmuneTime(ImmunityCooldownID.General, Player.longInvince ? 80 : 40);
 		Player.immune = true;
 		Player.immuneNoBlink = false;
+
+		if (CurrentEnergyShield <= 0)
+		{
+			// TODO(art): swap for a dedicated shield-break SFX once authored.
+			SoundEngine.PlaySound(SoundID.Item27, Player.Center);
+		}
+
 		return true;
 	}
 
@@ -160,12 +179,18 @@ internal sealed class EnergyShieldPlayer : ModPlayer
 
 	private void AbsorbEnergyShield(int damage)
 	{
+		bool wasUp = CurrentEnergyShield > 0;
 		CurrentEnergyShield = Math.Max(0, CurrentEnergyShield - damage);
 		ResetRechargeDelay();
 
 		Rectangle textArea = Player.Hitbox;
 		textArea.Offset(0, -36);
 		CombatText.NewText(textArea, new Color(92, 210, 255), damage);
+
+		if (wasUp && CurrentEnergyShield <= 0)
+		{
+			shatterTicksRemaining = ShatterDurationTicks;
+		}
 	}
 
 	private void ResetRechargeDelay()
