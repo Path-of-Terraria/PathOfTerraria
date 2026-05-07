@@ -329,7 +329,7 @@ public class Nova : Skill
 				target.AddBuff(BuffID.OnFire, 8 * 60);
 			}
 
-			if (Skill.Tree.TryGetNode(out ShockChance shock) && shock.Allocated && Main.rand.NextFloat() < 0.02f * shock.Level)
+			if (Skill.Tree.TryGetNode(out ShockChance shock) && shock.Allocated && Main.rand.NextFloat() < ShockChance.Chance * shock.Level)
 			{
 				ShockDebuff.Apply(Main.player[Projectile.owner], target, damageDone);
 			}
