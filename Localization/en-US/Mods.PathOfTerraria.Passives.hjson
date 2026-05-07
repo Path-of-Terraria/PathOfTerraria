@@ -116,7 +116,7 @@ StrongerChillPassive: {
 
 ShockChancePassive: {
 	Name: Added Shock Chance
-	Tooltip: 5% chance to apply Shock
+	Tooltip: {0}% chance to apply Shock
 }
 
 IncreasedMinionDamagePassive: {
