@@ -412,6 +412,9 @@ Magic.Name: Магический
 Ranged.Name: Дальний
 Melee.Name: Рукопашный
 Accessory.Name: Аксессуар
+// Charm.Name: Accessory
+// Wings.Name: Wings
+// JumpAccessories.Name: Jump Accessory
 
 Ring: {
 	Name: Кольцо

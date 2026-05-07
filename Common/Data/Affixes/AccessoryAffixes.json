@@ -1,0 +1,177 @@
+[
+	{
+		"affixType": "MiningSpeedAffix",
+		"equipTypes": "Accessories Wings JumpAccessories",
+		"round": true,
+		"tiers": [
+			{ "minValue": 2, "maxValue": 3, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 3, "maxValue": 4, "minimumLevel": 21, "weight": 1 },
+			{ "minValue": 4, "maxValue": 6, "minimumLevel": 52, "weight": 1 },
+			{ "minValue": 6, "maxValue": 8, "minimumLevel": 70, "weight": 1 }
+		]
+	},
+	{
+		"affixType": "FishingPowerAffix",
+		"equipTypes": "Accessories Wings JumpAccessories",
+		"round": true,
+		"tiers": [
+			{ "minValue": 2, "maxValue": 3, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 3, "maxValue": 5, "minimumLevel": 21, "weight": 1 },
+			{ "minValue": 5, "maxValue": 7, "minimumLevel": 52, "weight": 1 },
+			{ "minValue": 7, "maxValue": 10, "minimumLevel": 70, "weight": 1 }
+		]
+	},
+	{
+		"affixType": "BaitConservationAffix",
+		"equipTypes": "Accessories Wings JumpAccessories",
+		"round": true,
+		"tiers": [
+			{ "minValue": 3, "maxValue": 4, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 4, "maxValue": 6, "minimumLevel": 21, "weight": 1 },
+			{ "minValue": 6, "maxValue": 8, "minimumLevel": 52, "weight": 1 },
+			{ "minValue": 8, "maxValue": 10, "minimumLevel": 70, "weight": 1 }
+		]
+	},
+	{
+		"affixType": "TilePlacementSpeedAffix",
+		"equipTypes": "Accessories Wings JumpAccessories",
+		"round": true,
+		"tiers": [
+			{ "minValue": 3, "maxValue": 4, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 4, "maxValue": 6, "minimumLevel": 21, "weight": 1 },
+			{ "minValue": 6, "maxValue": 8, "minimumLevel": 52, "weight": 1 },
+			{ "minValue": 8, "maxValue": 10, "minimumLevel": 70, "weight": 1 }
+		]
+	},
+	{
+		"affixType": "WallPlacementSpeedAffix",
+		"equipTypes": "Accessories Wings JumpAccessories",
+		"round": true,
+		"tiers": [
+			{ "minValue": 3, "maxValue": 4, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 4, "maxValue": 6, "minimumLevel": 21, "weight": 1 },
+			{ "minValue": 6, "maxValue": 8, "minimumLevel": 52, "weight": 1 },
+			{ "minValue": 8, "maxValue": 10, "minimumLevel": 70, "weight": 1 }
+		]
+	},
+	{
+		"affixType": "ItemPickupRangeAffix",
+		"equipTypes": "Accessories Wings JumpAccessories",
+		"tiers": [
+			{ "minValue": 0.5, "maxValue": 0.75, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 0.75, "maxValue": 1, "minimumLevel": 21, "weight": 1 },
+			{ "minValue": 1, "maxValue": 1.5, "minimumLevel": 52, "weight": 1 },
+			{ "minValue": 1.5, "maxValue": 2, "minimumLevel": 70, "weight": 1 }
+		]
+	},
+	{
+		"affixType": "CoinPickupRangeAffix",
+		"equipTypes": "Accessories Wings JumpAccessories",
+		"round": true,
+		"tiers": [
+			{ "minValue": 1, "maxValue": 2, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 2, "maxValue": 3, "minimumLevel": 21, "weight": 1 },
+			{ "minValue": 3, "maxValue": 4, "minimumLevel": 52, "weight": 1 },
+			{ "minValue": 4, "maxValue": 5, "minimumLevel": 70, "weight": 1 }
+		]
+	},
+	{
+		"affixType": "PotionCooldownReductionAffix",
+		"equipTypes": "Accessories Wings JumpAccessories",
+		"round": true,
+		"tiers": [
+			{ "minValue": 2, "maxValue": 3, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 3, "maxValue": 4, "minimumLevel": 21, "weight": 1 },
+			{ "minValue": 4, "maxValue": 5, "minimumLevel": 52, "weight": 1 },
+			{ "minValue": 5, "maxValue": 6, "minimumLevel": 70, "weight": 1 }
+		]
+	},
+	{
+		"affixType": "BuffDurationAffix",
+		"equipTypes": "Accessories Wings JumpAccessories",
+		"round": true,
+		"tiers": [
+			{ "minValue": 3, "maxValue": 4, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 4, "maxValue": 6, "minimumLevel": 21, "weight": 1 },
+			{ "minValue": 6, "maxValue": 8, "minimumLevel": 52, "weight": 1 },
+			{ "minValue": 8, "maxValue": 10, "minimumLevel": 70, "weight": 1 }
+		]
+	},
+	{
+		"affixType": "BreathCapacityAffix",
+		"equipTypes": "Accessories Wings JumpAccessories",
+		"round": true,
+		"tiers": [
+			{ "minValue": 5, "maxValue": 6, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 6, "maxValue": 9, "minimumLevel": 21, "weight": 1 },
+			{ "minValue": 9, "maxValue": 12, "minimumLevel": 52, "weight": 1 },
+			{ "minValue": 12, "maxValue": 15, "minimumLevel": 70, "weight": 1 }
+		]
+	},
+	{
+		"affixType": "SwimSpeedAffix",
+		"equipTypes": "Accessories Wings JumpAccessories",
+		"round": true,
+		"tiers": [
+			{ "minValue": 3, "maxValue": 4, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 4, "maxValue": 6, "minimumLevel": 21, "weight": 1 },
+			{ "minValue": 6, "maxValue": 8, "minimumLevel": 52, "weight": 1 },
+			{ "minValue": 8, "maxValue": 10, "minimumLevel": 70, "weight": 1 }
+		]
+	},
+	{
+		"affixType": "SafeFallDistanceAffix",
+		"equipTypes": "Accessories Wings JumpAccessories",
+		"round": true,
+		"tiers": [
+			{ "minValue": 2, "maxValue": 3, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 3, "maxValue": 5, "minimumLevel": 21, "weight": 1 },
+			{ "minValue": 5, "maxValue": 7, "minimumLevel": 52, "weight": 1 },
+			{ "minValue": 7, "maxValue": 10, "minimumLevel": 70, "weight": 1 }
+		]
+	},
+	{
+		"affixType": "JumpHeightAffix",
+		"equipTypes": "JumpAccessories",
+		"round": true,
+		"tiers": [
+			{ "minValue": 3, "maxValue": 4, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 4, "maxValue": 6, "minimumLevel": 21, "weight": 1 },
+			{ "minValue": 6, "maxValue": 8, "minimumLevel": 52, "weight": 1 },
+			{ "minValue": 8, "maxValue": 10, "minimumLevel": 70, "weight": 1 }
+		]
+	},
+	{
+		"affixType": "JumpSpeedAffix",
+		"equipTypes": "JumpAccessories",
+		"round": true,
+		"tiers": [
+			{ "minValue": 2, "maxValue": 3, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 3, "maxValue": 4, "minimumLevel": 21, "weight": 1 },
+			{ "minValue": 4, "maxValue": 5, "minimumLevel": 52, "weight": 1 },
+			{ "minValue": 5, "maxValue": 6, "minimumLevel": 70, "weight": 1 }
+		]
+	},
+	{
+		"affixType": "WingFlightTimeAffix",
+		"equipTypes": "Wings",
+		"round": true,
+		"tiers": [
+			{ "minValue": 3, "maxValue": 4, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 4, "maxValue": 6, "minimumLevel": 21, "weight": 1 },
+			{ "minValue": 6, "maxValue": 8, "minimumLevel": 52, "weight": 1 },
+			{ "minValue": 8, "maxValue": 10, "minimumLevel": 70, "weight": 1 }
+		]
+	},
+	{
+		"affixType": "WingGlideControlAffix",
+		"equipTypes": "Wings",
+		"round": true,
+		"tiers": [
+			{ "minValue": 3, "maxValue": 4, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 4, "maxValue": 6, "minimumLevel": 21, "weight": 1 },
+			{ "minValue": 6, "maxValue": 8, "minimumLevel": 52, "weight": 1 },
+			{ "minValue": 8, "maxValue": 10, "minimumLevel": 70, "weight": 1 }
+		]
+	}
+]

@@ -412,6 +412,9 @@ Talisman: {
 // Ranged.Name: Ranged
 // Melee.Name: Melee
 // Accessory.Name: Accessory
+// Charm.Name: Accessory
+// Wings.Name: Wings
+// JumpAccessories.Name: Jump Accessory
 
 Ring: {
 	// Name: Ring
