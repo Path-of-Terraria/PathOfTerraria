@@ -201,7 +201,7 @@ internal class PlayerStatInnerPanel : SmartUiElement
 		
 		// Gathering
 		list.Add(new PlayerStatUI(Localize("GatheringHeader"), player => "", isHeader: true));
-		list.Add(new PlayerStatUI(Localize("MiningSpeed"), player => FormatPercentBonus(player.pickSpeed - 1f)));
+		list.Add(new PlayerStatUI(Localize("MiningSpeed"), player => FormatPercentBonus(1f / player.pickSpeed - 1f)));
 		list.Add(new PlayerStatUI(Localize("FishingPower"), player => player.fishingSkill.ToString()));
 		list.Add(new PlayerStatUI(Localize("BaitConservation"), player => FormatPercent(player.GetModPlayer<AccessoryAffixPlayer>().BaitSaveChance)));
 		list.Add(new PlayerStatUI(Localize("TilePlacementSpeed"), player => FormatPercentBonus(player.tileSpeed - 1f)));

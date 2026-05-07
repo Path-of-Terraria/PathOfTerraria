@@ -21,7 +21,7 @@ internal class MiningSpeedAffix : ItemAffix
 
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		player.pickSpeed *= 1 + Value / 100f;
+		player.pickSpeed *= MathHelper.Clamp(1f - Value / 100f, 0.1f, 1f);
 	}
 }
 
@@ -45,7 +45,7 @@ internal class TilePlacementSpeedAffix : RoundedAccessoryAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		player.tileSpeed *= 1 + Value / 100f;
+		player.tileSpeed += Value / 100f;
 	}
 }
 
@@ -53,7 +53,7 @@ internal class WallPlacementSpeedAffix : RoundedAccessoryAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		player.wallSpeed *= 1 + Value / 100f;
+		player.wallSpeed += Value / 100f;
 	}
 }
 
@@ -79,6 +79,11 @@ internal class PotionCooldownReductionAffix : RoundedAccessoryAffix
 	{
 		float multiplier = MathHelper.Clamp(1f - Value / 100f, 0.1f, 1f);
 		player?.GetModPlayer<AccessoryAffixPlayer>().AddPotionCooldownReduction(Value);
+		if (player is null)
+		{
+			return;
+		}
+
 		PotionPlayer potionPlayer = player.GetModPlayer<PotionPlayer>();
 		potionPlayer.HealDelay = (int)Math.Round(potionPlayer.HealDelay * multiplier);
 		potionPlayer.ManaDelay = (int)Math.Round(potionPlayer.ManaDelay * multiplier);
