@@ -897,9 +897,11 @@ internal class MapDeviceEntity : ModTileEntity
 			return false;
 		}
 
-		if (StoredMap.ModItem is Map map)
+		Subworld? destination = StoredMap.ModItem is Map map ? map.GetDestination() : null;
+
+		if (destination is not null)
 		{
-			ResetPersistentMapInfo(map.GetDestination().FullName);
+			ResetPersistentMapInfo(destination.FullName);
 		}
 
 		// The map is destroyed if the portal is ever closed.
@@ -908,7 +910,7 @@ internal class MapDeviceEntity : ModTileEntity
 		PortalUsesLeft = 0;
 		Injection = null;
 		MappingWorld.ClearActiveMapDevice();
-		MappingWorld.DeleteSavedSubworld();
+		MappingWorld.DeleteSavedSubworld(destination);
 
 		// Broadcast the interaction.
 		if (Main.netMode == NetmodeID.Server)
