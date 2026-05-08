@@ -21,7 +21,8 @@ public abstract class ItemAffix : Affix
 	public virtual void ApplyTooltips(Player player, Item item, AffixTooltips handler)
 	{
 		PoTInstanceItemData instanceData = item.GetInstanceData();
-		handler.AddOrModify(GetType(), CreateDefaultTooltip(player, instanceData.ItemType, instanceData.RealLevel));
+		ItemType itemType = item.ResolveToSingleType(instanceData.ItemType);
+		handler.AddOrModify(GetType(), CreateDefaultTooltip(player, itemType, instanceData.RealLevel));
 	}
 	/// <inheritdoc cref="ApplyTooltips(Player, Item, AffixTooltips)"/>
 	public virtual void ApplyTooltips(Player player, ItemType itemType, int itemLevel, AffixTooltips handler)
@@ -65,7 +66,8 @@ public abstract class ItemAffix : Affix
 	protected virtual AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
 	{
 		int level = GetItemLevel.Invoke(item);
-		return CreateDefaultTooltip(player, item);
+		ItemType itemType = item.ResolveToSingleType(item.GetInstanceData().ItemType);
+		return CreateDefaultTooltip(player, itemType, level);
 	}
 
 	/// <inheritdoc cref="AffixRegistry.GetItemData(Type)"/>

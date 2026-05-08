@@ -7,6 +7,6 @@ internal class IncreasedSkillDamagePassive : Passive
 {
 	public override void BuffPlayer(Player player)
 	{
-		player.GetModPlayer<SkillCombatPlayer>().GlobalBuff.Damage += 1 + Value / 100f;
+		player.GetModPlayer<SkillCombatPlayer>().GlobalBuff.Damage += Value / 100f;
 	}
 }

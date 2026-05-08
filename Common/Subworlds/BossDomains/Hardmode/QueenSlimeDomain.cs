@@ -147,7 +147,7 @@ internal class QueenSlimeDomain : BossDomainSubworld
 						ItemDatabase.ItemRecord drop = drops[k];
 						if (drop.Item != null)
 						{
-							chest.item[k] = new Item(drop.ItemId, drop.Item.stack);
+							chest.item[k] = MapChestLoot.BuildChestItem(drop);
 						}
 					}
 					else

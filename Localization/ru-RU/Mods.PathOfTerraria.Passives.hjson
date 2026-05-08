@@ -116,7 +116,7 @@ StrongerChillPassive: {
 
 ShockChancePassive: {
 	Name: Энергетическое поле
-	Tooltip: Добавляет дополнительный 5% шанс нанести врагу шок за уровень.
+	Tooltip: Добавляет дополнительный {0}% шанс нанести врагу шок за уровень.
 }
 
 IncreasedMinionDamagePassive: {

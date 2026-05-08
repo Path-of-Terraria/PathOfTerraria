@@ -3,6 +3,7 @@ using PathOfTerraria.Common.Systems.BlockSystem;
 using PathOfTerraria.Common.Classing;
 using PathOfTerraria.Common.Systems.Charges;
 using PathOfTerraria.Common.Systems.ElementalDamage;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
@@ -198,10 +199,34 @@ internal class PlayerStatInnerPanel : SmartUiElement
 		list.Add(new PlayerStatUI(Localize("MaxFocusCharges"), player => $"{player.GetModPlayer<FocusChargePlayer>().MaxCharges:#0.##}"));
 		list.Add(new PlayerStatUI(Localize("MaxAegisCharges"), player => $"{player.GetModPlayer<AegisChargePlayer>().MaxCharges:#0.##}"));
 		
-		// Misc
-		list.Add(new PlayerStatUI(Localize("MiscHeader"), player => "", isHeader: true));
-		list.Add(new PlayerStatUI(Localize("MaxMinions"), player => $"{player.maxMinions}"));
-		list.Add(new PlayerStatUI(Localize("AmmoConsumptionChance"), player => $"{player.GetModPlayer<AmmoConsumptionPlayer>().AmmoSaveChance * 100:#0.##}%"));
+		// Gathering
+		list.Add(new PlayerStatUI(Localize("GatheringHeader"), player => "", isHeader: true));
+		list.Add(new PlayerStatUI(Localize("MiningSpeed"), player => FormatPercentBonus(1f / player.pickSpeed - 1f)));
+		list.Add(new PlayerStatUI(Localize("FishingPower"), player => player.fishingSkill.ToString()));
+		list.Add(new PlayerStatUI(Localize("BaitConservation"), player => FormatPercent(player.GetModPlayer<AccessoryAffixPlayer>().BaitSaveChance)));
+		list.Add(new PlayerStatUI(Localize("TilePlacementSpeed"), player => FormatPercentBonus(player.tileSpeed - 1f)));
+		list.Add(new PlayerStatUI(Localize("WallPlacementSpeed"), player => FormatPercentBonus(player.wallSpeed - 1f)));
+		list.Add(new PlayerStatUI(Localize("ItemPickupRange"), player => FormatTiles(player.GetModPlayer<AccessoryAffixPlayer>().ItemPickupRangeTiles)));
+		list.Add(new PlayerStatUI(Localize("CoinPickupRange"), player => FormatTiles(player.GetModPlayer<AccessoryAffixPlayer>().CoinPickupRangeTiles)));
+
+		// Mobility
+		list.Add(new PlayerStatUI(Localize("MobilityHeader"), player => "", isHeader: true));
+		list.Add(new PlayerStatUI(Localize("JumpHeight"), player => FormatPercentBonus(player.GetModPlayer<AccessoryAffixPlayer>().JumpHeight / 100f)));
+		list.Add(new PlayerStatUI(Localize("JumpSpeed"), player => FormatPercentBonus(player.jumpSpeedBoost)));
+		list.Add(new PlayerStatUI(Localize("WingFlightTime"), player =>
+		{
+			AccessoryAffixPlayer accessoryPlayer = player.GetModPlayer<AccessoryAffixPlayer>();
+			return $"{FormatPercentBonus(accessoryPlayer.WingFlightTime / 100f)} ({player.wingTimeMax / 60f:#0.##}s)";
+		}));
+		list.Add(new PlayerStatUI(Localize("WingGlideControl"), player => FormatPercent(player.GetModPlayer<AccessoryAffixPlayer>().WingGlideFallSpeedReduction)));
+		list.Add(new PlayerStatUI(Localize("SwimSpeed"), player => FormatPercentBonus(player.GetModPlayer<AccessoryAffixPlayer>().SwimSpeed / 100f)));
+		list.Add(new PlayerStatUI(Localize("BreathCapacity"), player => FormatPercentBonus(player.GetModPlayer<AccessoryAffixPlayer>().BreathCapacity / 100f)));
+		list.Add(new PlayerStatUI(Localize("SafeFallDistance"), player => FormatTiles(player.GetModPlayer<AccessoryAffixPlayer>().SafeFallDistance)));
+
+		// Consumables
+		list.Add(new PlayerStatUI(Localize("ConsumablesHeader"), player => "", isHeader: true));
+		list.Add(new PlayerStatUI(Localize("PotionCooldownReduction"), player => FormatPercent(player.GetModPlayer<AccessoryAffixPlayer>().PotionCooldownReduction)));
+		list.Add(new PlayerStatUI(Localize("BuffDuration"), player => FormatPercentBonus(player.GetModPlayer<AccessoryAffixPlayer>().BuffDuration / 100f)));
 
 		list.Add(new PlayerStatUI(Localize("HealthPotions"), player =>
 		{
@@ -214,7 +239,10 @@ internal class PlayerStatInnerPanel : SmartUiElement
 			return $"{potionPlayer.ManaLeft}/{potionPlayer.MaxMana}";
 		}));
 
-		list.Add(new PlayerStatUI(Localize("FishingPower"), player => player.fishingSkill.ToString()));
+		// Misc
+		list.Add(new PlayerStatUI(Localize("MiscHeader"), player => "", isHeader: true));
+		list.Add(new PlayerStatUI(Localize("MaxMinions"), player => $"{player.maxMinions}"));
+		list.Add(new PlayerStatUI(Localize("AmmoConsumptionChance"), player => $"{player.GetModPlayer<AmmoConsumptionPlayer>().AmmoSaveChance * 100:#0.##}%"));
 
 		static LocalizedText Localize(string type)
 		{
@@ -224,6 +252,21 @@ internal class PlayerStatInnerPanel : SmartUiElement
 		static LocalizedText GetHelp(string type)
 		{
 			return Language.GetText($"Mods.{PoTMod.ModName}.UI.StatUI.Help." + type);
+		}
+
+		static string FormatPercent(float value)
+		{
+			return $"{value:#0.##}%";
+		}
+
+		static string FormatPercentBonus(float value)
+		{
+			return $"{value * 100f:#0.##}%";
+		}
+
+		static string FormatTiles(float value)
+		{
+			return $"{value:#0.##}";
 		}
 	}
 
