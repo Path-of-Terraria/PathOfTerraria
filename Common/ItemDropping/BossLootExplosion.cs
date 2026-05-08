@@ -118,6 +118,9 @@ internal sealed class BossLootExplosion : GlobalNPC
 		return SubworldSystem.Current is BossDomainSubworld or MappingWorld;
 	}
 
+	private static readonly int[] EaterOfWorldsSegments = [NPCID.EaterofWorldsHead, NPCID.EaterofWorldsBody, NPCID.EaterofWorldsTail];
+	private static readonly int[] DestroyerSegments = [NPCID.TheDestroyer, NPCID.TheDestroyerBody, NPCID.TheDestroyerTail];
+
 	private static bool ShouldCountBossKill(NPC npc)
 	{
 		return npc.type switch
@@ -125,8 +128,35 @@ internal sealed class BossLootExplosion : GlobalNPC
 			NPCID.Retinazer => !NPC.AnyNPCs(NPCID.Spazmatism),
 			NPCID.Spazmatism => !NPC.AnyNPCs(NPCID.Retinazer),
 			NPCID.GolemFistLeft or NPCID.GolemFistRight or NPCID.GolemHead or NPCID.GolemHeadFree => false,
+			NPCID.EaterofWorldsHead or NPCID.EaterofWorldsBody or NPCID.EaterofWorldsTail => IsLastWormSegment(npc, EaterOfWorldsSegments),
+			NPCID.TheDestroyer or NPCID.TheDestroyerBody or NPCID.TheDestroyerTail => IsLastWormSegment(npc, DestroyerSegments),
 			_ => true,
 		};
+	}
+
+	// Worm bosses are made of many segment NPCs that each fire OnKill. Only burst on the final segment so EoW/Destroyer
+	// don't drop a segment-count's worth of loot. The dying NPC may still appear in Main.npc here, so exclude by whoAmI.
+	private static bool IsLastWormSegment(NPC dying, int[] segmentTypes)
+	{
+		for (int i = 0; i < Main.maxNPCs; i++)
+		{
+			NPC other = Main.npc[i];
+
+			if (!other.active || other.whoAmI == dying.whoAmI)
+			{
+				continue;
+			}
+
+			for (int j = 0; j < segmentTypes.Length; j++)
+			{
+				if (other.type == segmentTypes[j])
+				{
+					return false;
+				}
+			}
+		}
+
+		return true;
 	}
 
 	private static int ComputeBurstCount(int areaLevel)
