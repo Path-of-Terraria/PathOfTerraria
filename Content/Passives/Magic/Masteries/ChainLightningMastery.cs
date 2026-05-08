@@ -17,7 +17,7 @@ internal class ChainLightningMastery : Passive
 
 			PassiveTreePlayer treePlayer = Player.GetModPlayer<PassiveTreePlayer>();
 
-			if (ElementalPlayer.HasElementType(ElementType.Lightning, con, other, item) && treePlayer.TryGetCumulativeValue<ChainLightningMastery>(out float value) && Main.rand.NextFloat() < value / 100f)
+			if (ElementalPlayer.DealsElementalDamage(ElementType.Lightning, con, other, item!) && treePlayer.TryGetCumulativeValue<ChainLightningMastery>(out float value) && Main.rand.NextFloat() < value / 100f)
 			{
 				Terraria.DataStructures.IEntitySource src = Player.GetSource_OnHit(target);
 				Projectile.NewProjectile(src, target.Center, Vector2.Zero, ModContent.ProjectileType<ChainLightning>(), finalDamage, 0, Player.whoAmI, target.whoAmI);

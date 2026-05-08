@@ -329,7 +329,7 @@ public class ElementalPlayer : ModPlayer
 	/// <summary>
 	/// Checks if the current hit deals any damage of the specified <see cref="ElementType"/>.<br/>
 	/// </summary>
-	internal static bool HasElementType(ElementType type, ElementalContainer container, ElementalContainer other, Item? item)
+	internal static bool DealsElementalDamage(ElementType type, ElementalContainer container, ElementalContainer other, Item item)
 	{
 		ElementInstance ele = container[type];
 

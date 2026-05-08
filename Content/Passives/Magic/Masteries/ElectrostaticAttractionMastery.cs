@@ -34,7 +34,7 @@ internal class ElectrostaticAttractionMastery : Passive
 				return;
 			}
 
-			if (ElementalPlayer.HasElementType(ElementType.Lightning, con, other, item) && Player.GetModPlayer<PassiveTreePlayer>().HasNode<ElectrostaticAttractionMastery>())
+			if (ElementalPlayer.DealsElementalDamage(ElementType.Lightning, con, other, item!) && Player.GetModPlayer<PassiveTreePlayer>().HasNode<ElectrostaticAttractionMastery>())
 			{
 				Player.AddBuff(ModContent.BuffType<ElectrostaticBuff>(), Duration);
 				stacks.Add(Duration);

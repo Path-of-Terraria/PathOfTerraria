@@ -17,7 +17,7 @@ internal class BurstingFuryMastery : Passive
 				return;
 			}
 
-			if (ElementalPlayer.HasElementType(ElementType.Fire, con, other, item) && finalDamage > 0 && target.life <= 0 && Player.GetModPlayer<PassiveTreePlayer>().HasNode<BurstingFuryMastery>())
+			if (ElementalPlayer.DealsElementalDamage(ElementType.Fire, con, other, item!) && finalDamage > 0 && target.life <= 0 && Player.GetModPlayer<PassiveTreePlayer>().HasNode<BurstingFuryMastery>())
 			{
 				int damage = (int)(finalDamage * Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<AfterburnMastery>() / 100f);
 				int type = ModContent.ProjectileType<Flameburst>();
