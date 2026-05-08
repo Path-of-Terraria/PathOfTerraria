@@ -977,6 +977,9 @@
 		"connections": [
 			{
 				"referenceId": 242
+			},
+			{
+				"referenceId": 1445
 			}
 		],
 		"position": {
@@ -998,6 +1001,12 @@
 			},
 			{
 				"referenceId": 1151
+			},
+			{
+				"referenceId": 1467
+			},
+			{
+				"referenceId": 1466
 			}
 		],
 		"position": {
@@ -1014,7 +1023,14 @@
 			"x": 292,
 			"y": 1451
 		},
-		"connections": []
+		"connections": [
+			{
+				"referenceId": 1449
+			},
+			{
+				"referenceId": 1473
+			}
+		]
 	},
 	{
 		"internalIdentifier": "AddedDexterityPassive",
@@ -1030,8 +1046,8 @@
 			}
 		],
 		"position": {
-			"x": -9,
-			"y": 1474
+			"x": 0,
+			"y": 1480
 		}
 	},
 	{
@@ -1042,11 +1058,17 @@
 		"connections": [
 			{
 				"referenceId": 228
+			},
+			{
+				"referenceId": 1457
+			},
+			{
+				"referenceId": 1471
 			}
 		],
 		"position": {
-			"x": -323,
-			"y": 1448
+			"x": -294,
+			"y": 1452
 		}
 	},
 	{
@@ -1063,6 +1085,12 @@
 			},
 			{
 				"referenceId": 250
+			},
+			{
+				"referenceId": 1635
+			},
+			{
+				"referenceId": 1636
 			}
 		],
 		"position": {
@@ -1107,6 +1135,9 @@
 		"connections": [
 			{
 				"referenceId": 216
+			},
+			{
+				"referenceId": 1523
 			}
 		],
 		"position": {
@@ -1128,11 +1159,17 @@
 			},
 			{
 				"referenceId": 211
+			},
+			{
+				"referenceId": 1543
+			},
+			{
+				"referenceId": 1542
 			}
 		],
 		"position": {
 			"x": -1390,
-			"y": 548
+			"y": 550
 		}
 	},
 	{
@@ -1144,7 +1181,14 @@
 			"x": -1470,
 			"y": 291
 		},
-		"connections": []
+		"connections": [
+			{
+				"referenceId": 1511
+			},
+			{
+				"referenceId": 1519
+			}
+		]
 	},
 	{
 		"internalIdentifier": "AddedStrengthPassive",
@@ -1157,6 +1201,12 @@
 			},
 			{
 				"referenceId": 63
+			},
+			{
+				"referenceId": 1568
+			},
+			{
+				"referenceId": 1569
 			}
 		],
 		"position": {
@@ -1172,6 +1222,12 @@
 		"connections": [
 			{
 				"referenceId": 184
+			},
+			{
+				"referenceId": 1507
+			},
+			{
+				"referenceId": 1515
 			}
 		],
 		"position": {
@@ -3079,6 +3135,9 @@
 		"connections": [
 			{
 				"referenceId": 186
+			},
+			{
+				"referenceId": 1549
 			}
 		],
 		"position": {
@@ -3096,7 +3155,10 @@
 				"referenceId": 63
 			},
 			{
-				"referenceId": 186
+				"referenceId": 1551
+			},
+			{
+				"referenceId": 1552
 			}
 		],
 		"position": {
@@ -3110,10 +3172,17 @@
 		"maxLevel": 1,
 		"value": 5,
 		"position": {
-			"x": -1382,
-			"y": -9
+			"x": -1260,
+			"y": -90
 		},
-		"connections": []
+		"connections": [
+			{
+				"referenceId": 1551
+			},
+			{
+				"referenceId": 1627
+			}
+		]
 	},
 	{
 		"internalIdentifier": "YoyoDamagePassive",
@@ -3611,8 +3680,8 @@
 		"maxLevel": 1,
 		"value": 2,
 		"position": {
-			"x": -1107,
-			"y": 758
+			"x": -1110,
+			"y": 760
 		},
 		"connections": [
 			{
@@ -7452,8 +7521,8 @@
 		"maxLevel": 1,
 		"value": 15,
 		"position": {
-			"x": -995,
-			"y": 751
+			"x": -1004,
+			"y": 760
 		},
 		"connections": [
 			{
@@ -7482,6 +7551,9295 @@
 			},
 			{
 				"referenceId": 139
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1170,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 233,
+			"y": -2260
+		},
+		"connections": [
+			{
+				"referenceId": 1171
+			},
+			{
+				"referenceId": 1173
+			},
+			{
+				"referenceId": 1226
+			},
+			{
+				"referenceId": 1251
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1171,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -290,
+			"y": -2260
+		},
+		"connections": [
+			{
+				"referenceId": 1170
+			},
+			{
+				"referenceId": 1172
+			},
+			{
+				"referenceId": 1225
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1172,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -750,
+			"y": -2170
+		},
+		"connections": [
+			{
+				"referenceId": 1171
+			},
+			{
+				"referenceId": 1177
+			},
+			{
+				"referenceId": 1222
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1173,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 709,
+			"y": -2167
+		},
+		"connections": [
+			{
+				"referenceId": 1174
+			},
+			{
+				"referenceId": 1170
+			},
+			{
+				"referenceId": 1218
+			},
+			{
+				"referenceId": 1249
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1174,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1150,
+			"y": -1980
+		},
+		"connections": [
+			{
+				"referenceId": 1173
+			},
+			{
+				"referenceId": 1175
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1175,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1600,
+			"y": -1650
+		},
+		"connections": [
+			{
+				"referenceId": 1174
+			},
+			{
+				"referenceId": 1181
+			},
+			{
+				"referenceId": 1207
+			},
+			{
+				"referenceId": 1331
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1177,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1200,
+			"y": -1960
+		},
+		"connections": [
+			{
+				"referenceId": 1178
+			},
+			{
+				"referenceId": 1172
+			},
+			{
+				"referenceId": 1299
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligenceStrengthPassive",
+		"referenceId": 1178,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1590,
+			"y": -1640
+		},
+		"connections": [
+			{
+				"referenceId": 1177
+			},
+			{
+				"referenceId": 1194
+			},
+			{
+				"referenceId": 1213
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligenceDexterityPassive",
+		"referenceId": 1179,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1632,
+			"y": 1563
+		},
+		"connections": [
+			{
+				"referenceId": 1186
+			},
+			{
+				"referenceId": 1187
+			},
+			{
+				"referenceId": 1210
+			},
+			{
+				"referenceId": 1397
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityStrengthPassive",
+		"referenceId": 1180,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1660,
+			"y": 1539
+		},
+		"connections": [
+			{
+				"referenceId": 1192
+			},
+			{
+				"referenceId": 1200
+			},
+			{
+				"referenceId": 1212
+			},
+			{
+				"referenceId": 1628
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1181,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1950,
+			"y": -1240
+		},
+		"connections": [
+			{
+				"referenceId": 1175
+			},
+			{
+				"referenceId": 1182
+			},
+			{
+				"referenceId": 1329
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1182,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 2180,
+			"y": -790
+		},
+		"connections": [
+			{
+				"referenceId": 1181
+			},
+			{
+				"referenceId": 1183
+			},
+			{
+				"referenceId": 1375
+			},
+			{
+				"referenceId": 1379
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1183,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 2270,
+			"y": -250
+		},
+		"connections": [
+			{
+				"referenceId": 1182
+			},
+			{
+				"referenceId": 1184
+			},
+			{
+				"referenceId": 1388
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1184,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 2270,
+			"y": 290
+		},
+		"connections": [
+			{
+				"referenceId": 1183
+			},
+			{
+				"referenceId": 1185
+			},
+			{
+				"referenceId": 1389
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1185,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 2178,
+			"y": 738
+		},
+		"connections": [
+			{
+				"referenceId": 1184
+			},
+			{
+				"referenceId": 1186
+			},
+			{
+				"referenceId": 1435
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1186,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1955,
+			"y": 1175
+		},
+		"connections": [
+			{
+				"referenceId": 1185
+			},
+			{
+				"referenceId": 1179
+			},
+			{
+				"referenceId": 1326
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1187,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1251,
+			"y": 1891
+		},
+		"connections": [
+			{
+				"referenceId": 1179
+			},
+			{
+				"referenceId": 1188
+			},
+			{
+				"referenceId": 1661
+			},
+			{
+				"referenceId": 1662
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1188,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 831,
+			"y": 2109
+		},
+		"connections": [
+			{
+				"referenceId": 1187
+			},
+			{
+				"referenceId": 1189
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1189,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 290,
+			"y": 2220
+		},
+		"connections": [
+			{
+				"referenceId": 1188
+			},
+			{
+				"referenceId": 1190
+			},
+			{
+				"referenceId": 1453
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1190,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -270,
+			"y": 2220
+		},
+		"connections": [
+			{
+				"referenceId": 1189
+			},
+			{
+				"referenceId": 1191
+			},
+			{
+				"referenceId": 1462
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1191,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -810,
+			"y": 2080
+		},
+		"connections": [
+			{
+				"referenceId": 1192
+			},
+			{
+				"referenceId": 1190
+			},
+			{
+				"referenceId": 1641
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1192,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1270,
+			"y": 1850
+		},
+		"connections": [
+			{
+				"referenceId": 1191
+			},
+			{
+				"referenceId": 1180
+			},
+			{
+				"referenceId": 1500
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1194,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1910,
+			"y": -1240
+		},
+		"connections": [
+			{
+				"referenceId": 1178
+			},
+			{
+				"referenceId": 1196
+			},
+			{
+				"referenceId": 1601
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1196,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -2140,
+			"y": -770
+		},
+		"connections": [
+			{
+				"referenceId": 1194
+			},
+			{
+				"referenceId": 1197
+			},
+			{
+				"referenceId": 1518
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1197,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -2240,
+			"y": -280
+		},
+		"connections": [
+			{
+				"referenceId": 1196
+			},
+			{
+				"referenceId": 1198
+			},
+			{
+				"referenceId": 1510
+			},
+			{
+				"referenceId": 1563
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1198,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -2240,
+			"y": 230
+		},
+		"connections": [
+			{
+				"referenceId": 1197
+			},
+			{
+				"referenceId": 1199
+			},
+			{
+				"referenceId": 1514
+			},
+			{
+				"referenceId": 1559
+			},
+			{
+				"referenceId": 1564
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1199,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -2160,
+			"y": 710
+		},
+		"connections": [
+			{
+				"referenceId": 1200
+			},
+			{
+				"referenceId": 1198
+			},
+			{
+				"referenceId": 1522
+			},
+			{
+				"referenceId": 1529
+			},
+			{
+				"referenceId": 1561
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1200,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1980,
+			"y": 1150
+		},
+		"connections": [
+			{
+				"referenceId": 1180
+			},
+			{
+				"referenceId": 1199
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1205,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1216,
+			"y": -1266
+		},
+		"connections": [
+			{
+				"referenceId": 76
+			},
+			{
+				"referenceId": 1207
+			},
+			{
+				"referenceId": 1288
+			},
+			{
+				"referenceId": 1336
+			},
+			{
+				"referenceId": 1337
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1207,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1409,
+			"y": -1461
+		},
+		"connections": [
+			{
+				"referenceId": 1175
+			},
+			{
+				"referenceId": 1205
+			},
+			{
+				"referenceId": 1281
+			},
+			{
+				"referenceId": 1282
+			},
+			{
+				"referenceId": 1330
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligenceDexterityPassive",
+		"referenceId": 1208,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1240,
+			"y": 1180
+		},
+		"connections": [
+			{
+				"referenceId": 52
+			},
+			{
+				"referenceId": 1210
+			},
+			{
+				"referenceId": 1417
+			},
+			{
+				"referenceId": 1418
+			},
+			{
+				"referenceId": 1444
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligenceDexterityPassive",
+		"referenceId": 1210,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1434,
+			"y": 1359
+		},
+		"connections": [
+			{
+				"referenceId": 1179
+			},
+			{
+				"referenceId": 1208
+			},
+			{
+				"referenceId": 1671
+			},
+			{
+				"referenceId": 1676
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityStrengthPassive",
+		"referenceId": 1211,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1280,
+			"y": 1190
+		},
+		"connections": [
+			{
+				"referenceId": 1212
+			},
+			{
+				"referenceId": 60
+			},
+			{
+				"referenceId": 1492
+			},
+			{
+				"referenceId": 1493
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityStrengthPassive",
+		"referenceId": 1212,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1473,
+			"y": 1365
+		},
+		"connections": [
+			{
+				"referenceId": 1180
+			},
+			{
+				"referenceId": 1211
+			},
+			{
+				"referenceId": 1537
+			},
+			{
+				"referenceId": 1536
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligenceStrengthPassive",
+		"referenceId": 1213,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1423,
+			"y": -1466
+		},
+		"connections": [
+			{
+				"referenceId": 1178
+			},
+			{
+				"referenceId": 1214
+			},
+			{
+				"referenceId": 1306
+			},
+			{
+				"referenceId": 1605
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligenceStrengthPassive",
+		"referenceId": 1214,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1246,
+			"y": -1284
+		},
+		"connections": [
+			{
+				"referenceId": 1213
+			},
+			{
+				"referenceId": 68
+			},
+			{
+				"referenceId": 1609
+			},
+			{
+				"referenceId": 1608
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1215,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 368,
+			"y": -1629
+		},
+		"connections": [
+			{
+				"referenceId": 73
+			},
+			{
+				"referenceId": 1216
+			},
+			{
+				"referenceId": 1232
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1216,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 450,
+			"y": -1760
+		},
+		"connections": [
+			{
+				"referenceId": 1215
+			},
+			{
+				"referenceId": 1217
+			},
+			{
+				"referenceId": 1228
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1217,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 536,
+			"y": -1898
+		},
+		"connections": [
+			{
+				"referenceId": 1216
+			},
+			{
+				"referenceId": 1218
+			},
+			{
+				"referenceId": 1247
+			},
+			{
+				"referenceId": 1259
+			},
+			{
+				"referenceId": 1267
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1218,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 620,
+			"y": -2030
+		},
+		"connections": [
+			{
+				"referenceId": 1217
+			},
+			{
+				"referenceId": 1173
+			},
+			{
+				"referenceId": 1248
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1219,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -370,
+			"y": -1630
+		},
+		"connections": [
+			{
+				"referenceId": 71
+			},
+			{
+				"referenceId": 1220
+			},
+			{
+				"referenceId": 1231
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1220,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -470,
+			"y": -1760
+		},
+		"connections": [
+			{
+				"referenceId": 1219
+			},
+			{
+				"referenceId": 1221
+			},
+			{
+				"referenceId": 1223
+			},
+			{
+				"referenceId": 1238
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1221,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -570,
+			"y": -1890
+		},
+		"connections": [
+			{
+				"referenceId": 1220
+			},
+			{
+				"referenceId": 1222
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1222,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -670,
+			"y": -2030
+		},
+		"connections": [
+			{
+				"referenceId": 1221
+			},
+			{
+				"referenceId": 1172
+			},
+			{
+				"referenceId": 1298
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1223,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -350,
+			"y": -1850
+		},
+		"connections": [
+			{
+				"referenceId": 1220
+			},
+			{
+				"referenceId": 1224
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1224,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -250,
+			"y": -1960
+		},
+		"connections": [
+			{
+				"referenceId": 1223
+			},
+			{
+				"referenceId": 1225
+			},
+			{
+				"referenceId": 1230
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1225,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -250,
+			"y": -2120
+		},
+		"connections": [
+			{
+				"referenceId": 1224
+			},
+			{
+				"referenceId": 1171
+			},
+			{
+				"referenceId": 1229
+			},
+			{
+				"referenceId": 1244
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1226,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 200,
+			"y": -2120
+		},
+		"connections": [
+			{
+				"referenceId": 1227
+			},
+			{
+				"referenceId": 1170
+			},
+			{
+				"referenceId": 1229
+			},
+			{
+				"referenceId": 1250
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1227,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 200,
+			"y": -1960
+		},
+		"connections": [
+			{
+				"referenceId": 1228
+			},
+			{
+				"referenceId": 1226
+			},
+			{
+				"referenceId": 1230
+			},
+			{
+				"referenceId": 1246
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1228,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 310,
+			"y": -1850
+		},
+		"connections": [
+			{
+				"referenceId": 1216
+			},
+			{
+				"referenceId": 1227
+			},
+			{
+				"referenceId": 1245
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1229,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -25,
+			"y": -2171
+		},
+		"connections": [
+			{
+				"referenceId": 1225
+			},
+			{
+				"referenceId": 1226
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1230,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -20,
+			"y": -1913
+		},
+		"connections": [
+			{
+				"referenceId": 1227
+			},
+			{
+				"referenceId": 1224
+			},
+			{
+				"referenceId": 1236
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1231,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -280,
+			"y": -1670
+		},
+		"connections": [
+			{
+				"referenceId": 1219
+			},
+			{
+				"referenceId": 1234
+			},
+			{
+				"referenceId": 1235
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1232,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 266,
+			"y": -1670
+		},
+		"connections": [
+			{
+				"referenceId": 1215
+			},
+			{
+				"referenceId": 1233
+			},
+			{
+				"referenceId": 1237
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1233,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 92,
+			"y": -1620
+		},
+		"connections": [
+			{
+				"referenceId": 1234
+			},
+			{
+				"referenceId": 1232
+			},
+			{
+				"referenceId": 1363
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1234,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -115,
+			"y": -1620
+		},
+		"connections": [
+			{
+				"referenceId": 1231
+			},
+			{
+				"referenceId": 1233
+			},
+			{
+				"referenceId": 1363
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1235,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -190,
+			"y": -1800
+		},
+		"connections": [
+			{
+				"referenceId": 1231
+			},
+			{
+				"referenceId": 1236
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1236,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -20,
+			"y": -1850
+		},
+		"connections": [
+			{
+				"referenceId": 1235
+			},
+			{
+				"referenceId": 1237
+			},
+			{
+				"referenceId": 1230
+			},
+			{
+				"referenceId": 1363
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1237,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 180,
+			"y": -1800
+		},
+		"connections": [
+			{
+				"referenceId": 1236
+			},
+			{
+				"referenceId": 1232
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1238,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -460,
+			"y": -1870
+		},
+		"connections": [
+			{
+				"referenceId": 1220
+			},
+			{
+				"referenceId": 1239
+			},
+			{
+				"referenceId": 1240
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1239,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -480,
+			"y": -1980
+		},
+		"connections": [
+			{
+				"referenceId": 1238
+			},
+			{
+				"referenceId": 1242
+			},
+			{
+				"referenceId": 1244
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1240,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -370,
+			"y": -1990
+		},
+		"connections": [
+			{
+				"referenceId": 1238
+			},
+			{
+				"referenceId": 1244
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1242,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -540,
+			"y": -2070
+		},
+		"connections": [
+			{
+				"referenceId": 1239
+			},
+			{
+				"referenceId": 1362
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1243,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -490,
+			"y": -2160
+		},
+		"connections": [
+			{
+				"referenceId": 1244
+			},
+			{
+				"referenceId": 1362
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1244,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -390,
+			"y": -2100
+		},
+		"connections": [
+			{
+				"referenceId": 1240
+			},
+			{
+				"referenceId": 1243
+			},
+			{
+				"referenceId": 1225
+			},
+			{
+				"referenceId": 1239
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1245,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 380,
+			"y": -1960
+		},
+		"connections": [
+			{
+				"referenceId": 1246
+			},
+			{
+				"referenceId": 1247
+			},
+			{
+				"referenceId": 1228
+			},
+			{
+				"referenceId": 1364
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1246,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 310,
+			"y": -2010
+		},
+		"connections": [
+			{
+				"referenceId": 1250
+			},
+			{
+				"referenceId": 1245
+			},
+			{
+				"referenceId": 1227
+			},
+			{
+				"referenceId": 1364
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1247,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 480,
+			"y": -1970
+		},
+		"connections": [
+			{
+				"referenceId": 1245
+			},
+			{
+				"referenceId": 1248
+			},
+			{
+				"referenceId": 1217
+			},
+			{
+				"referenceId": 1364
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1248,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 530,
+			"y": -2050
+		},
+		"connections": [
+			{
+				"referenceId": 1247
+			},
+			{
+				"referenceId": 1249
+			},
+			{
+				"referenceId": 1218
+			},
+			{
+				"referenceId": 1364
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1249,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 540,
+			"y": -2140
+		},
+		"connections": [
+			{
+				"referenceId": 1248
+			},
+			{
+				"referenceId": 1173
+			},
+			{
+				"referenceId": 1364
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1250,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 290,
+			"y": -2100
+		},
+		"connections": [
+			{
+				"referenceId": 1251
+			},
+			{
+				"referenceId": 1246
+			},
+			{
+				"referenceId": 1226
+			},
+			{
+				"referenceId": 1364
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1251,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 340,
+			"y": -2180
+		},
+		"connections": [
+			{
+				"referenceId": 1250
+			},
+			{
+				"referenceId": 1170
+			},
+			{
+				"referenceId": 1364
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1259,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 660,
+			"y": -1880
+		},
+		"connections": [
+			{
+				"referenceId": 1217
+			},
+			{
+				"referenceId": 1268
+			},
+			{
+				"referenceId": 1272
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1260,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 620,
+			"y": -1450
+		},
+		"connections": [
+			{
+				"referenceId": 74
+			},
+			{
+				"referenceId": 1261
+			},
+			{
+				"referenceId": 1262
+			},
+			{
+				"referenceId": 1366
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1261,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 680,
+			"y": -1510
+		},
+		"connections": [
+			{
+				"referenceId": 1260
+			},
+			{
+				"referenceId": 1263
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1262,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 560,
+			"y": -1510
+		},
+		"connections": [
+			{
+				"referenceId": 1264
+			},
+			{
+				"referenceId": 1260
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1263,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 710,
+			"y": -1620
+		},
+		"connections": [
+			{
+				"referenceId": 1261
+			},
+			{
+				"referenceId": 1265
+			},
+			{
+				"referenceId": 1366
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1264,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 530,
+			"y": -1620
+		},
+		"connections": [
+			{
+				"referenceId": 1266
+			},
+			{
+				"referenceId": 1262
+			},
+			{
+				"referenceId": 1366
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1265,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 680,
+			"y": -1730
+		},
+		"connections": [
+			{
+				"referenceId": 1263
+			},
+			{
+				"referenceId": 1267
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1266,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 560,
+			"y": -1730
+		},
+		"connections": [
+			{
+				"referenceId": 1267
+			},
+			{
+				"referenceId": 1264
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1267,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 620,
+			"y": -1790
+		},
+		"connections": [
+			{
+				"referenceId": 1265
+			},
+			{
+				"referenceId": 1266
+			},
+			{
+				"referenceId": 1217
+			},
+			{
+				"referenceId": 1366
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1268,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 770,
+			"y": -1860
+		},
+		"connections": [
+			{
+				"referenceId": 1259
+			},
+			{
+				"referenceId": 1269
+			},
+			{
+				"referenceId": 1280
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1269,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 880,
+			"y": -1810
+		},
+		"connections": [
+			{
+				"referenceId": 1268
+			},
+			{
+				"referenceId": 1270
+			},
+			{
+				"referenceId": 1280
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1270,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 970,
+			"y": -1740
+		},
+		"connections": [
+			{
+				"referenceId": 1269
+			},
+			{
+				"referenceId": 1271
+			},
+			{
+				"referenceId": 1278
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1271,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 970,
+			"y": -1890
+		},
+		"connections": [
+			{
+				"referenceId": 1270
+			},
+			{
+				"referenceId": 1365
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1272,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 780,
+			"y": -1970
+		},
+		"connections": [
+			{
+				"referenceId": 1259
+			},
+			{
+				"referenceId": 1365
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1273,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 860,
+			"y": -1360
+		},
+		"connections": [
+			{
+				"referenceId": 75
+			},
+			{
+				"referenceId": 1274
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1274,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 900,
+			"y": -1440
+		},
+		"connections": [
+			{
+				"referenceId": 1273
+			},
+			{
+				"referenceId": 1275
+			},
+			{
+				"referenceId": 1279
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1275,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 990,
+			"y": -1420
+		},
+		"connections": [
+			{
+				"referenceId": 1274
+			},
+			{
+				"referenceId": 1277
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1276,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1090,
+			"y": -1540
+		},
+		"connections": [
+			{
+				"referenceId": 1277
+			},
+			{
+				"referenceId": 1278
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1277,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1070,
+			"y": -1450
+		},
+		"connections": [
+			{
+				"referenceId": 1275
+			},
+			{
+				"referenceId": 1276
+			},
+			{
+				"referenceId": 1279
+			},
+			{
+				"referenceId": 1288
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1278,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1050,
+			"y": -1620
+		},
+		"connections": [
+			{
+				"referenceId": 1276
+			},
+			{
+				"referenceId": 1279
+			},
+			{
+				"referenceId": 1270
+			},
+			{
+				"referenceId": 1367
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1279,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 990,
+			"y": -1520
+		},
+		"connections": [
+			{
+				"referenceId": 1278
+			},
+			{
+				"referenceId": 1274
+			},
+			{
+				"referenceId": 1277
+			},
+			{
+				"referenceId": 1367
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1280,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 853,
+			"y": -1898
+		},
+		"connections": [
+			{
+				"referenceId": 1269
+			},
+			{
+				"referenceId": 1268
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1281,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1320,
+			"y": -1510
+		},
+		"connections": [
+			{
+				"referenceId": 1283
+			},
+			{
+				"referenceId": 1207
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1282,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1380,
+			"y": -1550
+		},
+		"connections": [
+			{
+				"referenceId": 1207
+			},
+			{
+				"referenceId": 1284
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1283,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1260,
+			"y": -1570
+		},
+		"connections": [
+			{
+				"referenceId": 1285
+			},
+			{
+				"referenceId": 1281
+			},
+			{
+				"referenceId": 1284
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1284,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1330,
+			"y": -1620
+		},
+		"connections": [
+			{
+				"referenceId": 1282
+			},
+			{
+				"referenceId": 1286
+			},
+			{
+				"referenceId": 1283
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1285,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1163,
+			"y": -1611
+		},
+		"connections": [
+			{
+				"referenceId": 1287
+			},
+			{
+				"referenceId": 1283
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1286,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1305,
+			"y": -1720
+		},
+		"connections": [
+			{
+				"referenceId": 1284
+			},
+			{
+				"referenceId": 1287
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1287,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1180,
+			"y": -1730
+		},
+		"connections": [
+			{
+				"referenceId": 1285
+			},
+			{
+				"referenceId": 1286
+			},
+			{
+				"referenceId": 1368
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1288,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1140,
+			"y": -1360
+		},
+		"connections": [
+			{
+				"referenceId": 1205
+			},
+			{
+				"referenceId": 1277
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1289,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -830,
+			"y": -1960
+		},
+		"connections": [
+			{
+				"referenceId": 1293
+			},
+			{
+				"referenceId": 1291
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1291,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -930,
+			"y": -2000
+		},
+		"connections": [
+			{
+				"referenceId": 1289
+			},
+			{
+				"referenceId": 1297
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1292,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1070,
+			"y": -1860
+		},
+		"connections": [
+			{
+				"referenceId": 1294
+			},
+			{
+				"referenceId": 1297
+			},
+			{
+				"referenceId": 1299
+			},
+			{
+				"referenceId": 1359
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1293,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -796,
+			"y": -1860
+		},
+		"connections": [
+			{
+				"referenceId": 1289
+			},
+			{
+				"referenceId": 1296
+			},
+			{
+				"referenceId": 1298
+			},
+			{
+				"referenceId": 1359
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1294,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1030,
+			"y": -1760
+		},
+		"connections": [
+			{
+				"referenceId": 1292
+			},
+			{
+				"referenceId": 1295
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1295,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -930,
+			"y": -1730
+		},
+		"connections": [
+			{
+				"referenceId": 1294
+			},
+			{
+				"referenceId": 1296
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1296,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -832,
+			"y": -1760
+		},
+		"connections": [
+			{
+				"referenceId": 1295
+			},
+			{
+				"referenceId": 1293
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1297,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1040,
+			"y": -1960
+		},
+		"connections": [
+			{
+				"referenceId": 1292
+			},
+			{
+				"referenceId": 1291
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1298,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -720,
+			"y": -1930
+		},
+		"connections": [
+			{
+				"referenceId": 1222
+			},
+			{
+				"referenceId": 1293
+			}
+		]
+	},
+	{
+		"internalIdentifier": "LifeRegenRatePassive",
+		"referenceId": 1299,
+		"maxLevel": 1,
+		"value": 15,
+		"position": {
+			"x": -1160,
+			"y": -1870
+		},
+		"connections": [
+			{
+				"referenceId": 1177
+			},
+			{
+				"referenceId": 1292
+			},
+			{
+				"referenceId": 1310
+			}
+		]
+	},
+	{
+		"internalIdentifier": "StrongerDebuffsPassive",
+		"referenceId": 1300,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": -1110,
+			"y": -1200
+		},
+		"connections": [
+			{
+				"referenceId": 68
+			},
+			{
+				"referenceId": 1302
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedSummonCritChancePassive",
+		"referenceId": 1301,
+		"maxLevel": 1,
+		"value": 2.5,
+		"position": {
+			"x": -1000,
+			"y": -1200
+		},
+		"connections": [
+			{
+				"referenceId": 68
+			},
+			{
+				"referenceId": 1303
+			}
+		]
+	},
+	{
+		"internalIdentifier": "StrongerDebuffsPassive",
+		"referenceId": 1302,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": -1090,
+			"y": -1320
+		},
+		"connections": [
+			{
+				"referenceId": 1300
+			},
+			{
+				"referenceId": 1305
+			},
+			{
+				"referenceId": 1303
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedSummonCritChancePassive",
+		"referenceId": 1303,
+		"maxLevel": 1,
+		"value": 2.5,
+		"position": {
+			"x": -1020,
+			"y": -1320
+		},
+		"connections": [
+			{
+				"referenceId": 1304
+			},
+			{
+				"referenceId": 1301
+			},
+			{
+				"referenceId": 1302
+			}
+		]
+	},
+	{
+		"internalIdentifier": "IncreasedSummonDamagePassive",
+		"referenceId": 1304,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": -990,
+			"y": -1490
+		},
+		"connections": [
+			{
+				"referenceId": 1303
+			},
+			{
+				"referenceId": 1360
+			}
+		]
+	},
+	{
+		"internalIdentifier": "IncreasedMinionDamagePassive",
+		"referenceId": 1305,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": -1120,
+			"y": -1490
+		},
+		"connections": [
+			{
+				"referenceId": 1302
+			},
+			{
+				"referenceId": 1360
+			}
+		]
+	},
+	{
+		"internalIdentifier": "FasterMinionsPassive",
+		"referenceId": 1306,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {	
+			"x": -1370,
+			"y": -1540
+		},
+		"connections": [
+			{
+				"referenceId": 1307
+			},
+			{
+				"referenceId": 1308
+			},
+			{
+				"referenceId": 1213
+			}
+		]
+	},
+	{
+		"internalIdentifier": "FasterMinionsPassive",
+		"referenceId": 1307,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": -1260,
+			"y": -1550
+		},
+		"connections": [
+			{
+				"referenceId": 1311
+			},
+			{
+				"referenceId": 1306
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedCriticalStrikeChance",
+		"referenceId": 1308,
+		"maxLevel": 1,
+		"value": 2.5,
+		"position": {
+			"x": -1430,
+			"y": -1630
+		},
+		"connections": [
+			{
+				"referenceId": 1306
+			},
+			{
+				"referenceId": 1309
+			}
+		]
+	},
+	{
+		"internalIdentifier": "IncreasedSummonDamagePassive",
+		"referenceId": 1309,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": -1360,
+			"y": -1740
+		},
+		"connections": [
+			{
+				"referenceId": 1308
+			},
+			{
+				"referenceId": 1310
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedAllResistancePassive",
+		"referenceId": 1310,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": -1230,
+			"y": -1780
+		},
+		"connections": [
+			{
+				"referenceId": 1299
+			},
+			{
+				"referenceId": 1309
+			},
+			{
+				"referenceId": 1311
+			},
+			{
+				"referenceId": 1358
+			}
+		]
+	},
+	{
+		"internalIdentifier": "DamageReductionPassive",
+		"referenceId": 1311,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": -1210,
+			"y": -1640
+		},
+		"connections": [
+			{
+				"referenceId": 1307
+			},
+			{
+				"referenceId": 1310
+			},
+			{
+				"referenceId": 1358
+			}
+		]
+	},
+	{
+		"internalIdentifier": "FasterMinionsPassive",
+		"referenceId": 1312,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": -770,
+			"y": -1390
+		},
+		"connections": [
+			{
+				"referenceId": 1313
+			},
+			{
+				"referenceId": 1314
+			},
+			{
+				"referenceId": 69
+			}
+		]
+	},
+	{
+		"internalIdentifier": "IncreasedSummonDamagePassive",
+		"referenceId": 1313,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": -800,
+			"y": -1530
+		},
+		"connections": [
+			{
+				"referenceId": 1315
+			},
+			{
+				"referenceId": 1312
+			}
+		]
+	},
+	{
+		"internalIdentifier": "IncreasedMinionDamagePassive",
+		"referenceId": 1314,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": -660,
+			"y": -1470
+		},
+		"connections": [
+			{
+				"referenceId": 1312
+			},
+			{
+				"referenceId": 1315
+			}
+		]
+	},
+	{
+		"internalIdentifier": "HeartySummonsPassive",
+		"referenceId": 1315,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": -731,
+			"y": -1501
+		},
+		"connections": [
+			{
+				"referenceId": 1317
+			},
+			{
+				"referenceId": 1313
+			},
+			{
+				"referenceId": 1314
+			},
+			{
+				"referenceId": 1316
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MinionDamageAuraPassive",
+		"referenceId": 1316,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": -610,
+			"y": -1640
+		},
+		"connections": [
+			{
+				"referenceId": 1315
+			},
+			{
+				"referenceId": 1361
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MinionManaRegenAuraPassive",
+		"referenceId": 1317,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": -730,
+			"y": -1680
+		},
+		"connections": [
+			{
+				"referenceId": 1315
+			},
+			{
+				"referenceId": 1361
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1320,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1600,
+			"y": -110
+		},
+		"connections": [
+			{
+				"referenceId": 48
+			},
+			{
+				"referenceId": 1323
+			},
+			{
+				"referenceId": 1349
+			},
+			{
+				"referenceId": 1380
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1321,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1600,
+			"y": 96
+		},
+		"connections": [
+			{
+				"referenceId": 48
+			},
+			{
+				"referenceId": 1322
+			},
+			{
+				"referenceId": 1380
+			},
+			{
+				"referenceId": 1405
+			},
+			{
+				"referenceId": 1404
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1322,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1720,
+			"y": 320
+		},
+		"connections": [
+			{
+				"referenceId": 1321
+			},
+			{
+				"referenceId": 1324
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1323,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1720,
+			"y": -330
+		},
+		"connections": [
+			{
+				"referenceId": 1320
+			},
+			{
+				"referenceId": 1327
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1324,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1770,
+			"y": 530
+		},
+		"connections": [
+			{
+				"referenceId": 1325
+			},
+			{
+				"referenceId": 1322
+			},
+			{
+				"referenceId": 1436
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1325,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1790,
+			"y": 750
+		},
+		"connections": [
+			{
+				"referenceId": 1326
+			},
+			{
+				"referenceId": 1324
+			},
+			{
+				"referenceId": 1423
+			},
+			{
+				"referenceId": 1430
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1326,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1850,
+			"y": 970
+		},
+		"connections": [
+			{
+				"referenceId": 1325
+			},
+			{
+				"referenceId": 1186
+			},
+			{
+				"referenceId": 1427
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1327,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1770,
+			"y": -560
+		},
+		"connections": [
+			{
+				"referenceId": 1328
+			},
+			{
+				"referenceId": 1323
+			},
+			{
+				"referenceId": 1355
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1328,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1790,
+			"y": -800
+		},
+		"connections": [
+			{
+				"referenceId": 1327
+			},
+			{
+				"referenceId": 1329
+			},
+			{
+				"referenceId": 1342
+			},
+			{
+				"referenceId": 1348
+			},
+			{
+				"referenceId": 1376
+			},
+			{
+				"referenceId": 1373
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1329,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1850,
+			"y": -1020
+		},
+		"connections": [
+			{
+				"referenceId": 1328
+			},
+			{
+				"referenceId": 1181
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1330,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1540,
+			"y": -1490
+		},
+		"connections": [
+			{
+				"referenceId": 1207
+			},
+			{
+				"referenceId": 1332
+			},
+			{
+				"referenceId": 1331
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1331,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1660,
+			"y": -1490
+		},
+		"connections": [
+			{
+				"referenceId": 1333
+			},
+			{
+				"referenceId": 1175
+			},
+			{
+				"referenceId": 1330
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1332,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1564,
+			"y": -1357
+		},
+		"connections": [
+			{
+				"referenceId": 1330
+			},
+			{
+				"referenceId": 1334
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1333,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1643,
+			"y": -1357
+		},
+		"connections": [
+			{
+				"referenceId": 1335
+			},
+			{
+				"referenceId": 1331
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1334,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1584,
+			"y": -1230
+		},
+		"connections": [
+			{
+				"referenceId": 1332
+			},
+			{
+				"referenceId": 1370
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1335,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1630,
+			"y": -1230
+		},
+		"connections": [
+			{
+				"referenceId": 1333
+			},
+			{
+				"referenceId": 1370
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1336,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1302,
+			"y": -1206
+		},
+		"connections": [
+			{
+				"referenceId": 1205
+			},
+			{
+				"referenceId": 1338
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1337,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1250,
+			"y": -1167
+		},
+		"connections": [
+			{
+				"referenceId": 1205
+			},
+			{
+				"referenceId": 1340
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1338,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1396,
+			"y": -1296
+		},
+		"connections": [
+			{
+				"referenceId": 1336
+			},
+			{
+				"referenceId": 1339
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1339,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1414,
+			"y": -1168
+		},
+		"connections": [
+			{
+				"referenceId": 1338
+			},
+			{
+				"referenceId": 1369
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1340,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1150,
+			"y": -1090
+		},
+		"connections": [
+			{
+				"referenceId": 1337
+			},
+			{
+				"referenceId": 1341
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1341,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1271,
+			"y": -1064
+		},
+		"connections": [
+			{
+				"referenceId": 1340
+			},
+			{
+				"referenceId": 1369
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1342,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1700,
+			"y": -900
+		},
+		"connections": [
+			{
+				"referenceId": 1343
+			},
+			{
+				"referenceId": 1328
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1343,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1580,
+			"y": -950
+		},
+		"connections": [
+			{
+				"referenceId": 1342
+			},
+			{
+				"referenceId": 1344
+			},
+			{
+				"referenceId": 1371
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1344,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1480,
+			"y": -900
+		},
+		"connections": [
+			{
+				"referenceId": 1343
+			},
+			{
+				"referenceId": 1346
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1346,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1480,
+			"y": -770
+		},
+		"connections": [
+			{
+				"referenceId": 1347
+			},
+			{
+				"referenceId": 1344
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1347,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1580,
+			"y": -700
+		},
+		"connections": [
+			{
+				"referenceId": 1348
+			},
+			{
+				"referenceId": 1346
+			},
+			{
+				"referenceId": 1371
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1348,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1700,
+			"y": -730
+		},
+		"connections": [
+			{
+				"referenceId": 1328
+			},
+			{
+				"referenceId": 1347
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1349,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1600,
+			"y": -290
+		},
+		"connections": [
+			{
+				"referenceId": 1320
+			},
+			{
+				"referenceId": 1350
+			},
+			{
+				"referenceId": 1351
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1350,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1530,
+			"y": -360
+		},
+		"connections": [
+			{
+				"referenceId": 1352
+			},
+			{
+				"referenceId": 1349
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1351,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1660,
+			"y": -360
+		},
+		"connections": [
+			{
+				"referenceId": 1356
+			},
+			{
+				"referenceId": 1349
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1352,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1490,
+			"y": -450
+		},
+		"connections": [
+			{
+				"referenceId": 1353
+			},
+			{
+				"referenceId": 1350
+			},
+			{
+				"referenceId": 1372
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1353,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1520,
+			"y": -540
+		},
+		"connections": [
+			{
+				"referenceId": 1354
+			},
+			{
+				"referenceId": 1352
+			},
+			{
+				"referenceId": 1372
+			},
+			{
+				"referenceId": 46
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1354,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1600,
+			"y": -590
+		},
+		"connections": [
+			{
+				"referenceId": 1355
+			},
+			{
+				"referenceId": 1353
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1355,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1670,
+			"y": -540
+		},
+		"connections": [
+			{
+				"referenceId": 1356
+			},
+			{
+				"referenceId": 1354
+			},
+			{
+				"referenceId": 1372
+			},
+			{
+				"referenceId": 1327
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1356,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1700,
+			"y": -450
+		},
+		"connections": [
+			{
+				"referenceId": 1351
+			},
+			{
+				"referenceId": 1355
+			},
+			{
+				"referenceId": 1372
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1358,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1080,
+			"y": -1700
+		},
+		"connections": [
+			{
+				"referenceId": 1310
+			},
+			{
+				"referenceId": 1311
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1359,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -930,
+			"y": -1860
+		},
+		"connections": [
+			{
+				"referenceId": 1292
+			},
+			{
+				"referenceId": 1293
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1360,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1057,
+			"y": -1577
+		},
+		"connections": [
+			{
+				"referenceId": 1305
+			},
+			{
+				"referenceId": 1304
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1361,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -639,
+			"y": -1749
+		},
+		"connections": [
+			{
+				"referenceId": 1317
+			},
+			{
+				"referenceId": 1316
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1362,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -610,
+			"y": -2150
+		},
+		"connections": [
+			{
+				"referenceId": 1243
+			},
+			{
+				"referenceId": 1242
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1363,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -16,
+			"y": -1724
+		},
+		"connections": [
+			{
+				"referenceId": 1236
+			},
+			{
+				"referenceId": 1234
+			},
+			{
+				"referenceId": 1233
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1364,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 408,
+			"y": -2071
+		},
+		"connections": [
+			{
+				"referenceId": 1251
+			},
+			{
+				"referenceId": 1250
+			},
+			{
+				"referenceId": 1246
+			},
+			{
+				"referenceId": 1245
+			},
+			{
+				"referenceId": 1247
+			},
+			{
+				"referenceId": 1248
+			},
+			{
+				"referenceId": 1249
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1365,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 890,
+			"y": -1970
+		},
+		"connections": [
+			{
+				"referenceId": 1272
+			},
+			{
+				"referenceId": 1271
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1366,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 620,
+			"y": -1620
+		},
+		"connections": [
+			{
+				"referenceId": 1267
+			},
+			{
+				"referenceId": 1260
+			},
+			{
+				"referenceId": 1264
+			},
+			{
+				"referenceId": 1263
+			}
+		],
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1367,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 940,
+			"y": -1660
+		},
+		"connections": [
+			{
+				"referenceId": 1278
+			},
+			{
+				"referenceId": 1279
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1368,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1110,
+			"y": -1800
+		},
+		"connections": [
+			{
+				"referenceId": 1287
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1369,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1356,
+			"y": -1092
+		},
+		"connections": [
+			{
+				"referenceId": 1339
+			},
+			{
+				"referenceId": 1341
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1370,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1606,
+			"y": -1129
+		},
+		"connections": [
+			{
+				"referenceId": 1334
+			},
+			{
+				"referenceId": 1335
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1371,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1580,
+			"y": -820
+		},
+		"connections": [
+			{
+				"referenceId": 1343
+			},
+			{
+				"referenceId": 1347
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1372,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1600,
+			"y": -490
+		},
+		"connections": [
+			{
+				"referenceId": 1353
+			},
+			{
+				"referenceId": 1355
+			},
+			{
+				"referenceId": 1352
+			},
+			{
+				"referenceId": 1356
+			}
+		],
+		"requiredAllocatedEdges": 3
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1373,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1880,
+			"y": -840
+		},
+		"connections": [
+			{
+				"referenceId": 1328
+			},
+			{
+				"referenceId": 1374
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1374,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1970,
+			"y": -890
+		},
+		"connections": [
+			{
+				"referenceId": 1373
+			},
+			{
+				"referenceId": 1375
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1375,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 2060,
+			"y": -840
+		},
+		"connections": [
+			{
+				"referenceId": 1374
+			},
+			{
+				"referenceId": 1182
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1376,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1880,
+			"y": -750
+		},
+		"connections": [
+			{
+				"referenceId": 1377
+			},
+			{
+				"referenceId": 1328
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1377,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1940,
+			"y": -670
+		},
+		"connections": [
+			{
+				"referenceId": 1378
+			},
+			{
+				"referenceId": 1376
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1378,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 2020,
+			"y": -670
+		},
+		"connections": [
+			{
+				"referenceId": 1379
+			},
+			{
+				"referenceId": 1377
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1379,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 2060,
+			"y": -740
+		},
+		"connections": [
+			{
+				"referenceId": 1378
+			},
+			{
+				"referenceId": 1182
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1380,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1790,
+			"y": 0
+		},
+		"connections": [
+			{
+				"referenceId": 1320
+			},
+			{
+				"referenceId": 1321
+			},
+			{
+				"referenceId": 1382
+			},
+			{
+				"referenceId": 1381
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1381,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1910,
+			"y": -80
+		},
+		"connections": [
+			{
+				"referenceId": 1380
+			},
+			{
+				"referenceId": 1383
+			},
+			{
+				"referenceId": 1390
+			},
+			{
+				"referenceId": 1391
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1382,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1910,
+			"y": 90
+		},
+		"connections": [
+			{
+				"referenceId": 1380
+			},
+			{
+				"referenceId": 1384
+			},
+			{
+				"referenceId": 1440
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1383,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 2010,
+			"y": -40
+		},
+		"connections": [
+			{
+				"referenceId": 1381
+			},
+			{
+				"referenceId": 1385
+			},
+			{
+				"referenceId": 1387
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1384,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 2010,
+			"y": 60
+		},
+		"connections": [
+			{
+				"referenceId": 1382
+			},
+			{
+				"referenceId": 1386
+			},
+			{
+				"referenceId": 1387
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1385,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 2110,
+			"y": -110
+		},
+		"connections": [
+			{
+				"referenceId": 1383
+			},
+			{
+				"referenceId": 1388
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1386,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 2110,
+			"y": 130
+		},
+		"connections": [
+			{
+				"referenceId": 1384
+			},
+			{
+				"referenceId": 1389
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1387,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 2100,
+			"y": 10
+		},
+		"connections": [
+			{
+				"referenceId": 1383
+			},
+			{
+				"referenceId": 1384
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1388,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 2170,
+			"y": -210
+		},
+		"connections": [
+			{
+				"referenceId": 1385
+			},
+			{
+				"referenceId": 1183
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1389,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 2160,
+			"y": 230
+		},
+		"connections": [
+			{
+				"referenceId": 1386
+			},
+			{
+				"referenceId": 1184
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1390,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1860,
+			"y": -210
+		},
+		"connections": [
+			{
+				"referenceId": 1381
+			},
+			{
+				"referenceId": 1392
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1391,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1990,
+			"y": -200
+		},
+		"connections": [
+			{
+				"referenceId": 1394
+			},
+			{
+				"referenceId": 1381
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1392,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1820,
+			"y": -320
+		},
+		"connections": [
+			{
+				"referenceId": 1390
+			},
+			{
+				"referenceId": 1393
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1393,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1870,
+			"y": -420
+		},
+		"connections": [
+			{
+				"referenceId": 1392
+			},
+			{
+				"referenceId": 1396
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1394,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 2020,
+			"y": -290
+		},
+		"connections": [
+			{
+				"referenceId": 1395
+			},
+			{
+				"referenceId": 1391
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1395,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1990,
+			"y": -380
+		},
+		"connections": [
+			{
+				"referenceId": 1396
+			},
+			{
+				"referenceId": 1394
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1396,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1980,
+			"y": -510
+		},
+		"connections": [
+			{
+				"referenceId": 1393
+			},
+			{
+				"referenceId": 1395
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1397,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1630,
+			"y": 1460
+		},
+		"connections": [
+			{
+				"referenceId": 1179
+			},
+			{
+				"referenceId": 1399
+			},
+			{
+				"referenceId": 1398
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1398,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1590,
+			"y": 1380
+		},
+		"connections": [
+			{
+				"referenceId": 1397
+			},
+			{
+				"referenceId": 1400
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1399,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1660,
+			"y": 1380
+		},
+		"connections": [
+			{
+				"referenceId": 1397
+			},
+			{
+				"referenceId": 1401
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1400,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1530,
+			"y": 1310
+		},
+		"connections": [
+			{
+				"referenceId": 1398
+			},
+			{
+				"referenceId": 1402
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1401,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1720,
+			"y": 1310
+		},
+		"connections": [
+			{
+				"referenceId": 1399
+			},
+			{
+				"referenceId": 1403
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1402,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1570,
+			"y": 1240
+		},
+		"connections": [
+			{
+				"referenceId": 1400
+			},
+			{
+				"referenceId": 1412
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1403,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1670,
+			"y": 1240
+		},
+		"connections": [
+			{
+				"referenceId": 1401
+			},
+			{
+				"referenceId": 1412
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1404,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1550,
+			"y": 260
+		},
+		"connections": [
+			{
+				"referenceId": 1321
+			},
+			{
+				"referenceId": 1406
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1405,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1650,
+			"y": 260
+		},
+		"connections": [
+			{
+				"referenceId": 1321
+			},
+			{
+				"referenceId": 1407
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1406,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1550,
+			"y": 400
+		},
+		"connections": [
+			{
+				"referenceId": 1404
+			},
+			{
+				"referenceId": 1408
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1407,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1650,
+			"y": 400
+		},
+		"connections": [
+			{
+				"referenceId": 1409
+			},
+			{
+				"referenceId": 1405
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1408,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1510,
+			"y": 530
+		},
+		"connections": [
+			{
+				"referenceId": 1406
+			},
+			{
+				"referenceId": 1411
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1409,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1690,
+			"y": 530
+		},
+		"connections": [
+			{
+				"referenceId": 1407
+			},
+			{
+				"referenceId": 1411
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1411,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1600,
+			"y": 650
+		},
+		"connections": [
+			{
+				"referenceId": 1409
+			},
+			{
+				"referenceId": 1408
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1412,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1620,
+			"y": 1160
+		},
+		"connections": [
+			{
+				"referenceId": 1402
+			},
+			{
+				"referenceId": 1403
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1413,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1690,
+			"y": 880
+		},
+		"connections": [
+			{
+				"referenceId": 1428
+			},
+			{
+				"referenceId": 1429
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1414,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1460,
+			"y": 920
+		},
+		"connections": [
+			{
+				"referenceId": 1421
+			},
+			{
+				"referenceId": 1420
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1417,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1270,
+			"y": 1060
+		},
+		"connections": [
+			{
+				"referenceId": 1208
+			},
+			{
+				"referenceId": 1419
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1418,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1360,
+			"y": 1140
+		},
+		"connections": [
+			{
+				"referenceId": 1208
+			},
+			{
+				"referenceId": 1419
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1419,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1370,
+			"y": 1040
+		},
+		"connections": [
+			{
+				"referenceId": 1417
+			},
+			{
+				"referenceId": 1418
+			},
+			{
+				"referenceId": 1421
+			},
+			{
+				"referenceId": 1420
+			},
+			{
+				"referenceId": 1422
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1420,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1320,
+			"y": 910
+		},
+		"connections": [
+			{
+				"referenceId": 1419
+			},
+			{
+				"referenceId": 1414
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1421,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1520,
+			"y": 1050
+		},
+		"connections": [
+			{
+				"referenceId": 1419
+			},
+			{
+				"referenceId": 1414
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1422,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1420,
+			"y": 980
+		},
+		"connections": [
+			{
+				"referenceId": 1419
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1423,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1710,
+			"y": 740
+		},
+		"connections": [
+			{
+				"referenceId": 1424
+			},
+			{
+				"referenceId": 1325
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1424,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1630,
+			"y": 760
+		},
+		"connections": [
+			{
+				"referenceId": 1429
+			},
+			{
+				"referenceId": 1423
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1426,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1690,
+			"y": 1000
+		},
+		"connections": [
+			{
+				"referenceId": 1428
+			},
+			{
+				"referenceId": 1427
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1427,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1770,
+			"y": 1000
+		},
+		"connections": [
+			{
+				"referenceId": 1426
+			},
+			{
+				"referenceId": 1326
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1428,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1610,
+			"y": 950
+		},
+		"connections": [
+			{
+				"referenceId": 1413
+			},
+			{
+				"referenceId": 1426
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1429,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1590,
+			"y": 820
+		},
+		"connections": [
+			{
+				"referenceId": 1413
+			},
+			{
+				"referenceId": 1424
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1430,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1860,
+			"y": 690
+		},
+		"connections": [
+			{
+				"referenceId": 1325
+			},
+			{
+				"referenceId": 1432
+			},
+			{
+				"referenceId": 1431
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1431,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1966,
+			"y": 816
+		},
+		"connections": [
+			{
+				"referenceId": 1433
+			},
+			{
+				"referenceId": 1430
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1432,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1950,
+			"y": 610
+		},
+		"connections": [
+			{
+				"referenceId": 1430
+			},
+			{
+				"referenceId": 1434
+			},
+			{
+				"referenceId": 1442
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1433,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 2051,
+			"y": 731
+		},
+		"connections": [
+			{
+				"referenceId": 1435
+			},
+			{
+				"referenceId": 1431
+			},
+			{
+				"referenceId": 1442
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1434,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 2040,
+			"y": 530
+		},
+		"connections": [
+			{
+				"referenceId": 1432
+			},
+			{
+				"referenceId": 1435
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1435,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 2143,
+			"y": 643
+		},
+		"connections": [
+			{
+				"referenceId": 1434
+			},
+			{
+				"referenceId": 1185
+			},
+			{
+				"referenceId": 1433
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1436,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1820,
+			"y": 440
+		},
+		"connections": [
+			{
+				"referenceId": 1324
+			},
+			{
+				"referenceId": 1437
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1437,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1920,
+			"y": 410
+		},
+		"connections": [
+			{
+				"referenceId": 1436
+			},
+			{
+				"referenceId": 1438
+			},
+			{
+				"referenceId": 1441
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1438,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1820,
+			"y": 320
+		},
+		"connections": [
+			{
+				"referenceId": 1437
+			},
+			{
+				"referenceId": 1439
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1439,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1980,
+			"y": 290
+		},
+		"connections": [
+			{
+				"referenceId": 1438
+			},
+			{
+				"referenceId": 1440
+			},
+			{
+				"referenceId": 1441
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1440,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1850,
+			"y": 190
+		},
+		"connections": [
+			{
+				"referenceId": 1439
+			},
+			{
+				"referenceId": 1382
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1441,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1990,
+			"y": 370
+		},
+		"connections": [
+			{
+				"referenceId": 1439
+			},
+			{
+				"referenceId": 1437
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1442,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 2002,
+			"y": 668
+		},
+		"connections": [
+			{
+				"referenceId": 1432
+			},
+			{
+				"referenceId": 1433
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1443,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1040,
+			"y": 1200
+		},
+		"connections": [
+			{
+				"referenceId": 1444
+			},
+			{
+				"referenceId": 1445
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1444,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1167,
+			"y": 1281
+		},
+		"connections": [
+			{
+				"referenceId": 1208
+			},
+			{
+				"referenceId": 1443
+			},
+			{
+				"referenceId": 1446
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1445,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 920,
+			"y": 1280
+		},
+		"connections": [
+			{
+				"referenceId": 1443
+			},
+			{
+				"referenceId": 53
+			},
+			{
+				"referenceId": 1446
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1446,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1043,
+			"y": 1380
+		},
+		"connections": [
+			{
+				"referenceId": 1445
+			},
+			{
+				"referenceId": 1447
+			},
+			{
+				"referenceId": 1444
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1447,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1130,
+			"y": 1480
+		},
+		"connections": [
+			{
+				"referenceId": 1448
+			},
+			{
+				"referenceId": 1446
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1448,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 970,
+			"y": 1460
+		},
+		"connections": [
+			{
+				"referenceId": 1447
+			},
+			{
+				"referenceId": 1501
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1449,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 360,
+			"y": 1570
+		},
+		"connections": [
+			{
+				"referenceId": 55
+			},
+			{
+				"referenceId": 1450
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1450,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 420,
+			"y": 1700
+		},
+		"connections": [
+			{
+				"referenceId": 1449
+			},
+			{
+				"referenceId": 1451
+			},
+			{
+				"referenceId": 1454
+			},
+			{
+				"referenceId": 1658
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1451,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 440,
+			"y": 1850
+		},
+		"connections": [
+			{
+				"referenceId": 1450
+			},
+			{
+				"referenceId": 1452
+			},
+			{
+				"referenceId": 1655
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1452,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 401,
+			"y": 1981
+		},
+		"connections": [
+			{
+				"referenceId": 1451
+			},
+			{
+				"referenceId": 1453
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1453,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 351,
+			"y": 2109
+		},
+		"connections": [
+			{
+				"referenceId": 1452
+			},
+			{
+				"referenceId": 1189
+			},
+			{
+				"referenceId": 1464
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1454,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 220,
+			"y": 1740
+		},
+		"connections": [
+			{
+				"referenceId": 1450
+			},
+			{
+				"referenceId": 1458
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1455,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -420,
+			"y": 1700
+		},
+		"connections": [
+			{
+				"referenceId": 1457
+			},
+			{
+				"referenceId": 1459
+			},
+			{
+				"referenceId": 1460
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1457,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -380,
+			"y": 1570
+		},
+		"connections": [
+			{
+				"referenceId": 57
+			},
+			{
+				"referenceId": 1455
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1458,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 0,
+			"y": 1750
+		},
+		"connections": [
+			{
+				"referenceId": 1454
+			},
+			{
+				"referenceId": 1459
+			},
+			{
+				"referenceId": 1475
+			},
+			{
+				"referenceId": 1481
+			},
+			{
+				"referenceId": 1478
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1459,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -220,
+			"y": 1740
+		},
+		"connections": [
+			{
+				"referenceId": 1458
+			},
+			{
+				"referenceId": 1455
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1460,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -440,
+			"y": 1850
+		},
+		"connections": [
+			{
+				"referenceId": 1461
+			},
+			{
+				"referenceId": 1455
+			},
+			{
+				"referenceId": 1652
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1461,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -402,
+			"y": 1978
+		},
+		"connections": [
+			{
+				"referenceId": 1462
+			},
+			{
+				"referenceId": 1460
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1462,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -340,
+			"y": 2100
+		},
+		"connections": [
+			{
+				"referenceId": 1190
+			},
+			{
+				"referenceId": 1461
+			},
+			{
+				"referenceId": 1465
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1464,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 150,
+			"y": 2140
+		},
+		"connections": [
+			{
+				"referenceId": 1453
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1465,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -150,
+			"y": 2140
+		},
+		"connections": [
+			{
+				"referenceId": 1462
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1466,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 700,
+			"y": 1440
+		},
+		"connections": [
+			{
+				"referenceId": 54
+			},
+			{
+				"referenceId": 1469
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1467,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 570,
+			"y": 1500
+		},
+		"connections": [
+			{
+				"referenceId": 1468
+			},
+			{
+				"referenceId": 54
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1468,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 580,
+			"y": 1650
+		},
+		"connections": [
+			{
+				"referenceId": 1470
+			},
+			{
+				"referenceId": 1467
+			},
+			{
+				"referenceId": 1668
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1469,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 820,
+			"y": 1560
+		},
+		"connections": [
+			{
+				"referenceId": 1466
+			},
+			{
+				"referenceId": 1470
+			},
+			{
+				"referenceId": 1669
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1470,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 685,
+			"y": 1578
+		},
+		"connections": [
+			{
+				"referenceId": 1468
+			},
+			{
+				"referenceId": 1469
+			},
+			{
+				"referenceId": 1502
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1471,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -236,
+			"y": 1530
+		},
+		"connections": [
+			{
+				"referenceId": 57
+			},
+			{
+				"referenceId": 1472
+			},
+			{
+				"referenceId": 1477
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1472,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -110,
+			"y": 1550
+		},
+		"connections": [
+			{
+				"referenceId": 1471
+			},
+			{
+				"referenceId": 1503
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1473,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 223,
+			"y": 1529
+		},
+		"connections": [
+			{
+				"referenceId": 55
+			},
+			{
+				"referenceId": 1474
+			},
+			{
+				"referenceId": 1476
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1474,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 104,
+			"y": 1551
+		},
+		"connections": [
+			{
+				"referenceId": 1473
+			},
+			{
+				"referenceId": 1503
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1475,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 0,
+			"y": 1670
+		},
+		"connections": [
+			{
+				"referenceId": 1476
+			},
+			{
+				"referenceId": 1477
+			},
+			{
+				"referenceId": 1458
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1476,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 181,
+			"y": 1642
+		},
+		"connections": [
+			{
+				"referenceId": 1473
+			},
+			{
+				"referenceId": 1475
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1477,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -180,
+			"y": 1640
+		},
+		"connections": [
+			{
+				"referenceId": 1475
+			},
+			{
+				"referenceId": 1471
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1478,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -90,
+			"y": 1840
+		},
+		"connections": [
+			{
+				"referenceId": 1458
+			},
+			{
+				"referenceId": 1479
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1479,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -120,
+			"y": 1940
+		},
+		"connections": [
+			{
+				"referenceId": 1478
+			},
+			{
+				"referenceId": 1480
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1480,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -70,
+			"y": 2040
+		},
+		"connections": [
+			{
+				"referenceId": 1479
+			},
+			{
+				"referenceId": 1504
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1481,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 90,
+			"y": 1840
+		},
+		"connections": [
+			{
+				"referenceId": 1482
+			},
+			{
+				"referenceId": 1458
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1482,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 130,
+			"y": 1940
+		},
+		"connections": [
+			{
+				"referenceId": 1483
+			},
+			{
+				"referenceId": 1481
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1483,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 80,
+			"y": 2040
+		},
+		"connections": [
+			{
+				"referenceId": 1482
+			},
+			{
+				"referenceId": 1504
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1484,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1210,
+			"y": 1660
+		},
+		"connections": [
+			{
+				"referenceId": 1500
+			},
+			{
+				"referenceId": 1486
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1485,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1130,
+			"y": 1860
+		},
+		"connections": [
+			{
+				"referenceId": 1490
+			},
+			{
+				"referenceId": 1500
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1486,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1100,
+			"y": 1590
+		},
+		"connections": [
+			{
+				"referenceId": 1484
+			},
+			{
+				"referenceId": 1505
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1489,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -950,
+			"y": 1740
+		},
+		"connections": [
+			{
+				"referenceId": 1490
+			},
+			{
+				"referenceId": 1505
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1490,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1010,
+			"y": 1840
+		},
+		"connections": [
+			{
+				"referenceId": 1489
+			},
+			{
+				"referenceId": 1485
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1492,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1170,
+			"y": 1200
+		},
+		"connections": [
+			{
+				"referenceId": 1211
+			},
+			{
+				"referenceId": 1495
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1493,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1270,
+			"y": 1300
+		},
+		"connections": [
+			{
+				"referenceId": 1211
+			},
+			{
+				"referenceId": 1494
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1494,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1170,
+			"y": 1360
+		},
+		"connections": [
+			{
+				"referenceId": 1493
+			},
+			{
+				"referenceId": 1497
+			},
+			{
+				"referenceId": 1495
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1495,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1050,
+			"y": 1290
+		},
+		"connections": [
+			{
+				"referenceId": 1492
+			},
+			{
+				"referenceId": 1494
+			},
+			{
+				"referenceId": 1496
+			},
+			{
+				"referenceId": 1498
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1496,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1090,
+			"y": 1420
+		},
+		"connections": [
+			{
+				"referenceId": 1497
+			},
+			{
+				"referenceId": 1495
+			},
+			{
+				"referenceId": 1499
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1497,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1190,
+			"y": 1460
+		},
+		"connections": [
+			{
+				"referenceId": 1494
+			},
+			{
+				"referenceId": 1496
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1498,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -920,
+			"y": 1380
+		},
+		"connections": [
+			{
+				"referenceId": 1495
+			},
+			{
+				"referenceId": 1506
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1499,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -990,
+			"y": 1480
+		},
+		"connections": [
+			{
+				"referenceId": 1496
+			},
+			{
+				"referenceId": 1506
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1500,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1220,
+			"y": 1780
+		},
+		"connections": [
+			{
+				"referenceId": 1192
+			},
+			{
+				"referenceId": 1485
+			},
+			{
+				"referenceId": 1484
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1501,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1080,
+			"y": 1560
+		},
+		"connections": [
+			{
+				"referenceId": 1448
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1502,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 730,
+			"y": 1680
+		},
+		"connections": [
+			{
+				"referenceId": 1470
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1503,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 0,
+			"y": 1560
+		},
+		"connections": [
+			{
+				"referenceId": 1474
+			},
+			{
+				"referenceId": 1472
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1504,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 10,
+			"y": 1970
+		},
+		"connections": [
+			{
+				"referenceId": 1480
+			},
+			{
+				"referenceId": 1483
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1505,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -980,
+			"y": 1620
+		},
+		"connections": [
+			{
+				"referenceId": 1489
+			},
+			{
+				"referenceId": 1486
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1506,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -860,
+			"y": 1490
+		},
+		"connections": [
+			{
+				"referenceId": 1498
+			},
+			{
+				"referenceId": 1499
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1507,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1620,
+			"y": -250
+		},
+		"connections": [
+			{
+				"referenceId": 1508
+			},
+			{
+				"referenceId": 65
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1508,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1770,
+			"y": -220
+		},
+		"connections": [
+			{
+				"referenceId": 1509
+			},
+			{
+				"referenceId": 1507
+			},
+			{
+				"referenceId": 1577
+			},
+			{
+				"referenceId": 1576
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1509,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1930,
+			"y": -210
+		},
+		"connections": [
+			{
+				"referenceId": 1510
+			},
+			{
+				"referenceId": 1508
+			},
+			{
+				"referenceId": 1566
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1510,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -2100,
+			"y": -230
+		},
+		"connections": [
+			{
+				"referenceId": 1197
+			},
+			{
+				"referenceId": 1509
+			},
+			{
+				"referenceId": 1582
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1511,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1620,
+			"y": 240
+		},
+		"connections": [
+			{
+				"referenceId": 1512
+			},
+			{
+				"referenceId": 63
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1512,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1770,
+			"y": 210
+		},
+		"connections": [
+			{
+				"referenceId": 1513
+			},
+			{
+				"referenceId": 1511
+			},
+			{
+				"referenceId": 1560
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1513,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1930,
+			"y": 190
+		},
+		"connections": [
+			{
+				"referenceId": 1514
+			},
+			{
+				"referenceId": 1512
+			},
+			{
+				"referenceId": 1567
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1514,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -2100,
+			"y": 200
+		},
+		"connections": [
+			{
+				"referenceId": 1198
+			},
+			{
+				"referenceId": 1513
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1515,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1580,
+			"y": -460
+		},
+		"connections": [
+			{
+				"referenceId": 65
+			},
+			{
+				"referenceId": 1516
+			},
+			{
+				"referenceId": 1589
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1516,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1700,
+			"y": -570
+		},
+		"connections": [
+			{
+				"referenceId": 1515
+			},
+			{
+				"referenceId": 1517
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1517,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1830,
+			"y": -660
+		},
+		"connections": [
+			{
+				"referenceId": 1516
+			},
+			{
+				"referenceId": 1518
+			},
+			{
+				"referenceId": 1590
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1518,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1980,
+			"y": -730
+		},
+		"connections": [
+			{
+				"referenceId": 1517
+			},
+			{
+				"referenceId": 1196
+			},
+			{
+				"referenceId": 1593
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1519,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1580,
+			"y": 440
+		},
+		"connections": [
+			{
+				"referenceId": 63
+			},
+			{
+				"referenceId": 1520
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1520,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1700,
+			"y": 550
+		},
+		"connections": [
+			{
+				"referenceId": 1519
+			},
+			{
+				"referenceId": 1521
+			},
+			{
+				"referenceId": 1553
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1521,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1840,
+			"y": 630
+		},
+		"connections": [
+			{
+				"referenceId": 1520
+			},
+			{
+				"referenceId": 1522
+			},
+			{
+				"referenceId": 1562
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1522,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -2000,
+			"y": 690
+		},
+		"connections": [
+			{
+				"referenceId": 1521
+			},
+			{
+				"referenceId": 1199
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1523,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1340,
+			"y": 860
+		},
+		"connections": [
+			{
+				"referenceId": 61
+			},
+			{
+				"referenceId": 1525
+			},
+			{
+				"referenceId": 1524
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1524,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1280,
+			"y": 970
+		},
+		"connections": [
+			{
+				"referenceId": 1528
+			},
+			{
+				"referenceId": 1523
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1525,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1440,
+			"y": 790
+		},
+		"connections": [
+			{
+				"referenceId": 1523
+			},
+			{
+				"referenceId": 1526
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1526,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1530,
+			"y": 870
+		},
+		"connections": [
+			{
+				"referenceId": 1525
+			},
+			{
+				"referenceId": 1527
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1527,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1420,
+			"y": 930
+		},
+		"connections": [
+			{
+				"referenceId": 1526
+			},
+			{
+				"referenceId": 1528
+			},
+			{
+				"referenceId": 1616
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1528,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1360,
+			"y": 1040
+		},
+		"connections": [
+			{
+				"referenceId": 1527
+			},
+			{
+				"referenceId": 1524
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1529,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -2020,
+			"y": 780
+		},
+		"connections": [
+			{
+				"referenceId": 1199
+			},
+			{
+				"referenceId": 1533
+			},
+			{
+				"referenceId": 1531
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1530,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1810,
+			"y": 890
+		},
+		"connections": [
+			{
+				"referenceId": 1535
+			},
+			{
+				"referenceId": 1615
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1531,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1880,
+			"y": 780
+		},
+		"connections": [
+			{
+				"referenceId": 1529
+			},
+			{
+				"referenceId": 1532
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1532,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1760,
+			"y": 780
+		},
+		"connections": [
+			{
+				"referenceId": 1531
+			},
+			{
+				"referenceId": 1615
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1533,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1890,
+			"y": 890
+		},
+		"connections": [
+			{
+				"referenceId": 1529
+			},
+			{
+				"referenceId": 1534
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1534,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1950,
+			"y": 980
+		},
+		"connections": [
+			{
+				"referenceId": 1533
+			},
+			{
+				"referenceId": 1535
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1535,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1750,
+			"y": 980
+		},
+		"connections": [
+			{
+				"referenceId": 1534
+			},
+			{
+				"referenceId": 1530
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1536,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1580,
+			"y": 1350
+		},
+		"connections": [
+			{
+				"referenceId": 1212
+			},
+			{
+				"referenceId": 1539
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1537,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1470,
+			"y": 1260
+		},
+		"connections": [
+			{
+				"referenceId": 1212
+			},
+			{
+				"referenceId": 1538
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1538,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1510,
+			"y": 1150
+		},
+		"connections": [
+			{
+				"referenceId": 1541
+			},
+			{
+				"referenceId": 1537
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1539,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1680,
+			"y": 1280
+		},
+		"connections": [
+			{
+				"referenceId": 1536
+			},
+			{
+				"referenceId": 1540
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1540,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1720,
+			"y": 1170
+		},
+		"connections": [
+			{
+				"referenceId": 1539
+			},
+			{
+				"referenceId": 1614
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1541,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1620,
+			"y": 1080
+		},
+		"connections": [
+			{
+				"referenceId": 1538
+			},
+			{
+				"referenceId": 1614
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1542,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1410,
+			"y": 630
+		},
+		"connections": [
+			{
+				"referenceId": 62
+			},
+			{
+				"referenceId": 1544
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1543,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1470,
+			"y": 530
+		},
+		"connections": [
+			{
+				"referenceId": 62
+			},
+			{
+				"referenceId": 1544
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1544,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1510,
+			"y": 620
+		},
+		"connections": [
+			{
+				"referenceId": 1543
+			},
+			{
+				"referenceId": 1545
+			},
+			{
+				"referenceId": 1542
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1545,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1580,
+			"y": 650
+		},
+		"connections": [
+			{
+				"referenceId": 1547
+			},
+			{
+				"referenceId": 1544
+			},
+			{
+				"referenceId": 1548
+			},
+			{
+				"referenceId": 1617
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1547,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1560,
+			"y": 720
+		},
+		"connections": [
+			{
+				"referenceId": 1545
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1548,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1629,
+			"y": 591
+		},
+		"connections": [
+			{
+				"referenceId": 1545
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1549,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1430,
+			"y": -90
+		},
+		"connections": [
+			{
+				"referenceId": 184
+			},
+			{
+				"referenceId": 1552
+			},
+			{
+				"referenceId": 1627
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1551,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1260,
+			"y": 80
+		},
+		"connections": [
+			{
+				"referenceId": 185
+			},
+			{
+				"referenceId": 186
+			},
+			{
+				"referenceId": 1627
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1552,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1430,
+			"y": 80
+		},
+		"connections": [
+			{
+				"referenceId": 1549
+			},
+			{
+				"referenceId": 185
+			},
+			{
+				"referenceId": 1627
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1553,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1740,
+			"y": 480
+		},
+		"connections": [
+			{
+				"referenceId": 1554
+			},
+			{
+				"referenceId": 1520
+			},
+			{
+				"referenceId": 1556
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1554,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1740,
+			"y": 410
+		},
+		"connections": [
+			{
+				"referenceId": 1558
+			},
+			{
+				"referenceId": 1553
+			},
+			{
+				"referenceId": 1557
+			},
+			{
+				"referenceId": 1555
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1555,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1740,
+			"y": 330
+		},
+		"connections": [
+			{
+				"referenceId": 1554
+			},
+			{
+				"referenceId": 1619
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1556,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1670,
+			"y": 470
+		},
+		"connections": [
+			{
+				"referenceId": 1553
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1557,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1650,
+			"y": 370
+		},
+		"connections": [
+			{
+				"referenceId": 1554
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1558,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1830,
+			"y": 420
+		},
+		"connections": [
+			{
+				"referenceId": 1554
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1559,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -2120,
+			"y": 300
+		},
+		"connections": [
+			{
+				"referenceId": 1560
+			},
+			{
+				"referenceId": 1198
+			},
+			{
+				"referenceId": 1618
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1560,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1930,
+			"y": 300
+		},
+		"connections": [
+			{
+				"referenceId": 1512
+			},
+			{
+				"referenceId": 1559
+			},
+			{
+				"referenceId": 1618
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1561,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -2110,
+			"y": 610
+		},
+		"connections": [
+			{
+				"referenceId": 1562
+			},
+			{
+				"referenceId": 1199
+			},
+			{
+				"referenceId": 1618
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1562,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1920,
+			"y": 600
+		},
+		"connections": [
+			{
+				"referenceId": 1521
+			},
+			{
+				"referenceId": 1561
+			},
+			{
+				"referenceId": 1618
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1563,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -2160,
+			"y": -130
+		},
+		"connections": [
+			{
+				"referenceId": 1197
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1564,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -2160,
+			"y": 90
+		},
+		"connections": [
+			{
+				"referenceId": 1198
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1566,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -2030,
+			"y": -90
+		},
+		"connections": [
+			{
+				"referenceId": 1567
+			},
+			{
+				"referenceId": 1509
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1567,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -2030,
+			"y": 80
+		},
+		"connections": [
+			{
+				"referenceId": 1513
+			},
+			{
+				"referenceId": 1566
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1568,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1590,
+			"y": -50
+		},
+		"connections": [
+			{
+				"referenceId": 1570
+			},
+			{
+				"referenceId": 64
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1569,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1590,
+			"y": 30
+		},
+		"connections": [
+			{
+				"referenceId": 64
+			},
+			{
+				"referenceId": 1571
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1570,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1670,
+			"y": -50
+		},
+		"connections": [
+			{
+				"referenceId": 1572
+			},
+			{
+				"referenceId": 1568
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1571,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1670,
+			"y": 30
+		},
+		"connections": [
+			{
+				"referenceId": 1569
+			},
+			{
+				"referenceId": 1573
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1572,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1670,
+			"y": -140
+		},
+		"connections": [
+			{
+				"referenceId": 1575
+			},
+			{
+				"referenceId": 1570
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1573,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1670,
+			"y": 110
+		},
+		"connections": [
+			{
+				"referenceId": 1571
+			},
+			{
+				"referenceId": 1574
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1574,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1840,
+			"y": 50
+		},
+		"connections": [
+			{
+				"referenceId": 1573
+			},
+			{
+				"referenceId": 1620
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1575,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1840,
+			"y": -80
+		},
+		"connections": [
+			{
+				"referenceId": 1572
+			},
+			{
+				"referenceId": 1620
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1576,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1690,
+			"y": -290
+		},
+		"connections": [
+			{
+				"referenceId": 1508
+			},
+			{
+				"referenceId": 1578
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1577,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1840,
+			"y": -290
+		},
+		"connections": [
+			{
+				"referenceId": 1508
+			},
+			{
+				"referenceId": 1579
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1578,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1610,
+			"y": -360
+		},
+		"connections": [
+			{
+				"referenceId": 1576
+			},
+			{
+				"referenceId": 1581
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1579,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1910,
+			"y": -360
+		},
+		"connections": [
+			{
+				"referenceId": 1577
+			},
+			{
+				"referenceId": 1580
+			},
+			{
+				"referenceId": 1583
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1580,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1830,
+			"y": -440
+		},
+		"connections": [
+			{
+				"referenceId": 1579
+			},
+			{
+				"referenceId": 1621
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1581,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1700,
+			"y": -440
+		},
+		"connections": [
+			{
+				"referenceId": 1578
+			},
+			{
+				"referenceId": 1621
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1582,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -2120,
+			"y": -360
+		},
+		"connections": [
+			{
+				"referenceId": 1510
+			},
+			{
+				"referenceId": 1583
+			},
+			{
+				"referenceId": 1585
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1583,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -2010,
+			"y": -360
+		},
+		"connections": [
+			{
+				"referenceId": 1579
+			},
+			{
+				"referenceId": 1582
+			},
+			{
+				"referenceId": 1584
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1584,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1970,
+			"y": -480
+		},
+		"connections": [
+			{
+				"referenceId": 1583
+			},
+			{
+				"referenceId": 1587
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1585,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -2160,
+			"y": -480
+		},
+		"connections": [
+			{
+				"referenceId": 1582
+			},
+			{
+				"referenceId": 1586
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1586,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -2110,
+			"y": -540
+		},
+		"connections": [
+			{
+				"referenceId": 1585
+			},
+			{
+				"referenceId": 1622
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1587,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -2020,
+			"y": -540
+		},
+		"connections": [
+			{
+				"referenceId": 1584
+			},
+			{
+				"referenceId": 1622
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1588,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1630,
+			"y": -650
+		},
+		"connections": [
+			{
+				"referenceId": 1589
+			},
+			{
+				"referenceId": 1590
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1589,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1500,
+			"y": -550
+		},
+		"connections": [
+			{
+				"referenceId": 1592
+			},
+			{
+				"referenceId": 1588
+			},
+			{
+				"referenceId": 1515
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1590,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1740,
+			"y": -730
+		},
+		"connections": [
+			{
+				"referenceId": 1588
+			},
+			{
+				"referenceId": 1591
+			},
+			{
+				"referenceId": 1517
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1591,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1600,
+			"y": -790
+		},
+		"connections": [
+			{
+				"referenceId": 1590
+			},
+			{
+				"referenceId": 1592
+			},
+			{
+				"referenceId": 1623
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1592,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1490,
+			"y": -710
+		},
+		"connections": [
+			{
+				"referenceId": 1589
+			},
+			{
+				"referenceId": 1591
+			},
+			{
+				"referenceId": 1623
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1593,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1926,
+			"y": -815
+		},
+		"connections": [
+			{
+				"referenceId": 1518
+			},
+			{
+				"referenceId": 1594
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1594,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1870,
+			"y": -900
+		},
+		"connections": [
+			{
+				"referenceId": 1593
+			},
+			{
+				"referenceId": 1595
+			},
+			{
+				"referenceId": 1598
+			},
+			{
+				"referenceId": 1624
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1595,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1960,
+			"y": -950
+		},
+		"connections": [
+			{
+				"referenceId": 1594
+			},
+			{
+				"referenceId": 1599
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1598,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1780,
+			"y": -850
+		},
+		"connections": [
+			{
+				"referenceId": 1594
+			},
+			{
+				"referenceId": 1600
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1599,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1910,
+			"y": -1030
+		},
+		"connections": [
+			{
+				"referenceId": 1595
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1600,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1730,
+			"y": -930
+		},
+		"connections": [
+			{
+				"referenceId": 1598
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1601,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1770,
+			"y": -1220
+		},
+		"connections": [
+			{
+				"referenceId": 1603
+			},
+			{
+				"referenceId": 1194
+			},
+			{
+				"referenceId": 1607
+			},
+			{
+				"referenceId": 1625
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1602,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1430,
+			"y": -1220
+		},
+		"connections": [
+			{
+				"referenceId": 1606
+			},
+			{
+				"referenceId": 1607
+			},
+			{
+				"referenceId": 1625
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1603,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1770,
+			"y": -1350
+		},
+		"connections": [
+			{
+				"referenceId": 1601
+			},
+			{
+				"referenceId": 1604
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1604,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1660,
+			"y": -1400
+		},
+		"connections": [
+			{
+				"referenceId": 1603
+			},
+			{
+				"referenceId": 1605
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1605,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1540,
+			"y": -1400
+		},
+		"connections": [
+			{
+				"referenceId": 1604
+			},
+			{
+				"referenceId": 1606
+			},
+			{
+				"referenceId": 1213
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1606,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1430,
+			"y": -1340
+		},
+		"connections": [
+			{
+				"referenceId": 1605
+			},
+			{
+				"referenceId": 1602
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1607,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1600,
+			"y": -1270
+		},
+		"connections": [
+			{
+				"referenceId": 1601
+			},
+			{
+				"referenceId": 1602
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1608,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1240,
+			"y": -1110
+		},
+		"connections": [
+			{
+				"referenceId": 1214
+			},
+			{
+				"referenceId": 1609
+			},
+			{
+				"referenceId": 1611
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1609,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1360,
+			"y": -1170
+		},
+		"connections": [
+			{
+				"referenceId": 1610
+			},
+			{
+				"referenceId": 1214
+			},
+			{
+				"referenceId": 1608
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1610,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1450,
+			"y": -1110
+		},
+		"connections": [
+			{
+				"referenceId": 1612
+			},
+			{
+				"referenceId": 1609
+			},
+			{
+				"referenceId": 1611
+			},
+			{
+				"referenceId": 1626
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1611,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1260,
+			"y": -1000
+		},
+		"connections": [
+			{
+				"referenceId": 1608
+			},
+			{
+				"referenceId": 1613
+			},
+			{
+				"referenceId": 1610
+			},
+			{
+				"referenceId": 1626
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1612,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1520,
+			"y": -1000
+		},
+		"connections": [
+			{
+				"referenceId": 1613
+			},
+			{
+				"referenceId": 1610
+			},
+			{
+				"referenceId": 1626
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 1613,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1320,
+			"y": -880
+		},
+		"connections": [
+			{
+				"referenceId": 1612
+			},
+			{
+				"referenceId": 1611
+			},
+			{
+				"referenceId": 1626
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1614,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1710,
+			"y": 1090
+		},
+		"connections": [
+			{
+				"referenceId": 1540
+			},
+			{
+				"referenceId": 1541
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1615,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1650,
+			"y": 780
+		},
+		"connections": [
+			{
+				"referenceId": 1530
+			},
+			{
+				"referenceId": 1532
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1616,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1490,
+			"y": 1000
+		},
+		"connections": [
+			{
+				"referenceId": 1527
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1617,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1650,
+			"y": 680
+		},
+		"connections": [
+			{
+				"referenceId": 1545
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1618,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -2020,
+			"y": 450
+		},
+		"connections": [
+			{
+				"referenceId": 1559
+			},
+			{
+				"referenceId": 1561
+			},
+			{
+				"referenceId": 1562
+			},
+			{
+				"referenceId": 1560
+			}
+		],
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1619,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1740,
+			"y": 270
+		},
+		"connections": [
+			{
+				"referenceId": 1555
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1620,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1990,
+			"y": -10
+		},
+		"connections": [
+			{
+				"referenceId": 1575
+			},
+			{
+				"referenceId": 1574
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1621,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1766,
+			"y": -395
+		},
+		"connections": [
+			{
+				"referenceId": 1580
+			},
+			{
+				"referenceId": 1581
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1622,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -2067,
+			"y": -610
+		},
+		"connections": [
+			{
+				"referenceId": 1586
+			},
+			{
+				"referenceId": 1587
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1623,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1484,
+			"y": -821
+		},
+		"connections": [
+			{
+				"referenceId": 1591
+			},
+			{
+				"referenceId": 1592
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1624,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1793,
+			"y": -1030
+		},
+		"connections": [
+			{
+				"referenceId": 1594
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1625,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1600,
+			"y": -1174
+		},
+		"connections": [
+			{
+				"referenceId": 1602
+			},
+			{
+				"referenceId": 1601
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1626,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1390,
+			"y": -1000
+		},
+		"connections": [
+			{
+				"referenceId": 1612
+			},
+			{
+				"referenceId": 1613
+			},
+			{
+				"referenceId": 1611
+			},
+			{
+				"referenceId": 1610
+			}
+		],
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1627,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1340,
+			"y": 0
+		},
+		"connections": [
+			{
+				"referenceId": 1549
+			},
+			{
+				"referenceId": 1552
+			},
+			{
+				"referenceId": 186
+			},
+			{
+				"referenceId": 1551
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1628,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1570,
+			"y": 1540
+		},
+		"connections": [
+			{
+				"referenceId": 1180
+			},
+			{
+				"referenceId": 1629
+			},
+			{
+				"referenceId": 1631
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1629,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1460,
+			"y": 1460
+		},
+		"connections": [
+			{
+				"referenceId": 1628
+			},
+			{
+				"referenceId": 1630
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1630,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1360,
+			"y": 1460
+		},
+		"connections": [
+			{
+				"referenceId": 1629
+			},
+			{
+				"referenceId": 1632
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1631,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1480,
+			"y": 1580
+		},
+		"connections": [
+			{
+				"referenceId": 1628
+			},
+			{
+				"referenceId": 1633
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1632,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1270,
+			"y": 1520
+		},
+		"connections": [
+			{
+				"referenceId": 1630
+			},
+			{
+				"referenceId": 1634
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1633,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1390,
+			"y": 1630
+		},
+		"connections": [
+			{
+				"referenceId": 1631
+			},
+			{
+				"referenceId": 1634
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1634,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1290,
+			"y": 1610
+		},
+		"connections": [
+			{
+				"referenceId": 1632
+			},
+			{
+				"referenceId": 1633
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1635,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -700,
+			"y": 1440
+		},
+		"connections": [
+			{
+				"referenceId": 58
+			},
+			{
+				"referenceId": 1637
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1636,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -510,
+			"y": 1500
+		},
+		"connections": [
+			{
+				"referenceId": 58
+			},
+			{
+				"referenceId": 1638
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1637,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -680,
+			"y": 1560
+		},
+		"connections": [
+			{
+				"referenceId": 1635
+			},
+			{
+				"referenceId": 1640
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1638,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -590,
+			"y": 1590
+		},
+		"connections": [
+			{
+				"referenceId": 1636
+			},
+			{
+				"referenceId": 1639
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1639,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -592,
+			"y": 1702
+		},
+		"connections": [
+			{
+				"referenceId": 1638
+			},
+			{
+				"referenceId": 1654
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1640,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -750,
+			"y": 1650
+		},
+		"connections": [
+			{
+				"referenceId": 1637
+			},
+			{
+				"referenceId": 1654
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1641,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -810,
+			"y": 1970
+		},
+		"connections": [
+			{
+				"referenceId": 1191
+			},
+			{
+				"referenceId": 1642
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1642,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -780,
+			"y": 1870
+		},
+		"connections": [
+			{
+				"referenceId": 1641
+			},
+			{
+				"referenceId": 1643
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1643,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -690,
+			"y": 1800
+		},
+		"connections": [
+			{
+				"referenceId": 1642
+			},
+			{
+				"referenceId": 1644
+			},
+			{
+				"referenceId": 1648
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1644,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -580,
+			"y": 1830
+		},
+		"connections": [
+			{
+				"referenceId": 1643
+			},
+			{
+				"referenceId": 1645
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1645,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -560,
+			"y": 1930
+		},
+		"connections": [
+			{
+				"referenceId": 1644
+			},
+			{
+				"referenceId": 1646
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1646,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -630,
+			"y": 2010
+		},
+		"connections": [
+			{
+				"referenceId": 1645
+			},
+			{
+				"referenceId": 1653
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1648,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -680,
+			"y": 1860
+		},
+		"connections": [
+			{
+				"referenceId": 1649
+			},
+			{
+				"referenceId": 1653
+			},
+			{
+				"referenceId": 1643
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1649,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -750,
+			"y": 1940
+		},
+		"connections": [
+			{
+				"referenceId": 1648
+			},
+			{
+				"referenceId": 1650
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1650,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -720,
+			"y": 2050
+		},
+		"connections": [
+			{
+				"referenceId": 1651
+			},
+			{
+				"referenceId": 1649
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1651,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -620,
+			"y": 2070
+		},
+		"connections": [
+			{
+				"referenceId": 1650
+			},
+			{
+				"referenceId": 1652
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1652,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -510,
+			"y": 1980
+		},
+		"connections": [
+			{
+				"referenceId": 1460
+			},
+			{
+				"referenceId": 1651
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1653,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -660,
+			"y": 1940
+		},
+		"connections": [
+			{
+				"referenceId": 1648
+			},
+			{
+				"referenceId": 1646
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1654,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -690,
+			"y": 1720
+		},
+		"connections": [
+			{
+				"referenceId": 1640
+			},
+			{
+				"referenceId": 1639
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1655,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 500,
+			"y": 1970
+		},
+		"connections": [
+			{
+				"referenceId": 1451
+			},
+			{
+				"referenceId": 1656
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1656,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 600,
+			"y": 2040
+		},
+		"connections": [
+			{
+				"referenceId": 1655
+			},
+			{
+				"referenceId": 1657
+			},
+			{
+				"referenceId": 1670
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1657,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 730,
+			"y": 2070
+		},
+		"connections": [
+			{
+				"referenceId": 1656
+			},
+			{
+				"referenceId": 1680
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1658,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 540,
+			"y": 1810
+		},
+		"connections": [
+			{
+				"referenceId": 1450
+			},
+			{
+				"referenceId": 1659
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1659,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 650,
+			"y": 1890
+		},
+		"connections": [
+			{
+				"referenceId": 1658
+			},
+			{
+				"referenceId": 1660
+			},
+			{
+				"referenceId": 1670
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1660,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 780,
+			"y": 1930
+		},
+		"connections": [
+			{
+				"referenceId": 1659
+			},
+			{
+				"referenceId": 1680
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1661,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1140,
+			"y": 1890
+		},
+		"connections": [
+			{
+				"referenceId": 1187
+			},
+			{
+				"referenceId": 1663
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1662,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1279,
+			"y": 1786
+		},
+		"connections": [
+			{
+				"referenceId": 1665
+			},
+			{
+				"referenceId": 1187
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1663,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1050,
+			"y": 1840
+		},
+		"connections": [
+			{
+				"referenceId": 1661
+			},
+			{
+				"referenceId": 1664
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1664,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1030,
+			"y": 1750
+		},
+		"connections": [
+			{
+				"referenceId": 1663
+			},
+			{
+				"referenceId": 1667
+			},
+			{
+				"referenceId": 1666
+			},
+			{
+				"referenceId": 1679
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1665,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1264,
+			"y": 1691
+		},
+		"connections": [
+			{
+				"referenceId": 1666
+			},
+			{
+				"referenceId": 1662
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1666,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1183,
+			"y": 1641
+		},
+		"connections": [
+			{
+				"referenceId": 1667
+			},
+			{
+				"referenceId": 1664
+			},
+			{
+				"referenceId": 1665
+			},
+			{
+				"referenceId": 1679
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1667,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1073,
+			"y": 1658
+		},
+		"connections": [
+			{
+				"referenceId": 1664
+			},
+			{
+				"referenceId": 1666
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1668,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 650,
+			"y": 1740
+		},
+		"connections": [
+			{
+				"referenceId": 1468
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1669,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 830,
+			"y": 1670
+		},
+		"connections": [
+			{
+				"referenceId": 1469
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1670,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 660,
+			"y": 1977
+		},
+		"connections": [
+			{
+				"referenceId": 1656
+			},
+			{
+				"referenceId": 1659
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1671,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1340,
+			"y": 1400
+		},
+		"connections": [
+			{
+				"referenceId": 1210
+			},
+			{
+				"referenceId": 1672
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1672,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1230,
+			"y": 1390
+		},
+		"connections": [
+			{
+				"referenceId": 1671
+			},
+			{
+				"referenceId": 1673
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1673,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1270,
+			"y": 1480
+		},
+		"connections": [
+			{
+				"referenceId": 1672
+			},
+			{
+				"referenceId": 1678
+			},
+			{
+				"referenceId": 1677
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1674,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1380,
+			"y": 1550
+		},
+		"connections": [
+			{
+				"referenceId": 1678
+			},
+			{
+				"referenceId": 1675
+			},
+			{
+				"referenceId": 1677
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1675,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1480,
+			"y": 1560
+		},
+		"connections": [
+			{
+				"referenceId": 1674
+			},
+			{
+				"referenceId": 1676
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1676,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1430,
+			"y": 1460
+		},
+		"connections": [
+			{
+				"referenceId": 1675
+			},
+			{
+				"referenceId": 1210
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 1677,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1360,
+			"y": 1470
+		},
+		"connections": [
+			{
+				"referenceId": 1673
+			},
+			{
+				"referenceId": 1674
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1678,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1290,
+			"y": 1570
+		},
+		"connections": [
+			{
+				"referenceId": 1673
+			},
+			{
+				"referenceId": 1674
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1679,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1130,
+			"y": 1720
+		},
+		"connections": [
+			{
+				"referenceId": 1664
+			},
+			{
+				"referenceId": 1666
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1680,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 870,
+			"y": 2000
+		},
+		"connections": [
+			{
+				"referenceId": 1660
+			},
+			{
+				"referenceId": 1657
 			}
 		]
 	}
