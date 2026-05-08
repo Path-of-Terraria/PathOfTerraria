@@ -325,4 +325,17 @@ public class ElementalPlayer : ModPlayer
 
 		return false;
 	}
+
+	/// <summary>
+	/// Checks if the current hit deals any damage of the specified <see cref="ElementType"/>.<br/>
+	/// </summary>
+	internal static bool HasElementType(ElementType type, ElementalContainer container, ElementalContainer other, Item? item)
+	{
+		ElementInstance ele = container[type];
+
+		float totalConversion = GetConversionMultiplier(ele, item, other);
+		float flatDamage = ele.GetFlatDamage(other);
+
+		return totalConversion > 0 || flatDamage > 0;
+	}
 }
