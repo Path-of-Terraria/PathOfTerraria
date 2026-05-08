@@ -70,6 +70,24 @@ StatUI: {
 	// MaxHasteCharges: Maximum Haste Charges
 	// MaxFocusCharges: Maximum Focus Charges
 	// MaxAegisCharges: Maximum Aegis Charges
+	// GatheringHeader: Gathering
+	// MiningSpeed: Mining Speed
+	// BaitConservation: Bait Conservation
+	// TilePlacementSpeed: Tile Placement Speed
+	// WallPlacementSpeed: Wall Placement Speed
+	// ItemPickupRange: Item Pickup Range
+	// CoinPickupRange: Coin Pickup Range
+	// MobilityHeader: Mobility
+	// JumpHeight: Jump Height
+	// JumpSpeed: Jump Speed
+	// WingFlightTime: Wing Flight Time
+	// WingGlideControl: Wing Glide Control
+	// SwimSpeed: Swim Speed
+	// BreathCapacity: Breath Capacity
+	// SafeFallDistance: Safe Fall Distance
+	// ConsumablesHeader: Consumables
+	// PotionCooldownReduction: Potion Cooldown Reduction
+	// BuffDuration: Buff Duration
 	// MiscHeader: Misc
 	MaxMinions: Макс. миньонов
 	// AmmoConsumptionChance: Ammo Reservation
