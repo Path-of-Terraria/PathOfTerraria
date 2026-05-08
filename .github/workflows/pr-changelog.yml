@@ -27,8 +27,10 @@ jobs:
           github-token: ${{ steps.app-token.outputs.token }}
           script: |
             const COMMENT_MARKER = '<!-- pot-changelog-bot -->';
-            const BODY_START = '<!-- pot-changelog-closes:start -->';
-            const BODY_END = '<!-- pot-changelog-closes:end -->';
+            const CLOSES_START = '<!-- pot-changelog-closes:start -->';
+            const CLOSES_END = '<!-- pot-changelog-closes:end -->';
+            const DESC_START = '<!-- pot-changelog-desc:start -->';
+            const DESC_END = '<!-- pot-changelog-desc:end -->';
 
             const pr = context.payload.pull_request;
             const { owner, repo } = context.repo;
@@ -62,10 +64,8 @@ jobs:
               const scopeIssues = [...scope.matchAll(/#(\d+)/g)].map(x => Number(x[1]));
               for (const n of scopeIssues) closes.add(n);
 
-              const linked = scopeIssues.length
-                ? ' (' + scopeIssues.map(n => `#${n}`).join(', ') + ')'
-                : '';
-              groups[type].entries.push(`- ${subject}${linked} (${c.sha.slice(0, 7)})`);
+              // Plain-text bullet — no commit hash, no issue links — so it copy-pastes cleanly into wiki articles.
+              groups[type].entries.push(`- ${subject}`);
             }
 
             const sections = [];
@@ -100,20 +100,33 @@ jobs:
               await github.rest.issues.createComment({ owner, repo, issue_number: pr.number, body });
             }
 
-            // Update the PR body's managed section so GitHub auto-closes the linked issues on merge.
             const currentBody = pr.body || '';
-            const managed = closesList.length
-              ? `${BODY_START}\n${closesList.map(n => `Closes #${n}`).join('\n')}\n${BODY_END}`
-              : `${BODY_START}\n${BODY_END}`;
+            let newBody = currentBody;
 
-            const sectionRe = new RegExp(`${BODY_START}[\\s\\S]*?${BODY_END}`);
-            let newBody;
-            if (sectionRe.test(currentBody)) {
-              newBody = currentBody.replace(sectionRe, managed);
+            // Inject the changelog sections under the PR template's "### Description of Work" heading, if present.
+            // The block is delimited by markers so re-runs replace it in place instead of stacking duplicates.
+            const descBlock = sections.length
+              ? `${DESC_START}\n${sections.join('\n\n')}\n${DESC_END}`
+              : `${DESC_START}\n${DESC_END}`;
+            const descRe = new RegExp(`${DESC_START}[\\s\\S]*?${DESC_END}`);
+            const headingRe = /^(\s*#{1,6}\s+Description of Work\s*)$/m;
+
+            if (descRe.test(newBody)) {
+              newBody = newBody.replace(descRe, descBlock);
+            } else if (sections.length && headingRe.test(newBody)) {
+              newBody = newBody.replace(headingRe, `$1\n\n${descBlock}`);
+            }
+
+            // Maintain a managed Closes block so GitHub auto-closes the linked issues on merge.
+            const closesBlock = closesList.length
+              ? `${CLOSES_START}\n${closesList.map(n => `Closes #${n}`).join('\n')}\n${CLOSES_END}`
+              : `${CLOSES_START}\n${CLOSES_END}`;
+            const closesRe = new RegExp(`${CLOSES_START}[\\s\\S]*?${CLOSES_END}`);
+
+            if (closesRe.test(newBody)) {
+              newBody = newBody.replace(closesRe, closesBlock);
             } else if (closesList.length) {
-              newBody = currentBody ? `${currentBody}\n\n${managed}` : managed;
-            } else {
-              newBody = currentBody;
+              newBody = newBody ? `${newBody}\n\n${closesBlock}` : closesBlock;
             }
 
             if (newBody !== currentBody) {
