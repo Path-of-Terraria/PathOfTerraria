@@ -90,6 +90,7 @@ Quest: {
 		Name: Королевские приключения
 		Description: ""
 		KillQueen: Убейте Королеву пчел
+		// EnterDomain: Submerge the Hornet summon from your Grimoire in Honey
 	}
 
 	DeerclopsQuest: {

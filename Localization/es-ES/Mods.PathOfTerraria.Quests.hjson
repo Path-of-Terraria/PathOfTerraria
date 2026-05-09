@@ -81,7 +81,7 @@ Quest: {
 	BoCQuest: {
 		// Name: A Heart Still Beating
 		// Description: ""
-		// SmashOrb: Smash a Crimson Heart
+		// SmashOrb: Have Lloyd Smash a Crimson Heart
 		// EnterDomain: Enter the Brain of Cthulhu domain
 		// KillBrain: Kill the Brain of Cthulhu
 	}
@@ -90,6 +90,7 @@ Quest: {
 		// Name: A Royal Adventure
 		// Description: ""
 		// KillQueen: Kill the Queen Bee
+		// EnterDomain: Submerge the Hornet summon from your Grimoire in Honey
 	}
 
 	DeerclopsQuest: {

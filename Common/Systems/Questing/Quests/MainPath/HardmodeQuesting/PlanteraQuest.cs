@@ -70,7 +70,6 @@ internal class PlanteraQuest() : HardmodeQuest(5)
 
 	protected override bool InternalAvailable()
 	{
-		Quest skelePrimeQuest = GetLocalPlayerInstance<SkelePrimeQuest>();
-		return skelePrimeQuest.Completed && NPC.downedMechBoss3;
+		return NPC.downedMechBoss3;
 	}
 }

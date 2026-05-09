@@ -90,6 +90,7 @@ Quest: {
 		Name: Królewska Przygoda
 		// Description: ""
 		KillQueen: Zabij Królową Pszczół
+		// EnterDomain: Submerge the Hornet summon from your Grimoire in Honey
 	}
 
 	DeerclopsQuest: {

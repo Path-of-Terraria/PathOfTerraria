@@ -90,6 +90,7 @@ Quest: {
 		Name: Une Aventure Royale
 		// Description: ""
 		KillQueen: Tuez la Reine des Abeilles
+		// EnterDomain: Submerge the Hornet summon from your Grimoire in Honey
 	}
 
 	DeerclopsQuest: {
