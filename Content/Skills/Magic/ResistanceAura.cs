@@ -11,7 +11,7 @@ public class ResistanceAura : Skill
 
 	public override int MaxLevel => 1;
 	public override SkillFunctionalityInfo Functionality => new(true, true, SkillCost.None);
-	public override string Texture => $"{PoTMod.ModName}/Assets/Skills/Fireball";
+	public override string Texture => $"{PoTMod.ModName}/Assets/Skills/ResistanceAura";
 
 	public override SkillTags Tags()
 	{
@@ -29,9 +29,13 @@ public class ResistanceAura : Skill
 
 internal sealed class ResistanceAuraPlayer : ModPlayer
 {
+	private static readonly bool[] AuraActiveByPlayer = new bool[Main.maxPlayers];
+	private static readonly bool[] AuraActiveByTeam = new bool[6];
+	private static uint _lastAuraCacheUpdateTick;
+
 	public override void PostUpdateEquips()
 	{
-		if (!IsAffectedByAnyResistanceAura())
+		if (!IsAffectedByResistanceAura())
 		{
 			return;
 		}
@@ -47,32 +51,44 @@ internal sealed class ResistanceAuraPlayer : ModPlayer
 		}
 	}
 
-	private bool IsAffectedByAnyResistanceAura()
+	private bool IsAffectedByResistanceAura()
 	{
-		foreach (Player source in Main.ActivePlayers)
-		{
-			if (ProvidesAuraTo(source, Player))
-			{
-				return true;
-			}
-		}
+		UpdateAuraCache();
 
-		return false;
-	}
-
-	private static bool ProvidesAuraTo(Player source, Player target)
-	{
-		if (!source.active || source.dead || !HasActiveAura(source))
-		{
-			return false;
-		}
-
-		if (source.whoAmI == target.whoAmI)
+		if (AuraActiveByPlayer[Player.whoAmI])
 		{
 			return true;
 		}
 
-		return source.team != (int)Team.None && source.team == target.team;
+		return Player.team > (int)Team.None && AuraActiveByTeam[Player.team];
+	}
+
+	private static void UpdateAuraCache()
+	{
+		if (_lastAuraCacheUpdateTick == Main.GameUpdateCount)
+		{
+			return;
+		}
+
+		Array.Clear(AuraActiveByPlayer);
+		Array.Clear(AuraActiveByTeam);
+
+		foreach (Player source in Main.ActivePlayers)
+		{
+			if (!source.active || source.dead || !HasActiveAura(source))
+			{
+				continue;
+			}
+
+			AuraActiveByPlayer[source.whoAmI] = true;
+
+			if (source.team > (int)Team.None)
+			{
+				AuraActiveByTeam[source.team] = true;
+			}
+		}
+
+		_lastAuraCacheUpdateTick = Main.GameUpdateCount;
 	}
 
 	private static bool HasActiveAura(Player source)
