@@ -30,7 +30,7 @@ public class ResistanceAura : Skill
 internal sealed class ResistanceAuraPlayer : ModPlayer
 {
 	private static readonly bool[] AuraActiveByPlayer = new bool[Main.maxPlayers];
-	private static readonly bool[] AuraActiveByTeam = new bool[6];
+	private static readonly bool[] AuraActiveByTeam = new bool[Main.teamColor.Length];
 	private static uint _lastAuraCacheUpdateTick;
 
 	public override void PostUpdateEquips()
@@ -75,7 +75,7 @@ internal sealed class ResistanceAuraPlayer : ModPlayer
 
 		foreach (Player source in Main.ActivePlayers)
 		{
-			if (!source.active || source.dead || !HasActiveAura(source))
+			if (source.dead || !HasActiveAura(source))
 			{
 				continue;
 			}
