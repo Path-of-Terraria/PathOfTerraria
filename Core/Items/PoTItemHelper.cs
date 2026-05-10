@@ -107,6 +107,11 @@ public static class PoTItemHelper
 	    PoTInstanceItemData data = item.GetInstanceData();
 	    foreach (ItemAffix affix in data.Affixes)
 	    {
+		    if (affix.IsImplicit)
+		    {
+			    continue;
+		    }
+		    
 	        affix.Value = AffixRegistry.GetRandomAffixValue(affix, item, GetItemLevel.Invoke(item));
 	    }
 	}

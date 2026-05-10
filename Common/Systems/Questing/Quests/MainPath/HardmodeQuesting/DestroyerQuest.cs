@@ -73,8 +73,6 @@ internal class DestroyerQuest() : Quest
 
 	protected override bool InternalAvailable()
 	{
-		Quest twinsQuest = GetLocalPlayerInstance<TwinsQuest>();
-		RavencrestSubworld subworld = ModContent.GetInstance<RavencrestSubworld>();
-		return twinsQuest.Completed && NPC.downedMechBoss2 && MappingWorld.GetTimesEntered<RavencrestSubworld>() != TwinsQuest.CompletionVisit;
+		return NPC.downedMechBoss2 && MappingWorld.GetTimesEntered<RavencrestSubworld>() != TwinsQuest.CompletionVisit;
 	}
 }

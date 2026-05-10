@@ -68,8 +68,6 @@ internal class SkelePrimeQuest() : Quest
 
 	protected override bool InternalAvailable()
 	{
-		Quest destroyerQuest = GetLocalPlayerInstance<DestroyerQuest>();
-		RavencrestSubworld subworld = ModContent.GetInstance<RavencrestSubworld>();
-		return destroyerQuest.Completed && NPC.downedMechBoss1 && MappingWorld.GetTimesEntered<RavencrestSubworld>() != DestroyerQuest.CompletionVisit;
+		return NPC.downedMechBoss1 && MappingWorld.GetTimesEntered<RavencrestSubworld>() != DestroyerQuest.CompletionVisit;
 	}
 }
