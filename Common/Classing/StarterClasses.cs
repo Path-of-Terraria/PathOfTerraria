@@ -59,7 +59,7 @@ internal sealed class StarterClasses : ModSystem
 		infoByClass[(int)StarterClass.Magic] = new()
 		{
 			WeaponItemId = ModContent.ItemType<MahoganyWand>(),
-			SkillTypes = [typeof(Fireball)],
+			SkillTypes = [typeof(Fireball), typeof(ResistanceAura)],
 		};
 		infoByClass[(int)StarterClass.Summon] = new()
 		{

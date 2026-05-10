@@ -97,6 +97,11 @@ FlameSage: {
 		'''
 }
 
+ResistanceAura: {
+	Name: Resistance Aura
+	Description: Toggle an aura that grants you and allied players +20% elemental resistances.
+}
+
 Swarm: {
 	Name: Pest Swarm
 	Description: Summon a short-lived creature to fight for you, which targets enemies automatically.
