@@ -156,17 +156,17 @@ AddedDexterityPassive: {
 
 AddedIntelligenceStrengthPassive: {
 	// Name: Added Intelligence and Strength
-	// Tooltip: Adds +{0} points to intelligence and strength
+	// Tooltip: Adds +{0} points to [mechanic/shift:Intelligence] and [mechanic/shift:Strength]
 }
 
 AddedIntelligenceDexterityPassive: {
 	// Name: Added Intelligence and Dexterity
-	// Tooltip: Adds +{0} points to intelligence and dexterity
+	// Tooltip: Adds +{0} points to [mechanic/shift:Intelligence] and [mechanic/shift:Dexterity]
 }
 
 AddedDexterityStrengthPassive: {
 	// Name: Added Dexterity and Strength
-	// Tooltip: Adds +{0} points to dexterity and strength
+	// Tooltip: Adds +{0} points to [mechanic/shift:Dexterity] and [mechanic/shift:Strength]
 }
 
 IncreasedPotionRecoveryPassive: {

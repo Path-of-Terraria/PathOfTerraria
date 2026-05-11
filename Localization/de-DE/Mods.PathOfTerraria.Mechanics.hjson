@@ -140,16 +140,16 @@ Siphon: {
 }
 
 Intelligence: {
-	// Tag: Mods.PathOfTerraria.Mechanics.Intelligence.Tag
-	// Description: Mods.PathOfTerraria.Mechanics.Intelligence.Description
+	// Tag: Intelligence
+	// Description: A player stat that increases max mana by 5 every 10 points.
 }
 
 Strength: {
-	// Tag: Mods.PathOfTerraria.Mechanics.Strength.Tag
-	// Description: Mods.PathOfTerraria.Mechanics.Strength.Description
+	// Tag: Strength
+	// Description: A player stat that increases max health by 5 every 10 points.
 }
 
 Dexterity: {
-	// Tag: Mods.PathOfTerraria.Mechanics.Dexterity.Tag
-	// Description: Mods.PathOfTerraria.Mechanics.Dexterity.Description
+	// Tag: Dexterity
+	// Description: A player stat that increases use speed for all items by 0.1% every 10 points.
 }
