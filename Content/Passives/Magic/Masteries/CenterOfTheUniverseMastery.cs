@@ -18,7 +18,7 @@ internal class CenterOfTheUniverseMastery : Passive
 
 		public override void PostUpdate()
 		{
-			RotationTimer += Player.GetAttackSpeed(DamageClass.Generic);
+			RotationTimer += Player.GetAttackSpeed(DamageClass.Magic);
 		}
 
 		public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
@@ -45,7 +45,7 @@ internal class CenterOfTheUniverseMastery : Passive
 
 				if (GetNextPlanetIndex(player, out int planetIndex, out _) && value / 100f > Main.rand.NextFloat())
 				{
-					int damage = (int)(damageDone * 0.35f);
+					int damage = (int)(damageDone * 0.4f);
 
 					Projectile.NewProjectile(source, player.Center, Vector2.Zero, type, damage, 6, player.whoAmI, 0, planetIndex, planetIndex switch
 					{
@@ -58,12 +58,14 @@ internal class CenterOfTheUniverseMastery : Passive
 
 		public static bool GetNextPlanetIndex(Player player, out int index, out int maxIndex)
 		{
+			const int Max = 14;
+
 			int type = ModContent.ProjectileType<OrbitingPlanet>();
 			int num = player.ownedProjectileCounts[type];
 			index = -1;
 			maxIndex = -1;
 
-			if (num >= 10)
+			if (num >= Max)
 			{
 				return false;
 			}
@@ -79,7 +81,7 @@ internal class CenterOfTheUniverseMastery : Passive
 				}
 			}
 
-			for (int i = 0; i < 10; ++i)
+			for (int i = 0; i < Max; ++i)
 			{
 				if (!foundIndices.Contains(i))
 				{
