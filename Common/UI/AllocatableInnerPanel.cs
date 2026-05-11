@@ -181,7 +181,7 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 	
 	public override void SafeScrollWheel(UIScrollWheelEvent evt)
 	{
-		if (!EnableZoom || !ContainsPoint(Main.MouseScreen))
+		if (!EnableZoom || !ContainsPoint(Main.MouseScreen) || ItemSlot.ShiftInUse)
 		{
 			return;
 		}

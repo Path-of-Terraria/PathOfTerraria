@@ -140,7 +140,9 @@ internal class MechanicsTagHandler : ITagHandler
 			if (AllowShift && !ItemSlot.ShiftInUse)
 			{
 				Vector2 sc = new Vector2(scale) * 0.7f;
-				ChatManager.DrawColorCodedStringWithShadow(spriteBatch, font, "(shift)", position + new Vector2(0, 24), Color.Gray, Color.Black, 0f, Vector2.Zero, sc, spread: 2f);
+				string text = Language.GetTextValue("Mods.PathOfTerraria.Mechanics.SmallShift");
+				Color shiftColor = new Color(new Vector3(Main.mouseTextColor / 255f * 0.7f)) with { A = 255 };
+				ChatManager.DrawColorCodedStringWithShadow(spriteBatch, font, text, position + new Vector2(0, 24), shiftColor, Color.Black, 0f, Vector2.Zero, sc, spread: 2f);
 			}
 
 			return true;
