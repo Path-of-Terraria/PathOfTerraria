@@ -138,3 +138,18 @@ Siphon: {
 	// Tag: Siphon
 	// Description: Healing on damage - lifesteal.
 }
+
+Intelligence: {
+	// Tag: Mods.PathOfTerraria.Mechanics.Intelligence.Tag
+	// Description: Mods.PathOfTerraria.Mechanics.Intelligence.Description
+}
+
+Strength: {
+	// Tag: Mods.PathOfTerraria.Mechanics.Strength.Tag
+	// Description: Mods.PathOfTerraria.Mechanics.Strength.Description
+}
+
+Dexterity: {
+	// Tag: Mods.PathOfTerraria.Mechanics.Dexterity.Tag
+	// Description: Mods.PathOfTerraria.Mechanics.Dexterity.Description
+}
