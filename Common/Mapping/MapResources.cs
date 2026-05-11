@@ -59,7 +59,7 @@ internal sealed class MapResources : ModSystem, ISubworldSync
 
 			if (sendToSubworlds)
 			{
-				SubworldSystem.SendToAllSubservers(PoTMod.Instance, Networking.GetFinalPacketBuffer(packet));
+				Networking.SendToAllSubservers(packet, true);
 			}
 		}
 
