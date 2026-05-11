@@ -496,7 +496,7 @@ CriticalOverloadMastery: {
 
 AnticipatedStrikeMastery: {
 	// Name: Anticipated Strike
-	// Tooltip: If you haven't used a skill in 10 seconds, your next skill is used twice
+	// Tooltip: If you haven't used a skill in {0} seconds, your next skill is used twice
 }
 
 StarcallerMastery: {
