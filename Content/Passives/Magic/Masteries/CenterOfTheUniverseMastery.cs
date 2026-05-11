@@ -16,6 +16,11 @@ internal class CenterOfTheUniverseMastery : Passive
 			RotationTimer++;
 		}
 
+		public override void PostUpdate()
+		{
+			RotationTimer += Player.GetAttackSpeed(DamageClass.Generic);
+		}
+
 		public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (hit.DamageType.CountsAsClass(DamageClass.Magic))

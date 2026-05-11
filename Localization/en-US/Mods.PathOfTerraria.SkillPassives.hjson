@@ -398,7 +398,7 @@ EverburningPyre: {
 
 PainIsPleasure: {
 	Name: Scorching Penance
-	Tooltip: Standing in your own Pyres deals damage, but increases your [mechanic/shift=0;2:Chaos] and [mechanic/shift=1;2:Fire] substantially
+	Tooltip: Standing in your own Pyres hurts you, but increases your [mechanic/shift=0;2:Chaos] and [mechanic/shift=1;2:Fire] by 50%
 }
 
 AbyssalHunger: {

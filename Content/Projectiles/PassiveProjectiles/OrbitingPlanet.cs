@@ -34,12 +34,12 @@ internal class OrbitingPlanet : ModProjectile
 		Projectile.timeLeft++;
 
 		Player owner = Main.player[Projectile.owner];
-		Vector2 offset = GetOffset();
+		Vector2 offset = GetOffset(owner);
 		Projectile.Center = owner.Center + offset - new Vector2(4, 0);
 		Projectile.rotation = offset.ToRotation() + MathHelper.PiOver2;
 	}
 
-	private Vector2 GetOffset()
+	private Vector2 GetOffset(Player owner)
 	{
 		if (Ring == 0)
 		{
