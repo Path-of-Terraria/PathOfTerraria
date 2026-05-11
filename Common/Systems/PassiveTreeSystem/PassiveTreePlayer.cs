@@ -130,7 +130,15 @@ public class PassiveTreePlayer : ModPlayer
 
 	public override void UpdateEquips()
 	{
-		ActiveNodes.Where(n => n.Level != 0).ToList().ForEach(n => n.BuffPlayer(Player));
+		foreach (Passive passive in ActiveNodes)
+		{
+			if (passive.Level == 0)
+			{
+				continue;
+			}
+
+			passive.BuffPlayer(Player);
+		}
 	}
 
 	public override void SaveData(TagCompound tag)

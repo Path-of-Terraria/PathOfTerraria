@@ -121,7 +121,7 @@ ShockChancePassive: {
 
 IncreasedMinionDamagePassive: {
 	Name: Increased Minion Damage
-	Tooltip: "{0}% increased Minion Damage"
+	Tooltip: "{0}% increased minion and sentry damage"
 }
 
 AddedAggressionPassive: {

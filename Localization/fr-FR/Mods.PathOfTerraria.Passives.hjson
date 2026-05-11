@@ -506,7 +506,7 @@ StarcallerMastery: {
 
 CenterOfTheUniverseMastery: {
 	// Name: Center of the Universe
-	// Tooltip: Your magic hits have a {0}% chance to spawn an orbiting planet (10 max), which deal 20% of the hit's damage and heal 5 mana on hit
+	// Tooltip: Your magic hits have a {0}% chance to spawn an orbiting planet (14 max), which deal 40% of the hit's damage and healing 15 mana on hit
 }
 
 OverloadingEnergyMastery: {
