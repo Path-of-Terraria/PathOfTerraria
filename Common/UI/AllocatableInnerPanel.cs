@@ -168,7 +168,7 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 	{
 		Vector2 oldOffset = DragOffset;
 		MouseState state = Mouse.GetState();
-		//DragOffset = new Vector2(state.X, state.Y);
+		DragOffset = new Vector2(state.X, state.Y);
 
 		//Manually check mouse input because other elements shouldn't be allowed to interfere
 		if (ContainsPoint(Main.MouseScreen) && Main.mouseLeft)
