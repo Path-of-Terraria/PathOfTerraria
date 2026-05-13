@@ -25,6 +25,8 @@ public class AzarielNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnI
 {
 	private const int BossMapStockCount = 5;
 	private const int ExplorationMapStockCount = 2;
+	private const int BossMapSeedOffset = 1783;
+	private const int ExplorationMapSeedOffset = 9173;
 
 	Point16 ISpawnInRavencrestNPC.TileSpawn => RavencrestSystem.StaticStructureLocations["Chamber"];
 
@@ -207,12 +209,12 @@ public class AzarielNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnI
 
 		foreach ((int mapType, Func<bool> _) in bossMaps)
 		{
-			shop.Add(new NPCShop.Entry(mapType, [BuildRotatingMapCondition(mapType, bossMaps, BossMapStockCount, seedOffset: 1783)]));
+			shop.Add(new NPCShop.Entry(mapType, [BuildRotatingMapCondition(mapType, bossMaps, BossMapStockCount, seedOffset: BossMapSeedOffset)]));
 		}
 
 		foreach ((int mapType, Func<bool> _) in explorationMaps)
 		{
-			shop.Add(new NPCShop.Entry(mapType, [BuildRotatingMapCondition(mapType, explorationMaps, ExplorationMapStockCount, seedOffset: 9173)]));
+			shop.Add(new NPCShop.Entry(mapType, [BuildRotatingMapCondition(mapType, explorationMaps, ExplorationMapStockCount, seedOffset: ExplorationMapSeedOffset)]));
 		}
 
 		shop.Register();
@@ -220,7 +222,8 @@ public class AzarielNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnI
 
 	private static Condition BuildRotatingMapCondition(int mapType, (int mapType, Func<bool> unlocked)[] mapPool, int stockCount, int seedOffset)
 	{
-		return new Condition(LocalizedText.Empty, () => IsMapInCurrentRotation(mapType, mapPool, stockCount, seedOffset));
+		LocalizedText text = Language.GetOrRegister($"Mods.{PoTMod.ModName}.NPCs.AzarielNPC.MapNotInRotation", () => "Not currently in stock");
+		return new Condition(text, () => IsMapInCurrentRotation(mapType, mapPool, stockCount, seedOffset));
 	}
 
 	private static bool IsMapInCurrentRotation(int mapType, (int mapType, Func<bool> unlocked)[] mapPool, int stockCount, int seedOffset)
@@ -257,14 +260,13 @@ public class AzarielNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnI
 
 		for (int i = 0; i < activeStockCount; i++)
 		{
-			int idx = random.Next(unlockedMaps.Count);
+			int idx = random.Next(i, unlockedMaps.Count);
+			(unlockedMaps[i], unlockedMaps[idx]) = (unlockedMaps[idx], unlockedMaps[i]);
 
-			if (unlockedMaps[idx] == mapType)
+			if (unlockedMaps[i] == mapType)
 			{
 				return true;
 			}
-
-			unlockedMaps.RemoveAt(idx);
 		}
 
 		return false;
