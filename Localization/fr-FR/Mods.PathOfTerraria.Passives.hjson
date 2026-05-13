@@ -116,7 +116,7 @@ StrongerChillPassive: {
 
 ShockChancePassive: {
 	Name: Champ énergétique
-	Tooltip: Ajoute 5% de chances supplémentaires d'infliger Choc à un ennemi par niveau.
+	Tooltip: Ajoute {0}% de chances supplémentaires d'infliger Choc à un ennemi par niveau.
 }
 
 IncreasedMinionDamagePassive: {

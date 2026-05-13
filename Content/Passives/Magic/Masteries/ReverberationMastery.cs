@@ -38,7 +38,7 @@ internal class ReverberationMastery : Passive
 		{
 			bool notChanneled = player.channel && !CustomItemSets.VisualChannelOnly[item.type]; // Only spawn if this is not channeled or if this is from a visual channel item
 
-			if (notChanneled || !player.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<ReverberationMastery>(out float value))
+			if (notChanneled || !player.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<ReverberationMastery>(out float value) || !projectile.DamageType.CountsAsClass(DamageClass.Magic))
 			{
 				return;
 			}

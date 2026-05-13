@@ -82,8 +82,7 @@ internal class FishronQuest() : Quest
 
 	protected override bool InternalAvailable()
 	{
-		Quest golemQuest = GetLocalPlayerInstance<GolemQuest>();
-		return golemQuest.Completed && NPC.downedGolemBoss;
+		return NPC.downedGolemBoss;
 	}
 }
 

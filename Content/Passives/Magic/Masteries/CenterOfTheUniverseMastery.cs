@@ -18,12 +18,15 @@ internal class CenterOfTheUniverseMastery : Passive
 
 		public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			CheckSpawnPlanet(Player.GetSource_OnHit(target), Player, damageDone);
+			if (hit.DamageType.CountsAsClass(DamageClass.Magic))
+			{
+				CheckSpawnPlanet(Player.GetSource_OnHit(target), Player, damageDone);
+			}
 		}
 
 		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (proj.type != ModContent.ProjectileType<OrbitingPlanet>())
+			if (proj.type != ModContent.ProjectileType<OrbitingPlanet>() && hit.DamageType.CountsAsClass(DamageClass.Magic))
 			{
 				CheckSpawnPlanet(Player.GetSource_OnHit(target), Player, damageDone);
 			}

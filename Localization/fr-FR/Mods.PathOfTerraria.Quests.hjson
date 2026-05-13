@@ -90,6 +90,7 @@ Quest: {
 		Name: Une Aventure Royale
 		// Description: ""
 		KillQueen: Tuez la Reine des Abeilles
+		// EnterDomain: Submerge the Hornet summon from your Grimoire in Honey
 	}
 
 	DeerclopsQuest: {
@@ -145,7 +146,7 @@ Quest: {
 		// Wraiths: Defeat ({0}/{1}) Wraiths
 		// PossessedArmors: Defeat ({0}/{1}) Possessed Armors
 		// WanderingEyes: Defeat ({0}/{1}) Wandering Eyes
-		// CollectFragments: Collect ({0}/{1}) Lunar Fragments
+		// CollectFragments: Collect 5 Lunar Fragments from Wandering Eyes, Possessed Armors, or Wraiths.
 	}
 
 	TinkerIntroQuest: {

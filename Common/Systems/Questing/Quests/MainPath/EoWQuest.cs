@@ -48,7 +48,7 @@ internal class EoWQuest : Quest
 
 				return true;
 			}),
-			new ConditionCheck("Orbs", (_) => DisableEvilOrbBossSpawning.ActualOrbsSmashed > 2, 1, this.GetLocalization("SmashOrbs")),
+			new ConditionCheck("Orbs", (_) => DisableEvilOrbBossSpawning.ActualOrbsSmashed > 2, 1, this.GetLocalization("SmashOrbs"), Language.GetText("Mods.PathOfTerraria.NPCs.MorvenNPC.Dialogue.InRavencrest")),
 			new ConditionCheck("KillEoW", _ => BossTracker.DownedInDomain<EaterDomain>(NPCID.EaterofWorldsHead), 1, this.GetLocalization("KillEoW"))
 			{
 				SkipCheck = QuestUtils.BossSkipCheck(NPCID.EaterofWorldsHead)
