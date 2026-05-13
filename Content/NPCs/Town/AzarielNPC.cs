@@ -8,6 +8,7 @@ using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 using PathOfTerraria.Common.Utilities.Extensions;
+using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using PathOfTerraria.Content.Items.Consumables.Maps.ExplorableMaps;
 using PathOfTerraria.Content.Projectiles.Utility;
 using Terraria.DataStructures;
@@ -15,12 +16,16 @@ using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using Terraria.Localization;
+using Terraria.Utilities;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
 public class AzarielNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnInRavencrestNPC
 {
+	private const int BossMapStockCount = 5;
+	private const int ExplorationMapStockCount = 2;
+
 	Point16 ISpawnInRavencrestNPC.TileSpawn => RavencrestSystem.StaticStructureLocations["Chamber"];
 
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
@@ -170,8 +175,99 @@ public class AzarielNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnI
 
 	public override void AddShops()
 	{
-		new NPCShop(Type)
-			.Register();
+		var shop = new NPCShop(Type);
+
+		(int mapType, Func<bool> unlocked)[] bossMaps =
+		[
+			(ModContent.ItemType<KingSlimeMap>(), () => NPC.downedSlimeKing),
+			(ModContent.ItemType<EoCMap>(), () => NPC.downedBoss1),
+			(ModContent.ItemType<EoWMap>(), () => NPC.downedBoss2),
+			(ModContent.ItemType<BoCMap>(), () => NPC.downedBoss2),
+			(ModContent.ItemType<BeeMap>(), () => NPC.downedQueenBee),
+			(ModContent.ItemType<SkeletronMap>(), () => NPC.downedBoss3),
+			(ModContent.ItemType<WoFMap>(), () => Main.hardMode),
+			(ModContent.ItemType<QueenSlimeMap>(), () => NPC.downedQueenSlime),
+			(ModContent.ItemType<TwinsMap>(), () => NPC.downedMechBoss2),
+			(ModContent.ItemType<DestroyerMap>(), () => NPC.downedMechBoss1),
+			(ModContent.ItemType<PrimeMap>(), () => NPC.downedMechBoss3),
+			(ModContent.ItemType<PlanteraMap>(), () => NPC.downedPlantBoss),
+			(ModContent.ItemType<GolemMap>(), () => NPC.downedGolemBoss),
+			(ModContent.ItemType<FishronMap>(), () => NPC.downedFishron),
+			(ModContent.ItemType<EoLMap>(), () => NPC.downedEmpressOfLight),
+			(ModContent.ItemType<CultistMap>(), () => NPC.downedAncientCultist),
+			(ModContent.ItemType<MoonMap>(), () => NPC.downedMoonlord),
+		];
+
+		(int mapType, Func<bool> unlocked)[] explorationMaps =
+		[
+			(ModContent.ItemType<ForestMap>(), () => NPC.downedMoonlord),
+			(ModContent.ItemType<DesertMap>(), () => NPC.downedMoonlord),
+			(ModContent.ItemType<SwampMap>(), () => NPC.downedMoonlord),
+		];
+
+		foreach ((int mapType, Func<bool> _) in bossMaps)
+		{
+			shop.Add(new NPCShop.Entry(mapType, [BuildRotatingMapCondition(mapType, bossMaps, BossMapStockCount, seedOffset: 1783)]));
+		}
+
+		foreach ((int mapType, Func<bool> _) in explorationMaps)
+		{
+			shop.Add(new NPCShop.Entry(mapType, [BuildRotatingMapCondition(mapType, explorationMaps, ExplorationMapStockCount, seedOffset: 9173)]));
+		}
+
+		shop.Register();
+	}
+
+	private static Condition BuildRotatingMapCondition(int mapType, (int mapType, Func<bool> unlocked)[] mapPool, int stockCount, int seedOffset)
+	{
+		return new Condition(LocalizedText.Empty, () => IsMapInCurrentRotation(mapType, mapPool, stockCount, seedOffset));
+	}
+
+	private static bool IsMapInCurrentRotation(int mapType, (int mapType, Func<bool> unlocked)[] mapPool, int stockCount, int seedOffset)
+	{
+		if (stockCount <= 0)
+		{
+			return false;
+		}
+
+		List<int> unlockedMaps = [];
+
+		foreach ((int candidateMapType, Func<bool> unlocked) in mapPool)
+		{
+			if (unlocked())
+			{
+				unlockedMaps.Add(candidateMapType);
+			}
+		}
+
+		if (!unlockedMaps.Contains(mapType))
+		{
+			return false;
+		}
+
+		int activeStockCount = Math.Min(stockCount, unlockedMaps.Count);
+
+		if (activeStockCount == unlockedMaps.Count)
+		{
+			return true;
+		}
+
+		int seed = HashCode.Combine(Main.worldID, Main.moonPhase, seedOffset);
+		var random = new UnifiedRandom(seed);
+
+		for (int i = 0; i < activeStockCount; i++)
+		{
+			int idx = random.Next(unlockedMaps.Count);
+
+			if (unlockedMaps[idx] == mapType)
+			{
+				return true;
+			}
+
+			unlockedMaps.RemoveAt(idx);
+		}
+
+		return false;
 	}
 
 	public override ITownNPCProfile TownNPCProfile()
