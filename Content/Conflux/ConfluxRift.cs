@@ -803,7 +803,7 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile, 
 		// Naturally generated rifts only display a map icon up-close.
 		if (BitFlags.HasFlag(Flags.NaturallySpawned))
 		{
-			return Main.LocalPlayer.WithinRange(projectile.Center, 2250);
+			return Main.LocalPlayer.WithinRange(projectile.Center, 8050);
 		}
 #endif
 		

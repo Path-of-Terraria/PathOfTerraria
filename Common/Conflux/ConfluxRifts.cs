@@ -1,5 +1,5 @@
-﻿// #define DEBUG_LOG
-// #define INSTANT_REFILL
+﻿#define DEBUG_LOG
+#define INSTANT_REFILL
 
 using System.Collections.Generic;
 using System.Linq;
@@ -283,7 +283,7 @@ internal sealed class ConfluxRifts : ModSystem
 			{
 				continue;
 			}
-			
+
 			// Try spawning. Break on failure.
 			if (SpawnRift(generation: false, forcedPosition: slot.Position, forcedKind: slot.Kind) is not Projectile rift)
 			{
@@ -296,13 +296,131 @@ internal sealed class ConfluxRifts : ModSystem
 
 			if (numSpawnsToAnnounce > 0)
 			{
-				ChatHelper.BroadcastChatMessage(NetworkText.FromKey($"Mods.{nameof(PathOfTerraria)}.Misc.Rifts.NaturalSpawn"), Color.Magenta);
+				// Get biome and distance information
+				string biomeName = GetCurrentBiomeName(rift.Center);
+				float distanceInBlocks = Vector2.Distance(Main.LocalPlayer.Center, rift.Center) / 16f;
+				string riftTypeName = slot.Kind.ToString().ToLower();
+
+				string customMessage = $"A {riftTypeName} rift has opened in the {biomeName}, {distanceInBlocks:F0} blocks away!";
+				ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(customMessage), Color.Magenta);
+
 				numSpawnsToAnnounce--;
 			}
 
 			break;
 		}
 	}
+private static string GetCurrentBiomeName(Vector2 riftCenter)
+{
+	Point tileCoords = riftCenter.ToTileCoordinates();
+	
+	// Ensure coordinates are within world bounds
+	if (tileCoords.X < 0 || tileCoords.X >= Main.maxTilesX || tileCoords.Y < 0 || tileCoords.Y >= Main.maxTilesY)
+	{
+		return "Unknown";
+	}
+
+	// Check depth-based biomes first
+	if (tileCoords.Y > Main.UnderworldLayer)
+	{
+		return "Hell";
+	}
+	
+	if (tileCoords.Y > Main.rockLayer)
+	{
+		return "Caverns";
+	}
+	
+	if (tileCoords.Y > Main.worldSurface)
+	{
+		return "Underground";
+	}
+
+	// Check surrounding area for biome walls/tiles (5x5 area)
+	Dictionary<string, int> biomeCount = new();
+	for (int x = -2; x <= 2; x++)
+	{
+		for (int y = -2; y <= 2; y++)
+		{
+			Point checkCoords = new Point(tileCoords.X + x, tileCoords.Y + y);
+			if (checkCoords.X >= 0 && checkCoords.X < Main.maxTilesX && 
+			    checkCoords.Y >= 0 && checkCoords.Y < Main.maxTilesY)
+			{
+				Tile checkTile = Main.tile[checkCoords.X, checkCoords.Y];
+				string biomeName = GetBiomeFromTile(checkTile);
+				if (biomeName != "Forest")
+				{
+					biomeCount[biomeName] = biomeCount.GetValueOrDefault(biomeName, 0) + 1;
+				}
+			}
+		}
+	}
+
+	// Return the most common biome found, or Forest as default
+	if (biomeCount.Count > 0)
+	{
+		return biomeCount.OrderByDescending(kvp => kvp.Value).First().Key;
+	}
+
+	return "Forest";
+}
+
+private static string GetBiomeFromTile(Tile tile)
+{
+	ushort wallType = tile.WallType;
+	ushort tileType = tile.TileType;
+
+	// Check wall types first (for underground areas)
+	if (wallType == WallID.DesertFossil || wallType == WallID.HardenedSand || wallType == WallID.Sandstone)
+		return "Desert";
+	
+	if (wallType == WallID.SnowWallUnsafe || wallType == WallID.IceUnsafe)
+		return "Snow";
+	
+	if (wallType == WallID.JungleUnsafe || wallType == WallID.Jungle)
+		return "Jungle";
+	
+	if (wallType >= WallID.CorruptionUnsafe1 && wallType <= WallID.CorruptionUnsafe4 || wallType == WallID.EbonstoneUnsafe)
+		return "Corruption";
+	
+	if (wallType >= WallID.CrimsonUnsafe1 && wallType <= WallID.CrimsonUnsafe4 || wallType == WallID.CrimstoneUnsafe)
+		return "Crimson";
+	
+	if (wallType >= WallID.HallowUnsafe1 && wallType <= WallID.HallowUnsafe4)
+		return "Hallow";
+	
+	if (wallType == WallID.BlueDungeonSlabUnsafe || wallType == WallID.BlueDungeonTileUnsafe ||
+	    wallType == WallID.GreenDungeonSlabUnsafe || wallType == WallID.GreenDungeonTileUnsafe ||
+	    wallType == WallID.PinkDungeonSlabUnsafe || wallType == WallID.PinkDungeonTileUnsafe)
+		return "Dungeon";
+
+	// Check tile types (for surface areas with no walls)
+	if (tile.HasTile)
+	{
+		if (tileType == TileID.Sand || tileType == TileID.Sandstone || tileType == TileID.HardenedSand)
+			return "Desert";
+		
+		if (tileType == TileID.SnowBlock || tileType == TileID.IceBlock)
+			return "Snow";
+		
+		if (tileType == TileID.JungleGrass || tileType == TileID.Mud)
+			return "Jungle";
+		
+		if (tileType == TileID.CorruptGrass || tileType == TileID.Ebonstone)
+			return "Corruption";
+		
+		if (tileType == TileID.CrimsonGrass || tileType == TileID.Crimstone)
+			return "Crimson";
+		
+		if (tileType == TileID.HallowedGrass || tileType == TileID.Pearlstone)
+			return "Hallow";
+		
+		if (tileType == TileID.BlueDungeonBrick || tileType == TileID.GreenDungeonBrick || tileType == TileID.PinkDungeonBrick)
+			return "Dungeon";
+	}
+
+	return "Forest";
+}
 
 	/// <summary> Attempts to spawn a conflux rift. </summary>
 	public static Projectile? SpawnRift(bool generation, Vector2? forcedPosition = null, ConfluxRiftKind? forcedKind = null)
