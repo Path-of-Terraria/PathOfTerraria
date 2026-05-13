@@ -1176,7 +1176,7 @@ OneMinionArmyKeystone: {
 
 DirectShotKeystone: {
 	Name: DirectShotKeystone
-	Tooltip: Your Projectiles deal up to +50% more Damage at [mechanic/shift:Nearby] range, but deal up to 50% less Damage at Far range"
+	Tooltip: Your Projectiles deal up to +50% more Damage at [mechanic/shift:Nearby] range, but deal up to 50% less Damage at Far range.
 }
 
 BloodMagicKeystone: {
@@ -1186,5 +1186,5 @@ BloodMagicKeystone: {
 
 CinderBastionMastery: {
 	Name: CinderBastionMastery
-	Tooltip: Gain a 1% increase to Ignite damage per 10 maximum life. When moving, apply a {0}% max life Ignite to yourself.
+	Tooltip: Gain a 2% increase to Ignite damage per 10 maximum life. When moving, apply a {0}% max life Ignite to yourself.
 }

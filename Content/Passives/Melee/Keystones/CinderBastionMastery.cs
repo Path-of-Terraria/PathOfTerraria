@@ -5,8 +5,8 @@ namespace PathOfTerraria.Content.Passives.Melee.Masteries;
 
 internal class CinderBastionMastery : Passive
 {
-	const float IgniteDamagePerLifePer10 = 1f; 
-	private const float SelfIgnitePercent = 20f; // 20% max life per second
+	const float IgniteDamagePerLifePer10 = 2f; 
+	private const float SelfIgnitePercent = 10f; // 10% max life per second by default
 	
 	internal class CinderBastionPlayer : ModPlayer
 	{
@@ -33,7 +33,7 @@ internal class CinderBastionMastery : Passive
 					
 					int damage = (int)(Player.statLifeMax2 * SelfIgnitePercent / 100f);
 					
-					IgnitedDebuff.ApplyTo(null, Player, damage, 60); //1s duration for self ignite
+					IgnitedDebuff.ApplyTo(null, Player, damage, 130);
 				}
 			}
 			else
@@ -49,7 +49,7 @@ internal class CinderBastionMastery : Passive
 		if (player.TryGetModPlayer(out IgnitedPlayer ignitedPlayer))
 		{
 			float igniteDamageMultiplier = 1f + (player.statLifeMax2 / 10f) * IgniteDamagePerLifePer10 / 100f;
-			ignitedPlayer.IgniteDamage += igniteDamageMultiplier - 1f; // Additive multiplier
+			ignitedPlayer.IgniteDamage += igniteDamageMultiplier - 1f;
 		}
 	}
 }
