@@ -12,9 +12,9 @@ internal class SkillfulMagicMastery : Passive
 	{
 		public void OnUseSkill(Skill skill)
 		{
-			if (Player.GetModPlayer<PassiveTreePlayer>().HasNode<SkillfulMagicMastery>())
+			if (Player.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<SkillfulMagicMastery>(out float value))
 			{
-				Player.AddBuff(ModContent.BuffType<SkillfulBoostBuff>(), 3 * 60);
+				Player.AddBuff(ModContent.BuffType<SkillfulBoostBuff>(), (int)(value * 60));
 			}
 		}
 

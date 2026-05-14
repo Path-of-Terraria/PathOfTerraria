@@ -68,7 +68,7 @@ internal class IncreasedSummonDamageAffix : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		player.GetDamage(DamageClass.Summon) +=  Value / 100f;
+		player.GetDamage(DamageClass.Summon) += Value / 100f;
 	}
 }
 

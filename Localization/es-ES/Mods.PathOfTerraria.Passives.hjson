@@ -121,7 +121,7 @@ ShockChancePassive: {
 
 IncreasedMinionDamagePassive: {
 	// Name: Increased Minion Damage
-	// Tooltip: "{0}% increased Minion Damage"
+	// Tooltip: "{0}% increased minion and sentry damage"
 }
 
 AddedAggressionPassive: {
@@ -141,32 +141,32 @@ IncreasedBlockChancePassive: {
 
 AddedIntelligencePassive: {
 	// Name: Added Intelligence
-	// Tooltip: Adds +{0} points to intelligence
+	// Tooltip: Adds +{0} points to [mechanic/shift:Intelligence]
 }
 
 AddedStrengthPassive: {
 	// Name: Added Strength
-	// Tooltip: Adds +{0} points to strength
+	// Tooltip: Adds +{0} points to [mechanic/shift:Strength]
 }
 
 AddedDexterityPassive: {
 	// Name: Added Dexterity
-	// Tooltip: Adds +{0} points to dexterity
+	// Tooltip: Adds +{0} points to [mechanic/shift:Dexterity]
 }
 
 AddedIntelligenceStrengthPassive: {
 	// Name: Added Intelligence and Strength
-	// Tooltip: Adds +{0} points to intelligence and strength
+	// Tooltip: Adds +{0} points to [mechanic/shift=0;2:Intelligence] and [mechanic/shift=1;2:Strength]
 }
 
 AddedIntelligenceDexterityPassive: {
 	// Name: Added Intelligence and Dexterity
-	// Tooltip: Adds +{0} points to intelligence and dexterity
+	// Tooltip: Adds +{0} points to [mechanic/shift=0;2:Intelligence] and [mechanic/shift=1;2:Dexterity]
 }
 
 AddedDexterityStrengthPassive: {
 	// Name: Added Dexterity and Strength
-	// Tooltip: Adds +{0} points to dexterity and strength
+	// Tooltip: Adds +{0} points to [mechanic/shift=0;2:Dexterity] and [mechanic/shift=1;2:Strength]
 }
 
 IncreasedPotionRecoveryPassive: {
@@ -496,7 +496,7 @@ CriticalOverloadMastery: {
 
 AnticipatedStrikeMastery: {
 	// Name: Anticipated Strike
-	// Tooltip: If you haven't used a skill in 10 seconds, your next skill is used twice
+	// Tooltip: If you haven't used a skill in {0} seconds, your next skill is used twice
 }
 
 StarcallerMastery: {
@@ -506,7 +506,7 @@ StarcallerMastery: {
 
 CenterOfTheUniverseMastery: {
 	// Name: Center of the Universe
-	// Tooltip: Your magic hits have a {0}% chance to spawn an orbiting planet (10 max), which deal 20% of the hit's damage and heal 5 mana on hit
+	// Tooltip: Your magic hits have a {0}% chance to spawn an orbiting planet (14 max), which deal 40% of the hit's damage and healing 15 mana on hit
 }
 
 OverloadingEnergyMastery: {

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Core.UI.SmartUI;
@@ -136,9 +137,6 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 	/// Also handles repositioning by dragging the cursor </summary>
 	public override void SafeUpdate(GameTime gameTime)
 	{
-		Vector2 oldOffset = DragOffset;
-		DragOffset = Main.MouseScreen;
-
 		// Smoothly interpolate zoom and drag center towards targets
 		float oldZoom = Zoom;
 		Zoom = MathUtils.Damp(Zoom, TargetZoom, 0.02f, (float)gameTime.ElapsedGameTime.TotalSeconds);
@@ -149,7 +147,7 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 		{
 			foreach (UIElement c in _draggable)
 			{
-				if (!_origPositions.TryGetValue(c, out var orig))
+				if (!_origPositions.TryGetValue(c, out (float OrigLeft, float OrigTop, float OrigWidth, float OrigHeight) orig))
 				{
 					continue;
 				}
@@ -163,7 +161,17 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 			Recalculate();
 		}
 
-		if (ContainsPoint(Main.MouseScreen) && Main.mouseLeft) //Manually check mouse input because other elements shouldn't be allowed to interfere
+		DragPanel();
+	}
+
+	private void DragPanel()
+	{
+		Vector2 oldOffset = DragOffset;
+		MouseState state = Mouse.GetState();
+		DragOffset = new Vector2(state.X, state.Y);
+
+		//Manually check mouse input because other elements shouldn't be allowed to interfere
+		if (ContainsPoint(Main.MouseScreen) && Main.mouseLeft)
 		{
 			Vector2 velocity = DragOffset - oldOffset;
 			DragCenter += velocity;
@@ -178,10 +186,10 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 			Recalculate();
 		}
 	}
-	
+
 	public override void SafeScrollWheel(UIScrollWheelEvent evt)
 	{
-		if (!EnableZoom || !ContainsPoint(Main.MouseScreen))
+		if (!EnableZoom || !ContainsPoint(Main.MouseScreen) || ItemSlot.ShiftInUse)
 		{
 			return;
 		}

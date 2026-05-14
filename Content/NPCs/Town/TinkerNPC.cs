@@ -168,7 +168,7 @@ public class TinkerNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnIn
 		randomOffset = 0.3f;
 	}
 
-	public bool CanSpawn(NPCSpawnTimeframe timeframe, bool alreadyExists)
+	bool ISpawnInRavencrestNPC.CanSpawn(NPCSpawnTimeframe timeframe, bool alreadyExists)
 	{
 		return Main.hardMode && !alreadyExists;
 	}

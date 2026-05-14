@@ -207,6 +207,10 @@ public class Nova : Skill
 			{
 				SpamLightningDust();
 			}
+			else
+			{
+				SpamNormalDust();
+			}
 		}
 
 		private void ScorchSurface()
@@ -232,6 +236,18 @@ public class Nova : Skill
 			static bool IsSolid(int x, int y, bool checkSloped = false)
 			{
 				return (checkSloped ? WorldGen.SolidOrSlopedTile(x, y) : WorldGen.SolidTile(x, y)) || Main.tileSolidTop[Main.tile[x, y].TileType];
+			}
+		}
+
+		private void SpamNormalDust()
+		{
+			for (int i = 0; i < 12; ++i)
+			{
+				Vector2 offset = Main.rand.NextVector2CircularEdge(Spread, Spread);
+				Vector2 pos = Projectile.Center + offset;
+				var dust = Dust.NewDustPerfect(pos, DustID.WhiteTorch, Vector2.Normalize(offset) * Main.rand.NextFloat(1, 2), Scale: Main.rand.NextFloat(1, 2));
+				dust.noGravity = true;
+				dust.fadeIn = 1.5f;
 			}
 		}
 
@@ -351,40 +367,42 @@ public class Nova : Skill
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Vector2 position = Projectile.position - Main.screenPosition;
-			float timer = Timer * 300f;
-			var topLeft = new Vector3(position - new Vector2(timer), 0);
-			Color color = Color.White;
+			return true;
 
-			short[] indices = [0, 1, 2, 1, 3, 2];
+			//Vector2 position = Projectile.position - Main.screenPosition;
+			//float timer = Timer * 300f;
+			//var topLeft = new Vector3(position - new Vector2(timer), 0);
+			//Color color = Color.White;
 
-			VertexPositionColorTexture[] vertices =
-			[
-				new(topLeft, color, new Vector2(0, 0)),
-				new(topLeft + new Vector3(new Vector2(timer * 2, 0), 0), color, new Vector2(1, 0)),
-				new(topLeft + new Vector3(new Vector2(0, timer * 2), 0), color, new Vector2(0, 1)),
-				new(topLeft + new Vector3(new Vector2(timer * 2), 0), color, new Vector2(1, 1)),
-			];
+			//short[] indices = [0, 1, 2, 1, 3, 2];
 
-			Effect effect = ModContent.Request<Effect>($"{PoTMod.ModName}/Assets/Effects/RunestoneRing", AssetRequestMode.ImmediateLoad).Value;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			Matrix renderMatrix = view * projection;
-			float opacity = MathF.Min(Projectile.timeLeft / 30f, 1);
-			float lerpFactor = MathF.Pow(MathF.Sin((float)Main.timeForVisualEffects * 0.5f), 2);
-			(Color, Color) colorPair = GetColorPair();
-			var drawColor = Vector4.Lerp(colorPair.Item1.ToVector4(), colorPair.Item2.ToVector4(), lerpFactor);
+			//VertexPositionColorTexture[] vertices =
+			//[
+			//	new(topLeft, color, new Vector2(0, 0)),
+			//	new(topLeft + new Vector3(new Vector2(timer * 2, 0), 0), color, new Vector2(1, 0)),
+			//	new(topLeft + new Vector3(new Vector2(0, timer * 2), 0), color, new Vector2(0, 1)),
+			//	new(topLeft + new Vector3(new Vector2(timer * 2), 0), color, new Vector2(1, 1)),
+			//];
+
+			//Effect effect = ModContent.Request<Effect>($"{PoTMod.ModName}/Assets/Effects/RunestoneRing", AssetRequestMode.ImmediateLoad).Value;
+			//var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			//Matrix view = Main.GameViewMatrix.TransformationMatrix;
+			//Matrix renderMatrix = view * projection;
+			//float opacity = MathF.Min(Projectile.timeLeft / 30f, 1);
+			//float lerpFactor = MathF.Pow(MathF.Sin((float)Main.timeForVisualEffects * 0.5f), 2);
+			//(Color, Color) colorPair = GetColorPair();
+			//var drawColor = Vector4.Lerp(colorPair.Item1.ToVector4(), colorPair.Item2.ToVector4(), lerpFactor);
 			
-			foreach (EffectPass pass in effect.CurrentTechnique.Passes)
-			{
-				effect.Parameters["baseColor"].SetValue(drawColor * opacity);
-				effect.Parameters["uWorldViewProjection"].SetValue(renderMatrix);
-				pass.Apply();
+			//foreach (EffectPass pass in effect.CurrentTechnique.Passes)
+			//{
+			//	effect.Parameters["baseColor"].SetValue(drawColor * opacity);
+			//	effect.Parameters["uWorldViewProjection"].SetValue(renderMatrix);
+			//	pass.Apply();
 
-				Main.instance.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertices, 0, 4, indices, 0, 2);
-			}
+			//	Main.instance.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertices, 0, 4, indices, 0, 2);
+			//}
 
-			return false;
+			//return false;
 		}
 
 		private (Color, Color) GetColorPair()
