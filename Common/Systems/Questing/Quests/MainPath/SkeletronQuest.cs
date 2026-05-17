@@ -33,7 +33,7 @@ internal class SkeletronQuest : Quest
 			new InteractWithNPC("HasItems", NPCQuestGiver, oldManIntro, Language.GetText("Mods.PathOfTerraria.NPCs.OldMan.Dialogue.HasItems"),
 				[new GiveItem(2, ItemID.Candle, ItemID.PlatinumCandle), new GiveItem(1, ItemID.CrimtaneBar, ItemID.DemoniteBar),
 					new GiveItem(1, ModContent.ItemType<AncientEvilBook>())]),
-			new ConditionCheck("Enter", (_) => SubworldSystem.Current is SkeletronDomain, 1, this.GetLocalization("EnterDomain")),
+			new ConditionCheck("Enter", (_) => SubworldSystem.Current is SkeletronDomain, 1, this.GetLocalization("EnterDomain"), Language.GetText("Mods.PathOfTerraria.NPCs.OldMan.Dialogue.HasItems")),
 			new ConditionCheck("Kill", _ => BossTracker.DownedInDomain<SkeletronDomain>(NPCID.SkeletronHead), 1, this.GetLocalization("KillSkeletron"))
 			{
 				SkipCheck = QuestUtils.BossSkipCheck(NPCID.SkeletronHead)

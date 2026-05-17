@@ -33,7 +33,7 @@ internal abstract class BossMap(int tier, int level, Func<bool> defeatCondition,
 
 	bool ITemporaryItem.DespawnCondition()
 	{
-		return !CanDrop;
+		return CanDrop;
 	}
 }
 

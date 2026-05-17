@@ -30,8 +30,20 @@ internal class DropTable
 	/// <c>Currency:</c> Default 15%<br/>
 	/// <c>Maps:</c> Default 5%<br/>
 	/// </summary>
-	/// <param name="random">The random to 'seed' the choice with. Defaults to Main.rand.</param>
-	public static ItemDatabase.ItemRecord RollMobDrops(int itemLevel, float dropRarityModifier, DropCategoryWeights? categoryWeights = null, UnifiedRandom random = null, 
+	/// <param name="itemLevel">Level to drop the item at.</param>
+	/// <param name="dropRarityModifier">
+	/// The rarity modifier of the drops. 100 = 100% increase for both Rare and Unique drops, taken out of Magic's pool.<br/>
+	/// For example, if we have Magic at 90%, Rare at 7% and Unique at 3%, 100% <paramref name="dropRarityModifier"/> would turn it into Magic 80%, Rare 14% and Unique 6%.
+	/// </param>
+	/// <param name="categoryWeights">
+	/// Drop rates for <see cref="Gear"/>, <see cref="CurrencyShard"/>s and <see cref="Map"/>s. Defaults to 80%, 15% and 5%.<br/>
+	/// Note that in <see cref="Main.hardMode"/>, the map slice is split into 70% Explorable maps and 30% boss maps.
+	/// </param>
+	/// <param name="random">The random to 'seed' the choice with. Defaults to <see cref="Main.rand"/>.</param>
+	/// <param name="forceRarity">The rarity that <b>must</b> drop from this, if any. Defaults to <see cref="ItemRarity.Invalid"/>, which will allow any rarity. When set, the map pool is excluded.</param>
+	/// <param name="uniqueModifier">Multiplier applied to the weight of unique items in the gear/currency pools. Defaults to 1.</param>
+	/// <param name="applyAreaLevelCategoryScaling">If true, scales <paramref name="categoryWeights"/> based on <paramref name="itemLevel"/> (currency share decreases as level rises).</param>
+	public static ItemDatabase.ItemRecord RollMobDrops(int itemLevel, float dropRarityModifier, DropCategoryWeights? categoryWeights = null, UnifiedRandom random = null,
 		ItemRarity forceRarity = ItemRarity.Invalid, float uniqueModifier = 1f, bool applyAreaLevelCategoryScaling = true)
 	{
 		random ??= Main.rand;
@@ -118,39 +130,6 @@ internal class DropTable
 		}
 	}
 
-	private static IEnumerable<ItemDatabase.ItemRecord> GetMapPool(UnifiedRandom random)
-	{
-		IEnumerable<ItemDatabase.ItemRecord> items;
-
-		if (Main.hardMode)
-		{
-			IEnumerable<ItemDatabase.ItemRecord> allMaps = ItemDatabase.GetItemByType<Map>().Where(x => ((Map)x.Item.ModItem).CanDrop);
-			IEnumerable<ItemDatabase.ItemRecord> itemRecords = allMaps as ItemDatabase.ItemRecord[] ?? [.. allMaps];
-			IEnumerable<ItemDatabase.ItemRecord> explorableMaps = itemRecords.Where(x => x.Item.ModItem is Content.Items.Consumables.Maps.ExplorableMaps.ExplorableMap);
-			IEnumerable<ItemDatabase.ItemRecord> bossMaps = itemRecords.Where(x => x.Item.ModItem is not Content.Items.Consumables.Maps.ExplorableMaps.ExplorableMap);
-
-			var mapTypeChances = new WeightedRandom<int>(random ?? Main.rand);
-			mapTypeChances.Add(0, 0.7f); //70% explorable maps
-			mapTypeChances.Add(1, 0.3f); //30% boss domain maps
-			int mapTypeChoice = mapTypeChances.Get();
-
-			if (mapTypeChoice == 0)
-			{
-				items = explorableMaps;
-			}
-			else
-			{
-				items = bossMaps;
-			}
-		}
-		else
-		{
-			items = ItemDatabase.GetItemByType<Map>().Where(x => (x.Item.ModItem as Map).CanDrop);
-		}
-
-		return items;
-	}
-
 	private static void AddPool(WeightedRandom<WeightedRandom<ItemDatabase.ItemRecord>> chances, WeightedRandom<ItemDatabase.ItemRecord> pool, float weight)
 	{
 		if (pool.elements.Count > 0 && weight > 0)
@@ -165,19 +144,29 @@ internal class DropTable
 
 		if (Main.hardMode)
 		{
-			IEnumerable<ItemDatabase.ItemRecord> allMaps = ItemDatabase.GetItemByType<Map>().Where(x => ((Map)x.Item.ModItem).CanDrop);
-			IEnumerable<ItemDatabase.ItemRecord> itemRecords = allMaps as ItemDatabase.ItemRecord[] ?? [.. allMaps];
-			IEnumerable<ItemDatabase.ItemRecord> explorableMaps = itemRecords.Where(x => x.Item.ModItem is Content.Items.Consumables.Maps.ExplorableMaps.ExplorableMap);
-			IEnumerable<ItemDatabase.ItemRecord> bossMaps = itemRecords.Where(x => x.Item.ModItem is not Content.Items.Consumables.Maps.ExplorableMaps.ExplorableMap);
+			ItemDatabase.ItemRecord[] allMaps = [.. ItemDatabase.GetItemByType<Map>().Where(x => ((Map)x.Item.ModItem).CanDrop)];
+			ItemDatabase.ItemRecord[] explorableMaps = [.. allMaps.Where(x => x.Item.ModItem is Content.Items.Consumables.Maps.ExplorableMaps.ExplorableMap)];
+			ItemDatabase.ItemRecord[] bossMaps = [.. allMaps.Where(x => x.Item.ModItem is not Content.Items.Consumables.Maps.ExplorableMaps.ExplorableMap)];
 
-			foreach (ItemDatabase.ItemRecord record in explorableMaps)
+			// Normalize per-category so explorable maps sum to 70% and boss maps sum to 30%, regardless of how many maps are in each category.
+			if (explorableMaps.Length > 0)
 			{
-				items.Add(record, 0.7f);
+				float weightPer = 0.7f / explorableMaps.Length;
+
+				foreach (ItemDatabase.ItemRecord record in explorableMaps)
+				{
+					items.Add(record, weightPer);
+				}
 			}
 
-			foreach (ItemDatabase.ItemRecord record in bossMaps)
+			if (bossMaps.Length > 0)
 			{
-				items.Add(record, 0.3f);
+				float weightPer = 0.3f / bossMaps.Length;
+
+				foreach (ItemDatabase.ItemRecord record in bossMaps)
+				{
+					items.Add(record, weightPer);
+				}
 			}
 		}
 		else

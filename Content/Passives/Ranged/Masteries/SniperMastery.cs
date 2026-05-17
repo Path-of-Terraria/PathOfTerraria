@@ -12,7 +12,7 @@ internal class SniperMastery : Passive
 				return;
 			if (target.DistanceSQ(Player.Center) > PoTMod.NearbyDistanceSq && modifiers.DamageType.CountsAsClass(DamageClass.Ranged))
 			{
-				modifiers.SourceDamage *= Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<SniperMastery>() / 100f;
+				modifiers.SourceDamage *= 1 + Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<SniperMastery>() / 100f;
 			}
 		}
 	}

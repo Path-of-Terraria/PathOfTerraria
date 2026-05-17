@@ -42,7 +42,6 @@ internal class PlayerStatInnerPanel : SmartUiElement
 				MarginTop = 10;
 			}
 
-
 			Slot = SlotNumber++;
 			HAlign = 0.5f;
 		}
@@ -61,6 +60,26 @@ internal class PlayerStatInnerPanel : SmartUiElement
 					SimpleSubtitle = hover.Value,
 				});
 			}
+		}
+	}
+
+	/// <summary>
+	/// Bizarre, weird workaround because <see cref="Player.manaRegen"/> isn't set properly? Is reset early? Unsure.
+	/// </summary>
+	internal class ManaRegenTracker : ModPlayer
+	{
+		public int LastManaRegen { get; internal set; }
+
+		public override void Load()
+		{
+			On_Player.UpdateManaRegen += CheckManaRegen;
+		}
+
+		private static void CheckManaRegen(On_Player.orig_UpdateManaRegen orig, Player self)
+		{
+			self.GetModPlayer<ManaRegenTracker>().LastManaRegen = self.manaRegen;
+
+			orig(self);
 		}
 	}
 
@@ -140,7 +159,7 @@ internal class PlayerStatInnerPanel : SmartUiElement
 		list.Add(new PlayerStatUI(Localize("Level"), player => player.GetModPlayer<ExpModPlayer>().Level.ToString()));
 		list.Add(new PlayerStatUI(Localize("Experience"), player =>
 		{
-			ExpModPlayer expPlayer = Main.LocalPlayer.GetModPlayer<ExpModPlayer>();
+			ExpModPlayer expPlayer = player.GetModPlayer<ExpModPlayer>();
 			float expPercent = expPlayer.Exp / (float)expPlayer.NextLevel * 100;
 			return $"{expPlayer.Exp}/{expPlayer.NextLevel} ({expPercent:#0.##}%)";
 		}));
@@ -149,8 +168,8 @@ internal class PlayerStatInnerPanel : SmartUiElement
 		list.Add(new PlayerStatUI(Localize("DefenseHeader"), player => "", isHeader: true));
 		list.Add(new PlayerStatUI(Localize("Life"), player =>
 		{
-			float lifePercent = Main.LocalPlayer.statLife / Main.LocalPlayer.statLifeMax2 * 100;
-			return $"{Main.LocalPlayer.statLife}/{Main.LocalPlayer.statLifeMax2} ({lifePercent:#0.##}%)";
+			float lifePercent = player.statLife / player.statLifeMax2 * 100;
+			return $"{player.statLife}/{player.statLifeMax2} ({lifePercent:#0.##}%)";
 		}));
 		list.Add(new PlayerStatUI(Localize("EnergyShield"), player =>
 		{
@@ -158,13 +177,13 @@ internal class PlayerStatInnerPanel : SmartUiElement
 			float energyShieldPercent = energyShield.MaximumEnergyShield <= 0 ? 0 : energyShield.CurrentEnergyShield / energyShield.MaximumEnergyShield * 100;
 			return $"{energyShield.CurrentEnergyShieldRounded}/{energyShield.MaximumEnergyShield} ({energyShieldPercent:#0.##}%)";
 		}));
-		list.Add(new PlayerStatUI(Localize("LifeRegen"), player => $"{Main.LocalPlayer.lifeRegen}"));
+		list.Add(new PlayerStatUI(Localize("LifeRegen"), player => $"{player.lifeRegen}"));
 		list.Add(new PlayerStatUI(Localize("Mana"), player =>
 		{
-			float manaPercent = Main.LocalPlayer.statMana / Main.LocalPlayer.statManaMax * 100;
-			return $"{Main.LocalPlayer.statMana}/{Main.LocalPlayer.statManaMax2} ({manaPercent:#0.##}%)";
+			float manaPercent = player.statMana / player.statManaMax * 100;
+			return $"{player.statMana}/{player.statManaMax2} ({manaPercent:#0.##}%)";
 		}));
-		list.Add(new PlayerStatUI(Localize("ManaRegen"), player => $"{Main.LocalPlayer.manaRegen}"));
+		list.Add(new PlayerStatUI(Localize("ManaRegen"), player => $"{player.GetModPlayer<ManaRegenTracker>().LastManaRegen}"));
 		list.Add(new PlayerStatUI(Localize("DamageReduction"), player => $"{player.endurance * 100:#0.##}%"));
 		list.Add(new PlayerStatUI(Localize("BlockChance"), player => $"{player.GetModPlayer<BlockPlayer>().ActualBlockChance * 100:#0.##}%"));
 		list.Add(new PlayerStatUI(Localize("MaxBlock"), player => $"{player.GetModPlayer<BlockPlayer>().MaxBlockChance * 100:#0.##}%"));

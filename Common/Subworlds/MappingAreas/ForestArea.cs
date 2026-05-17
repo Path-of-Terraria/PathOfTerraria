@@ -358,7 +358,7 @@ internal class ForestArea : MappingWorld, IOverrideBiome, IExplorationWorld
 
 					if (drop.Item is not null)
 					{
-						chest.item[k] = new Item(drop.ItemId, drop.Item.stack);
+						chest.item[k] = MapChestLoot.BuildChestItem(drop);
 					}
 				}
 			}

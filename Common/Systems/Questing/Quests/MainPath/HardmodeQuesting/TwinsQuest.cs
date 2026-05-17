@@ -89,7 +89,6 @@ internal class TwinsQuest() : Quest
 	protected override bool InternalAvailable()
 	{
 		Quest tinkerIntroQuest = GetLocalPlayerInstance<TinkerIntroQuest>();
-		RavencrestSubworld subworld = ModContent.GetInstance<RavencrestSubworld>();
 		return tinkerIntroQuest.Completed && NPC.downedQueenSlime && MappingWorld.GetTimesEntered<RavencrestSubworld>() != TinkerIntroQuest.CompletionVisit;
 	}
 }
