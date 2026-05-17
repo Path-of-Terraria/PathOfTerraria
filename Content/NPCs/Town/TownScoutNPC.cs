@@ -13,6 +13,8 @@ namespace PathOfTerraria.Content.NPCs.Town;
 
 public sealed class TownScoutNPC : ModNPC
 {
+	private const string SurveyorQuestStep = "KillSurveyor";
+
 	private bool HasPlayerBeenNear
 	{
 		get => NPC.ai[0] == 1;
@@ -46,6 +48,18 @@ public sealed class TownScoutNPC : ModNPC
 
 	public override bool PreAI()
 	{
+		if (Main.netMode != NetmodeID.MultiplayerClient && !AnyPlayerNeedsSurveyor())
+		{
+			NPC.active = false;
+
+			if (Main.netMode == NetmodeID.Server)
+			{
+				NetMessage.SendData(MessageID.SyncNPC, number: NPC.whoAmI);
+			}
+
+			return false;
+		}
+
 		if (!HasPlayerBeenNear)
 		{
 			foreach (Player plr in Main.ActivePlayers)
@@ -113,39 +127,37 @@ public sealed class TownScoutNPC : ModNPC
 
 	public override float SpawnChance(NPCSpawnInfo spawnInfo)
 	{
-		bool anyHealthyPlayer = true;
-		bool forceQuestSpawn = false;
+		if (!AnyPlayerNeedsSurveyor())
+		{
+			return 0;
+		}
+		
+		bool spawnedScout = ModContent.GetInstance<RavencrestSystem>().SpawnedScout;
+
+		return SubworldSystem.Current is RavencrestSubworld && spawnInfo.SpawnTileX < 180 && !spawnedScout ? 100f : 0;
+	}
+
+	public override bool CheckActive()
+	{
+		return false;
+	}
+
+	private static bool AnyPlayerNeedsSurveyor()
+	{
+		string questName = ModContent.GetInstance<WizardStartQuest>().FullName;
 
 		foreach (Player plr in Main.ActivePlayers)
 		{
 			QuestModPlayer questPlayer = plr.GetModPlayer<QuestModPlayer>();
 
-			if (questPlayer.QuestsByName.TryGetValue(ModContent.GetInstance<WizardStartQuest>().FullName, out Quest quest)
+			if (questPlayer.QuestsByName.TryGetValue(questName, out Quest quest)
 				&& quest.Active
-				&& quest.ActiveStep.Id == "Start")
+				&& quest.ActiveStep.Id == SurveyorQuestStep)
 			{
-				forceQuestSpawn = true;
-			}
-
-			if (plr.ConsumedLifeCrystals > 5)
-			{
-				anyHealthyPlayer = true;
+				return true;
 			}
 		}
 
-		if (!anyHealthyPlayer && !forceQuestSpawn)
-		{
-			return 0;
-		}
-		
-		float chance = forceQuestSpawn ? 100f : (NPC.downedGoblins ? 0.1f : 5);
-		bool spawnedScout = ModContent.GetInstance<RavencrestSystem>().SpawnedScout;
-
-		return SubworldSystem.Current is RavencrestSubworld && spawnInfo.SpawnTileX < 180 && !spawnedScout ? chance : 0;
-	}
-
-	public override bool CheckActive()
-	{
 		return false;
 	}
 }
