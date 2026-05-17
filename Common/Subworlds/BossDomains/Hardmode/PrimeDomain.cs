@@ -450,7 +450,7 @@ internal class PrimeDomain : BossDomainSubworld
 		TileEntity.UpdateEnd();
 
 		FightState state = FightTracker.UpdateState();
-		GetData().CheckDowned<PrimeDomain>(NPCID.SkeletronPrime);
+		GetData().MarkBossDownedIfDefeated<PrimeDomain>(NPCID.SkeletronPrime);
 
 		if (state == FightState.NotStarted && !GetData().BossDowned)
 		{

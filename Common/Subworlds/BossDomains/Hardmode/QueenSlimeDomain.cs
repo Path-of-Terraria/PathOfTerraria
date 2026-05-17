@@ -441,7 +441,7 @@ internal class QueenSlimeDomain : BossDomainSubworld
 		}
 
 		FightState state = FightTracker.UpdateState();
-		GetData().CheckDowned<QueenSlimeDomain>(NPCID.QueenSlimeBoss);
+		GetData().MarkBossDownedIfDefeated<QueenSlimeDomain>(NPCID.QueenSlimeBoss);
 
 		if (state == FightState.NotStarted && !GetData().BossDowned)
 		{

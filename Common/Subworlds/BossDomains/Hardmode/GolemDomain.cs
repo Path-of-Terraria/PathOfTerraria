@@ -364,7 +364,7 @@ internal class GolemDomain : BossDomainSubworld
 		TileEntity.UpdateEnd();
 
 		FightState state = FightTracker.UpdateState();
-		GetData().CheckDowned<GolemDomain>(NPCID.Golem);
+		GetData().MarkBossDownedIfDefeated<GolemDomain>(NPCID.Golem);
 
 		if (state == FightState.NotStarted && !GetData().BossDowned)
 		{

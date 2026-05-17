@@ -35,16 +35,16 @@ public class PersistentData
 	public bool BossDowned = false;
 
 	/// <summary>
-	/// Automatically checks if the corresponding boss(es) have been downed, and sets <see cref="BossDowned"/> to true if so.
+	/// Marks this domain's persistent boss state as completed when all listed NPC ids were defeated in the current domain.
 	/// </summary>
-	public void CheckDowned<T>(params int[] id) where T : BossDomainSubworld
+	public void MarkBossDownedIfDefeated<T>(params int[] npcIds) where T : BossDomainSubworld
 	{
-		if (id.Length == 0)
+		if (npcIds.Length == 0)
 		{
-			throw new ArgumentException("There must be at least 1 IDs passed to CheckDowned.");
+			throw new ArgumentException($"There must be at least 1 NPC id passed to {nameof(MarkBossDownedIfDefeated)}.");
 		}
 
-		if (BossTracker.DownedInDomain<T>(id))
+		if (BossTracker.DownedInDomain<T>(npcIds))
 		{
 			BossDowned = true;
 		}

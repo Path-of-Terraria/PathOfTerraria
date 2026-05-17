@@ -259,7 +259,7 @@ public class KingSlimeDomain : BossDomainSubworld
 		}
 
 		FightState state = FightTracker.UpdateState();
-		GetData().CheckDowned<KingSlimeDomain>(NPCID.KingSlime);
+		GetData().MarkBossDownedIfDefeated<KingSlimeDomain>(NPCID.KingSlime);
 
 		if (state == FightState.NotStarted && allInArena && !GetData().BossDowned)
 		{
