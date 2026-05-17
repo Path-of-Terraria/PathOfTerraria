@@ -13,6 +13,8 @@ namespace PathOfTerraria.Content.NPCs.Town;
 
 public sealed class TownScoutNPC : ModNPC
 {
+	private const string SurveyorQuestStep = "KillSurveyor";
+
 	private bool HasPlayerBeenNear
 	{
 		get => NPC.ai[0] == 1;
@@ -46,6 +48,18 @@ public sealed class TownScoutNPC : ModNPC
 
 	public override bool PreAI()
 	{
+		if (Main.netMode != NetmodeID.MultiplayerClient && !AnyPlayerCanEncounterSurveyor())
+		{
+			NPC.active = false;
+
+			if (Main.netMode == NetmodeID.Server)
+			{
+				NetMessage.SendData(MessageID.SyncNPC, number: NPC.whoAmI);
+			}
+
+			return false;
+		}
+
 		if (!HasPlayerBeenNear)
 		{
 			foreach (Player plr in Main.ActivePlayers)
@@ -113,39 +127,50 @@ public sealed class TownScoutNPC : ModNPC
 
 	public override float SpawnChance(NPCSpawnInfo spawnInfo)
 	{
-		bool anyHealthyPlayer = true;
-		bool forceQuestSpawn = false;
+		float questChance = GetQuestSpawnChance();
 
-		foreach (Player plr in Main.ActivePlayers)
-		{
-			QuestModPlayer questPlayer = plr.GetModPlayer<QuestModPlayer>();
-
-			if (questPlayer.QuestsByName.TryGetValue(ModContent.GetInstance<WizardStartQuest>().FullName, out Quest quest)
-				&& quest.Active
-				&& quest.ActiveStep.Id == "Start")
-			{
-				forceQuestSpawn = true;
-			}
-
-			if (plr.ConsumedLifeCrystals > 5)
-			{
-				anyHealthyPlayer = true;
-			}
-		}
-
-		if (!anyHealthyPlayer && !forceQuestSpawn)
+		if (questChance <= 0)
 		{
 			return 0;
 		}
 		
-		float chance = forceQuestSpawn ? 100f : (NPC.downedGoblins ? 0.1f : 5);
 		bool spawnedScout = ModContent.GetInstance<RavencrestSystem>().SpawnedScout;
 
-		return SubworldSystem.Current is RavencrestSubworld && spawnInfo.SpawnTileX < 180 && !spawnedScout ? chance : 0;
+		return SubworldSystem.Current is RavencrestSubworld && spawnInfo.SpawnTileX < 180 && !spawnedScout ? questChance : 0;
 	}
 
 	public override bool CheckActive()
 	{
 		return false;
+	}
+
+	private static bool AnyPlayerCanEncounterSurveyor()
+	{
+		return GetQuestSpawnChance() > 0;
+	}
+
+	private static float GetQuestSpawnChance()
+	{
+		string questName = ModContent.GetInstance<WizardStartQuest>().FullName;
+		bool questCompleted = false;
+
+		foreach (Player plr in Main.ActivePlayers)
+		{
+			QuestModPlayer questPlayer = plr.GetModPlayer<QuestModPlayer>();
+
+			if (!questPlayer.QuestsByName.TryGetValue(questName, out Quest quest))
+			{
+				continue;
+			}
+
+			if (quest.Active && quest.ActiveStep.Id == SurveyorQuestStep)
+			{
+				return 100f;
+			}
+
+			questCompleted |= quest.Completed;
+		}
+
+		return questCompleted ? (NPC.downedGoblins ? 0.1f : 5) : 0;
 	}
 }
