@@ -1,0 +1,134 @@
+name: PR Changelog
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+    branches:
+      - main
+      - develop
+
+permissions:
+  contents: read
+
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ secrets.POT_GH_APP_APP_ID }}
+          private-key: ${{ secrets.POT_GH_APP_PRIVATE_KEY }}
+
+      - name: Build and post changelog
+        uses: actions/github-script@v9
+        with:
+          github-token: ${{ steps.app-token.outputs.token }}
+          script: |
+            const COMMENT_MARKER = '<!-- pot-changelog-bot -->';
+            const CLOSES_START = '<!-- pot-changelog-closes:start -->';
+            const CLOSES_END = '<!-- pot-changelog-closes:end -->';
+            const DESC_START = '<!-- pot-changelog-desc:start -->';
+            const DESC_END = '<!-- pot-changelog-desc:end -->';
+
+            const pr = context.payload.pull_request;
+            const { owner, repo } = context.repo;
+
+            const commits = await github.paginate(github.rest.pulls.listCommits, {
+              owner,
+              repo,
+              pull_number: pr.number,
+              per_page: 100,
+            });
+
+            const groups = {
+              feat:    { title: 'Features',  entries: [] },
+              balance: { title: 'Balance',   entries: [] },
+              fix:     { title: 'Bug Fixes', entries: [] },
+            };
+            const closes = new Set();
+
+            // type(scope)?: subject — only the first line of each commit message
+            const re = /^(feat|balance|fix)(?:\(([^)]*)\))?!?:\s*(.+)$/i;
+
+            for (const c of commits) {
+              const firstLine = (c.commit.message || '').split(/\r?\n/)[0].trim();
+              const m = firstLine.match(re);
+              if (!m) continue;
+
+              const type = m[1].toLowerCase();
+              const scope = (m[2] || '').trim();
+              const subject = m[3].trim();
+
+              const scopeIssues = [...scope.matchAll(/#(\d+)/g)].map(x => Number(x[1]));
+              for (const n of scopeIssues) closes.add(n);
+
+              // Plain-text bullet — no commit hash, no issue links — so it copy-pastes cleanly into wiki articles.
+              groups[type].entries.push(`- ${subject}`);
+            }
+
+            const sections = [];
+            for (const key of ['feat', 'balance', 'fix']) {
+              const g = groups[key];
+              if (g.entries.length) sections.push(`### ${g.title}\n\n${g.entries.join('\n')}`);
+            }
+
+            const closesList = [...closes].sort((a, b) => a - b);
+            const closesSection = closesList.length
+              ? `### Closes\n\n${closesList.map(n => `- Closes #${n}`).join('\n')}`
+              : '';
+
+            const body = [
+              COMMENT_MARKER,
+              '## Changelog',
+              sections.length ? sections.join('\n\n') : '_No conventional commits (`feat:`, `balance:`, `fix:`) found in this PR._',
+              closesSection,
+            ].filter(Boolean).join('\n\n');
+
+            // Sticky comment: find existing bot comment and update, otherwise create.
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number: pr.number,
+              per_page: 100,
+            });
+            const existing = comments.find(c => c.body && c.body.includes(COMMENT_MARKER));
+            if (existing) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number: pr.number, body });
+            }
+
+            const currentBody = pr.body || '';
+            let newBody = currentBody;
+
+            // Inject the changelog sections under the PR template's "### Description of Work" heading, if present.
+            // The block is delimited by markers so re-runs replace it in place instead of stacking duplicates.
+            const descBlock = sections.length
+              ? `${DESC_START}\n${sections.join('\n\n')}\n${DESC_END}`
+              : `${DESC_START}\n${DESC_END}`;
+            const descRe = new RegExp(`${DESC_START}[\\s\\S]*?${DESC_END}`);
+            const headingRe = /^(\s*#{1,6}\s+Description of Work\s*)$/m;
+
+            if (descRe.test(newBody)) {
+              newBody = newBody.replace(descRe, descBlock);
+            } else if (sections.length && headingRe.test(newBody)) {
+              newBody = newBody.replace(headingRe, `$1\n\n${descBlock}`);
+            }
+
+            // Maintain a managed Closes block so GitHub auto-closes the linked issues on merge.
+            const closesBlock = closesList.length
+              ? `${CLOSES_START}\n${closesList.map(n => `Closes #${n}`).join('\n')}\n${CLOSES_END}`
+              : `${CLOSES_START}\n${CLOSES_END}`;
+            const closesRe = new RegExp(`${CLOSES_START}[\\s\\S]*?${CLOSES_END}`);
+
+            if (closesRe.test(newBody)) {
+              newBody = newBody.replace(closesRe, closesBlock);
+            } else if (closesList.length) {
+              newBody = newBody ? `${newBody}\n\n${closesBlock}` : closesBlock;
+            }
+
+            if (newBody !== currentBody) {
+              await github.rest.pulls.update({ owner, repo, pull_number: pr.number, body: newBody });
+            }
