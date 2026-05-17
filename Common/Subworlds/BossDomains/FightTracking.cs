@@ -1,5 +1,7 @@
 ﻿#pragma warning disable CS9124 // Parameter is captured into the state of the enclosing type and its value is also used to initialize a field, property, or event.
 
+#nullable enable
+
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -27,8 +29,10 @@ public struct FightTracker
 
 	/// <summary> If true, the fight's start will not be signaled automatically when any tracked enemy is detected in the world. </summary>
 	public bool ManualStart { get; init; }
+
 	/// <summary> If true when enemies vanish without properly dying, the fight's data will be reset automatically, allowing a restart. </summary>
 	public bool ResetOnVanish { get; init; }
+
 	/// <summary> If not null when enemies vanish without properly dying, the tracker's state will be put into <see cref="FightState.Halted"/> for the specified bit of time. </summary>
 	public uint? HaltTimeOnVanish { get; init; }
 
@@ -127,18 +131,29 @@ public struct FightTracker
 		{
 			foreach (NPC activeNpc in Main.ActiveNPCs)
 			{
+				if (activeNpc is null)
+				{
+					continue;
+				}
+
 				if (activeNpc.type == type) { return true; }
 			}
 		}
 
 		return false;
 	}
+
 	public readonly NPC? GetFirstNPC()
 	{
 		foreach (int type in NpcTypes)
 		{
 			foreach (NPC activeNpc in Main.ActiveNPCs)
 			{
+				if (activeNpc is null)
+				{
+					continue;
+				}
+
 				if (activeNpc.type == type) { return activeNpc; }
 			}
 		}
