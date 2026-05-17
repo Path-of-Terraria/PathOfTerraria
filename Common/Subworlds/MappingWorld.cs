@@ -30,8 +30,10 @@ namespace PathOfTerraria.Common.Subworlds;
 /// but it is a class so it can be inherited to add arbitrary additional data.<br/><b>Most</b> of the code relating to this will not run on multiplayer clients,
 /// so be careful.
 /// </summary>
-public class PersistentData
+public class PersistentData : TagSerializable
 {
+	public static readonly Func<TagCompound, PersistentData> DESERIALIZER = Load;
+
 	public bool BossDowned = false;
 
 	/// <summary>
@@ -50,16 +52,20 @@ public class PersistentData
 		}
 	}
 
-	/// <summary> Persists this instance into the given tag. Subclasses should override and call base. </summary>
-	public virtual void Save(TagCompound tag)
+	public TagCompound SerializeData()
 	{
-		tag[nameof(BossDowned)] = BossDowned;
+		return new TagCompound
+		{
+			[nameof(BossDowned)] = BossDowned
+		};
 	}
 
-	/// <summary> Restores this instance from the given tag. Subclasses should override and call base. </summary>
-	public virtual void Load(TagCompound tag)
+	public static PersistentData Load(TagCompound tag)
 	{
-		BossDowned = tag.GetBool(nameof(BossDowned));
+		return new PersistentData
+		{
+			BossDowned = tag.GetBool(nameof(BossDowned))
+		};
 	}
 }
 
@@ -101,9 +107,7 @@ public abstract class MappingWorld : Subworld
 			// happens in ReadCopiedMainWorldData.
 			if (SubworldSystem.Current is { } current && PersistentDomainInfo.TryGetValue(current.FullName, out PersistentData? data))
 			{
-				TagCompound persistTag = [];
-				data.Save(persistTag);
-				tag.Add("persistentData", persistTag);
+				tag.Add("persistentData", data);
 			}
 		}
 
@@ -130,10 +134,8 @@ public abstract class MappingWorld : Subworld
 			// Subworld-side: restore this subworld's PersistentData from its .twld (must come before
 			// ReadCopiedMainWorldData runs, which is the case because LoadWorldData is part of the
 			// world load and ReadCopiedMainWorldData runs afterwards).
-			if (SubworldSystem.Current is { } current && tag.TryGet("persistentData", out TagCompound persistTag))
+			if (SubworldSystem.Current is { } current && tag.TryGet("persistentData", out PersistentData data))
 			{
-				PersistentData data = new();
-				data.Load(persistTag);
 				PersistentDomainInfo[current.FullName] = data;
 			}
 		}
