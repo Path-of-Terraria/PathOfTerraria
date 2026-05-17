@@ -31,6 +31,7 @@ public class ItemAffixData
 	public string EquipTypes { get; set; }
 	public string Influences { get; set; }
 	public bool RequiresPathOfTerrariaItem { get; set; }
+	public bool RequiresEnergyShieldItem { get; set; }
 	public bool Round { get; set; }
 	public List<TierData> Tiers { get; set; }
 

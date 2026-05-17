@@ -9,6 +9,7 @@ using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Common.Systems.EnergyShield;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Utilities;
 using Terraria.ModLoader.Core;
@@ -267,7 +268,12 @@ public class AffixRegistry : ILoadable
 
 	private static bool CanApplyToItem(ItemAffixData affixData, Item item)
 	{
-		return !affixData.RequiresPathOfTerrariaItem || item.ModItem is IPoTGlobalItem;
+		if (affixData.RequiresPathOfTerrariaItem && item.ModItem is not IPoTGlobalItem)
+		{
+			return false;
+		}
+
+		return !affixData.RequiresEnergyShieldItem || item.ModItem is IEnergyShieldItem;
 	}
 
 	/// <summary>

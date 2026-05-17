@@ -477,6 +477,7 @@
 	{
 		"affixType": "MaximumEnergyShieldAffix",
 		"equipTypes": "Armor Ring Amulet",
+		"requiresEnergyShieldItem": true,
 		"tiers": [
 			{
 				"minValue": 3,
@@ -507,6 +508,7 @@
 	{
 		"affixType": "IncreasedEnergyShieldAffix",
 		"equipTypes": "Armor Ring Amulet",
+		"requiresEnergyShieldItem": true,
 		"tiers": [
 			{
 				"minValue": 5,
@@ -537,6 +539,7 @@
 	{
 		"affixType": "EnergyShieldRechargeRateAffix",
 		"equipTypes": "Armor Ring Amulet",
+		"requiresEnergyShieldItem": true,
 		"tiers": [
 			{
 				"minValue": 5,
@@ -567,6 +570,7 @@
 	{
 		"affixType": "FasterEnergyShieldRechargeStartAffix",
 		"equipTypes": "Armor Ring Amulet",
+		"requiresEnergyShieldItem": true,
 		"tiers": [
 			{
 				"minValue": 5,
