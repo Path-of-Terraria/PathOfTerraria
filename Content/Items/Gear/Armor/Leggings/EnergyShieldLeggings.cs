@@ -1,16 +1,19 @@
 using System.Collections.Generic;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.EnergyShield;
+using PathOfTerraria.Common.Systems.ItemStats;
 using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Content.Items.Gear.Armor.Leggings;
 
-internal abstract class EnergyShieldLeggings : Leggings, IEnergyShieldItem
+internal abstract class EnergyShieldLeggings : Leggings, IEnergyShieldItem, IEnergyShieldRangeItem
 {
 	protected abstract int MinimumDropItemLevel { get; }
 	protected abstract int MaximumDropItemLevel { get; }
 	protected abstract int MinimumEnergyShield { get; }
 	protected abstract int MaximumEnergyShield { get; }
+
+	public (int Minimum, int Maximum) EnergyShieldRange => (MinimumEnergyShield, MaximumEnergyShield);
 
 	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Gear/Armor/Legs/{GetType().Name}";
 

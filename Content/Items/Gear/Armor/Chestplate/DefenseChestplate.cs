@@ -1,13 +1,16 @@
+using PathOfTerraria.Common.Systems.ItemStats;
 using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Content.Items.Gear.Armor.Chestplate;
 
-internal abstract class DefenseChestplate : Chestplate
+internal abstract class DefenseChestplate : Chestplate, IDefenseRangeItem
 {
 	protected abstract int MinimumDropItemLevel { get; }
 	protected abstract int MaximumDropItemLevel { get; }
 	protected abstract int MinimumDefense { get; }
 	protected abstract int MaximumDefense { get; }
+
+	public (int Minimum, int Maximum) DefenseRange => (MinimumDefense, MaximumDefense);
 
 	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Gear/Armor/Body/{GetType().Name}";
 

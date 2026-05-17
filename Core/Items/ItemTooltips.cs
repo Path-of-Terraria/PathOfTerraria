@@ -7,6 +7,7 @@ using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Common.Systems.DisableBuilding;
 using PathOfTerraria.Common.Systems.EnergyShield;
+using PathOfTerraria.Common.Systems.ItemStats;
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Content.Items.Consumables.Maps.ExplorableMaps;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
@@ -535,8 +536,11 @@ public sealed partial class ItemTooltips : GlobalItem
 		if (modifiedDefense > 0)
 		{
 			Color defenseNumberColor = modifiedDefense == item.defense ? Colors.DefaultNumber : Colors.ModifiedStat;
+			string defenseDetails = Main.keyState.PressingShift()
+				? FormatBaseStatDetails(item.defense, modifiedDefense, GetDefenseRollRange(item))
+				: string.Empty;
 			var def = new TooltipLine(Mod, "Defense",
-				$"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"+{modifiedDefense} {Localize("Defense")}", defenseNumberColor)}");
+				$"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"+{modifiedDefense}", defenseNumberColor)} {Localize("Defense")}{defenseDetails}");
 			AddNewTooltipLine(item, tooltips, def);
 		}
 
@@ -547,8 +551,11 @@ public sealed partial class ItemTooltips : GlobalItem
 			if (energyShield > 0)
 			{
 				Color energyShieldNumberColor = energyShield == baseEnergyShield ? Colors.DefaultNumber : Colors.ModifiedStat;
+				string energyShieldDetails = Main.keyState.PressingShift()
+					? FormatBaseStatDetails(baseEnergyShield, energyShield, GetEnergyShieldRollRange(item))
+					: string.Empty;
 				var energyShieldLine = new TooltipLine(Mod, "EnergyShield",
-					$"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"{energyShield} {Localize("EnergyShield")}", energyShieldNumberColor)}");
+					$"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"{energyShield}", energyShieldNumberColor)} {Localize("EnergyShield")}{energyShieldDetails}");
 				AddNewTooltipLine(item, tooltips, energyShieldLine);
 			}
 		}
@@ -757,6 +764,52 @@ public sealed partial class ItemTooltips : GlobalItem
 		}
 
 		return Math.Max(0, item.defense + (int)Math.Round(addedDefense));
+	}
+
+	private static (int Minimum, int Maximum)? GetDefenseRollRange(Item item)
+	{
+		if (item.ModItem is not IDefenseRangeItem rangeItem)
+		{
+			return null;
+		}
+
+		(int minimum, int maximum) = rangeItem.DefenseRange;
+		return minimum == maximum ? null : (minimum, maximum);
+	}
+
+	private static (int Minimum, int Maximum)? GetEnergyShieldRollRange(Item item)
+	{
+		if (item.ModItem is not IEnergyShieldRangeItem rangeItem)
+		{
+			return null;
+		}
+
+		(int minimum, int maximum) = rangeItem.EnergyShieldRange;
+		return minimum == maximum ? null : (minimum, maximum);
+	}
+
+	private static string FormatBaseStatDetails(int baseValue, int modifiedValue, (int Minimum, int Maximum)? rollRange)
+	{
+		List<string> details = [];
+
+		if (rollRange is { } range)
+		{
+			details.Add(HighlightNumbers($"roll [{range.Minimum}-{range.Maximum}]"));
+		}
+
+		int modifier = modifiedValue - baseValue;
+		if (modifier != 0)
+		{
+			Color modifierColor = modifier > 0 ? Colors.ModifiedStat : Colors.Negative;
+			details.Add($"{HighlightNumbers($"base {baseValue}")} {HighlightNumbers(FormatSignedNumber(modifier), modifierColor)}");
+		}
+
+		return details.Count == 0 ? string.Empty : $" ({string.Join("; ", details)})";
+	}
+
+	private static string FormatSignedNumber(int value)
+	{
+		return value > 0 ? $"+{value}" : value.ToString();
 	}
 
 	public static string HighlightNumbers(string input, Color? numColor = null, Color? baseColor = null)
