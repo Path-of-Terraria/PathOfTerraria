@@ -116,6 +116,7 @@ BetterBleedAffix.Description: "{1}{0}% increased Bleed damage"
 EoLDaylightAffix.Description: Fight in the Daylight
 AmmoReservationAffix.Description: "{1}{0}% chance to reserve ammo"
 IncreasedSummonDamageAffix.Description: "{1}{0}% increased summon damage"
+AddedMaxMinionsAffix.Description: "{1}{0} maximum minions"
 IncreasedMeleeDamageAffix.Description: "{1}{0}% increased melee damage"
 IncreasedRangedDamageAffix.Description: "{1}{0}% increased ranged damage"
 IncreasedMagicDamageAffix.Description: "{1}{0}% increased magic damage"

@@ -116,6 +116,7 @@ BetterBleedAffix.Description: "{1}{0}% większych obrażenia od Krwawienia"
 EoLDaylightAffix.Description: Walcz w świetle dnia
 AmmoReservationAffix.Description: "{1}{0}% szansy na zachowanie amunicji"
 IncreasedSummonDamageAffix.Description: "{1}{0}% zwiększone obrażenia przywołanych"
+// AddedMaxMinionsAffix.Description: "{1}{0} maximum minions"
 IncreasedMeleeDamageAffix.Description: "{1}{0}% zwiększone obrażenia wręcz"
 IncreasedRangedDamageAffix.Description: "{1}{0}% zwiększone obrażenia dystansowe"
 IncreasedMagicDamageAffix.Description: "{1}{0}% zwiększone obrażenia magiczne"
