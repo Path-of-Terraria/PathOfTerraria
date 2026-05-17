@@ -14,7 +14,27 @@ public class ExpModPlayer : ModPlayer
 
 	public int Exp;
 
-	public int NextLevel => Level == 100 ? 1 : Level * 250 + (int)(80 * Math.Pow(2, 1 + Level * 0.2f));
+	public int NextLevel
+	{
+		get
+		{
+			if (Level == 100)
+			{
+				return 1;
+			}
+
+			int baseXp = Level * 250 + (int)(80 * Math.Pow(2, 1 + Level * 0.2f));
+
+			if (Level <= 10)
+			{
+				float progress = (Level - 1) / 9f;
+				float multiplier = MathHelper.Lerp(0.6f, 0.95f, progress);
+				return (int)(baseXp * multiplier);
+			}
+
+			return baseXp;
+		}
+	}
 
 	public override void PreUpdate()
 	{
