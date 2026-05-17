@@ -10,8 +10,6 @@ internal sealed class AcolyteHood : EnergyShieldHelmet
 	protected override int MinimumDropItemLevel => 25;
 	protected override int MaximumDropItemLevel => 50;
 
-	public override List<ItemAffix> GenerateImplicits()
-	{
-		return [(ItemAffix)Affix.CreateAffix<MaximumEnergyShieldAffix>(10, 20)];
-	}
+	protected override int MinimumEnergyShield => 10;
+	protected override int MaximumEnergyShield => 20;
 }

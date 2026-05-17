@@ -10,8 +10,6 @@ internal sealed class EtherealMantle : EnergyShieldChestplate
 	protected override int MinimumDropItemLevel => 71;
 	protected override int MaximumDropItemLevel => 85;
 
-	public override List<ItemAffix> GenerateImplicits()
-	{
-		return [(ItemAffix)Affix.CreateAffix<MaximumEnergyShieldAffix>(85, 110)];
-	}
+	protected override int MinimumEnergyShield => 85;
+	protected override int MaximumEnergyShield => 110;
 }

@@ -10,8 +10,6 @@ internal sealed class MysticGarb : EnergyShieldChestplate
 	protected override int MinimumDropItemLevel => 40;
 	protected override int MaximumDropItemLevel => 65;
 
-	public override List<ItemAffix> GenerateImplicits()
-	{
-		return [(ItemAffix)Affix.CreateAffix<MaximumEnergyShieldAffix>(38, 58)];
-	}
+	protected override int MinimumEnergyShield => 38;
+	protected override int MaximumEnergyShield => 58;
 }

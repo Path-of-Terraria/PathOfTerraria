@@ -10,8 +10,6 @@ internal sealed class SpectralStriders : EnergyShieldLeggings
 	protected override int MinimumDropItemLevel => 55;
 	protected override int MaximumDropItemLevel => 80;
 
-	public override List<ItemAffix> GenerateImplicits()
-	{
-		return [(ItemAffix)Affix.CreateAffix<MaximumEnergyShieldAffix>(25, 35)];
-	}
+	protected override int MinimumEnergyShield => 25;
+	protected override int MaximumEnergyShield => 35;
 }

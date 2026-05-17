@@ -10,8 +10,6 @@ internal sealed class EtherealGreaves : EnergyShieldLeggings
 	protected override int MinimumDropItemLevel => 71;
 	protected override int MaximumDropItemLevel => 85;
 
-	public override List<ItemAffix> GenerateImplicits()
-	{
-		return [(ItemAffix)Affix.CreateAffix<MaximumEnergyShieldAffix>(36, 46)];
-	}
+	protected override int MinimumEnergyShield => 36;
+	protected override int MaximumEnergyShield => 46;
 }

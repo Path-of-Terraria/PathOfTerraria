@@ -10,8 +10,6 @@ internal sealed class ApprenticeCap : EnergyShieldHelmet
 	protected override int MinimumDropItemLevel => 1;
 	protected override int MaximumDropItemLevel => 35;
 
-	public override List<ItemAffix> GenerateImplicits()
-	{
-		return [(ItemAffix)Affix.CreateAffix<MaximumEnergyShieldAffix>(3, 10)];
-	}
+	protected override int MinimumEnergyShield => 3;
+	protected override int MaximumEnergyShield => 10;
 }

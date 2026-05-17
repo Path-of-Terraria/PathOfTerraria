@@ -10,8 +10,6 @@ internal sealed class MysticCirclet : EnergyShieldHelmet
 	protected override int MinimumDropItemLevel => 40;
 	protected override int MaximumDropItemLevel => 65;
 
-	public override List<ItemAffix> GenerateImplicits()
-	{
-		return [(ItemAffix)Affix.CreateAffix<MaximumEnergyShieldAffix>(19, 29)];
-	}
+	protected override int MinimumEnergyShield => 19;
+	protected override int MaximumEnergyShield => 29;
 }

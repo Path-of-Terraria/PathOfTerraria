@@ -10,8 +10,6 @@ internal sealed class SpectralShroud : EnergyShieldChestplate
 	protected override int MinimumDropItemLevel => 55;
 	protected override int MaximumDropItemLevel => 80;
 
-	public override List<ItemAffix> GenerateImplicits()
-	{
-		return [(ItemAffix)Affix.CreateAffix<MaximumEnergyShieldAffix>(58, 83)];
-	}
+	protected override int MinimumEnergyShield => 58;
+	protected override int MaximumEnergyShield => 83;
 }

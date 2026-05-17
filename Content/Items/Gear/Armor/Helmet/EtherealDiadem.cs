@@ -10,8 +10,6 @@ internal sealed class EtherealDiadem : EnergyShieldHelmet
 	protected override int MinimumDropItemLevel => 71;
 	protected override int MaximumDropItemLevel => 85;
 
-	public override List<ItemAffix> GenerateImplicits()
-	{
-		return [(ItemAffix)Affix.CreateAffix<MaximumEnergyShieldAffix>(44, 56)];
-	}
+	protected override int MinimumEnergyShield => 44;
+	protected override int MaximumEnergyShield => 56;
 }

@@ -10,8 +10,6 @@ internal sealed class ApprenticeRobe : EnergyShieldChestplate
 	protected override int MinimumDropItemLevel => 1;
 	protected override int MaximumDropItemLevel => 35;
 
-	public override List<ItemAffix> GenerateImplicits()
-	{
-		return [(ItemAffix)Affix.CreateAffix<MaximumEnergyShieldAffix>(7, 21)];
-	}
+	protected override int MinimumEnergyShield => 7;
+	protected override int MaximumEnergyShield => 21;
 }

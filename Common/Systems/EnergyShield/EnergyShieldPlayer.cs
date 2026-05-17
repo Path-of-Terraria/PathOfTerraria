@@ -44,7 +44,7 @@ internal sealed class EnergyShieldPlayer : ModPlayer
 
 	public void AddArmorEnergyShield(Item item)
 	{
-		float flat = 0;
+		float flat = EnergyShieldItem.GetBaseEnergyShield(item);
 		float increased = 0;
 
 		foreach (ItemAffix affix in item.GetInstanceData().Affixes)
@@ -201,9 +201,14 @@ internal sealed class EnergyShieldPlayer : ModPlayer
 
 internal static class EnergyShieldItem
 {
+	public static int GetBaseEnergyShield(Item item)
+	{
+		return item.ModItem is IEnergyShieldItem ? item.GetInstanceData().BaseEnergyShield : 0;
+	}
+
 	public static int GetLocalEnergyShield(Item item)
 	{
-		float flat = 0;
+		float flat = GetBaseEnergyShield(item);
 		float increased = 0;
 
 		foreach (ItemAffix affix in item.GetInstanceData().Affixes)
@@ -220,6 +225,34 @@ internal static class EnergyShieldItem
 		}
 
 		return Math.Max(0, (int)MathF.Round(flat * (1 + increased / 100f)));
+	}
+
+	public static void RollBaseEnergyShield(Item item, int minimumEnergyShield, int maximumEnergyShield)
+	{
+		PoTInstanceItemData data = item.GetInstanceData();
+		MigrateLegacyImplicitEnergyShield(data);
+
+		if (data.BaseEnergyShield <= 0)
+		{
+			data.BaseEnergyShield = (int)MathF.Round(Main.rand.NextFloat(minimumEnergyShield, maximumEnergyShield));
+		}
+	}
+
+	private static void MigrateLegacyImplicitEnergyShield(PoTInstanceItemData data)
+	{
+		int index = data.Affixes.FindIndex(affix => affix is MaximumEnergyShieldAffix && affix.IsImplicit);
+		if (index < 0)
+		{
+			return;
+		}
+
+		data.BaseEnergyShield = Math.Max(data.BaseEnergyShield, (int)MathF.Round(data.Affixes[index].Value));
+		data.Affixes.RemoveAt(index);
+
+		if (data.ImplicitCount > 0)
+		{
+			data.ImplicitCount--;
+		}
 	}
 
 	public static bool IsGlobalEnergyShieldSource(Item item)

@@ -10,8 +10,6 @@ internal sealed class MysticBoots : EnergyShieldLeggings
 	protected override int MinimumDropItemLevel => 40;
 	protected override int MaximumDropItemLevel => 65;
 
-	public override List<ItemAffix> GenerateImplicits()
-	{
-		return [(ItemAffix)Affix.CreateAffix<MaximumEnergyShieldAffix>(16, 24)];
-	}
+	protected override int MinimumEnergyShield => 16;
+	protected override int MaximumEnergyShield => 24;
 }

@@ -7,6 +7,8 @@ internal abstract class EnergyShieldChestplate : Chestplate, IEnergyShieldItem
 {
 	protected abstract int MinimumDropItemLevel { get; }
 	protected abstract int MaximumDropItemLevel { get; }
+	protected abstract int MinimumEnergyShield { get; }
+	protected abstract int MaximumEnergyShield { get; }
 
 	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Gear/Armor/Body/{GetType().Name}";
 
@@ -24,6 +26,7 @@ internal abstract class EnergyShieldChestplate : Chestplate, IEnergyShieldItem
 
 	public override void PostRoll()
 	{
+		EnergyShieldItem.RollBaseEnergyShield(Item, MinimumEnergyShield, MaximumEnergyShield);
 		Item.defense = 0;
 	}
 }

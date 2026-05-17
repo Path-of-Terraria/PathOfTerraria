@@ -10,8 +10,6 @@ internal sealed class SpectralVeil : EnergyShieldHelmet
 	protected override int MinimumDropItemLevel => 55;
 	protected override int MaximumDropItemLevel => 80;
 
-	public override List<ItemAffix> GenerateImplicits()
-	{
-		return [(ItemAffix)Affix.CreateAffix<MaximumEnergyShieldAffix>(30, 42)];
-	}
+	protected override int MinimumEnergyShield => 30;
+	protected override int MaximumEnergyShield => 42;
 }

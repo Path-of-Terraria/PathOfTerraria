@@ -10,8 +10,6 @@ internal sealed class AcolyteVestment : EnergyShieldChestplate
 	protected override int MinimumDropItemLevel => 25;
 	protected override int MaximumDropItemLevel => 50;
 
-	public override List<ItemAffix> GenerateImplicits()
-	{
-		return [(ItemAffix)Affix.CreateAffix<MaximumEnergyShieldAffix>(19, 39)];
-	}
+	protected override int MinimumEnergyShield => 19;
+	protected override int MaximumEnergyShield => 39;
 }

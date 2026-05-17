@@ -10,8 +10,6 @@ internal sealed class ApprenticeSlippers : EnergyShieldLeggings
 	protected override int MinimumDropItemLevel => 1;
 	protected override int MaximumDropItemLevel => 35;
 
-	public override List<ItemAffix> GenerateImplicits()
-	{
-		return [(ItemAffix)Affix.CreateAffix<MaximumEnergyShieldAffix>(2, 8)];
-	}
+	protected override int MinimumEnergyShield => 2;
+	protected override int MaximumEnergyShield => 8;
 }

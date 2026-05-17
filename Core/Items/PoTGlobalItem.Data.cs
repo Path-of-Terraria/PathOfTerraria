@@ -38,6 +38,7 @@ public sealed class PoTInstanceItemData : GlobalItem
 		clone.Influence = Influence;
 		clone.ImplicitCount = ImplicitCount;
 		clone.RealLevel = RealLevel;
+		clone.BaseEnergyShield = BaseEnergyShield;
 		clone.Affixes = [.. Affixes.Select(a => a.Clone<ItemAffix>())];
 		clone.Corrupted = Corrupted;
 		clone.Cloned = Cloned;
@@ -90,6 +91,11 @@ public sealed class PoTInstanceItemData : GlobalItem
 	public int ImplicitCount { get; set; }
 
 	internal int RealLevel { get; set; }
+
+	/// <summary>
+	///		The item's rolled base Energy Shield value, before local Energy Shield affixes.
+	/// </summary>
+	public int BaseEnergyShield { get; set; }
 }
 
 /// <summary>

@@ -10,8 +10,6 @@ internal sealed class AcolyteSandals : EnergyShieldLeggings
 	protected override int MinimumDropItemLevel => 25;
 	protected override int MaximumDropItemLevel => 50;
 
-	public override List<ItemAffix> GenerateImplicits()
-	{
-		return [(ItemAffix)Affix.CreateAffix<MaximumEnergyShieldAffix>(8, 16)];
-	}
+	protected override int MinimumEnergyShield => 8;
+	protected override int MaximumEnergyShield => 16;
 }
