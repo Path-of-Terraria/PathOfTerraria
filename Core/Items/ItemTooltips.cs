@@ -647,7 +647,7 @@ public sealed partial class ItemTooltips : GlobalItem
 			tooltips.Add(priceLine);
 		}
 
-		if (item.ModItem is ITemporaryItem)
+		if (item.ModItem is ITemporaryItem temp && temp.DespawnCondition())
 		{
 			AddNewTooltipLine(item, tooltips, new TooltipLine(Mod, "Temporary", "[c/7F8FCC:(Ephemeral)]"));
 		}
