@@ -647,9 +647,9 @@ public sealed partial class ItemTooltips : GlobalItem
 			tooltips.Add(priceLine);
 		}
 
-		if (item.ModItem is ITemporaryItem temp && temp.DespawnCondition())
+		if (item.ModItem is ITemporaryItem temp && item.TryGetGlobalItem(out ITemporaryItem.TemporaryGlobalItem tempGlobal) && tempGlobal.IsTemporary && temp.DespawnCondition())
 		{
-			AddNewTooltipLine(item, tooltips, new TooltipLine(Mod, "Temporary", "[c/7F8FCC:(Ephemeral)]"));
+			AddNewTooltipLine(item, tooltips, new TooltipLine(Mod, "Temporary", $"[c/7F8FCC:{Language.GetTextValue("Mods.PathOfTerraria.TooltipNotices.Ephemeral")}]"));
 		}
 	}
 
