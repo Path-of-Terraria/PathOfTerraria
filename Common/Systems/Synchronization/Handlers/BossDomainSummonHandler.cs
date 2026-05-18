@@ -40,11 +40,6 @@ internal class BossDomainSummonHandler : Handler
 	{
 		BossDomainSummon summon = (BossDomainSummon)reader.ReadByte();
 
-		if (sender >= Main.maxPlayers)
-		{
-			return;
-		}
-
 		Player player = Main.player[sender];
 
 		if (!CanSummon(summon, player))
