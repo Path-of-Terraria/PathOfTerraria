@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Tiles;
+using PathOfTerraria.Common.Systems.Visuals;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -6,8 +7,10 @@ using Terraria.ObjectData;
 
 namespace PathOfTerraria.Content.Tiles.BossDomain.Mech;
 
-internal class MechButton : ModTile
+internal class MechButton : ModTile, ISpecialGlowTile
 {
+	public Color GlowColor => new(255, 90, 80);
+
 	public override void SetStaticDefaults()
 	{
 		Main.tileCut[Type] = true;

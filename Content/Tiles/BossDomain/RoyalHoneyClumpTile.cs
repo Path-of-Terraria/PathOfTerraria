@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems.DisableBuilding;
+using PathOfTerraria.Common.Systems.Visuals;
 using PathOfTerraria.Content.Items.BossDomain;
 using System.Collections.Generic;
 using Terraria.GameContent;
@@ -6,8 +7,10 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.Tiles.BossDomain;
 
-internal class RoyalHoneyClumpTile : ModTile, ICanCutTile
+internal class RoyalHoneyClumpTile : ModTile, ICanCutTile, ISpecialGlowTile
 {
+	public Color GlowColor => new(255, 190, 70);
+
 	public override void SetStaticDefaults()
 	{
 		Main.tileCut[Type] = true;
