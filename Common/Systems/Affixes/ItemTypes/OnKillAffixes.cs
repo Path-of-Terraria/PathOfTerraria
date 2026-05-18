@@ -53,13 +53,8 @@ internal class LifeOnKillAffix : ItemAffix
 				return;
 			}
 
-			player.Heal((int)Math.Round(totalLifeOnKill));
+			player.Heal((int)totalLifeOnKill);
 		}
-	}
-
-	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
-	{
-		return base.CreateDefaultTooltip(player, item) with { Value = (int)Math.Round(Value) };
 	}
 }
 
@@ -89,7 +84,7 @@ internal class ManaOnKillAffix : ItemAffix
 				return;
 			}
 
-			int manaToRestore = (int)Math.Round(totalManaOnKill);
+			int manaToRestore = (int)totalManaOnKill;
 			player.statMana = Math.Min(player.statMana + manaToRestore, player.statManaMax2);
 			
 			//Add combat text for mana restoration value
@@ -97,9 +92,5 @@ internal class ManaOnKillAffix : ItemAffix
 		}
 	}
 
-	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
-	{
-		return base.CreateDefaultTooltip(player, item) with { Value = (int)Math.Round(Value) };
-	}
 }
 

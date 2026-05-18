@@ -9,20 +9,13 @@ internal abstract class ResistItemAffix : ItemAffix
 	{
 		Round = true;
 	}
-
-	protected float RoundedValue => (float)Math.Round(Value);
-
-	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
-	{
-		return base.CreateDefaultTooltip(player, item) with { Value = (int)Math.Round(Value) };
-	}
 }
 
 internal class FireResistItemAffix : ResistItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		player.GetModPlayer<ElementalPlayer>().Container[ElementType.Fire].Resistance += RoundedValue * 0.01f;
+		player.GetModPlayer<ElementalPlayer>().Container[ElementType.Fire].Resistance += Value * 0.01f;
 	}
 }
 
@@ -30,7 +23,7 @@ internal class ColdResistItemAffix : ResistItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		player.GetModPlayer<ElementalPlayer>().Container[ElementType.Cold].Resistance += RoundedValue * 0.01f;
+		player.GetModPlayer<ElementalPlayer>().Container[ElementType.Cold].Resistance += Value * 0.01f;
 	}
 }
 
@@ -38,7 +31,7 @@ internal class LightningResistItemAffix : ResistItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		player.GetModPlayer<ElementalPlayer>().Container[ElementType.Lightning].Resistance += RoundedValue * 0.01f;
+		player.GetModPlayer<ElementalPlayer>().Container[ElementType.Lightning].Resistance += Value * 0.01f;
 	}
 }
 
@@ -46,7 +39,7 @@ internal class ChaosResistItemAffix : ResistItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		player.GetModPlayer<ElementalPlayer>().Container[ElementType.Chaos].Resistance += RoundedValue * 0.01f;
+		player.GetModPlayer<ElementalPlayer>().Container[ElementType.Chaos].Resistance += Value * 0.01f;
 	}
 }
 
@@ -203,12 +196,7 @@ internal class IgniteChanceAffix : ItemAffix
 
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		player.GetModPlayer<IgnitedPlayer>().AddedIgniteChance += (float)Math.Round(Value) / 100f;
-	}
-
-	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
-	{
-		return base.CreateDefaultTooltip(player, item) with { Value = (int)Math.Round(Value) };
+		player.GetModPlayer<IgnitedPlayer>().AddedIgniteChance += Value / 100f;
 	}
 }
 
@@ -229,17 +217,10 @@ internal class AllResistancesAffix : ItemAffix
 
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		float value = (float)Math.Round(Value);
-
 		foreach (ElementInstance element in player.GetModPlayer<ElementalPlayer>().Container)
 		{
-			element.Resistance += value / 100f;
+			element.Resistance += Value / 100f;
 		}
-	}
-
-	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
-	{
-		return base.CreateDefaultTooltip(player, item) with { Value = (int)Math.Round(Value) };
 	}
 }
 

@@ -6,20 +6,13 @@ internal abstract class LifeAffix : ItemAffix
 	{
 		Round = true;
 	}
-
-	protected float RoundedValue => (float)Math.Round(Value);
-
-	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
-	{
-		return base.CreateDefaultTooltip(player, item) with { Value = (int)Math.Round(Value) };
-	}
 }
 
 internal class BaseLifeAffix : LifeAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		modifier.MaximumLife.Base += RoundedValue;
+		modifier.MaximumLife.Base += Value;
 	}
 }
 
@@ -27,7 +20,7 @@ internal class AddedLifeAffix : LifeAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		modifier.MaximumLife += RoundedValue / 100;
+		modifier.MaximumLife += Value / 100;
 	}
 }
 
@@ -35,7 +28,7 @@ internal class LifeRegenAffix : LifeAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		modifier.LifeRegen.Base += RoundedValue;
+		modifier.LifeRegen.Base += Value;
 	}
 }
 
@@ -43,7 +36,7 @@ internal class LifeRegenMultiplierAffix : LifeAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		modifier.LifeRegen += RoundedValue / 100;
+		modifier.LifeRegen += Value / 100;
 	}
 }
 
@@ -51,7 +44,7 @@ internal class LifePotionPowerAffix : LifeAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		modifier.PotionHealPower.Base += RoundedValue;
+		modifier.PotionHealPower.Base += Value;
 	}
 }
 
@@ -59,7 +52,7 @@ internal class LifePotionCapAffix : LifeAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		modifier.MaxHealthPotions += RoundedValue;
+		modifier.MaxHealthPotions += Value;
 	}
 }
 
@@ -67,6 +60,6 @@ internal class LifePotionCooldownAffix : LifeAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		modifier.PotionHealDelay.Base -= RoundedValue;
+		modifier.PotionHealDelay.Base -= Value;
 	}
 }
