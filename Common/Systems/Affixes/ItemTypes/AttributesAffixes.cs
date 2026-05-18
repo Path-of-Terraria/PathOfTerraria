@@ -2,7 +2,15 @@
 
 namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
-internal class StrengthItemAffix : ItemAffix
+internal abstract class AttributeItemAffix : ItemAffix
+{
+	protected AttributeItemAffix()
+	{
+		Round = true;
+	}
+}
+
+internal class StrengthItemAffix : AttributeItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
@@ -15,7 +23,7 @@ internal class StrengthItemAffix : ItemAffix
 	}
 }
 
-internal class DexterityItemAffix : ItemAffix
+internal class DexterityItemAffix : AttributeItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
@@ -28,7 +36,7 @@ internal class DexterityItemAffix : ItemAffix
 	}
 }
 
-internal class IntelligenceItemAffix : ItemAffix
+internal class IntelligenceItemAffix : AttributeItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{

@@ -28,40 +28,50 @@ internal class IncreasedKnockbackItemAffix : ItemAffix
 	}
 }
 	
-internal class ChanceToApplyOnFireGearAffix : ItemAffix
+internal abstract class ChanceToApplyAffix : ItemAffix
 {
-	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+	protected ChanceToApplyAffix()
 	{
-		modifier.Buffer.Add(BuffID.OnFire, Duration, Value * 0.01f);
+		Round = true;
 	}
+
+	protected float RoundedChance => (float)Math.Round(Value);
 
 	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
 	{
-		return base.CreateDefaultTooltip(player, item) with { Value = MathF.Round(Value * 100f) };
+		return base.CreateDefaultTooltip(player, item) with { Value = (int)Math.Round(Value) };
 	}
 }
 	
-internal class ChanceToApplyArmorShredGearAffix : ItemAffix
+internal class ChanceToApplyOnFireGearAffix : ChanceToApplyAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		modifier.Buffer.Add(ModContent.BuffType<ArmorShredDebuff>(), Duration, Value * 0.01f);
+		modifier.Buffer.Add(BuffID.OnFire, Duration, RoundedChance * 0.01f);
+	}
+}
+	
+internal class ChanceToApplyArmorShredGearAffix : ChanceToApplyAffix
+{
+	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+	{
+		modifier.Buffer.Add(ModContent.BuffType<ArmorShredDebuff>(), Duration, RoundedChance * 0.01f);
 	}
 }
 
-internal class ChanceToApplyBloodclotItemAffix : ItemAffix
+internal class ChanceToApplyBloodclotItemAffix : ChanceToApplyAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		modifier.Buffer.Add(ModContent.BuffType<BloodclotDebuff>(), Duration, Value * 0.01f);
+		modifier.Buffer.Add(ModContent.BuffType<BloodclotDebuff>(), Duration, RoundedChance * 0.01f);
 	}
 }
 
-internal class ChanceToApplyPoisonItemAffix : ItemAffix
+internal class ChanceToApplyPoisonItemAffix : ChanceToApplyAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		modifier.Buffer.Add(BuffID.Poisoned, Duration, Value * 0.01f);
+		modifier.Buffer.Add(BuffID.Poisoned, Duration, RoundedChance * 0.01f);
 	}
 }
 
@@ -81,11 +91,11 @@ internal class BuffPoisonedHitsAffix : ItemAffix
 	}
 }
 
-internal class ChanceToApplyShockGearAffix : ItemAffix
+internal class ChanceToApplyShockGearAffix : ChanceToApplyAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		modifier.Buffer.Add(ModContent.BuffType<ShockDebuff>(), Duration, Value * 0.01f, 
+		modifier.Buffer.Add(ModContent.BuffType<ShockDebuff>(), Duration, RoundedChance * 0.01f, 
 			(Player player, NPC target, NPC.HitInfo info, int damageDone, int time) => ShockDebuff.Apply(player, target, damageDone));
 	}
 }
@@ -94,20 +104,20 @@ internal class BuffShockedEffectAffix : ItemAffix
 {
 }
 
-internal class ChanceToApplyRootedGearAffix : ItemAffix
+internal class ChanceToApplyRootedGearAffix : ChanceToApplyAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		modifier.Buffer.Add(ModContent.BuffType<RootedDebuff>(), Duration, Value * 0.01f);
+		modifier.Buffer.Add(ModContent.BuffType<RootedDebuff>(), Duration, RoundedChance * 0.01f);
 	}
 }
 
-internal class ChanceToApplyBleedingItemAffix : ItemAffix
+internal class ChanceToApplyBleedingItemAffix : ChanceToApplyAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		// TODO: Needs duration modifier?
-		modifier.Buffer.Add(BuffID.Bleeding, 5 * 60, Value * 0.01f, (player, npc, _, damage, time) => BleedDebuff.Apply(player, npc, damage));
+		modifier.Buffer.Add(BuffID.Bleeding, 5 * 60, RoundedChance * 0.01f, (player, npc, _, damage, time) => BleedDebuff.Apply(player, npc, damage));
 	}
 }
 

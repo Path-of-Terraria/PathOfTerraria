@@ -1,51 +1,56 @@
-﻿namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
-internal class ManaAffix : ItemAffix
+internal abstract class ManaItemAffix : ItemAffix
 {
-	public ManaAffix()
+	protected ManaItemAffix()
 	{
 		Round = true;
 	}
-	
-	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+
+	protected float RoundedValue => (float)Math.Round(Value);
+
+	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
 	{
-		modifier.MaximumMana.Base += Value;
+		return base.CreateDefaultTooltip(player, item) with { Value = (int)Math.Round(Value) };
 	}
 }
 
-internal class ManaRegenAffix : ItemAffix
+internal class ManaAffix : ManaItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		modifier.ManaRegen.Base += Value;
+		modifier.MaximumMana.Base += RoundedValue;
 	}
 }
 
-internal class ManaPotionPowerAffix : ItemAffix
+internal class ManaRegenAffix : ManaItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		modifier.PotionManaPower.Base += Value;
+		modifier.ManaRegen.Base += RoundedValue;
 	}
 }
 
-internal class ManaPotionCapAffix : ItemAffix
+internal class ManaPotionPowerAffix : ManaItemAffix
 {
-	public ManaPotionCapAffix()
-	{
-		Round = true;
-	}
-	
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		modifier.MaxManaPotions += Value;
+		modifier.PotionManaPower.Base += RoundedValue;
 	}
 }
 
-internal class ManaPotionCooldownAffix : ItemAffix
+internal class ManaPotionCapAffix : ManaItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		modifier.PotionManaDelay.Base -= Value;
+		modifier.MaxManaPotions += RoundedValue;
+	}
+}
+
+internal class ManaPotionCooldownAffix : ManaItemAffix
+{
+	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+	{
+		modifier.PotionManaDelay.Base -= RoundedValue;
 	}
 }

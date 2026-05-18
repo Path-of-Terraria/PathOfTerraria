@@ -29,6 +29,11 @@ internal class HealOnKillingBurningEnemiesAffix : ItemAffix
 
 internal class LifeOnKillAffix : ItemAffix
 {
+	public LifeOnKillAffix()
+	{
+		Round = true;
+	}
+
 	private sealed class LifeOnKillGlobalNPC : GlobalNPC
 	{
 		public override void OnKill(NPC npc)
@@ -60,6 +65,11 @@ internal class LifeOnKillAffix : ItemAffix
 
 internal class ManaOnKillAffix : ItemAffix
 {
+	public ManaOnKillAffix()
+	{
+		Round = true;
+	}
+
 	private sealed class ManaOnKillGlobalNPC : GlobalNPC
 	{
 		public override void OnKill(NPC npc)

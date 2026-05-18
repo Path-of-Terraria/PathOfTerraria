@@ -1,72 +1,72 @@
-﻿namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
-internal class BaseLifeAffix : ItemAffix
+internal abstract class LifeAffix : ItemAffix
 {
-	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
-	{
-		modifier.MaximumLife.Base += Value;
-	}
-
-	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
-	{
-		return base.CreateDefaultTooltip(player, item) with { Value = (int)Math.Round(Value) };
-	}
-}
-
-internal class AddedLifeAffix : ItemAffix
-{
-	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
-	{
-		modifier.MaximumLife += Value / 100;
-	}
-
-	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
-	{
-		return base.CreateDefaultTooltip(player, item) with { Value = (int)Math.Round(Value) };
-	}
-}
-
-internal class LifeRegenAffix : ItemAffix
-{
-	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
-	{
-		modifier.LifeRegen.Base += Value;
-	}
-}
-
-internal class LifeRegenMultiplierAffix : ItemAffix
-{
-	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
-	{
-		modifier.LifeRegen += Value / 100;
-	}
-}
-
-internal class LifePotionPowerAffix : ItemAffix
-{
-	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
-	{
-		modifier.PotionHealPower.Base += Value;
-	}
-}
-
-internal class LifePotionCapAffix : ItemAffix
-{
-	public LifePotionCapAffix()
+	protected LifeAffix()
 	{
 		Round = true;
 	}
-	
-	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+
+	protected float RoundedValue => (float)Math.Round(Value);
+
+	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
 	{
-		modifier.MaxHealthPotions += Value;
+		return base.CreateDefaultTooltip(player, item) with { Value = (int)Math.Round(Value) };
 	}
 }
 
-internal class LifePotionCooldownAffix : ItemAffix
+internal class BaseLifeAffix : LifeAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		modifier.PotionHealDelay.Base -= Value;
+		modifier.MaximumLife.Base += RoundedValue;
+	}
+}
+
+internal class AddedLifeAffix : LifeAffix
+{
+	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+	{
+		modifier.MaximumLife += RoundedValue / 100;
+	}
+}
+
+internal class LifeRegenAffix : LifeAffix
+{
+	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+	{
+		modifier.LifeRegen.Base += RoundedValue;
+	}
+}
+
+internal class LifeRegenMultiplierAffix : LifeAffix
+{
+	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+	{
+		modifier.LifeRegen += RoundedValue / 100;
+	}
+}
+
+internal class LifePotionPowerAffix : LifeAffix
+{
+	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+	{
+		modifier.PotionHealPower.Base += RoundedValue;
+	}
+}
+
+internal class LifePotionCapAffix : LifeAffix
+{
+	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+	{
+		modifier.MaxHealthPotions += RoundedValue;
+	}
+}
+
+internal class LifePotionCooldownAffix : LifeAffix
+{
+	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+	{
+		modifier.PotionHealDelay.Base -= RoundedValue;
 	}
 }
