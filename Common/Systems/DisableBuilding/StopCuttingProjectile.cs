@@ -54,7 +54,7 @@ internal class StopCuttingProjectile : GlobalProjectile
 
 	private bool CutCheck(On_DelegateMethods.orig_CutTiles orig, int x, int y)
 	{
-		if (CuttingProjectile is not null && (SubworldSystem.Current is (BossDomainSubworld or IExplorationWorld) and not MoonLordDomain) 
+		if (CuttingProjectile is not null && (SubworldSystem.Current is (BossDomainSubworld or IExplorationWorld) and not MoonLordDomain) && WorldGen.InWorld(x, y) 
 			&& Main.tile[x, y].HasTile && Main.tileCut[Main.tile[x, y].TileType])
 		{
 			return CanCutTile(CuttingProjectile, x, y) && orig(x, y);
