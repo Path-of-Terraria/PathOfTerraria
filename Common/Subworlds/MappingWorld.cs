@@ -193,8 +193,7 @@ public abstract class MappingWorld : Subworld
 	public static int AreaLevel = 0;
 
 	/// <summary>
-	/// The map tier. This is the unconverted version of <see cref="AreaLevel"/>; the level should be used more often.<br/>
-	/// This is kept as the map tier is used for a couple of things, namely <see cref="MappingDomainSystem.Tracker"/>.
+	/// The map tier. This is the unconverted version of <see cref="AreaLevel"/>; the level should be used more often.
 	/// </summary>
 	public static int MapTier = 0;
 
@@ -394,10 +393,6 @@ public abstract class MappingWorld : Subworld
 
 	private static void CopyConsistentInfo()
 	{
-		TagCompound trackerTag = [];
-		ModContent.GetInstance<MappingDomainSystem>().Tracker.Save(trackerTag);
-		SubworldSystem.CopyWorldData("tracker", trackerTag);
-
 		TagCompound bossTrackerTag = [];
 		BossTracker.WriteConsistentInfo(bossTrackerTag);
 		SubworldSystem.CopyWorldData("bossTracker", bossTrackerTag);
@@ -452,10 +447,6 @@ public abstract class MappingWorld : Subworld
 
 	private void ReadConsistentInfo()
 	{
-		TagCompound tag = SubworldSystem.ReadCopiedWorldData<TagCompound>("tracker");
-		var tracker = MappingDomainSystem.TiersDownedTracker.Load(tag);
-		ModContent.GetInstance<MappingDomainSystem>().Tracker = tracker;
-
 		BossTracker.ReadConsistentInfo(SubworldSystem.ReadCopiedWorldData<TagCompound>("bossTracker"));
 		EventTracker.ReadConsistentInfo(SubworldSystem.ReadCopiedWorldData<TagCompound>("eventTracker"));
 
