@@ -28,20 +28,23 @@ internal class IncreasedKnockbackItemAffix : ItemAffix
 	}
 }
 	
-internal class ChanceToApplyOnFireGearAffix : ItemAffix
+internal abstract class ChanceToApplyAffix : ItemAffix
+{
+	protected ChanceToApplyAffix()
+	{
+		Round = true;
+	}
+}
+	
+internal class ChanceToApplyOnFireGearAffix : ChanceToApplyAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		modifier.Buffer.Add(BuffID.OnFire, Duration, Value * 0.01f);
 	}
-
-	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
-	{
-		return base.CreateDefaultTooltip(player, item) with { Value = MathF.Round(Value * 100f) };
-	}
 }
 	
-internal class ChanceToApplyArmorShredGearAffix : ItemAffix
+internal class ChanceToApplyArmorShredGearAffix : ChanceToApplyAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
@@ -49,7 +52,7 @@ internal class ChanceToApplyArmorShredGearAffix : ItemAffix
 	}
 }
 
-internal class ChanceToApplyBloodclotItemAffix : ItemAffix
+internal class ChanceToApplyBloodclotItemAffix : ChanceToApplyAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
@@ -57,7 +60,7 @@ internal class ChanceToApplyBloodclotItemAffix : ItemAffix
 	}
 }
 
-internal class ChanceToApplyPoisonItemAffix : ItemAffix
+internal class ChanceToApplyPoisonItemAffix : ChanceToApplyAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
@@ -81,7 +84,7 @@ internal class BuffPoisonedHitsAffix : ItemAffix
 	}
 }
 
-internal class ChanceToApplyShockGearAffix : ItemAffix
+internal class ChanceToApplyShockGearAffix : ChanceToApplyAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
@@ -94,7 +97,7 @@ internal class BuffShockedEffectAffix : ItemAffix
 {
 }
 
-internal class ChanceToApplyRootedGearAffix : ItemAffix
+internal class ChanceToApplyRootedGearAffix : ChanceToApplyAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
@@ -102,7 +105,7 @@ internal class ChanceToApplyRootedGearAffix : ItemAffix
 	}
 }
 
-internal class ChanceToApplyBleedingItemAffix : ItemAffix
+internal class ChanceToApplyBleedingItemAffix : ChanceToApplyAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
