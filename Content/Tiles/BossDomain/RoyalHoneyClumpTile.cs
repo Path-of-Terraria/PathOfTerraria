@@ -40,6 +40,11 @@ internal class RoyalHoneyClumpTile : ModTile, ICanCutTile
 		return Main.tile[i, j].TileFrameY > 0;
 	}
 
+	public override bool CanKillTile(int i, int j, ref bool blockDamaged)
+	{
+		return Main.tile[i, j].TileFrameY > 0;
+	}
+
 	public override IEnumerable<Item> GetItemDrops(int i, int j)
 	{
 		if (Main.tile[i, j].TileFrameY > 0)
