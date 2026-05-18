@@ -23,8 +23,8 @@ public abstract class Affix : ILocalizedModType
 
 	public float Value
 	{
-		get => Round ? (float)Math.Round(_value) : _value;
-		set => _value = value;
+		get => _value;
+		set => _value = Round ? (float)Math.Round(value) : value;
 	}
 
 	public int Duration = 180; //3 Seconds by default
