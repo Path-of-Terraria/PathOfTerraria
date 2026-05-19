@@ -252,6 +252,6 @@ public class AffixRegistry : ILoadable
 			map.Strength = tierData.Strength;
 		}
 
-		return affix.Round ? (float)Math.Round(randomValue) : randomValue;
+		return randomValue;
 	}
 }

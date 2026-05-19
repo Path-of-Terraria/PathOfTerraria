@@ -30,24 +30,42 @@ namespace PathOfTerraria.Common.Subworlds;
 /// but it is a class so it can be inherited to add arbitrary additional data.<br/><b>Most</b> of the code relating to this will not run on multiplayer clients,
 /// so be careful.
 /// </summary>
-public class PersistentData
+public class PersistentData : TagSerializable
 {
+	public static readonly Func<TagCompound, PersistentData> DESERIALIZER = Load;
+
 	public bool BossDowned = false;
 
 	/// <summary>
-	/// Automatically checks if the corresponding boss(es) have been downed, and sets <see cref="BossDowned"/> to true if so.
+	/// Marks this domain's persistent boss state as completed when all listed NPC ids were defeated in the current domain.
 	/// </summary>
-	public void CheckDowned<T>(params int[] id) where T : BossDomainSubworld
+	public void MarkBossDownedIfDefeated<T>(params int[] npcIds) where T : BossDomainSubworld
 	{
-		if (id.Length == 0)
+		if (npcIds.Length == 0)
 		{
-			throw new ArgumentException("There must be at least 1 IDs passed to CheckDowned.");
+			throw new ArgumentException($"There must be at least 1 NPC id passed to {nameof(MarkBossDownedIfDefeated)}.");
 		}
 
-		if (BossTracker.DownedInDomain<T>(id))
+		if (BossTracker.DownedInDomain<T>(npcIds))
 		{
 			BossDowned = true;
 		}
+	}
+
+	public TagCompound SerializeData()
+	{
+		return new TagCompound
+		{
+			[nameof(BossDowned)] = BossDowned
+		};
+	}
+
+	public static PersistentData Load(TagCompound tag)
+	{
+		return new PersistentData
+		{
+			BossDowned = tag.GetBool(nameof(BossDowned))
+		};
 	}
 }
 
@@ -83,6 +101,14 @@ public abstract class MappingWorld : Subworld
 			tag.Add("lastPath", LastSubworldSavePath);
 			tag.Add("timesKeys", (string[])[.. TimesEnteredByDomain.Keys]);
 			tag.Add("timesValues", (int[])[.. TimesEnteredByDomain.Values]);
+
+			// In a subworld, persist that subworld's PersistentData (e.g. BossDowned) into its own .twld
+			// so it survives reloads, subserver restarts, and the CachedBossesDowned overwrite that
+			// happens in ReadCopiedMainWorldData.
+			if (SubworldSystem.Current is { } current && PersistentDomainInfo.TryGetValue(current.FullName, out PersistentData? data))
+			{
+				tag.Add("persistentData", data);
+			}
 		}
 
 		public override void LoadWorldData(TagCompound tag)
@@ -104,6 +130,14 @@ public abstract class MappingWorld : Subworld
 					TimesEnteredByDomain.Add(times[i], values[i]);
 				}
 			}
+
+			// Subworld-side: restore this subworld's PersistentData from its .twld (must come before
+			// ReadCopiedMainWorldData runs, which is the case because LoadWorldData is part of the
+			// world load and ReadCopiedMainWorldData runs afterwards).
+			if (SubworldSystem.Current is { } current && tag.TryGet("persistentData", out PersistentData data))
+			{
+				PersistentDomainInfo[current.FullName] = data;
+			}
 		}
 	}
 
@@ -123,18 +157,18 @@ public abstract class MappingWorld : Subworld
 
 	internal class SetLastSubworldPathHandler : Handler
 	{
-		public static void Send(string value)
+		public static void Send(string value, string fullName)
 		{
 			ModPacket packet = Networking.GetPacket<SetLastSubworldPathHandler>();
 			packet.Write(value);
+			packet.Write(fullName);
 			packet.Send();
 		}
 
 		internal override void Receive(BinaryReader reader, byte sender)
 		{
-			string value = reader.ReadString();
-
-			LastSubworldSavePath = value;
+			LastSubworldSavePath = reader.ReadString();
+			LastSubworldFullName = reader.ReadString();
 		}
 	}
 
@@ -193,12 +227,17 @@ public abstract class MappingWorld : Subworld
 	public static int AreaLevel = 0;
 
 	/// <summary>
-	/// The map tier. This is the unconverted version of <see cref="AreaLevel"/>; the level should be used more often.<br/>
-	/// This is kept as the map tier is used for a couple of things, namely <see cref="MappingDomainSystem.Tracker"/>.
+	/// The map tier. This is the unconverted version of <see cref="AreaLevel"/>; the level should be used more often.
 	/// </summary>
 	public static int MapTier = 0;
 
 	internal static string? LastSubworldSavePath { get; private set; }
+
+	/// <summary>
+	/// The <see cref="ModType.FullName"/> of the subworld whose save path is held in <see cref="LastSubworldSavePath"/>.
+	/// Tracked so we can stop the corresponding subserver before deleting that file.
+	/// </summary>
+	internal static string? LastSubworldFullName { get; private set; }
 
 	private static Point16 ActiveMapDevicePosition = new(-1, -1);
 	private static bool CloseActiveMapDeviceAfterFailedRun;
@@ -319,6 +358,7 @@ public abstract class MappingWorld : Subworld
 		if (SubworldSystem.Current is not null)
 		{
 			LastSubworldSavePath = TryGetCurrentPath();
+			LastSubworldFullName = SubworldSystem.Current.FullName;
 
 			if (!TimesEnteredByDomain.TryAdd(FullName, 1))
 			{
@@ -329,6 +369,7 @@ public abstract class MappingWorld : Subworld
 			{
 				ModPacket packet = Networking.GetPacket<SetLastSubworldPathHandler>();
 				packet.Write(LastSubworldSavePath!);
+				packet.Write(LastSubworldFullName!);
 				Networking.SendPacketToMainServer(packet);
 			}
 		}
@@ -394,10 +435,6 @@ public abstract class MappingWorld : Subworld
 
 	private static void CopyConsistentInfo()
 	{
-		TagCompound trackerTag = [];
-		ModContent.GetInstance<MappingDomainSystem>().Tracker.Save(trackerTag);
-		SubworldSystem.CopyWorldData("tracker", trackerTag);
-
 		TagCompound bossTrackerTag = [];
 		BossTracker.WriteConsistentInfo(bossTrackerTag);
 		SubworldSystem.CopyWorldData("bossTracker", bossTrackerTag);
@@ -452,10 +489,6 @@ public abstract class MappingWorld : Subworld
 
 	private void ReadConsistentInfo()
 	{
-		TagCompound tag = SubworldSystem.ReadCopiedWorldData<TagCompound>("tracker");
-		var tracker = MappingDomainSystem.TiersDownedTracker.Load(tag);
-		ModContent.GetInstance<MappingDomainSystem>().Tracker = tracker;
-
 		BossTracker.ReadConsistentInfo(SubworldSystem.ReadCopiedWorldData<TagCompound>("bossTracker"));
 		EventTracker.ReadConsistentInfo(SubworldSystem.ReadCopiedWorldData<TagCompound>("eventTracker"));
 
@@ -496,24 +529,59 @@ public abstract class MappingWorld : Subworld
 
 	internal static void DeleteSavedSubworld(Subworld? subworld = null)
 	{
-		if (Main.netMode != NetmodeID.MultiplayerClient)
-		{
-			if (LastSubworldSavePath is { Length: > 0 } path)
-			{
-				DeleteSubworldFiles(path);
-			}
-
-			if (subworld is not null && TryGetSavePath(subworld) is { Length: > 0 } destinationPath && destinationPath != LastSubworldSavePath)
-			{
-				DeleteSubworldFiles(destinationPath);
-			}
-		}
-		else if (Main.netMode == NetmodeID.MultiplayerClient)
+		if (Main.netMode == NetmodeID.MultiplayerClient)
 		{
 			DeleteOnServerHandler.Send();
+			LastSubworldSavePath = null;
+			LastSubworldFullName = null;
+			return;
+		}
+
+		// In MP, the subserver process holds the .wld file open and silent IO failures here are how the
+		// "boss didn't reset / spawn point in arena / stale switches" bugs sneak in. Stop any subserver
+		// that could be holding the destination and the previously-entered subworld before deleting.
+		if (Main.netMode == NetmodeID.Server)
+		{
+			TryStopSubserver(subworld?.FullName);
+			TryStopSubserver(LastSubworldFullName);
+		}
+
+		if (LastSubworldSavePath is { Length: > 0 } path)
+		{
+			DeleteSubworldFiles(path);
+		}
+
+		if (subworld is not null && TryGetSavePath(subworld) is { Length: > 0 } destinationPath && destinationPath != LastSubworldSavePath)
+		{
+			DeleteSubworldFiles(destinationPath);
 		}
 
 		LastSubworldSavePath = null;
+		LastSubworldFullName = null;
+	}
+
+	private static void TryStopSubserver(string? fullName)
+	{
+		if (fullName is null or { Length: 0 })
+		{
+			return;
+		}
+
+		int index = SubworldSystem.GetIndex(fullName);
+
+		if (index < 0)
+		{
+			return;
+		}
+
+		try
+		{
+			SubworldSystem.StopSubserver(index);
+		}
+		catch (Exception ex)
+		{
+			PoTMod.Instance.Logger.Warn($"[DeleteSavedSubworld] Failed to stop subserver for '{fullName}'. Subsequent file deletion may fail. {ex.Message}");
+		}
 	}
 
 	private static string? TryGetSavePath(Subworld subworld)
@@ -543,28 +611,38 @@ public abstract class MappingWorld : Subworld
 
 	private static void DeleteSubworldFiles(string path)
 	{
-		DeleteSubworldFile(path);
-		DeleteSubworldFile(path + ".bak");
-		DeleteSubworldFile(path + ".bak2");
-		DeleteSubworldFile(Path.ChangeExtension(path, ".twld"));
-		DeleteSubworldFile(Path.ChangeExtension(path, ".twld") + ".bak");
-		DeleteSubworldFile(Path.ChangeExtension(path, ".twld") + ".bak2");
+		bool allOk = true;
+		allOk &= DeleteSubworldFile(path);
+		allOk &= DeleteSubworldFile(path + ".bak");
+		allOk &= DeleteSubworldFile(path + ".bak2");
+		allOk &= DeleteSubworldFile(Path.ChangeExtension(path, ".twld"));
+		allOk &= DeleteSubworldFile(Path.ChangeExtension(path, ".twld") + ".bak");
+		allOk &= DeleteSubworldFile(Path.ChangeExtension(path, ".twld") + ".bak2");
+
+		if (!allOk)
+		{
+			// Loud, single-line summary so a stuck subserver is obvious in logs instead of silently
+			// causing the next entry to load a stale world.
+			PoTMod.Instance.Logger.Error($"[DeleteSavedSubworld] One or more subworld files at '{path}' could not be deleted. Next entry will load stale world data.");
+		}
 	}
 
-	private static void DeleteSubworldFile(string path)
+	private static bool DeleteSubworldFile(string path)
 	{
 		if (!File.Exists(path))
 		{
-			return;
+			return true;
 		}
 
 		try
 		{
 			File.Delete(path);
+			return true;
 		}
-		catch
+		catch (Exception ex)
 		{
-			PoTMod.Instance.Logger.Error($"[DeleteSavedSubworld] Failed to delete saved subworld file at '{path}'.");
+			PoTMod.Instance.Logger.Error($"[DeleteSavedSubworld] Failed to delete '{path}': {ex.GetType().Name}: {ex.Message}");
+			return false;
 		}
 	}
 

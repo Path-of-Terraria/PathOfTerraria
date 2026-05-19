@@ -60,7 +60,6 @@ internal class SwampArea : MappingWorld, IExplorationWorld
 		Main.worldSurface = WaterY + 10;
 		Main.rockLayer = WaterY + 40;
 
-		setBossSpawn = false;
 		spawnedTemporaryContent = false;
 		EncounterLocations.Clear();
 		LeftSpawn = Random.NextBool(2);
@@ -789,6 +788,15 @@ internal class SwampArea : MappingWorld, IExplorationWorld
 		}
 
 		return yPerX;
+	}
+
+	public override void OnEnter()
+	{
+		base.OnEnter();
+
+		// Reset per-entry gate so a re-entered/loaded world re-evaluates the arena spawn override
+		// instead of inheriting whatever value the static held in this process.
+		setBossSpawn = false;
 	}
 
 	public override void Update()

@@ -754,7 +754,7 @@ public class SkeletronDomain : BossDomainSubworld
 		}
 
 		FightState state = FightTracker.UpdateState();
-		GetData().CheckDowned<SkeletronDomain>(NPCID.SkeletronHead);
+		GetData().MarkBossDownedIfDefeated<SkeletronDomain>(NPCID.SkeletronHead);
 
 		if (state == FightState.NotStarted && allInArena && !GetData().BossDowned)
 		{

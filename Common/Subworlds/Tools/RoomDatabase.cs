@@ -72,6 +72,14 @@ internal class RoomDatabase : ModSystem
 		AddGolemDatabase();
 	}
 
+	public override void OnWorldUnload()
+	{
+		// Timers are populated by the active subworld's worldgen and reference tile positions in that
+		// world. When the world unloads, drop any that haven't fired yet — otherwise they'll fire on
+		// the next subworld at stale coordinates and re-trigger pulled levers / spent traps.
+		_timers.Clear();
+	}
+
 	private void AddGolemDatabase()
 	{
 		DataByRoomIndex.Add(7, MakeRoom(true, 75, new Point(15, 0), 

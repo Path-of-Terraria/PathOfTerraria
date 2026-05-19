@@ -10,7 +10,7 @@ internal class AutomagicMissileMastery : Passive
 	{
 		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (!Player.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<AutomagicMissileMastery>(out float value) || Main.rand.NextFloat() > value / 100f)
+			if (!Player.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<AutomagicMissileMastery>(out float value) || Main.rand.NextFloat() > value / 100f || !hit.DamageType.CountsAsClass(DamageClass.Magic))
 			{
 				return;
 			}

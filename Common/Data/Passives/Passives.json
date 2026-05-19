@@ -5464,7 +5464,7 @@
 		"internalIdentifier": "CenterOfTheUniverseMastery",
 		"referenceId": 1033,
 		"maxLevel": 1,
-		"value": 30,
+		"value": 50,
 		"position": {
 			"x": 955,
 			"y": 432
@@ -5523,7 +5523,7 @@
 		"internalIdentifier": "SkillfulMagicMastery",
 		"referenceId": 1037,
 		"maxLevel": 1,
-		"value": 10,
+		"value": 3,
 		"position": {
 			"x": 1043,
 			"y": -913

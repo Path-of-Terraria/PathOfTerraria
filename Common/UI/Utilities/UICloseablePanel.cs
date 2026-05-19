@@ -8,7 +8,6 @@ public class UICloseablePanel : UIPanel
 {
 	private bool[] _scaling = [false, false];
 
-
 	public bool Blocked = true;
 	public bool Visible = true;
 

@@ -412,6 +412,9 @@ Magic.Name: Magiczny
 Ranged.Name: Dystansowe
 Melee.Name: Wręcz
 Accessory.Name: Akcesoria
+// Charm.Name: Accessory
+// Wings.Name: Wings
+// JumpAccessories.Name: Jump Accessory
 
 Ring: {
 	// Name: Ring

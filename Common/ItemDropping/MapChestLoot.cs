@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.MobSystem;
 using PathOfTerraria.Core.Items;
@@ -37,6 +38,28 @@ internal static class MapChestLoot
 		}
 
 		return DropTable.RollManyMobDrops(count, PoTItemHelper.PickItemLevel(), rarity, random: WorldGen.genRand);
+	}
+
+	/// <summary>
+	/// Builds a chest <see cref="Item"/> from a rolled <see cref="ItemDatabase.ItemRecord"/>, applying the
+	/// record's rolled rarity and re-running the affix roll so the chest item actually reflects the gear pool's
+	/// rarity selection. The default <c>new Item(type)</c> path leaves <see cref="PoTInstanceItemData.Rarity"/>
+	/// at <see cref="ItemRarity.Normal"/>, which silently produces zero affixes regardless of what the gear pool rolled.
+	/// </summary>
+	public static Item BuildChestItem(ItemDatabase.ItemRecord record)
+	{
+		var item = new Item(record.ItemId, record.Item.stack);
+
+		if (item.TryGetGlobalItem<PoTInstanceItemData>(out _))
+		{
+			PoTInstanceItemData data = item.GetInstanceData();
+			PoTStaticItemData staticData = item.GetStaticData();
+
+			data.Rarity = staticData.IsUnique ? ItemRarity.Unique : record.Rarity;
+			PoTItemHelper.Roll(item, PoTItemHelper.PickItemLevel());
+		}
+
+		return item;
 	}
 }
 

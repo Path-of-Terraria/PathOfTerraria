@@ -7,6 +7,7 @@ using PathOfTerraria.Common.Systems.Questing.RewardTypes;
 using PathOfTerraria.Content.Items.Pickups.GrimoirePickups;
 using PathOfTerraria.Content.NPCs.Town;
 using System.Collections.Generic;
+using SubworldLibrary;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
@@ -42,6 +43,7 @@ internal class QueenBeeQuest : Quest
 						}
 					}
 				}),
+			new ConditionCheck("Domain", _ => SubworldSystem.Current is QueenBeeDomain, 1, this.GetLocalization("EnterDomain"), Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.GotStingers")),
 			new ConditionCheck("Kill", _ => BossTracker.DownedInDomain<QueenBeeDomain>(NPCID.QueenBee), 1, this.GetLocalization("KillQueen"))
 			{
 				SkipCheck = QuestUtils.BossSkipCheck(NPCID.QueenBee)

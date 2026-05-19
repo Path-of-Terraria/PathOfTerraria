@@ -66,7 +66,6 @@ internal class EoLQuest() : Quest
 
 	protected override bool InternalAvailable()
 	{
-		Quest fishronQuest = GetLocalPlayerInstance<FishronQuest>();
-		return fishronQuest.Completed && NPC.downedFishron;
+		return NPC.downedFishron;
 	}
 }

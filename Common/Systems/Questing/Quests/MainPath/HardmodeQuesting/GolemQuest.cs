@@ -65,7 +65,6 @@ internal class GolemQuest() : Quest
 
 	protected override bool InternalAvailable()
 	{
-		Quest planteraQuest = GetLocalPlayerInstance<PlanteraQuest>();
-		return planteraQuest.Completed && NPC.downedPlantBoss;
+		return NPC.downedPlantBoss;
 	}
 }

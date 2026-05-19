@@ -74,6 +74,17 @@ public static class PoTItemHelper
 		data.NameAffix = GenerateNameAffixes.Invoke(item);
 	}
 
+	public static void RerollAffixes(Item item, int itemLevel)
+	{
+		PoTInstanceItemData data = item.GetInstanceData();
+
+		SetItemLevel.Invoke(item, itemLevel);
+
+		RerollNonImplicitAffixes(item);
+		PostRoll.Invoke(item);
+		data.NameAffix = GenerateNameAffixes.Invoke(item);
+	}
+
 	private static void RollAffixes(Item item)
 	{
 		PoTInstanceItemData data = item.GetInstanceData();
@@ -82,6 +93,21 @@ public static class PoTItemHelper
 		data.Affixes.AddRange(GenerateImplicits.Invoke(item));
 		data.ImplicitCount = data.Affixes.Count;
 
+		RollNonImplicitAffixes(item, data);
+	}
+
+	private static void RerollNonImplicitAffixes(Item item)
+	{
+		PoTInstanceItemData data = item.GetInstanceData();
+
+		data.Affixes.RemoveAll(affix => !affix.IsImplicit);
+		data.ImplicitCount = data.Affixes.Count;
+
+		RollNonImplicitAffixes(item, data);
+	}
+
+	private static void RollNonImplicitAffixes(Item item, PoTInstanceItemData data)
+	{
 		int affixesToRoll = GetAffixCount(item);
 		for (int i = 0; i < affixesToRoll; i++)
 		{
@@ -97,6 +123,34 @@ public static class PoTItemHelper
 
 		data.Affixes.AddRange(uniqueItemAffixes);
 	}
+
+	public static bool RemoveRandomNonImplicitAffix(Item item)
+	{
+		PoTInstanceItemData data = item.GetInstanceData();
+		int nonImplicitAffixCount = data.Affixes.Count(affix => !affix.IsImplicit);
+
+		if (nonImplicitAffixCount == 0)
+		{
+			return false;
+		}
+
+		int selectedAffixIndex = Main.rand.Next(nonImplicitAffixCount);
+		for (int i = 0; i < data.Affixes.Count; i++)
+		{
+			if (data.Affixes[i].IsImplicit)
+			{
+				continue;
+			}
+
+			if (selectedAffixIndex-- == 0)
+			{
+				data.Affixes.RemoveAt(i);
+				return true;
+			}
+		}
+
+		return false;
+	}
 	
 	/// <summary>
 	/// Re-rolls the values of all affixes on an item. Keeping the tiers and affixes the same.
@@ -107,6 +161,11 @@ public static class PoTItemHelper
 	    PoTInstanceItemData data = item.GetInstanceData();
 	    foreach (ItemAffix affix in data.Affixes)
 	    {
+		    if (affix.IsImplicit)
+		    {
+			    continue;
+		    }
+		    
 	        affix.Value = AffixRegistry.GetRandomAffixValue(affix, item, GetItemLevel.Invoke(item));
 	    }
 	}
@@ -195,6 +254,11 @@ public static class PoTItemHelper
 		PoTInstanceItemData data = item.GetInstanceData();
 		int nonImplicitAffixCount = data.Affixes.Count(affix => !affix.IsImplicit);
 		return nonImplicitAffixCount >= GetMaxAffixCounts(data.Rarity);
+	}
+
+	public static bool HasNonImplicitAffixes(Item item)
+	{
+		return item.GetInstanceData().Affixes.Any(affix => !affix.IsImplicit);
 	}
 
 	public static void SetMouseItemToHeldItem(Player player)
