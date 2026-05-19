@@ -26,10 +26,12 @@ public enum SkillFailReason
 /// <summary> Contains a reason for a skill to fail in any context. </summary>
 /// <param name="reason"></param>
 /// <param name="context"></param>
-public readonly struct SkillFailure(SkillFailReason reason, string context = null,  params object[] formatArgs)
+public readonly struct SkillFailure(SkillFailReason reason, string context = null, params object[] formatArgs)
 {
 	/// <summary> Whether <see cref="Reason"/> is a weapons requirement. </summary>
-	public bool WeaponRejected => Reason is SkillFailReason.NeedsMelee or SkillFailReason.NeedsRanged or SkillFailReason.NeedsMagic or SkillFailReason.NeedsSummon;
+	public bool WeaponRejected => Reason is SkillFailReason.NeedsMelee or SkillFailReason.NeedsRanged
+		or SkillFailReason.NeedsMagic or SkillFailReason.NeedsSummon;
+
 	public readonly LocalizedText Description => GetDescription();
 
 	public readonly SkillFailReason Reason = reason;
@@ -40,7 +42,7 @@ public readonly struct SkillFailure(SkillFailReason reason, string context = nul
 	{
 		const string path = $"Mods.{PoTMod.ModName}.SkillFailReasons.";
 		string value = Reason switch
-		{ 
+		{
 			SkillFailReason.NeedsMelee => ItemType.Melee.ToString(),
 			SkillFailReason.NeedsRanged => ItemType.Ranged.ToString(),
 			SkillFailReason.NeedsMagic => ItemType.Magic.ToString(),
@@ -119,7 +121,9 @@ public abstract partial class Skill : ILoadable
 	public virtual string Texture => $"{PoTMod.ModName}/Assets/Skills/" + GetTextureName();
 
 	public virtual LocalizedText DisplayName => Language.GetText("Mods.PathOfTerraria." + GetLocalKey() + ".Name");
-	public virtual LocalizedText Description => Language.GetText("Mods.PathOfTerraria." + GetLocalKey() + ".Description");
+
+	public virtual LocalizedText Description =>
+		Language.GetText("Mods.PathOfTerraria." + GetLocalKey() + ".Description");
 
 	/// <summary>
 	/// Defines how the skill is used - if it's an Aura (toggleable) skill, if it's "always on" if/when toggled, and what cost it has for usage.
@@ -141,7 +145,7 @@ public abstract partial class Skill : ILoadable
 	/// <see cref="SkillCost.ManaReserve"/> - <see cref="SkillCost.HealthReserve"/>
 	/// </summary>
 	public int ResourceCost;
-	
+
 	public ItemType WeaponType = ItemType.None;
 	public byte Level = 1;
 
@@ -260,11 +264,8 @@ public abstract partial class Skill : ILoadable
 			player.statLife -= TotalResourceCost;
 			Cooldown = cooldown;
 		}
-		
-		// Health/ManaReserve is handled inSkillResourcingPlaying
 
-		//player.MaxManaRegenDelay was way too slow for some reason compared to when using a mag weapon? Idk why. But 60 seems right
-		player.manaRegenDelay = player.maxRegenDelay;
+		// Health/ManaReserve is handled inSkillResourcingPlaying
 		InternalUseSkill(player);
 	}
 
@@ -328,12 +329,14 @@ public abstract partial class Skill : ILoadable
 			return true;
 		}
 
-		if (Functionality.Cost is SkillCost.ManaUse or SkillCost.ManaDrainPerSecond && !player.CheckMana(TotalResourceCost))
+		if (Functionality.Cost is SkillCost.ManaUse or SkillCost.ManaDrainPerSecond &&
+		    !player.CheckMana(TotalResourceCost))
 		{
 			failReason = new SkillFailure(SkillFailReason.NotEnoughMana);
 			return false;
 		}
-		else if (Functionality.Cost is SkillCost.HealthUse or SkillCost.LifeDrainPerSecond && player.statLife < TotalResourceCost)
+		else if (Functionality.Cost is SkillCost.HealthUse or SkillCost.LifeDrainPerSecond &&
+		         player.statLife < TotalResourceCost)
 		{
 			failReason = new SkillFailure(SkillFailReason.NotEnoughLife);
 			return false;

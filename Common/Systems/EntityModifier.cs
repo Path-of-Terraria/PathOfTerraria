@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.VanillaModifications;
 
 namespace PathOfTerraria.Common.Systems;
 
@@ -107,7 +108,8 @@ public partial class EntityModifier : EntityModifierSegment
 		player.statManaMax2 = (int)MaximumMana.ApplyTo(player.statManaMax2);
 		// player.statManaMax - for when the overlay gets implemented
 
-		player.manaRegen = (int)ManaRegen.ApplyTo(player.manaRegen); // dont know if this is the right value
+		ManaRegenRework.ManaRegenPlayer manaRegenPlayer = player.GetModPlayer<ManaRegenRework.ManaRegenPlayer>();
+		manaRegenPlayer.ManaRegen = manaRegenPlayer.ManaRegen.CombineWith(ManaRegen);
 		player.statDefense += (int)Defense.ApplyTo((int)player.statDefense) - player.statDefense;
 
 		player.endurance *= DamageReduction.ApplyTo(player.endurance); // i think this is right..?

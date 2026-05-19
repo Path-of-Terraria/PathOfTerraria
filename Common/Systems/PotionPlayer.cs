@@ -37,6 +37,7 @@ internal class PotionPlayer : ModPlayer
 	public int MaxMana = 3;
 	public int ManaPower = 50;
 	public int ManaDelay = 300;
+	public int ManaDelayLeft = 0;
 
 	public override void Load()
 	{
@@ -89,7 +90,7 @@ internal class PotionPlayer : ModPlayer
 	{
 		PotionPlayer mp = self.GetModPlayer<PotionPlayer>();
 
-		if (mp.ManaLeft <= 0 || self.HasBuff(BuffID.ManaSickness) || self.statMana >= self.statManaMax2)
+		if (mp.ManaLeft <= 0 || mp.ManaDelayLeft > 0 || self.statMana >= self.statManaMax2)
 		{
 			return;
 		}
@@ -106,7 +107,7 @@ internal class PotionPlayer : ModPlayer
 
 		IOnCustomPotionPlayer.Invoke(self, true, mp.ManaPower);
 
-		self.AddBuff(BuffID.ManaSickness, mp.ManaDelay);
+		mp.ManaDelayLeft = mp.ManaDelay;
 		mp.ManaLeft--;
 
 		SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/PickupPotion"));
@@ -138,5 +139,6 @@ internal class PotionPlayer : ModPlayer
 		MaxMana = 3;
 		ManaPower = 50;
 		ManaDelay = 300;
+		ManaDelayLeft = Math.Max(0, ManaDelayLeft - 1);
 	}
 }
