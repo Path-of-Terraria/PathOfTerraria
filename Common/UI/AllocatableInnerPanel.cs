@@ -15,6 +15,16 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 {
 	private static readonly Asset<Texture2D> _glowTex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/GlowAlpha");
 	private static readonly Asset<Texture2D> _starTex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/StarAlpha");
+	private static readonly Color ConstellationBaseColor = new(80, 95, 130);
+	private static readonly Color ConstellationActiveColor = new(150, 175, 255);
+	private static readonly Color ConstellationEndpointDimColor = new(155, 185, 255);
+	private static readonly Color ConstellationEndpointLitColor = new(255, 245, 215);
+	private static readonly Color ConstellationParticleGlowColor = new(190, 220, 255);
+	private static readonly Color ConstellationParticleStarColor = new(255, 245, 215);
+
+	private const float ParticlePulseBase = 0.45f;
+	private const float ParticlePulseVariance = 0.55f;
+	private const float ParticleTwinkleSpeed = 0.15f;
 
 	private readonly HashSet<UIElement> _draggable = [];
 
@@ -93,10 +103,8 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 			bool isAllocatedPath = startAllocated && endAllocated;
 			float pulse = (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.5f + 0.5f;
 
-			var baseColor = new Color(80, 95, 130);
-			var activeColor = new Color(150, 175, 255);
 			float activeWeight = isAllocatedPath ? 1f : (isPulsingPath ? 0.45f + pulse * 0.55f : 0f);
-			Color lineColor = Color.Lerp(baseColor, activeColor, activeWeight);
+			Color lineColor = Color.Lerp(ConstellationBaseColor, ConstellationActiveColor, activeWeight);
 
 			if (!edge.Flags.HasFlag(EdgeFlags.EffectsOnly))
 			{
@@ -116,7 +124,7 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 			}
 
 			float endpointScale = scale * (isAllocatedPath ? 0.16f : 0.12f);
-			var endpointColor = isAllocatedPath ? new Color(255, 245, 215) : new Color(155, 185, 255);
+			Color endpointColor = isAllocatedPath ? ConstellationEndpointLitColor : ConstellationEndpointDimColor;
 			Color endpointGlowColor = endpointColor * (isAllocatedPath ? 0.6f : 0.35f);
 			endpointGlowColor.A = 0;
 			endpointColor.A = 0;
@@ -130,8 +138,10 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 
 			if (showParticles)
 			{
-				var glowColor = new Color(190, 220, 255) { A = 0 };
-				var starColor = new Color(255, 245, 215) { A = 0 };
+				Color glowColor = ConstellationParticleGlowColor;
+				Color starColor = ConstellationParticleStarColor;
+				glowColor.A = 0;
+				starColor.A = 0;
 
 				var rand = new FastRandom(edge.GetHashCode());
 
@@ -144,7 +154,7 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 					
 					float progress = (Main.GameUpdateCount + 15 * k) % len / len;
 					Vector2 pos = center + Vector2.SmoothStep(startPos, endPos, progress);
-					float pulseScale = 0.45f + 0.55f * ((float)Math.Sin(Main.GameUpdateCount * 0.15f + twinkleOffset) * 0.5f + 0.5f);
+					float pulseScale = ParticlePulseBase + ParticlePulseVariance * ((float)Math.Sin(Main.GameUpdateCount * ParticleTwinkleSpeed + twinkleOffset) * 0.5f + 0.5f);
 					float scale2 = (float)Math.Sin(progress * MathHelper.Pi) * (0.42f - particleScale) * scale * pulseScale;
 					
 					spriteBatch.Draw(glow, pos, null, glowColor * scale2, 0, glow.Size() / 2f, scale2, 0, 0);
