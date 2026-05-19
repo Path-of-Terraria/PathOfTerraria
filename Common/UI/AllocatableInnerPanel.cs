@@ -23,16 +23,21 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 	private static readonly Color ConstellationParticleStarColor = new(255, 245, 215);
 
 	private const float ParticlePulseBase = 0.45f;
-	private const float ParticlePulseVariance = 0.55f;
+	private const float ParticlePulseAmplitude = 0.55f;
 	private const float ParticleTwinkleSpeed = 0.15f;
 	private const float InactiveLineCoreOpacity = 0.2f;
 	private const float ActiveLineCoreOpacity = 0.62f;
 	private const float InactiveLineGlowOpacity = 0.06f;
 	private const float ActiveLineGlowOpacity = 0.18f;
+	private const float LineCoreThicknessScale = 1.25f;
+	private const float LineGlowThicknessMultiplier = 2.3f;
 	private const float InactiveEndpointScale = 0.06f;
 	private const float ActiveEndpointScale = 0.09f;
 	private const float EndpointGlowOpacity = 0.28f;
 	private const float ActiveEndpointGlowOpacity = 0.42f;
+	private const float EndpointStarScaleRatio = 0.9f;
+	private const float ParticleStarOpacityRatio = 0.85f;
+	private const float ParticleStarScaleRatio = 0.8f;
 
 	private readonly HashSet<UIElement> _draggable = [];
 
@@ -124,8 +129,8 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 				if (distance > 0.01f)
 				{
 					float rotation = delta.ToRotation();
-					float coreThickness = Math.Max(1f, 1.25f * scale);
-					float glowThickness = coreThickness * 2.3f;
+					float coreThickness = Math.Max(1f, LineCoreThicknessScale * scale);
+					float glowThickness = coreThickness * LineGlowThicknessMultiplier;
 
 					spriteBatch.Draw(pixel, startPos, null, glowColor, rotation, new Vector2(0f, 0.5f), new Vector2(distance, glowThickness), SpriteEffects.None, 0f);
 					spriteBatch.Draw(pixel, startPos, null, coreColor, rotation, new Vector2(0f, 0.5f), new Vector2(distance, coreThickness), SpriteEffects.None, 0f);
@@ -145,8 +150,8 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 
 				spriteBatch.Draw(glow, center + startPos, null, endpointGlowColor, 0f, glow.Size() / 2f, endpointScale, SpriteEffects.None, 0f);
 				spriteBatch.Draw(glow, center + endPos, null, endpointGlowColor, 0f, glow.Size() / 2f, endpointScale, SpriteEffects.None, 0f);
-				spriteBatch.Draw(star, center + startPos, null, endpointColor, 0f, star.Size() / 2f, endpointScale * 0.9f, SpriteEffects.None, 0f);
-				spriteBatch.Draw(star, center + endPos, null, endpointColor, 0f, star.Size() / 2f, endpointScale * 0.9f, SpriteEffects.None, 0f);
+				spriteBatch.Draw(star, center + startPos, null, endpointColor, 0f, star.Size() / 2f, endpointScale * EndpointStarScaleRatio, SpriteEffects.None, 0f);
+				spriteBatch.Draw(star, center + endPos, null, endpointColor, 0f, star.Size() / 2f, endpointScale * EndpointStarScaleRatio, SpriteEffects.None, 0f);
 			}
 
 			if (showParticles)
@@ -167,11 +172,11 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 					
 					float progress = (Main.GameUpdateCount + 15 * k) % len / len;
 					Vector2 pos = center + Vector2.SmoothStep(startPos, endPos, progress);
-					float pulseScale = ParticlePulseBase + ParticlePulseVariance * ((float)Math.Sin(Main.GameUpdateCount * ParticleTwinkleSpeed + twinkleOffset) * 0.5f + 0.5f);
+					float pulseScale = ParticlePulseBase + ParticlePulseAmplitude * ((float)Math.Sin(Main.GameUpdateCount * ParticleTwinkleSpeed + twinkleOffset) * 0.5f + 0.5f);
 					float scale2 = (float)Math.Sin(progress * MathHelper.Pi) * (0.42f - particleScale) * scale * pulseScale;
 					
 					spriteBatch.Draw(glow, pos, null, glowColor * scale2, 0, glow.Size() / 2f, scale2, 0, 0);
-					spriteBatch.Draw(star, pos, null, starColor * (scale2 * 0.85f), 0, star.Size() / 2f, scale2 * 0.8f, 0, 0);
+					spriteBatch.Draw(star, pos, null, starColor * (scale2 * ParticleStarOpacityRatio), 0, star.Size() / 2f, scale2 * ParticleStarScaleRatio, 0, 0);
 				}
 			}
 		}
