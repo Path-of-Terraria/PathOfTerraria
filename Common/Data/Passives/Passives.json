@@ -70,9 +70,6 @@
 			},
 			{
 				"referenceId": 78
-			},
-			{
-				"referenceId": 20
 			}
 		],
 		"position": {
@@ -88,58 +85,11 @@
 		"connections": [
 			{
 				"referenceId": 79
-			},
-			{
-				"referenceId": 3
 			}
 		],
 		"position": {
 			"x": 425,
 			"y": 94
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 3,
-		"maxLevel": 1,
-		"value": 5,
-		"position": {
-			"x": 388,
-			"y": 202
-		},
-		"connections": []
-	},
-	{
-		"internalIdentifier": "AddedIntelligenceDexterityPassive",
-		"referenceId": 4,
-		"value": 5,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 3
-			}
-		],
-		"position": {
-			"x": 320,
-			"y": 304
-		}
-	},
-	{
-		"internalIdentifier": "AddedDexterityPassive",
-		"referenceId": 5,
-		"value": 5,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 4
-			},
-			{
-				"referenceId": 6
-			}
-		],
-		"position": {
-			"x": 204,
-			"y": 391
 		}
 	},
 	{
@@ -167,63 +117,12 @@
 		"value": 5,
 		"connections": [
 			{
-				"referenceId": 8
-			},
-			{
 				"referenceId": 218
 			}
 		],
 		"position": {
 			"x": -102,
 			"y": 439
-		}
-	},
-	{
-		"internalIdentifier": "AddedDexterityPassive",
-		"referenceId": 8,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 9
-			}
-		],
-		"position": {
-			"x": -221,
-			"y": 388
-		}
-	},
-	{
-		"internalIdentifier": "AddedDexterityStrengthPassive",
-		"referenceId": 9,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 10
-			},
-			{
-				"referenceId": 267
-			}
-		],
-		"position": {
-			"x": -340,
-			"y": 301
-		}
-	},
-	{
-		"internalIdentifier": "AddedStrengthPassive",
-		"referenceId": 10,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 11
-			}
-		],
-		"position": {
-			"x": -408,
-			"y": 209
 		}
 	},
 	{
@@ -251,9 +150,6 @@
 		"value": 5,
 		"connections": [
 			{
-				"referenceId": 13
-			},
-			{
 				"referenceId": 173
 			}
 		],
@@ -263,58 +159,11 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedStrengthPassive",
-		"referenceId": 13,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 14
-			}
-		],
-		"position": {
-			"x": -408,
-			"y": -230
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligenceStrengthPassive",
-		"referenceId": 14,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 15
-			},
-			{
-				"referenceId": 266
-			}
-		],
-		"position": {
-			"x": -323,
-			"y": -335
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 15,
-		"maxLevel": 1,
-		"value": 5,
-		"position": {
-			"x": -221,
-			"y": -411
-		},
-		"connections": []
-	},
-	{
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 16,
 		"maxLevel": 1,
 		"value": 5,
 		"connections": [
-			{
-				"referenceId": 15
-			},
 			{
 				"referenceId": -3
 			}
@@ -337,51 +186,6 @@
 		"position": {
 			"x": 85,
 			"y": -463
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 18,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 17
-			}
-		],
-		"position": {
-			"x": 204,
-			"y": -417
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 19,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 18
-			}
-		],
-		"position": {
-			"x": 306,
-			"y": -337
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 20,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 19
-			}
-		],
-		"position": {
-			"x": 386,
-			"y": -231
 		}
 	},
 	{
@@ -469,9 +273,6 @@
 		"maxLevel": 1,
 		"value": 5,
 		"connections": [
-			{
-				"referenceId": 264
-			},
 			{
 				"referenceId": 25
 			},
@@ -708,9 +509,6 @@
 		"connections": [
 			{
 				"referenceId": 39
-			},
-			{
-				"referenceId": 266
 			}
 		],
 		"position": {
@@ -820,9 +618,6 @@
 		"maxLevel": 1,
 		"value": 5,
 		"connections": [
-			{
-				"referenceId": 265
-			},
 			{
 				"referenceId": 276
 			},
@@ -4509,62 +4304,6 @@
 		"position": {
 			"x": -9,
 			"y": 1260
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligenceDexterityPassive",
-		"referenceId": 264,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 4
-			}
-		],
-		"position": {
-			"x": 446,
-			"y": 417
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 265,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 19
-			}
-		],
-		"position": {
-			"x": 427,
-			"y": -461
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligenceStrengthPassive",
-		"referenceId": 266,
-		"maxLevel": 1,
-		"value": 5,
-		"position": {
-			"x": -454,
-			"y": -468
-		},
-		"connections": []
-	},
-	{
-		"internalIdentifier": "AddedDexterityStrengthPassive",
-		"referenceId": 267,
-		"maxLevel": 1,
-		"value": 5,
-		"connections": [
-			{
-				"referenceId": 32
-			}
-		],
-		"position": {
-			"x": -472,
-			"y": 432
 		}
 	},
 	{
