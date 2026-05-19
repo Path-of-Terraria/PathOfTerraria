@@ -2,14 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
+using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Subworlds.Tools;
 
 public record PlacedRoom(RoomData Data, Rectangle Area);
+public readonly record struct IORoom(Point16 Position, int Id);
 
 internal class RoomDatabase : ModSystem
 {
 	public Dictionary<int, RoomData> DataByRoomIndex = [];
+
+	private readonly static List<IORoom> _ioRooms = [];
 
 	private readonly List<EngageTimerInfo> _timers = [];
 
@@ -52,7 +56,9 @@ internal class RoomDatabase : ModSystem
 
 	public Rectangle PlaceRoom(int id, int x, int y, Point origin)
 	{
-		return DataByRoomIndex[id].PlaceRoom(x, y, id, origin);
+		Rectangle rectangle = DataByRoomIndex[id].PlaceRoom(x, y, id, origin);
+		_ioRooms.Add(new IORoom(new Point16(x, y), id));
+		return rectangle;
 	}
 
 	public void AddTimerInfo(EngageTimerInfo info)
@@ -70,6 +76,36 @@ internal class RoomDatabase : ModSystem
 		DataByRoomIndex.Clear();
 		AddSkeletronDatabase();
 		AddGolemDatabase();
+	}
+
+	public override void SaveWorldData(TagCompound tag)
+	{
+		tag.Add("count", _ioRooms.Count);
+		int num = 0;
+
+		foreach (IORoom room in _ioRooms)
+		{
+			tag.Add("roomId" + num, room.Id);
+			tag.Add("roomPos" + num, room.Position);
+			num++;
+		}
+	}
+
+	public override void LoadWorldData(TagCompound tag)
+	{
+		int count = tag.GetInt("count");
+		_ioRooms.Clear();
+
+		for (int i = 0; i < count; i++)
+		{
+			IORoom room = new(tag.Get<Point16>("roomPos" + i), tag.GetInt("roomId" + i));
+			_ioRooms.Add(room);
+		}
+
+		foreach (IORoom room in _ioRooms)
+		{
+			DataByRoomIndex[room.Id].AddSpawns(room.Position.X, room.Position.Y);
+		}
 	}
 
 	public override void OnWorldUnload()
