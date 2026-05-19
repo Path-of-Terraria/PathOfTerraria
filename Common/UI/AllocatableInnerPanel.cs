@@ -13,7 +13,8 @@ namespace PathOfTerraria.Common.UI;
 
 internal abstract class AllocatableInnerPanel : SmartUiElement
 {
-	private static readonly Asset<Texture2D> _chainTex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Link");
+	private static readonly Asset<Texture2D> _glowTex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/GlowAlpha");
+	private static readonly Asset<Effect> _connectorShader = ModContent.Request<Effect>($"{PoTMod.ModName}/Assets/Effects/PassiveTreeConnector");
 
 	private readonly HashSet<UIElement> _draggable = [];
 
@@ -65,11 +66,13 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 	public static void DrawEdgeConnections(SpriteBatch spriteBatch, ReadOnlySpan<Edge<IConnectedAllocatableNode>> connections, float scale = 1f)
 	{
 		Vector2 center = default;
-		Texture2D chainTex = _chainTex.Value;
+		Texture2D glowTex = _glowTex.Value;
+		Effect connectorEffect = _connectorShader.Value;
+		SpriteBatchArgs args = spriteBatch.GetArguments();
+		float time = (float)Main.timeForVisualEffects;
 
 		foreach (Edge<IConnectedAllocatableNode> edge in connections)
 		{
-			Color color = Color.Gray;
 			IConnectedAllocatableNode start = edge.Start;
 			IConnectedAllocatableNode end = edge.End;
 
@@ -83,37 +86,38 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 				continue;
 			}
 
-			if (end.AppearsAsCanBeAllocated() && end.AppearsAsAllocated())
-			{
-				color = Color.Lerp(Color.Gray, Color.White,
-					(float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.5f + 0.5f);
-			}
-
-			if (end.AppearsAsAllocated() && start.AppearsAsAllocated())
-			{
-				color = Color.White;
-			}
-
+			bool startAllocated = start.AppearsAsAllocated();
+			bool endAllocated = end.AppearsAsAllocated();
+			bool endCanAllocate = end.AppearsAsCanBeAllocated();
+			bool fullyAllocated = startAllocated && endAllocated;
+			bool highlighted = endCanAllocate && endAllocated;
+			float pulse = highlighted ? ((float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.5f + 0.5f) : 0f;
 			Vector2 startPos = start.GetCenter();
 			Vector2 endPos = end.GetCenter();
 
 			if (!edge.Flags.HasFlag(EdgeFlags.EffectsOnly))
 			{
-				// Step size keeps link count constant regardless of zoom; each link is drawn at the current scale.
-				float linkSize = 16 * scale;
-				for (float k = 0; k <= 1; k += 1 / (Vector2.Distance(startPos, endPos) / linkSize))
+				GetConstellationPalette(fullyAllocated, highlighted, pulse, out Color coreColor, out Color glowColor, out Color nodeColor);
+				connectorEffect.Parameters["uTime"].SetValue(time * 0.85f);
+				connectorEffect.Parameters["uPulse"].SetValue(pulse);
+				connectorEffect.Parameters["uShimmer"].SetValue(fullyAllocated ? 0.35f : (highlighted ? 0.28f : 0.18f));
+				connectorEffect.Parameters["uTint"].SetValue(coreColor.ToVector3());
+
+				using (spriteBatch.Override(args with { Effect = connectorEffect }))
 				{
-					Vector2 pos = center + Vector2.Lerp(startPos, endPos, k);
-					spriteBatch.Draw(chainTex, pos, null, color, startPos.DirectionTo(endPos).ToRotation(), chainTex.Size() / 2, scale, 0, 0);
+					DrawLine(spriteBatch, startPos, endPos, glowColor * 0.65f, 4.6f * scale);
+					DrawLine(spriteBatch, startPos, endPos, coreColor, 2.1f * scale);
+					DrawLine(spriteBatch, startPos, endPos, Color.White * (0.3f + pulse * 0.2f), 0.85f * scale);
 				}
+
+				DrawConstellationNodes(spriteBatch, glowTex, startPos, endPos, nodeColor, scale, edge.GetHashCode(), pulse);
 			}
 
-			bool showParticles = start.AppearsAsAllocated() && (end.AppearsAsAllocated() || (edge.Flags.HasFlag(EdgeFlags.EffectsOnly) && end.AppearsAsCanBeAllocated()));
+			bool showParticles = startAllocated && (endAllocated || (edge.Flags.HasFlag(EdgeFlags.EffectsOnly) && endCanAllocate));
 
 			if (showParticles)
 			{
-				Texture2D glow = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/GlowAlpha").Value;
-				var glowColor = new Color(255, 230, 150) { A = 0 };
+				var travelingGlowColor = new Color(130, 210, 255) { A = 0 };
 
 				var rand = new FastRandom(edge.GetHashCode());
 
@@ -127,10 +131,78 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 					Vector2 pos = center + Vector2.SmoothStep(startPos, endPos, progress);
 					float scale2 = (float)Math.Sin(progress * 3.14f) * (0.4f - particleScale) * scale;
 					
-					spriteBatch.Draw(glow, pos, null, glowColor * scale2, 0, glow.Size() / 2f, scale2, 0, 0);
+					spriteBatch.Draw(glowTex, pos, null, travelingGlowColor * scale2, 0, glowTex.Size() / 2f, scale2, 0, 0);
 				}
 			}
 		}
+	}
+
+	private static void DrawLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color color, float thickness)
+	{
+		Vector2 delta = end - start;
+		float length = delta.Length();
+
+		if (length <= 0.001f)
+		{
+			return;
+		}
+
+		float rotation = delta.ToRotation();
+		Vector2 scale = new(length, thickness);
+		spriteBatch.Draw(TextureAssets.MagicPixel.Value, start, null, color, rotation, new Vector2(0f, 0.5f), scale, SpriteEffects.None, 0f);
+	}
+
+	private static void DrawConstellationNodes(SpriteBatch spriteBatch, Texture2D glowTex, Vector2 start, Vector2 end, Color color, float zoomScale, int seed, float pulse)
+	{
+		float dist = Vector2.Distance(start, end);
+		float time = (float)Main.timeForVisualEffects;
+		float nodePulse = 0.88f + 0.12f * (float)Math.Sin(time * 2.7f + seed * 0.005f);
+		DrawStarNode(spriteBatch, glowTex, start, color, (0.21f + pulse * 0.03f) * zoomScale * nodePulse);
+		DrawStarNode(spriteBatch, glowTex, end, color, (0.21f + pulse * 0.03f) * zoomScale * nodePulse);
+
+		int interiorNodeCount = Math.Clamp((int)(dist / (72f * Math.Max(zoomScale, 0.4f))), 1, 3);
+
+		for (int i = 1; i <= interiorNodeCount; i++)
+		{
+			float progress = i / (interiorNodeCount + 1f);
+			Vector2 pos = Vector2.Lerp(start, end, progress);
+			float twinkle = 0.75f + 0.25f * (float)Math.Sin(time * 3.6f + i * 0.8f + seed * 0.004f);
+			DrawStarNode(spriteBatch, glowTex, pos, color * 0.75f, (0.1f + pulse * 0.02f) * zoomScale * twinkle);
+		}
+	}
+
+	private static void DrawStarNode(SpriteBatch spriteBatch, Texture2D glowTex, Vector2 position, Color color, float scale)
+	{
+		if (scale <= 0.001f)
+		{
+			return;
+		}
+
+		spriteBatch.Draw(glowTex, position, null, color, 0f, glowTex.Size() / 2f, scale, SpriteEffects.None, 0f);
+		spriteBatch.Draw(glowTex, position, null, Color.White * 0.45f * color.A / 255f, 0f, glowTex.Size() / 2f, scale * 0.45f, SpriteEffects.None, 0f);
+	}
+
+	private static void GetConstellationPalette(bool fullyAllocated, bool highlighted, float pulse, out Color coreColor, out Color glowColor, out Color nodeColor)
+	{
+		if (fullyAllocated)
+		{
+			coreColor = Color.Lerp(new Color(165, 220, 255), new Color(225, 245, 255), 0.5f);
+			glowColor = new Color(95, 175, 255);
+			nodeColor = new Color(210, 240, 255);
+			return;
+		}
+
+		if (highlighted)
+		{
+			coreColor = Color.Lerp(new Color(120, 160, 220), new Color(200, 235, 255), pulse * 0.7f);
+			glowColor = Color.Lerp(new Color(70, 120, 200), new Color(120, 200, 255), pulse);
+			nodeColor = Color.Lerp(new Color(160, 210, 255), Color.White, pulse * 0.6f);
+			return;
+		}
+
+		coreColor = new Color(80, 110, 155);
+		glowColor = new Color(45, 70, 120);
+		nodeColor = new Color(110, 150, 200);
 	}
 
 	/// <summary><inheritdoc cref="SmartUiElement.SafeUpdate(GameTime)"/><br/>
