@@ -23,6 +23,24 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 	private const float ZoomMin = 0.2f;
 	private const float ZoomMax = 2.25f;
 	private const float ZoomStep = 0.15f;
+	private const float InteriorNodeSpacing = 72f;
+	private const float MinZoomForNodeSpacing = 0.4f;
+	private const float LinkGlowThickness = 4.6f;
+	private const float LinkCoreThickness = 2.1f;
+	private const float LinkHighlightThickness = 0.85f;
+	private const float LinkGlowAlpha = 0.65f;
+	private const float LinkHighlightBaseAlpha = 0.3f;
+	private const float LinkHighlightPulseAlpha = 0.2f;
+	private const float NodePulseBase = 0.88f;
+	private const float NodePulseAmplitude = 0.12f;
+	private const float NodePulseFrequency = 2.7f;
+	private const float NodePulseSeedMultiplier = 0.005f;
+	private const float NodeTwinkleBase = 0.75f;
+	private const float NodeTwinkleAmplitude = 0.25f;
+	private const float NodeTwinkleFrequency = 3.6f;
+	private const float NodeTwinkleIndexMultiplier = 0.8f;
+	private const float NodeTwinkleSeedMultiplier = 0.004f;
+	private const float StarCenterHighlightIntensity = 0.45f;
 
 	/// <summary> Whether this panel supports scroll-wheel zoom. Override in a subclass to enable. </summary>
 	protected virtual bool EnableZoom => false;
@@ -105,9 +123,9 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 
 				using (spriteBatch.Override(args with { Effect = connectorEffect }))
 				{
-					DrawLine(spriteBatch, startPos, endPos, glowColor * 0.65f, 4.6f * scale);
-					DrawLine(spriteBatch, startPos, endPos, coreColor, 2.1f * scale);
-					DrawLine(spriteBatch, startPos, endPos, Color.White * (0.3f + pulse * 0.2f), 0.85f * scale);
+					DrawLine(spriteBatch, startPos, endPos, glowColor * LinkGlowAlpha, LinkGlowThickness * scale);
+					DrawLine(spriteBatch, startPos, endPos, coreColor, LinkCoreThickness * scale);
+					DrawLine(spriteBatch, startPos, endPos, Color.White * (LinkHighlightBaseAlpha + pulse * LinkHighlightPulseAlpha), LinkHighlightThickness * scale);
 				}
 
 				DrawConstellationNodes(spriteBatch, glowTex, startPos, endPos, nodeColor, scale, edge.GetHashCode(), pulse);
@@ -156,17 +174,17 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 	{
 		float dist = Vector2.Distance(start, end);
 		float time = (float)Main.timeForVisualEffects;
-		float nodePulse = 0.88f + 0.12f * (float)Math.Sin(time * 2.7f + seed * 0.005f);
+		float nodePulse = NodePulseBase + NodePulseAmplitude * (float)Math.Sin(time * NodePulseFrequency + seed * NodePulseSeedMultiplier);
 		DrawStarNode(spriteBatch, glowTex, start, color, (0.21f + pulse * 0.03f) * zoomScale * nodePulse);
 		DrawStarNode(spriteBatch, glowTex, end, color, (0.21f + pulse * 0.03f) * zoomScale * nodePulse);
 
-		int interiorNodeCount = Math.Clamp((int)(dist / (72f * Math.Max(zoomScale, 0.4f))), 1, 3);
+		int interiorNodeCount = Math.Clamp((int)(dist / (InteriorNodeSpacing * Math.Max(zoomScale, MinZoomForNodeSpacing))), 1, 3);
 
 		for (int i = 1; i <= interiorNodeCount; i++)
 		{
 			float progress = i / (interiorNodeCount + 1f);
 			Vector2 pos = Vector2.Lerp(start, end, progress);
-			float twinkle = 0.75f + 0.25f * (float)Math.Sin(time * 3.6f + i * 0.8f + seed * 0.004f);
+			float twinkle = NodeTwinkleBase + NodeTwinkleAmplitude * (float)Math.Sin(time * NodeTwinkleFrequency + i * NodeTwinkleIndexMultiplier + seed * NodeTwinkleSeedMultiplier);
 			DrawStarNode(spriteBatch, glowTex, pos, color * 0.75f, (0.1f + pulse * 0.02f) * zoomScale * twinkle);
 		}
 	}
@@ -179,7 +197,7 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 		}
 
 		spriteBatch.Draw(glowTex, position, null, color, 0f, glowTex.Size() / 2f, scale, SpriteEffects.None, 0f);
-		spriteBatch.Draw(glowTex, position, null, Color.White * 0.45f * color.A / 255f, 0f, glowTex.Size() / 2f, scale * 0.45f, SpriteEffects.None, 0f);
+		spriteBatch.Draw(glowTex, position, null, Color.White * StarCenterHighlightIntensity * color.A / 255f, 0f, glowTex.Size() / 2f, scale * StarCenterHighlightIntensity, SpriteEffects.None, 0f);
 	}
 
 	private static void GetConstellationPalette(bool fullyAllocated, bool highlighted, float pulse, out Color coreColor, out Color glowColor, out Color nodeColor)
