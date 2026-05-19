@@ -12,7 +12,7 @@ internal class PassiveTreeInnerPanel : AllocatableInnerPanel
 	private static readonly Vector3 TopColor = new(0.02f, 0.03f, 0.08f);
 	private static readonly Vector3 BottomColor = new(0.01f, 0.01f, 0.03f);
 
-	private static readonly Asset<Effect> _backgroundShader = ModContent.Request<Effect>($"{PoTMod.ModName}/Assets/Effects/PassiveTreeBackground");
+	private static Asset<Effect> BackgroundShader => ModContent.Request<Effect>($"{PoTMod.ModName}/Assets/Effects/PassiveTreeBackground");
 
 	public override string TabName => "PassiveTree";
 	
@@ -23,7 +23,7 @@ internal class PassiveTreeInnerPanel : AllocatableInnerPanel
 		CalculatedStyle dims = GetDimensions();
 		var rect = new Rectangle((int)dims.X, (int)dims.Y, (int)dims.Width, (int)dims.Height);
 
-		Effect effect = _backgroundShader.Value;
+		Effect effect = BackgroundShader.Value;
 		effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.05f);
 		effect.Parameters["uOpacity"].SetValue(BackgroundOpacity);
 		effect.Parameters["uStarIntensity"].SetValue(StarIntensity);
