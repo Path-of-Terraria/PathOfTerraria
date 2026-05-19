@@ -13,7 +13,8 @@ namespace PathOfTerraria.Common.UI;
 
 internal abstract class AllocatableInnerPanel : SmartUiElement
 {
-	private static readonly Asset<Texture2D> _chainTex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Link");
+	private static readonly Asset<Texture2D> _glowTex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/GlowAlpha");
+	private static readonly Asset<Texture2D> _starTex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/StarAlpha");
 
 	private readonly HashSet<UIElement> _draggable = [];
 
@@ -65,11 +66,12 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 	public static void DrawEdgeConnections(SpriteBatch spriteBatch, ReadOnlySpan<Edge<IConnectedAllocatableNode>> connections, float scale = 1f)
 	{
 		Vector2 center = default;
-		Texture2D chainTex = _chainTex.Value;
+		Texture2D pixel = TextureAssets.MagicPixel.Value;
+		Texture2D glow = _glowTex.Value;
+		Texture2D star = _starTex.Value;
 
 		foreach (Edge<IConnectedAllocatableNode> edge in connections)
 		{
-			Color color = Color.Gray;
 			IConnectedAllocatableNode start = edge.Start;
 			IConnectedAllocatableNode end = edge.End;
 
@@ -83,37 +85,53 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 				continue;
 			}
 
-			if (end.AppearsAsCanBeAllocated() && end.AppearsAsAllocated())
-			{
-				color = Color.Lerp(Color.Gray, Color.White,
-					(float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.5f + 0.5f);
-			}
-
-			if (end.AppearsAsAllocated() && start.AppearsAsAllocated())
-			{
-				color = Color.White;
-			}
-
 			Vector2 startPos = start.GetCenter();
 			Vector2 endPos = end.GetCenter();
+			bool startAllocated = start.AppearsAsAllocated();
+			bool endAllocated = end.AppearsAsAllocated();
+			bool isPulsingPath = end.AppearsAsCanBeAllocated() && endAllocated;
+			bool isAllocatedPath = startAllocated && endAllocated;
+			float pulse = (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.5f + 0.5f;
+
+			var baseColor = new Color(80, 95, 130);
+			var activeColor = new Color(150, 175, 255);
+			float activeWeight = isAllocatedPath ? 1f : (isPulsingPath ? 0.45f + pulse * 0.55f : 0f);
+			Color lineColor = Color.Lerp(baseColor, activeColor, activeWeight);
 
 			if (!edge.Flags.HasFlag(EdgeFlags.EffectsOnly))
 			{
-				// Step size keeps link count constant regardless of zoom; each link is drawn at the current scale.
-				float linkSize = 16 * scale;
-				for (float k = 0; k <= 1; k += 1 / (Vector2.Distance(startPos, endPos) / linkSize))
+				Vector2 delta = endPos - startPos;
+				float distance = delta.Length();
+
+				if (distance > 0.01f)
 				{
-					Vector2 pos = center + Vector2.Lerp(startPos, endPos, k);
-					spriteBatch.Draw(chainTex, pos, null, color, startPos.DirectionTo(endPos).ToRotation(), chainTex.Size() / 2, scale, 0, 0);
+					float rotation = delta.ToRotation();
+					float coreThickness = Math.Max(1f, 1.25f * scale);
+					float glowThickness = coreThickness * 2.3f;
+					Color glowColor = lineColor * (isAllocatedPath ? 0.35f : 0.2f);
+
+					spriteBatch.Draw(pixel, startPos, null, glowColor, rotation, new Vector2(0f, 0.5f), new Vector2(distance, glowThickness), SpriteEffects.None, 0f);
+					spriteBatch.Draw(pixel, startPos, null, lineColor, rotation, new Vector2(0f, 0.5f), new Vector2(distance, coreThickness), SpriteEffects.None, 0f);
 				}
 			}
 
-			bool showParticles = start.AppearsAsAllocated() && (end.AppearsAsAllocated() || (edge.Flags.HasFlag(EdgeFlags.EffectsOnly) && end.AppearsAsCanBeAllocated()));
+			float endpointScale = scale * (isAllocatedPath ? 0.16f : 0.12f);
+			var endpointColor = isAllocatedPath ? new Color(255, 245, 215) : new Color(155, 185, 255);
+			Color endpointGlowColor = endpointColor * (isAllocatedPath ? 0.6f : 0.35f);
+			endpointGlowColor.A = 0;
+			endpointColor.A = 0;
+
+			spriteBatch.Draw(glow, center + startPos, null, endpointGlowColor, 0f, glow.Size() / 2f, endpointScale, SpriteEffects.None, 0f);
+			spriteBatch.Draw(glow, center + endPos, null, endpointGlowColor, 0f, glow.Size() / 2f, endpointScale, SpriteEffects.None, 0f);
+			spriteBatch.Draw(star, center + startPos, null, endpointColor, 0f, star.Size() / 2f, endpointScale * 0.9f, SpriteEffects.None, 0f);
+			spriteBatch.Draw(star, center + endPos, null, endpointColor, 0f, star.Size() / 2f, endpointScale * 0.9f, SpriteEffects.None, 0f);
+
+			bool showParticles = startAllocated && (endAllocated || (edge.Flags.HasFlag(EdgeFlags.EffectsOnly) && end.AppearsAsCanBeAllocated()));
 
 			if (showParticles)
 			{
-				Texture2D glow = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/GlowAlpha").Value;
-				var glowColor = new Color(255, 230, 150) { A = 0 };
+				var glowColor = new Color(190, 220, 255) { A = 0 };
+				var starColor = new Color(255, 245, 215) { A = 0 };
 
 				var rand = new FastRandom(edge.GetHashCode());
 
@@ -121,13 +139,16 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 				{
 					float dist = Vector2.Distance(startPos, endPos);
 					float len = (40 + rand.Next(120)) * dist / 50;
-					float particleScale = 0.05f + rand.Next(10000) / 10000f * 0.15f;
+					float particleScale = 0.04f + rand.Next(10000) / 10000f * 0.09f;
+					float twinkleOffset = rand.Next(10000) / 10000f * MathHelper.TwoPi;
 					
 					float progress = (Main.GameUpdateCount + 15 * k) % len / len;
 					Vector2 pos = center + Vector2.SmoothStep(startPos, endPos, progress);
-					float scale2 = (float)Math.Sin(progress * 3.14f) * (0.4f - particleScale) * scale;
+					float pulseScale = 0.45f + 0.55f * ((float)Math.Sin(Main.GameUpdateCount * 0.15f + twinkleOffset) * 0.5f + 0.5f);
+					float scale2 = (float)Math.Sin(progress * MathHelper.Pi) * (0.42f - particleScale) * scale * pulseScale;
 					
 					spriteBatch.Draw(glow, pos, null, glowColor * scale2, 0, glow.Size() / 2f, scale2, 0, 0);
+					spriteBatch.Draw(star, pos, null, starColor * (scale2 * 0.85f), 0, star.Size() / 2f, scale2 * 0.8f, 0, 0);
 				}
 			}
 		}
