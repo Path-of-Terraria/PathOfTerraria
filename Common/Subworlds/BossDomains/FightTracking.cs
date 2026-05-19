@@ -131,11 +131,6 @@ public struct FightTracker
 		{
 			foreach (NPC activeNpc in Main.ActiveNPCs)
 			{
-				if (activeNpc is null)
-				{
-					continue;
-				}
-
 				if (activeNpc.type == type) { return true; }
 			}
 		}
@@ -149,11 +144,6 @@ public struct FightTracker
 		{
 			foreach (NPC activeNpc in Main.ActiveNPCs)
 			{
-				if (activeNpc is null)
-				{
-					continue;
-				}
-
 				if (activeNpc.type == type) { return activeNpc; }
 			}
 		}
