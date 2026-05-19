@@ -1176,7 +1176,7 @@ OneMinionArmyKeystone: {
 
 DirectShotKeystone: {
 	// Name: DirectShotKeystone
-	// Tooltip: Your Projectiles deal up to +50% more Damage at [mechanic/shift:Nearby] range, but deal up to 50% less Damage at Far range.
+	// Tooltip: Your Projectiles deal up to +50% more Damage within 20 blocks, but deal up to 50% less Damage beyond 20 blocks.
 }
 
 BloodMagicKeystone: {
