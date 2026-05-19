@@ -22,7 +22,7 @@ float starField(float2 uv, float scale, float threshold, float twinkleSpeed)
 	float twinkle = 1;
 	float starMask = smoothstep(threshold, 1.0, rnd);
 
-	float falloff = smoothstep(0.07, 0.0, length(gv));
+	float falloff = smoothstep(0.12, 0.0, length(gv));
 	return starMask * falloff * twinkle;
 }
 

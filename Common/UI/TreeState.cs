@@ -21,8 +21,8 @@ namespace PathOfTerraria.Common.UI;
 /// </summary>
 internal class TreeState : TabsUiState
 {
-	private const int ShrinkX = 160;
-	private const int ShrinkY = 40;
+	private const int ShrinkX = 0;
+	private const int ShrinkY = 0;
 
 	private PassiveTreeInnerPanel _passiveTreeInner;
 	private SkillSelectionPanel _skillSelection;
@@ -48,6 +48,14 @@ internal class TreeState : TabsUiState
 		{
 			Panel.Left = StyleDimension.FromPixels(ShrinkX);
 			Panel.Top = StyleDimension.FromPixels(ShrinkY);
+		}
+		
+		// Always block mouse interface when TreeState is visible
+		if (IsVisible)
+		{
+			Main.LocalPlayer.mouseInterface = true;
+			Main.isMouseLeftConsumedByUI = true;
+			Main.mouseText = false;
 		}
 	}
 
@@ -75,6 +83,7 @@ internal class TreeState : TabsUiState
 		};
 
 		base.CreateMainPanel(localizedTexts, false, panelSize: (Width: new(-ShrinkX * 2, 1f), Height: new(-ShrinkY * 2, 1f)));
+		Panel.BackgroundColor = new Color(16, 24, 65, 255); 
 		base.AppendChildren();
 		AddCloseButton();
 		ResetTree();
