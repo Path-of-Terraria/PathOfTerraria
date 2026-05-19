@@ -29,6 +29,7 @@ internal sealed class InfernalRealm : BossDomainSubworld, IOverrideBiome
 		{
 			if (IsActive) { ArenaCenter.NetSend(writer); }
 		}
+
 		public override void NetReceive(BinaryReader reader)
 		{
 			if (IsActive) { ArenaCenter.NetReceive(reader); }
@@ -47,7 +48,8 @@ internal sealed class InfernalRealm : BossDomainSubworld, IOverrideBiome
 	public override (int time, bool isDay) ForceTime => (49000, true);
 	// public override (int time, bool isDay) ForceTime => ((int)(Main.nightLength * 0.5), false);
 
-	public bool FightActive => FightTracker.GetFirstNPC() is { ModNPC: InfernalBoss { Phase: > 0, CutsceneActive: false } };
+	public bool FightActive => FightTracker.GetFirstNPC() is
+		{ ModNPC: InfernalBoss { Phase: > 0, CutsceneActive: false } };
 
 	public override List<GenPass> Tasks =>
 	[
@@ -58,32 +60,41 @@ internal sealed class InfernalRealm : BossDomainSubworld, IOverrideBiome
 	public override void OnEnter()
 	{
 		base.OnEnter();
-		
+
 		ArenaCenter.Reset();
-		FightTracker = new([ModContent.NPCType<InfernalBoss>()])
-		{
-			ResetOnVanish = true,
-			HaltTimeOnVanish = 60 * 10,
-		};
+		FightTracker = new([ModContent.NPCType<InfernalBoss>()]) { ResetOnVanish = true, HaltTimeOnVanish = 60 * 10, };
 	}
-	
+
 	public override void Update()
 	{
 		FightState state = FightTracker.UpdateState();
 
 		if (ArenaCenter.Get() is not Point16 arenaCenter) { return; }
+
 		if (PlayerExit.Get() is not Point16 playerExit) { return; }
 
 		if (state == FightState.NotStarted)
 		{
 			// Spawn the boss.
 			var spawnPos = (arenaCenter.ToWorldCoordinates() + new Vector2(0, -128)).ToPoint16();
-			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), spawnPos.X, spawnPos.Y, ModContent.NPCType<InfernalBoss>());
+
+			if (Main.netMode != NetmodeID.MultiplayerClient)
+			{
+				int npcIndex = NPC.NewNPC(Entity.GetSource_NaturalSpawn(), spawnPos.X, spawnPos.Y,
+					ModContent.NPCType<InfernalBoss>());
+
+				if (npcIndex >= 0 && npcIndex < Main.maxNPCs)
+				{
+					FightTracker.SignalStart();
+					Main.npc[npcIndex].netUpdate = true;
+				}
+			}
 		}
 		else if (state == FightState.JustCompleted)
 		{
 			IEntitySource src = Entity.GetSource_NaturalSpawn();
-			Projectile.NewProjectile(src, playerExit.ToWorldCoordinates(), Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0);
+			Projectile.NewProjectile(src, playerExit.ToWorldCoordinates(), Vector2.Zero,
+				ModContent.ProjectileType<ExitPortal>(), 0, 0);
 		}
 
 		bool inFight = FightActive;
@@ -105,11 +116,12 @@ internal sealed class InfernalRealm : BossDomainSubworld, IOverrideBiome
 	public override bool ChangeAudio()
 	{
 		if (FightActive) { return false; }
-		
+
 		Main.newMusic = MusicID.OtherworldlyCorruption;
 		Main.curMusic = MusicID.OtherworldlyCorruption;
 		return true;
 	}
+
 	void IOverrideBiome.OverrideBiome()
 	{
 		Main.LocalPlayer.ZoneSkyHeight = true;
@@ -151,7 +163,7 @@ internal sealed class InfernalRealm : BossDomainSubworld, IOverrideBiome
 		ArenaCenter.Reset();
 		Point16 arenaCenter = ArenaCenter.Get()!.Value;
 		Point16 playerSpawn = PlayerSpawn.Get()!.Value;
-		
+
 		(Main.spawnTileX, Main.spawnTileY) = (playerSpawn.X, playerSpawn.Y);
 	}
 }
@@ -167,7 +179,7 @@ internal sealed class InfernalRealmRendering : ModSystem
 		BeforeSolids = 1 << 4,
 		AfterSolids = 1 << 5,
 	}
-	
+
 	private static Asset<Texture2D>? textureThrone;
 	private static Asset<Texture2D>? textureWall;
 	private static Asset<Texture2D>? texturePane;
@@ -201,6 +213,7 @@ internal sealed class InfernalRealmRendering : ModSystem
 		On_Main.DrawSunAndMoon += (orig, self, sceneArea, moonColor, sunColor, tempMushroomInfluence) =>
 		{
 			if (InfernalRealm.IsActive) { return; }
+
 			orig(self, sceneArea, moonColor, sunColor, tempMushroomInfluence);
 		};
 	}
@@ -208,19 +221,30 @@ internal sealed class InfernalRealmRendering : ModSystem
 	public void RenderObjects(Vector2 screenPos, DrawLayer layers, bool batchActive)
 	{
 		if (!InfernalRealm.IsActive) { return; }
+
 		if (InfernalRealm.ArenaCenter.Get() is not Point16 baseTilePos) { return; }
 
-		Texture2D texThrone = AssetUtils.ImmediateValue($"{nameof(PathOfTerraria)}/Assets/Conflux/InfernalArena_Throne", ref textureThrone);
-		Texture2D texWall = AssetUtils.ImmediateValue($"{nameof(PathOfTerraria)}/Assets/Conflux/InfernalArena_Wall", ref textureWall);
-		Texture2D texPane = AssetUtils.ImmediateValue($"{nameof(PathOfTerraria)}/Assets/Conflux/InfernalArena_Pane", ref texturePane);
-		Texture2D texPillar = AssetUtils.ImmediateValue($"{nameof(PathOfTerraria)}/Assets/Conflux/InfernalArena_Pillar", ref texturePillar);
-		Texture2D texChandelier = AssetUtils.ImmediateValue($"{nameof(PathOfTerraria)}/Assets/Conflux/InfernalArena_Chandelier", ref textureChandelier);
-		Texture2D texChandelierGlow = AssetUtils.ImmediateValue($"{nameof(PathOfTerraria)}/Assets/Conflux/InfernalArena_Chandelier_Glow", ref textureChandelierGlow);
-		Texture2D texBrickPlatform = AssetUtils.ImmediateValue($"{nameof(PathOfTerraria)}/Assets/Conflux/InfernalArena_BrickPlatform", ref textureBrickPlatform);
+		Texture2D texThrone = AssetUtils.ImmediateValue($"{nameof(PathOfTerraria)}/Assets/Conflux/InfernalArena_Throne",
+			ref textureThrone);
+		Texture2D texWall = AssetUtils.ImmediateValue($"{nameof(PathOfTerraria)}/Assets/Conflux/InfernalArena_Wall",
+			ref textureWall);
+		Texture2D texPane = AssetUtils.ImmediateValue($"{nameof(PathOfTerraria)}/Assets/Conflux/InfernalArena_Pane",
+			ref texturePane);
+		Texture2D texPillar = AssetUtils.ImmediateValue($"{nameof(PathOfTerraria)}/Assets/Conflux/InfernalArena_Pillar",
+			ref texturePillar);
+		Texture2D texChandelier =
+			AssetUtils.ImmediateValue($"{nameof(PathOfTerraria)}/Assets/Conflux/InfernalArena_Chandelier",
+				ref textureChandelier);
+		Texture2D texChandelierGlow = AssetUtils.ImmediateValue(
+			$"{nameof(PathOfTerraria)}/Assets/Conflux/InfernalArena_Chandelier_Glow", ref textureChandelierGlow);
+		Texture2D texBrickPlatform =
+			AssetUtils.ImmediateValue($"{nameof(PathOfTerraria)}/Assets/Conflux/InfernalArena_BrickPlatform",
+				ref textureBrickPlatform);
 
 		SpriteBatch sb = Main.spriteBatch;
 		SpriteBatchArgs sbArgs = !batchActive
-			? new(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix)
+			? new(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None,
+				Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix)
 			: sb.GetArguments();
 
 		if (batchActive) { sb.End(); }
@@ -251,6 +275,7 @@ internal sealed class InfernalRealmRendering : ModSystem
 				);
 				sb.Draw(texture, dstRect, entranceSrcRect, Color.White, 0f, default, 0, 0);
 			}
+
 			// Window walls.
 			for (int i = -1; i <= +1; i++)
 			{
@@ -260,10 +285,11 @@ internal sealed class InfernalRealmRendering : ModSystem
 				sb.Draw(texture, position - screenPos, null, Color.White, 0f, texture.Size() * 0.5f, drawScale, 0, 0);
 			}
 		}
+
 		void DrawWindows(Texture2D texture)
 		{
 			if (!layers.HasFlag(DrawLayer.BeforeWalls)) { return; }
-			
+
 			for (int i = -1; i <= +1; i++)
 			{
 				float xOffset = wallStep * (i * 1.00f);
@@ -272,6 +298,7 @@ internal sealed class InfernalRealmRendering : ModSystem
 				sb.Draw(texture, position - screenPos, null, Color.White, 0f, texture.Size() * 0.5f, drawScale, 0, 0);
 			}
 		}
+
 		void DrawPillars(Texture2D texture)
 		{
 			if (!layers.HasFlag(DrawLayer.AfterSolids) && !layers.HasFlag(DrawLayer.BeforeSolids)) { return; }
@@ -282,11 +309,13 @@ internal sealed class InfernalRealmRendering : ModSystem
 
 				int dir = Math.Sign(i);
 				int indexOnSide = i - dir;
-				float xOffset = wallStep * ((indexOnSide * 1.00f) + (dir * 0.50f) + (Math.Abs(i) >= 3 ? (-dir * 0.4f) : 0));
+				float xOffset = wallStep *
+				                ((indexOnSide * 1.00f) + (dir * 0.50f) + (Math.Abs(i) >= 3 ? (-dir * 0.4f) : 0));
 				Vector2 pillarPos = baseWorldPos + new Vector2(xOffset - 8, +8);
 				var pillarSize = (Vector2)(texture.Size() * drawScale);
 				var pillarHalf = (Vector2)(pillarSize * 0.5f);
-				var pillarAabb = new Vector4(pillarPos.X - pillarHalf.X, pillarPos.Y - pillarSize.Y, pillarPos.X + pillarHalf.X, pillarPos.Y);
+				var pillarAabb = new Vector4(pillarPos.X - pillarHalf.X, pillarPos.Y - pillarSize.Y,
+					pillarPos.X + pillarHalf.X, pillarPos.Y);
 
 				if (Math.Abs(i) != 1)
 				{
@@ -308,11 +337,13 @@ internal sealed class InfernalRealmRendering : ModSystem
 					var dstAabb = (Vector4)(bit switch
 					{
 						0 => new(pillarAabb.X, pillarAabb.Y, pillarAabb.Z, pillarAabb.Y + (tHeight * drawScale)),
-						1 => new(pillarAabb.X, pillarAabb.Y + (tHeight * drawScale), pillarAabb.Z, pillarAabb.W - (bHeight * drawScale)),
+						1 => new(pillarAabb.X, pillarAabb.Y + (tHeight * drawScale), pillarAabb.Z,
+							pillarAabb.W - (bHeight * drawScale)),
 						2 => new(pillarAabb.X, pillarAabb.W - (bHeight * drawScale), pillarAabb.Z, pillarAabb.W),
 						_ => throw new NotImplementedException(),
 					});
-					var dstRect = new Rectangle((int)dstAabb.X, (int)dstAabb.Y, (int)(dstAabb.Z - dstAabb.X), (int)(dstAabb.W - dstAabb.Y));
+					var dstRect = new Rectangle((int)dstAabb.X, (int)dstAabb.Y, (int)(dstAabb.Z - dstAabb.X),
+						(int)(dstAabb.W - dstAabb.Y));
 					dstRect.X -= (int)Main.screenPosition.X;
 					dstRect.Y -= (int)Main.screenPosition.Y;
 
@@ -326,11 +357,13 @@ internal sealed class InfernalRealmRendering : ModSystem
 					{
 						Vector2 worldPos = pillarPos + new Vector2(0, -400 + (-400 * p));
 						Vector2 drawOrigin = texBrickPlatform.Size() * new Vector2(0.5f, 1.0f);
-						sb.Draw(texBrickPlatform, worldPos - screenPos, null, Color.White, 0f, drawOrigin, drawScale, 0, 0);
+						sb.Draw(texBrickPlatform, worldPos - screenPos, null, Color.White, 0f, drawOrigin, drawScale, 0,
+							0);
 					}
 				}
 			}
 		}
+
 		void DrawThrone(Texture2D texture)
 		{
 			if (!layers.HasFlag(DrawLayer.AfterSolids)) { return; }
@@ -339,6 +372,7 @@ internal sealed class InfernalRealmRendering : ModSystem
 			Vector2 drawOrigin = texture.Size() * new Vector2(0.5f, 1.0f);
 			sb.Draw(texture, worldPos - screenPos, null, Color.White, 0f, drawOrigin, drawScale, 0, 0);
 		}
+
 		void DrawChandelier(Texture2D texture, bool light)
 		{
 			if (!layers.HasFlag(DrawLayer.AfterSolids)) { return; }
@@ -363,7 +397,8 @@ internal sealed class InfernalRealmRendering : ModSystem
 						if (Math.Abs(j) is not 2 or 6 or 9 or 11) { continue; }
 
 						var offset = new Vector2(j * 20, 410);
-						var lightPos = (Vector2)(worldPos + ((rotation + MathHelper.PiOver2).ToRotationVector2() * offset));
+						var lightPos =
+							(Vector2)(worldPos + ((rotation + MathHelper.PiOver2).ToRotationVector2() * offset));
 						Lighting.AddLight(lightPos, lightVec);
 					}
 				}
@@ -371,20 +406,39 @@ internal sealed class InfernalRealmRendering : ModSystem
 		}
 
 		// Glass
-		using (sb.Scope(sbArgs with { SortMode = SpriteSortMode.Deferred, BlendState = BlendState.Additive, Effect = effect, Matrix = matrix }))
+		using (sb.Scope(sbArgs with
+		       {
+			       SortMode = SpriteSortMode.Deferred,
+			       BlendState = BlendState.Additive,
+			       Effect = effect,
+			       Matrix = matrix
+		       }))
 		{
 			DrawWindows(texPane);
 		}
+
 		// Solids
-		using (sb.Scope(sbArgs with { SortMode = SpriteSortMode.Deferred, BlendState = BlendState.AlphaBlend, Effect = effect, Matrix = matrix }))
+		using (sb.Scope(sbArgs with
+		       {
+			       SortMode = SpriteSortMode.Deferred,
+			       BlendState = BlendState.AlphaBlend,
+			       Effect = effect,
+			       Matrix = matrix
+		       }))
 		{
 			DrawWalls(texWall);
 			DrawPillars(texPillar);
 			DrawThrone(texThrone);
 			DrawChandelier(texChandelier, false);
 		}
+
 		// Glowmasks
-		using (sb.Scope(sbArgs with { SortMode = SpriteSortMode.Deferred, BlendState = BlendState.AlphaBlend, Matrix = Main.GameViewMatrix.TransformationMatrix }))
+		using (sb.Scope(sbArgs with
+		       {
+			       SortMode = SpriteSortMode.Deferred,
+			       BlendState = BlendState.AlphaBlend,
+			       Matrix = Main.GameViewMatrix.TransformationMatrix
+		       }))
 		{
 			DrawChandelier(texChandelierGlow, true);
 		}

@@ -34,6 +34,24 @@ public class PassiveTreePlayer : ModPlayer
 
 	private TagCompound _saveData = [];
 
+	public override void Load()
+	{
+		On_Player.UpdateEquips += EarlyUpdateEquips;
+	}
+
+	private static void EarlyUpdateEquips(On_Player.orig_UpdateEquips orig, Player self, int i)
+	{
+		if (self.TryGetModPlayer(out PassiveTreePlayer plr))
+		{
+			// This code is in a detour so it runs before other ModPlayer.UpdateEquip hooks.
+			// Since passives are not equips, the method order matters less,
+			// and this fixes some issues where passives would run too late to be used.
+			plr.ApplyPassives();
+		}
+
+		orig(self, i);
+	}
+
 	public override void OnEnterWorld()
 	{
 		SmartUiLoader.GetUiState<TreeState>().RemoveAllChildren(); // is this really necessary?
@@ -128,7 +146,7 @@ public class PassiveTreePlayer : ModPlayer
 		}));
 	}
 
-	public override void UpdateEquips()
+	private void ApplyPassives()
 	{
 		foreach (Passive passive in ActiveNodes)
 		{

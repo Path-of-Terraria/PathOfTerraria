@@ -1,7 +1,7 @@
 [
 	{
 		"affixType": "DexterityItemAffix",
-		"equipTypes": "Weapon Armor Jewel Quiver",
+		"equipTypes": "Weapon Armor Jewel Quiver Ring Amulet",
 		"round": true,
 		"tiers": [
 			{
@@ -44,7 +44,7 @@
 	},
 	{
 		"affixType": "StrengthItemAffix",
-		"equipTypes": "Weapon Armor Jewel Shield",
+		"equipTypes": "Weapon Armor Jewel Shield Ring Amulet",
 		"round": true,
 		"tiers": [
 			{
@@ -87,7 +87,7 @@
 	},
 	{
 		"affixType": "IntelligenceItemAffix",
-		"equipTypes": "Weapon Armor Jewel Talisman",
+		"equipTypes": "Weapon Armor Jewel Talisman Ring Amulet",
 		"round": true,
 		"tiers": [
 			{

@@ -22,7 +22,7 @@ internal class QueenBeeDomainSpawns :  GlobalNPC
 
 	public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns)
 	{
-		if (SubworldSystem.Current is not FishronDomain || spawnRate == int.MinValue)
+		if (SubworldSystem.Current is not QueenBeeDomain || spawnRate == int.MinValue)
 		{
 			return;
 		}

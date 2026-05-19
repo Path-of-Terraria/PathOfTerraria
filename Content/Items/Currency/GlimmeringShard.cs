@@ -33,6 +33,6 @@ public class GlimmeringShard : CurrencyShard
 
 	public override void ApplyToItem(Item slotItem)
 	{
-		PoTItemHelper.Roll(slotItem, slotItem.GetInstanceData().RealLevel);
+		PoTItemHelper.RerollAffixes(slotItem, slotItem.GetInstanceData().RealLevel);
 	}
 }
