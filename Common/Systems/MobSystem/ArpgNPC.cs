@@ -152,7 +152,7 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 	private static float GetProgressionDropRateScale(int areaLevel)
 	{
 		float progress = MathHelper.Clamp((areaLevel - 1f) / PoTMobHelper.AreaLevelScalingCap, 0f, 1f);
-		return MathHelper.Lerp(0.2f, 0.15f, progress);
+		return MathHelper.Lerp(0.1f, 0.075f, progress);
 	}
 
 	// First caller wins so later SetDefaults modifiers (rarity, map affixes, area scaling) don't pollute the snapshot.
@@ -194,6 +194,14 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 		{
 			dropRarityModifier += DomainRarityBoost();
 		}
+
+		// Magic/Rare mobs bias their non-guaranteed drops toward higher rarities.
+		dropRarityModifier += Rarity switch
+		{
+			ItemRarity.Magic => 0.5f,
+			ItemRarity.Rare => 1.5f,
+			_ => 0f
+		};
 
 		// Determine drop count
 		float minDrop = (DropQuantity * MinDropChanceScale * 100f);
