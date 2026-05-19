@@ -13,8 +13,6 @@ namespace PathOfTerraria.Content.NPCs.Town;
 
 public sealed class TownScoutNPC : ModNPC
 {
-	private const string SurveyorQuestStep = "KillSurveyor";
-
 	private bool HasPlayerBeenNear
 	{
 		get => NPC.ai[0] == 1;
@@ -163,7 +161,7 @@ public sealed class TownScoutNPC : ModNPC
 				continue;
 			}
 
-			if (quest.Active && quest.ActiveStep.Id == SurveyorQuestStep)
+			if (quest.Active && quest.ActiveStep.Id == WizardStartQuest.SurveyorStepId)
 			{
 				return 100f;
 			}

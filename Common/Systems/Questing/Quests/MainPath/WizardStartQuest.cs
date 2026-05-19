@@ -16,6 +16,8 @@ namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 
 internal class WizardStartQuest : Quest
 {
+	public const string SurveyorStepId = "KillSurveyor";
+
 	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct1;
 	public override int NPCQuestGiver => ModContent.NPCType<WizardNPC>();
 
@@ -57,7 +59,7 @@ internal class WizardStartQuest : Quest
 				RavencrestSystem.UpgradeBuilding("Library");
 				return true;
 			}),
-			new KillCount("KillSurveyor", ModContent.NPCType<TownScoutNPC>(), 1, this.GetLocalization("KillSurveyor")),
+			new KillCount(SurveyorStepId, ModContent.NPCType<TownScoutNPC>(), 1, this.GetLocalization(SurveyorStepId)),
 			new InteractWithNPC("End", ModContent.NPCType<WizardNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.Quest"),
 			Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.End")) { CountsAsCompletedOnMarker = true }, 
 		];
