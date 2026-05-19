@@ -6,7 +6,13 @@ namespace PathOfTerraria.Common.UI.PassiveTree;
 
 internal class PassiveTreeInnerPanel : AllocatableInnerPanel
 {
-	private static readonly Asset<Effect> _backgroundShader = ModContent.Request<Effect>($"{PoTMod.ModName}/Assets/Effects/PassiveTreeBackground", AssetRequestMode.ImmediateLoad);
+	private const float BackgroundOpacity = 0.78f;
+	private const float StarIntensity = 0.16f;
+	private const float NebulaIntensity = 0.10f;
+	private static readonly Vector3 TopColor = new(0.02f, 0.03f, 0.08f);
+	private static readonly Vector3 BottomColor = new(0.01f, 0.01f, 0.03f);
+
+	private static readonly Asset<Effect> _backgroundShader = ModContent.Request<Effect>($"{PoTMod.ModName}/Assets/Effects/PassiveTreeBackground");
 
 	public override string TabName => "PassiveTree";
 	
@@ -19,20 +25,17 @@ internal class PassiveTreeInnerPanel : AllocatableInnerPanel
 
 		Effect effect = _backgroundShader.Value;
 		effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.05f);
-		effect.Parameters["uOpacity"].SetValue(0.78f);
-		effect.Parameters["uStarIntensity"].SetValue(0.16f);
-		effect.Parameters["uNebulaIntensity"].SetValue(0.10f);
-		effect.Parameters["uBaseTopColor"].SetValue(new Vector3(0.02f, 0.03f, 0.08f));
-		effect.Parameters["uBaseBottomColor"].SetValue(new Vector3(0.01f, 0.01f, 0.03f));
+		effect.Parameters["uOpacity"].SetValue(BackgroundOpacity);
+		effect.Parameters["uStarIntensity"].SetValue(StarIntensity);
+		effect.Parameters["uNebulaIntensity"].SetValue(NebulaIntensity);
+		effect.Parameters["uBaseTopColor"].SetValue(TopColor);
+		effect.Parameters["uBaseBottomColor"].SetValue(BottomColor);
 
 		SpriteBatchArgs args = spriteBatch.GetArguments();
-		var shaderArgs = args with { Effect = effect };
-
-		spriteBatch.End();
-		spriteBatch.Begin(shaderArgs);
-		spriteBatch.Draw(TextureAssets.MagicPixel.Value, rect, Color.White);
-		spriteBatch.End();
-		spriteBatch.Begin(args);
+		using (spriteBatch.Override(args with { Effect = effect }))
+		{
+			spriteBatch.Draw(TextureAssets.MagicPixel.Value, rect, Color.White);
+		}
 
 		base.DrawSelf(spriteBatch);
 	}
