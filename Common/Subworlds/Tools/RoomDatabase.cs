@@ -7,12 +7,19 @@ using Terraria.ModLoader.IO;
 namespace PathOfTerraria.Common.Subworlds.Tools;
 
 public record PlacedRoom(RoomData Data, Rectangle Area);
+
+/// <summary>
+/// Structure used solely to store room information and placement.
+/// </summary>
 public readonly record struct IORoom(Point16 Position, int Id);
 
 internal class RoomDatabase : ModSystem
 {
 	public Dictionary<int, RoomData> DataByRoomIndex = [];
 
+	/// <summary>
+	/// Room information stored for persistence.
+	/// </summary>
 	private readonly static List<IORoom> _ioRooms = [];
 
 	private readonly List<EngageTimerInfo> _timers = [];
@@ -31,7 +38,7 @@ internal class RoomDatabase : ModSystem
 			roomData = roomDatas.ElementAt(roomId);
 		} while (usedColors.Contains(roomData.Value.Wire));
 
-		if (opening == OpeningType.Right) // Right-placed needs to be adjusted
+		if (opening == OpeningType.Right) // Right-placed needs to be adjusted for some reason
 		{
 			x++;
 		}
@@ -57,7 +64,7 @@ internal class RoomDatabase : ModSystem
 	public Rectangle PlaceRoom(int id, int x, int y, Point origin)
 	{
 		Rectangle rectangle = DataByRoomIndex[id].PlaceRoom(x, y, id, origin);
-		_ioRooms.Add(new IORoom(new Point16(x, y), id));
+		_ioRooms.Add(new IORoom(new Point16(x - origin.X, y - origin.Y), id));
 		return rectangle;
 	}
 
@@ -216,7 +223,7 @@ internal class RoomDatabase : ModSystem
 				Tile tile = Main.tile[info.Position];
 				tile.TileFrameY = 18;
 
-				Wiring.CheckMech(info.Position.X, info.Position.Y, 18000);
+				Wiring.CheckMech(info.Position.X, info.Position.Y, 2);
 			}
 		}
 
