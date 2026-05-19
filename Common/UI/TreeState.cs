@@ -19,7 +19,7 @@ namespace PathOfTerraria.Common.UI;
 /// <summary>
 /// UI state for the Passive and Skill trees.
 /// </summary>
-internal class TreeState : TabsUiState
+internal class TreeState : TabsUiState, IAutopauseUI
 {
 	private const int ShrinkX = 0;
 	private const int ShrinkY = 0;

@@ -39,8 +39,8 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
 	float nebula = 0.5 + 0.5 * sin((driftUv.x + driftUv.y) * 16.0 + sin(driftUv.y * 11.0 + uTime * 0.35) * 1.2);
 	float3 nebulaColor = float3(0.08, 0.12, 0.20) * nebula * uNebulaIntensity;
 
-	float starsNear = starField(uv + float2(uTime * 0.0005, 0), 90.0, 0.960, 0.3);
-	float starsFar = starField(uv + float2(-uTime * 0.0002, uTime * 0.0005), 150.0, 0.99, 0.2);
+	float starsNear = starField(uv + float2(uTime * 0.001, 0), 90.0, 0.960, 0.3);
+	float starsFar = starField(uv + float2(-uTime * 0.0005, uTime * 0.0005), 150.0, 0.99, 0.2);
 	float stars = saturate(starsNear + starsFar * 0.7) * uStarIntensity;
 
 	float3 color = baseColor + nebulaColor + stars;

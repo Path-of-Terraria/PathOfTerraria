@@ -9,7 +9,7 @@ internal class PassiveTreeInnerPanel : AllocatableInnerPanel
 {
 	private const float BackgroundOpacity = 1f;
 	private const float StarIntensity = 0.22f;
-	private const float NebulaIntensity = 0.3f;
+	private const float NebulaIntensity = 0.13f;
 	private static readonly Vector3 TopColor = new(0.02f, 0.03f, 0.12f);
 	private static readonly Vector3 BottomColor = new(0.01f, 0.01f, 0.05f);
 
