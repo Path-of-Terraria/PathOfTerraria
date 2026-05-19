@@ -21,8 +21,8 @@ namespace PathOfTerraria.Common.UI;
 /// </summary>
 internal class TreeState : TabsUiState
 {
-	private const int ShrinkX = 160;
-	private const int ShrinkY = 40;
+	private const int ShrinkX = 0;
+	private const int ShrinkY = 0;
 
 	private PassiveTreeInnerPanel _passiveTreeInner;
 	private SkillSelectionPanel _skillSelection;
