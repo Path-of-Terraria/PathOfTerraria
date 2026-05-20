@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
-using Terraria.DataStructures;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.BossDomain;
@@ -14,8 +13,9 @@ internal class RoyalJelly : ModItem
 
 	public override bool? UseItem(Player player)
 	{
-		NPC.SpawnOnPlayer(player.whoAmI, NPCID.QueenBee);
-		return true;
+		return BossDomainSummonHandler.TrySummon(
+			BossDomainSummonHandler.BossDomainSummon.QueenBee,
+			player);
 	}
 
 	public override void AddRecipes()

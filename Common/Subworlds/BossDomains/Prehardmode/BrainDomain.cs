@@ -409,7 +409,7 @@ public class BrainDomain : BossDomainSubworld
 		}
 
 		FightState state = FightTracker.UpdateState();
-		GetData().CheckDowned<BrainDomain>(NPCID.BrainofCthulhu);
+		GetData().MarkBossDownedIfDefeated<BrainDomain>(NPCID.BrainofCthulhu);
 
 		if (state == FightState.NotStarted && allInArena && !GetData().BossDowned)
 		{

@@ -91,7 +91,7 @@
 	},
 	{
 		"affixType": "BaseLifeAffix",
-		"equipTypes": "Armor Shield",
+		"equipTypes": "Armor Shield Ring Amulet",
 		"tiers": [
 			{
 				"minValue": 1,
@@ -296,7 +296,7 @@
 	},
 	{
 		"affixType": "ManaAffix",
-		"equipTypes": "Armor Talisman",
+		"equipTypes": "Armor Talisman Ring Amulet",
 		"tiers": [
 			{
 				"minValue": 1,

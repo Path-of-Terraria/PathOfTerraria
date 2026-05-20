@@ -41,6 +41,6 @@ public class UnfoldingShard : CurrencyShard
 	{
 		PoTInstanceItemData data = slotItem.GetInstanceData();
 		data.Rarity = ItemRarity.Magic;
-		PoTItemHelper.Roll(slotItem, data.RealLevel);
+		PoTItemHelper.RerollAffixes(slotItem, data.RealLevel);
 	}
 }

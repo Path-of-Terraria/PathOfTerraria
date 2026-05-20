@@ -127,16 +127,13 @@ public abstract class ModChargePlayer : ModPlayer
     
     public void RemoveAllCharges()
     {
-	    if (Charges > 0)
+	    Charges = 0;
+	    chargeDuration = 0;
+
+	    // Remove the buff even when the caller has already reduced Charges to 0.
+	    if (BuffType != -1)
 	    {
-		    Charges = 0;
-		    chargeDuration = 0;
-            
-		    // Remove the buff
-		    if (BuffType != -1)
-		    {
-			    Player.ClearBuff(BuffType);
-		    }
+		    Player.ClearBuff(BuffType);
 	    }
 
     }

@@ -58,7 +58,7 @@ internal class EmpressDomain : BossDomainSubworld, IOverrideBiome
 
 	public override void Update()
 	{
-		GetData().CheckDowned<EmpressDomain>(NPCID.HallowBoss); // HallowBoss is EoL
+		GetData().MarkBossDownedIfDefeated<EmpressDomain>(NPCID.HallowBoss); // HallowBoss is EoL
 		DoWaveFunctionality();
 
 		FightState state = FightTracker.UpdateState();

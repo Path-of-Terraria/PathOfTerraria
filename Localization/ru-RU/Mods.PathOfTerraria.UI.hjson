@@ -351,6 +351,7 @@ Tips: {
 
 PointsRemaining: Очков осталось
 ResetPoints: Сброс очков
+// ExpGain: +{0} XP
 ExpBarHover:
 	'''
 	Уровень {0}
