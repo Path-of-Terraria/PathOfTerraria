@@ -1,6 +1,6 @@
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Subworlds;
-using PathOfTerraria.Common.Systems.ExperienceSystem;
+using PathOfTerraria.Common.Systems.ModPlayers;
 using SubworldLibrary;
 using Terraria.ID;
 
@@ -14,6 +14,11 @@ public class MobExperienceGlobalNPC : GlobalNPC
 	/// <param name="npc"></param>
 	public override void OnKill(NPC npc)
 	{
+		if (Main.netMode == NetmodeID.MultiplayerClient)
+		{
+			return;
+		}
+
 		if (npc.SpawnedFromStatue || npc.friendly || npc.CountsAsACritter || !npc.AnyInteractions() || NPCID.Sets.ProjectileNPC[npc.type])
 		{
 			return;
@@ -49,7 +54,7 @@ public class MobExperienceGlobalNPC : GlobalNPC
 				continue;
 			}
 
-			ExperienceTracker.SpawnExperience(amount, npc.Center, Vector2.UnitX.RotatedByRandom(MathHelper.Pi) * 6f, player.whoAmI);
+			ExpModPlayer.GrantExperience(player, amount);
 		}
 	}
 }
