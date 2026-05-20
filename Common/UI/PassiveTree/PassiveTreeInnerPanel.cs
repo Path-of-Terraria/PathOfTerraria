@@ -25,6 +25,10 @@ internal class PassiveTreeInnerPanel : AllocatableInnerPanel
 		var rect = new Rectangle((int)dims.X, (int)dims.Y, (int)dims.Width, (int)dims.Height);
 	
 		Effect effect = BackgroundShader.Value;
+		if (effect == null)
+		{
+			return;
+		}
 		effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.05f);
 		effect.Parameters["uOpacity"].SetValue(BackgroundOpacity);
 		effect.Parameters["uStarIntensity"].SetValue(StarIntensity);

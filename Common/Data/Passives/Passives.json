@@ -2065,7 +2065,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "IncreasedMagicAndSummonDamagePassive",
+		"internalIdentifier": "AddedSummonCritChancePassive",
 		"referenceId": 128,
 		"maxLevel": 1,
 		"value": 5,
@@ -2083,7 +2083,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "IncreasedMagicAndSummonDamagePassive",
+		"internalIdentifier": "AddedSummonCritChancePassive",
 		"referenceId": 129,
 		"maxLevel": 1,
 		"value": 5,
@@ -2098,7 +2098,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedSummonCritChancePassive",
+		"internalIdentifier": "IncreasedMagicAndSummonDamagePassive",
 		"referenceId": 130,
 		"maxLevel": 1,
 		"value": 5,
@@ -2119,7 +2119,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedSummonCritChancePassive",
+		"internalIdentifier": "IncreasedMagicAndSummonDamagePassive",
 		"referenceId": 131,
 		"maxLevel": 1,
 		"value": 5,
@@ -18930,6 +18930,66 @@
 		"connections": [
 			{
 				"referenceId": 1625
+			}
+		]
+	},
+	{
+		"internalIdentifier": "OneMinionArmyKeystone",
+		"referenceId": 1795,
+		"maxLevel": 1,
+		"value": 80,
+		"position": {
+			"x": -10,
+			"y": -1400
+		},
+		"connections": [
+			{
+				"referenceId": 72
+			}
+		]
+	},
+	{
+		"internalIdentifier": "DirectShotKeystone",
+		"referenceId": 1796,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": -10,
+			"y": 1480
+		},
+		"connections": [
+			{
+				"referenceId": 56
+			}
+		]
+	},
+	{
+		"internalIdentifier": "BloodMagicKeystone",
+		"referenceId": 1797,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": 1100,
+			"y": -14
+		},
+		"connections": [
+			{
+				"referenceId": 90
+			}
+		]
+	},
+	{
+		"internalIdentifier": "CinderBastionMastery",
+		"referenceId": 1798,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": -1125,
+			"y": -14
+		},
+		"connections": [
+			{
+				"referenceId": 181
 			}
 		]
 	}
