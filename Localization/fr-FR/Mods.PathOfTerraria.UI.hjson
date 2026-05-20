@@ -336,6 +336,7 @@ Tips: {
 
 // PointsRemaining: Points Remaining
 // ResetPoints: Reset Points
+// ExpGain: +{0} XP
 /* ExpBarHover:
 	'''
 	Level {0}
