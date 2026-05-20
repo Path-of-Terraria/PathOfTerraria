@@ -36,6 +36,7 @@ internal class TreeState : TabsUiState, IAutopauseUI
 	private UIEditableText _passiveSearchInput;
 	private string _passiveSearchQuery = string.Empty;
 	private string _lastAppliedSearchQuery = string.Empty;
+	private string[] _passiveSearchTerms = [];
 
 	public override List<SmartUiElement> TabPanels => [_passiveTreeInner, _skillSelection];
 
@@ -59,7 +60,11 @@ internal class TreeState : TabsUiState, IAutopauseUI
 			Panel.Left = StyleDimension.FromPixels(ShrinkX);
 			Panel.Top = StyleDimension.FromPixels(ShrinkY);
 			UpdatePassiveSearchVisibility();
-			ApplyPassiveSearchHighlight();
+
+			if (_passiveSearchInput is { } searchInput && !string.Equals(searchInput.CurrentValue, _lastAppliedSearchQuery, StringComparison.Ordinal))
+			{
+				ApplyPassiveSearchHighlight();
+			}
 		}
 		
 		// Always block mouse interface when TreeState is visible
@@ -188,7 +193,6 @@ internal class TreeState : TabsUiState, IAutopauseUI
 		_passiveSearchInput.Width.Set(-16f, 1f);
 		_passiveSearchInput.Height.Set(PassiveSearchHeight, 0f);
 		_passiveSearchInput.CurrentValue = _passiveSearchQuery;
-		_passiveSearchInput.OnUpdate += _ => ApplyPassiveSearchHighlight();
 
 		_passiveSearchBackground.Append(_passiveSearchInput);
 		UpdatePassiveSearchVisibility();
@@ -238,23 +242,24 @@ internal class TreeState : TabsUiState, IAutopauseUI
 		_passiveSearchQuery = query;
 		_lastAppliedSearchQuery = query;
 		bool hasQuery = !string.IsNullOrWhiteSpace(query);
+		_passiveSearchTerms = hasQuery ? query.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) : [];
 
 		foreach (PassiveElement element in _passiveElements)
 		{
-			element.SearchHighlighted = hasQuery && PassiveMatchesSearch(element.Passive, query);
+			element.SearchHighlighted = hasQuery && PassiveMatchesSearch(element.Passive, _passiveSearchTerms);
 		}
 	}
 
-	private static bool PassiveMatchesSearch(Passive passive, string query)
+	private static bool PassiveMatchesSearch(Passive passive, ReadOnlySpan<string> terms)
 	{
-		if (string.IsNullOrWhiteSpace(query))
+		if (terms.IsEmpty)
 		{
 			return false;
 		}
 
 		string searchable = $"{passive.DisplayName}\n{passive.DisplayTooltip}\n{passive.Name}";
 
-		foreach (string term in query.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+		foreach (string term in terms)
 		{
 			if (!searchable.Contains(term, StringComparison.InvariantCultureIgnoreCase))
 			{
