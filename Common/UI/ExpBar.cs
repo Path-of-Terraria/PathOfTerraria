@@ -15,6 +15,11 @@ namespace PathOfTerraria.Common.UI;
 
 public class ExpBar : SmartUiState
 {
+	private const int ExperienceGainDisplayTime = 180;
+
+	private int _experienceGainTimer;
+	private int _recentExperienceGained;
+
 	public override bool Visible => true;
 
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
@@ -42,6 +47,7 @@ public class ExpBar : SmartUiState
 		spriteBatch.Draw(fill, target, source, Color.White);
 
 		Utils.DrawBorderString(spriteBatch, $"{mp.Level}", pos + new Vector2(bar.Width * 0.5f - 20, 22), Color.White, 0.8f, 0.5f, 0.5f);
+		DrawExperienceGain(spriteBatch, pos, bar.Width);
 
 		var bounding = new Rectangle((int)(pos.X - bar.Width / 2f), (int)pos.Y, bar.Width, bar.Height);
 
@@ -68,6 +74,29 @@ public class ExpBar : SmartUiState
 		Utils.DrawBorderString(spriteBatch, text, pos + new Vector2(-halfWidth - 10, 60), Color.White, 1);
 	}
 
+	public void AddExperienceGain(int experience)
+	{
+		if (experience <= 0)
+		{
+			return;
+		}
+
+		_recentExperienceGained = (int)Math.Min(int.MaxValue, (long)_recentExperienceGained + experience);
+		_experienceGainTimer = ExperienceGainDisplayTime;
+	}
+
+	public override void SafeUpdate(GameTime gameTime)
+	{
+		if (_experienceGainTimer > 0)
+		{
+			_experienceGainTimer--;
+		}
+		else
+		{
+			_recentExperienceGained = 0;
+		}
+	}
+
 	public override void SafeClick(UIMouseEvent evt)
 	{
 		Texture2D bar = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/BarEmpty").Value;
@@ -84,5 +113,25 @@ public class ExpBar : SmartUiState
 		{
 			SmartUiLoader.GetUiState<TreeState>().Toggle();
 		}
+	}
+
+	private void DrawExperienceGain(SpriteBatch spriteBatch, Vector2 barPosition, int barWidth)
+	{
+		if (_experienceGainTimer <= 0 || _recentExperienceGained <= 0)
+		{
+			return;
+		}
+
+		float remaining = _experienceGainTimer / (float)ExperienceGainDisplayTime;
+		float elapsed = 1f - remaining;
+		float fadeIn = Utils.GetLerpValue(0f, 0.12f, elapsed, true);
+		float fadeOut = Utils.GetLerpValue(0f, 0.25f, remaining, true);
+		float opacity = fadeIn * fadeOut;
+		float pop = Utils.GetLerpValue(0.22f, 0f, elapsed, true);
+		float scale = 0.85f + pop * 0.25f;
+		string text = Language.GetTextValue("Mods.PathOfTerraria.UI.ExpGain", _recentExperienceGained);
+		Vector2 position = barPosition + new Vector2(barWidth / 2f + 22, 28 - 8f * elapsed);
+
+		Utils.DrawBorderString(spriteBatch, text, position, new Color(255, 215, 95) * opacity, scale, 0f, 0.5f);
 	}
 }
