@@ -15,7 +15,12 @@ internal class PersistentMinionsPlayer : ModPlayer
 
 		public override bool AppliesToEntity(Projectile entity, bool lateInstantiation)
 		{
-			return entity.minion && !CustomProjectileSets.NonPersistentProjectiles[entity.type];
+			// Skip tail/body segments of multisegment minions (e.g. Stardust Dragon's StardustDragon2..4).
+			// Saving and respawning them independently would leave orphaned segments next to the head's
+			// naturally re-spawned ones.
+			return entity.minion
+				&& !CustomProjectileSets.NonPersistentProjectiles[entity.type]
+				&& !CustomProjectileSets.MultisegmentMinionProjectiles[entity.type];
 		}
 
 		public override void OnSpawn(Projectile projectile, IEntitySource source)
@@ -30,13 +35,18 @@ internal class PersistentMinionsPlayer : ModPlayer
 
 	public override void SaveData(TagCompound tag)
 	{
-		TagCompound projectiles = [];
-		int count = 0;
-
+		// Reset the in-memory list each save. Without this, consecutive SaveData calls (an autosave
+		// followed by the explicit save SubworldLibrary triggers on transition) pile up entries and
+		// OnEnterWorld respawns Nx minions in the destination world.
+		_savedProjectiles.Clear();
+		
 		if (Main.gameMenu) // Skip this on the main menu, as it can't run properly
 		{
 			return;
 		}
+
+		TagCompound projectiles = [];
+		int count = 0;
 
 		foreach (Projectile projectile in Main.ActiveProjectiles)
 		{
@@ -55,7 +65,7 @@ internal class PersistentMinionsPlayer : ModPlayer
 				_savedProjectiles.Add(new SavedProjectile(projectile.type, projectile.timeLeft, damage, projectile.knockBack));
 			}
 		}
-		
+
 		if (count > 0)
 		{
 			projectiles.Add("count", count);
@@ -65,6 +75,8 @@ internal class PersistentMinionsPlayer : ModPlayer
 
 	public override void LoadData(TagCompound tag)
 	{
+		_savedProjectiles.Clear();
+
 		if (tag.TryGet("savedProjectiles", out TagCompound projectiles))
 		{
 			int count = projectiles.GetInt("count");
@@ -88,6 +100,14 @@ internal class PersistentMinionsPlayer : ModPlayer
 		foreach (SavedProjectile item in _savedProjectiles)
 		{
 			int proj = Projectile.NewProjectile(Player.GetSource_FromThis(), pos, Vector2.Zero, item.type, item.damage, item.knockBack, Player.whoAmI);
+
+			// NewProjectile returns Main.maxProjectiles when the projectile array is full; skip rather
+			// than throw, so one failed respawn doesn't drop the rest of the player's minions.
+			if (proj >= Main.maxProjectiles)
+			{
+				continue;
+			}
+
 			Main.projectile[proj].timeLeft = item.time;
 			Main.projectile[proj].netUpdate = true;
 			Main.projectile[proj].damage = item.damage;
