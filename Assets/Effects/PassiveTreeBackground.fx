@@ -16,13 +16,13 @@ float starField(float2 uv, float scale, float threshold, float twinkleSpeed)
 {
 	float2 grid = uv * scale;
 	float2 id = floor(grid);
-	float2 gv = frac(grid) - 0.5;
+	float2 gv = frac(grid) - 0.25;
 
 	float rnd = hash21(id);
 	float twinkle = 1;
 	float starMask = smoothstep(threshold, 1.0, rnd);
 
-	float falloff = smoothstep(0.12, 0.0, length(gv));
+	float falloff = smoothstep(0.1, 0.0, length(gv));
 	return starMask * falloff * twinkle;
 }
 
