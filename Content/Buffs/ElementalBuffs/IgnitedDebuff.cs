@@ -24,7 +24,9 @@ internal class IgnitedDebuff : ModBuff
 
 		if (attacker is Player atkPlayer)
 		{
-			tickRate = atkPlayer.GetModPlayer<IgnitedPlayer>().IgniteDuration.ApplyTo(DefaultTickRate);
+			IgnitedPlayer ignitedPlayer = atkPlayer.GetModPlayer<IgnitedPlayer>();
+			tickRate = ignitedPlayer.IgniteDuration.ApplyTo(DefaultTickRate);
+			stackDamage = (int)ignitedPlayer.IgniteDamage.ApplyTo(hitDamage);
 		}
 		
 		if (victim is NPC npc)
@@ -211,7 +213,7 @@ public class IgnitedPlayer : ModPlayer
 		Player.lifeRegen = Math.Min(Player.lifeRegen, 0);
 		Player.lifeRegenTime = 0;
 		Player.lifeRegen -= Stacks[0].BaseDamage;
-
+	
 		Stacks[0].Time--;
 
 		if (Stacks[0].Time <= 0)
