@@ -58,6 +58,10 @@ internal class RavencrestSubworld : MappingWorld
 		WorldGen.shadowOrbSmashed = SubworldSystem.ReadCopiedWorldData<bool>("smashedOrb");
 		Main.time = SubworldSystem.ReadCopiedWorldData<double>("time");
 		Main.dayTime = SubworldSystem.ReadCopiedWorldData<bool>("dayTime");
+		// Mirrors the write in CopyMainWorldData. Without this read, the value saved in Ravencrest's .wld (forced false
+		// during worldgen) wins on every entry, which strands hardmode-gated NPCs like Pyra (TinkerNPC) and any quest or
+		// dialogue check that asks Main.hardMode while inside Ravencrest.
+		Main.hardMode = SubworldSystem.ReadCopiedWorldData<bool>("hardMode");
 		DisableEvilOrbBossSpawning.ActualOrbsSmashed = SubworldSystem.ReadCopiedWorldData<short>("orbsSmashed");
 
 		ModContent.GetInstance<RavencrestSystem>().HasOverworldNPC.Clear();
@@ -79,8 +83,11 @@ internal class RavencrestSubworld : MappingWorld
 		ModContent.GetInstance<RavencrestSystem>().CurrentRavencrestVersion = RavencrestSystem.RavencrestVersion;
 		StructureTools.PlaceByOrigin("Assets/Structures/Worlds/Ravencrest_Structure", new Point16(40, 80), Vector2.Zero);
 		RavencrestSystem.SpawnNativeNpcs(NPCSpawnTimeframe.WorldGen);
-		
-		Main.hardMode = false;
+
+		// Intentionally do NOT force Main.hardMode = false here. ReadCopiedMainWorldData re-syncs hardMode from the main
+		// world on every entry, so whatever value gets baked into Ravencrest's .wld is overwritten on load. Forcing it
+		// false here would clobber the value set by ReadCopiedMainWorldData on first generation while the player is
+		// already in hardmode, leaving Pyra/quests broken for that session.
 	}
 
 	public override void Update()
