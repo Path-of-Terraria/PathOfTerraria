@@ -32,6 +32,7 @@ internal class TreeState : TabsUiState, IAutopauseUI
 	private PassiveTreeInnerPanel _passiveTreeInner;
 	private SkillSelectionPanel _skillSelection;
 	private readonly List<PassiveElement> _passiveElements = [];
+	private readonly Dictionary<PassiveElement, string> _passiveSearchableText = [];
 	private UIPanel _passiveSearchBackground;
 	private UIEditableText _passiveSearchInput;
 	private string _passiveSearchQuery = string.Empty;
@@ -86,6 +87,7 @@ internal class TreeState : TabsUiState, IAutopauseUI
 			_passiveSearchBackground = null;
 			_passiveSearchInput = null;
 			_passiveElements.Clear();
+			_passiveSearchableText.Clear();
 			IsVisible = false;
 			return;
 		}
@@ -130,6 +132,7 @@ internal class TreeState : TabsUiState, IAutopauseUI
 	{
 		_passiveTreeInner.RemoveAllChildren();
 		_passiveElements.Clear();
+		_passiveSearchableText.Clear();
 
 		LocalPassiveTreePlayer.CreateTree();
 
@@ -153,6 +156,7 @@ internal class TreeState : TabsUiState, IAutopauseUI
 			{
 				mapping[passive.ReferenceId] = element;
 				_passiveElements.Add(element);
+				_passiveSearchableText[element] = BuildSearchableText(passive);
 				_passiveTreeInner.AppendAsDraggable(element);
 			}
 		}
@@ -246,18 +250,23 @@ internal class TreeState : TabsUiState, IAutopauseUI
 
 		foreach (PassiveElement element in _passiveElements)
 		{
-			element.SearchHighlighted = hasQuery && PassiveMatchesSearch(element.Passive, _passiveSearchTerms);
+			element.SearchHighlighted = hasQuery
+				&& _passiveSearchableText.TryGetValue(element, out string searchable)
+				&& PassiveMatchesSearch(searchable, _passiveSearchTerms);
 		}
 	}
 
-	private static bool PassiveMatchesSearch(Passive passive, ReadOnlySpan<string> terms)
+	private static string BuildSearchableText(Passive passive)
+	{
+		return string.Concat(passive.DisplayName, " ", passive.DisplayTooltip, " ", passive.Name);
+	}
+
+	private static bool PassiveMatchesSearch(string searchable, ReadOnlySpan<string> terms)
 	{
 		if (terms.IsEmpty)
 		{
 			return false;
 		}
-
-		string searchable = $"{passive.DisplayName}\n{passive.DisplayTooltip}\n{passive.Name}";
 
 		foreach (string term in terms)
 		{

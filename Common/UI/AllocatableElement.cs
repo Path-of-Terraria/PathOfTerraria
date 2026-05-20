@@ -21,6 +21,10 @@ internal interface IConnectedAllocatableNode
 
 internal abstract class AllocatableElement : SmartUiElement, IConnectedAllocatableNode
 {
+	private const float SearchPulseSpeed = 0.12f;
+	private const float SearchPulseAmplitude = 0.2f;
+	private const float SearchPulseBaseline = 0.8f;
+
 	public static Asset<Texture2D> GlowAlpha = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/GlowAlpha");
 	public static Asset<Texture2D> StarAlpha = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/StarAlpha");
 
@@ -122,7 +126,7 @@ internal abstract class AllocatableElement : SmartUiElement, IConnectedAllocatab
 
 		Texture2D glow = GlowAlpha.Value;
 		Texture2D star = StarAlpha.Value;
-		float pulse = (float)Math.Sin(Main.GameUpdateCount * 0.12f) * 0.2f + 0.8f;
+		float pulse = (float)Math.Sin(Main.GameUpdateCount * SearchPulseSpeed) * SearchPulseAmplitude + SearchPulseBaseline;
 		float nodeScale = Math.Max(Node.Size.X, Node.Size.Y) / glow.Width * 1.8f * scale;
 
 		var glowColor = new Color(100, 220, 255)
