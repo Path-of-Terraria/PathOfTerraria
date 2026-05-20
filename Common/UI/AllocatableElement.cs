@@ -25,6 +25,7 @@ internal abstract class AllocatableElement : SmartUiElement, IConnectedAllocatab
 	public static Asset<Texture2D> StarAlpha = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/StarAlpha");
 
 	public Allocatable Node { get; }
+	public bool SearchHighlighted { get; set; }
 
 	private int _flashTimer;
 	private int _redFlashTimer;
@@ -62,6 +63,7 @@ internal abstract class AllocatableElement : SmartUiElement, IConnectedAllocatab
 
 		float zoom = GetZoom();
 		Vector2 center = GetDimensions().Center();
+		DrawSearchHighlight(spriteBatch, center, zoom);
 		DrawNode(Node, spriteBatch, center, zoom);
 		DrawOnto(spriteBatch, center);
 
@@ -109,6 +111,34 @@ internal abstract class AllocatableElement : SmartUiElement, IConnectedAllocatab
 		{
 			DrawHoverTooltip(Node);
 		}
+	}
+
+	private void DrawSearchHighlight(SpriteBatch spriteBatch, Vector2 center, float scale)
+	{
+		if (!SearchHighlighted)
+		{
+			return;
+		}
+
+		Texture2D glow = GlowAlpha.Value;
+		Texture2D star = StarAlpha.Value;
+		float pulse = (float)Math.Sin(Main.GameUpdateCount * 0.12f) * 0.2f + 0.8f;
+		float nodeScale = Math.Max(Node.Size.X, Node.Size.Y) / glow.Width * 1.8f * scale;
+
+		var glowColor = new Color(100, 220, 255)
+		{
+			A = 0
+		};
+		glowColor *= pulse * 0.65f;
+
+		var starColor = new Color(170, 245, 255)
+		{
+			A = 0
+		};
+		starColor *= pulse * 0.45f;
+
+		spriteBatch.Draw(glow, center, null, glowColor, 0, glow.Size() / 2f, nodeScale, 0, 0);
+		spriteBatch.Draw(star, center, null, starColor, 0, star.Size() / 2f, nodeScale * 0.8f, 0, 0);
 	}
 
 	public virtual void DrawNode(Allocatable node, SpriteBatch spriteBatch, Vector2 center, float scale = 1f)

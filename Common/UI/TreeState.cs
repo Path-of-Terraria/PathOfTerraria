@@ -4,6 +4,7 @@ using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.ModPlayers.SkillPlayers;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Common.UI.Components;
+using PathOfTerraria.Common.UI.Elements;
 using PathOfTerraria.Common.UI.PassiveTree;
 using PathOfTerraria.Common.UI.SkillsTree;
 using PathOfTerraria.Common.UI.Utilities;
@@ -23,9 +24,18 @@ internal class TreeState : TabsUiState, IAutopauseUI
 {
 	private const int ShrinkX = 0;
 	private const int ShrinkY = 0;
+	private const int PassiveSearchHeight = 32;
+	private const int PassiveSearchPadding = 8;
+	private const int PassiveSearchReservedHeight = PassiveSearchHeight + PassiveSearchPadding * 2;
+	private const int PassiveSearchWidth = 260;
 
 	private PassiveTreeInnerPanel _passiveTreeInner;
 	private SkillSelectionPanel _skillSelection;
+	private readonly List<PassiveElement> _passiveElements = [];
+	private UIPanel _passiveSearchBackground;
+	private UIEditableText _passiveSearchInput;
+	private string _passiveSearchQuery = string.Empty;
+	private string _lastAppliedSearchQuery = string.Empty;
 
 	public override List<SmartUiElement> TabPanels => [_passiveTreeInner, _skillSelection];
 
@@ -48,6 +58,8 @@ internal class TreeState : TabsUiState, IAutopauseUI
 		{
 			Panel.Left = StyleDimension.FromPixels(ShrinkX);
 			Panel.Top = StyleDimension.FromPixels(ShrinkY);
+			UpdatePassiveSearchVisibility();
+			ApplyPassiveSearchHighlight();
 		}
 		
 		// Always block mouse interface when TreeState is visible
@@ -66,6 +78,9 @@ internal class TreeState : TabsUiState, IAutopauseUI
 			RemoveAllChildren(); //Temporary thing to update the GUI when toggling
 			_passiveTreeInner = null;
 			_skillSelection = null;
+			_passiveSearchBackground = null;
+			_passiveSearchInput = null;
+			_passiveElements.Clear();
 			IsVisible = false;
 			return;
 		}
@@ -85,6 +100,8 @@ internal class TreeState : TabsUiState, IAutopauseUI
 		base.CreateMainPanel(localizedTexts, false, panelSize: (Width: new(-ShrinkX * 2, 1f), Height: new(-ShrinkY * 2, 1f)));
 		Panel.BackgroundColor = new Color(16, 24, 65, 255); 
 		base.AppendChildren();
+		ReservePassiveSearchSpace();
+		CreatePassiveSearch();
 		AddCloseButton();
 		ResetTree();
 		Recalculate();
@@ -107,6 +124,7 @@ internal class TreeState : TabsUiState, IAutopauseUI
 	private void ResetTree()
 	{
 		_passiveTreeInner.RemoveAllChildren();
+		_passiveElements.Clear();
 
 		LocalPassiveTreePlayer.CreateTree();
 
@@ -129,6 +147,7 @@ internal class TreeState : TabsUiState, IAutopauseUI
 			if (element != null)
 			{
 				mapping[passive.ReferenceId] = element;
+				_passiveElements.Add(element);
 				_passiveTreeInner.AppendAsDraggable(element);
 			}
 		}
@@ -145,6 +164,105 @@ internal class TreeState : TabsUiState, IAutopauseUI
 				_passiveTreeInner.Connections.Add(new(uiStart, uiEnd, edge.Flags));
 			}
 		}
+
+		ApplyPassiveSearchHighlight(force: true);
+	}
+
+	private void ReservePassiveSearchSpace()
+	{
+		_passiveTreeInner.Top.Set(DraggablePanelHeight + PassiveSearchReservedHeight, 0f);
+		_passiveTreeInner.Height.Set(-(DraggablePanelHeight + PassiveSearchReservedHeight), 1f);
+	}
+
+	private void CreatePassiveSearch()
+	{
+		_passiveSearchBackground = new UIPanel();
+		_passiveSearchBackground.Left.Set(-PassiveSearchWidth - PointsAndExitPadding - 42, 1f);
+		_passiveSearchBackground.Top.Set(DraggablePanelHeight + PassiveSearchPadding, 0f);
+		_passiveSearchBackground.Width.Set(PassiveSearchWidth, 0f);
+		_passiveSearchBackground.Height.Set(PassiveSearchHeight, 0f);
+
+		_passiveSearchInput = new UIEditableText(backingText: Language.GetTextValue("Mods.PathOfTerraria.UI.PassiveTreeSearchPlaceholder"), maxChars: 80);
+		_passiveSearchInput.Left.Set(8f, 0f);
+		_passiveSearchInput.Top.Set(0f, 0f);
+		_passiveSearchInput.Width.Set(-16f, 1f);
+		_passiveSearchInput.Height.Set(PassiveSearchHeight, 0f);
+		_passiveSearchInput.CurrentValue = _passiveSearchQuery;
+		_passiveSearchInput.OnUpdate += _ => ApplyPassiveSearchHighlight();
+
+		_passiveSearchBackground.Append(_passiveSearchInput);
+		UpdatePassiveSearchVisibility();
+	}
+
+	private void UpdatePassiveSearchVisibility()
+	{
+		if (_passiveSearchBackground is null || Panel is null || _passiveTreeInner is null)
+		{
+			return;
+		}
+
+		bool shouldShow = IsVisible && TabPanel?.ActiveTab == _passiveTreeInner.TabName;
+
+		if (shouldShow)
+		{
+			if (_passiveSearchBackground.Parent != Panel)
+			{
+				Panel.Append(_passiveSearchBackground);
+			}
+
+			return;
+		}
+
+		if (_passiveSearchBackground.Parent is not null)
+		{
+			_passiveSearchBackground.Remove();
+		}
+
+		_passiveSearchInput?.SetNotTyping();
+	}
+
+	private void ApplyPassiveSearchHighlight(bool force = false)
+	{
+		if (_passiveSearchInput is null)
+		{
+			return;
+		}
+
+		string query = _passiveSearchInput.CurrentValue?.Trim() ?? string.Empty;
+
+		if (!force && string.Equals(query, _lastAppliedSearchQuery, StringComparison.Ordinal))
+		{
+			return;
+		}
+
+		_passiveSearchQuery = query;
+		_lastAppliedSearchQuery = query;
+		bool hasQuery = !string.IsNullOrWhiteSpace(query);
+
+		foreach (PassiveElement element in _passiveElements)
+		{
+			element.SearchHighlighted = hasQuery && PassiveMatchesSearch(element.Passive, query);
+		}
+	}
+
+	private static bool PassiveMatchesSearch(Passive passive, string query)
+	{
+		if (string.IsNullOrWhiteSpace(query))
+		{
+			return false;
+		}
+
+		string searchable = $"{passive.DisplayName}\n{passive.DisplayTooltip}\n{passive.Name}";
+
+		foreach (string term in query.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+		{
+			if (!searchable.Contains(term, StringComparison.InvariantCultureIgnoreCase))
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	public override void Draw(SpriteBatch spriteBatch)
