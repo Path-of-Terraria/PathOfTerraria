@@ -5,6 +5,8 @@ namespace PathOfTerraria.Common.Projectiles;
 
 internal class AreaOfEffectScalingProjectile : GlobalProjectile
 {
+	private const float ScaleEpsilon = 0.0001f;
+
 	public override void OnSpawn(Projectile projectile, IEntitySource source)
 	{
 		if (!CustomProjectileSets.AreaOfEffectProjectiles[projectile.type])
@@ -18,7 +20,7 @@ internal class AreaOfEffectScalingProjectile : GlobalProjectile
 		}
 
 		float scale = owner.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.AreaOfEffect.ApplyTo(1f);
-		if (MathF.Abs(scale - 1f) < 0.0001f)
+		if (MathF.Abs(scale - 1f) < ScaleEpsilon)
 		{
 			return;
 		}
