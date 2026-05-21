@@ -10489,10 +10489,10 @@
 		]
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedDurationPassive",
 		"referenceId": 1342,
 		"maxLevel": 1,
-		"value": 0,
+		"value": 10,
 		"position": {
 			"x": 1700,
 			"y": -900
@@ -10507,10 +10507,10 @@
 		]
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedDurationPassive",
 		"referenceId": 1343,
 		"maxLevel": 1,
-		"value": 0,
+		"value": 10,
 		"position": {
 			"x": 1580,
 			"y": -950
@@ -10528,10 +10528,10 @@
 		]
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "DebuffsExpireFasterPassive",
 		"referenceId": 1344,
 		"maxLevel": 1,
-		"value": 0,
+		"value": 10,
 		"position": {
 			"x": 1480,
 			"y": -900
@@ -10546,10 +10546,10 @@
 		]
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "DebuffsExpireFasterPassive",
 		"referenceId": 1346,
 		"maxLevel": 1,
-		"value": 0,
+		"value": 10,
 		"position": {
 			"x": 1480,
 			"y": -770
@@ -10564,10 +10564,10 @@
 		]
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "DecreasedDurationPassive",
 		"referenceId": 1347,
 		"maxLevel": 1,
-		"value": 0,
+		"value": 10,
 		"position": {
 			"x": 1580,
 			"y": -700
@@ -10585,10 +10585,10 @@
 		]
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "DecreasedDurationPassive",
 		"referenceId": 1348,
 		"maxLevel": 1,
-		"value": 0,
+		"value": 10,
 		"position": {
 			"x": 1700,
 			"y": -730
@@ -11531,7 +11531,7 @@
 		"internalIdentifier": "AddedFireDamageMultiplierPassive",
 		"referenceId": 1390,
 		"maxLevel": 1,
-		"value": 0,
+		"value": 5,
 		"position": {
 			"x": 1860,
 			"y": -210
@@ -11570,10 +11570,10 @@
 		]
 	},
 	{
-		"internalIdentifier": "IncreasedAttackSpeedPassive",
+		"internalIdentifier": "AddedFireDamageConversionPassive",
 		"referenceId": 1392,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
 		"position": {
 			"x": 1820,
 			"y": -320
@@ -11609,10 +11609,10 @@
 		]
 	},
 	{
-		"internalIdentifier": "IncreasedCriticalStrikeChance",
+		"internalIdentifier": "AddedFireDamageConversionPassive",
 		"referenceId": 1394,
 		"maxLevel": 1,
-		"value": 5,
+		"value": 10,
 		"position": {
 			"x": 2020,
 			"y": -290
@@ -14695,10 +14695,10 @@
 		]
 	},
 	{
-		"internalIdentifier": "AddedStrengthPassive",
+		"internalIdentifier": "IncreasedDurationPassive",
 		"referenceId": 1559,
 		"maxLevel": 1,
-		"value": 0,
+		"value": 50,
 		"position": {
 			"x": -2120,
 			"y": 300
@@ -14716,10 +14716,10 @@
 		]
 	},
 	{
-		"internalIdentifier": "AddedStrengthPassive",
+		"internalIdentifier": "IncreasedDurationPassive",
 		"referenceId": 1560,
 		"maxLevel": 1,
-		"value": 0,
+		"value": 50,
 		"position": {
 			"x": -1930,
 			"y": 300
@@ -14737,10 +14737,10 @@
 		]
 	},
 	{
-		"internalIdentifier": "AddedStrengthPassive",
+		"internalIdentifier": "DecreasedDurationPassive",
 		"referenceId": 1561,
 		"maxLevel": 1,
-		"value": 0,
+		"value": 50,
 		"position": {
 			"x": -2110,
 			"y": 610
@@ -14758,10 +14758,10 @@
 		]
 	},
 	{
-		"internalIdentifier": "AddedStrengthPassive",
+		"internalIdentifier": "DecreasedDurationPassive",
 		"referenceId": 1562,
 		"maxLevel": 1,
-		"value": 0,
+		"value": 50,
 		"position": {
 			"x": -1920,
 			"y": 600

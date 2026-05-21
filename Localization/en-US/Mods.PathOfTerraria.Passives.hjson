@@ -1170,56 +1170,66 @@ DangerMiningPassive: {
 }
 
 OneMinionArmyKeystone: {
-	Name: OneMinionArmyKeystone
+	Name: One Minion Army
 	Tooltip: You are limited to one maximum minion, but gain {0}% increased damage per maximum minion slot.
 }
 
 DirectShotKeystone: {
-	Name: DirectShotKeystone
+	Name: Direct Shot
 	Tooltip: Your Projectiles deal up to +50% more Damage within 20 blocks, but deal up to 50% less Damage beyond 20 blocks.
 }
 
 BloodMagicKeystone: {
-	Name: BloodMagicKeystone
+	Name: Blood Magic
 	Tooltip: All of your mana costs become life costs. Gain {0}% of the damage done as life back on all damage, scaling with your max hp.
 }
 
 CinderBastionMastery: {
-	Name: CinderBastionMastery
+	Name: Cinder Bastion
 	Tooltip: Gain a 2% increase to Ignite damage per 10 maximum life. When moving, apply a {0}% max life Ignite to yourself.
 }
 
 AddedChaosDamageConversionPassive: {
-	Name: AddedChaosDamageConversionPassive
+	Name: Added Chaos Damage Conversion
 	Tooltip: +{0}% chaos damage conversion
 }
 
 AddedChaosDamageMultiplierPassive: {
-	Name: AddedChaosDamageMultiplierPassive
+	Name: Added ChaosDamage Multiplier
 	Tooltip: +{0}% more chaos damage
 }
 
 ReducedMaxLifeIncreasedChaosDamagePassive: {
-	Name: ReducedMaxLifeIncreasedChaosDamagePassive
+	Name: Reduced Max Life Increased Chaos Damage
 	Tooltip: -3% reduced maximum life, +{0}% more chaos damage
 }
 
 DebuffsExpireFasterPassive: {
-	Name: DebuffsExpireFasterPassive
+	Name: Debuffs Expire Faster
 	Tooltip: Debuffs on yourself expire +{0}% faster
 }
 
 IgnitesDealDamageFasterPassive: {
-	Name: IgnitesDealDamageFasterPassive
+	Name: Ignites Deal Damage Faster
 	Tooltip: +{0}% increased ignite tick rate
 }
 
 IgniteDurationPassive: {
-	Name: IgniteDurationPassive
+	Name: Increased Ignite Duration
 	Tooltip: +{0}% increased ignite duration
 }
 
 IgniteDamagePassive: {
-	Name: IgniteDamagePassive
+	Name: Increased Ignite Damage
 	Tooltip: +{0}% increased ignite damage
+}
+
+IncreasedDurationPassive: {
+	Name: Increased Duration
+	Tooltip: +{0}% increased [mechanic/shift:Duration]
+}
+
+DecreasedDurationPassive: {
+	Name: Decreased Duration
+	Tooltip: +{0}% decreased [mechanic/shift:Duration]
 }

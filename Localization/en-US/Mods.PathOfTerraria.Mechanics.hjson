@@ -154,3 +154,8 @@ Dexterity: {
 	Tag: Dexterity
 	Description: A player stat that increases use speed for all items by 0.1% every 10 points.
 }
+
+Duration: {
+	Tag: Duration
+	Description: Affects how long projectiles, buffs, and skills last. Increased duration makes effects persist longer, while decreased duration makes them expire faster. This modifier applies to all timed effects from the player.
+}
