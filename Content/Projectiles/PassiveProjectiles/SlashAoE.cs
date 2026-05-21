@@ -1,4 +1,6 @@
-﻿namespace PathOfTerraria.Content.Projectiles.PassiveProjectiles;
+using PathOfTerraria.Common.Projectiles;
+
+namespace PathOfTerraria.Content.Projectiles.PassiveProjectiles;
 
 internal class SlashAoE : ModProjectile
 {
@@ -7,6 +9,7 @@ internal class SlashAoE : ModProjectile
 	public override void SetStaticDefaults()
 	{
 		Main.projFrames[Type] = 6;
+		CustomProjectileSets.AreaOfEffectProjectiles[Type] = true;
 	}
 
 	public override void SetDefaults()

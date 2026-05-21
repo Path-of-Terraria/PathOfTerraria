@@ -29,6 +29,9 @@ public partial class EntityModifier : EntityModifierSegment
 	// Used in SpeedUpProjectile
 	public AddableFloat ProjectileBehaviourSpeed = new();
 
+	// Used in AreaOfEffect scaling.
+	public StatModifier AreaOfEffect = new();
+
 	public StatModifier Damage = new();
 	public StatModifier AttackSpeed = new();
 	public StatModifier ArmorPenetration = new();

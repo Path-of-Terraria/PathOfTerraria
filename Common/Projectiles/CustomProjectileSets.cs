@@ -19,4 +19,11 @@ internal class CustomProjectileSets
 	public static bool[] NonPersistentProjectiles = ProjectileID.Sets.Factory.CreateNamedSet(PoTMod.Instance, "NonPersistentProjectiles")
 		.Description("Defines which minion projectiles should not persist.")
 		.RegisterBoolSet(false, [ProjectileID.StardustGuardian]);
+
+	/// <summary>
+	/// Defines which projectiles should scale with Area of Effect modifiers.
+	/// </summary>
+	public static bool[] AreaOfEffectProjectiles = ProjectileID.Sets.Factory.CreateNamedSet(PoTMod.Instance, "AreaOfEffectProjectiles")
+		.Description("Defines which projectiles should scale with Area of Effect modifiers.")
+		.RegisterBoolSet(false);
 }

@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using PathOfTerraria.Common.Items;
+using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
@@ -13,6 +15,8 @@ internal class DwarvenGreatsword : Sword
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
+
+		CustomItemSets.AreaOfEffectWeapons[Type] = true;
 
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = null;
@@ -82,6 +86,7 @@ internal class DwarvenGreatsword : Sword
 		{
 			ProjectileID.Sets.TrailCacheLength[Type] = 5;
 			ProjectileID.Sets.TrailingMode[Type] = 2;
+			CustomProjectileSets.AreaOfEffectProjectiles[Type] = true;
 		}
 
 		public override void SetDefaults()

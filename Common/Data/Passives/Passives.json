@@ -18989,5 +18989,20 @@
 				"referenceId": 181
 			}
 		]
+	},
+	{
+		"internalIdentifier": "IncreasedAreaOfEffectPassive",
+		"referenceId": 1799,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": 350,
+			"y": -760
+		},
+		"connections": [
+			{
+				"referenceId": 290
+			}
+		]
 	}
 ]

@@ -18,7 +18,13 @@ internal class ExplosiveSizeProjectile : GlobalProjectile
 			Point center = compareSpot.ToTileCoordinates();
 
 			int oldRadius = radius;
-			radius = (int)player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.ExplosionSize.ApplyTo(radius);
+			EntityModifier modifier = player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier;
+			radius = (int)modifier.ExplosionSize.ApplyTo(radius);
+
+			if (CustomProjectileSets.AreaOfEffectProjectiles[self.type])
+			{
+				radius = (int)(radius * modifier.AreaOfEffect.ApplyTo(1f));
+			}
 
 			int delta = radius - oldRadius;
 			minI -= delta;
@@ -34,7 +40,13 @@ internal class ExplosiveSizeProjectile : GlobalProjectile
 	{
 		if (ProjectileID.Sets.Explosive[self.type] && self.TryGetOwner(out Player player))
 		{
-			float size = player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.ExplosionSize.ApplyTo(1);
+			EntityModifier modifier = player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier;
+			float size = modifier.ExplosionSize.ApplyTo(1f);
+
+			if (CustomProjectileSets.AreaOfEffectProjectiles[self.type])
+			{
+				size *= modifier.AreaOfEffect.ApplyTo(1f);
+			}
 			newWidth = (int)(newWidth * size);
 			newHeight = (int)(newHeight * size);
 		}

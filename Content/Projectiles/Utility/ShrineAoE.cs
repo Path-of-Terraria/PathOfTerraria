@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.Projectiles;
+using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Content.Tiles.Maps;
 using ReLogic.Content;
 using System.Collections.Generic;
@@ -34,6 +35,8 @@ public abstract class ShrineAoE : ModProjectile
 			IconsByType.Add(Type, ModContent.Request<Texture2D>(Icon));
 			MapIconsByType.Add(Type, ModContent.Request<Texture2D>(MapIcon));
 		}
+
+		CustomProjectileSets.AreaOfEffectProjectiles[Type] = true;
 	}
 
 	public override void SetDefaults()
