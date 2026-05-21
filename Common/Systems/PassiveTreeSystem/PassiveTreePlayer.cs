@@ -18,6 +18,8 @@ namespace PathOfTerraria.Common.Systems.PassiveTreeSystem;
 // ReSharper disable once ClassNeverInstantiated.Global
 public class PassiveTreePlayer : ModPlayer
 {
+	private const ulong InvalidFrameValue = ulong.MaxValue;
+
 	/// <summary>
 	/// This should be equal to your level + any extra points you have.
 	/// </summary>
@@ -32,7 +34,7 @@ public class PassiveTreePlayer : ModPlayer
 	public List<Passive> ActiveNodes = [];
 	internal List<Edge<Allocatable>> Edges = [];
 	private readonly Dictionary<Allocatable, int> _allocatedEdgeCounts = [];
-	private ulong _edgeCountCacheFrame = ulong.MaxValue;
+	private ulong _edgeCountCacheFrame = InvalidFrameValue;
 
 	private TagCompound _saveData = [];
 
@@ -123,7 +125,7 @@ public class PassiveTreePlayer : ModPlayer
 		ActiveNodes = [];
 		Edges = [];
 		_allocatedEdgeCounts.Clear();
-		_edgeCountCacheFrame = ulong.MaxValue;
+		_edgeCountCacheFrame = InvalidFrameValue;
 
 		Dictionary<int, Passive> passives = [];
 		List<PassiveData> data = PassiveRegistry.GetPassiveData();
@@ -531,18 +533,13 @@ public class PassiveTreePlayer : ModPlayer
 
 	private void IncrementAllocatedEdgeCount(Allocatable allocatable)
 	{
-		if (_allocatedEdgeCounts.TryGetValue(allocatable, out int count))
-		{
-			_allocatedEdgeCounts[allocatable] = count + 1;
-			return;
-		}
-
-		_allocatedEdgeCounts[allocatable] = 1;
+		ref int count = ref CollectionsMarshal.GetValueRefOrAddDefault(_allocatedEdgeCounts, allocatable, out bool exists);
+		count = exists ? count + 1 : 1;
 	}
 
 	private void InvalidateEdgeCountCache()
 	{
-		_edgeCountCacheFrame = ulong.MaxValue;
+		_edgeCountCacheFrame = InvalidFrameValue;
 	}
 
 	private void EnsureStrengthCapacity(int id)
