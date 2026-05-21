@@ -1209,6 +1209,11 @@ DebuffsExpireFasterPassive: {
 	Tooltip: Debuffs on yourself expire +{0}% faster
 }
 
+IncreasedDurationPassive: {
+	Name: Increased Duration
+	Tooltip: +{0}% increased duration of buffs, skills, and projectiles
+}
+
 IgnitesDealDamageFasterPassive: {
 	Name: IgnitesDealDamageFasterPassive
 	Tooltip: +{0}% increased ignite tick rate
