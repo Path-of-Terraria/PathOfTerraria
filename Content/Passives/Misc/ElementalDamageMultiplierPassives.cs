@@ -29,3 +29,12 @@ internal class AddedLightningDamageMultiplierPassive : Passive
 		elemental.Container[ElementType.Lightning].Multiplier *= 1 + Value / 100f;
 	}
 }
+
+internal class AddedChaosDamageMultiplierPassive : Passive
+{
+	public override void BuffPlayer(Player player)
+	{
+		ElementalPlayer elemental = player.GetModPlayer<ElementalPlayer>();
+		elemental.Container[ElementType.Chaos].Multiplier *= 1f + (Value / 100f);
+	}
+}
