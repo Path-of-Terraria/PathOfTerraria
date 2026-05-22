@@ -1233,3 +1233,8 @@ DecreasedDurationPassive: {
 	Name: Decreased Duration
 	Tooltip: +{0}% decreased [mechanic/shift:Duration]
 }
+
+PinpointMastery: {
+	Name: Pinpoint
+	Tooltip: All projectiles gain +1 Pierce
+}
