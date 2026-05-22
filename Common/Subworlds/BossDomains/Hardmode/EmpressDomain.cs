@@ -1,5 +1,5 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
-using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
+using PathOfTerraria.Common.Systems.Affixes.Maps;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.NPCs.BossDomain.EoLDomain;
 using PathOfTerraria.Content.Projectiles.Utility;

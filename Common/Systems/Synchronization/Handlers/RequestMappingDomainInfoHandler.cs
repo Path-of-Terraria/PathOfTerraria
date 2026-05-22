@@ -1,6 +1,6 @@
 using System.IO;
 using PathOfTerraria.Common.Subworlds;
-using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Common.Systems.Affixes.Maps;
 using SubworldLibrary;
 using Terraria.ID;
 
