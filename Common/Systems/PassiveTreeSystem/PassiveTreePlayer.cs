@@ -438,6 +438,7 @@ public class PassiveTreePlayer : ModPlayer
 	{
 		if (passive is MasteryPassive) // Hardcode for this, which doesn't work the same as any other passive
 		{
+			InvalidateEdgeCountCache(); 
 			return;
 		}
 

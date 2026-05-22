@@ -124,22 +124,9 @@ internal class MultiPassiveElement : PassiveElement
 				return;
 			}
 
-			bool canAllocateInner;
-			try
-			{
-				Passive.Level++;
-				canAllocateInner = radial.Passive.CanAllocate(player);
-			}
-			finally
-			{
-				Passive.Level--;
-			}
-
-			if (canAllocateInner)
-			{
-				Allocate(Passive, usedCost: 0);
-				Allocate(radial.Passive, usedCost: 1);
-			}
+			// Skip the inner CanAllocate check for masteries - if the hub can be allocated, the inner can too
+			Allocate(Passive, usedCost: 0);
+			Allocate(radial.Passive, usedCost: 1);
 		}
 	}
 
