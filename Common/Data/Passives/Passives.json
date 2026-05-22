@@ -6154,6 +6154,9 @@
 				"referenceId": 1100
 			},
 			{
+				"referenceId": 1799
+			},
+			{
 				"referenceId": 256
 			}
 		],
@@ -6195,6 +6198,18 @@
 		"value": 30,
 		"position": {
 			"x": -432,
+			"y": 920
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "PinpointMastery",
+		"referenceId": 1799,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": -684,
 			"y": 920
 		},
 		"isHidden": true,

@@ -704,6 +704,11 @@ PinningShotMastery: {
 	Tooltip: Ranged projectiles have a {0}% chance to inflict Rooted, and deal {1}% more damage to Rooted enemies
 }
 
+PinpointMastery: {
+	Name: Pinpoint
+	Tooltip: Projectiles gain +{0} pierce
+}
+
 LimitedEntranceMastery: {
 	Name: Limited Opening
 	Tooltip: Summons deal 30% more damage for {0} seconds after spawning.
