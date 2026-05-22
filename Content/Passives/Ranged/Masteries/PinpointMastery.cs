@@ -11,13 +11,13 @@ internal class PinpointMastery : Passive
 	{
 		public override void OnSpawn(Projectile projectile, IEntitySource source)
 		{
-			if (!projectile.friendly || projectile.penetrate < 0 || !projectile.TryGetOwner(out Player player)
+			if (!projectile.friendly || !projectile.TryGetOwner(out Player player)
 				|| !player.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<PinpointMastery>(out float value))
 			{
 				return;
 			}
 
-			projectile.penetrate += (int)value;
+			projectile.penetrate = projectile.penetrate == -1 ? -1 : projectile.penetrate + (int)value;
 		}
 	}
 }
