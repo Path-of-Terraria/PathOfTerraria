@@ -1081,12 +1081,12 @@ ReprisalMastery: {
 
 ImmolationStrideMastery: {
 	// Name: Immolation Stride
-	// Tooltip: Unused.
+	// Tooltip: Gain {0}% increased movement speed and Fire damage while you have the Ignited or Scorched debuff.
 }
 
 ShortFuseMastery: {
 	// Name: Short Fuse
-	// Tooltip: Unused.
+	// Tooltip: Ignites deal damage {0}% faster.
 }
 
 AddRagePassive: {
@@ -1237,4 +1237,9 @@ DecreasedDurationPassive: {
 PinpointMastery: {
 	// Name: Pinpoint
 	// Tooltip: All projectiles gain +1 Pierce
+}
+
+ConflagrationMastery: {
+	// Name: ConflagrationMastery
+	// Tooltip: ""
 }

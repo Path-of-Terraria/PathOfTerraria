@@ -16035,18 +16035,16 @@
 		"isChoiceNode": true,
 		"connections": [
 			{
-				"referenceId": 1549
+				"referenceId": 1799
 			},
 			{
-				"referenceId": 1552
+				"referenceId": 1800
 			},
 			{
-				"referenceId": 186
-			},
-			{
-				"referenceId": 1551
+				"referenceId": 1801
 			}
-		]
+		],
+		"requiredAllocatedEdges": 2
 	},
 	{
 		"internalIdentifier": "AddRagePassive",
@@ -18987,6 +18985,150 @@
 		"connections": [
 			{
 				"referenceId": 181
+			}
+		]
+	},
+	{
+		"internalIdentifier": "ImmolationStrideMastery",
+		"referenceId": 1799,
+		"maxLevel": 1,
+		"value": 30,
+		"position": {
+			"x": -1345,
+			"y": -90
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1627
+			}
+		]
+	},
+	{
+		"internalIdentifier": "ShortFuseMastery",
+		"referenceId": 1800,
+		"maxLevel": 1,
+		"value": 30,
+		"position": {
+			"x": -1345,
+			"y": 80
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1627
+			}
+		]
+	},
+	{
+		"internalIdentifier": "ConflagrationMastery",
+		"referenceId": 1801,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": -1225,
+			"y": -14
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1627
+			}
+		]
+	},
+	{
+		"internalIdentifier": "ConflagrationMastery",
+		"referenceId": 1802,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": -1700,
+			"y": -990
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1624
+			}
+		]
+	},
+	{
+		"internalIdentifier": "ShortFuseMastery",
+		"referenceId": 1803,
+		"maxLevel": 1,
+		"value": 30,
+		"position": {
+			"x": -1890,
+			"y": -1080
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1624
+			}
+		]
+	},
+	{
+		"internalIdentifier": "ImmolationStrideMastery",
+		"referenceId": 1804,
+		"maxLevel": 1,
+		"value": 30,
+		"position": {
+			"x": -1760,
+			"y": -1100
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1624
+			}
+		]
+	},
+	{
+		"internalIdentifier": "ConflagrationMastery",
+		"referenceId": 1805,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": -1670,
+			"y": 320
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1619
+			}
+		]
+	},
+	{
+		"internalIdentifier": "ShortFuseMastery",
+		"referenceId": 1806,
+		"maxLevel": 1,
+		"value": 30,
+		"position": {
+			"x": -1820,
+			"y": 280
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1619
+			}
+		]
+	},
+	{
+		"internalIdentifier": "ImmolationStrideMastery",
+		"referenceId": 1807,
+		"maxLevel": 1,
+		"value": 30,
+		"position": {
+			"x": -1800,
+			"y": 350
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1619
 			}
 		]
 	}
