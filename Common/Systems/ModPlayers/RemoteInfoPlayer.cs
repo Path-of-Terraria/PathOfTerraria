@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Classing;
 using PathOfTerraria.Common.Systems.Synchronization;
 using System.IO;
+using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.ModPlayers;
 
@@ -73,6 +74,11 @@ internal class RemoteInfoPlayer : ModPlayer
 
 	public override void OnEnterWorld()
 	{
+		if (Main.netMode != NetmodeID.MultiplayerClient)
+		{
+			return;
+		}
+
 		RequestRemoteInfoHandler.Send();
 		SendRemoteInfoHandler.Send();
 	}
