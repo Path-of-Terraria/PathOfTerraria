@@ -82,6 +82,9 @@ MapIncreasedBehaviourAffix.Description: "{1}{0}% zwiększonej szybkości akcji p
 MapStealAegisChargeAffix.Description: Potwory kradną ładunek Egidy przy trafieniu
 MapStealFocusChargeAffix.Description: Potwory kradną ładunek Skupienia przy trafieniu
 MapStealHasteChargeAffix.Description: Potwory kradną ładunek Pośpiechu przy trafieniu
+// MapFireAddedDamageAffix.Description: Monsters deal {1}{0}% extra damage as fire
+// MapColdAddedDamageAffix.Description: Monsters deal {1}{0}% extra damage as cold
+// MapLightningAddedDamageAffix.Description: Monsters deal {1}{0}% extra damage as lightning
 ColdAffix.Prefix: Zamrażanie
 LightningAffix.Prefix: Wstrząsający
 FlamingAffix.Prefix: Ognisty

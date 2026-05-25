@@ -1,7 +1,7 @@
-﻿using PathOfTerraria.Common.Config;
+using PathOfTerraria.Common.Config;
 using PathOfTerraria.Common.Subworlds.Passes;
 using PathOfTerraria.Common.Systems.Affixes;
-using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Common.Systems.Affixes.Maps;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.DisableBuilding;
 using PathOfTerraria.Common.Systems.Synchronization;

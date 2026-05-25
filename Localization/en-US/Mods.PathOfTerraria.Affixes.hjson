@@ -82,6 +82,9 @@ MapIncreasedBehaviourAffix.Description: "{1}{0}% increased enemy behavior speed"
 MapStealAegisChargeAffix.Description: Monsters steal an Aegis Charge on hit
 MapStealFocusChargeAffix.Description: Monsters steal a Focus Charge on hit
 MapStealHasteChargeAffix.Description: Monsters steal a Haste Charge on hit
+MapFireAddedDamageAffix.Description: Monsters deal {1}{0}% extra damage as fire
+MapColdAddedDamageAffix.Description: Monsters deal {1}{0}% extra damage as cold
+MapLightningAddedDamageAffix.Description: Monsters deal {1}{0}% extra damage as lightning
 ColdAffix.Prefix: Freezing
 LightningAffix.Prefix: Shocking
 FlamingAffix.Prefix: Flaming
