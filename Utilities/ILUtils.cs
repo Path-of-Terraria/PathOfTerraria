@@ -87,4 +87,56 @@ internal static class ILUtils
 			}
 		});
 	}
+
+	/// <summary>
+	/// Creates an IL edit "detour" that, in two parts, works almost the same as a standard detour but doesn't bloat the call stack.<br/>
+	/// This overload takes no parameters.
+	/// </summary>
+	public static void EmitILDetour(MethodInfo hook, Action before, Action after)
+	{
+		MonoModHooks.Modify(hook, (context) =>
+		{
+			ILCursor c = new(context);
+
+			if (before != null)
+			{
+				c.EmitDelegate(before);
+			}
+
+			if (after != null)
+			{
+				Queue<int> indexes = [];
+
+				while (c.TryGotoNext(x => x.MatchRet()))
+				{
+					indexes.Enqueue(c.Index);
+				}
+
+				while (indexes.Count > 0)
+				{
+					c.Index = indexes.Dequeue();
+					c.EmitDelegate(after);
+				}
+			}
+		});
+	}
+
+	/// <summary>
+	/// Emits a hook before every return.
+	/// </summary>
+	public static void EmitPostHook(ILCursor c, Action emitDelegate)
+	{
+		Queue<int> indexes = [];
+
+		while (c.TryGotoNext(x => x.MatchRet()))
+		{
+			indexes.Enqueue(c.Index);
+		}
+
+		while (indexes.Count > 0)
+		{
+			c.Index = indexes.Dequeue();
+			emitDelegate();
+		}
+	}
 }
