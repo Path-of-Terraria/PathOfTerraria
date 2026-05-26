@@ -1,6 +1,7 @@
-﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Common.Systems.Affixes.Maps;
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Core.Items;
 using System.Collections.Generic;

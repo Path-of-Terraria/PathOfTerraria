@@ -24,6 +24,7 @@ public abstract class ItemAffix : Affix
 		ItemType itemType = item.ResolveToSingleType(instanceData.ItemType);
 		handler.AddOrModify(GetType(), CreateDefaultTooltip(player, itemType, instanceData.RealLevel));
 	}
+
 	/// <inheritdoc cref="ApplyTooltips(Player, Item, AffixTooltips)"/>
 	public virtual void ApplyTooltips(Player player, ItemType itemType, int itemLevel, AffixTooltips handler)
 	{
@@ -49,7 +50,7 @@ public abstract class ItemAffix : Affix
 
 		// PoTInstanceItemData itemData = item.GetInstanceData();
 		ItemAffixData.TierData tierData = data.Tiers[Tier];
-		
+
 		(int tierMin, int tierMax) = data.GetPossibleTierRange(itemLevel);
 
 		return new AffixTooltipLine
@@ -62,7 +63,7 @@ public abstract class ItemAffix : Affix
 			Implicit = IsImplicit,
 		};
 	}
-	
+
 	protected virtual AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
 	{
 		int level = GetItemLevel.Invoke(item);
@@ -72,23 +73,31 @@ public abstract class ItemAffix : Affix
 
 	/// <inheritdoc cref="AffixRegistry.GetItemData(Type)"/>
 	public IEnumerable<ItemAffixData> GetData() { return AffixRegistry.GetItemData(GetType()); }
+
 	/// <inheritdoc cref="AffixRegistry.GetItemData(Type, Item)"/>
 	public ItemAffixData GetData(Item item) { return AffixRegistry.GetItemData(GetType(), item); }
+
 	/// <inheritdoc cref="AffixRegistry.GetItemData(Type, ItemType)"/>
 	public ItemAffixData GetData(ItemType exactItemType) { return AffixRegistry.GetItemData(GetType(), exactItemType); }
 
 	/// <inheritdoc cref="AffixRegistry.TryGetItemData(Type)"/>
 	public IEnumerable<ItemAffixData>? TryGetData() { return AffixRegistry.TryGetItemData(GetType()); }
+
 	/// <inheritdoc cref="AffixRegistry.TryGetItemData(Type, Item)"/>
 	public ItemAffixData? TryGetData(Item item) { return AffixRegistry.TryGetItemData(GetType(), item); }
+
 	/// <inheritdoc cref="AffixRegistry.TryGetItemData(Type, ItemType)"/>
-	public ItemAffixData? TryGetData(ItemType exactItemType) { return AffixRegistry.TryGetItemData(GetType(), exactItemType); }
+	public ItemAffixData? TryGetData(ItemType exactItemType)
+	{
+		return AffixRegistry.TryGetItemData(GetType(), exactItemType);
+	}
 
 	public Influence GetRequiredInfluence(Item item)
 	{
 		const Influence Default = Influence.None;
 		return TryGetData(item)?.GetInfluences() ?? Default;
 	}
+
 	public ItemType GetPossibleTypes()
 	{
 		const ItemType Default = ItemType.None;

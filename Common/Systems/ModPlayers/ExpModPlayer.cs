@@ -80,6 +80,8 @@ public class ExpModPlayer : ModPlayer
 		_exp -= NextLevel;
 		Level++;
 
+		RemoteInfoPlayer.SendRemoteInfoHandler.Send();
+
 		if (Main.myPlayer == Player.whoAmI && !Main.dedServ) //Only use level up text and sounds on the local client, despite progress being otherwise synced
 		{
 			SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier5"));
