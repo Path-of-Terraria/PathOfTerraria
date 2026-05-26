@@ -1161,32 +1161,32 @@ ExtraStockMastery: {
 
 MoneySpeedMastery: {
 	Name: Haste of Avarice
-	Tooltip: Picking up a coin grants you increased movement for {0} seconds.
+	Tooltip: Picking up a coin grants you increased movement for {0} seconds
 }
 
 DangerMiningPassive: {
 	Name: Panic Digging
-	Tooltip: "{0}% increased mining speed when enemies are [mechanic/shift:Nearby]."
+	Tooltip: "{0}% increased mining speed when enemies are [mechanic/shift:Nearby]"
 }
 
 OneMinionArmyKeystone: {
 	Name: One Minion Army
-	Tooltip: You are limited to one maximum minion, but gain {0}% increased damage per maximum minion slot.
+	Tooltip: You are limited to one maximum minion, but gain {0}% increased damage per maximum minion slot
 }
 
 DirectShotKeystone: {
 	Name: Direct Shot
-	Tooltip: Your Projectiles deal up to +50% more Damage within 20 blocks, but deal up to 50% less Damage beyond 20 blocks.
+	Tooltip: Your Projectiles deal up to +50% more Damage within 20 blocks, but deal up to 50% less Damage beyond 20 blocks
 }
 
 BloodMagicKeystone: {
 	Name: Blood Magic
-	Tooltip: All of your mana costs become life costs. Gain {0}% of the damage done as life back on all damage, scaling with your max hp.
+	Tooltip: All of your mana costs become life costs. Gain {0}% of the damage done as life back on all damage, scaling with your max hp
 }
 
 CinderBastionMastery: {
 	Name: Cinder Bastion
-	Tooltip: Gain a 2% increase to Ignite damage per 10 maximum life. When moving, apply a {0}% max life Ignite to yourself.
+	Tooltip: Gain a 2% increase to Ignite damage per 10 maximum life. When moving, apply a {0}% max life Ignite to yourself
 }
 
 AddedChaosDamageConversionPassive: {
@@ -1242,4 +1242,19 @@ PinpointMastery: {
 ConflagrationMastery: {
 	Name: ConflagrationMastery
 	Tooltip: ""
+}
+
+EndlessFlowMastery: {
+	Name: Endless Flow
+	Tooltip: +{0}% increased [mechanic/shift:Duration]
+}
+
+MomentumMastery: {
+	Name: MomentumMastery
+	Tooltip: Every active buff on you grants you +{0}% increased damage. Every debuff grants +{0}% decreased damage
+}
+
+TemporalCompressionMastery: {
+	Name: Temporal Compression
+	Tooltip: +{0}% decreased [mechanic/shift:Duration]
 }
