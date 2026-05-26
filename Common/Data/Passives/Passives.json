@@ -11161,6 +11161,15 @@
 			},
 			{
 				"referenceId": 1347
+			},
+			{
+				"referenceId": 1808
+			},
+			{
+				"referenceId": 1809
+			},
+			{
+				"referenceId": 1810
 			}
 		]
 	},
@@ -14698,7 +14707,7 @@
 		"internalIdentifier": "IncreasedDurationPassive",
 		"referenceId": 1559,
 		"maxLevel": 1,
-		"value": 50,
+		"value": 10,
 		"position": {
 			"x": -2120,
 			"y": 300
@@ -14719,7 +14728,7 @@
 		"internalIdentifier": "IncreasedDurationPassive",
 		"referenceId": 1560,
 		"maxLevel": 1,
-		"value": 50,
+		"value": 10,
 		"position": {
 			"x": -1930,
 			"y": 300
@@ -14740,7 +14749,7 @@
 		"internalIdentifier": "DecreasedDurationPassive",
 		"referenceId": 1561,
 		"maxLevel": 1,
-		"value": 50,
+		"value": 10,
 		"position": {
 			"x": -2110,
 			"y": 610
@@ -14761,7 +14770,7 @@
 		"internalIdentifier": "DecreasedDurationPassive",
 		"referenceId": 1562,
 		"maxLevel": 1,
-		"value": 50,
+		"value": 10,
 		"position": {
 			"x": -1920,
 			"y": 600
@@ -15821,6 +15830,15 @@
 			},
 			{
 				"referenceId": 1560
+			},
+			{
+				"referenceId": 1814
+			},
+			{
+				"referenceId": 1815
+			},
+			{
+				"referenceId": 1816
 			}
 		],
 		"requiredAllocatedEdges": 2
@@ -17029,6 +17047,15 @@
 			},
 			{
 				"referenceId": 1666
+			},
+			{
+				"referenceId": 1811
+			},
+			{
+				"referenceId": 1812
+			},
+			{
+				"referenceId": 1813
 			}
 		]
 	},
@@ -19129,6 +19156,150 @@
 		"connections": [
 			{
 				"referenceId": 1619
+			}
+		]
+	},
+	{
+		"internalIdentifier": "TemporalCompressionMastery",
+		"referenceId": 1808,
+		"maxLevel": 1,
+		"value": 30,
+		"position": {
+			"x": 1630,
+			"y": -880
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1371
+			}
+		]
+	},
+	{
+		"internalIdentifier": "EndlessFlowMastery",
+		"referenceId": 1809,
+		"maxLevel": 1,
+		"value": 30,
+		"position": {
+			"x": 1690,
+			"y": -820
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1371
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MomentumMastery",
+		"referenceId": 1810,
+		"maxLevel": 1,
+		"value": 2,
+		"position": {
+			"x": 1630,
+			"y": -760
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1371
+			}
+		]
+	},
+	{
+		"internalIdentifier": "TemporalCompressionMastery",
+		"referenceId": 1811,
+		"maxLevel": 1,
+		"value": 30,
+		"position": {
+			"x": 1196,
+			"y": 1701
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1679
+			}
+		]
+	},
+	{
+		"internalIdentifier": "EndlessFlowMastery",
+		"referenceId": 1812,
+		"maxLevel": 1,
+		"value": 30,
+		"position": {
+			"x": 1183,
+			"y": 1784
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1679
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MomentumMastery",
+		"referenceId": 1813,
+		"maxLevel": 1,
+		"value": 2,
+		"position": {
+			"x": 1096,
+			"y": 1776
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1679
+			}
+		]
+	},
+	{
+		"internalIdentifier": "TemporalCompressionMastery",
+		"referenceId": 1814,
+		"maxLevel": 1,
+		"value": 30,
+		"position": {
+			"x": -2020,
+			"y": 530
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1618
+			}
+		]
+	},
+	{
+		"internalIdentifier": "EndlessFlowMastery",
+		"referenceId": 1815,
+		"maxLevel": 1,
+		"value": 30,
+		"position": {
+			"x": -2020,
+			"y": 370
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1618
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MomentumMastery",
+		"referenceId": 1816,
+		"maxLevel": 1,
+		"value": 2,
+		"position": {
+			"x": -1930,
+			"y": 450
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1618
 			}
 		]
 	}
