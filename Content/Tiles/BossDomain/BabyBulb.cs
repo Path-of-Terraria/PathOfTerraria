@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
+using PathOfTerraria.Common.Systems.Visuals;
 using PathOfTerraria.Content.NPCs.BossDomain.PlantDomain;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -6,8 +7,10 @@ using Terraria.ObjectData;
 
 namespace PathOfTerraria.Content.Tiles.BossDomain;
 
-internal class BabyBulb : ModTile
+internal class BabyBulb : ModTile, ISpecialGlowTile
 {
+	public Color GlowColor => new(170, 255, 90);
+
 	public override void SetStaticDefaults()
 	{
 		Main.tileCut[Type] = true;

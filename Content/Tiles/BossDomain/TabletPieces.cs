@@ -1,12 +1,15 @@
 ﻿using PathOfTerraria.Content.Items.BossDomain;
+using PathOfTerraria.Common.Systems.Visuals;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ObjectData;
 
 namespace PathOfTerraria.Content.Tiles.BossDomain;
 
-internal class TabletPieces : ModTile
+internal class TabletPieces : ModTile, ISpecialGlowTile
 {
+	public Color GlowColor => new(255, 210, 130);
+
 	public override void SetStaticDefaults()
 	{
 		Main.tileFrameImportant[Type] = true;
