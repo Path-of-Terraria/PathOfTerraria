@@ -22,7 +22,7 @@ internal sealed class ItemFilterUIState : UIState, IMutuallyExclusiveUI, IAutopa
 
 	private static readonly ItemRarity[] AllRarities = [ItemRarity.Normal, ItemRarity.Magic, ItemRarity.Rare, ItemRarity.Unique];
 	private static readonly ItemType[] AllBaseTypes = CreateSingleBaseTypes();
-	private static readonly ItemType AllBaseTypesMask = CreateAllBaseTypesMask();
+	private static readonly ItemType AllBaseTypesMask = ItemType.All;
 
 	private UIList _filterList;
 	private UIList _ruleList;
@@ -672,18 +672,6 @@ internal sealed class ItemFilterUIState : UIState, IMutuallyExclusiveUI, IAutopa
 		}
 
 		return [.. result];
-	}
-
-	private static ItemType CreateAllBaseTypesMask()
-	{
-		ItemType result = ItemType.None;
-
-		foreach (ItemType type in AllBaseTypes)
-		{
-			result |= type;
-		}
-
-		return result;
 	}
 
 	private static LocalizedText LanguageHelperLocalizeBaseType(ItemType type)

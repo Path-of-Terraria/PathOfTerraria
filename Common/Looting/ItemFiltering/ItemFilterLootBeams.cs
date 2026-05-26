@@ -7,90 +7,22 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Common.Looting.ItemFiltering;
 
-internal struct ItemFilterLootBeamData
-{
-	public int Type;
-	public float FadeIn;
-	public int TimeSinceSpawn;
-	public bool Initialized;
-	public bool HighlightedThisFrame;
-}
-
-internal sealed class ItemFilterLootBeamSystem : ModSystem
-{
-	public static ItemFilterLootBeamData[] DataByIndex = [];
-
-	public static void Init()
-	{
-		DataByIndex = new ItemFilterLootBeamData[Main.maxItems];
-	}
-
-	public override void Load()
-	{
-		Init();
-	}
-
-	public override void Unload()
-	{
-		DataByIndex = [];
-	}
-
-	public override void PostUpdateItems()
-	{
-		if (DataByIndex.Length < Main.maxItems)
-		{
-			Array.Resize(ref DataByIndex, Main.maxItems);
-		}
-
-		for (int i = 0; i < Main.maxItems; i++)
-		{
-			Item item = Main.item[i];
-			ref ItemFilterLootBeamData data = ref DataByIndex[i];
-
-			if (!item.active)
-			{
-				if (data.Type > ItemID.None)
-				{
-					data = new ItemFilterLootBeamData();
-				}
-
-				continue;
-			}
-
-			if (item.type <= ItemID.None || data.Type == item.type)
-			{
-				continue;
-			}
-
-			data = new ItemFilterLootBeamData
-			{
-				Type = item.type,
-				Initialized = true
-			};
-		}
-	}
-}
-
-internal sealed class ItemFilterLootBeamPlayer : ModPlayer
-{
-	public override void OnEnterWorld()
-	{
-		if (Main.myPlayer == Player.whoAmI)
-		{
-			ItemFilterLootBeamSystem.Init();
-		}
-	}
-}
-
 internal sealed class ItemFilterLootBeamGlobalItem : GlobalItem
 {
-	private const float BeamScale = 0.75f;
-	private const float GlowScale = 0.75f;
-	private const float FlashScale = 5f;
+	private const float BeamScale = 0.8f;
+	private const float GroundScale = 0.72f;
+	private const float FlashScale = 3.75f;
 
 	private static Asset<Texture2D> BeamTexture = null!;
 	private static Asset<Texture2D> CenterGlowTexture = null!;
 	private static Asset<Texture2D> SimpleGlowTexture = null!;
+
+	private int _trackedType = ItemID.None;
+	private float _fadeIn;
+	private int _animationTimer;
+	private bool _highlightedThisFrame;
+
+	public override bool InstancePerEntity => true;
 
 	public override bool AppliesToEntity(Item entity, bool lateInstantiation)
 	{
@@ -118,119 +50,122 @@ internal sealed class ItemFilterLootBeamGlobalItem : GlobalItem
 
 	public override bool PreDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
 	{
-		if (Main.netMode == NetmodeID.Server || !ModContent.GetInstance<UIConfig>().ShowLootBeams ||
-		    item is null || item.IsAir || !TryGetHighlightColor(item, out Color beamColor))
+		if (!CanDrawLootBeam(item, out Color beamColor))
 		{
 			return base.PreDrawInWorld(item, spriteBatch, lightColor, alphaColor, ref rotation, ref scale, whoAmI);
 		}
 
-		ref ItemFilterLootBeamData data = ref EnsureData(item, whoAmI);
-		data.HighlightedThisFrame = true;
+		ResetVisualStateIfNeeded(item);
+		_highlightedThisFrame = true;
 
 		Texture2D itemTexture = TextureAssets.Item[item.type].Value;
-		int itemFrameHeight = itemTexture.Height;
+		int itemFrameHeight = GetItemFrameHeight(item, itemTexture);
+		Vector2 ground = new(item.Center.X - Main.screenPosition.X, item.Hitbox.Bottom - Main.screenPosition.Y);
+		Vector2 itemCenter = ground - new Vector2(0f, itemFrameHeight * 0.5f);
+		float time = _animationTimer / 60f;
+		float breath = 0.92f + 0.08f * MathF.Sin(time * MathHelper.TwoPi);
+		float fade = _fadeIn;
+		Color beamColorWithFade = beamColor * fade;
 
-		if (Main.itemAnimationsRegistered.Contains(item.type) && Main.itemAnimations[item.type].FrameCount > 1)
-		{
-			itemFrameHeight /= Main.itemAnimations[item.type].FrameCount;
-		}
+		DrawVerticalSignal(spriteBatch, ground, beamColorWithFade, breath);
+		DrawGroundFlare(spriteBatch, ground, beamColorWithFade, breath, fade);
+		DrawItemHalo(spriteBatch, itemTexture, itemFrameHeight, itemCenter, beamColorWithFade, time);
 
-		float pulse = Utils.Clamp(((float)Math.Sin(MathHelper.ToRadians(data.TimeSinceSpawn * 2)) + 1f) * 0.5f, 0f, 1f);
-		float fade = data.FadeIn;
-		float flashGlowScale = GlowScale * (FlashScale - fade * (FlashScale - 1f));
-		Vector2 screenCenter = new(item.Center.X - Main.screenPosition.X, item.Hitbox.Bottom - Main.screenPosition.Y);
-		Vector2 glowPosition = screenCenter - new Vector2(0, itemFrameHeight * 0.5f);
-		Color drawColor = beamColor * fade * (0.75f + pulse * 0.25f);
-
-		spriteBatch.Draw(
-			BeamTexture.Value,
-			screenCenter - new Vector2(0, itemFrameHeight * 0.5f + 56f * BeamScale),
-			null,
-			drawColor,
-			0f,
-			BeamTexture.Value.Size() * 0.5f,
-			BeamScale,
-			SpriteEffects.None,
-			0f);
-
-		spriteBatch.Draw(
-			CenterGlowTexture.Value,
-			glowPosition,
-			null,
-			drawColor,
-			0f,
-			CenterGlowTexture.Value.Size() * 0.5f,
-			flashGlowScale,
-			SpriteEffects.None,
-			0f);
-
-		float itemSizeFactor = Utils.Clamp((itemTexture.Width / 16f + itemFrameHeight / 16f) * 0.5f, 0.25f, 5f);
-		float simpleGlowScale = (0.3f + pulse * 0.05f * itemSizeFactor) * GlowScale;
-
-		spriteBatch.Draw(
-			SimpleGlowTexture.Value,
-			glowPosition,
-			null,
-			beamColor * fade * (0.5f + pulse * 0.5f),
-			0f,
-			SimpleGlowTexture.Value.Size() * 0.5f,
-			simpleGlowScale,
-			SpriteEffects.None,
-			0f);
-
-		data.FadeIn = Utils.Clamp(data.FadeIn + 0.025f / Math.Max((float)Main.frameRate / 60f, 0.017f), 0f, 1f);
+		_fadeIn = Utils.Clamp(_fadeIn + FrameAdjustedStep(0.035f), 0f, 1f);
 
 		return base.PreDrawInWorld(item, spriteBatch, lightColor, alphaColor, ref rotation, ref scale, whoAmI);
 	}
 
 	public override bool GrabStyle(Item item, Player player)
 	{
-		if (item.whoAmI >= 0 && item.whoAmI < ItemFilterLootBeamSystem.DataByIndex.Length)
-		{
-			ref ItemFilterLootBeamData data = ref ItemFilterLootBeamSystem.DataByIndex[item.whoAmI];
-			data.FadeIn = Utils.Clamp(data.FadeIn - 0.125f / Math.Max((float)Main.frameRate / 60f, 0.017f), 0f, 1f);
-		}
-
+		_fadeIn = Utils.Clamp(_fadeIn - FrameAdjustedStep(0.16f), 0f, 1f);
 		return base.GrabStyle(item, player);
 	}
 
 	public override void PostDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
 	{
-		if (whoAmI < 0 || whoAmI >= ItemFilterLootBeamSystem.DataByIndex.Length)
+		if (!_highlightedThisFrame)
 		{
 			return;
 		}
 
-		ref ItemFilterLootBeamData data = ref ItemFilterLootBeamSystem.DataByIndex[whoAmI];
-
-		if (!data.HighlightedThisFrame)
-		{
-			return;
-		}
-
-		data.TimeSinceSpawn++;
-		data.HighlightedThisFrame = false;
+		_animationTimer++;
+		_highlightedThisFrame = false;
 	}
 
-	private static ref ItemFilterLootBeamData EnsureData(Item item, int whoAmI)
+	private static bool CanDrawLootBeam(Item item, out Color beamColor)
 	{
-		if (whoAmI >= ItemFilterLootBeamSystem.DataByIndex.Length)
+		beamColor = Color.White;
+
+		return Main.netMode != NetmodeID.Server &&
+		       ModContent.GetInstance<UIConfig>().ShowLootBeams &&
+		       item is not null &&
+		       !item.IsAir &&
+		       TryGetHighlightColor(item, out beamColor);
+	}
+
+	private void ResetVisualStateIfNeeded(Item item)
+	{
+		if (_trackedType == item.type)
 		{
-			Array.Resize(ref ItemFilterLootBeamSystem.DataByIndex, whoAmI + 1);
+			return;
 		}
 
-		ref ItemFilterLootBeamData data = ref ItemFilterLootBeamSystem.DataByIndex[whoAmI];
+		_trackedType = item.type;
+		_fadeIn = 0f;
+		_animationTimer = 0;
+		_highlightedThisFrame = false;
+	}
 
-		if (!data.Initialized || data.Type != item.type)
+	private static int GetItemFrameHeight(Item item, Texture2D itemTexture)
+	{
+		if (Main.itemAnimationsRegistered.Contains(item.type) && Main.itemAnimations[item.type].FrameCount > 1)
 		{
-			data = new ItemFilterLootBeamData
-			{
-				Type = item.type,
-				Initialized = true
-			};
+			return itemTexture.Height / Main.itemAnimations[item.type].FrameCount;
 		}
 
-		return ref data;
+		return itemTexture.Height;
+	}
+
+	private static void DrawVerticalSignal(SpriteBatch spriteBatch, Vector2 ground, Color color, float breath)
+	{
+		Vector2 center = ground - new Vector2(0f, 70f * BeamScale);
+		Texture2D texture = BeamTexture.Value;
+		Vector2 origin = texture.Size() * 0.5f;
+
+		spriteBatch.Draw(texture, center, null, color * 0.72f, 0f, origin, new Vector2(BeamScale * breath, BeamScale), SpriteEffects.None, 0f);
+		spriteBatch.Draw(texture, center, null, color * 0.34f, 0f, origin, new Vector2(BeamScale * 1.7f, BeamScale), SpriteEffects.FlipHorizontally, 0f);
+	}
+
+	private static void DrawGroundFlare(SpriteBatch spriteBatch, Vector2 ground, Color color, float breath, float fade)
+	{
+		Texture2D texture = CenterGlowTexture.Value;
+		Vector2 origin = texture.Size() * 0.5f;
+		float arrivalFlash = GroundScale * (FlashScale - fade * (FlashScale - 1f));
+
+		spriteBatch.Draw(texture, ground + new Vector2(0f, 2f), null, color * 0.48f, 0f, origin, GroundScale * (1.1f + (1f - breath) * 0.4f), SpriteEffects.None, 0f);
+		spriteBatch.Draw(texture, ground + new Vector2(0f, 2f), null, color * 0.22f, MathHelper.PiOver4, origin, arrivalFlash, SpriteEffects.None, 0f);
+	}
+
+	private static void DrawItemHalo(SpriteBatch spriteBatch, Texture2D itemTexture, int itemFrameHeight, Vector2 itemCenter, Color color, float time)
+	{
+		float itemSizeFactor = Utils.Clamp((itemTexture.Width + itemFrameHeight) / 40f, 0.45f, 3f);
+		Texture2D texture = SimpleGlowTexture.Value;
+		Vector2 origin = texture.Size() * 0.5f;
+
+		spriteBatch.Draw(texture, itemCenter, null, color * 0.55f, 0f, origin, 0.22f * itemSizeFactor, SpriteEffects.None, 0f);
+
+		for (int i = 0; i < 3; i++)
+		{
+			float angle = time * 1.8f + i * MathHelper.TwoPi / 3f;
+			Vector2 offset = angle.ToRotationVector2() * (4f + itemSizeFactor * 1.5f);
+			spriteBatch.Draw(texture, itemCenter + offset, null, color * 0.18f, 0f, origin, 0.07f * itemSizeFactor, SpriteEffects.None, 0f);
+		}
+	}
+
+	private static float FrameAdjustedStep(float amount)
+	{
+		return amount / Math.Max((float)Main.frameRate / 60f, 0.017f);
 	}
 
 	private static bool TryGetHighlightColor(Item item, out Color color)

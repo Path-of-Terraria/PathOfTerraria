@@ -161,8 +161,6 @@ public sealed class ItemFilterRule
 	public HashSet<ItemRarity> Rarities { get; } = [];
 	public ItemType BaseTypes { get; set; } = ItemType.None;
 
-	public ItemFilterRulePresentation Presentation { get; } = new();
-
 	public bool RequiresPoTData =>
 		MinItemLevel is not null || MaxItemLevel is not null || Rarities.Count > 0 || BaseTypes != ItemType.None;
 
@@ -243,7 +241,6 @@ public sealed class ItemFilterRule
 			copy.Rarities.Add(rarity);
 		}
 
-		copy.Presentation.CopyFrom(Presentation);
 		return copy;
 	}
 
@@ -254,8 +251,7 @@ public sealed class ItemFilterRule
 			["name"] = Name,
 			["action"] = (byte)Action,
 			["baseTypes"] = (long)BaseTypes,
-			["rarities"] = (int[])[.. Rarities.Select(r => (int)r)],
-			["presentation"] = Presentation.Save()
+			["rarities"] = (int[])[.. Rarities.Select(r => (int)r)]
 		};
 
 		if (MinItemLevel is { } min)
@@ -298,11 +294,6 @@ public sealed class ItemFilterRule
 			}
 		}
 
-		if (tag.TryGet("presentation", out TagCompound presentation))
-		{
-			rule.Presentation.CopyFrom(ItemFilterRulePresentation.Load(presentation));
-		}
-
 		return rule;
 	}
 
@@ -319,8 +310,6 @@ public sealed class ItemFilterRule
 		{
 			writer.Write((sbyte)rarity);
 		}
-
-		Presentation.NetSend(writer);
 	}
 
 	public static ItemFilterRule NetReceive(BinaryReader reader)
@@ -344,38 +333,7 @@ public sealed class ItemFilterRule
 			rule.Rarities.Add((ItemRarity)reader.ReadSByte());
 		}
 
-		rule.Presentation.CopyFrom(ItemFilterRulePresentation.NetReceive(reader));
 		return rule;
-	}
-}
-
-/// <summary>
-///		Reserved per-rule presentation data. The filter evaluation returns the matched rule so future
-///		loot beams, label colors, and audio cues can be applied without changing rule matching again.
-/// </summary>
-public sealed class ItemFilterRulePresentation
-{
-	public void CopyFrom(ItemFilterRulePresentation other)
-	{
-	}
-
-	public TagCompound Save()
-	{
-		return new TagCompound();
-	}
-
-	public static ItemFilterRulePresentation Load(TagCompound tag)
-	{
-		return new ItemFilterRulePresentation();
-	}
-
-	public void NetSend(BinaryWriter writer)
-	{
-	}
-
-	public static ItemFilterRulePresentation NetReceive(BinaryReader reader)
-	{
-		return new ItemFilterRulePresentation();
 	}
 }
 
