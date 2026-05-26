@@ -5,7 +5,7 @@ namespace PathOfTerraria.Common.Systems.VanillaModifications;
 
 internal sealed class ManaRegenRework : ModSystem
 {
-	private const float BaseManaRegenMultiplier = 0.1f;
+	private const float BaseManaRegenMultiplier = 0.05f;
 	private const int MinimumBaseManaRegen = 1;
 	private const int TicksPerSecond = 60;
 	private const int VanillaManaRegenCountPerMana = 120;
