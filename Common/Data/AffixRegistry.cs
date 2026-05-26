@@ -10,6 +10,7 @@ using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Common.Systems.EnergyShield;
+using PathOfTerraria.Common.Systems.Affixes.Maps;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Utilities;
 using Terraria.ModLoader.Core;
@@ -182,7 +183,7 @@ public class AffixRegistry : ILoadable
 	internal static ItemAffix ConvertToItemAffix(ItemAffixData affixData)
 	{
 		string typeName = $"{PoTMod.ModName}.Common.Systems.Affixes.ItemTypes.{affixData.AffixType}";
-		var affixType = Type.GetType(typeName);
+		var affixType = Type.GetType(typeName) ?? Type.GetType($"{PoTMod.ModName}.Common.Systems.Affixes.Maps.{affixData.AffixType}");
 
 		if (affixType == null || !typeof(ItemAffix).IsAssignableFrom(affixType))
 		{

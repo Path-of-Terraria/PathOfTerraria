@@ -17,7 +17,7 @@ public class ItemAffixData
 		public float Weight { get; set; }
 
 		/// <summary>
-		/// Used exclusively for <see cref="Systems.Affixes.ItemTypes.MapAffix"/>es.
+		/// Used exclusively for <see cref="Systems.Affixes.Maps.MapAffix"/>es.
 		/// </summary>
 		public float Strength { get; set; }
 
