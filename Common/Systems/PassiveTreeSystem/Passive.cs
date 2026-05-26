@@ -3,7 +3,6 @@ using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Content.Passives;
 using PathOfTerraria.Content.Passives.Misc;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using Terraria.Localization;
 using Terraria.ModLoader.Core;
 
@@ -137,27 +136,7 @@ public abstract class Passive : Allocatable, ILoadable
 			Level < MaxLevel &&
 			this is not AnchorPassive &&
 			Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().Points > 0 &&
-			CountRequiredEdges(CollectionsMarshal.AsSpan(passivePlayer.Edges));
-	}
-
-	private bool CountRequiredEdges(Span<Edge<Allocatable>> edges)
-	{
-		int count = 0;
-
-		foreach (Edge<Allocatable> edge in edges)
-		{
-			if (edge.Contains(this) && edge.Other(this).Level > 0)
-			{
-				count++;
-
-				if (count >= RequiredAllocatedEdges)
-				{
-					return true;
-				}
-			}
-		}
-
-		return false;
+			passivePlayer.HasRequiredAllocatedEdges(this);
 	}
 
 	/// <summary>

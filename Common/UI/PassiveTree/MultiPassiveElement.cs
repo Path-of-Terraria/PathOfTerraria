@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Linq;
+﻿using System.Linq;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using Terraria.UI;
@@ -99,28 +98,35 @@ internal class MultiPassiveElement : PassiveElement
 		DrawSelf(spriteBatch);
 	}
 
+	/// <summary>
+	/// Checks if a mastery with the same internal identifier is already allocated elsewhere on the tree.
+	/// </summary>
+	public bool IsMasteryTypeAlreadyAllocated(string masteryIdentifier)
+	{
+		Player player = Main.LocalPlayer;
+		PassiveTreePlayer passiveTreePlayer = player.GetModPlayer<PassiveTreePlayer>();
+		
+		return passiveTreePlayer.ActiveNodes
+			.Where(passive => passive.Level > 0 && passive.Name == masteryIdentifier)
+			.Any();
+	}
+
 	public override void SafeClick(UIMouseEvent evt)
 	{
 		Player player = Main.LocalPlayer;
 
 		if (evt?.Target is PassiveRadialElement radial && ActivePassive == null && Passive.CanAllocate(player))
 		{
-			bool canAllocateInner;
-			try
+			// Check if this mastery type is already allocated elsewhere
+			if (IsMasteryTypeAlreadyAllocated(radial.Passive.Name))
 			{
-				Passive.Level++;
-				canAllocateInner = radial.Passive.CanAllocate(player);
-			}
-			finally
-			{
-				Passive.Level--;
+				// TODO: Some kind of feedback here maybe?
+				return;
 			}
 
-			if (canAllocateInner)
-			{
-				Allocate(Passive, usedCost: 0);
-				Allocate(radial.Passive, usedCost: 1);
-			}
+			// Skip the inner CanAllocate check for masteries - if the hub can be allocated, the inner can too
+			Allocate(Passive, usedCost: 0);
+			Allocate(radial.Passive, usedCost: 1);
 		}
 	}
 
@@ -217,7 +223,19 @@ internal class PassiveRadialElement : PassiveElement
 
 	public override bool AppearsAsCanBeAllocated(Allocatable? nodeOverride = null)
 	{
-		return Handler?.AppearsAsCanBeAllocated(Handler.Node) == true;
+		bool canHandlerBeAllocated = Handler?.AppearsAsCanBeAllocated(Handler.Node) == true;
+		if (!canHandlerBeAllocated)
+		{
+			return false;
+		}
+
+		// Check if this specific mastery type is already allocated elsewhere
+		if (Handler != null && Handler.IsMasteryTypeAlreadyAllocated(Passive.Name))
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 	public override void DrawHoverTooltip(Allocatable node)
@@ -225,13 +243,54 @@ internal class PassiveRadialElement : PassiveElement
 		// Prevent tooltip overlaps as the radials appear.
 		if (Progress >= 0.25f)
 		{
-			base.DrawHoverTooltip(node);
+			// Check if this mastery is already allocated and show appropriate tooltip
+			if (Handler != null && Handler.IsMasteryTypeAlreadyAllocated(node.Name))
+			{
+				string name = node.DisplayName + " (Already Allocated)";
+				string subtitle = "[c/FF6666:This mastery is already allocated elsewhere on the tree.]";
+				
+				Tooltip.Create(new TooltipDescription
+				{
+					Identifier = GetType().Name,
+					SimpleTitle = name,
+					SimpleSubtitle = subtitle,
+				});
+			}
+			else
+			{
+				base.DrawHoverTooltip(node);
+			}
 		}
 	}
 
-	public override void Draw(SpriteBatch spriteBatch)
+	public override void DrawNode(Allocatable node, SpriteBatch spriteBatch, Vector2 center, float scale = 1f)
 	{
-		base.Draw(spriteBatch);
+		Texture2D tex = node.Texture.Value;
+		Color color = Color.Gray;
+
+		if (AppearsAsCanBeAllocated(node))
+		{
+			color = Color.Lerp(Color.Gray, Color.White, (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.5f + 0.5f);
+		}
+
+		if (AppearsAsAllocated(node))
+		{
+			color = Color.White;
+		}
+
+		// Dim the color if this mastery type is already allocated elsewhere
+		if (Handler != null && Handler.IsMasteryTypeAlreadyAllocated(node.Name))
+		{
+			color = Color.Gray * 0.4f;
+		}
+
+		center = center.Floor();
+		spriteBatch.Draw(tex, center, null, color, 0, node.Size * 0.5f, scale, 0, 0);
+		
+		if (node.MaxLevel > 1)
+		{
+			Utils.DrawBorderString(spriteBatch, $"{node.Level}/{node.MaxLevel}", center + node.Size * 0.5f * scale, color, scale, 0.5f, 0.5f);
+		}
 	}
 
 	public override void SafeClick(UIMouseEvent evt)

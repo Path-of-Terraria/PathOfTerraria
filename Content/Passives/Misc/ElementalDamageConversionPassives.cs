@@ -32,3 +32,13 @@ internal class AddedLightningDamageConversionPassive : Passive
 		self = self.AddModifiers(null, Value / 100f);
 	}
 }
+
+internal class AddedChaosDamageConversionPassive : Passive
+{
+	public override void BuffPlayer(Player player)
+	{
+		ElementalPlayer elemental = player.GetModPlayer<ElementalPlayer>();
+		ref ElementalDamage self = ref elemental.Container[ElementType.Chaos].DamageModifier;
+		self = self.AddModifiers(null, (Value / 100f));
+	}
+}

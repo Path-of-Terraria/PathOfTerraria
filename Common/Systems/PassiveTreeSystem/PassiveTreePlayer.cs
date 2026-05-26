@@ -31,6 +31,8 @@ public class PassiveTreePlayer : ModPlayer
 	public float[] StrengthByPassive = new float[Passive.MaxId];
 	public List<Passive> ActiveNodes = [];
 	internal List<Edge<Allocatable>> Edges = [];
+	private readonly Dictionary<Allocatable, int> _allocatedEdgeCounts = [];
+	private ulong _edgeCountCacheFrame = ulong.MaxValue;
 
 	private TagCompound _saveData = [];
 
@@ -112,6 +114,7 @@ public class PassiveTreePlayer : ModPlayer
 			}
 		}
 
+		InvalidateEdgeCountCache();
 		// PruneDisconnectedNodes(setStrengths);
 	}
 
@@ -119,6 +122,8 @@ public class PassiveTreePlayer : ModPlayer
 	{
 		ActiveNodes = [];
 		Edges = [];
+		_allocatedEdgeCounts.Clear();
+		_edgeCountCacheFrame = ulong.MaxValue;
 
 		Dictionary<int, Passive> passives = [];
 		List<PassiveData> data = PassiveRegistry.GetPassiveData();
@@ -433,6 +438,7 @@ public class PassiveTreePlayer : ModPlayer
 	{
 		if (passive is MasteryPassive) // Hardcode for this, which doesn't work the same as any other passive
 		{
+			InvalidateEdgeCountCache(); 
 			return;
 		}
 
@@ -446,6 +452,8 @@ public class PassiveTreePlayer : ModPlayer
 		{
 			SaveData([]); // Instantly save the result because _saveData is needed whenever the element reloads - same in DeallocatePassive
 		}
+
+		InvalidateEdgeCountCache();
 	}
 
 	internal void DeallocatePassive(Passive passive, float valueLoss, int pointRefund, bool save = true)
@@ -479,6 +487,63 @@ public class PassiveTreePlayer : ModPlayer
 		{
 			SaveData([]);
 		}
+
+		InvalidateEdgeCountCache();
+	}
+
+	internal bool HasRequiredAllocatedEdges(Allocatable allocatable)
+	{
+		UpdateAllocatedEdgeCounts();
+		return _allocatedEdgeCounts.TryGetValue(allocatable, out int count) && count >= allocatable.RequiredAllocatedEdges;
+	}
+
+	private void UpdateAllocatedEdgeCounts()
+	{
+		ulong frame = Main.GameUpdateCount;
+		if (_edgeCountCacheFrame == frame)
+		{
+			return;
+		}
+
+		_edgeCountCacheFrame = frame;
+		_allocatedEdgeCounts.Clear();
+
+		foreach (Edge<Allocatable> edge in Edges)
+		{
+			Allocatable start = edge.Start;
+			Allocatable end = edge.End;
+
+			if (start == null || end == null)
+			{
+				continue;
+			}
+
+			if (start.Level > 0)
+			{
+				IncrementAllocatedEdgeCount(end);
+			}
+
+			if (end.Level > 0)
+			{
+				IncrementAllocatedEdgeCount(start);
+			}
+		}
+	}
+
+	private void IncrementAllocatedEdgeCount(Allocatable allocatable)
+	{
+		if (_allocatedEdgeCounts.TryGetValue(allocatable, out int count))
+		{
+			_allocatedEdgeCounts[allocatable] = count + 1;
+			return;
+		}
+
+		_allocatedEdgeCounts[allocatable] = 1;
+	}
+
+	private void InvalidateEdgeCountCache()
+	{
+		_edgeCountCacheFrame = ulong.MaxValue;
 	}
 
 	private void EnsureStrengthCapacity(int id)

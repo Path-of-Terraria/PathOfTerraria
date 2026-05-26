@@ -416,6 +416,7 @@ CurrencyPouch: {
 }
 
 // PassiveTreeTab: Passives
+// PassiveTreeSearchPlaceholder: Search passives...
 // MasteryRequiredNodes: Requires {0} connected nodes to allocate
 // SkillTreeTab: Skills
 // QuestsAvailableTab: Available
