@@ -54,7 +54,7 @@ public abstract class ForegroundParticle : IParticle
     /// </summary>
     public Color Color = Color.White;
 
-    public virtual void Update()
+	public virtual void Update()
     {
         Position += Velocity;
     }
