@@ -60,7 +60,7 @@ internal class SkillCombatPlayer : ModPlayer
 
 	public override void SetControls()
 	{
-		if (Main.myPlayer != Player.whoAmI || Main.playerInventory)
+		if (Main.playerInventory)
 		{
 			return;
 		}
@@ -137,6 +137,9 @@ internal class SkillCombatPlayer : ModPlayer
 			return true;
 		}
 
+		// Skill keys intentionally share defaults with vanilla hotbar keys. When the
+		// vanilla hotbar trigger consumes that shared key, read the keyboard edge
+		// directly so combat-mode skill input still fires.
 		foreach (string assignedKey in keybind.GetAssignedKeys(InputMode.Keyboard))
 		{
 			if (!TryParseKeyboardKey(assignedKey, out Keys key))
@@ -155,7 +158,7 @@ internal class SkillCombatPlayer : ModPlayer
 
 	private static bool TryParseKeyboardKey(string assignedKey, out Keys key)
 	{
-		// Handle single-digit bindings ("3") before the generic parse — Enum.TryParse("3")
+		// Handle single-digit bindings ("3") before the generic parse; Enum.TryParse("3")
 		// otherwise succeeds with the integer-valued Keys.Cancel (3) instead of Keys.D3 (51).
 		if (assignedKey.Length == 1 && char.IsDigit(assignedKey[0]))
 		{

@@ -193,9 +193,10 @@ Guide: {
 	7:
 		'''
 		Next up, the hotbar has changed substantially as well.
-		You'll see that when the first hotbar slot is selected, the hotbar is in Combat mode.
-		It shows your skills, weapon and potions. 
-		When off of the first slot, Normal mode is shown, showing the rest of your hotbar normally.
+		When the first hotbar slot is selected, the hotbar is in Combat mode. It shows your skills, weapon, and potions.
+		Slots 2-10 are Building mode, showing the rest of your hotbar normally.
+		These modes are intentionally separate: the mouse wheel stays inside the current mode, and combat skill keys still use skills instead of selecting building slots.
+		Use the hotbar keys to swap between Combat mode and Building mode when needed.
 		Hit the "Next" button when ready.
 		'''
 	# Explain inventory pt2, hotswapping
