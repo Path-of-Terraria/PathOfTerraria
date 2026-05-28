@@ -91,7 +91,7 @@
 	},
 	{
 		"affixType": "BaseLifeAffix",
-		"equipTypes": "Armor Shield",
+		"equipTypes": "Armor Shield Ring Amulet",
 		"tiers": [
 			{
 				"minValue": 1,
@@ -296,7 +296,7 @@
 	},
 	{
 		"affixType": "ManaAffix",
-		"equipTypes": "Armor Talisman",
+		"equipTypes": "Armor Talisman Ring Amulet",
 		"tiers": [
 			{
 				"minValue": 1,
@@ -329,26 +329,26 @@
 		"equipTypes": "Armor Talisman",
 		"tiers": [
 			{
-				"minValue": 1,
-				"maxValue": 4,
+				"minValue": 10,
+				"maxValue": 18,
 				"minimumLevel": 1,
 				"weight": 1
 			},
 			{
-				"minValue": 5,
-				"maxValue": 8,
+				"minValue": 19,
+				"maxValue": 28,
 				"minimumLevel": 21,
 				"weight": 1
 			},
 			{
-				"minValue": 9,
-				"maxValue": 12,
+				"minValue": 30,
+				"maxValue": 40,
 				"minimumLevel": 52,
 				"weight": 1
 			},
 			{
-				"minValue": 13,
-				"maxValue": 16,
+				"minValue": 45,
+				"maxValue": 60,
 				"minimumLevel": 73,
 				"weight": 1
 			}
@@ -469,6 +469,130 @@
 			{
 				"minValue": 13,
 				"maxValue": 16,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "MaximumEnergyShieldAffix",
+		"equipTypes": "Armor Ring Amulet",
+		"requiresEnergyShieldItem": true,
+		"tiers": [
+			{
+				"minValue": 3,
+				"maxValue": 8,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 9,
+				"maxValue": 16,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 17,
+				"maxValue": 26,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 27,
+				"maxValue": 38,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "IncreasedEnergyShieldAffix",
+		"equipTypes": "Armor Ring Amulet",
+		"requiresEnergyShieldItem": true,
+		"tiers": [
+			{
+				"minValue": 5,
+				"maxValue": 10,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 11,
+				"maxValue": 18,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 19,
+				"maxValue": 28,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 29,
+				"maxValue": 40,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "EnergyShieldRechargeRateAffix",
+		"equipTypes": "Armor Ring Amulet",
+		"requiresEnergyShieldItem": true,
+		"tiers": [
+			{
+				"minValue": 5,
+				"maxValue": 10,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 11,
+				"maxValue": 18,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 19,
+				"maxValue": 28,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 29,
+				"maxValue": 40,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "FasterEnergyShieldRechargeStartAffix",
+		"equipTypes": "Armor Ring Amulet",
+		"requiresEnergyShieldItem": true,
+		"tiers": [
+			{
+				"minValue": 5,
+				"maxValue": 10,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 11,
+				"maxValue": 16,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 17,
+				"maxValue": 24,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 25,
+				"maxValue": 32,
 				"minimumLevel": 73,
 				"weight": 1
 			}

@@ -20,6 +20,10 @@ ManaRegenAffix.Description: "{1}{0}% régénération de mana"
 ManaPotionPowerAffix.Description: "{1}{0}% potions de mana plus puissantes"
 ManaPotionCapAffix.Description: "{1}{0} potions de mana maximale"
 ManaPotionCooldownAffix.Description: "{1}{0}% de réduction du temps de recharge des potions de mana"
+// MaximumEnergyShieldAffix.Description: "{1}{0} maximum Energy Shield"
+// IncreasedEnergyShieldAffix.Description: "{1}{0}% increased Energy Shield"
+// EnergyShieldRechargeRateAffix.Description: "{1}{0}% increased Energy Shield recharge rate"
+// FasterEnergyShieldRechargeStartAffix.Description: "{1}{0}% faster start of Energy Shield recharge"
 PiercingItemAffix.Description: "{1}{0}% de perforation de défense"
 AddedKnockbackItemAffix.Description: "{1}{0} de recul"
 IncreasedKnockbackItemAffix.Description: "{1}{0}% de recul"
@@ -29,6 +33,22 @@ ChanceToApplyBloodclotItemAffix.Description: "{1}{0}% de chances d'appliquer Cai
 ChanceToApplyPoisonItemAffix.Description: "{1}{0}% de chances d'appliquer Empoisonné"
 BuffPoisonedHitsAffix.Description: "{1}{0}% dégâts infligés aux ennemis empoisonnés"
 MovementSpeedAffix.Description: "{1}{0}% de vitesse de déplacement"
+// MiningSpeedAffix.Description: "{1}{0}% increased mining speed"
+// FishingPowerAffix.Description: "{1}{0} fishing power"
+// BaitConservationAffix.Description: "{1}{0}% chance to not consume bait"
+// TilePlacementSpeedAffix.Description: "{1}{0}% increased tile placement speed"
+// WallPlacementSpeedAffix.Description: "{1}{0}% increased wall placement speed"
+// ItemPickupRangeAffix.Description: "{1}{0} tile item pickup range"
+// CoinPickupRangeAffix.Description: "{1}{0} tile coin pickup range"
+// PotionCooldownReductionAffix.Description: "{1}{0}% potion cooldown reduction"
+// BuffDurationAffix.Description: "{1}{0}% increased buff duration"
+// BreathCapacityAffix.Description: "{1}{0}% increased breath capacity"
+// SwimSpeedAffix.Description: "{1}{0}% increased swim speed"
+// SafeFallDistanceAffix.Description: "{1}{0} tile safe fall distance"
+// JumpHeightAffix.Description: "{1}{0}% increased jump height"
+// JumpSpeedAffix.Description: "{1}{0}% increased jump speed"
+// WingFlightTimeAffix.Description: "{1}{0}% increased wing flight time"
+// WingGlideControlAffix.Description: "{1}{0}% reduced wing glide fall speed"
 HealOnKillingBurningEnemiesAffix.Description: "{1}{0} de point de vie gagnée en tuant un ennemi brûlé"
 IncreasedAttackSpeedAffix.Description: "{1}{0}% de vitesse d'attaque"
 AddedAttackSpeedAffix.Description: "{1}{0}% d'augmentation de la vitesse d'attaque"
@@ -66,6 +86,9 @@ MapIncreasedBehaviourAffix.Description: "{1}{0}% d'augmentation de la vitesse de
 // MapStealAegisChargeAffix.Description: Monsters steal an Aegis Charge on hit
 // MapStealFocusChargeAffix.Description: Monsters steal a Focus Charge on hit
 // MapStealHasteChargeAffix.Description: Monsters steal a Haste Charge on hit
+// MapFireAddedDamageAffix.Description: Monsters deal {1}{0}% extra damage as fire
+// MapColdAddedDamageAffix.Description: Monsters deal {1}{0}% extra damage as cold
+// MapLightningAddedDamageAffix.Description: Monsters deal {1}{0}% extra damage as lightning
 ColdAffix.Prefix: Congélation
 LightningAffix.Prefix: Choquant
 FlamingAffix.Prefix: Enflammé
@@ -96,6 +119,7 @@ LightningResistItemAffix.Description: "{1}{0} de résistance à la foudre"
 // EoLDaylightAffix.Description: Fight in the Daylight
 // AmmoReservationAffix.Description: "{1}{0}% chance to reserve ammo"
 // IncreasedSummonDamageAffix.Description: "{1}{0}% increased summon damage"
+// AddedMaxMinionsAffix.Description: "{1}{0} maximum minions"
 // IncreasedMeleeDamageAffix.Description: "{1}{0}% increased melee damage"
 // IncreasedRangedDamageAffix.Description: "{1}{0}% increased ranged damage"
 // IncreasedMagicDamageAffix.Description: "{1}{0}% increased magic damage"

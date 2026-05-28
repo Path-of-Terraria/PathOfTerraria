@@ -11,6 +11,7 @@ Tooltips: {
 	Tier: Poziom
 	Level: Poziom przedmiotu
 	Defense: Obrona
+	// EnergyShield: Energy Shield
 	Pickaxe: Moc kilofa
 	Axe: Moc topora
 	Hammer: Moc młota
@@ -412,6 +413,9 @@ Magic.Name: Magiczny
 Ranged.Name: Dystansowe
 Melee.Name: Wręcz
 Accessory.Name: Akcesoria
+// Charm.Name: Accessory
+// Wings.Name: Wings
+// JumpAccessories.Name: Jump Accessory
 
 Ring: {
 	// Name: Ring

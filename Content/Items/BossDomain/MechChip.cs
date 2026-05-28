@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using SubworldLibrary;
 using Terraria.ID;
 
@@ -14,8 +15,9 @@ internal class MechChip : ModItem
 
 	public override bool? UseItem(Player player)
 	{
-		NPC.SpawnOnPlayer(player.whoAmI, NPCID.TheDestroyer);
-		return true;
+		return BossDomainSummonHandler.TrySummon(
+			BossDomainSummonHandler.BossDomainSummon.Destroyer,
+			player);
 	}
 
 	public override void UpdateInventory(Player player)

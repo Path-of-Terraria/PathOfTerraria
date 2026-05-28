@@ -58,7 +58,7 @@ internal class EoCQuest : Quest
 				RavencrestSystem.UpgradeBuilding("Observatory");
 				return true;
 			}),
-			new InteractWithNPC("SecondEldric", ModContent.NPCType<EldricNPC>(), LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.EldricNPC.Dialogue.Quest2"),
+			new InteractWithNPC("SecondEldric", ModContent.NPCType<EldricNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.EldricNPC.Dialogue.Quest2"), Language.GetText("Mods.PathOfTerraria.NPCs.EldricNPC.Dialogue.Quest2"),
 				[ new GiveItem(1, ModContent.ItemType<LunarLiquid>()) ], true, (npc) =>
 				{
 					int item = Item.NewItem(new EntitySource_Gift(npc), npc.Bottom, ModContent.ItemType<LunarObject>());

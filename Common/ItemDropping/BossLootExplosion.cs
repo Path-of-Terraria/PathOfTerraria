@@ -125,6 +125,8 @@ internal sealed class BossLootExplosion : GlobalNPC
 			NPCID.Retinazer => !NPC.AnyNPCs(NPCID.Spazmatism),
 			NPCID.Spazmatism => !NPC.AnyNPCs(NPCID.Retinazer),
 			NPCID.GolemFistLeft or NPCID.GolemFistRight or NPCID.GolemHead or NPCID.GolemHeadFree => false,
+			NPCID.EaterofWorldsBody or NPCID.EaterofWorldsTail => false,
+			NPCID.TheDestroyerBody or NPCID.TheDestroyerTail => false,
 			_ => true,
 		};
 	}

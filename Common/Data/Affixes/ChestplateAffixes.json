@@ -28,5 +28,30 @@
 				"weight": 1
 			}
 		]
+	},
+	{
+		"affixType": "AddedMaxMinionsAffix",
+		"equipTypes": "Chestplate",
+		"requiresPathOfTerrariaItem": true,
+		"tiers": [
+			{
+				"minValue": 1,
+				"maxValue": 1,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 1,
+				"maxValue": 2,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 2,
+				"maxValue": 2,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
 	}
 ]

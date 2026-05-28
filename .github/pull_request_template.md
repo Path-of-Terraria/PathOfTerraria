@@ -1,7 +1,4 @@
-﻿### Link Issues
-Resolves:
-
-### Description of Work
+﻿### Description of Work
 
 
 ### Comments

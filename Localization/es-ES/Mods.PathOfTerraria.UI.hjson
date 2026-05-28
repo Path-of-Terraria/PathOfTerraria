@@ -42,6 +42,7 @@ StatUI: {
 	Experience: Exp
 	// DefenseHeader: Defense
 	Life: Vida
+	// EnergyShield: Energy Shield
 	// LifeRegen: Life Regen/s
 	Mana: Maná
 	// ManaRegen: Mana Regen/s
@@ -69,6 +70,24 @@ StatUI: {
 	// MaxHasteCharges: Maximum Haste Charges
 	// MaxFocusCharges: Maximum Focus Charges
 	// MaxAegisCharges: Maximum Aegis Charges
+	// GatheringHeader: Gathering
+	// MiningSpeed: Mining Speed
+	// BaitConservation: Bait Conservation
+	// TilePlacementSpeed: Tile Placement Speed
+	// WallPlacementSpeed: Wall Placement Speed
+	// ItemPickupRange: Item Pickup Range
+	// CoinPickupRange: Coin Pickup Range
+	// MobilityHeader: Mobility
+	// JumpHeight: Jump Height
+	// JumpSpeed: Jump Speed
+	// WingFlightTime: Wing Flight Time
+	// WingGlideControl: Wing Glide Control
+	// SwimSpeed: Swim Speed
+	// BreathCapacity: Breath Capacity
+	// SafeFallDistance: Safe Fall Distance
+	// ConsumablesHeader: Consumables
+	// PotionCooldownReduction: Potion Cooldown Reduction
+	// BuffDuration: Buff Duration
 	// MiscHeader: Misc
 	MaxMinions: Súbditos máximos
 	// AmmoConsumptionChance: Ammo Reservation
@@ -175,9 +194,10 @@ Guide: {
 	/* 7:
 		'''
 		Next up, the hotbar has changed substantially as well.
-		You'll see that when the first hotbar slot is selected, the hotbar is in Combat mode.
-		It shows your skills, weapon and potions. 
-		When off of the first slot, Normal mode is shown, showing the rest of your hotbar normally.
+		When the first hotbar slot is selected, the hotbar is in Combat mode. It shows your skills, weapon, and potions.
+		Slots 2-10 are Building mode, showing the rest of your hotbar normally.
+		These modes are intentionally separate: the mouse wheel stays inside the current mode, and combat skill keys still use skills instead of selecting building slots.
+		Use the hotbar keys to swap between Combat mode and Building mode when needed.
 		Hit the "Next" button when ready.
 		''' */
 	# Explain inventory pt2, hotswapping
@@ -325,6 +345,7 @@ Tips: {
 
 // PointsRemaining: Points Remaining
 // ResetPoints: Reset Points
+// ExpGain: +{0} XP
 /* ExpBarHover:
 	'''
 	Level {0}
@@ -353,19 +374,39 @@ VirtualBag: {
 
 ItemFilter: {
 	// Title: Item Filters
+	// Filters: Filters
+	// Rules: Rules
 	// New: New
 	// Duplicate: Duplicate
 	// Delete: Delete
+	// AddRule: New
+	// DuplicateRule: Copy
+	// DeleteRule: Delete
+	// MoveUp: Move Up
+	// MoveDown: Move Down
 	// SetActive: Set Active
 	// ClearActive: Clear Active
 	// ActiveMarker: "[Active] {0}"
 	// DefaultName: New Filter
+	// DefaultRuleName: Rule {0}
 	// EmptyHint: Create or select a filter to begin editing.
-	// Name: Name
+	// RuleEmptyHint: Add a rule to this filter to begin editing.
+	// FilterName: Filter Name
+	// RuleName: Rule Name
+	// RuleAction: Action
+	// RuleSummary: "{0}. {1}: {2}"
 	// ItemLevel: Item Level (min - max)
 	// Any: Any
 	// Rarity: Rarity (any if none selected)
 	// BaseTypes: Base Types (any if none selected)
+	// SelectAllBaseTypes: Select All
+	// DeselectAllBaseTypes: Deselect All
+
+	Actions: {
+		// Show: Show
+		// Hide: Hide
+		// Highlight: Highlight
+	}
 
 	Rarities: {
 		// Normal: Normal
@@ -383,6 +424,10 @@ ItemFilter: {
 		// LevelAboveMax: Level {0} > Max {1}
 		// RarityNotAllowed: Rarity {0} not in {{{1}}}
 		// BaseTypeNotAllowed: BaseType {0} not in {1}
+		// NoMatchingRule: no matching rule
+		// ShownByRule: Rule '{0}' showed item
+		// HiddenByRule: Rule '{0}' hid item
+		// HighlightedByRule: Rule '{0}' highlighted item
 	}
 
 	// RejectionChat: Filter '{0}' rejected '{1}' — {2}

@@ -11,10 +11,9 @@ namespace PathOfTerraria.Common.UI.PassiveTree;
 /// <summary> Offers a choice of one of multiple passives contained within. Every hidden child node is considered an inner node. </summary>
 internal class MultiPassiveElement : PassiveElement
 {
-
 	private readonly Edge<IConnectedAllocatableNode>[] _extraEdges;
 
-	private AllocatableInnerPanel _parentPanel;
+	private AllocatableInnerPanel _parentPanel = null!;
 	public int AnimationTime { get; set; }
 	public int AnimationTimeMax => 60;
 	public Passive[] InnerPassives { get; }
@@ -63,7 +62,7 @@ internal class MultiPassiveElement : PassiveElement
 			distance = MathF.Max(distance, center.DistanceSQ(target));
 		}
 
-		_parentPanel ??= Parent as AllocatableInnerPanel;
+		_parentPanel ??= (Parent as AllocatableInnerPanel)!;
 		float zoom = _parentPanel?.Zoom ?? 1f;
 		return (distance + 120 * 120) * zoom * zoom;	
 	}

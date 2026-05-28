@@ -44,7 +44,6 @@ public class ShiftingShard : CurrencyShard
 	public override void ApplyToItem(Item slotItem)
 	{
 		PoTInstanceItemData data = slotItem.GetInstanceData();
-		data.Affixes = [];
-		PoTItemHelper.Roll(slotItem, data.RealLevel);
+		PoTItemHelper.RerollAffixes(slotItem, data.RealLevel);
 	}
 }

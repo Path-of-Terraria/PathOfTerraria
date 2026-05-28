@@ -141,7 +141,7 @@ public class ElementalPlayer : ModPlayer
 		foreach (ElementInstance element in container)
 		{
 			float conversion = GetRawConversion(element, item) * conversionScale;
-			float resistanceMultiplier = 1f - other[element.Type].Resistance;
+			float resistanceMultiplier = element.GetDamageMultiplier();
 			elementalDamage += conversion * element.Multiplier * resistanceMultiplier;
 		}
 
@@ -324,5 +324,18 @@ public class ElementalPlayer : ModPlayer
 		}
 
 		return false;
+	}
+
+	/// <summary>
+	/// Checks if the current hit deals any damage of the specified <see cref="ElementType"/>.<br/>
+	/// </summary>
+	internal static bool DealsElementalDamage(ElementType type, ElementalContainer container, ElementalContainer other, Item item)
+	{
+		ElementInstance ele = container[type];
+
+		float totalConversion = GetConversionMultiplier(ele, item, other);
+		float flatDamage = ele.GetFlatDamage(other);
+
+		return totalConversion > 0 || flatDamage > 0;
 	}
 }

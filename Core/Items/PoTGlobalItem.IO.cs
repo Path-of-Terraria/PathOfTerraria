@@ -14,13 +14,14 @@ partial class PoTGlobalItem : GlobalItem
 	{
 		PoTInstanceItemData data = item.GetInstanceData();
 
-		tag["type"] = (int)data.ItemType;
+		tag["type"] = (long)data.ItemType;
 		tag["rarity"] = (int)data.Rarity;
 		tag["influence"] = (int)data.Influence;
 
 		tag["implicits"] = data.ImplicitCount;
 
 		tag["ItemLevel"] = data.RealLevel;
+		tag["baseEnergyShield"] = data.BaseEnergyShield;
 		tag["corrupt"] = data.Corrupted;
 		tag["cloned"] = data.Cloned;
 		tag["namePrefix"] = (short)data.NameAffix.Prefix;
@@ -41,13 +42,14 @@ partial class PoTGlobalItem : GlobalItem
 	{
 		PoTInstanceItemData data = item.GetInstanceData();
 
-		data.ItemType = (ItemType)tag.GetInt("type");
+		data.ItemType = NormalizeLoadedItemType(item, LoadItemType(tag));
 		data.Rarity = (ItemRarity)tag.GetInt("rarity");
 		data.Influence = (Influence)tag.GetInt("influence");
 
 		data.ImplicitCount = tag.GetInt("implicits");
 
 		data.RealLevel = tag.GetInt("ItemLevel");
+		data.BaseEnergyShield = tag.GetInt("baseEnergyShield");
 		data.Corrupted = tag.GetBool("corrupt");
 		data.Cloned = tag.GetBool("cloned");
 
@@ -83,6 +85,7 @@ partial class PoTGlobalItem : GlobalItem
 		writer.Write((sbyte)data.NameAffix.Prefix);
 		writer.Write((sbyte)data.NameAffix.Suffix);
 		writer.Write((byte)data.RealLevel);
+		writer.Write((short)data.BaseEnergyShield);
 
 		writer.Write((byte)data.Affixes.Count);
 		foreach (ItemAffix affix in data.Affixes)
@@ -95,7 +98,7 @@ partial class PoTGlobalItem : GlobalItem
 	{
 		PoTInstanceItemData data = item.GetInstanceData();
 
-		data.ItemType = (ItemType)reader.ReadInt64();
+		data.ItemType = NormalizeLoadedItemType(item, (ItemType)reader.ReadInt64());
 		data.Rarity = (ItemRarity)reader.ReadByte();
 		data.Influence = (Influence)reader.ReadByte();
 		data.ImplicitCount = reader.ReadByte();
@@ -104,6 +107,7 @@ partial class PoTGlobalItem : GlobalItem
 		data.Cloned = reader.ReadBoolean();
 		data.NameAffix = new(reader.ReadSByte(), reader.ReadSByte());
 		data.RealLevel = reader.ReadByte();
+		data.BaseEnergyShield = reader.ReadInt16();
 
 		data.Affixes.Clear();
 		int affixes = reader.ReadByte();
@@ -113,5 +117,30 @@ partial class PoTGlobalItem : GlobalItem
 		}
 
 		PostRoll.Invoke(item);
+	}
+
+	private static ItemType NormalizeLoadedItemType(Item item, ItemType itemType)
+	{
+		if (item.wingSlot > 0 && itemType != ItemType.Wings)
+		{
+			return ItemType.Wings;
+		}
+
+		if (item.IsJumpAccessory() && itemType != ItemType.JumpAccessories)
+		{
+			return ItemType.JumpAccessories;
+		}
+
+		return item.ResolveToSingleType(itemType);
+	}
+
+	private static ItemType LoadItemType(TagCompound tag)
+	{
+		return tag["type"] switch
+		{
+			long value => (ItemType)value,
+			int value => (ItemType)value,
+			_ => (ItemType)tag.GetLong("type")
+		};
 	}
 }

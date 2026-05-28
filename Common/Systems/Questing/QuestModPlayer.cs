@@ -167,7 +167,7 @@ public class QuestModPlayer : ModPlayer
 
 			quest.Update(Player);
 
-			if (!HasAnyRecoveryItem && quest.ActiveStep.RecoveryItem != -1)
+			if (!HasAnyRecoveryItem && quest.CurrentStep < quest.QuestSteps.Count && quest.ActiveStep.RecoveryItem != -1)
 			{
 				HasAnyRecoveryItem = true;
 			}

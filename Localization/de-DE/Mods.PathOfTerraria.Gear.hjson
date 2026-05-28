@@ -11,6 +11,7 @@ Tooltips: {
 	Tier: Stufe
 	Level: Level
 	Defense: Verteidigung
+	// EnergyShield: Energy Shield
 	Pickaxe: Spitzhacken Stärke
 	Axe: Axt Stärke
 	Hammer: Hammer Stärke
@@ -412,6 +413,9 @@ Talisman: {
 // Ranged.Name: Ranged
 // Melee.Name: Melee
 // Accessory.Name: Accessory
+// Charm.Name: Accessory
+// Wings.Name: Wings
+// JumpAccessories.Name: Jump Accessory
 
 Ring: {
 	// Name: Ring

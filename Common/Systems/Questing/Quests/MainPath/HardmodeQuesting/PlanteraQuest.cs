@@ -13,7 +13,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 
-internal class PlanteraQuest() : HardmodeQuest(5)
+internal class PlanteraQuest() : Quest
 {
 	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct2;
 	public override int NPCQuestGiver => ModContent.NPCType<MorganaNPC>();
@@ -70,7 +70,6 @@ internal class PlanteraQuest() : HardmodeQuest(5)
 
 	protected override bool InternalAvailable()
 	{
-		Quest skelePrimeQuest = GetLocalPlayerInstance<SkelePrimeQuest>();
-		return skelePrimeQuest.Completed && NPC.downedMechBoss3;
+		return NPC.downedMechBoss3;
 	}
 }

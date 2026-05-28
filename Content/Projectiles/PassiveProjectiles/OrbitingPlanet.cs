@@ -48,7 +48,7 @@ internal class OrbitingPlanet : ModProjectile
 		else if (Ring == 1)
 		{
 			int index = Index - 5;
-			return new Vector2(180, 0).RotatedBy(Timer * 0.035f + (Index * MathHelper.TwoPi / 4f));
+			return new Vector2(180, 0).RotatedBy(Timer * 0.035f + (Index * MathHelper.TwoPi / 7f));
 		}
 		else
 		{
@@ -60,8 +60,8 @@ internal class OrbitingPlanet : ModProjectile
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
 		Player plr = Main.player[Projectile.owner];
-		plr.statMana = Math.Min(plr.statMana + 5, plr.statManaMax2);
-		plr.ManaEffect(5);
+		plr.statMana = Math.Min(plr.statMana + 15, plr.statManaMax2);
+		plr.ManaEffect(15);
 	}
 
 	public override bool PreDraw(ref Color lightColor)

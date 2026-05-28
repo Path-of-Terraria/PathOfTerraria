@@ -5,7 +5,10 @@ namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
 internal abstract class ResistItemAffix : ItemAffix
 {
-	
+	protected ResistItemAffix()
+	{
+		Round = true;
+	}
 }
 
 internal class FireResistItemAffix : ResistItemAffix
@@ -186,6 +189,11 @@ internal class ExtraChaosDamage : ItemAffix
 
 internal class IgniteChanceAffix : ItemAffix
 {
+	public IgniteChanceAffix()
+	{
+		Round = true;
+	}
+
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		player.GetModPlayer<IgnitedPlayer>().AddedIgniteChance += Value / 100f;
@@ -202,6 +210,11 @@ internal class IncreasedIgniteEffectAffix : ItemAffix
 
 internal class AllResistancesAffix : ItemAffix
 {
+	public AllResistancesAffix()
+	{
+		Round = true;
+	}
+
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		foreach (ElementInstance element in player.GetModPlayer<ElementalPlayer>().Container)

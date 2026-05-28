@@ -42,7 +42,6 @@ public class LimpidShard : CurrencyShard
 	{
 		PoTInstanceItemData data = slotItem.GetInstanceData();
 		data.Rarity = ItemRarity.Normal;
-		data.Affixes = [];
-		PoTItemHelper.Roll(slotItem, data.RealLevel);
+		PoTItemHelper.RerollAffixes(slotItem, data.RealLevel);
 	}
 }

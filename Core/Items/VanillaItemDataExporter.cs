@@ -29,7 +29,15 @@ internal class VanillaItemDataExporter : ModSystem
 			{
 				type = ItemType.Accessories;
 
-				if (item.shieldSlot > 0)
+				if (item.wingSlot > 0)
+				{
+					type = ItemType.Wings;
+				}
+				else if (item.IsJumpAccessory())
+				{
+					type = ItemType.JumpAccessories;
+				}
+				else if (item.shieldSlot > 0)
 				{
 					type = ItemType.Shield;
 				}

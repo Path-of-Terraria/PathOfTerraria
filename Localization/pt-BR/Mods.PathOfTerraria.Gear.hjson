@@ -11,6 +11,7 @@ Tooltips: {
 	// Tier: Tier:
 	// Level: Item level:
 	// Defense: Defense
+	// EnergyShield: Energy Shield
 	// Pickaxe: Pickaxe Power
 	// Axe: Axe Power
 	// Hammer: Hammer Power
@@ -412,6 +413,9 @@ Talisman: {
 // Ranged.Name: Ranged
 // Melee.Name: Melee
 // Accessory.Name: Accessory
+// Charm.Name: Accessory
+// Wings.Name: Wings
+// JumpAccessories.Name: Jump Accessory
 
 Ring: {
 	// Name: Ring

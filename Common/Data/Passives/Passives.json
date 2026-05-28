@@ -5395,7 +5395,7 @@
 		"internalIdentifier": "CenterOfTheUniverseMastery",
 		"referenceId": 1033,
 		"maxLevel": 1,
-		"value": 30,
+		"value": 50,
 		"position": {
 			"x": 955,
 			"y": 432
@@ -5454,7 +5454,7 @@
 		"internalIdentifier": "SkillfulMagicMastery",
 		"referenceId": 1037,
 		"maxLevel": 1,
-		"value": 10,
+		"value": 3,
 		"position": {
 			"x": 1043,
 			"y": -913
@@ -7482,6 +7482,66 @@
 			},
 			{
 				"referenceId": 139
+			}
+		]
+	},
+	{
+		"internalIdentifier": "OneMinionArmyKeystone",
+		"referenceId": 1170,
+		"maxLevel": 1,
+		"value": 80,
+		"position": {
+			"x": -10,
+			"y": -1460
+		},
+		"connections": [
+			{
+				"referenceId": 72
+			}
+		]
+	},
+	{
+		"internalIdentifier": "DirectShotKeystone",
+		"referenceId": 1171,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": -10,
+			"y": 1410
+		},
+		"connections": [
+			{
+				"referenceId": 56
+			}
+		]
+	},
+	{
+		"internalIdentifier": "BloodMagicKeystone",
+		"referenceId": 1172,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": 1150,
+			"y": -14
+		},
+		"connections": [
+			{
+				"referenceId": 90
+			}
+		]
+	},
+	{
+		"internalIdentifier": "CinderBastionMastery",
+		"referenceId": 1173,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": -1320,
+			"y": -9
+		},
+		"connections": [
+			{
+				"referenceId": 186
 			}
 		]
 	}

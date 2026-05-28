@@ -147,7 +147,7 @@ internal class QueenSlimeDomain : BossDomainSubworld
 						ItemDatabase.ItemRecord drop = drops[k];
 						if (drop.Item != null)
 						{
-							chest.item[k] = new Item(drop.ItemId, drop.Item.stack);
+							chest.item[k] = MapChestLoot.BuildChestItem(drop);
 						}
 					}
 					else
@@ -441,7 +441,7 @@ internal class QueenSlimeDomain : BossDomainSubworld
 		}
 
 		FightState state = FightTracker.UpdateState();
-		GetData().CheckDowned<QueenSlimeDomain>(NPCID.QueenSlimeBoss);
+		GetData().MarkBossDownedIfDefeated<QueenSlimeDomain>(NPCID.QueenSlimeBoss);
 
 		if (state == FightState.NotStarted && !GetData().BossDowned)
 		{

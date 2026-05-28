@@ -73,7 +73,7 @@ public readonly struct RoomData(WireColor color, OpeningType opening, Point open
 		return new Rectangle(position.X, position.Y, size.X, size.Y);
 	}
 
-	private void AddSpawns(int x, int y)
+	internal void AddSpawns(int x, int y)
 	{
 		foreach (SpikeballInfo info in Spikeballs)
 		{

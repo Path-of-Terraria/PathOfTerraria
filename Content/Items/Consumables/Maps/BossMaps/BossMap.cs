@@ -7,6 +7,7 @@ internal abstract class BossMap(int tier, int level, Func<bool> defeatCondition,
 {
 	public override int MaxUses => GetBossUseCount();
 	public override int WorldLevel => level;
+	protected override bool RollsAdjacentTiers => false;
 
 	public override bool CanDrop
 	{
@@ -27,20 +28,23 @@ internal abstract class BossMap(int tier, int level, Func<bool> defeatCondition,
 		{
 			return 1;
 		}
+
 		// Hardmode boss maps can only drop with their own tier
 		return tier;
 	}
 
 	bool ITemporaryItem.DespawnCondition()
 	{
-		return !CanDrop;
+		return CanDrop;
 	}
 }
 
-internal abstract class PreHardmodeBossMap(int level, Func<bool> defeatCondition) : BossMap(tier: 1, level: level, defeatCondition, hardMode: false)
+internal abstract class PreHardmodeBossMap(int level, Func<bool> defeatCondition)
+	: BossMap(tier: 1, level: level, defeatCondition, hardMode: false)
 {
 }
 
-internal abstract class HardmodeBossMap(int tier, int level, Func<bool> defeatCondition) : BossMap(tier: tier, level: level, defeatCondition, hardMode: true)
+internal abstract class HardmodeBossMap(int tier, int level, Func<bool> defeatCondition)
+	: BossMap(tier: tier, level: level, defeatCondition, hardMode: true)
 {
 }
