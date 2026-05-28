@@ -198,11 +198,6 @@ public static class PoTItemHelper
 		}
 
 		affix.Value = AffixRegistry.GetRandomAffixValue(affix, item, GetItemLevel.Invoke(item));
-		if (affix.Value == 0)
-		{
-			return; //If the affix has no value, don't add it. This usually happens when there's no TierData associated with the given item
-		}
-
 		data.Affixes.Add(affix);
 	}
 
