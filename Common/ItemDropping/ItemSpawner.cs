@@ -69,7 +69,7 @@ internal class ItemSpawner
 		var filteredGear = ItemDatabase.AllItems.Where(g =>
 		{
 			PoTStaticItemData staticData = ContentSamples.ItemsByType[g.ItemId].GetStaticData();
-			return staticData.MinDropItemLevel <= iLevel;
+			return staticData.CanDropAtItemLevel(iLevel);
 		}).ToList();
 
 		return SpawnItemFromList(pos, dropCondition, iLevel, dropRarityModifier, filteredGear);

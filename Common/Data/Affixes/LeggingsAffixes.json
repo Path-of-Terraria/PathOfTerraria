@@ -1,0 +1,15 @@
+[
+	{
+		"affixType": "AddedMaxMinionsAffix",
+		"equipTypes": "Leggings",
+		"requiresPathOfTerrariaItem": true,
+		"tiers": [
+			{
+				"minValue": 1,
+				"maxValue": 1,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	}
+]

@@ -4,7 +4,10 @@ using System.Text.RegularExpressions;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Items;
 using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Common.Systems.DisableBuilding;
+using PathOfTerraria.Common.Systems.EnergyShield;
+using PathOfTerraria.Common.Systems.ItemStats;
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Content.Items.Consumables.Maps.ExplorableMaps;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
@@ -47,10 +50,12 @@ public sealed partial class ItemTooltips : GlobalItem
 		public static Color Positive => ColorUtils.FromHexRgb(0x_99e550);
 		public static Color Negative => ColorUtils.FromHexRgb(0x_ac3232);
 		public static Color Levels => ColorUtils.FromHexRgb(0x_d8b47a);
-		public static Color FireDamage => ColorUtils.FromHexRgb(0xFF6A6A); 
+		public static Color FireDamage => ColorUtils.FromHexRgb(0xFF6A6A);
 		public static Color ColdDamage => ColorUtils.FromHexRgb(0x5FCDE4);
-		public static Color LightningDamage => ColorUtils.FromHexRgb(0xFFF68F); 
+		public static Color LightningDamage => ColorUtils.FromHexRgb(0xFFF68F);
 		public static Color ChaosDamage => ColorUtils.FromHexRgb(0xC084FC);
+		public static Color ModifiedStat => ColorUtils.FromHexRgb(0x_639bff);
+
 		// Accents
 		public static Color StatsAccent => ColorUtils.FromHexRgb(0x_a1bdbd);
 		public static Color AffixAccent => ColorUtils.FromHexRgb(0x_ff2222);
@@ -81,7 +86,8 @@ public sealed partial class ItemTooltips : GlobalItem
 		On_ItemSlot.MouseHover_ItemArray_int_int += FixSetBonusTooltipNotAppearing;
 	}
 
-	private void FixSetBonusTooltipNotAppearing(On_ItemSlot.orig_MouseHover_ItemArray_int_int orig, Item[] inv, int context, int slot)
+	private void FixSetBonusTooltipNotAppearing(On_ItemSlot.orig_MouseHover_ItemArray_int_int orig, Item[] inv,
+		int context, int slot)
 	{
 		orig(inv, context, slot);
 
@@ -101,7 +107,7 @@ public sealed partial class ItemTooltips : GlobalItem
 		{
 			case "FishingPower":
 			case "Consumable":
-			case "Material": 
+			case "Material":
 			case "Placeable":
 			case "Price":
 				yOffset = -2;
@@ -140,7 +146,8 @@ public sealed partial class ItemTooltips : GlobalItem
 			Color col = Color.Gray;
 
 			Main.spriteBatch.Draw(tex, pos, new Rectangle(0, 0, 10, 6), col);
-			Main.spriteBatch.Draw(tex, pos + new Vector2(10, 0), new Rectangle(10, 0, 100, 6), col, 0f, Vector2.Zero, middleScale, SpriteEffects.None, 0);
+			Main.spriteBatch.Draw(tex, pos + new Vector2(10, 0), new Rectangle(10, 0, 100, 6), col, 0f, Vector2.Zero,
+				middleScale, SpriteEffects.None, 0);
 			Main.spriteBatch.Draw(tex, pos + new Vector2(middleWidth + 6, 0), new Rectangle(110, 0, 10, 6), col);
 
 			// Return true - draws nothing (aka ""), but this is necessary to add the yOffset properly
@@ -182,7 +189,8 @@ public sealed partial class ItemTooltips : GlobalItem
 		}
 
 		if (line.Name.Contains("Affix") || line.Name.Contains("Socket") || line.Name.StartsWith("Stat")
-			|| line.Name is "Defense" or "AttacksPerSecond" or "CriticalStrikeChance" or "ManaCost" || line.Name.StartsWith("Damage"))
+		    || line.Name is "Defense" or "AttacksPerSecond" or "CriticalStrikeChance" or "ManaCost" ||
+		    line.Name.StartsWith("Damage"))
 		{
 			line.BaseScale = new Vector2(0.95f);
 			yOffset = -4;
@@ -267,18 +275,14 @@ public sealed partial class ItemTooltips : GlobalItem
 
 		if (data.Corrupted)
 		{
-			AddNewTooltipLine(item, tooltips, new TooltipLine(Mod, "Corrupted", $" {Localize("Corrupted")}")
-			{
-				OverrideColor = Colors.Corrupt,
-			});
+			AddNewTooltipLine(item, tooltips,
+				new TooltipLine(Mod, "Corrupted", $" {Localize("Corrupted")}") { OverrideColor = Colors.Corrupt, });
 		}
-		
+
 		if (data.Cloned)
 		{
-			AddNewTooltipLine(item, tooltips, new TooltipLine(Mod, "Cloned", $" {Localize("Cloned")}")
-			{
-				OverrideColor = Colors.Cloned
-			});
+			AddNewTooltipLine(item, tooltips,
+				new TooltipLine(Mod, "Cloned", $" {Localize("Cloned")}") { OverrideColor = Colors.Cloned });
 		}
 
 		if (data.ItemType != ItemType.None || data.Rarity > ItemRarity.Normal)
@@ -306,7 +310,9 @@ public sealed partial class ItemTooltips : GlobalItem
 
 			if (item.ModItem is GearLocalizationCategory.IItem gear)
 			{
-				string name = Language.GetTextValue("Mods.PathOfTerraria.Gear." + GearLocalizationCategory.Invoke(item) + ".Name");
+				string name =
+					Language.GetTextValue("Mods.PathOfTerraria.Gear." + GearLocalizationCategory.Invoke(item) +
+					                      ".Name");
 				rarityDesc = GetDescriptor(name, data.Rarity, data.Influence);
 			}
 
@@ -322,17 +328,20 @@ public sealed partial class ItemTooltips : GlobalItem
 
 		if (GetItemLevel.Invoke(item) is > 0 and int level)
 		{
-			var itemLevelLine = new TooltipLine(Mod, "ItemLevel", $" {Localize("Level")} [c/{ColorUtils.ToHexRGB(Colors.Levels)}:{level}]")
-			{
-				OverrideColor = Colors.Levels,
-			};
+			var itemLevelLine =
+				new TooltipLine(Mod, "ItemLevel",
+					$" {Localize("Level")} [c/{ColorUtils.ToHexRGB(Colors.Levels)}:{level}]")
+				{
+					OverrideColor = Colors.Levels,
+				};
 			AddNewTooltipLine(item, tooltips, itemLevelLine);
 			AddSeparator(item, tooltips);
 		}
 
 		if (!string.IsNullOrWhiteSpace(staticData.AltUseDescription.Value))
 		{
-			AddNewTooltipLine(item, tooltips, new TooltipLine(Mod, "AltUseDescription", staticData.AltUseDescription.Value));
+			AddNewTooltipLine(item, tooltips,
+				new TooltipLine(Mod, "AltUseDescription", staticData.AltUseDescription.Value));
 		}
 
 		if (!string.IsNullOrWhiteSpace(staticData.Description.Value))
@@ -346,28 +355,30 @@ public sealed partial class ItemTooltips : GlobalItem
 			Player player = Main.LocalPlayer;
 			float baseDamage = item.damage * ItemID.Sets.ToolTipDamageMultiplier[item.type];
 			float finalDamage = player.GetWeaponDamage(item, true);
-    
+
 			// 15% variability, default range
 			float minDamage = finalDamage * 0.85f;
 			float maxDamage = finalDamage * 1.15f;
 
 			float baseMinDamage = baseDamage * 0.85f;
 			float baseMaxDamage = baseDamage * 1.15f;
-			
+
 			ElementalContainer playerElements = player.GetModPlayer<ElementalPlayer>().Container;
-			
+
 			// Calculate total flat damage to add to main tooltip
 			float totalFlatDamage = playerElements.Sum(x => x.GetFlatDamage(0) * x.Multiplier);
 			float totalRawConversion = 0f;
 
 			foreach (ElementInstance instance in playerElements)
 			{
-				float baseWeaponConversion = item?.type > ItemID.None ? ElementalWeaponSets.GetElementStrength(item.type, instance.Type) : 0f;
+				float baseWeaponConversion = item?.type > ItemID.None
+					? ElementalWeaponSets.GetElementStrength(item.type, instance.Type)
+					: 0f;
 				totalRawConversion += MathF.Max(0f, baseWeaponConversion + instance.GetTotalConversion(0));
 			}
 
 			float conversionScale = totalRawConversion > 1f ? 1f / totalRawConversion : 1f;
-			
+
 			// We are doing calcs and storing it here, so tooltip placement order isnt messed up, and the final damage tooltip is accurate
 			List<TooltipLine> elementLines = [];
 
@@ -377,45 +388,60 @@ public sealed partial class ItemTooltips : GlobalItem
 
 			if (baseDamageMax > 0f)
 			{
-				string baseDamageText = baseDamageMin == baseDamageMax ? $"[{Math.Round(baseDamageMin, 2)}]" : $"[{Math.Round(baseDamageMin, 2)}-{Math.Round(baseDamageMax, 2)}]";
+				string baseDamageText = baseDamageMin == baseDamageMax
+					? $"[{Math.Round(baseDamageMin, 2)}]"
+					: $"[{Math.Round(baseDamageMin, 2)}-{Math.Round(baseDamageMax, 2)}]";
 				string highlightedBaseDamage = HighlightNumbers(baseDamageText);
 				string damageTypeName = item.DamageType.DisplayName.Value.Trim().ToLower();
 
-				elementLines.Add(new TooltipLine(Mod, "DamageBase", $"    {ColoredDot(Colors.StatsAccent)} {highlightedBaseDamage} base {damageTypeName} damage"));
+				elementLines.Add(new TooltipLine(Mod, "DamageBase",
+					$"    {ColoredDot(Colors.StatsAccent)} {highlightedBaseDamage} base {damageTypeName} damage"));
 			}
 
 			foreach (ElementInstance instance in playerElements)
 			{
 				float flat = instance.GetFlatDamage(0) * instance.Multiplier;
-				string elementName = Language.GetTextValue("Mods.PathOfTerraria.Misc.Damage", instance.ElementDisplayName.Value.ToLower().Trim());
-				float baseWeaponConversion = item?.type > ItemID.None ? ElementalWeaponSets.GetElementStrength(item.type, instance.Type) : 0f;
+				string elementName = Language.GetTextValue("Mods.PathOfTerraria.Misc.Damage",
+					instance.ElementDisplayName.Value.ToLower().Trim());
+				float baseWeaponConversion = item?.type > ItemID.None
+					? ElementalWeaponSets.GetElementStrength(item.type, instance.Type)
+					: 0f;
 
-				float elementDamage = finalDamage * MathF.Max(0f, baseWeaponConversion + instance.GetTotalConversion(0)) * conversionScale * instance.Multiplier;
+				float elementDamage = finalDamage *
+				                      MathF.Max(0f, baseWeaponConversion + instance.GetTotalConversion(0)) *
+				                      conversionScale * instance.Multiplier;
 
 				float eleMinDamage = (elementDamage * 0.85f) + flat;
 				float eleMaxDamage = (elementDamage * 1.15f) + flat;
-				
+
 				if (eleMinDamage > 0)
 				{
 					// pick element color based on type
 					Color elementColor = instance.Type.ElementColor();
 
 					// numbers tinted with element color
-					string highlightNumbers = HighlightNumbers((eleMinDamage == eleMaxDamage) ? $"[{Math.Round(eleMinDamage, 2)}]" : $"[{Math.Round(eleMinDamage, 2)}-{Math.Round(eleMaxDamage, 2)}]", elementColor);
-					var newDamageLine = new TooltipLine(Mod, "Damage" + instance.Type, $"    {ColoredDot(Colors.StatsAccent)} {highlightNumbers} {elementName}");
+					string highlightNumbers =
+						HighlightNumbers(
+							(eleMinDamage == eleMaxDamage)
+								? $"[{Math.Round(eleMinDamage, 2)}]"
+								: $"[{Math.Round(eleMinDamage, 2)}-{Math.Round(eleMaxDamage, 2)}]", elementColor);
+					var newDamageLine = new TooltipLine(Mod, "Damage" + instance.Type,
+						$"    {ColoredDot(Colors.StatsAccent)} {highlightNumbers} {elementName}");
 					elementLines.Add(newDamageLine);
 				}
 			}
 
 			// Elemental conversion replaces base damage instead of adding another copy of it.
-			float totalMultiplier = 1 + ElementalPlayer.GetElementalDamageAdjustment(playerElements, new ElementalContainer(), item);
+			float totalMultiplier =
+				1 + ElementalPlayer.GetElementalDamageAdjustment(playerElements, new ElementalContainer(), item);
 			string topHighlightNumbers = HighlightNumbers(
 				$"[{Math.Round((minDamage * totalMultiplier) + totalFlatDamage, 2)}-{Math.Round((maxDamage * totalMultiplier) + totalFlatDamage, 2)}] {item.DamageType.DisplayName.Value.Trim()}"
 			);
 
 			if (Main.keyState.PressingShift())
 			{
-				topHighlightNumbers += $" ({HighlightNumbers($"[{baseMinDamage:#0.#}-{baseMaxDamage:#0.#}]")} [c/{Colors.DefaultNumber.ToHexRGB()}:base])";
+				topHighlightNumbers +=
+					$" ({HighlightNumbers($"[{baseMinDamage:#0.#}-{baseMaxDamage:#0.#}]")} [c/{Colors.DefaultNumber.ToHexRGB()}:base])";
 			}
 
 			var damageLine = new TooltipLine(
@@ -423,24 +449,24 @@ public sealed partial class ItemTooltips : GlobalItem
 				"Damage",
 				$"{ColoredDot(Colors.StatsAccent)} {topHighlightNumbers}"
 			);
-			
+
 			//Add the actual damage line
 			AddNewTooltipLine(item, tooltips, damageLine);
-			
+
 			// Then add all elemental lines
 			foreach (TooltipLine line in elementLines)
 			{
 				AddNewTooltipLine(item, tooltips, line);
 			}
 		}
-		
-		if (item.useTime > 0 && item.damage > 0) 
+
+		if (item.useTime > 0 && item.damage > 0)
 		{
 			//We want to ensure default attack speed is not shown on any of the below gear/items.
-			if (data.ItemType != ItemType.Helmet && 
-			    data.ItemType != ItemType.Chestplate && 
-			    data.ItemType != ItemType.Leggings && 
-			    data.ItemType != ItemType.Ring && 
+			if (data.ItemType != ItemType.Helmet &&
+			    data.ItemType != ItemType.Chestplate &&
+			    data.ItemType != ItemType.Leggings &&
+			    data.ItemType != ItemType.Ring &&
 			    data.ItemType != ItemType.Amulet &&
 			    data.ItemType != ItemType.Accessories &&
 			    data.ItemType != ItemType.Map &&
@@ -449,11 +475,11 @@ public sealed partial class ItemTooltips : GlobalItem
 			{
 				Player player = Main.LocalPlayer;
 				float effectiveUseTime = CombinedHooks.TotalUseTime(item.useTime, player, item);
-		
+
 				// Calculate attacks per second with bonuses
 				float aps = 60f / effectiveUseTime;
 
-				aps = (float) Math.Round(aps, 2);
+				aps = (float)Math.Round(aps, 2);
 				string apsStr = aps.ToString("0.00");
 				string localizeString = item.DamageType == DamageClass.Magic ? "CastSpeed" : "AttackSpeed";
 				var attackSpeed = new TooltipLine(Mod, "AttacksPerSecond",
@@ -462,14 +488,14 @@ public sealed partial class ItemTooltips : GlobalItem
 				AddNewTooltipLine(item, tooltips, attackSpeed);
 			}
 		}
-		
+
 		// Add weapon critical strike chance
 		if (item.damage > 0 && !item.accessory)
 		{
 			Player player = Main.LocalPlayer;
-        
+
 			float totalCritChance = player.GetWeaponCrit(item);
-        
+
 			// Add the tooltip line
 			var critLine = new TooltipLine(Mod, "CriticalStrikeChance",
 				$"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"[{totalCritChance:0}%]")} Critical Strike Chance"
@@ -483,59 +509,97 @@ public sealed partial class ItemTooltips : GlobalItem
 			Player player = Main.LocalPlayer;
 			int effectiveManaCost = player.GetManaCost(item);
 
-			string manaCost = $"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"[{effectiveManaCost}]")} [c/{Colors.ManaCost.ToHexRGB()}:{Localize("ManaCost")}]";
+			string manaCost =
+				$"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"[{effectiveManaCost}]")} [c/{Colors.ManaCost.ToHexRGB()}:{Localize("ManaCost")}]";
 			var manaLine = new TooltipLine(Mod, "ManaCost", manaCost);
 			AddNewTooltipLine(item, tooltips, manaLine);
 		}
 
-		if (item.defense > 0)
+		int modifiedDefense = GetModifiedDefense(item);
+		if (modifiedDefense > 0)
 		{
-			var def = new TooltipLine(Mod, "Defense", $"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"+{item.defense} {Localize("Defense")}")}");
+			Color defenseNumberColor = modifiedDefense == item.defense ? Colors.DefaultNumber : Colors.ModifiedStat;
+			string defenseDetails = Main.keyState.PressingShift()
+				? FormatBaseStatDetails(item.defense, modifiedDefense, GetDefenseRollRange(item))
+				: string.Empty;
+			var def = new TooltipLine(Mod, "Defense",
+				$"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"+{modifiedDefense}", defenseNumberColor)} {Localize("Defense")}{defenseDetails}");
 			AddNewTooltipLine(item, tooltips, def);
+		}
+
+		if (item.ModItem is IEnergyShieldItem)
+		{
+			int baseEnergyShield = EnergyShieldItem.GetBaseEnergyShield(item);
+			int energyShield = EnergyShieldItem.GetLocalEnergyShield(item);
+			if (energyShield > 0)
+			{
+				Color energyShieldNumberColor = energyShield == baseEnergyShield ? Colors.DefaultNumber : Colors.ModifiedStat;
+				string energyShieldDetails = Main.keyState.PressingShift()
+					? FormatBaseStatDetails(baseEnergyShield, energyShield, GetEnergyShieldRollRange(item))
+					: string.Empty;
+				var energyShieldLine = new TooltipLine(Mod, "EnergyShield",
+					$"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"{energyShield}", energyShieldNumberColor)} {Localize("EnergyShield")}{energyShieldDetails}");
+				AddNewTooltipLine(item, tooltips, energyShieldLine);
+			}
 		}
 
 		if (item.pick > 0)
 		{
-			var pick = new TooltipLine(Mod, "Pickaxe", $"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"{item.pick} {Localize("Pickaxe")}")}");
+			var pick = new TooltipLine(Mod, "Pickaxe",
+				$"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"{item.pick} {Localize("Pickaxe")}")}");
 			AddNewTooltipLine(item, tooltips, pick);
 		}
-		
+
 		if (item.axe > 0)
 		{
-			var axe = new TooltipLine(Mod, "Axe", $"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"{item.axe * 5} {Localize("Axe")}")}");
+			var axe = new TooltipLine(Mod, "Axe",
+				$"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"{item.axe * 5} {Localize("Axe")}")}");
 			AddNewTooltipLine(item, tooltips, axe);
 		}
-		
+
 		if (item.hammer > 0)
 		{
-			var hammer = new TooltipLine(Mod, "Hammer", $"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"{item.hammer} {Localize("Hammer")}")}");
+			var hammer = new TooltipLine(Mod, "Hammer",
+				$"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"{item.hammer} {Localize("Hammer")}")}");
 			AddNewTooltipLine(item, tooltips, hammer);
 		}
-		
+
 		tooltips.AddRange(oldStats);
 
 		if (item.ModItem is Map map && map.Tier > 0)
 		{
-			AddNewTooltipLine(item, tooltips, new TooltipLine(Mod, "MapTier", $" {Localize("Tier")} [c/CCCCFF:" + map.Tier + "]")
-			{
-				OverrideColor = new Color(170, 170, 170)
-			});
+			AddNewTooltipLine(item, tooltips,
+				new TooltipLine(Mod, "MapTier", $" {Localize("Tier")} [c/CCCCFF:" + map.Tier + "]")
+				{
+					OverrideColor = new Color(170, 170, 170)
+				});
 		}
 
 		if (StopBuildingPlayer.InvalidItemsToUse.Contains(item.type) && SubworldSystem.Current is MappingWorld)
 		{
-			AddNewTooltipLine(item, tooltips, new TooltipLine(Mod, "BuildBlocked", Localize("BuildBlocked")) { OverrideColor = new Color(220, 110, 110) });
+			AddNewTooltipLine(item, tooltips,
+				new TooltipLine(Mod, "BuildBlocked", Localize("BuildBlocked"))
+				{
+					OverrideColor = new Color(220, 110, 110)
+				});
 		}
 
 		if (StopBuildingPlayer.NerfedDomainItems.ContainsKey(item.type) && SubworldSystem.Current is MappingWorld)
 		{
-			AddNewTooltipLine(item, tooltips, new TooltipLine(Mod, "WeaponNerfed", Localize("WeaponNerfed")) { OverrideColor = new Color(255, 160, 160) });
+			AddNewTooltipLine(item, tooltips,
+				new TooltipLine(Mod, "WeaponNerfed", Localize("WeaponNerfed"))
+				{
+					OverrideColor = new Color(255, 160, 160)
+				});
 		}
 
-		if (StopBuildingProjectiles.ProjectileAliasingsByItemId.TryGetValue(item.type, out StopBuildingProjectiles.ProjectileAlias alias))
+		if (StopBuildingProjectiles.ProjectileAliasingsByItemId.TryGetValue(item.type,
+			    out StopBuildingProjectiles.ProjectileAlias alias))
 		{
-			string text = Language.GetTextValue("Mods.PathOfTerraria.Gear.Tooltips.ShootBlocked", Lang.GetItemName(alias.AltItemId), alias.AltItemId);
-			AddNewTooltipLine(item, tooltips, new TooltipLine(Mod, "ShootBlocked", text) { OverrideColor = new Color(220, 110, 110) });
+			string text = Language.GetTextValue("Mods.PathOfTerraria.Gear.Tooltips.ShootBlocked",
+				Lang.GetItemName(alias.AltItemId), alias.AltItemId);
+			AddNewTooltipLine(item, tooltips,
+				new TooltipLine(Mod, "ShootBlocked", text) { OverrideColor = new Color(220, 110, 110) });
 		}
 
 		// Affix tooltips
@@ -545,7 +609,7 @@ public sealed partial class ItemTooltips : GlobalItem
 
 		// These don't need AddNewTooltipLine as they're vanilla tooltips
 		tooltips.AddRange(oldTooltips);
-		
+
 		if (favoriteLine is not null)
 		{
 			favoriteLine.OverrideColor = Color.Gold;
@@ -605,7 +669,7 @@ public sealed partial class ItemTooltips : GlobalItem
 			fishingPowerLine.OverrideColor = Color.LightBlue;
 			tooltips.Add(fishingPowerLine);
 		}
-		
+
 		if (consumableLine is not null)
 		{
 			consumableLine.OverrideColor = Color.LightGray;
@@ -668,6 +732,67 @@ public sealed partial class ItemTooltips : GlobalItem
 		{
 			tooltips.Add(tooltip);
 		}
+	}
+
+	private static int GetModifiedDefense(Item item)
+	{
+		float addedDefense = 0;
+
+		foreach (ItemAffix affix in item.GetInstanceData().Affixes)
+		{
+			if (affix is DefenseItemAffix)
+			{
+				addedDefense += affix.Value;
+			}
+		}
+
+		return Math.Max(0, item.defense + (int)Math.Round(addedDefense));
+	}
+
+	private static (int Minimum, int Maximum)? GetDefenseRollRange(Item item)
+	{
+		if (item.ModItem is not IDefenseRangeItem rangeItem)
+		{
+			return null;
+		}
+
+		(int minimum, int maximum) = rangeItem.DefenseRange;
+		return minimum == maximum ? null : (minimum, maximum);
+	}
+
+	private static (int Minimum, int Maximum)? GetEnergyShieldRollRange(Item item)
+	{
+		if (item.ModItem is not IEnergyShieldRangeItem rangeItem)
+		{
+			return null;
+		}
+
+		(int minimum, int maximum) = rangeItem.EnergyShieldRange;
+		return minimum == maximum ? null : (minimum, maximum);
+	}
+
+	private static string FormatBaseStatDetails(int baseValue, int modifiedValue, (int Minimum, int Maximum)? rollRange)
+	{
+		List<string> details = [];
+
+		if (rollRange is { } range)
+		{
+			details.Add(HighlightNumbers($"roll [{range.Minimum}-{range.Maximum}]"));
+		}
+
+		int modifier = modifiedValue - baseValue;
+		if (modifier != 0)
+		{
+			Color modifierColor = modifier > 0 ? Colors.ModifiedStat : Colors.Negative;
+			details.Add($"{HighlightNumbers($"base {baseValue}")} {HighlightNumbers(FormatSignedNumber(modifier), modifierColor)}");
+		}
+
+		return details.Count == 0 ? string.Empty : $" ({string.Join("; ", details)})";
+	}
+
+	private static string FormatSignedNumber(int value)
+	{
+		return value > 0 ? $"+{value}" : value.ToString();
 	}
 
 	public static string HighlightNumbers(string input, Color? numColor = null, Color? baseColor = null)
@@ -734,6 +859,7 @@ public sealed partial class ItemTooltips : GlobalItem
 
 	[GeneratedRegex(@"([\d\%\-\+]+)|([^\d\%\-\+]+)")]
 	private static partial Regex NumberHighlightRegex();
+
 	#endregion
 
 	private static void LoadBackImages()
@@ -748,7 +874,9 @@ public sealed partial class ItemTooltips : GlobalItem
 	}
 
 	#region Special rendering for rarities and influences
-	private static void DrawSpecial(On_ItemSlot.orig_Draw_SpriteBatch_ItemArray_int_int_Vector2_Color orig, SpriteBatch sb,
+
+	private static void DrawSpecial(On_ItemSlot.orig_Draw_SpriteBatch_ItemArray_int_int_Vector2_Color orig,
+		SpriteBatch sb,
 		Item[] inv, int context, int slot, Vector2 position, Color color)
 	{
 		if (!GearGlobalItem.IsGearItem(inv[slot]) || context == 21 || context == ItemSlot.Context.ChatItem)
@@ -768,11 +896,13 @@ public sealed partial class ItemTooltips : GlobalItem
 		};
 
 		Color backColor = Color.White * 0.75f;
-		sb.Draw(Textures[rareName].Value, position, null, backColor, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);
+		sb.Draw(Textures[rareName].Value, position, null, backColor, 0f, default, Main.inventoryScale,
+			SpriteEffects.None, 0f);
 
 		if (inv[slot].favorited)
 		{
-			sb.Draw(Textures["Favorite"].Value, position, null, backColor, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);
+			sb.Draw(Textures["Favorite"].Value, position, null, backColor, 0f, default, Main.inventoryScale,
+				SpriteEffects.None, 0f);
 		}
 
 		// For some reason this *hard* crashes if it's a HotbarItem.
@@ -865,5 +995,6 @@ public sealed partial class ItemTooltips : GlobalItem
 		spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default,
 			Main.UIScaleMatrix);
 	}
+
 	#endregion
 }

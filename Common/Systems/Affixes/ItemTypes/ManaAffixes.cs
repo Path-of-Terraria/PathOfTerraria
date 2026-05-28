@@ -20,7 +20,7 @@ internal class ManaRegenAffix : ManaItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		modifier.ManaRegen.Base += Value;
+		modifier.ManaRegen += Value / 100f;
 	}
 }
 

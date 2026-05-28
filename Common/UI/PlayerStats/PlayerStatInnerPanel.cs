@@ -3,8 +3,10 @@ using PathOfTerraria.Common.Systems.BlockSystem;
 using PathOfTerraria.Common.Classing;
 using PathOfTerraria.Common.Systems.Charges;
 using PathOfTerraria.Common.Systems.ElementalDamage;
+using PathOfTerraria.Common.Systems.EnergyShield;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.VanillaModifications;
 using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
 using Terraria.GameContent.UI.Elements;
@@ -59,26 +61,6 @@ internal class PlayerStatInnerPanel : SmartUiElement
 					SimpleSubtitle = hover.Value,
 				});
 			}
-		}
-	}
-
-	/// <summary>
-	/// Bizarre, weird workaround because <see cref="Player.manaRegen"/> isn't set properly? Is reset early? Unsure.
-	/// </summary>
-	internal class ManaRegenTracker : ModPlayer
-	{
-		public int LastManaRegen { get; internal set; }
-
-		public override void Load()
-		{
-			On_Player.UpdateManaRegen += CheckManaRegen;
-		}
-
-		private static void CheckManaRegen(On_Player.orig_UpdateManaRegen orig, Player self)
-		{
-			self.GetModPlayer<ManaRegenTracker>().LastManaRegen = self.manaRegen;
-
-			orig(self);
 		}
 	}
 
@@ -170,13 +152,19 @@ internal class PlayerStatInnerPanel : SmartUiElement
 			float lifePercent = player.statLife / player.statLifeMax2 * 100;
 			return $"{player.statLife}/{player.statLifeMax2} ({lifePercent:#0.##}%)";
 		}));
+		list.Add(new PlayerStatUI(Localize("EnergyShield"), player =>
+		{
+			EnergyShieldPlayer energyShield = Main.LocalPlayer.GetModPlayer<EnergyShieldPlayer>();
+			float energyShieldPercent = energyShield.MaximumEnergyShield <= 0 ? 0 : energyShield.CurrentEnergyShield / energyShield.MaximumEnergyShield * 100;
+			return $"{energyShield.CurrentEnergyShieldRounded}/{energyShield.MaximumEnergyShield} ({energyShieldPercent:#0.##}%)";
+		}));
 		list.Add(new PlayerStatUI(Localize("LifeRegen"), player => $"{player.lifeRegen}"));
 		list.Add(new PlayerStatUI(Localize("Mana"), player =>
 		{
 			float manaPercent = player.statMana / player.statManaMax * 100;
 			return $"{player.statMana}/{player.statManaMax2} ({manaPercent:#0.##}%)";
 		}));
-		list.Add(new PlayerStatUI(Localize("ManaRegen"), player => $"{player.GetModPlayer<ManaRegenTracker>().LastManaRegen}"));
+		list.Add(new PlayerStatUI(Localize("ManaRegen"), player => $"{player.GetModPlayer<ManaRegenRework.ManaRegenPlayer>().LastManaRegen}"));
 		list.Add(new PlayerStatUI(Localize("DamageReduction"), player => $"{player.endurance * 100:#0.##}%"));
 		list.Add(new PlayerStatUI(Localize("BlockChance"), player => $"{player.GetModPlayer<BlockPlayer>().ActualBlockChance * 100:#0.##}%"));
 		list.Add(new PlayerStatUI(Localize("MaxBlock"), player => $"{player.GetModPlayer<BlockPlayer>().MaxBlockChance * 100:#0.##}%"));

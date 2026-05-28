@@ -15,18 +15,21 @@ internal class ManaPotionPickup : PickupItem
 
 	public override bool CanPickup(Player player)
 	{
-		int manaLeft = player.GetModPlayer<PotionPlayer>().ManaLeft;
-		int maxMana = player.GetModPlayer<PotionPlayer>().MaxMana;
+		PotionPlayer potionPlayer = player.GetModPlayer<PotionPlayer>();
+		int manaLeft = potionPlayer.ManaLeft;
+		int maxMana = potionPlayer.MaxMana;
+		int delayLeft = potionPlayer.ManaDelayLeft;
 		bool potionSpace = manaLeft < maxMana;
-		bool orAutoMana = manaLeft >= maxMana && player.statMana < player.statManaMax2 && !player.HasBuff(BuffID.ManaSickness);
+		bool orAutoMana = manaLeft >= maxMana && delayLeft <= 0 && player.statMana < player.statManaMax2;
 		return potionSpace || orAutoMana;
 	}
+
 	public override bool OnPickup(Player player)
 	{
 		PotionPlayer potionPlr = player.GetModPlayer<PotionPlayer>();
 		ref int manaLeft = ref potionPlr.ManaLeft;
 
-		if (manaLeft >= player.GetModPlayer<PotionPlayer>().MaxMana && player.statMana < player.statManaMax2 && !player.HasBuff(BuffID.ManaSickness))
+		if (manaLeft >= player.GetModPlayer<PotionPlayer>().MaxMana && potionPlr.ManaDelayLeft <= 0 && player.statMana < player.statManaMax2)
 		{
 			manaLeft++;
 			PotionPlayer.UseManaPotion(player, true);

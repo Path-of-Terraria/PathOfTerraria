@@ -42,6 +42,7 @@ StatUI: {
 	Experience: Опыт
 	DefenseHeader: Защита
 	Life: Здоровье
+	// EnergyShield: Energy Shield
 	// LifeRegen: Life Regen/s
 	Mana: Мана
 	// ManaRegen: Mana Regen/s
@@ -379,19 +380,39 @@ VirtualBag: {
 
 ItemFilter: {
 	// Title: Item Filters
+	// Filters: Filters
+	// Rules: Rules
 	// New: New
 	// Duplicate: Duplicate
 	// Delete: Delete
+	// AddRule: New
+	// DuplicateRule: Copy
+	// DeleteRule: Delete
+	// MoveUp: Move Up
+	// MoveDown: Move Down
 	// SetActive: Set Active
 	// ClearActive: Clear Active
 	// ActiveMarker: "[Active] {0}"
 	// DefaultName: New Filter
+	// DefaultRuleName: Rule {0}
 	// EmptyHint: Create or select a filter to begin editing.
-	// Name: Name
+	// RuleEmptyHint: Add a rule to this filter to begin editing.
+	// FilterName: Filter Name
+	// RuleName: Rule Name
+	// RuleAction: Action
+	// RuleSummary: "{0}. {1}: {2}"
 	// ItemLevel: Item Level (min - max)
 	// Any: Any
 	// Rarity: Rarity (any if none selected)
 	// BaseTypes: Base Types (any if none selected)
+	// SelectAllBaseTypes: Select All
+	// DeselectAllBaseTypes: Deselect All
+
+	Actions: {
+		// Show: Show
+		// Hide: Hide
+		// Highlight: Highlight
+	}
 
 	Rarities: {
 		// Normal: Normal
@@ -409,6 +430,10 @@ ItemFilter: {
 		// LevelAboveMax: Level {0} > Max {1}
 		// RarityNotAllowed: Rarity {0} not in {{{1}}}
 		// BaseTypeNotAllowed: BaseType {0} not in {1}
+		// NoMatchingRule: no matching rule
+		// ShownByRule: Rule '{0}' showed item
+		// HiddenByRule: Rule '{0}' hid item
+		// HighlightedByRule: Rule '{0}' highlighted item
 	}
 
 	// RejectionChat: Filter '{0}' rejected '{1}' — {2}

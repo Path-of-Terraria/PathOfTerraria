@@ -20,6 +20,10 @@
 // ManaPotionPowerAffix.Description: "{1}{0}% stronger mana potions"
 // ManaPotionCapAffix.Description: "{1}{0} max mana potions"
 // ManaPotionCooldownAffix.Description: "{1}{0}% mana potion cooldown reduction"
+// MaximumEnergyShieldAffix.Description: "{1}{0} maximum Energy Shield"
+// IncreasedEnergyShieldAffix.Description: "{1}{0}% increased Energy Shield"
+// EnergyShieldRechargeRateAffix.Description: "{1}{0}% increased Energy Shield recharge rate"
+// FasterEnergyShieldRechargeStartAffix.Description: "{1}{0}% faster start of Energy Shield recharge"
 // PiercingItemAffix.Description: "{1}{0}% defense piercing"
 // AddedKnockbackItemAffix.Description: "{1}{0} added knockback"
 // IncreasedKnockbackItemAffix.Description: "{1}{0}% increased knockback"
@@ -115,6 +119,7 @@ NoFallDamageAffix: {
 // EoLDaylightAffix.Description: Fight in the Daylight
 // AmmoReservationAffix.Description: "{1}{0}% chance to reserve ammo"
 // IncreasedSummonDamageAffix.Description: "{1}{0}% increased summon damage"
+// AddedMaxMinionsAffix.Description: "{1}{0} maximum minions"
 // IncreasedMeleeDamageAffix.Description: "{1}{0}% increased melee damage"
 // IncreasedRangedDamageAffix.Description: "{1}{0}% increased ranged damage"
 // IncreasedMagicDamageAffix.Description: "{1}{0}% increased magic damage"
