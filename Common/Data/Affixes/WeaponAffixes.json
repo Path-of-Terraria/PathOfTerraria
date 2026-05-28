@@ -1,5 +1,35 @@
 [
 	{
+		"affixType": "ManaRegenAffix",
+		"equipTypes": "Weapon Summoner",
+		"tiers": [
+			{
+				"minValue": 10,
+				"maxValue": 18,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 19,
+				"maxValue": 28,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 30,
+				"maxValue": 40,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 45,
+				"maxValue": 60,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	},
+	{
 		"affixType": "PercentageIncreasedCriticalStrikeChanceAffix",
 		"equipTypes": "Weapon Offhand Summoner",
 		"tiers": [
