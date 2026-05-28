@@ -85,12 +85,59 @@
 		"connections": [
 			{
 				"referenceId": 79
+			},
+			{
+				"referenceId": 1823
 			}
 		],
 		"position": {
 			"x": 425,
 			"y": 94
 		}
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1823,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1824
+			},
+			{
+				"referenceId": 1825
+			}
+		],
+		"position": {
+			"x": 775,
+			"y": 109
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 1
+	},
+	{
+		"internalIdentifier": "ArcanistMastery",
+		"referenceId": 1824,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": 860,
+			"y": 194
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "ConjurerMastery",
+		"referenceId": 1825,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": 916,
+			"y": -32
+		},
+		"isHidden": true,
+		"connections": []
 	},
 	{
 		"internalIdentifier": "AddedDexterityPassive",
@@ -118,12 +165,59 @@
 		"connections": [
 			{
 				"referenceId": 218
+			},
+			{
+				"referenceId": 1820
 			}
 		],
 		"position": {
 			"x": -102,
 			"y": 439
 		}
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1820,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1821
+			},
+			{
+				"referenceId": 1822
+			}
+		],
+		"position": {
+			"x": -123,
+			"y": 838
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 1
+	},
+	{
+		"internalIdentifier": "HunterMastery",
+		"referenceId": 1821,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": -303,
+			"y": 838
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "DexterityMarksmanMastery",
+		"referenceId": 1822,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": 70,
+			"y": 890
+		},
+		"isHidden": true,
+		"connections": []
 	},
 	{
 		"internalIdentifier": "AddedStrengthPassive",
@@ -151,12 +245,59 @@
 		"connections": [
 			{
 				"referenceId": 173
+			},
+			{
+				"referenceId": 1817
 			}
 		],
 		"position": {
 			"x": -456,
 			"y": -102
 		}
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1817,
+		"maxLevel": 1,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 1818
+			},
+			{
+				"referenceId": 1819
+			}
+		],
+		"position": {
+			"x": -856,
+			"y": -120
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 1
+	},
+	{
+		"internalIdentifier": "TitanMastery",
+		"referenceId": 1818,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": -1056,
+			"y": -120
+		},
+		"isHidden": true,
+		"connections": []
+	},
+	{
+		"internalIdentifier": "ColossusMastery",
+		"referenceId": 1819,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": -941,
+			"y": -35
+		},
+		"isHidden": true,
+		"connections": []
 	},
 	{
 		"internalIdentifier": "AddedIntelligencePassive",

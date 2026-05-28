@@ -154,6 +154,36 @@ AddedDexterityPassive: {
 	Tooltip: Добавляет +{0} очков ловкости за уровень.
 }
 
+TitanMastery: {
+	// Name: Titan
+	// Tooltip: +{0}% increased [mechanic/shift:Strength]
+}
+
+ColossusMastery: {
+	// Name: Colossus
+	// Tooltip: [mechanic/shift:Strength] now also increases all knockback done
+}
+
+ArcanistMastery: {
+	// Name: Arcanist
+	// Tooltip: +{0}% increased [mechanic/shift:Intelligence]
+}
+
+ConjurerMastery: {
+	// Name: Conjurer
+	// Tooltip: [mechanic/shift:Intelligence] now also increases all area of effect
+}
+
+HunterMastery: {
+	// Name: Hunter
+	// Tooltip: +{0}% increased [mechanic/shift:Dexterity]
+}
+
+DexterityMarksmanMastery: {
+	// Name: Marksman
+	// Tooltip: [mechanic/shift:Dexterity] now also increases projectile speed
+}
+
 AddedIntelligenceStrengthPassive: {
 	// Name: Added Intelligence and Strength
 	// Tooltip: Adds +{0} points to [mechanic/shift=0;2:Intelligence] and [mechanic/shift=1;2:Strength]
