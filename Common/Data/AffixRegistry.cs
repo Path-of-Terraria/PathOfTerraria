@@ -9,6 +9,7 @@ using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Common.Systems.EnergyShield;
 using PathOfTerraria.Common.Systems.Affixes.Maps;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Utilities;
@@ -20,10 +21,13 @@ public class AffixRegistry : ILoadable
 {
 	/// <summary> All item affix data objects. </summary>
 	private static readonly List<ItemAffixData> AllItemData = [];
+
 	/// <summary> Lookup by affix type. </summary>
 	private static readonly Dictionary<Type, List<ItemAffixData>> ByAffix = [];
+
 	/// <summary> Lookup by EXACT item type. </summary>
 	private static readonly Dictionary<ItemType, List<ItemAffixData>> ByItemType = [];
+
 	/// <summary> Lookup by affix and EXACT item type. </summary>
 	private static readonly Dictionary<(Type AffixType, ItemType ItemType), ItemAffixData> ByAffixAndItemType = [];
 
@@ -53,11 +57,19 @@ public class AffixRegistry : ILoadable
 
 		throw new KeyNotFoundException($"No item data found for affix type '{affixType.Name}'!");
 	}
+
 	/// <summary> Unsafely acquires an ItemAffixData entry specific to the provided arguments. Errors if no such data exists! </summary>
 	public static ItemAffixData GetItemData(Type affixType, Item item)
 	{
-		return GetItemData(affixType, item.ResolveToSingleType(item.GetInstanceData().ItemType));
+		if (TryGetItemData(affixType, item) is { } values)
+		{
+			return values;
+		}
+
+		throw new KeyNotFoundException(
+			$"No item data found for affix-type pair ('{affixType.Name}', '{item.GetInstanceData().ItemType}')!");
 	}
+
 	/// <summary> Unsafely acquires an ItemAffixData entry specific to the provided arguments. Errors if no such data exists! </summary>
 	public static ItemAffixData GetItemData(Type affixType, ItemType itemType)
 	{
@@ -74,15 +86,19 @@ public class AffixRegistry : ILoadable
 	{
 		return ByAffix.TryGetValue(affixType, out List<ItemAffixData>? values) ? values : null;
 	}
+
 	/// <summary> Safely tries to acquire an affix item distribution entry specific to the provided arguments. </summary>
 	public static ItemAffixData? TryGetItemData(Type affixType, Item item)
 	{
-		return TryGetItemData(affixType, item.ResolveToSingleType(item.GetInstanceData().ItemType));
+		ItemAffixData? data = TryGetItemData(affixType, item.ResolveToSingleType(item.GetInstanceData().ItemType));
+		return data is not null && CanApplyToItem(data, item) ? data : null;
 	}
+
 	/// <summary> Safely tries to acquire an affix item distribution entry specific to the provided arguments. </summary>
 	public static ItemAffixData? TryGetItemData(Type affixType, ItemType itemType)
 	{
 		if (itemType == 0) { return null; }
+
 		Debug.Assert(BitOperations.PopCount((ulong)itemType) == 1);
 		return ByAffixAndItemType.TryGetValue((affixType, itemType), out ItemAffixData? result) ? result : null;
 	}
@@ -105,8 +121,8 @@ public class AffixRegistry : ILoadable
 		ByItemType.EnsureCapacity((int)ItemType.TypeCount);
 
 		foreach (Stream jsonStream in jsonFiles
-			.Where(path => path.StartsWith("Common/Data/Affixes") && path.EndsWith(".json"))
-			.Select(path => PoTMod.Instance.GetFileStream(path)))
+			         .Where(path => path.StartsWith("Common/Data/Affixes") && path.EndsWith(".json"))
+			         .Select(path => PoTMod.Instance.GetFileStream(path)))
 		{
 			using var jsonReader = new StreamReader(jsonStream);
 			string json = jsonReader.ReadToEnd();
@@ -153,7 +169,8 @@ public class AffixRegistry : ILoadable
 
 			if (!ByAffixAndItemType.TryAdd((affixType, itemType), data))
 			{
-				throw new InvalidDataException($"Duplicate item affix data found for key ({affixType.Name}, {itemType})!");
+				throw new InvalidDataException(
+					$"Duplicate item affix data found for key ({affixType.Name}, {itemType})!");
 			}
 		}
 	}
@@ -185,7 +202,8 @@ public class AffixRegistry : ILoadable
 	/// </summary>
 	/// <param name="itemType">The ItemType to filter by.</param>
 	/// <returns>Random ItemAffixData entry matching the ItemType.</returns>
-	public static ItemAffixData? GetRandomAffixDataByItemType(ItemType itemType, IEnumerable<ItemAffixData>? excludedAffixes = null)
+	public static ItemAffixData? GetRandomAffixDataByItemType(ItemType itemType,
+		IEnumerable<ItemAffixData>? excludedAffixes = null)
 	{
 		// No affixes for unrecognized item types.
 		if (itemType == ItemType.None)
@@ -216,7 +234,47 @@ public class AffixRegistry : ILoadable
 	public static ItemAffixData? GetRandomAffixData(Item item, IEnumerable<ItemAffixData>? excludedAffixes = null)
 	{
 		ItemType itemType = item.ResolveToSingleType(item.GetInstanceData().ItemType);
-		return GetRandomAffixDataByItemType(itemType, excludedAffixes);
+		return GetRandomAffixDataByItemType(itemType, excludedAffixes, item);
+	}
+
+	private static ItemAffixData? GetRandomAffixDataByItemType(ItemType itemType,
+		IEnumerable<ItemAffixData>? excludedAffixes, Item item)
+	{
+		// No affixes for unrecognized item types.
+		if (itemType == ItemType.None)
+		{
+			return null;
+		}
+
+		IEnumerable<ItemAffixData> enumerable = AllItemData
+			.Where(affixData => (itemType & affixData.GetEquipTypes()) != ItemType.None)
+			.Where(affixData => CanApplyToItem(affixData, item));
+
+		if (excludedAffixes != null)
+		{
+			enumerable = enumerable.Except(excludedAffixes);
+		}
+
+		var filteredAffixData = enumerable.ToList();
+
+		if (filteredAffixData.Count == 0)
+		{
+			return null;
+		}
+
+		int randomIndex = Main.rand.Next(0, filteredAffixData.Count);
+
+		return filteredAffixData[randomIndex];
+	}
+
+	private static bool CanApplyToItem(ItemAffixData affixData, Item item)
+	{
+		if (affixData.RequiresPathOfTerrariaItem && item.ModItem is not IPoTGlobalItem)
+		{
+			return false;
+		}
+
+		return !affixData.RequiresEnergyShieldItem || item.ModItem is IEnergyShieldItem;
 	}
 
 	/// <summary>

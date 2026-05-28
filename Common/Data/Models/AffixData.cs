@@ -30,6 +30,8 @@ public class ItemAffixData
 	public string AffixType { get; set; }
 	public string EquipTypes { get; set; }
 	public string Influences { get; set; }
+	public bool RequiresPathOfTerrariaItem { get; set; }
+	public bool RequiresEnergyShieldItem { get; set; }
 	public bool Round { get; set; }
 	public List<TierData> Tiers { get; set; }
 
@@ -112,7 +114,7 @@ public class ItemAffixData
 
 	public Influence GetInfluences()
 	{
-		if (Influences is null || Influences == string.Empty)
+		if (string.IsNullOrEmpty(Influences))
 		{
 			return Influence.None;
 		}
