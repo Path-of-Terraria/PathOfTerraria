@@ -55,7 +55,7 @@ public sealed partial class ItemTooltips : GlobalItem
 		public static Color LightningDamage => ColorUtils.FromHexRgb(0xFFF68F);
 		public static Color ChaosDamage => ColorUtils.FromHexRgb(0xC084FC);
 		public static Color ModifiedStat => ColorUtils.FromHexRgb(0x_639bff);
-		
+
 		// Accents
 		public static Color StatsAccent => ColorUtils.FromHexRgb(0x_a1bdbd);
 		public static Color AffixAccent => ColorUtils.FromHexRgb(0x_ff2222);
@@ -353,23 +353,15 @@ public sealed partial class ItemTooltips : GlobalItem
 		if (item.damage > 0)
 		{
 			Player player = Main.LocalPlayer;
-
-			// Get the weapon's damage type
-			DamageClass damageClass = item.DamageType;
-
-			// Calculate the actual damage the player would deal with this weapon
-			StatModifier damage = player.GetTotalDamage(damageClass);
-			int baseDamage = item.damage;
-
-			float finalDamage = damage.ApplyTo(baseDamage);
+			float baseDamage = item.damage * ItemID.Sets.ToolTipDamageMultiplier[item.type];
+			float finalDamage = player.GetWeaponDamage(item, true);
 
 			// 15% variability, default range
 			float minDamage = finalDamage * 0.85f;
 			float maxDamage = finalDamage * 1.15f;
 
-			// Base values for the base tooltip
-			float baseMinDamage = minDamage;
-			float baseMaxDamage = maxDamage;
+			float baseMinDamage = baseDamage * 0.85f;
+			float baseMaxDamage = baseDamage * 1.15f;
 
 			ElementalContainer playerElements = player.GetModPlayer<ElementalPlayer>().Container;
 
@@ -482,11 +474,7 @@ public sealed partial class ItemTooltips : GlobalItem
 			    item.wingSlot <= 0)
 			{
 				Player player = Main.LocalPlayer;
-				// Get the player's attack speed multiplier
-				float useTimeMultiplier = player.GetTotalAttackSpeed(item.DamageType);
-
-				// Calculate effective use time with player bonuses
-				float effectiveUseTime = item.useTime / useTimeMultiplier;
+				float effectiveUseTime = CombinedHooks.TotalUseTime(item.useTime, player, item);
 
 				// Calculate attacks per second with bonuses
 				float aps = 60f / effectiveUseTime;
@@ -506,11 +494,7 @@ public sealed partial class ItemTooltips : GlobalItem
 		{
 			Player player = Main.LocalPlayer;
 
-			// Calculate the actual crit chance for this weapon
-			// Base crit of all weapons atm is 4 (+ any added we have)
-			float baseCritChance = item.crit;
-			float playerCritChance = player.GetTotalCritChance(item.DamageType);
-			float totalCritChance = baseCritChance + playerCritChance;
+			float totalCritChance = player.GetWeaponCrit(item);
 
 			// Add the tooltip line
 			var critLine = new TooltipLine(Mod, "CriticalStrikeChance",
@@ -523,8 +507,7 @@ public sealed partial class ItemTooltips : GlobalItem
 		if (item.mana > 0)
 		{
 			Player player = Main.LocalPlayer;
-			// Calculate the real mana cost
-			int effectiveManaCost = (int)Math.Round(item.mana * player.manaCost);
+			int effectiveManaCost = player.GetManaCost(item);
 
 			string manaCost =
 				$"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"[{effectiveManaCost}]")} [c/{Colors.ManaCost.ToHexRGB()}:{Localize("ManaCost")}]";
