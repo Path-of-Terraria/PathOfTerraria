@@ -35,6 +35,11 @@ UIConfig: {
 		Label: Use Sack of Holding
 		Tooltip: Allows use of the Sack of Holding in domains for easier inventory management.
 	}
+
+	ShowLootBeams: {
+		Label: Show Loot Beams
+		Tooltip: When enabled, loot filter Highlight rules draw beams over matching dropped items.
+	}
 }
 
 GameplayConfig: {

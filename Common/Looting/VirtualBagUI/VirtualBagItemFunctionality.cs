@@ -91,7 +91,7 @@ internal class VirtualBagItemFunctionality : GlobalItem, PostRoll.IGlobal
 
 		ItemFilter filter = player.GetModPlayer<ItemFilterPlayer>().ActiveFilter;
 
-		if (filter is null || filter.Evaluate(item, out LocalizedText reason))
+		if (filter is null || filter.Evaluate(item, out ItemFilterEvaluationResult result))
 		{
 			return;
 		}
@@ -100,7 +100,7 @@ internal class VirtualBagItemFunctionality : GlobalItem, PostRoll.IGlobal
 		storage.FilteredOutStorage.Add(item.Clone());
 		storage.LastFilterName = filter.Name;
 
-		LogFilterRejection(item, filter, "Update", reason);
+		LogFilterRejection(item, filter, "Update", result.Reason);
 
 		item.TurnToAir();
 
@@ -143,7 +143,7 @@ internal class VirtualBagItemFunctionality : GlobalItem, PostRoll.IGlobal
 		var storage = player.GetModPlayer<VirtualBagStoragePlayer>();
 		ItemFilter filter = player.GetModPlayer<ItemFilterPlayer>().ActiveFilter;
 
-		if (filter is null || filter.Evaluate(item, out LocalizedText reason))
+		if (filter is null || filter.Evaluate(item, out ItemFilterEvaluationResult result))
 		{
 			storage.MatchedStorage.Add(item);
 
@@ -158,7 +158,7 @@ internal class VirtualBagItemFunctionality : GlobalItem, PostRoll.IGlobal
 			// landed on it before the delay elapsed). Route through the bag the same way.
 			storage.FilteredOutStorage.Add(item);
 			storage.LastFilterName = filter.Name;
-			LogFilterRejection(item, filter, "OnPickup", reason);
+			LogFilterRejection(item, filter, "OnPickup", result.Reason);
 		}
 
 		AdvancedPopupRequest request = default;
