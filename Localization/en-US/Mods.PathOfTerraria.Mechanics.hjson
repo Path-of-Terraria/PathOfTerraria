@@ -157,5 +157,5 @@ Dexterity: {
 
 Duration: {
 	Tag: Duration
-	Description: Affects how long projectiles, buffs, and skills last. Increased duration makes effects persist longer, while decreased duration makes them expire faster. This modifier applies to all timed effects from the player.
+	Description: Affects how long projectiles, buffs, and skills last. This modifier applies to all timed effects from the player.
 }

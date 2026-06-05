@@ -1258,3 +1258,33 @@ TemporalCompressionMastery: {
 	// Name: Temporal Compression
 	// Tooltip: +{0}% decreased [mechanic/shift:Duration]
 }
+
+TitanMastery: {
+	// Name: TitanMastery
+	// Tooltip: ""
+}
+
+ColossusMastery: {
+	// Name: ColossusMastery
+	// Tooltip: ""
+}
+
+ArcanistMastery: {
+	// Name: ArcanistMastery
+	// Tooltip: ""
+}
+
+ConjurerMastery: {
+	// Name: ConjurerMastery
+	// Tooltip: ""
+}
+
+HunterMastery: {
+	// Name: HunterMastery
+	// Tooltip: ""
+}
+
+DexterityMarksmanMastery: {
+	// Name: DexterityMarksmanMastery
+	// Tooltip: ""
+}
