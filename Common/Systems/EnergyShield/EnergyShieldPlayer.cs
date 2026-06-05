@@ -83,6 +83,31 @@ internal sealed class EnergyShieldPlayer : ModPlayer
 		fasterRechargeStart += value;
 	}
 
+	public int ConsumeEnergyShield(int amount, bool triggerShatter = false)
+	{
+		if (amount <= 0 || CurrentEnergyShield <= 0)
+		{
+			return 0;
+		}
+
+		int available = (int)MathF.Floor(CurrentEnergyShield);
+		if (available <= 0)
+		{
+			return 0;
+		}
+
+		int consumed = Math.Min(available, amount);
+		CurrentEnergyShield = Math.Max(0f, CurrentEnergyShield - consumed);
+		ResetRechargeDelay();
+
+		if (triggerShatter && CurrentEnergyShield <= 0 && consumed > 0)
+		{
+			shatterTicksRemaining = ShatterDurationTicks;
+		}
+
+		return consumed;
+	}
+
 	public override void PostUpdateEquips()
 	{
 		if (shatterTicksRemaining > 0)
