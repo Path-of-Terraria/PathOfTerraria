@@ -11,6 +11,7 @@ Tooltips: {
 	Tier: Tier:
 	Level: Item level:
 	Defense: Defense
+	EnergyShield: Energy Shield
 	Pickaxe: Pickaxe Power
 	Axe: Axe Power
 	Hammer: Hammer Power

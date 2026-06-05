@@ -60,6 +60,11 @@ public sealed partial class PoTGlobalItem : GlobalItem
 	
 	public override void OnCreated(Item item, ItemCreationContext context)
 	{
+		if (context is BuyItemCreationContext)
+		{
+			return;
+		}
+
 		// Only apply to gear items that should use dynamic levels
 		if (GearGlobalItem.IsGearItem(item))
 		{

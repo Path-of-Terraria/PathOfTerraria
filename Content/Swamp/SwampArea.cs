@@ -803,9 +803,13 @@ internal class SwampArea : MappingWorld, IExplorationWorld
 	{
 		Liquid.UpdateLiquid();
 
-		if (Main.ActivePlayers.GetEnumerator().MoveNext() && NPC.CountNPCS(ModContent.NPCType<GiantEel>()) < Main.CurrentFrameFlags.ActivePlayersCount)
+		int activePlayerCount = Main.CurrentFrameFlags.ActivePlayersCount;
+		int eelsToSpawn = activePlayerCount - NPC.CountNPCS(ModContent.NPCType<GiantEel>());
+
+		for (int i = 0; i < eelsToSpawn; ++i)
 		{
-			int npc = NPC.NewNPC(new EntitySource_WorldGen(), Main.spawnTileX * 16, 120 * 16, ModContent.NPCType<GiantEel>(), 0, 0, 0, Main.CurrentFrameFlags.ActivePlayersCount - 1);
+			Vector2 spawnPosition = GetGiantEelSpawnPosition();
+			int npc = NPC.NewNPC(new EntitySource_WorldGen(), (int)spawnPosition.X, (int)spawnPosition.Y, ModContent.NPCType<GiantEel>(), 0, 0, 0, GetRandomActivePlayerIndex());
 			Main.npc[npc].netUpdate = true;
 		}
 
@@ -854,6 +858,58 @@ internal class SwampArea : MappingWorld, IExplorationWorld
 				}
 			}
 		}
+	}
+
+	private static Vector2 GetGiantEelSpawnPosition()
+	{
+		const int SpawnTileY = 120;
+		const int ArenaPadding = 80;
+		const int MinimumPlayerDistanceX = 220;
+		const int Attempts = 50;
+
+		int minX = SwampArenaGeneration.ArenaWidth + ArenaPadding;
+		int maxX = Main.maxTilesX - SwampArenaGeneration.ArenaWidth - ArenaPadding;
+		int fallbackX = Random.Next(minX, maxX);
+
+		for (int i = 0; i < Attempts; ++i)
+		{
+			int x = Random.Next(minX, maxX);
+
+			if (!IsNearAnyActivePlayerX(x, MinimumPlayerDistanceX))
+			{
+				return new Vector2(x * 16, SpawnTileY * 16);
+			}
+		}
+
+		return new Vector2(fallbackX * 16, SpawnTileY * 16);
+	}
+
+	private static bool IsNearAnyActivePlayerX(int tileX, int minimumDistance)
+	{
+		foreach (Player player in Main.ActivePlayers)
+		{
+			if (Math.Abs(player.Center.X / 16f - tileX) < minimumDistance)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private static int GetRandomActivePlayerIndex()
+	{
+		int remaining = Random.Next(Main.CurrentFrameFlags.ActivePlayersCount);
+
+		foreach (Player player in Main.ActivePlayers)
+		{
+			if (remaining-- == 0)
+			{
+				return player.whoAmI;
+			}
+		}
+
+		return 0;
 	}
 
 	private static void SpawnArenaEntities()

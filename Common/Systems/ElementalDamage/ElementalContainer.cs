@@ -14,6 +14,7 @@ public class ElementInstance(ElementType type, bool isGeneric)
 	/// Determines if this element is "generic", i.e. it's included in "All elemental" affixes or effects.
 	/// </summary>
 	public readonly bool IsGeneric = isGeneric;
+	public bool playerIsImmune = false;
 
 	public LocalizedText ElementDisplayName => Language.GetOrRegister("Mods.PathOfTerraria.Misc.Element." + Type + ".Name");
 
@@ -45,6 +46,20 @@ public class ElementInstance(ElementType type, bool isGeneric)
 	public float GetTotalConversion(float resistance)
 	{
 		return DamageModifier.DamageConversion * Math.Abs(1f - resistance);
+	}
+	
+	/// <summary>
+	/// Gets the damage multiplier after resistances, accounting for elemental immunities.
+	/// </summary>
+	/// <returns>Final damage multiplier, accounting for resistance and immunities.</returns>
+	public float GetDamageMultiplier()
+	{
+		if (playerIsImmune)
+		{
+			return 0f;
+		}
+
+		return 1f - Resistance;
 	}
 
 	/// <summary>

@@ -21,10 +21,14 @@ internal sealed class ItemFilterUIState : UIState, IMutuallyExclusiveUI, IAutopa
 	private const string Path = "Mods.PathOfTerraria.UI.ItemFilter.";
 
 	private static readonly ItemRarity[] AllRarities = [ItemRarity.Normal, ItemRarity.Magic, ItemRarity.Rare, ItemRarity.Unique];
+	private static readonly ItemType[] AllBaseTypes = CreateSingleBaseTypes();
+	private static readonly ItemType AllBaseTypesMask = ItemType.All;
 
 	private UIList _filterList;
+	private UIList _ruleList;
 	private UIElement _editorPanel;
-	private int _selectedIndex = -1;
+	private int _selectedFilterIndex = -1;
+	private int _selectedRuleIndex = -1;
 
 	public override void OnActivate()
 	{
@@ -33,7 +37,7 @@ internal sealed class ItemFilterUIState : UIState, IMutuallyExclusiveUI, IAutopa
 		RemoveAllChildren();
 
 		UIPanel root = new();
-		root.SetDimensions((0f, 0), (0, 0), (0, 900), (0, 560));
+		root.SetDimensions((0f, 0), (0, 0), (0, 1280), (0, 740));
 		root.HAlign = 0.5f;
 		root.VAlign = 0.5f;
 		root.OnUpdate += BlockClicks;
@@ -51,26 +55,35 @@ internal sealed class ItemFilterUIState : UIState, IMutuallyExclusiveUI, IAutopa
 		close.OnLeftClick += (_, _) => Toggle();
 		root.Append(close);
 
-		BuildLeftColumn(root);
-		BuildRightColumn(root);
+		BuildFilterColumn(root);
+		BuildRuleColumn(root);
+		BuildEditorColumn(root);
 
 		ItemFilterPlayer player = Main.LocalPlayer.GetModPlayer<ItemFilterPlayer>();
 
 		if (player.Filters.Count > 0)
 		{
-			_selectedIndex = Math.Max(0, player.ActiveFilterIndex);
+			_selectedFilterIndex = player.ActiveFilterIndex >= 0 && player.ActiveFilterIndex < player.Filters.Count
+				? player.ActiveFilterIndex
+				: 0;
 		}
 
+		EnsureSelectedRule();
 		RebuildFilterList();
+		RebuildRuleList();
 		RebuildEditor();
 	}
 
-	private void BuildLeftColumn(UIPanel root)
+	private void BuildFilterColumn(UIPanel root)
 	{
-		const int LeftWidth = 240;
+		const int Left = 6;
+		const int Top = 50;
+		const int Width = 260;
+
+		root.Append(new UIText(Language.GetText(Path + "Filters"), 0.85f) { Left = StyleDimension.FromPixels(Left), Top = StyleDimension.FromPixels(Top - 28) });
 
 		UIPanel column = new();
-		column.SetDimensions((0, 6), (0, 50), (0, LeftWidth), (1, -94));
+		column.SetDimensions((0, Left), (0, Top), (0, Width), (1, -94));
 		root.Append(column);
 
 		_filterList = new UIList();
@@ -84,67 +97,148 @@ internal sealed class ItemFilterUIState : UIState, IMutuallyExclusiveUI, IAutopa
 		_filterList.SetScrollbar(bar);
 		column.Append(bar);
 
-		// Action buttons under the list. Three equal-width buttons spanning the column.
 		const int ActionGap = 4;
-		int actionWidth = (LeftWidth - 2 * ActionGap) / 3;
+		int actionWidth = (Width - 2 * ActionGap) / 3;
 
-		AppendActionButton(root, Path + "New", 6 + 0 * (actionWidth + ActionGap), -50, actionWidth, () =>
+		AppendActionButton(root, Path + "New", Left + 0 * (actionWidth + ActionGap), -50, actionWidth, () =>
 		{
 			ItemFilterPlayer player = Main.LocalPlayer.GetModPlayer<ItemFilterPlayer>();
-			player.Filters.Add(new ItemFilter { Name = Language.GetTextValue(Path + "DefaultName") });
-			_selectedIndex = player.Filters.Count - 1;
-			// Auto-activate the new filter so the player doesn't have to remember to hit Set Active to
-			// see their filter take effect.
-			player.ActiveFilterIndex = _selectedIndex;
+			var filter = new ItemFilter { Name = Language.GetTextValue(Path + "DefaultName") };
+			filter.Rules.Add(CreateDefaultRule(1));
+			player.Filters.Add(filter);
+			_selectedFilterIndex = player.Filters.Count - 1;
+			_selectedRuleIndex = 0;
+			player.ActiveFilterIndex = _selectedFilterIndex;
 			RebuildFilterList();
+			RebuildRuleList();
 			RebuildEditor();
 		});
 
-		AppendActionButton(root, Path + "Duplicate", 6 + 1 * (actionWidth + ActionGap), -50, actionWidth, () =>
+		AppendActionButton(root, Path + "Duplicate", Left + 1 * (actionWidth + ActionGap), -50, actionWidth, () =>
 		{
 			ItemFilterPlayer player = Main.LocalPlayer.GetModPlayer<ItemFilterPlayer>();
 
-			if (_selectedIndex < 0 || _selectedIndex >= player.Filters.Count)
+			if (!TryGetSelectedFilter(player, out ItemFilter filter))
 			{
 				return;
 			}
 
-			player.Filters.Add(player.Filters[_selectedIndex].Clone());
-			_selectedIndex = player.Filters.Count - 1;
+			player.Filters.Add(filter.Clone());
+			_selectedFilterIndex = player.Filters.Count - 1;
+			_selectedRuleIndex = player.Filters[_selectedFilterIndex].Rules.Count > 0 ? 0 : -1;
 			RebuildFilterList();
+			RebuildRuleList();
 			RebuildEditor();
 		});
 
-		AppendActionButton(root, Path + "Delete", 6 + 2 * (actionWidth + ActionGap), -50, actionWidth, () =>
+		AppendActionButton(root, Path + "Delete", Left + 2 * (actionWidth + ActionGap), -50, actionWidth, () =>
 		{
 			ItemFilterPlayer player = Main.LocalPlayer.GetModPlayer<ItemFilterPlayer>();
 
-			if (_selectedIndex < 0 || _selectedIndex >= player.Filters.Count)
+			if (_selectedFilterIndex < 0 || _selectedFilterIndex >= player.Filters.Count)
 			{
 				return;
 			}
 
-			player.Filters.RemoveAt(_selectedIndex);
+			player.Filters.RemoveAt(_selectedFilterIndex);
 
-			if (player.ActiveFilterIndex == _selectedIndex)
+			if (player.ActiveFilterIndex == _selectedFilterIndex)
 			{
 				player.ActiveFilterIndex = -1;
 			}
-			else if (player.ActiveFilterIndex > _selectedIndex)
+			else if (player.ActiveFilterIndex > _selectedFilterIndex)
 			{
 				player.ActiveFilterIndex--;
 			}
 
-			_selectedIndex = Math.Min(_selectedIndex, player.Filters.Count - 1);
+			_selectedFilterIndex = Math.Min(_selectedFilterIndex, player.Filters.Count - 1);
+			EnsureSelectedRule();
 			RebuildFilterList();
+			RebuildRuleList();
 			RebuildEditor();
 		});
 	}
 
-	private void BuildRightColumn(UIPanel root)
+	private void BuildRuleColumn(UIPanel root)
+	{
+		const int Left = 280;
+		const int Top = 50;
+		const int Width = 330;
+
+		root.Append(new UIText(Language.GetText(Path + "Rules"), 0.85f) { Left = StyleDimension.FromPixels(Left), Top = StyleDimension.FromPixels(Top - 28) });
+
+		UIPanel column = new();
+		column.SetDimensions((0, Left), (0, Top), (0, Width), (1, -128));
+		root.Append(column);
+
+		_ruleList = new UIList();
+		_ruleList.SetDimensions((0, 0), (0, 0), (1, -24), (1, 0));
+		_ruleList.ListPadding = 4f;
+		column.Append(_ruleList);
+
+		var bar = new UIScrollbar();
+		bar.SetDimensions((0, 0), (0, 0), (0, 20), (1, 0));
+		bar.HAlign = 1f;
+		_ruleList.SetScrollbar(bar);
+		column.Append(bar);
+
+		const int ActionGap = 4;
+		int wideActionWidth = (Width - 2 * ActionGap) / 3;
+		int narrowActionWidth = (Width - ActionGap) / 2;
+
+		AppendActionButton(root, Path + "AddRule", Left + 0 * (wideActionWidth + ActionGap), -84, wideActionWidth, () =>
+		{
+			ItemFilterPlayer player = Main.LocalPlayer.GetModPlayer<ItemFilterPlayer>();
+
+			if (!TryGetSelectedFilter(player, out ItemFilter filter))
+			{
+				return;
+			}
+
+			filter.Rules.Add(CreateDefaultRule(filter.Rules.Count + 1));
+			_selectedRuleIndex = filter.Rules.Count - 1;
+			RebuildRuleList();
+			RebuildEditor();
+		});
+
+		AppendActionButton(root, Path + "DuplicateRule", Left + 1 * (wideActionWidth + ActionGap), -84, wideActionWidth, () =>
+		{
+			ItemFilterPlayer player = Main.LocalPlayer.GetModPlayer<ItemFilterPlayer>();
+
+			if (!TryGetSelectedRule(player, out ItemFilter filter, out ItemFilterRule rule))
+			{
+				return;
+			}
+
+			filter.Rules.Insert(_selectedRuleIndex + 1, rule.Clone());
+			_selectedRuleIndex++;
+			RebuildRuleList();
+			RebuildEditor();
+		});
+
+		AppendActionButton(root, Path + "DeleteRule", Left + 2 * (wideActionWidth + ActionGap), -84, wideActionWidth, () =>
+		{
+			ItemFilterPlayer player = Main.LocalPlayer.GetModPlayer<ItemFilterPlayer>();
+
+			if (!TryGetSelectedRule(player, out ItemFilter filter, out _))
+			{
+				return;
+			}
+
+			filter.Rules.RemoveAt(_selectedRuleIndex);
+			_selectedRuleIndex = Math.Min(_selectedRuleIndex, filter.Rules.Count - 1);
+			RebuildRuleList();
+			RebuildEditor();
+		});
+
+		AppendActionButton(root, Path + "MoveUp", Left, -44, narrowActionWidth, () => MoveSelectedRule(-1));
+		AppendActionButton(root, Path + "MoveDown", Left + narrowActionWidth + ActionGap, -44, narrowActionWidth, () => MoveSelectedRule(1));
+	}
+
+	private void BuildEditorColumn(UIPanel root)
 	{
 		_editorPanel = new UIPanel();
-		_editorPanel.SetDimensions((0, 252), (0, 50), (1, -260), (1, -94));
+		_editorPanel.SetDimensions((0, 626), (0, 50), (1, -634), (1, -94));
 		root.Append(_editorPanel);
 
 		const int RightActionWidth = 140;
@@ -154,12 +248,12 @@ internal sealed class ItemFilterUIState : UIState, IMutuallyExclusiveUI, IAutopa
 		{
 			ItemFilterPlayer player = Main.LocalPlayer.GetModPlayer<ItemFilterPlayer>();
 
-			if (_selectedIndex < 0 || _selectedIndex >= player.Filters.Count)
+			if (_selectedFilterIndex < 0 || _selectedFilterIndex >= player.Filters.Count)
 			{
 				return;
 			}
 
-			player.ActiveFilterIndex = _selectedIndex;
+			player.ActiveFilterIndex = _selectedFilterIndex;
 			RebuildFilterList();
 		}, alignRight: true);
 
@@ -194,6 +288,25 @@ internal sealed class ItemFilterUIState : UIState, IMutuallyExclusiveUI, IAutopa
 		parent.Append(button);
 	}
 
+	private static void AppendEditorButton(UIElement parent, string textKey, float leftPx, float topPx, int width, Action onClick)
+	{
+		var button = new UIButton<LocalizedText>(Language.GetText(textKey))
+		{
+			Width = StyleDimension.FromPixels(width),
+			Height = StyleDimension.FromPixels(28),
+			Left = StyleDimension.FromPixels(leftPx),
+			Top = StyleDimension.FromPixels(topPx),
+		};
+
+		button.OnLeftClick += (_, _) =>
+		{
+			SoundEngine.PlaySound(SoundID.MenuTick);
+			onClick();
+		};
+
+		parent.Append(button);
+	}
+
 	private void RebuildFilterList()
 	{
 		_filterList.Clear();
@@ -205,7 +318,7 @@ internal sealed class ItemFilterUIState : UIState, IMutuallyExclusiveUI, IAutopa
 			int index = i;
 			ItemFilter filter = player.Filters[i];
 			bool isActive = i == player.ActiveFilterIndex;
-			bool isSelected = i == _selectedIndex;
+			bool isSelected = i == _selectedFilterIndex;
 
 			string label = filter.Name;
 			if (isActive)
@@ -216,17 +329,55 @@ internal sealed class ItemFilterUIState : UIState, IMutuallyExclusiveUI, IAutopa
 			var row = new UIPanel();
 			row.SetPadding(0);
 			row.Width = StyleDimension.FromPercent(1f);
-			row.Height = StyleDimension.FromPixels(32);
+			row.Height = StyleDimension.FromPixels(34);
 			row.BackgroundColor = isSelected ? new Color(73, 94, 171) : new Color(63, 82, 151) * 0.7f;
-			row.Append(new UIText(label, 0.85f) { HAlign = 0.5f, VAlign = 0.5f });
+			row.Append(new UIText(label, 0.75f) { HAlign = 0.5f, VAlign = 0.5f });
 			row.OnLeftClick += (_, _) =>
 			{
 				SoundEngine.PlaySound(SoundID.MenuTick);
-				_selectedIndex = index;
+				_selectedFilterIndex = index;
+				EnsureSelectedRule();
 				RebuildFilterList();
+				RebuildRuleList();
 				RebuildEditor();
 			};
 			_filterList.Add(row);
+		}
+	}
+
+	private void RebuildRuleList()
+	{
+		_ruleList.Clear();
+
+		ItemFilterPlayer player = Main.LocalPlayer.GetModPlayer<ItemFilterPlayer>();
+
+		if (!TryGetSelectedFilter(player, out ItemFilter filter))
+		{
+			return;
+		}
+
+		for (int i = 0; i < filter.Rules.Count; i++)
+		{
+			int index = i;
+			ItemFilterRule rule = filter.Rules[i];
+			bool isSelected = i == _selectedRuleIndex;
+			string action = Language.GetTextValue(Path + "Actions." + rule.Action);
+			string label = Language.GetTextValue(Path + "RuleSummary", i + 1, action, rule.Name);
+
+			var row = new UIPanel();
+			row.SetPadding(0);
+			row.Width = StyleDimension.FromPercent(1f);
+			row.Height = StyleDimension.FromPixels(34);
+			row.BackgroundColor = isSelected ? new Color(73, 94, 171) : GetRuleColor(rule.Action) * 0.75f;
+			row.Append(new UIText(label, 0.72f) { HAlign = 0.5f, VAlign = 0.5f });
+			row.OnLeftClick += (_, _) =>
+			{
+				SoundEngine.PlaySound(SoundID.MenuTick);
+				_selectedRuleIndex = index;
+				RebuildRuleList();
+				RebuildEditor();
+			};
+			_ruleList.Add(row);
 		}
 	}
 
@@ -236,7 +387,7 @@ internal sealed class ItemFilterUIState : UIState, IMutuallyExclusiveUI, IAutopa
 
 		ItemFilterPlayer player = Main.LocalPlayer.GetModPlayer<ItemFilterPlayer>();
 
-		if (_selectedIndex < 0 || _selectedIndex >= player.Filters.Count)
+		if (!TryGetSelectedFilter(player, out ItemFilter filter))
 		{
 			_editorPanel.Append(new UIText(Language.GetText(Path + "EmptyHint"), 0.85f)
 			{
@@ -246,44 +397,76 @@ internal sealed class ItemFilterUIState : UIState, IMutuallyExclusiveUI, IAutopa
 			return;
 		}
 
-		ItemFilter filter = player.Filters[_selectedIndex];
-
-		// Layout: each section has a label row followed by an input row.
-		const int NameLabelY = 0;
-		const int NameFieldY = 24;
-		const int LevelLabelY = 64;
-		const int LevelFieldY = 88;
-		const int RarityLabelY = 128;
-		const int RarityToggleY = 152;
-		const int BaseTypeLabelY = 192;
-		const int BaseTypeGridY = 216;
 		const int FieldHeight = 28;
 		const int ToggleHeight = 28;
 
-		// Name field.
-		_editorPanel.Append(new UIText(Language.GetText(Path + "Name"), 0.85f) { Top = StyleDimension.FromPixels(NameLabelY) });
+		_editorPanel.Append(new UIText(Language.GetText(Path + "FilterName"), 0.85f) { Top = StyleDimension.FromPixels(0) });
 
-		var nameField = new UIEditableText(InputType.Text, Language.GetTextValue(Path + "DefaultName"), maxChars: 40)
+		var filterNameField = new UIEditableText(InputType.Text, Language.GetTextValue(Path + "DefaultName"), maxChars: 40)
 		{
 			CurrentValue = filter.Name,
 		};
-		nameField.SetDimensions((0, 0), (0, NameFieldY), (1, 0), (0, FieldHeight));
-		nameField.OnUpdate += _ =>
+		filterNameField.SetDimensions((0, 0), (0, 24), (1, 0), (0, FieldHeight));
+		filterNameField.OnUpdate += _ =>
 		{
-			if (!string.Equals(filter.Name, nameField.CurrentValue, StringComparison.Ordinal))
+			if (!string.Equals(filter.Name, filterNameField.CurrentValue, StringComparison.Ordinal))
 			{
-				filter.Name = nameField.CurrentValue;
+				filter.Name = filterNameField.CurrentValue;
+				RebuildFilterList();
 			}
 		};
-		_editorPanel.Append(nameField);
+		_editorPanel.Append(filterNameField);
 
-		// Item level fields - labels on label row, inputs on field row below.
+		if (!TryGetSelectedRule(player, out _, out ItemFilterRule rule))
+		{
+			_editorPanel.Append(new UIText(Language.GetText(Path + "RuleEmptyHint"), 0.85f)
+			{
+				HAlign = 0.5f,
+				VAlign = 0.5f,
+			});
+			return;
+		}
+
+		const int RuleNameLabelY = 64;
+		const int RuleNameFieldY = 88;
+		const int ActionLabelY = 128;
+		const int ActionToggleY = 152;
+		const int LevelLabelY = 192;
+		const int LevelFieldY = 216;
+		const int RarityLabelY = 256;
+		const int RarityToggleY = 280;
+		const int BaseTypeLabelY = 320;
+		const int BaseTypeBulkY = 344;
+		const int BaseTypeGridY = 380;
+
+		_editorPanel.Append(new UIText(Language.GetText(Path + "RuleName"), 0.85f) { Top = StyleDimension.FromPixels(RuleNameLabelY) });
+
+		var ruleNameField = new UIEditableText(InputType.Text, Language.GetTextValue(Path + "DefaultRuleName", _selectedRuleIndex + 1), maxChars: 40)
+		{
+			CurrentValue = rule.Name,
+		};
+		ruleNameField.SetDimensions((0, 0), (0, RuleNameFieldY), (1, 0), (0, FieldHeight));
+		ruleNameField.OnUpdate += _ =>
+		{
+			if (!string.Equals(rule.Name, ruleNameField.CurrentValue, StringComparison.Ordinal))
+			{
+				rule.Name = ruleNameField.CurrentValue;
+				RebuildRuleList();
+			}
+		};
+		_editorPanel.Append(ruleNameField);
+
+		_editorPanel.Append(new UIText(Language.GetText(Path + "RuleAction"), 0.85f) { Top = StyleDimension.FromPixels(ActionLabelY) });
+		AppendRuleActionToggle(rule, ItemFilterRuleAction.Show, 0, ActionToggleY);
+		AppendRuleActionToggle(rule, ItemFilterRuleAction.Hide, 112, ActionToggleY);
+		AppendRuleActionToggle(rule, ItemFilterRuleAction.Highlight, 224, ActionToggleY);
+
 		_editorPanel.Append(new UIText(Language.GetText(Path + "ItemLevel"), 0.85f) { Top = StyleDimension.FromPixels(LevelLabelY) });
 
 		var minField = new UINumberInput(Language.GetTextValue(Path + "Any"), maxChars: 4) { Min = 0 };
-		minField.Value = filter.MinItemLevel;
+		minField.Value = rule.MinItemLevel;
 		minField.SetDimensions((0, 0), (0, LevelFieldY), (0, 96), (0, FieldHeight));
-		minField.OnValueChanged += v => filter.MinItemLevel = v;
+		minField.OnValueChanged += v => rule.MinItemLevel = v;
 		_editorPanel.Append(minField);
 
 		_editorPanel.Append(new UIText("-", 0.85f)
@@ -293,12 +476,11 @@ internal sealed class ItemFilterUIState : UIState, IMutuallyExclusiveUI, IAutopa
 		});
 
 		var maxField = new UINumberInput(Language.GetTextValue(Path + "Any"), maxChars: 4) { Min = 0 };
-		maxField.Value = filter.MaxItemLevel;
+		maxField.Value = rule.MaxItemLevel;
 		maxField.SetDimensions((0, 120), (0, LevelFieldY), (0, 96), (0, FieldHeight));
-		maxField.OnValueChanged += v => filter.MaxItemLevel = v;
+		maxField.OnValueChanged += v => rule.MaxItemLevel = v;
 		_editorPanel.Append(maxField);
 
-		// Rarity toggles.
 		_editorPanel.Append(new UIText(Language.GetText(Path + "Rarity"), 0.85f) { Top = StyleDimension.FromPixels(RarityLabelY) });
 
 		const int RarityToggleWidth = 96;
@@ -310,16 +492,16 @@ internal sealed class ItemFilterUIState : UIState, IMutuallyExclusiveUI, IAutopa
 			ItemRarity captured = rarity;
 			var toggle = new UIToggleButton(
 				Language.GetText(Path + "Rarities." + captured),
-				() => filter.Rarities.Contains(captured),
+				() => rule.Rarities.Contains(captured),
 				v =>
 				{
 					if (v)
 					{
-						filter.Rarities.Add(captured);
+						rule.Rarities.Add(captured);
 					}
 					else
 					{
-						filter.Rarities.Remove(captured);
+						rule.Rarities.Remove(captured);
 					}
 				});
 			toggle.Top = StyleDimension.FromPixels(RarityToggleY);
@@ -330,8 +512,17 @@ internal sealed class ItemFilterUIState : UIState, IMutuallyExclusiveUI, IAutopa
 			rarityLeft += RarityToggleWidth + RarityToggleSpacing;
 		}
 
-		// Base type toggles.
 		_editorPanel.Append(new UIText(Language.GetText(Path + "BaseTypes"), 0.85f) { Top = StyleDimension.FromPixels(BaseTypeLabelY) });
+		AppendEditorButton(_editorPanel, Path + "SelectAllBaseTypes", 0, BaseTypeBulkY, 116, () =>
+		{
+			rule.BaseTypes = AllBaseTypesMask;
+			RebuildEditor();
+		});
+		AppendEditorButton(_editorPanel, Path + "DeselectAllBaseTypes", 124, BaseTypeBulkY, 132, () =>
+		{
+			rule.BaseTypes = ItemType.None;
+			RebuildEditor();
+		});
 
 		var baseTypeContainer = new UIPanel();
 		baseTypeContainer.SetDimensions((0, 0), (0, BaseTypeGridY), (1, 0), (1, -BaseTypeGridY - 8));
@@ -350,20 +541,123 @@ internal sealed class ItemFilterUIState : UIState, IMutuallyExclusiveUI, IAutopa
 
 		const int BaseTypeToggleWidth = 130;
 
-		foreach (ItemType type in GetSingleBaseTypes())
+		foreach (ItemType type in AllBaseTypes)
 		{
 			ItemType captured = type;
 			var toggle = new UIToggleButton(
 				LanguageHelperLocalizeBaseType(captured),
-				() => (filter.BaseTypes & captured) != 0,
-				v => filter.BaseTypes = v ? filter.BaseTypes | captured : filter.BaseTypes & ~captured);
+				() => (rule.BaseTypes & captured) != 0,
+				v => rule.BaseTypes = v ? rule.BaseTypes | captured : rule.BaseTypes & ~captured);
 			toggle.Width = StyleDimension.FromPixels(BaseTypeToggleWidth);
 			toggle.Height = StyleDimension.FromPixels(ToggleHeight);
 			baseGrid.Add(toggle);
 		}
 	}
 
-	private static IEnumerable<ItemType> GetSingleBaseTypes()
+	private void AppendRuleActionToggle(ItemFilterRule rule, ItemFilterRuleAction action, float left, float top)
+	{
+		var toggle = new UIToggleButton(
+			Language.GetText(Path + "Actions." + action),
+			() => rule.Action == action,
+			v =>
+			{
+				if (!v)
+				{
+					return;
+				}
+
+				rule.Action = action;
+				RebuildRuleList();
+			},
+			0.8f);
+		toggle.Top = StyleDimension.FromPixels(top);
+		toggle.Left = StyleDimension.FromPixels(left);
+		toggle.Width = StyleDimension.FromPixels(104);
+		toggle.Height = StyleDimension.FromPixels(28);
+		_editorPanel.Append(toggle);
+	}
+
+	private static ItemFilterRule CreateDefaultRule(int ordinal)
+	{
+		return new ItemFilterRule
+		{
+			Name = Language.GetTextValue(Path + "DefaultRuleName", ordinal),
+			Action = ItemFilterRuleAction.Show
+		};
+	}
+
+	private void MoveSelectedRule(int direction)
+	{
+		ItemFilterPlayer player = Main.LocalPlayer.GetModPlayer<ItemFilterPlayer>();
+
+		if (!TryGetSelectedRule(player, out ItemFilter filter, out _))
+		{
+			return;
+		}
+
+		int newIndex = _selectedRuleIndex + direction;
+
+		if (newIndex < 0 || newIndex >= filter.Rules.Count)
+		{
+			return;
+		}
+
+		(filter.Rules[_selectedRuleIndex], filter.Rules[newIndex]) = (filter.Rules[newIndex], filter.Rules[_selectedRuleIndex]);
+		_selectedRuleIndex = newIndex;
+		RebuildRuleList();
+		RebuildEditor();
+	}
+
+	private void EnsureSelectedRule()
+	{
+		ItemFilterPlayer player = Main.LocalPlayer.GetModPlayer<ItemFilterPlayer>();
+
+		if (!TryGetSelectedFilter(player, out ItemFilter filter) || filter.Rules.Count == 0)
+		{
+			_selectedRuleIndex = -1;
+			return;
+		}
+
+		if (_selectedRuleIndex < 0 || _selectedRuleIndex >= filter.Rules.Count)
+		{
+			_selectedRuleIndex = 0;
+		}
+	}
+
+	private bool TryGetSelectedFilter(ItemFilterPlayer player, out ItemFilter filter)
+	{
+		if (_selectedFilterIndex >= 0 && _selectedFilterIndex < player.Filters.Count)
+		{
+			filter = player.Filters[_selectedFilterIndex];
+			return true;
+		}
+
+		filter = null;
+		return false;
+	}
+
+	private bool TryGetSelectedRule(ItemFilterPlayer player, out ItemFilter filter, out ItemFilterRule rule)
+	{
+		if (TryGetSelectedFilter(player, out filter) && _selectedRuleIndex >= 0 && _selectedRuleIndex < filter.Rules.Count)
+		{
+			rule = filter.Rules[_selectedRuleIndex];
+			return true;
+		}
+
+		rule = null;
+		return false;
+	}
+
+	private static Color GetRuleColor(ItemFilterRuleAction action)
+	{
+		return action == ItemFilterRuleAction.Show
+			? new Color(78, 122, 72)
+			: action == ItemFilterRuleAction.Highlight
+				? new Color(120, 108, 47)
+				: new Color(122, 70, 70);
+	}
+
+	private static ItemType[] CreateSingleBaseTypes()
 	{
 		List<ItemType> result = [];
 
@@ -377,22 +671,17 @@ internal sealed class ItemFilterUIState : UIState, IMutuallyExclusiveUI, IAutopa
 			}
 		}
 
-		return result;
+		return [.. result];
 	}
 
 	private static LocalizedText LanguageHelperLocalizeBaseType(ItemType type)
 	{
-		// Localized names for base types live under the gear localization tree.
 		string key = $"Mods.{PoTMod.ModName}.Gear.{type}.Name";
 
 		if (Language.Exists(key))
 		{
 			return Language.GetText(key);
 		}
-
-		// In debug, surface missing localization keys loudly so the gap gets fixed rather than
-		// silently slipping through. In release, keep showing the enum name so the UI is still usable.
-		Debug.Fail($"Missing localization for base type '{type}' (expected key '{key}'). Add it to Localization/en-US/Mods.PathOfTerraria.Gear.hjson.");
 
 		return Language.GetText(Path + "BaseType.Fallback").WithFormatArgs(type.ToString());
 	}

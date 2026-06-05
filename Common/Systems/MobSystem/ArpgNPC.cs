@@ -6,6 +6,7 @@ using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.ItemDropping;
 using PathOfTerraria.Common.NPCs;
+using PathOfTerraria.Common.NPCs.Worms;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.ElementalDamage;
@@ -284,10 +285,11 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 
 		CaptureBaseLifeMax(npc);
 
-		// We only want to trigger these changes on hostile non-boss, mortal & damageable non-critter NPCs that aren't in NoAffixesSet
+		// We only want to trigger these changes on hostile non-boss, mortal & damageable non-critter NPCs that aren't in NoAffixesSet.
+		// Worm segments are linked helper NPCs and should never roll independent rarity or affixes.
 		if (npc.IsABestiaryIconDummy || npc.friendly || npc.boss || Main.gameMenu || npc.immortal ||
 		    npc.dontTakeDamage || NPCID.Sets.ProjectileNPC[npc.type]
-		    || npc.CountsAsACritter || npc.realLife != -1 || NoAffixesSet.Contains(npc.type))
+		    || npc.CountsAsACritter || npc.realLife != -1 || npc.ModNPC is WormSegment || NoAffixesSet.Contains(npc.type))
 		{
 			return;
 		}

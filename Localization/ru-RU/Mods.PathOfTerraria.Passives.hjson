@@ -1288,3 +1288,8 @@ DexterityMarksmanMastery: {
 	// Name: DexterityMarksmanMastery
 	// Tooltip: ""
 }
+
+HollowVesselKeystone: {
+	// Name: Hollow Vessel
+	// Tooltip: You are limited to 1 Maximum Life. Immune to Chaos damage.
+}

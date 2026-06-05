@@ -1,8 +1,8 @@
-﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mapping;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Affixes;
-using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Common.Systems.Affixes.Maps;
 using PathOfTerraria.Common.Systems.ModPlayers.LivesSystem;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Content.Tiles.Furniture;

@@ -10,8 +10,8 @@ using Terraria.UI;
 namespace PathOfTerraria.Common.Looting.ItemFiltering;
 
 /// <summary>
-///		Per-player storage of saved item filters and which one is currently active for routing
-///		pickups in the Sack of Holding.
+///		Per-player storage of saved item filters and which ordered rule set is currently active for
+///		routing pickups in the Sack of Holding.
 /// </summary>
 internal sealed class ItemFilterPlayer : ModPlayer
 {

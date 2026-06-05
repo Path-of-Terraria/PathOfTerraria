@@ -21,6 +21,7 @@ partial class PoTGlobalItem : GlobalItem
 		tag["implicits"] = data.ImplicitCount;
 
 		tag["ItemLevel"] = data.RealLevel;
+		tag["baseEnergyShield"] = data.BaseEnergyShield;
 		tag["corrupt"] = data.Corrupted;
 		tag["cloned"] = data.Cloned;
 		tag["namePrefix"] = (short)data.NameAffix.Prefix;
@@ -48,6 +49,7 @@ partial class PoTGlobalItem : GlobalItem
 		data.ImplicitCount = tag.GetInt("implicits");
 
 		data.RealLevel = tag.GetInt("ItemLevel");
+		data.BaseEnergyShield = tag.GetInt("baseEnergyShield");
 		data.Corrupted = tag.GetBool("corrupt");
 		data.Cloned = tag.GetBool("cloned");
 
@@ -83,6 +85,7 @@ partial class PoTGlobalItem : GlobalItem
 		writer.Write((sbyte)data.NameAffix.Prefix);
 		writer.Write((sbyte)data.NameAffix.Suffix);
 		writer.Write((byte)data.RealLevel);
+		writer.Write((short)data.BaseEnergyShield);
 
 		writer.Write((byte)data.Affixes.Count);
 		foreach (ItemAffix affix in data.Affixes)
@@ -104,6 +107,7 @@ partial class PoTGlobalItem : GlobalItem
 		data.Cloned = reader.ReadBoolean();
 		data.NameAffix = new(reader.ReadSByte(), reader.ReadSByte());
 		data.RealLevel = reader.ReadByte();
+		data.BaseEnergyShield = reader.ReadInt16();
 
 		data.Affixes.Clear();
 		int affixes = reader.ReadByte();

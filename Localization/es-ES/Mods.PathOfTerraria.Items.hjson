@@ -105,6 +105,156 @@ Treads: {
 	// Tooltip: ""
 }
 
+BatteredHelm: {
+	// DisplayName: Battered Helm
+	// Tooltip: ""
+}
+
+IronboundHelm: {
+	// DisplayName: Ironbound Helm
+	// Tooltip: ""
+}
+
+HallowforgedHelm: {
+	// DisplayName: Hallowforged Helm
+	// Tooltip: ""
+}
+
+AstralforgedGreathelm: {
+	// DisplayName: Astralforged Greathelm
+	// Tooltip: ""
+}
+
+EternalforgedGreathelm: {
+	// DisplayName: Eternalforged Greathelm
+	// Tooltip: ""
+}
+
+BatteredMail: {
+	// DisplayName: Battered Mail
+	// Tooltip: ""
+}
+
+IronboundCuirass: {
+	// DisplayName: Ironbound Cuirass
+	// Tooltip: ""
+}
+
+HallowforgedCuirass: {
+	// DisplayName: Hallowforged Cuirass
+	// Tooltip: ""
+}
+
+AstralforgedAegis: {
+	// DisplayName: Astralforged Aegis
+	// Tooltip: ""
+}
+
+EternalforgedAegis: {
+	// DisplayName: Eternalforged Aegis
+	// Tooltip: ""
+}
+
+BatteredGreaves: {
+	// DisplayName: Battered Greaves
+	// Tooltip: ""
+}
+
+IronboundGreaves: {
+	// DisplayName: Ironbound Greaves
+	// Tooltip: ""
+}
+
+HallowforgedGreaves: {
+	// DisplayName: Hallowforged Greaves
+	// Tooltip: ""
+}
+
+AstralforgedSabatons: {
+	// DisplayName: Astralforged Sabatons
+	// Tooltip: ""
+}
+
+EternalforgedSabatons: {
+	// DisplayName: Eternalforged Sabatons
+	// Tooltip: ""
+}
+
+ApprenticeCap: {
+	// DisplayName: Apprentice Cap
+	// Tooltip: ""
+}
+
+AcolyteHood: {
+	// DisplayName: Acolyte Hood
+	// Tooltip: ""
+}
+
+MysticCirclet: {
+	// DisplayName: Mystic Circlet
+	// Tooltip: ""
+}
+
+SpectralVeil: {
+	// DisplayName: Spectral Veil
+	// Tooltip: ""
+}
+
+EtherealDiadem: {
+	// DisplayName: Ethereal Diadem
+	// Tooltip: ""
+}
+
+ApprenticeRobe: {
+	// DisplayName: Apprentice Robe
+	// Tooltip: ""
+}
+
+AcolyteVestment: {
+	// DisplayName: Acolyte Vestment
+	// Tooltip: ""
+}
+
+MysticGarb: {
+	// DisplayName: Mystic Garb
+	// Tooltip: ""
+}
+
+SpectralShroud: {
+	// DisplayName: Spectral Shroud
+	// Tooltip: ""
+}
+
+EtherealMantle: {
+	// DisplayName: Ethereal Mantle
+	// Tooltip: ""
+}
+
+ApprenticeSlippers: {
+	// DisplayName: Apprentice Slippers
+	// Tooltip: ""
+}
+
+AcolyteSandals: {
+	// DisplayName: Acolyte Sandals
+	// Tooltip: ""
+}
+
+MysticBoots: {
+	// DisplayName: Mystic Boots
+	// Tooltip: ""
+}
+
+SpectralStriders: {
+	// DisplayName: Spectral Striders
+	// Tooltip: ""
+}
+
+EtherealGreaves: {
+	// DisplayName: Ethereal Greaves
+	// Tooltip: ""
+}
+
 Codex: {
 	// DisplayName: Codex
 	// Tooltip: ""

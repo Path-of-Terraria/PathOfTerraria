@@ -98,16 +98,16 @@ public abstract class Affix : ILocalizedModType
 	/// <returns></returns>
 	public static T FromTag<T>(TagCompound tag) where T : Affix
 	{
-		Type t = typeof(ItemAffix).Assembly.GetType(tag.GetString("type"));
+		string type = tag.GetString("type");
+		Type t = typeof(ItemAffix).Assembly.GetType(type) ?? typeof(ItemAffix).Assembly.GetType(type.Replace(".ItemTypes.", ".Maps."));
 
 		if (t is null)
 		{
-			PoTMod.Instance.Logger.Error($"Could not load affix {tag.GetString("type")}, was it removed?");
+			PoTMod.Instance.Logger.Error($"Could not load affix {type}, was it removed?");
 			return null;
 		}
 
-		string type = tag.GetString("type");
-		var affix = Activator.CreateInstance(Type.GetType(type)) as Affix;
+		var affix = Activator.CreateInstance(t) as Affix;
 		affix.InternalLoadFrom(tag);
 		return (T)affix;
 	}

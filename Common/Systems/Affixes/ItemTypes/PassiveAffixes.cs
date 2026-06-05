@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Systems.ModPlayers;
+﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Systems.ModPlayers;
 
 namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
@@ -69,6 +70,24 @@ internal class IncreasedSummonDamageAffix : ItemAffix
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		player.GetDamage(DamageClass.Summon) += Value / 100f;
+	}
+}
+
+internal class AddedMaxMinionsAffix : ItemAffix
+{
+	public AddedMaxMinionsAffix()
+	{
+		Round = true;
+	}
+
+	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+	{
+		player.maxMinions += (int)Math.Round(Value);
+	}
+
+	protected override AffixTooltipLine CreateDefaultTooltip(Player player, ItemType itemType, int itemLevel)
+	{
+		return base.CreateDefaultTooltip(player, itemType, itemLevel) with { Value = (int)Math.Round(Value) };
 	}
 }
 
