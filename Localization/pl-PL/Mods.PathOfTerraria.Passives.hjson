@@ -1323,3 +1323,23 @@ CuratorMastery: {
 	// Name: The Curator
 	// Tooltip: "{0}% Increased Energy Shield for every unique item you have equipped"
 }
+
+AddedEnergyShieldPassive: {
+	// Name: Added Energy Shield
+	// Tooltip: Adds +{0} to maximum Energy Shield
+}
+
+IncreasedEnergyShieldPassive: {
+	// Name: Increased Energy Shield
+	// Tooltip: "{0}% increased maximum Energy Shield"
+}
+
+IncreasedEnergyShieldRechargeRatePassive: {
+	// Name: Increased Energy Shield Recharge Rate
+	// Tooltip: "{0}% increased Energy Shield recharge rate"
+}
+
+AddFasterEnergyShieldRechargeStartPassive: {
+	// Name: Faster Energy Shield Recharge Start
+	// Tooltip: "{0}% faster start of Energy Shield recharge"
+}
