@@ -1,6 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Content.Passives;
-using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Projectiles;
@@ -11,11 +10,6 @@ internal class AreaOfEffectSizeProjectile : GlobalProjectile
 
 	private bool _scaled;
 
-	public override void OnSpawn(Projectile projectile, IEntitySource source)
-	{
-		TryApplyScaling(projectile);
-	}
-
 	public override void PostAI(Projectile projectile)
 	{
 		TryApplyScaling(projectile);
@@ -23,21 +17,25 @@ internal class AreaOfEffectSizeProjectile : GlobalProjectile
 
 	private void TryApplyScaling(Projectile projectile)
 	{
-		if (_scaled || !projectile.active || !projectile.friendly || projectile.hostile)
+		if (_scaled || !projectile.active)
 		{
-			_scaled = true;
+			return;
+		}
+
+		_scaled = true;
+
+		if (!projectile.friendly)
+		{
 			return;
 		}
 
 		if (!projectile.TryGetOwner(out Player owner))
 		{
-			_scaled = true;
 			return;
 		}
 
 		if (!owner.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<BiggerExplosivesPassive>(out float passiveValue) || !ShouldScale(projectile))
 		{
-			_scaled = true;
 			return;
 		}
 
@@ -45,7 +43,6 @@ internal class AreaOfEffectSizeProjectile : GlobalProjectile
 
 		if (scaleMultiplier <= 1f)
 		{
-			_scaled = true;
 			return;
 		}
 
@@ -54,7 +51,6 @@ internal class AreaOfEffectSizeProjectile : GlobalProjectile
 		projectile.Resize(Math.Max(1, (int)(projectile.width * scaleMultiplier)), Math.Max(1, (int)(projectile.height * scaleMultiplier)));
 		projectile.Center = center;
 		projectile.netUpdate = true;
-		_scaled = true;
 	}
 
 	private static bool ShouldScale(Projectile projectile)

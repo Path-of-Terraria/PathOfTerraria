@@ -6,7 +6,7 @@ namespace PathOfTerraria.Content.Passives;
 
 internal class BiggerExplosivesPassive : Passive
 {
-	private class AreaOfEffectMeleeSizePlayer : ModPlayer
+	private class MeleeAreaSizePlayer : ModPlayer
 	{
 		public override void ModifyItemScale(Item item, ref float scale)
 		{
@@ -16,11 +16,7 @@ internal class BiggerExplosivesPassive : Passive
 			}
 
 			float passiveValue = Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<BiggerExplosivesPassive>();
-
-			if (passiveValue > 0)
-			{
-				scale += passiveValue / 100f;
-			}
+			scale += passiveValue / 100f;
 		}
 	}
 
