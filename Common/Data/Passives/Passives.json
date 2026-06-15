@@ -2964,7 +2964,7 @@
 		"maxLevel": 1,
 		"value": 5,
 		"position": {
-			"x": -1260,
+			"x": -1240,
 			"y": -90
 		},
 		"connections": [
@@ -10926,6 +10926,15 @@
 			},
 			{
 				"referenceId": 1233
+			},
+			{
+				"referenceId": 1817
+			},
+			{
+				"referenceId": 1818
+			},
+			{
+				"referenceId": 1819
 			}
 		]
 	},
@@ -11195,6 +11204,15 @@
 			},
 			{
 				"referenceId": 1356
+			},
+			{
+				"referenceId": 1821
+			},
+			{
+				"referenceId": 1823
+			},
+			{
+				"referenceId": 1822
 			}
 		],
 		"requiredAllocatedEdges": 3
@@ -11420,7 +11438,7 @@
 				"referenceId": 1385
 			},
 			{
-				"referenceId": 1387
+				"referenceId": 1827
 			}
 		]
 	},
@@ -11441,7 +11459,7 @@
 				"referenceId": 1386
 			},
 			{
-				"referenceId": 1387
+				"referenceId": 1826
 			}
 		]
 	},
@@ -11487,16 +11505,25 @@
 		"maxLevel": 1,
 		"value": 5,
 		"position": {
-			"x": 2100,
+			"x": 2190,
 			"y": 10
 		},
 		"isChoiceNode": true,
 		"connections": [
 			{
-				"referenceId": 1383
+				"referenceId": 1830
 			},
 			{
-				"referenceId": 1384
+				"referenceId": 1831
+			},
+			{
+				"referenceId": 1833
+			},
+			{
+				"referenceId": 1835
+			},
+			{
+				"referenceId": 1834
 			}
 		]
 	},
@@ -11971,6 +11998,15 @@
 			},
 			{
 				"referenceId": 1403
+			},
+			{
+				"referenceId": 1840
+			},
+			{
+				"referenceId": 1841
+			},
+			{
+				"referenceId": 1842
 			}
 		]
 	},
@@ -12531,6 +12567,15 @@
 			},
 			{
 				"referenceId": 1433
+			},
+			{
+				"referenceId": 1838
+			},
+			{
+				"referenceId": 1836
+			},
+			{
+				"referenceId": 1837
 			}
 		]
 	},
@@ -13619,6 +13664,15 @@
 		"connections": [
 			{
 				"referenceId": 1470
+			},
+			{
+				"referenceId": 1844
+			},
+			{
+				"referenceId": 1845
+			},
+			{
+				"referenceId": 1843
 			}
 		]
 	},
@@ -14538,7 +14592,7 @@
 		"maxLevel": 1,
 		"value": 5,
 		"position": {
-			"x": -1430,
+			"x": -1450,
 			"y": -90
 		},
 		"connections": [
@@ -14559,7 +14613,7 @@
 		"maxLevel": 1,
 		"value": 15,
 		"position": {
-			"x": -1260,
+			"x": -1240,
 			"y": 80
 		},
 		"connections": [
@@ -14580,7 +14634,7 @@
 		"maxLevel": 1,
 		"value": 10,
 		"position": {
-			"x": -1430,
+			"x": -1450,
 			"y": 80
 		},
 		"connections": [
@@ -15764,6 +15818,15 @@
 			},
 			{
 				"referenceId": 1532
+			},
+			{
+				"referenceId": 1854
+			},
+			{
+				"referenceId": 1853
+			},
+			{
+				"referenceId": 1852
 			}
 		]
 	},
@@ -15805,6 +15868,15 @@
 		"connections": [
 			{
 				"referenceId": 1545
+			},
+			{
+				"referenceId": 1855
+			},
+			{
+				"referenceId": 1857
+			},
+			{
+				"referenceId": 1856
 			}
 		]
 	},
@@ -15856,6 +15928,15 @@
 		"connections": [
 			{
 				"referenceId": 1555
+			},
+			{
+				"referenceId": 1805
+			},
+			{
+				"referenceId": 1806
+			},
+			{
+				"referenceId": 1807
 			}
 		]
 	},
@@ -15875,6 +15956,15 @@
 			},
 			{
 				"referenceId": 1574
+			},
+			{
+				"referenceId": 1858
+			},
+			{
+				"referenceId": 1859
+			},
+			{
+				"referenceId": 1860
 			}
 		]
 	},
@@ -15975,6 +16065,15 @@
 		"connections": [
 			{
 				"referenceId": 1594
+			},
+			{
+				"referenceId": 1802
+			},
+			{
+				"referenceId": 1803
+			},
+			{
+				"referenceId": 1804
 			}
 		]
 	},
@@ -16577,6 +16676,15 @@
 			},
 			{
 				"referenceId": 1639
+			},
+			{
+				"referenceId": 1849
+			},
+			{
+				"referenceId": 1850
+			},
+			{
+				"referenceId": 1851
 			}
 		]
 	},
@@ -17028,6 +17136,15 @@
 			},
 			{
 				"referenceId": 1674
+			},
+			{
+				"referenceId": 1861
+			},
+			{
+				"referenceId": 1863
+			},
+			{
+				"referenceId": 1862
 			}
 		]
 	},
@@ -17075,6 +17192,15 @@
 			},
 			{
 				"referenceId": 1657
+			},
+			{
+				"referenceId": 1846
+			},
+			{
+				"referenceId": 1847
+			},
+			{
+				"referenceId": 1848
 			}
 		]
 	},
@@ -19021,8 +19147,8 @@
 		"maxLevel": 1,
 		"value": 30,
 		"position": {
-			"x": -1345,
-			"y": -90
+			"x": -1340,
+			"y": -80
 		},
 		"isHidden": true,
 		"connections": [
@@ -19037,7 +19163,7 @@
 		"maxLevel": 1,
 		"value": 30,
 		"position": {
-			"x": -1345,
+			"x": -1340,
 			"y": 80
 		},
 		"isHidden": true,
@@ -19053,8 +19179,8 @@
 		"maxLevel": 1,
 		"value": 50,
 		"position": {
-			"x": -1225,
-			"y": -14
+			"x": -1410,
+			"y": 0
 		},
 		"isHidden": true,
 		"connections": [
@@ -19300,6 +19426,690 @@
 		"connections": [
 			{
 				"referenceId": 1618
+			}
+		]
+	},
+	{
+		"internalIdentifier": "KineticBulwarkMastery",
+		"referenceId": 1817,
+		"maxLevel": 1,
+		"value": 35,
+		"position": {
+			"x": -115,
+			"y": -1724
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1363
+			}
+		]
+	},
+	{
+		"internalIdentifier": "EldritchMasteryMastery",
+		"referenceId": 1818,
+		"maxLevel": 1,
+		"value": 50,
+		"position": {
+			"x": -16,
+			"y": -1670
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1363
+			}
+		]
+	},
+	{
+		"internalIdentifier": "CuratorMastery",
+		"referenceId": 1819,
+		"maxLevel": 1,
+		"value": 5,
+		"position": {
+			"x": 92,
+			"y": -1724
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1363
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AbsoluteZeroMastery",
+		"referenceId": 1821,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1560,
+			"y": -430
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1372
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AbsoluteZeroMastery",
+		"referenceId": 1822,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1600,
+			"y": -380
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1372
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AbsoluteZeroMastery",
+		"referenceId": 1823,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1640,
+			"y": -430
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1372
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1826,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 2110,
+			"y": 60
+		},
+		"connections": [
+			{
+				"referenceId": 1384
+			},
+			{
+				"referenceId": 1829
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1827,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 2110,
+			"y": -40
+		},
+		"connections": [
+			{
+				"referenceId": 1383
+			},
+			{
+				"referenceId": 1828
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1828,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 2170,
+			"y": -100
+		},
+		"connections": [
+			{
+				"referenceId": 1827
+			},
+			{
+				"referenceId": 1830
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1829,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 2170,
+			"y": 120
+		},
+		"connections": [
+			{
+				"referenceId": 1831
+			},
+			{
+				"referenceId": 1826
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1830,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 2240,
+			"y": -60
+		},
+		"connections": [
+			{
+				"referenceId": 1828
+			},
+			{
+				"referenceId": 1387
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1831,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 2240,
+			"y": 80
+		},
+		"connections": [
+			{
+				"referenceId": 1829
+			},
+			{
+				"referenceId": 1387
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AbsoluteZeroMastery",
+		"referenceId": 1833,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 2180,
+			"y": -50
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1387
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AbsoluteZeroMastery",
+		"referenceId": 1834,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 2180,
+			"y": 70
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1387
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AbsoluteZeroMastery",
+		"referenceId": 1835,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 2140,
+			"y": 10
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1387
+			}
+		]
+	},
+	{
+		"internalIdentifier": "ArchmageMastery",
+		"referenceId": 1836,
+		"maxLevel": 1,
+		"value": 200,
+		"position": {
+			"x": 2040,
+			"y": 590
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1442
+			}
+		]
+	},
+	{
+		"internalIdentifier": "ArcanistMastery",
+		"referenceId": 1837,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 2090,
+			"y": 640
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1442
+			}
+		]
+	},
+	{
+		"internalIdentifier": "ConjurerMastery",
+		"referenceId": 1838,
+		"maxLevel": 1,
+		"value": 2,
+		"position": {
+			"x": 1945,
+			"y": 725
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1442
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AbsoluteZeroMastery",
+		"referenceId": 1840,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1540,
+			"y": 1160
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1412
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AbsoluteZeroMastery",
+		"referenceId": 1841,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1620,
+			"y": 1080
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1412
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AbsoluteZeroMastery",
+		"referenceId": 1842,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 1700,
+			"y": 1160
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1412
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AbsoluteZeroMastery",
+		"referenceId": 1843,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 770,
+			"y": 1750
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1502
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AbsoluteZeroMastery",
+		"referenceId": 1844,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 660,
+			"y": 1650
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1502
+			}
+		]
+	},
+	{
+		"internalIdentifier": "HunterMastery",
+		"referenceId": 1845,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 760,
+			"y": 1610
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1502
+			}
+		]
+	},
+	{
+		"internalIdentifier": "MarksmanMastery",
+		"referenceId": 1846,
+		"maxLevel": 1,
+		"value": 2,
+		"position": {
+			"x": 870,
+			"y": 1930
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1680
+			}
+		]
+	},
+	{
+		"internalIdentifier": "TrueshotMastery",
+		"referenceId": 1847,
+		"maxLevel": 1,
+		"value": 150,
+		"position": {
+			"x": 790,
+			"y": 1990
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1680
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AbsoluteZeroMastery",
+		"referenceId": 1848,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": 940,
+			"y": 2000
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1680
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AbsoluteZeroMastery",
+		"referenceId": 1849,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -660,
+			"y": 1650
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1654
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AbsoluteZeroMastery",
+		"referenceId": 1850,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -770,
+			"y": 1720
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1654
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AbsoluteZeroMastery",
+		"referenceId": 1851,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -640,
+			"y": 1780
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1654
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AbsoluteZeroMastery",
+		"referenceId": 1852,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1680,
+			"y": 860
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1615
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AbsoluteZeroMastery",
+		"referenceId": 1853,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1610,
+			"y": 850
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1615
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AbsoluteZeroMastery",
+		"referenceId": 1854,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1550,
+			"y": 800
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1615
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AbsoluteZeroMastery",
+		"referenceId": 1855,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1710,
+			"y": 710
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1617
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AbsoluteZeroMastery",
+		"referenceId": 1856,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1610,
+			"y": 740
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1617
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AbsoluteZeroMastery",
+		"referenceId": 1857,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1680,
+			"y": 620
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1617
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AbsoluteZeroMastery",
+		"referenceId": 1858,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1900,
+			"y": -20
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1620
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AbsoluteZeroMastery",
+		"referenceId": 1859,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1960,
+			"y": -90
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1620
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AbsoluteZeroMastery",
+		"referenceId": 1860,
+		"maxLevel": 1,
+		"value": 0,
+		"position": {
+			"x": -1960,
+			"y": 50
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1620
+			}
+		]
+	},
+	{
+		"internalIdentifier": "PinpointMastery",
+		"referenceId": 1861,
+		"maxLevel": 1,
+		"value": 1,
+		"position": {
+			"x": 1330,
+			"y": 1510
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1678
+			}
+		]
+	},
+	{
+		"internalIdentifier": "PinningShotMastery",
+		"referenceId": 1862,
+		"maxLevel": 1,
+		"value": 10,
+		"position": {
+			"x": 1220,
+			"y": 1520
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1678
+			}
+		]
+	},
+	{
+		"internalIdentifier": "SniperMastery",
+		"referenceId": 1863,
+		"maxLevel": 1,
+		"value": 20,
+		"position": {
+			"x": 1358,
+			"y": 1615
+		},
+		"isHidden": true,
+		"connections": [
+			{
+				"referenceId": 1678
 			}
 		]
 	}

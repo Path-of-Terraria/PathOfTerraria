@@ -1191,12 +1191,12 @@ CinderBastionMastery: {
 
 AddedChaosDamageConversionPassive: {
 	// Name: Added Chaos Damage Conversion
-	// Tooltip: +{0}% chaos damage conversion
+	// Tooltip: "{0}% chaos damage conversion"
 }
 
 AddedChaosDamageMultiplierPassive: {
 	// Name: Added ChaosDamage Multiplier
-	// Tooltip: +{0}% more chaos damage
+	// Tooltip: "{0}% more chaos damage"
 }
 
 ReducedMaxLifeIncreasedChaosDamagePassive: {
@@ -1211,27 +1211,27 @@ DebuffsExpireFasterPassive: {
 
 IgnitesDealDamageFasterPassive: {
 	// Name: Ignites Deal Damage Faster
-	// Tooltip: +{0}% increased ignite tick rate
+	// Tooltip: "{0}% increased ignite tick rate"
 }
 
 IgniteDurationPassive: {
 	// Name: Increased Ignite Duration
-	// Tooltip: +{0}% increased ignite duration
+	// Tooltip: "{0}% increased ignite duration"
 }
 
 IgniteDamagePassive: {
 	// Name: Increased Ignite Damage
-	// Tooltip: +{0}% increased ignite damage
+	// Tooltip: "{0}% increased ignite damage"
 }
 
 IncreasedDurationPassive: {
 	// Name: Increased Duration
-	// Tooltip: +{0}% increased [mechanic/shift:Duration]
+	// Tooltip: "{0}% increased [mechanic/shift:Duration]"
 }
 
 DecreasedDurationPassive: {
 	// Name: Decreased Duration
-	// Tooltip: +{0}% decreased [mechanic/shift:Duration]
+	// Tooltip: "{0}% decreased [mechanic/shift:Duration]"
 }
 
 PinpointMastery: {
@@ -1241,12 +1241,12 @@ PinpointMastery: {
 
 ConflagrationMastery: {
 	// Name: ConflagrationMastery
-	// Tooltip: ""
+	// Tooltip: TBD
 }
 
 EndlessFlowMastery: {
 	// Name: Endless Flow
-	// Tooltip: +{0}% increased [mechanic/shift:Duration]
+	// Tooltip: "{0}% increased [mechanic/shift:Duration]"
 }
 
 MomentumMastery: {
@@ -1256,40 +1256,70 @@ MomentumMastery: {
 
 TemporalCompressionMastery: {
 	// Name: Temporal Compression
-	// Tooltip: +{0}% decreased [mechanic/shift:Duration]
+	// Tooltip: "{0}% decreased [mechanic/shift:Duration]"
 }
 
 TitanMastery: {
-	// Name: TitanMastery
-	// Tooltip: ""
+	// Name: The Titan
+	// Tooltip: "{0}% Increased [mechanic/shift:Strength]"
 }
 
 ColossusMastery: {
-	// Name: ColossusMastery
-	// Tooltip: ""
+	// Name: The Colossus
+	// Tooltip: "[mechanic/shift:Strength] now also increases all knockback done"
 }
 
 ArcanistMastery: {
-	// Name: ArcanistMastery
-	// Tooltip: ""
+	// Name: The Arcanist
+	// Tooltip: "{0}% Increased [mechanic/shift:Intelligence]"
 }
 
 ConjurerMastery: {
-	// Name: ConjurerMastery
-	// Tooltip: ""
+	// Name: The Conjurer
+	// Tooltip: "[mechanic/shift:Intelligence] now also increases all area of effect"
 }
 
 HunterMastery: {
-	// Name: HunterMastery
-	// Tooltip: ""
+	// Name: The Hunter
+	// Tooltip: "{0}% Increased [mechanic/shift:Dexterity]"
 }
 
 DexterityMarksmanMastery: {
-	// Name: DexterityMarksmanMastery
-	// Tooltip: ""
+	// Name: The Marksman
+	// Tooltip: "[mechanic/shift:Dexterity] now also increases projectile speed"
 }
 
 HollowVesselKeystone: {
 	// Name: Hollow Vessel
-	// Tooltip: You are limited to 1 Maximum Life. Immune to Chaos damage.
+	// Tooltip: You are limited to 1 Maximum Life. Immune to Chaos Damage
+}
+
+GoliathMastery: {
+	// Name: The Goliath
+	// Tooltip: While above {0} [mechanic/shift:Strength], your melee damage done is increased by maximum life %
+}
+
+ArchmageMastery: {
+	// Name: The Archmage
+	// Tooltip: While above {0} [mechanic/shift:Intelligence], every 50 mana spent will create an elemental nova around you
+}
+
+TrueshotMastery: {
+	// Name: The Trueshot
+	// Tooltip: While above {0} Dexterity, all projectiles gain homing
+}
+
+KineticBulwarkMastery: {
+	// Name: Kinetic Bulwark
+	// Tooltip: Gain {0}% increased global damage based on your current energy shield
+}
+
+EldritchMasteryMastery: {
+	// Name: Eldritch Mastery
+	// Tooltip: "{0}% of Mana-cost is taken from Energy Shield before Mana"
+}
+
+CuratorMastery: {
+	// Name: The Curator
+	// Tooltip: "{0}% Increased Energy Shield for every unique item you have equipped"
 }
