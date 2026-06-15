@@ -1,4 +1,5 @@
-﻿using Terraria.Audio;
+﻿using PathOfTerraria.Common.Projectiles;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -28,6 +29,11 @@ public readonly record struct ExplosionSpawnInfo(bool Friendly = true, float Kno
 /// </summary>
 internal class ExplosionHitbox : ModProjectile
 {
+	public override void SetStaticDefaults()
+	{
+		CustomProjectileSets.AreaOfEffectProjectiles[Type] = true;
+	}
+
 	/// <summary>
 	/// Contains information related to a standard explosion's visual and audio effects.
 	/// </summary>
@@ -180,6 +186,11 @@ internal class ExplosionHitbox : ModProjectile
 
 internal class ExplosionHitboxFriendly : ExplosionHitbox
 {
+	public override void SetStaticDefaults()
+	{
+		CustomProjectileSets.AreaOfEffectProjectiles[Type] = true;
+	}
+
 	public override void SetDefaults()
 	{
 		base.SetDefaults();

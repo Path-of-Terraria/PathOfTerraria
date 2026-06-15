@@ -925,8 +925,8 @@ ExplosiveKnockbackPassive: {
 }
 
 BiggerExplosivesPassive: {
-	Name: Bigger Explosions
-	Tooltip: Explosives are {0}% larger
+	Name: Increased Area of Effect
+	Tooltip: Area effects are {0}% larger
 }
 
 DemolitionsExpertMastery: {

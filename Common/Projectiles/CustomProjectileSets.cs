@@ -6,6 +6,13 @@ namespace PathOfTerraria.Common.Projectiles;
 internal class CustomProjectileSets
 {
 	/// <summary>
+	/// Defines projectiles that should be affected by passive tree Area of Effect scaling.
+	/// </summary>
+	public static bool[] AreaOfEffectProjectiles = ProjectileID.Sets.Factory.CreateNamedSet(PoTMod.Instance, "AreaOfEffectProjectiles")
+		.Description("Defines projectiles that should be affected by passive tree Area of Effect scaling.")
+		.RegisterBoolSet(false);
+
+	/// <summary>
 	/// Defines which minion projectiles are multisegment, such as the body/tail of the Stardust Dragon projectile.<br/>
 	/// This is useful when doing actions per-minion that should avoid also occuring for each segment of a segmented minion.
 	/// </summary>
