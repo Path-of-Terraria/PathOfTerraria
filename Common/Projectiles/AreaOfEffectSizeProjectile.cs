@@ -34,7 +34,12 @@ internal class AreaOfEffectSizeProjectile : GlobalProjectile
 			return;
 		}
 
-		if (!owner.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<BiggerExplosivesPassive>(out float passiveValue) || !ShouldScale(projectile))
+		if (!ShouldScale(projectile))
+		{
+			return;
+		}
+
+		if (!owner.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<BiggerExplosivesPassive>(out float passiveValue))
 		{
 			return;
 		}
@@ -46,9 +51,11 @@ internal class AreaOfEffectSizeProjectile : GlobalProjectile
 			return;
 		}
 
+		int originalWidth = projectile.width;
+		int originalHeight = projectile.height;
 		Vector2 center = projectile.Center;
 		projectile.scale *= scaleMultiplier;
-		projectile.Resize(Math.Max(1, (int)(projectile.width * scaleMultiplier)), Math.Max(1, (int)(projectile.height * scaleMultiplier)));
+		projectile.Resize(Math.Max(1, (int)(originalWidth * scaleMultiplier)), Math.Max(1, (int)(originalHeight * scaleMultiplier)));
 		projectile.Center = center;
 		projectile.netUpdate = true;
 	}
@@ -61,7 +68,6 @@ internal class AreaOfEffectSizeProjectile : GlobalProjectile
 			|| ProjectileID.Sets.MinionShot[projectile.type]
 			|| projectile.minion
 			|| projectile.sentry
-			|| projectile.DamageType.CountsAsClass(DamageClass.Summon)
-			|| (projectile.aiStyle == ProjAIStyleID.HeldProjectile && projectile.DamageType.CountsAsClass(DamageClass.Melee));
+			|| projectile.DamageType.CountsAsClass(DamageClass.Summon);
 	}
 }
