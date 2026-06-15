@@ -41,7 +41,7 @@ internal static class NotablePassiveUtils
 		player.GetModPlayer<SkillCombatPlayer>().GlobalBuff.CostModifier *= factor;
 	}
 
-	public static bool HasNearbyEnemies(Player player)
+	public static bool CalculateNearbyEnemies(Player player)
 	{
 		foreach (NPC npc in Main.ActiveNPCs)
 		{
@@ -58,10 +58,25 @@ internal static class NotablePassiveUtils
 internal class NotablePassivesPlayer : ModPlayer
 {
 	public float DodgeChance;
+	public bool HasNearbyEnemies;
+	private int _nearbyEnemyCheckTimer;
 
 	public override void ResetEffects()
 	{
 		DodgeChance = 0f;
+	}
+
+	public override void PreUpdate()
+	{
+		if (_nearbyEnemyCheckTimer <= 0)
+		{
+			HasNearbyEnemies = NotablePassiveUtils.CalculateNearbyEnemies(Player);
+			_nearbyEnemyCheckTimer = 15;
+		}
+		else
+		{
+			_nearbyEnemyCheckTimer--;
+		}
 	}
 
 	public override bool FreeDodge(Player.HurtInfo info)
@@ -156,7 +171,7 @@ internal class LifeDefenseNoNearbyEnemiesNotable : Passive
 	{
 		NotablePassiveUtils.AddMaxLifePercent(player, Level, 0.05f);
 
-		if (!NotablePassiveUtils.HasNearbyEnemies(player))
+		if (!player.GetModPlayer<NotablePassivesPlayer>().HasNearbyEnemies)
 		{
 			player.statDefense += 5 * Level;
 		}
@@ -176,7 +191,7 @@ internal class DefenseWhileMovingMovementSpeedNotable : Passive
 {
 	public override void BuffPlayer(Player player)
 	{
-		if (player.velocity != Vector2.Zero)
+		if (player.velocity.LengthSquared() > 0.001f)
 		{
 			player.statDefense += 10 * Level;
 		}
