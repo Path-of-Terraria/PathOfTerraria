@@ -39,7 +39,11 @@ internal class AreaOfEffectSizeProjectile : GlobalProjectile
 			return;
 		}
 
-		if (!owner.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<BiggerExplosivesPassive>(out float passiveValue))
+		PassiveTreePlayer passiveTreePlayer = owner.GetModPlayer<PassiveTreePlayer>();
+		float passiveValue = passiveTreePlayer.GetCumulativeValue<BiggerExplosivesPassive>()
+			+ passiveTreePlayer.GetCumulativeValue<IncreasedAreaOfEffectPassive>();
+
+		if (passiveValue <= 0f)
 		{
 			return;
 		}

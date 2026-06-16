@@ -12,7 +12,9 @@ internal class AreaOfEffectMeleeScalePlayer : ModPlayer
 			return;
 		}
 
-		float passiveValue = Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<BiggerExplosivesPassive>();
+		PassiveTreePlayer passiveTreePlayer = Player.GetModPlayer<PassiveTreePlayer>();
+		float passiveValue = passiveTreePlayer.GetCumulativeValue<BiggerExplosivesPassive>()
+			+ passiveTreePlayer.GetCumulativeValue<IncreasedAreaOfEffectPassive>();
 		scale += passiveValue / 100f;
 	}
 }
