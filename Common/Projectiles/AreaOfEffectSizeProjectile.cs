@@ -50,11 +50,6 @@ internal class AreaOfEffectSizeProjectile : GlobalProjectile
 
 		float scaleMultiplier = 1f + passiveValue / 100f;
 
-		if (scaleMultiplier <= 1f)
-		{
-			return;
-		}
-
 		int originalWidth = projectile.width;
 		int originalHeight = projectile.height;
 		Vector2 center = projectile.Center;

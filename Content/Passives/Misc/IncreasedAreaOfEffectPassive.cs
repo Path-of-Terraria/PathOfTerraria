@@ -8,7 +8,7 @@ internal class IncreasedAreaOfEffectPassive : Passive
 {
 	public override void BuffPlayer(Player player)
 	{
-		float areaBonus = (Value / 100f) * Level;
+		float areaBonus = Value / 100f;
 		player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.ExplosionSize += areaBonus;
 		player.GetModPlayer<SkillCombatPlayer>().GlobalBuff.AreaOfEffect += areaBonus;
 	}
