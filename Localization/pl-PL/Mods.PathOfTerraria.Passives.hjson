@@ -1343,3 +1343,162 @@ AddFasterEnergyShieldRechargeStartPassive: {
 	// Name: Faster Energy Shield Recharge Start
 	// Tooltip: "{0}% faster start of Energy Shield recharge"
 }
+
+AllResistanceManaNotable: {
+	// Name: AllResistanceManaNotable
+	/* Tooltip:
+		'''
+		10% to all resistances
+		5% increased maximum mana
+		''' */
+}
+
+LifeManaDefenseNotable: {
+	// Name: LifeManaDefenseNotable
+	/* Tooltip:
+		'''
+		5% increased maximum life
+		5% increased maximum mana
+		+3 defense
+		''' */
+}
+
+ManaRegenLifeDefenseNotable: {
+	// Name: ManaRegenLifeDefenseNotable
+	/* Tooltip:
+		'''
+		+2 mana regenerated per second
+		5% increased maximum life
+		+5 defense
+		''' */
+}
+
+DamageReductionReducedManaCostNotable: {
+	// Name: DamageReductionReducedManaCostNotable
+	/* Tooltip:
+		'''
+		3% damage reduction
+		5% reduced mana cost
+		''' */
+}
+
+MovementSpeedLifeNotable: {
+	// Name: MovementSpeedLifeNotable
+	/* Tooltip:
+		'''
+		5% increased movement speed
+		+30 maximum life
+		''' */
+}
+
+LifeEnergyShieldNotable: {
+	// Name: LifeEnergyShieldNotable
+	/* Tooltip:
+		'''
+		+25 maximum life
+		+25 energy shield
+		''' */
+}
+
+AllResistanceProjectileSpeedMovementSpeedNotable: {
+	// Name: AllResistanceProjectileSpeedMovementSpeedNotable
+	/* Tooltip:
+		'''
+		5% to all resistances
+		5% increased projectile speed
+		3% increased movement speed
+		''' */
+}
+
+LifeDefenseNoNearbyEnemiesNotable: {
+	// Name: LifeDefenseNoNearbyEnemiesNotable
+	/* Tooltip:
+		'''
+		5% increased maximum life
+		+5 defense while no nearby enemies
+		''' */
+}
+
+LifeDefenseNotable: {
+	// Name: LifeDefenseNotable
+	/* Tooltip:
+		'''
+		5% increased maximum life
+		+5 defense
+		''' */
+}
+
+DefenseWhileMovingMovementSpeedNotable: {
+	// Name: DefenseWhileMovingMovementSpeedNotable
+	/* Tooltip:
+		'''
+		+7 defense while moving
+		5% increased movement speed
+		''' */
+}
+
+LifeRegenDamageReductionNotable: {
+	// Name: LifeRegenDamageReductionNotable
+	/* Tooltip:
+		'''
+		+2 life regenerated per second
+		3% damage reduction
+		''' */
+}
+
+BlockChanceLifeNotable: {
+	// Name: BlockChanceLifeNotable
+	/* Tooltip:
+		'''
+		5% increased block chance
+		+20 maximum life
+		''' */
+}
+
+MinionMovementSpeedLifeNotable: {
+	// Name: MinionMovementSpeedLifeNotable
+	/* Tooltip:
+		'''
+		5% increased minion movement speed
+		5% increased maximum life
+		''' */
+}
+
+MovementSpeedLifeBlockChanceNotable: {
+	// Name: MovementSpeedLifeBlockChanceNotable
+	/* Tooltip:
+		'''
+		5% increased movement speed
+		+15 maximum life
+		5% increased block chance
+		''' */
+}
+
+LifeManaAllResistanceNotable: {
+	// Name: LifeManaAllResistanceNotable
+	/* Tooltip:
+		'''
+		5% increased maximum life
+		5% increased maximum mana
+		3% to all resistances
+		''' */
+}
+
+FlatLifeManaDefenseNotable: {
+	// Name: FlatLifeManaDefenseNotable
+	/* Tooltip:
+		'''
+		+30 maximum life
+		+30 maximum mana
+		+3 defense
+		''' */
+}
+
+EnergyShieldGlobalDamageNotable: {
+	// Name: EnergyShieldGlobalDamageNotable
+	/* Tooltip:
+		'''
+		+30 energy shield
+		5% increased damage
+		''' */
+}

@@ -983,7 +983,7 @@
 		]
 	},
 	{
-		"internalIdentifier": "AddedStrengthPassive",
+		"internalIdentifier": "MovementSpeedLifeNotable",
 		"referenceId": 64,
 		"maxLevel": 1,
 		"value": 5,
@@ -2340,7 +2340,7 @@
 		]
 	},
 	{
-		"internalIdentifier": "IncreasedSummonDamagePassive",
+		"internalIdentifier": "LifeDefenseNotable",
 		"referenceId": 149,
 		"maxLevel": 1,
 		"value": 5,
@@ -6808,7 +6808,7 @@
 		]
 	},
 	{
-		"internalIdentifier": "IncreasedAttackSpeedPassive",
+		"internalIdentifier": "LifeEnergyShieldNotable",
 		"referenceId": 1143,
 		"maxLevel": 1,
 		"value": 5,
@@ -6961,7 +6961,7 @@
 		]
 	},
 	{
-		"internalIdentifier": "IncreasedAttackSpeedPassive",
+		"internalIdentifier": "LifeManaDefenseNotable",
 		"referenceId": 1151,
 		"maxLevel": 1,
 		"value": 5,
@@ -7963,7 +7963,7 @@
 		]
 	},
 	{
-		"internalIdentifier": "AddedIntelligenceDexterityPassive",
+		"internalIdentifier": "LifeManaAllResistanceNotable",
 		"referenceId": 1208,
 		"maxLevel": 1,
 		"value": 5,
@@ -8152,7 +8152,7 @@
 		]
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "MinionMovementSpeedLifeNotable",
 		"referenceId": 1217,
 		"maxLevel": 1,
 		"value": 5,
@@ -8557,7 +8557,7 @@
 		]
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "EnergyShieldGlobalDamageNotable",
 		"referenceId": 1236,
 		"maxLevel": 1,
 		"value": 5,
@@ -9463,7 +9463,7 @@
 		]
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "DamageReductionReducedManaCostNotable",
 		"referenceId": 1288,
 		"maxLevel": 1,
 		"value": 5,
@@ -9667,7 +9667,7 @@
 		]
 	},
 	{
-		"internalIdentifier": "AddedLifePassive",
+		"internalIdentifier": "LifeDefenseNoNearbyEnemiesNotable",
 		"referenceId": 1299,
 		"maxLevel": 1,
 		"value": 20,
@@ -11236,7 +11236,7 @@
 		]
 	},
 	{
-		"internalIdentifier": "IncreasedAttackSpeedPassive",
+		"internalIdentifier": "AllResistanceProjectileSpeedMovementSpeedNotable",
 		"referenceId": 1374,
 		"maxLevel": 1,
 		"value": 10,
@@ -11353,7 +11353,7 @@
 		]
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AllResistanceManaNotable",
 		"referenceId": 1380,
 		"maxLevel": 1,
 		"value": 5,
@@ -13168,7 +13168,7 @@
 		]
 	},
 	{
-		"internalIdentifier": "AddedDexterityPassive",
+		"internalIdentifier": "DefenseWhileMovingMovementSpeedNotable",
 		"referenceId": 1475,
 		"maxLevel": 1,
 		"value": 30,
@@ -13498,7 +13498,7 @@
 		]
 	},
 	{
-		"internalIdentifier": "IncreasedAttackSpeedPassive",
+		"internalIdentifier": "MovementSpeedLifeBlockChanceNotable",
 		"referenceId": 1495,
 		"maxLevel": 1,
 		"value": 5,
@@ -15295,7 +15295,7 @@
 		]
 	},
 	{
-		"internalIdentifier": "AddedLifePassive",
+		"internalIdentifier": "ManaRegenLifeDefenseNotable",
 		"referenceId": 1588,
 		"maxLevel": 1,
 		"value": 40,
@@ -15625,7 +15625,7 @@
 		]
 	},
 	{
-		"internalIdentifier": "FriendlyDefensePassive",
+		"internalIdentifier": "LifeRegenDamageReductionNotable",
 		"referenceId": 1607,
 		"maxLevel": 1,
 		"value": 10,
@@ -17301,7 +17301,7 @@
 		]
 	},
 	{
-		"internalIdentifier": "PercentStrongManaPotionsPassive",
+		"internalIdentifier": "FlatLifeManaDefenseNotable",
 		"referenceId": 1686,
 		"maxLevel": 1,
 		"value": 15,
@@ -17451,7 +17451,7 @@
 		]
 	},
 	{
-		"internalIdentifier": "AddedLifePassive",
+		"internalIdentifier": "ManaRegenLifeDefenseNotable",
 		"referenceId": 1694,
 		"maxLevel": 1,
 		"value": 30,
@@ -19778,10 +19778,10 @@
 		]
 	},
 	{
-		"internalIdentifier": "AbsoluteZeroMastery",
+		"internalIdentifier": "DexterityMarksmanMastery",
 		"referenceId": 1843,
 		"maxLevel": 1,
-		"value": 0,
+		"value": 2,
 		"position": {
 			"x": 770,
 			"y": 1750
@@ -19794,10 +19794,10 @@
 		]
 	},
 	{
-		"internalIdentifier": "AbsoluteZeroMastery",
+		"internalIdentifier": "TrueshotMastery",
 		"referenceId": 1844,
 		"maxLevel": 1,
-		"value": 0,
+		"value": 150,
 		"position": {
 			"x": 660,
 			"y": 1650
@@ -19826,7 +19826,7 @@
 		]
 	},
 	{
-		"internalIdentifier": "MarksmanMastery",
+		"internalIdentifier": "AbsoluteZeroMastery",
 		"referenceId": 1846,
 		"maxLevel": 1,
 		"value": 2,
@@ -19842,7 +19842,7 @@
 		]
 	},
 	{
-		"internalIdentifier": "TrueshotMastery",
+		"internalIdentifier": "AbsoluteZeroMastery",
 		"referenceId": 1847,
 		"maxLevel": 1,
 		"value": 150,
@@ -19922,10 +19922,10 @@
 		]
 	},
 	{
-		"internalIdentifier": "AbsoluteZeroMastery",
+		"internalIdentifier": "TitanMastery",
 		"referenceId": 1852,
 		"maxLevel": 1,
-		"value": 0,
+		"value": 20,
 		"position": {
 			"x": -1680,
 			"y": 860
@@ -19938,10 +19938,10 @@
 		]
 	},
 	{
-		"internalIdentifier": "AbsoluteZeroMastery",
+		"internalIdentifier": "ColossusMastery",
 		"referenceId": 1853,
 		"maxLevel": 1,
-		"value": 0,
+		"value": 2,
 		"position": {
 			"x": -1610,
 			"y": 850
@@ -19954,10 +19954,10 @@
 		]
 	},
 	{
-		"internalIdentifier": "AbsoluteZeroMastery",
+		"internalIdentifier": "GoliathMastery",
 		"referenceId": 1854,
 		"maxLevel": 1,
-		"value": 0,
+		"value": 150,
 		"position": {
 			"x": -1550,
 			"y": 800
