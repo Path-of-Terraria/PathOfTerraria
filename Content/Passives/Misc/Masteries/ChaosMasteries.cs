@@ -28,7 +28,7 @@ internal sealed class MassDebilitationMastery : Passive
 	{
 		public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (HitWasChaosDamage(target, item))
+			if (HitWasChaosDamage(Player, target, item))
 			{
 				TrySpreadDebuffs(target);
 			}
@@ -42,14 +42,14 @@ internal sealed class MassDebilitationMastery : Passive
 			}
 		}
 
-		private bool HitWasChaosDamage(NPC target, Item item)
+		private static bool HitWasChaosDamage(Player player, NPC target, Item item)
 		{
 			if (!target.TryGetGlobalNPC(out ElementalNPC elementalNpc))
 			{
 				return false;
 			}
 
-			ElementalContainer container = Player.GetModPlayer<ElementalPlayer>().Container;
+			ElementalContainer container = player.GetModPlayer<ElementalPlayer>().Container;
 			return ElementalPlayer.DealsElementalDamage(ElementType.Chaos, container, elementalNpc.Container, item);
 		}
 
@@ -109,6 +109,7 @@ internal sealed class MassDebilitationMastery : Passive
 
 internal sealed class EmbraceChaosMastery : Passive
 {
+	// 400 is the baseline life cap used by this mod's UI/stat flow and acts as the "full-life reference" for max-life scaling.
 	private const float ReferenceMaximumLife = 400f;
 
 	public override void BuffPlayer(Player player)
@@ -134,8 +135,7 @@ internal sealed class ChaosChaosChaosMastery : Passive
 		private const int RollInterval = 10 * 60;
 		private const int RollBuffDuration = 4 * 60;
 		private const int RollDebuffDuration = 3 * 60;
-		private const float SpeedBonus = 0.4f;
-		private const float ChaosDamageBonus = 0.4f;
+		private const float PositiveEffectMagnitude = 0.4f;
 
 		public bool Enabled;
 
@@ -153,13 +153,13 @@ internal sealed class ChaosChaosChaosMastery : Passive
 
 			if (_chaosDamageTimer > 0)
 			{
-				Player.GetModPlayer<ElementalPlayer>().Container[ElementType.Chaos].Multiplier *= 1f + ChaosDamageBonus;
+				Player.GetModPlayer<ElementalPlayer>().Container[ElementType.Chaos].Multiplier *= 1f + PositiveEffectMagnitude;
 			}
 
 			if (_speedTimer > 0)
 			{
-				Player.moveSpeed += SpeedBonus;
-				Player.GetAttackSpeed(DamageClass.Generic) += SpeedBonus;
+				Player.moveSpeed += PositiveEffectMagnitude;
+				Player.GetAttackSpeed(DamageClass.Generic) += PositiveEffectMagnitude;
 			}
 
 			if (_spinTimer > 0)
@@ -250,15 +250,7 @@ internal sealed class ChaosChaosChaosMastery : Passive
 		private void RollChaosEffect()
 		{
 			int roll = Main.rand.Next(1, 7);
-			string text = roll switch
-			{
-				6 => "I Can Do Anything!",
-				5 => "The World Revolves",
-				4 => "Devilsknife",
-				3 => "Carousel",
-				2 => "Gravity Games",
-				_ => "CHAOS, CHAOS!"
-			};
+			string text = GetRollText(roll);
 
 			switch (roll)
 			{
@@ -285,6 +277,19 @@ internal sealed class ChaosChaosChaosMastery : Passive
 			CombatText.NewText(Player.Hitbox, new Color(214, 90, 255), text);
 		}
 
+		private static string GetRollText(int roll)
+		{
+			return roll switch
+			{
+				6 => "I Can Do Anything!",
+				5 => "The World Revolves",
+				4 => "Devilsknife",
+				3 => "Carousel",
+				2 => "Gravity Games",
+				_ => "CHAOS, CHAOS!"
+			};
+		}
+
 		private void FireDevilsknives()
 		{
 			if (Main.myPlayer != Player.whoAmI)
@@ -294,6 +299,7 @@ internal sealed class ChaosChaosChaosMastery : Passive
 
 			const int scytheCount = 8;
 			const float scytheSpeed = 12f;
+			// Baseline projectile damage before player damage multipliers are applied.
 			int damage = (int)Player.GetDamage(DamageClass.Generic).ApplyTo(50f);
 
 			for (int i = 0; i < scytheCount; ++i)
