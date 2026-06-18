@@ -1345,7 +1345,7 @@ AddFasterEnergyShieldRechargeStartPassive: {
 }
 
 AllResistanceManaNotable: {
-	// Name: AllResistanceManaNotable
+	// Name: Elemental Fortification
 	/* Tooltip:
 		'''
 		10% to all resistances
@@ -1354,7 +1354,7 @@ AllResistanceManaNotable: {
 }
 
 LifeManaDefenseNotable: {
-	// Name: LifeManaDefenseNotable
+	// Name: Balanced Foundation
 	/* Tooltip:
 		'''
 		5% increased maximum life
@@ -1364,7 +1364,7 @@ LifeManaDefenseNotable: {
 }
 
 ManaRegenLifeDefenseNotable: {
-	// Name: ManaRegenLifeDefenseNotable
+	// Name: Arcane Vitality
 	/* Tooltip:
 		'''
 		+2 mana regenerated per second
@@ -1374,7 +1374,7 @@ ManaRegenLifeDefenseNotable: {
 }
 
 DamageReductionReducedManaCostNotable: {
-	// Name: DamageReductionReducedManaCostNotable
+	// Name: Efficient Endurance
 	/* Tooltip:
 		'''
 		3% damage reduction
@@ -1383,7 +1383,7 @@ DamageReductionReducedManaCostNotable: {
 }
 
 MovementSpeedLifeNotable: {
-	// Name: MovementSpeedLifeNotable
+	// Name: Swift Vigor
 	/* Tooltip:
 		'''
 		5% increased movement speed
@@ -1392,7 +1392,7 @@ MovementSpeedLifeNotable: {
 }
 
 LifeEnergyShieldNotable: {
-	// Name: LifeEnergyShieldNotable
+	// Name: Protective Barrier
 	/* Tooltip:
 		'''
 		+25 maximum life
@@ -1401,7 +1401,7 @@ LifeEnergyShieldNotable: {
 }
 
 AllResistanceProjectileSpeedMovementSpeedNotable: {
-	// Name: AllResistanceProjectileSpeedMovementSpeedNotable
+	// Name: Agile Resistance
 	/* Tooltip:
 		'''
 		5% to all resistances
@@ -1411,7 +1411,7 @@ AllResistanceProjectileSpeedMovementSpeedNotable: {
 }
 
 LifeDefenseNoNearbyEnemiesNotable: {
-	// Name: LifeDefenseNoNearbyEnemiesNotable
+	// Name: Isolated Fortress
 	/* Tooltip:
 		'''
 		5% increased maximum life
@@ -1420,7 +1420,7 @@ LifeDefenseNoNearbyEnemiesNotable: {
 }
 
 LifeDefenseNotable: {
-	// Name: LifeDefenseNotable
+	// Name: Stalwart Constitution
 	/* Tooltip:
 		'''
 		5% increased maximum life
@@ -1429,7 +1429,7 @@ LifeDefenseNotable: {
 }
 
 DefenseWhileMovingMovementSpeedNotable: {
-	// Name: DefenseWhileMovingMovementSpeedNotable
+	// Name: Mobile Guardian
 	/* Tooltip:
 		'''
 		+7 defense while moving
@@ -1438,7 +1438,7 @@ DefenseWhileMovingMovementSpeedNotable: {
 }
 
 LifeRegenDamageReductionNotable: {
-	// Name: LifeRegenDamageReductionNotable
+	// Name: Resilient Recovery
 	/* Tooltip:
 		'''
 		+2 life regenerated per second
@@ -1447,7 +1447,7 @@ LifeRegenDamageReductionNotable: {
 }
 
 BlockChanceLifeNotable: {
-	// Name: BlockChanceLifeNotable
+	// Name: Shield Bearer
 	/* Tooltip:
 		'''
 		5% increased block chance
@@ -1456,7 +1456,7 @@ BlockChanceLifeNotable: {
 }
 
 MinionMovementSpeedLifeNotable: {
-	// Name: MinionMovementSpeedLifeNotable
+	// Name: Commander's Vigor
 	/* Tooltip:
 		'''
 		5% increased minion movement speed
@@ -1465,7 +1465,7 @@ MinionMovementSpeedLifeNotable: {
 }
 
 MovementSpeedLifeBlockChanceNotable: {
-	// Name: MovementSpeedLifeBlockChanceNotable
+	// Name: Nimble Defender
 	/* Tooltip:
 		'''
 		5% increased movement speed
@@ -1475,7 +1475,7 @@ MovementSpeedLifeBlockChanceNotable: {
 }
 
 LifeManaAllResistanceNotable: {
-	// Name: LifeManaAllResistanceNotable
+	// Name: Harmonious Balance
 	/* Tooltip:
 		'''
 		5% increased maximum life
@@ -1485,7 +1485,7 @@ LifeManaAllResistanceNotable: {
 }
 
 FlatLifeManaDefenseNotable: {
-	// Name: FlatLifeManaDefenseNotable
+	// Name: Solid Foundation
 	/* Tooltip:
 		'''
 		+30 maximum life
@@ -1495,7 +1495,7 @@ FlatLifeManaDefenseNotable: {
 }
 
 EnergyShieldGlobalDamageNotable: {
-	// Name: EnergyShieldGlobalDamageNotable
+	// Name: Empowered Ward
 	/* Tooltip:
 		'''
 		+30 energy shield

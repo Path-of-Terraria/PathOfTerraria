@@ -1343,6 +1343,7 @@ AddFasterEnergyShieldRechargeStartPassive: {
 	Name: Faster Energy Shield Recharge Start
 	Tooltip: "{0}% faster start of Energy Shield recharge"
 }
+
 AllResistanceManaNotable: {
 	Name: Elemental Fortification
 	Tooltip:
