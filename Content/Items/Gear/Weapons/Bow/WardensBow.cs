@@ -3,6 +3,7 @@ using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.Projectiles.Ranged;
+using PathOfTerraria.Content.Skills.Ranged;
 using PathOfTerraria.Core.Items;
 using System.Collections.Generic;
 using Terraria.DataStructures;
@@ -20,6 +21,11 @@ internal class WardensBow : WoodenBow
 		staticData.DropChance = null;
 		staticData.IsUnique = true;
 		staticData.AltUseDescription = this.GetLocalization("AltUse");
+
+		RainOfArrowsSets.PostModify.Add(Type, new RainOfArrowsSets.PostModifyShootDelegate((player, item, projectile, who) =>
+		{
+			Main.projectile[who].GetGlobalProjectile<WardensBowProjectile>().WardenProj = true;
+		}));
 
 		BowAnimationProjectile.OverridenShootActionsByItemId[Type] = proj =>
 		{
