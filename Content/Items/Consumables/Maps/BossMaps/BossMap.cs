@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Common.Items;
-using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
@@ -9,18 +8,7 @@ internal abstract class BossMap(int tier, int level, Func<bool> defeatCondition,
 	public override int WorldLevel => level;
 	protected override bool RollsAdjacentTiers => false;
 
-	public override bool CanDrop
-	{
-		get
-		{
-			if (hardMode && PoTItemHelper.PickItemLevel() < WorldLevelBasedOnTier(tier))
-			{
-				return false;
-			}
-
-			return defeatCondition();
-		}
-	}
+	public override bool CanDrop => defeatCondition();
 
 	public override int GetMapTier(int _)
 	{
