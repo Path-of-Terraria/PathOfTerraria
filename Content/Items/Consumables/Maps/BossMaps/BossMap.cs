@@ -17,7 +17,6 @@ internal abstract class BossMap(int tier, int level, Func<bool> defeatCondition,
 			return 1;
 		}
 
-		// Hardmode boss maps can only drop with their own tier
 		return tier;
 	}
 
