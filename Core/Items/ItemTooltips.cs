@@ -12,7 +12,9 @@ using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Content.Items.Consumables.Maps.ExplorableMaps;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using PathOfTerraria.Content.Items.Gear;
+using PathOfTerraria.Content.Items.Gear.Offhands.Shields;
 using PathOfTerraria.Utilities.Xna;
+using Microsoft.Xna.Framework.Input;
 using ReLogic.Content;
 using Terraria.Graphics.Effects;
 using Terraria.Localization;
@@ -20,6 +22,7 @@ using Terraria.UI;
 using SubworldLibrary;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.ElementalDamage;
+using PathOfTerraria.Common.Systems.BlockSystem;
 using Terraria.ID;
 using Terraria.GameContent.RGB;
 using PathOfTerraria.Common.UI;
@@ -527,6 +530,21 @@ public sealed partial class ItemTooltips : GlobalItem
 			AddNewTooltipLine(item, tooltips, def);
 		}
 
+		if (item.ModItem is Shield shield)
+		{
+			float baseBlockChance = shield.BaseBlockChance * 100f;
+			float modifiedBlockChance = GetModifiedBlockChance(item, shield) * 100f;
+			bool isModified = Math.Abs(modifiedBlockChance - baseBlockChance) > 0.001f;
+			Color blockChanceNumberColor = isModified ? Colors.ModifiedStat : Colors.DefaultNumber;
+			bool isAltHeld = Main.keyState.IsKeyDown(Keys.LeftAlt) || Main.keyState.IsKeyDown(Keys.RightAlt);
+			string blockChanceDetails = isModified && isAltHeld
+				? FormatBaseStatDetails(baseBlockChance, modifiedBlockChance)
+				: string.Empty;
+			var blockChanceLine = new TooltipLine(Mod, "BlockChance",
+				$"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"{modifiedBlockChance:0.##}%", blockChanceNumberColor)} {Localize("BlockChance")}{blockChanceDetails}");
+			AddNewTooltipLine(item, tooltips, blockChanceLine);
+		}
+
 		if (item.ModItem is IEnergyShieldItem)
 		{
 			int baseEnergyShield = EnergyShieldItem.GetBaseEnergyShield(item);
@@ -749,6 +767,27 @@ public sealed partial class ItemTooltips : GlobalItem
 		return Math.Max(0, item.defense + (int)Math.Round(addedDefense));
 	}
 
+	private static float GetModifiedBlockChance(Item item, Shield shield)
+	{
+		float blockChance = shield.BaseBlockChance;
+		float blockChanceMultiplier = 1f;
+
+		foreach (ItemAffix affix in item.GetInstanceData().Affixes)
+		{
+			switch (affix)
+			{
+				case AddBlockAffix:
+					blockChance = Math.Min(blockChance + affix.Value / 100f, BlockPlayer.DefaultMaxBlockChance);
+					break;
+				case IncreaseBlockAffix:
+					blockChanceMultiplier *= 1 + affix.Value / 100f;
+					break;
+			}
+		}
+
+		return blockChance * blockChanceMultiplier;
+	}
+
 	private static (int Minimum, int Maximum)? GetDefenseRollRange(Item item)
 	{
 		if (item.ModItem is not IDefenseRangeItem rangeItem)
@@ -790,9 +829,21 @@ public sealed partial class ItemTooltips : GlobalItem
 		return details.Count == 0 ? string.Empty : $" ({string.Join("; ", details)})";
 	}
 
+	private static string FormatBaseStatDetails(float baseValue, float modifiedValue)
+	{
+		float modifier = modifiedValue - baseValue;
+		Color modifierColor = modifier > 0 ? Colors.ModifiedStat : Colors.Negative;
+		return $" ({HighlightNumbers($"base {baseValue:0.##}")} {HighlightNumbers(FormatSignedNumber(modifier), modifierColor)})";
+	}
+
 	private static string FormatSignedNumber(int value)
 	{
 		return value > 0 ? $"+{value}" : value.ToString();
+	}
+
+	private static string FormatSignedNumber(float value)
+	{
+		return value > 0 ? $"+{value:0.##}" : value.ToString("0.##");
 	}
 
 	public static string HighlightNumbers(string input, Color? numColor = null, Color? baseColor = null)
