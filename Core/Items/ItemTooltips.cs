@@ -521,7 +521,7 @@ public sealed partial class ItemTooltips : GlobalItem
 		if (modifiedDefense > 0)
 		{
 			Color defenseNumberColor = modifiedDefense == item.defense ? Colors.DefaultNumber : Colors.ModifiedStat;
-			string defenseDetails = Main.keyState.PressingShift()
+			string defenseDetails = IsAltHeld()
 				? FormatBaseStatDetails(item.defense, modifiedDefense, GetDefenseRollRange(item))
 				: string.Empty;
 			var def = new TooltipLine(Mod, "Defense",
@@ -535,8 +535,7 @@ public sealed partial class ItemTooltips : GlobalItem
 			float modifiedBlockChance = GetModifiedBlockChance(item, shield) * 100f;
 			bool isModified = Math.Abs(modifiedBlockChance - baseBlockChance) > 0.001f;
 			Color blockChanceNumberColor = isModified ? Colors.ModifiedStat : Colors.DefaultNumber;
-			bool isAltHeld = Main.keyState.IsKeyDown(Keys.LeftAlt) || Main.keyState.IsKeyDown(Keys.RightAlt);
-			string blockChanceDetails = isModified && isAltHeld
+			string blockChanceDetails = isModified && IsAltHeld()
 				? FormatBaseStatDetails(baseBlockChance, modifiedBlockChance)
 				: string.Empty;
 			var blockChanceLine = new TooltipLine(Mod, "BlockChance",
@@ -827,6 +826,11 @@ public sealed partial class ItemTooltips : GlobalItem
 		float modifier = modifiedValue - baseValue;
 		Color modifierColor = modifier > 0 ? Colors.ModifiedStat : Colors.Negative;
 		return $" ({HighlightNumbers($"base {baseValue:0.##}")} {HighlightNumbers(FormatSignedNumber(modifier), modifierColor)})";
+	}
+
+	private static bool IsAltHeld()
+	{
+		return Main.keyState.IsKeyDown(Keys.LeftAlt) || Main.keyState.IsKeyDown(Keys.RightAlt);
 	}
 
 	private static string FormatSignedNumber(int value)
