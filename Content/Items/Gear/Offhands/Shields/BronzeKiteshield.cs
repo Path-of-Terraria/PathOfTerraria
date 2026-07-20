@@ -5,8 +5,7 @@ namespace PathOfTerraria.Content.Items.Gear.Offhands.Shields;
 internal class BronzeKiteshield : Shield
 {
 	internal override float BaseBlockChance => 0.20f;
-	protected override float ImplicitBlockChance => 0.1f;
-	protected override float SpeedReduction => 1.4f;
+	protected override float SpeedReduction => 4f;
 
 	public override void SetStaticDefaults()
 	{

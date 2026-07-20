@@ -5,8 +5,7 @@ namespace PathOfTerraria.Content.Items.Gear.Offhands.Shields;
 internal class CrimsonBulwark : Shield
 {
 	internal override float BaseBlockChance => 0.23f;
-	protected override float ImplicitBlockChance => 0.18f;
-	protected override float SpeedReduction => 1.5f;
+	protected override float SpeedReduction => 5f;
 
 	public override void SetStaticDefaults()
 	{

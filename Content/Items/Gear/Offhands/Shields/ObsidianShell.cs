@@ -5,8 +5,7 @@ namespace PathOfTerraria.Content.Items.Gear.Offhands.Shields;
 internal class ObsidianShell : Shield
 {
 	internal override float BaseBlockChance => 0.21f;
-	protected override float ImplicitBlockChance => 0.20f;
-	protected override float SpeedReduction => 2.5f;
+	protected override float SpeedReduction => 4f;
 
 	public override void SetStaticDefaults()
 	{

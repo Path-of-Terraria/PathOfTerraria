@@ -22,7 +22,6 @@ using Terraria.UI;
 using SubworldLibrary;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.ElementalDamage;
-using PathOfTerraria.Common.Systems.BlockSystem;
 using Terraria.ID;
 using Terraria.GameContent.RGB;
 using PathOfTerraria.Common.UI;
@@ -769,23 +768,17 @@ public sealed partial class ItemTooltips : GlobalItem
 
 	private static float GetModifiedBlockChance(Item item, Shield shield)
 	{
-		float blockChance = shield.BaseBlockChance;
 		float blockChanceMultiplier = 1f;
 
 		foreach (ItemAffix affix in item.GetInstanceData().Affixes)
 		{
-			switch (affix)
+			if (affix is IncreaseBlockAffix)
 			{
-				case AddBlockAffix:
-					blockChance = Math.Min(blockChance + affix.Value / 100f, BlockPlayer.DefaultMaxBlockChance);
-					break;
-				case IncreaseBlockAffix:
-					blockChanceMultiplier *= 1 + affix.Value / 100f;
-					break;
+				blockChanceMultiplier *= 1 + affix.Value / 100f;
 			}
 		}
 
-		return blockChance * blockChanceMultiplier;
+		return shield.BaseBlockChance * blockChanceMultiplier;
 	}
 
 	private static (int Minimum, int Maximum)? GetDefenseRollRange(Item item)
