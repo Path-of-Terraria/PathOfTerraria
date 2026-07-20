@@ -18,12 +18,12 @@ internal class HollowVesselKeystone : Passive
 				{
 					Player.statLife = 1;
 				}
-			}
-			
-			ElementInstance chaos = Player.GetModPlayer<ElementalPlayer>()
-				.Container[ElementType.Chaos];
 
-			chaos.playerIsImmune = true;
+				ElementInstance chaos = Player.GetModPlayer<ElementalPlayer>()
+					.Container[ElementType.Chaos];
+
+				chaos.playerIsImmune = true;
+			}
 		}
 	}
 }

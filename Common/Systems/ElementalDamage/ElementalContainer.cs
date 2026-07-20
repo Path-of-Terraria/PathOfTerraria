@@ -110,6 +110,7 @@ public class ElementInstance(ElementType type, bool isGeneric)
 	{
 		Multiplier = 1;
 		Resistance = 0;
+		playerIsImmune = false;
 
 		if (resetModifiers)
 		{
