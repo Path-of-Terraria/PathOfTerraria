@@ -5,6 +5,7 @@ using PathOfTerraria.Content.SkillPassives.RainOfArrowsPassives;
 using PathOfTerraria.Content.Skills.Ranged;
 using PathOfTerraria.Content.SkillTrees;
 using Terraria.DataStructures;
+using Terraria.ID;
 
 namespace PathOfTerraria.Content.SkillSpecials.RainOfArrowsSpecials;
 
@@ -15,6 +16,7 @@ internal class PiercingPrecision(SkillTree tree) : SkillSpecial(tree)
 		public override string Texture => "Terraria/Images/NPC_0";
 
 		private int ProjToShoot => (int)Projectile.ai[0];
+		private int SpawnerItemType => (int)Projectile.ai[1];
 		private ref float Counter => ref Projectile.ai[2];
 
 		IEntitySource src = null;
@@ -52,6 +54,11 @@ internal class PiercingPrecision(SkillTree tree) : SkillSpecial(tree)
 
 					Projectile projectile = Main.projectile[proj];
 					projectile.GetGlobalProjectile<RainOfArrows.RainProjectile>().SetRainProjectile(Main.projectile[proj], Projectile.timeLeft == 8);
+
+					if (RainOfArrowsSets.PostModify.TryGetValue(SpawnerItemType, out RainOfArrowsSets.PostModifyShootDelegate hook))
+					{
+						hook.Invoke(player, ContentSamples.ItemsByType[SpawnerItemType], projectile, proj);
+					}
 				}
 
 				Counter++;
