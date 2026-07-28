@@ -1,5 +1,6 @@
-﻿using PathOfTerraria.Content.Projectiles.Ranged;
-using PathOfTerraria.Common.Systems;
+﻿using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Content.Projectiles.Ranged;
+using PathOfTerraria.Content.Skills.Ranged;
 using PathOfTerraria.Core.Items;
 using ReLogic.Content;
 using System.Collections.Generic;
@@ -24,6 +25,19 @@ internal abstract class Bow : Gear
 
 	protected bool IsChanneling;
 
+	public static bool DefaultFlurryFunctionality(Player player, Item item, out int projToShoot, out float speed, out int damage, out float knockBack, out int usedAmmoItemId)
+	{
+		// Get overall info for the usage as if this is a normal bow
+		if (!player.PickAmmo(ContentSamples.ItemsByType[ItemID.WoodenBow], out projToShoot, out speed, out damage, out knockBack, out usedAmmoItemId, true))
+		{
+			return false;
+		}
+
+		// Then adjust to get the 'actual' info for the relevant stats
+		player.PickAmmo(item, out _, out _, out damage, out knockBack, out _, true);
+		return true;
+	}
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
@@ -36,6 +50,8 @@ internal abstract class Bow : Gear
 		{
 			BowProjectileSpritesById.Add(Type, ModContent.Request<Texture2D>(Texture + "Animated"));
 		}
+
+		RainOfArrowsSets.CustomFunctionalities.Add(Type, DefaultFlurryFunctionality);
 	}
 
 	public override void SetDefaults()

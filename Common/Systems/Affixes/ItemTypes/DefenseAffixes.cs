@@ -59,6 +59,6 @@ internal class AddBlockAffix : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		player.GetModPlayer<BlockPlayer>().AddBlockChance(1 + Value / 100f);
+		player.GetModPlayer<BlockPlayer>().AddBlockChance(Value / 100f);
 	}
 }
