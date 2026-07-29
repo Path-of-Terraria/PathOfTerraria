@@ -11,6 +11,7 @@ Tooltips: {
 	Tier: Rang :
 	Level: Niveau d'objet :
 	Defense: Défense
+	// BlockChance: Block Chance
 	// EnergyShield: Energy Shield
 	Pickaxe: Puissance de la Pioche
 	Axe: Puissance de la Hache
