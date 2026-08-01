@@ -11,7 +11,7 @@ internal class BloodRushMastery : Passive
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (target.life <= 0 && Player.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<BloodRushMastery>(out float value) 
-				&& Main.rand.NextFloat() < value)
+				&& Main.rand.NextFloat() < value / 100f)
 			{
 				Player.Heal((int)(Player.statLifeMax2 * (HealProportion / 100f)));
 
