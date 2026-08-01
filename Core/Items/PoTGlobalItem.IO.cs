@@ -68,6 +68,7 @@ partial class PoTGlobalItem : GlobalItem
 			}
 		}
 
+		RemoveInvalidZeroValueAffixes(item, data);
 		PostRoll.Invoke(item);
 	}
 
@@ -116,7 +117,16 @@ partial class PoTGlobalItem : GlobalItem
 			data.Affixes.Add(Affix.FromBReader(reader));
 		}
 
+		RemoveInvalidZeroValueAffixes(item, data);
 		PostRoll.Invoke(item);
+	}
+
+	private static void RemoveInvalidZeroValueAffixes(Item item, PoTInstanceItemData data)
+	{
+		int itemLevel = GetItemLevel.Invoke(item);
+		data.Affixes.RemoveAll(affix => affix is { IsImplicit: false, Value: 0f }
+			&& affix.TryGetData(item) is { } affixData
+			&& !affixData.CanRollAtLevel(itemLevel));
 	}
 
 	private static ItemType NormalizeLoadedItemType(Item item, ItemType itemType)
