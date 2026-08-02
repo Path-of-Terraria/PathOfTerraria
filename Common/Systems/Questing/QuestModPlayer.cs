@@ -116,6 +116,11 @@ public class QuestModPlayer : ModPlayer
 				}
 			}
 		}
+
+		if (Player.whoAmI == Main.myPlayer && Main.netMode == NetmodeID.MultiplayerClient)
+		{
+			RequestOtherQuestStatesHandler.Send();
+		}
 	}
 
 	internal void SetSyncedQuestState(string questName, bool active, string activeStep, bool completed)
