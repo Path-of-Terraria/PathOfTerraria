@@ -22,7 +22,7 @@ namespace PathOfTerraria.Content.Items.Consumables.Maps;
 #nullable enable
 
 public abstract class Map : ModItem, GenerateNameAffixes.IItem, GenerateAffixes.IItem, GenerateImplicits.IItem,
-	IPoTGlobalItem, GetItemLevel.IItem, SetItemLevel.IItem
+	IPoTGlobalItem, SetItemLevel.IItem
 {
 	protected sealed override bool CloneNewInstances => true;
 
@@ -198,11 +198,6 @@ public abstract class Map : ModItem, GenerateNameAffixes.IItem, GenerateAffixes.
 	public List<ItemAffix> GenerateAffixes()
 	{
 		return [];
-	}
-
-	int GetItemLevel.IItem.GetItemLevel(int realLevel)
-	{
-		return realLevel;
 	}
 
 	void SetItemLevel.IItem.SetItemLevel(int level, ref int realLevel)
