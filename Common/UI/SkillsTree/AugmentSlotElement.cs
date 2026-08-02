@@ -189,9 +189,9 @@ internal class AugmentSlotElement : SmartUiElement, IConnectedAllocatableNode
 			SkillCombatPlayer global = Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>();
 			Type parent = SkillTree.Current.ParentSkill;
 
-			if (global.HotbarSkills.FirstOrDefault(x => x.GetType() == parent) is Skill skill)
+			if (global.HotbarSkills.FirstOrDefault(x => x?.GetType() == parent) is Skill skill)
 			{
-				return skill != default && augment.CanBeApplied(skill);
+				return augment.CanBeApplied(skill);
 			}
 
 			return false;
