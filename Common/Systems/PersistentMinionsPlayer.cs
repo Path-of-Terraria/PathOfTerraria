@@ -9,6 +9,30 @@ namespace PathOfTerraria.Common.Systems;
 
 internal class PersistentMinionsPlayer : ModPlayer, IPreDomainRespawnPlayer
 {
+	private static readonly HashSet<int> MinionBuffTypes = [];
+
+	private sealed class MinionBuffCacheSystem : ModSystem
+	{
+		public override void PostSetupContent()
+		{
+			MinionBuffTypes.Clear();
+
+			foreach (Item item in ContentSamples.ItemsByType.Values)
+			{
+				if (item.buffType > 0 && item.shoot > ProjectileID.None
+					&& ContentSamples.ProjectilesByType.TryGetValue(item.shoot, out Projectile projectile) && projectile.minion)
+				{
+					MinionBuffTypes.Add(item.buffType);
+				}
+			}
+		}
+
+		public override void Unload()
+		{
+			MinionBuffTypes.Clear();
+		}
+	}
+
 	private class PersistentMinionProjectile : GlobalProjectile
 	{
 		public override bool InstancePerEntity => true;
@@ -157,26 +181,11 @@ internal class PersistentMinionsPlayer : ModPlayer, IPreDomainRespawnPlayer
 		{
 			int type = Player.buffType[i];
 
-			if (type > 0 && IsMinionBuff(type))
+			if (MinionBuffTypes.Contains(type))
 			{
 				destination.Add(new SavedBuff(type, Player.buffTime[i]));
 			}
 		}
-	}
-
-	private static bool IsMinionBuff(int buffType)
-	{
-		// Terraria has no dedicated minion-buff set, so derive the relationship from summon items.
-		foreach (Item item in ContentSamples.ItemsByType.Values)
-		{
-			if (item.buffType == buffType && item.shoot > ProjectileID.None
-				&& ContentSamples.ProjectilesByType.TryGetValue(item.shoot, out Projectile projectile) && projectile.minion)
-			{
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	private void CaptureStationBuffs(List<SavedBuff> destination)
