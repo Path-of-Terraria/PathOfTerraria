@@ -44,15 +44,14 @@ internal class DoTFunctionality
 			damage = npc.life;
 		}
 
-		if (!npc.dontTakeDamage && !npc.immortal)
+		if (Main.netMode != NetmodeID.MultiplayerClient && !npc.dontTakeDamage && !npc.immortal)
 		{
-			if (npc.realLife == -1)
+			NPC lifeTarget = npc.realLife == -1 ? npc : Main.npc[npc.realLife];
+			lifeTarget.life -= damage;
+
+			if (Main.netMode == NetmodeID.Server)
 			{
-				npc.life -= damage;
-			}
-			else
-			{
-				Main.npc[npc.realLife].life -= damage;
+				lifeTarget.netUpdate = true;
 			}
 		}
 
