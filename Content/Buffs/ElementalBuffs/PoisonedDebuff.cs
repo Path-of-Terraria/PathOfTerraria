@@ -52,7 +52,7 @@ internal class PoisonedDebuff : ModBuff
 		{
 			if (player is null || player.whoAmI == Main.myPlayer)
 			{
-				PoisonStackHandler.Send(npc, time);
+				PoisonStackHandler.Send(npc, time, player);
 			}
 
 			return;
@@ -184,6 +184,14 @@ internal class PoisonNPC : GlobalNPC
 
 	public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
 	{
+		bool hasStacks = _stacks.Count > 0;
+		bitWriter.WriteBit(hasStacks);
+
+		if (!hasStacks)
+		{
+			return;
+		}
+
 		binaryWriter.Write((ushort)_stacks.Count);
 
 		foreach (PoisonStack stack in _stacks)
@@ -200,6 +208,15 @@ internal class PoisonNPC : GlobalNPC
 	public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
 	{
 		_stacks.Clear();
+
+		if (!bitReader.ReadBit())
+		{
+			ElapsedDoT = 0;
+			LastTickRate = 60;
+			_timer = 0;
+			return;
+		}
+
 		ushort count = binaryReader.ReadUInt16();
 
 		for (int i = 0; i < count; i++)

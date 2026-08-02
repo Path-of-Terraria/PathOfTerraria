@@ -3,16 +3,19 @@ using System.IO;
 
 namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
+#nullable enable
+
 /// <summary>
-/// Requests that the server add a stack of Poison to an NPC for the sending player.
+/// Requests that the server add a stack of Poison to an NPC, preserving whether the sending player was its source.
 /// </summary>
 internal class PoisonStackHandler : Handler
 {
-	public static void Send(NPC npc, int time)
+	public static void Send(NPC npc, int time, Player? player)
 	{
-		ModPacket packet = Networking.GetPacket<PoisonStackHandler>(7);
+		ModPacket packet = Networking.GetPacket<PoisonStackHandler>(8);
 		packet.Write((short)npc.whoAmI);
 		packet.Write(time);
+		packet.Write(player is not null);
 		packet.Send();
 	}
 
@@ -20,16 +23,17 @@ internal class PoisonStackHandler : Handler
 	{
 		short npcWhoAmI = reader.ReadInt16();
 		int time = reader.ReadInt32();
+		bool hasPlayerSource = reader.ReadBoolean();
 
 		if (sender >= Main.maxPlayers || npcWhoAmI < 0 || npcWhoAmI >= Main.maxNPCs || time <= 0)
 		{
 			return;
 		}
 
-		Player player = Main.player[sender];
+		Player? player = hasPlayerSource ? Main.player[sender] : null;
 		NPC npc = Main.npc[npcWhoAmI];
 
-		if (!player.active || !npc.active)
+		if (player is { active: false } || !npc.active)
 		{
 			return;
 		}
