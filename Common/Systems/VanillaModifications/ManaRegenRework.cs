@@ -6,6 +6,7 @@ namespace PathOfTerraria.Common.Systems.VanillaModifications;
 internal sealed class ManaRegenRework : ModSystem
 {
 	private const float BaseManaRegenMultiplier = 0.05f;
+	private const float NaturalManaRegenMultiplier = 1f / 3f;
 	private const int MinimumBaseManaRegen = 1;
 	private const int TicksPerSecond = 60;
 	private const int VanillaManaRegenCountPerMana = 120;
@@ -16,7 +17,8 @@ internal sealed class ManaRegenRework : ModSystem
 	internal sealed class ManaRegenPlayer : ModPlayer
 	{
 		public StatModifier ManaRegen = StatModifier.Default;
-		public int LastManaRegen { get; internal set; }
+		public float LastManaRegen { get; internal set; }
+		internal float ManaRegenRemainder;
 
 		public override void ResetEffects()
 		{
@@ -92,25 +94,39 @@ internal sealed class ManaRegenRework : ModSystem
 	private static int GetBaseManaRegenPenalty(Player player)
 	{
 		int baseManaRegen = player.statManaMax2 / 7 + 1;
-		int reducedBaseManaRegen = Math.Max(MinimumBaseManaRegen, (int)(baseManaRegen * BaseManaRegenMultiplier));
+		int reducedBaseManaRegen = GetReducedBaseManaRegen(baseManaRegen);
 		return baseManaRegen - reducedBaseManaRegen;
+	}
+
+	private static int GetReducedBaseManaRegen(int baseManaRegen)
+	{
+		return Math.Max(MinimumBaseManaRegen, (int)(baseManaRegen * BaseManaRegenMultiplier));
 	}
 
 	private static void ApplyManaRegenModifier(Player player, int statMana, int manaRegenCount)
 	{
 		ManaRegenPlayer regenPlayer = player.GetModPlayer<ManaRegenPlayer>();
-		int modifiedManaRegen = Math.Max(0, (int)regenPlayer.ManaRegen.ApplyTo(player.manaRegen));
-
-		if (modifiedManaRegen == player.manaRegen)
-		{
-			regenPlayer.LastManaRegen = player.manaRegen;
-			return;
-		}
+		int baseManaRegen = player.statManaMax2 / 7 + 1;
+		int naturalManaRegen = GetReducedBaseManaRegen(baseManaRegen);
+		float adjustedManaRegen = player.manaRegen - naturalManaRegen + naturalManaRegen * NaturalManaRegenMultiplier;
+		float modifiedManaRegen = Math.Max(0, regenPlayer.ManaRegen.ApplyTo(adjustedManaRegen));
 
 		int vanillaManaRestored = CountManaRestored(statMana, manaRegenCount, player.manaRegen, player.statManaMax2);
 		player.statMana = Math.Clamp(player.statMana - vanillaManaRestored, 0, player.statManaMax2);
-		player.manaRegen = modifiedManaRegen;
-		player.manaRegenCount = manaRegenCount + modifiedManaRegen;
+		player.manaRegen = (int)modifiedManaRegen;
+
+		if (statMana >= player.statManaMax2)
+		{
+			regenPlayer.ManaRegenRemainder = 0f;
+			player.manaRegenCount = 0;
+		}
+		else
+		{
+			regenPlayer.ManaRegenRemainder += modifiedManaRegen;
+			int manaRegenThisTick = (int)regenPlayer.ManaRegenRemainder;
+			regenPlayer.ManaRegenRemainder -= manaRegenThisTick;
+			player.manaRegenCount = manaRegenCount + manaRegenThisTick;
+		}
 
 		while (player.manaRegenCount >= VanillaManaRegenCountPerMana && player.statMana < player.statManaMax2)
 		{
@@ -118,7 +134,7 @@ internal sealed class ManaRegenRework : ModSystem
 			player.statMana++;
 		}
 
-		regenPlayer.LastManaRegen = player.manaRegen;
+		regenPlayer.LastManaRegen = modifiedManaRegen;
 	}
 
 	private static int CountManaRestored(int statMana, int manaRegenCount, int manaRegen, int statManaMax)
