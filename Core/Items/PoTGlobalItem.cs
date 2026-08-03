@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.AccessorySlots;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.EquipmentRequirements;
 using Terraria.DataStructures;
 using Terraria.UI;
 using Terraria.ModLoader.Core;
@@ -41,6 +42,13 @@ public sealed partial class PoTGlobalItem : GlobalItem
 	public override void UpdateEquip(Item item, Player player)
 	{
 		base.UpdateEquip(item, player);
+
+		if (!EquipmentRequirementPlayer.IsItemEnabled(player, item))
+		{
+			// Vanilla applies an armor item's base defense before ItemLoader.UpdateEquip runs.
+			player.statDefense -= item.defense;
+			return;
+		}
 
 		if (ReferenceEquals(player.armor[(int)RemappedEquipSlots.Offhand], item) && !AccessorySlotRemapping.IsOffhandCompatible(player, item))
 		{

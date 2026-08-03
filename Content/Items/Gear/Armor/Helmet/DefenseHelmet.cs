@@ -1,9 +1,10 @@
 using PathOfTerraria.Common.Systems.ItemStats;
+using PathOfTerraria.Common.Systems.EquipmentRequirements;
 using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Content.Items.Gear.Armor.Helmet;
 
-internal abstract class DefenseHelmet : Helmet, IDefenseRangeItem
+internal abstract class DefenseHelmet : Helmet, IDefenseRangeItem, IItemRequirements
 {
 	protected abstract int MinimumDropItemLevel { get; }
 	protected abstract int MaximumDropItemLevel { get; }
@@ -11,6 +12,7 @@ internal abstract class DefenseHelmet : Helmet, IDefenseRangeItem
 	protected abstract int MaximumDefense { get; }
 
 	public (int Minimum, int Maximum) DefenseRange => (MinimumDefense, MaximumDefense);
+	public ItemRequirements Requirements => ItemRequirements.CreateArmorBase(MinimumDropItemLevel, ArmorRequirementSlot.Helmet, RequirementAttribute.Strength);
 
 	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Gear/Armor/Helmet/{GetType().Name}";
 

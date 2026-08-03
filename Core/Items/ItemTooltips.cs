@@ -22,6 +22,8 @@ using Terraria.UI;
 using SubworldLibrary;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.ElementalDamage;
+using PathOfTerraria.Common.Systems.EquipmentRequirements;
+using PathOfTerraria.Common.Systems.ModPlayers;
 using Terraria.ID;
 using Terraria.GameContent.RGB;
 using PathOfTerraria.Common.UI;
@@ -168,7 +170,7 @@ public sealed partial class ItemTooltips : GlobalItem
 				line.BaseScale = new Vector2(0.8f);
 				return true;
 
-			case "ItemLevel":
+			case "ItemLevel" or "Requirements" or "RequirementsDisabled":
 				yOffset = item.ModItem is Map ? -8 : 2;
 				line.BaseScale = new Vector2(0.8f);
 				return true;
@@ -328,6 +330,7 @@ public sealed partial class ItemTooltips : GlobalItem
 			}
 		}
 
+		bool addedItemHeader = false;
 		if (GetItemLevel.Invoke(item) is > 0 and int level)
 		{
 			var itemLevelLine =
@@ -337,6 +340,49 @@ public sealed partial class ItemTooltips : GlobalItem
 					OverrideColor = Colors.Levels,
 				};
 			AddNewTooltipLine(item, tooltips, itemLevelLine);
+			addedItemHeader = true;
+		}
+
+		if (item.ModItem is IItemRequirements requirementItem)
+		{
+			ItemRequirements requirements = requirementItem.Requirements;
+			Player player = Main.LocalPlayer;
+			AttributesPlayer attributes = player.GetModPlayer<AttributesPlayer>();
+			int playerLevel = player.GetModPlayer<ExpModPlayer>().Level;
+			var parts = new List<string>
+			{
+				FormatRequirement(Localize("RequiredLevel"), requirements.Level, playerLevel >= requirements.Level),
+			};
+
+			if (requirements.Strength > 0)
+			{
+				parts.Add(FormatRequirement(Localize("RequiredStrength"), requirements.Strength, attributes.Strength >= requirements.Strength));
+			}
+
+			if (requirements.Dexterity > 0)
+			{
+				parts.Add(FormatRequirement(Localize("RequiredDexterity"), requirements.Dexterity, attributes.Dexterity >= requirements.Dexterity));
+			}
+
+			if (requirements.Intelligence > 0)
+			{
+				parts.Add(FormatRequirement(Localize("RequiredIntelligence"), requirements.Intelligence, attributes.Intelligence >= requirements.Intelligence));
+			}
+
+			AddNewTooltipLine(item, tooltips, new TooltipLine(Mod, "Requirements", $" {Localize("Requires")} {string.Join(", ", parts)}"));
+			addedItemHeader = true;
+
+			if (EquipmentRequirementPlayer.IsEquippedAndDisabled(player, item))
+			{
+				AddNewTooltipLine(item, tooltips, new TooltipLine(Mod, "RequirementsDisabled", $" {Localize("RequirementsDisabled")}")
+				{
+					OverrideColor = Colors.Negative,
+				});
+			}
+		}
+
+		if (addedItemHeader)
+		{
 			AddSeparator(item, tooltips);
 		}
 
@@ -968,6 +1014,31 @@ public sealed partial class ItemTooltips : GlobalItem
 		{
 			DrawLunarSlot(sb, position);
 		}
+
+		if (context != ItemSlot.Context.MouseItem && EquipmentRequirementPlayer.IsEquippedAndDisabled(Main.LocalPlayer, inv[slot]))
+		{
+			int size = (int)(TextureAssets.InventoryBack.Width() * Main.inventoryScale);
+			DrawDisabledOverlay(sb, new Rectangle((int)position.X, (int)position.Y, size, size));
+		}
+	}
+
+	internal static void DrawDisabledOverlay(SpriteBatch spriteBatch, Rectangle bounds)
+	{
+		Texture2D pixel = TextureAssets.MagicPixel.Value;
+		Color border = Colors.Negative * 0.9f;
+		const int BorderWidth = 2;
+
+		spriteBatch.Draw(pixel, bounds, Color.Black * 0.55f);
+		spriteBatch.Draw(pixel, new Rectangle(bounds.X, bounds.Y, bounds.Width, BorderWidth), border);
+		spriteBatch.Draw(pixel, new Rectangle(bounds.X, bounds.Bottom - BorderWidth, bounds.Width, BorderWidth), border);
+		spriteBatch.Draw(pixel, new Rectangle(bounds.X, bounds.Y, BorderWidth, bounds.Height), border);
+		spriteBatch.Draw(pixel, new Rectangle(bounds.Right - BorderWidth, bounds.Y, BorderWidth, bounds.Height), border);
+	}
+
+	private static string FormatRequirement(string label, int value, bool met)
+	{
+		Color color = met ? Colors.DefaultNumber : Colors.Negative;
+		return $"{label} [c/{ColorUtils.ToHexRGB(color)}:{value}]";
 	}
 
 	/// <summary>

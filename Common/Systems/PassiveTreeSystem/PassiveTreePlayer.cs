@@ -3,6 +3,7 @@ using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Classing;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.EquipmentRequirements;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Common.UI.Guide;
 using PathOfTerraria.Content.Passives;
@@ -47,6 +48,11 @@ public class PassiveTreePlayer : ModPlayer
 			// Since passives are not equips, the method order matters less,
 			// and this fixes some issues where passives would run too late to be used.
 			plr.ApplyPassives();
+		}
+
+		if (self.TryGetModPlayer(out EquipmentRequirementPlayer requirementsPlayer))
+		{
+			requirementsPlayer.RefreshEnabledEquipment();
 		}
 
 		orig(self, i);

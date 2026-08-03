@@ -10,6 +10,12 @@ Tooltips: {
 	Corrupted: Corrupted
 	Tier: Tier:
 	Level: Item level:
+	Requires: Requires
+	RequiredLevel: Level
+	RequiredStrength: Strength
+	RequiredDexterity: Dexterity
+	RequiredIntelligence: Intelligence
+	RequirementsDisabled: Disabled — requirements not met
 	Defense: Defense
 	BlockChance: Block Chance
 	EnergyShield: Energy Shield

@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.AccessorySlots;
 using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.Systems.EquipmentRequirements;
 using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Content.Socketables;
 using System.Collections.Generic;
@@ -259,6 +260,11 @@ internal sealed partial class GearGlobalItem : GlobalItem, InsertAdditionalToolt
 		base.UpdateEquip(item, player);
 
 		if (!IsGearItem(item))
+		{
+			return;
+		}
+
+		if (!EquipmentRequirementPlayer.IsItemEnabled(player, item))
 		{
 			return;
 		}

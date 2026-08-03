@@ -9,6 +9,8 @@ using Terraria.UI;
 using Terraria.UI.Chat;
 using System.Runtime.CompilerServices;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.EquipmentRequirements;
+using PathOfTerraria.Core.Items;
 using PathOfTerraria.Common.AccessorySlots;
 using Terraria.ModLoader.Default;
 
@@ -260,6 +262,11 @@ public class UIImageItemSlot
 			float invScale = 1f;
 			Vector2 stackPos = (dimensions.Position() + new Vector2(dimensions.Width, dimensions.Height) * new Vector2(0.1f, 0.55f)) * invScale;
 			ChatManager.DrawColorCodedStringWithShadow(sb, FontAssets.ItemStack.Value, Item.stack.ToString(), stackPos, Color.White, 0f, Vector2.Zero, new Vector2(invScale), -1f, invScale);
+		}
+
+		if (EquipmentRequirementPlayer.IsEquippedAndDisabled(Main.LocalPlayer, Item))
+		{
+			ItemTooltips.DrawDisabledOverlay(sb, dimensions.ToRectangle());
 		}
 	}
 

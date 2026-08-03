@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Core.Items;
+using PathOfTerraria.Common.Systems.EquipmentRequirements;
 
 namespace PathOfTerraria.Common.Systems.ModPlayers;
 
@@ -20,7 +21,7 @@ internal class UniversalBuffingPlayer : ModPlayer
 	{
 		int mainItem = Main.mouseItem.IsAir || Main.mouseItem.damage <= 0 ? 0 : 58;
 
-		if (!Player.inventory[mainItem].IsAir)
+		if (!Player.inventory[mainItem].IsAir && EquipmentRequirementPlayer.IsItemEnabled(Player, Player.inventory[mainItem]))
 		{
 			PoTItemHelper.ApplyAffixes(Player.inventory[mainItem], UniversalModifier, Player);
 		}
