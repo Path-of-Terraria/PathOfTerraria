@@ -39,14 +39,7 @@ internal static class RightClickableProjectileExtensions
 			return 0;
 		}
 
-		// Due to a quirk in how projectiles drawn using behindProjectiles are implemented,
-		// we need to do some math to calculate the correct world position of the mouse instead of using Main.MouseWorld directly.
-		var matrix = Matrix.Invert(Main.GameViewMatrix.ZoomMatrix);
-		Vector2 position = Main.ReverseGravitySupport(Main.MouseScreen);
-		Vector2.Transform(Main.screenPosition, matrix);
-		Vector2 realMouseWorld = Vector2.Transform(position, matrix) + Main.screenPosition;
-
-		bool mouseDirectlyOver = projectile.Hitbox.Contains(realMouseWorld.ToPoint());
+		bool mouseDirectlyOver = projectile.Hitbox.Contains(Main.MouseWorld.ToPoint());
 		bool interactingWithThisProjectile = mouseDirectlyOver || Main.SmartInteractProj == projectile.whoAmI;
 
 		if (!interactingWithThisProjectile || localPlayer.lastMouseInterface)

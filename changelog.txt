@@ -1,9 +1,23 @@
 v0.3.10
-- Added in system for items to allow Flurry even if not (normally) able, add support for all PoT bows + Warden's Bow synergy
-- Made hardmode map drops not require area item level to drop
-- Prevented recursive Raging Spirits procs
-- Corrected flat block chance calculation
-- Added a defense breakdown with Alt
-- Added a proper affix tooltip for modified shield block chance (i.e. +10 block chance)
-- Fixed player immunities not being reset properly for elemental damage types
-- Fixed an issue where the player's elemental immunity would count towards the amount of damage the player does with that element
+Features
+
+- make it so chest contents have relative item levels for the chest style
+- Summoner QOL
+  - Bewitched and War Table buffs retain their remaining duration through world/subworld travel.
+  - Active minions and their summon buffs are restored after normal death.
+  - Minions are also restored after consuming a boss-domain life.
+  - Restoration is owner-gated for multiplayer and avoids duplicating surviving minions.
+- add in instanced item loot and queen slime jelly drop instanced
+
+Bug Fixes
+- Fixes blood rush and igniting projectile passives triggering 100% of the time
+- wof portal removed when owner enters
+- war shield not blocking projectiles when parrying
+- issues with affixes rolling when they shouldn't and maps having issues with tiers
+- syncing quest status for goblin surveyor spawn
+- poison damage over time not synced in MP
+- nerf mana regen by about 2/3
+- prevent ponds from blocking deerclops proogression
+- Crash related to augment slots
+- distance lookup with rifts for rifts not doing anything
+- map storage sync issues
