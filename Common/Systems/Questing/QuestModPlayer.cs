@@ -33,6 +33,16 @@ public class QuestModPlayer : ModPlayer
 	/// </summary>
 	public readonly HashSet<string> EnabledQuestsByName = [];
 
+	/// <summary>
+	/// A fully synced lookup of active quest names to their current step IDs.
+	/// </summary>
+	public readonly Dictionary<string, string> ActiveQuestStepsByName = [];
+
+	/// <summary>
+	/// A fully synced list of the quests this player has completed.
+	/// </summary>
+	public readonly HashSet<string> CompletedQuestsByName = [];
+
 	internal bool FirstQuest = true;
 	/// <summary> The full name of this player's pinned quest. </summary>
 	public string PinnedQuest;
@@ -52,12 +62,17 @@ public class QuestModPlayer : ModPlayer
 	/// <param name="fromLoad">Skips the quest popups &amp; sound effects if true.</param>
 	public void StartQuest(string name, int step = -1, bool fromLoad = false)
 	{
-		QuestsByName[name].Start(Player, step == -1 ? 0 : step);
-		EnabledQuestsByName.Add(name);
+		Quest quest = QuestsByName[name];
+		quest.Start(Player, step == -1 ? 0 : step);
+
+		if (quest.Active)
+		{
+			SetSyncedQuestState(name, true, quest.ActiveStep.Id, false);
+		}
 
 		if (Main.myPlayer == Player.whoAmI && !fromLoad)
 		{
-			UIQuestPopupState.NewQuest = new UIQuestPopupState.PopupText(QuestsByName[name].DisplayName, 300, 1f, 1.2f);
+			UIQuestPopupState.NewQuest = new UIQuestPopupState.PopupText(quest.DisplayName, 300, 1f, 1.2f);
 			SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/QuestStart") { Volume = 0.5f });
 
 			if (FirstQuest) // Only display first quest popup on first quest (wow!)
@@ -67,26 +82,67 @@ public class QuestModPlayer : ModPlayer
 				FirstQuest = false;
 			}
 
-			if (Main.netMode != NetmodeID.SinglePlayer)
+			if (Main.netMode != NetmodeID.SinglePlayer && quest.Active)
 			{
-				SyncPlayerQuestActive.Send(name, true);
+				SyncPlayerQuestActive.Send(name, true, quest.ActiveStep.Id, false);
 			}
 		}
 	}
 
 	public override void OnEnterWorld()
 	{
+		EnabledQuestsByName.Clear();
+		ActiveQuestStepsByName.Clear();
+		CompletedQuestsByName.Clear();
+
 		foreach (Quest quest in QuestsByName.Values)
 		{
 			if (quest.Active)
 			{
-				EnabledQuestsByName.Add(quest.FullName);
+				SetSyncedQuestState(quest.FullName, true, quest.ActiveStep.Id, false);
 
-				if (Main.netMode != NetmodeID.SinglePlayer)
+				if (Player.whoAmI == Main.myPlayer && Main.netMode == NetmodeID.MultiplayerClient)
 				{
-					SyncPlayerQuestActive.Send(quest.FullName, true);
+					SyncPlayerQuestActive.Send(quest.FullName, true, quest.ActiveStep.Id, false);
 				}
 			}
+			else if (quest.Completed)
+			{
+				SetSyncedQuestState(quest.FullName, false, string.Empty, true);
+
+				if (Player.whoAmI == Main.myPlayer && Main.netMode == NetmodeID.MultiplayerClient)
+				{
+					SyncPlayerQuestActive.Send(quest.FullName, false, string.Empty, true);
+				}
+			}
+		}
+
+		if (Player.whoAmI == Main.myPlayer && Main.netMode == NetmodeID.MultiplayerClient)
+		{
+			RequestOtherQuestStatesHandler.Send();
+		}
+	}
+
+	internal void SetSyncedQuestState(string questName, bool active, string activeStep, bool completed)
+	{
+		if (active)
+		{
+			EnabledQuestsByName.Add(questName);
+			ActiveQuestStepsByName[questName] = activeStep;
+			CompletedQuestsByName.Remove(questName);
+			return;
+		}
+
+		EnabledQuestsByName.Remove(questName);
+		ActiveQuestStepsByName.Remove(questName);
+
+		if (completed)
+		{
+			CompletedQuestsByName.Add(questName);
+		}
+		else
+		{
+			CompletedQuestsByName.Remove(questName);
 		}
 	}
 
