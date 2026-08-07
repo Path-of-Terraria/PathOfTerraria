@@ -259,10 +259,14 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile, 
 				(Player? closestPlayer, float minSqrDist) = (null, float.PositiveInfinity);
 				foreach (Player player in Main.ActivePlayers)
 				{
-					(closestPlayer, minSqrDist) = (player, MathF.Min(minSqrDist, player.DistanceSQ(center)));
+					float sqrDist = player.DistanceSQ(center);
+					if (sqrDist < minSqrDist)
+					{
+						(closestPlayer, minSqrDist) = (player, sqrDist);
+					}
 				}
 
-				Vector2 compareSpot = Main.LocalPlayer.Center;
+				Vector2 compareSpot = closestPlayer?.Center ?? center;
 				bool isInteractible =
 					closestPlayer?.IsProjectileInteractibleAndInInteractionRange(Projectile, ref compareSpot) == true &&
 					CanInteract();
@@ -460,8 +464,6 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile, 
 
 		Main.spriteBatch.End();
 		Main.spriteBatch.Begin(sbArgs);
-
-		this.TryInteracting();
 
 		/*
 		(_, _, Color colorBase) = GetVisualParameters();
@@ -853,6 +855,23 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile, 
 }
 
 /// <summary>
+/// Processes rift input independently of projectile rendering so off-screen culling and draw-order changes cannot block interaction.
+/// </summary>
+internal sealed class RiftInteractionSystem : ModSystem
+{
+	public override void PostUpdateInput()
+	{
+		foreach (Projectile projectile in Main.ActiveProjectiles)
+		{
+			if (projectile.ModProjectile is ConfluxRift rift)
+			{
+				rift.TryInteracting();
+			}
+		}
+	}
+}
+
+/// <summary>
 /// Synchronizes right click interactions with rifts.
 /// </summary>
 internal class RiftInteractionHandler : Handler
@@ -866,22 +885,52 @@ internal class RiftInteractionHandler : Handler
 
 	internal override void Receive(BinaryReader reader, byte sender)
 	{
-		ModPacket packet = Networking.GetPacket(Id);
 		int riftIdentity = reader.ReadInt32();
 
 		if (Main.netMode != NetmodeID.Server) { return; }
 
-		if (Main.projectile.FirstOrDefault(p => p.identity == riftIdentity) is not { ModProjectile: ConfluxRift rift })
+		void LogRejection(string reason)
 		{
+			PoTMod.Instance.Logger.Debug(
+				$"Rejected rift interaction from player {sender} for identity {riftIdentity}: {reason}");
+		}
+
+		ConfluxRift? rift = null;
+		foreach (Projectile projectile in Main.ActiveProjectiles)
+		{
+			if (projectile.identity == riftIdentity && projectile.ModProjectile is ConfluxRift activeRift)
+			{
+				rift = activeRift;
+				break;
+			}
+		}
+
+		if (rift == null)
+		{
+			LogRejection("no active rift matched the projectile identity");
 			return;
 		}
 
-		if (Main.player[sender] is not { active: true } player) { return; }
+		if (Main.player[sender] is not { active: true } player)
+		{
+			LogRejection("the requesting player was inactive");
+			return;
+		}
+
+		if (rift.Activated || !rift.CanInteract())
+		{
+			LogRejection("the rift was already active or cannot be interacted with");
+			return;
+		}
 
 		// Increased reach distance for synchronization grace.
 		Point tileTarget = rift.Projectile.Hitbox.ClosestPointInRect(player.Center).ToTileCoordinates();
 		if (!player.IsInTileInteractionRange(tileTarget.X, tileTarget.Y,
-			    TileReachCheckSettings.Simple with { TileRangeMultiplier = 2 })) { return; }
+			    TileReachCheckSettings.Simple with { TileRangeMultiplier = 2 }))
+		{
+			LogRejection("the requesting player was out of interaction range");
+			return;
+		}
 
 		rift.Activate();
 	}
