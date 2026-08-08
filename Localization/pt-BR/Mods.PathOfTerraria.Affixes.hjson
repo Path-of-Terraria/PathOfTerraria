@@ -137,3 +137,7 @@ NoFallDamageAffix: {
 // IncreasedIgniteEffectAffix.Description: "{1}{0}% increased effect of Ignite"
 // SpreadIgniteScorchOnKillAffix.Description: On kill, spread your Ignite and Scorch debuffs to all nearby targets
 // AllResistancesAffix.Description: "{1}{0}% to all resistances"
+// RuneboundPrismaticAffix.Description: "{1}{0}% to all resistances"
+// RuneboundTitanAffix.Description: "{1}{0} added max life"
+// RuneboundAnnihilationAffix.Description: "{1}{0}% increased damage"
+// RuneboundTrinityAffix.Description: "{1}{0} to strength, dexterity, and intelligence"

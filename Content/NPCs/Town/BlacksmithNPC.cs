@@ -138,6 +138,10 @@ public class BlacksmithNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOv
 		{
 			return Quest.GetLocalPlayerInstance<EoWQuest>();
 		}
+		if (QuestUnlockManager.CanStartQuest<TheFirstBindingQuest>() || Quest.GetLocalPlayerInstance<TheFirstBindingQuest>().Active)
+		{
+			return Quest.GetLocalPlayerInstance<TheFirstBindingQuest>();
+		}
 		if (QuestUnlockManager.CanStartQuest<GolemQuest>() || Quest.GetLocalPlayerInstance<GolemQuest>().Active)
 		{
 			return Quest.GetLocalPlayerInstance<GolemQuest>();
@@ -151,6 +155,7 @@ public class BlacksmithNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOv
 
 		bool hasAvailableQuest = QuestUnlockManager.CanStartQuest<BlacksmithStartQuest>() ||
 		                         QuestUnlockManager.CanStartQuest<EoWQuest>() ||
+		                         QuestUnlockManager.CanStartQuest<TheFirstBindingQuest>() ||
 		                         QuestUnlockManager.CanStartQuest<GolemQuest>();
 
 		button2 = hasAvailableQuest ? Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest") : "";
@@ -173,6 +178,11 @@ public class BlacksmithNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOv
 		{
 			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.EoWDialogue");
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<EoWQuest>();
+		}
+		else if (QuestUnlockManager.CanStartQuest<TheFirstBindingQuest>())
+		{
+			Main.npcChatText = Quest.GetSingleton<TheFirstBindingQuest>().GetLocalization("ThrainStart").Value;
+			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<TheFirstBindingQuest>();
 		}
 		else if (QuestUnlockManager.CanStartQuest<GolemQuest>())
 		{

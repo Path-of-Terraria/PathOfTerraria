@@ -3,7 +3,9 @@ using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Common.UI.Components;
 using PathOfTerraria.Common.UI.Elements;
+using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Content.Items.Currency;
+using PathOfTerraria.Content.Items.Currency.Runebound;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI;
 using PathOfTerraria.Core.UI.SmartUI;
@@ -16,6 +18,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.UI;
 using Microsoft.Xna.Framework.Input;
+using System.Linq;
 
 namespace PathOfTerraria.Common.Looting.CurrencyPouch;
 
@@ -23,16 +26,24 @@ internal class CurrencyPouchUIState : UIState, IMutuallyExclusiveUI
 {
 	public const int SlotContext = ItemSlot.Context.ChestItem;
 	public const string Identifier = "Currency Pouch UI";
+	private const string CurrencyTab = "currency";
+	private const string RunestonesTab = "runestones";
+	private const int ItemsPerPage = 27;
 
 	private static CurrencyPouchBackUI _backdrop = null;
 
 	private static ref Item SlottedItem => ref Main.LocalPlayer.GetModPlayer<CurrencyPouchStoragePlayer>().SlottedItem;
 
 	private UIImageItemSlot _modifyItemSlot = null;
+	private UIPanelTab _currencyTab = null;
+	private UIPanelTab _runestonesTab = null;
+	private string _activeTab = CurrencyTab;
+	private int _page;
 
 	public override void OnActivate()
 	{
 		const int GridBuffer = 50;
+		const int TabBarHeight = 32;
 		const string Path = "Mods.PathOfTerraria.UI.CurrencyPouch.";
 
 		RemoveAllChildren();
@@ -40,7 +51,7 @@ internal class CurrencyPouchUIState : UIState, IMutuallyExclusiveUI
 		ModContent.GetInstance<SmartUiLoader>().ClearMutuallyExclusive<CurrencyPouchUIState>();
 
 		UIPanel panel = new();
-		panel.SetDimensions((0f, 0), (0, 0), (0, 424), (0, 212));
+		panel.SetDimensions((0f, 0), (0, 0), (0, 540), (0, 320 + TabBarHeight));
 		panel.VAlign = 0.5f;
 		panel.HAlign = 0.5f;
 		panel.OnUpdate += BlockClicks;
@@ -55,13 +66,32 @@ internal class CurrencyPouchUIState : UIState, IMutuallyExclusiveUI
 		close.OnLeftClick += Close;
 		panel.Append(close);
 
+		_currencyTab = new UIPanelTab(CurrencyTab, Language.GetText(Path + "TabCurrency"), 0.85f);
+		_currencyTab.SetPadding(6);
+		_currencyTab.Top = StyleDimension.FromPixels(GridBuffer);
+		_currencyTab.BackgroundColor.A = 255;
+		_currencyTab.OnLeftClick += (_, _) => SetActiveTab(CurrencyTab);
+		panel.Append(_currencyTab);
+
+		_runestonesTab = new UIPanelTab(RunestonesTab, Language.GetText(Path + "TabRunestones"), 0.85f);
+		_runestonesTab.SetPadding(6);
+		_runestonesTab.Top = StyleDimension.FromPixels(GridBuffer);
+		_runestonesTab.BackgroundColor.A = 255;
+		_runestonesTab.OnLeftClick += (_, _) => SetActiveTab(RunestonesTab);
+		panel.Append(_runestonesTab);
+
+		_currencyTab.Recalculate();
+		_runestonesTab.Left = StyleDimension.FromPixels(_currencyTab.GetDimensions().Width + 8);
+		_runestonesTab.Recalculate();
+		UpdateTabStyles();
+
 		_backdrop = new();
-		_backdrop.SetDimensions((0, 0), (0, GridBuffer), (1, 0), (1, -GridBuffer));
+		_backdrop.SetDimensions((0, 0), (0, GridBuffer + TabBarHeight), (1, 0), (1, -(GridBuffer + TabBarHeight)));
 		panel.Append(_backdrop);
 
 		BuildItemSlots(_backdrop);
 
-		UIElement container = _backdrop.AddElement(new UIElement(), x => x.SetDimensions((0, 172), (0, 64), (0, 54), (0, 54)));
+		UIElement container = _backdrop.AddElement(new UIElement(), x => x.SetDimensions((0.5f, -27), (0, 184), (0, 54), (0, 54)));
 
 		var wrapper = new UIImageItemSlot.SlotWrapper(() => SlottedItem, x => SlottedItem = x);
 		Asset<Texture2D> back = ModContent.Request<Texture2D>("PathOfTerraria/Assets/UI/CurrencyWeaponIcon", AssetRequestMode.ImmediateLoad);
@@ -90,38 +120,80 @@ internal class CurrencyPouchUIState : UIState, IMutuallyExclusiveUI
 
 	private void BuildItemSlots(CurrencyPouchBackUI backdrop)
 	{
-		TryAppendSingleItem<UnfoldingShard>(backdrop, new Vector2(20, 12));
-		TryAppendSingleItem<GlimmeringShard>(backdrop, new Vector2(70, 12));
-		TryAppendSingleItem<MysticShard>(backdrop, new Vector2(124, 12));
-		TryAppendSingleItem<LimpidShard>(backdrop, new Vector2(120, 72));
-		TryAppendSingleItem<CorruptShard>(backdrop, new Vector2(180, 11));
-		TryAppendSingleItem<AscendantShard>(backdrop, new Vector2(238, 12));
-		TryAppendSingleItem<ShiftingShard>(backdrop, new Vector2(242, 76));
-		TryAppendSingleItem<SeveranceShard>(backdrop, new Vector2(294, 72));
-		TryAppendSingleItem<RadiantShard>(backdrop, new Vector2(290, 12));
-		TryAppendSingleItem<EchoingShard>(backdrop, new Vector2(342, 14));
-		TryAppendSingleItem<RegalShard>(backdrop, new Vector2(70, 72));
-	}
+		CurrencyPouchStoragePlayer pouch = Main.LocalPlayer.GetModPlayer<CurrencyPouchStoragePlayer>();
+		IEnumerable<int> storedTypesQuery = pouch.StorageByType
+			.Where(pair => pair.Value > 0 && BelongsToActiveTab(ContentSamples.ItemsByType[pair.Key]))
+			.Select(pair => pair.Key);
 
-	private void TryAppendSingleItem<T>(CurrencyPouchBackUI backdrop, Vector2 position) where T : CurrencyShard
-	{
-		UIItemIcon icon = BuildSingleSlot<T>(position);
+		int[] storedTypes = (_activeTab == RunestonesTab
+			? storedTypesQuery.OrderBy(type => type)
+			: storedTypesQuery.OrderBy(type => ContentSamples.ItemsByType[type].Name))
+			.ToArray();
 
-		if (icon is not null)
+		int pageCount = Math.Max(1, (storedTypes.Length + ItemsPerPage - 1) / ItemsPerPage);
+		_page = Math.Clamp(_page, 0, pageCount - 1);
+		int start = _page * ItemsPerPage;
+		int end = Math.Min(start + ItemsPerPage, storedTypes.Length);
+
+		for (int i = start; i < end; i++)
 		{
-			backdrop.Append(icon);
+			int slot = i - start;
+			Vector2 position = new(14 + slot % 9 * 57, 8 + slot / 9 * 52);
+			backdrop.Append(BuildSingleSlot(storedTypes[i], position));
+		}
+
+		if (pageCount > 1)
+		{
+			var previous = new UITextPanel<string>("<", 0.8f) { Left = StyleDimension.FromPixels(188), Top = StyleDimension.FromPixels(200) };
+			previous.SetDimensions((0, 0), (0, 0), (0, 34), (0, 34));
+			previous.OnLeftClick += (_, _) => ChangePage(-1);
+			backdrop.Append(previous);
+
+			var pageText = new UIText($"{_page + 1} / {pageCount}", 0.75f) { HAlign = 0.5f, Top = StyleDimension.FromPixels(160) };
+			backdrop.Append(pageText);
+
+			var next = new UITextPanel<string>(">", 0.8f) { Left = StyleDimension.FromPixels(318), Top = StyleDimension.FromPixels(200) };
+			next.SetDimensions((0, 0), (0, 0), (0, 34), (0, 34));
+			next.OnLeftClick += (_, _) => ChangePage(1);
+			backdrop.Append(next);
 		}
 	}
 
-	public UIItemIcon BuildSingleSlot<T>(Vector2 position) where T : CurrencyShard
+	private bool BelongsToActiveTab(Item item)
 	{
-		int type = ModContent.ItemType<T>();
+		return item.ModItem is CurrencyShard
+			&& (_activeTab == RunestonesTab ? item.ModItem is Runestone : item.ModItem is not Runestone);
+	}
+
+	private void SetActiveTab(string tab)
+	{
+		if (_activeTab == tab)
+		{
+			return;
+		}
+
+		_activeTab = tab;
+		_page = 0;
+		OnActivate();
+		SoundEngine.PlaySound(SoundID.MenuTick);
+	}
+
+	private void UpdateTabStyles()
+	{
+		_currencyTab.TextColor = _activeTab == CurrencyTab ? Color.Yellow : Color.White;
+		_runestonesTab.TextColor = _activeTab == RunestonesTab ? Color.Yellow : Color.White;
+	}
+
+	private void ChangePage(int direction)
+	{
+		_page += direction;
+		OnActivate();
+		SoundEngine.PlaySound(SoundID.MenuTick);
+	}
+
+	public UIItemIcon BuildSingleSlot(int type, Vector2 position)
+	{
 		position -= new Vector2(1, 4);
-
-		if (!Main.LocalPlayer.GetModPlayer<CurrencyPouchStoragePlayer>().StorageByType.TryGetValue(type, out int count))
-		{
-			return null;
-		}
 
 		Item item = ContentSamples.ItemsByType[type];
 
@@ -195,7 +267,10 @@ internal class CurrencyPouchUIState : UIState, IMutuallyExclusiveUI
 
 	private void RightClickItem(Item item)
 	{
-		var shard = item.ModItem as CurrencyShard;
+		if (item.ModItem is not CurrencyShard shard)
+		{
+			return;
+		}
 
 		if (!shard.CanUseInPouch(SlottedItem, out _))
 		{

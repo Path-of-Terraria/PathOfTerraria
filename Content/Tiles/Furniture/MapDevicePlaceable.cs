@@ -4,12 +4,16 @@ using PathOfTerraria.Common.Items;
 using PathOfTerraria.Common.Mapping;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.ModPlayers.LivesSystem;
+using PathOfTerraria.Common.Systems.Scarabs;
 using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Content.Items.Consumables.Maps;
+using PathOfTerraria.Content.Items.Consumables.Maps.ExplorableMaps;
+using PathOfTerraria.Content.Items.Mapping.Scarabs;
 using PathOfTerraria.Content.Items.Placeable;
 using PathOfTerraria.Core.Audio;
 using PathOfTerraria.Core.Camera;
+using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.Time;
 using PathOfTerraria.Core.UI.SmartUI;
 using PathOfTerraria.Utilities;
@@ -384,6 +388,8 @@ internal class MapDeviceEntity : ModTileEntity
 
 	public Item StoredMap { get; set; }
 	public Item[] Storage { get; set; }
+	public Item[] ScarabSlots { get; set; }
+	public ScarabEntry[] ActiveScarabs { get; internal set; } = [];
 	public bool PortalActive { get; set; }
 	public int PortalUsesLeft { get; set; }
 	public int? InteractingPlayer { get; private set; }
@@ -399,6 +405,8 @@ internal class MapDeviceEntity : ModTileEntity
 		StoredMap = new();
 		Storage = new Item[StorageSize];
 		for (int i = 0; i < Storage.Length; i++) { Storage[i] = new(); }
+		ScarabSlots = new Item[4];
+		for (int i = 0; i < ScarabSlots.Length; i++) { ScarabSlots[i] = new(); }
 	}
 
 	public override bool IsTileValidForEntity(int x, int y)
@@ -433,6 +441,17 @@ internal class MapDeviceEntity : ModTileEntity
 			Item.NewItem(new EntitySource_TileBreak(Position.X, Position.Y), Position.ToWorldCoordinates(), item);
 		}
 
+		if (!PortalActive)
+		{
+			foreach (Item scarab in ScarabSlots)
+			{
+				if (scarab is { IsAir: false })
+				{
+					Item.NewItem(new EntitySource_TileBreak(Position.X, Position.Y), Position.ToWorldCoordinates(), scarab);
+				}
+			}
+		}
+
 		// Drop the map, but only if the portal has not been activated.
 		if (!PortalActive && StoredMap is { IsAir: false })
 		{
@@ -451,14 +470,8 @@ internal class MapDeviceEntity : ModTileEntity
 		// If the local player has the map device open.
 		if (InteractingPlayer.HasValue && Main.player[InteractingPlayer.Value] is { } player)
 		{
-			var tileData = TileObjectData.GetTileData(Main.tile[Position].TileType, 1);
-			var worldPos = Position.ToWorldCoordinates(0, 0).ToPoint();
-			var tileRect = new Rectangle(worldPos.X, worldPos.Y, tileData.Width * TileUtils.TileSizeInPixels, tileData.Height * TileUtils.TileSizeInPixels);
-			Vector2 worldCenter = tileRect.Center();
-
 			// Close UI if player is dead, gone, or too far away.
-			Point checkPoint = tileRect.ClosestPointInRect(player.Center).ToTileCoordinates();
-			if (!player.active || player.dead || !player.IsInTileInteractionRange(checkPoint.X, checkPoint.Y, TileReachCheckSettings.Simple))
+			if (!CanPlayerInteract(player))
 			{
 				TryClosingInterface();
 				return;
@@ -488,6 +501,26 @@ internal class MapDeviceEntity : ModTileEntity
 				}
 			}
 		}
+	}
+
+	internal bool CanPlayerInteract(Player player)
+	{
+		if (!player.active || player.dead || !WorldGen.InWorld(Position.X, Position.Y))
+		{
+			return false;
+		}
+
+		TileObjectData tileData = TileObjectData.GetTileData(Main.tile[Position].TileType, 1);
+		if (tileData is null)
+		{
+			return false;
+		}
+
+		Point worldPos = Position.ToWorldCoordinates(0, 0).ToPoint();
+		var tileRect = new Rectangle(worldPos.X, worldPos.Y, tileData.Width * TileUtils.TileSizeInPixels,
+			tileData.Height * TileUtils.TileSizeInPixels);
+		Point checkPoint = tileRect.ClosestPointInRect(player.Center).ToTileCoordinates();
+		return player.IsInTileInteractionRange(checkPoint.X, checkPoint.Y, TileReachCheckSettings.Simple);
 	}
 
 	public override void SaveData(TagCompound tag)
@@ -527,6 +560,17 @@ internal class MapDeviceEntity : ModTileEntity
 		}
 
 		if (storage.Count > 0) { tag.Add("storage", storage); }
+
+		var scarabs = new TagCompound();
+		for (int i = 0; i < ScarabSlots.Length; i++)
+		{
+			if (ScarabSlots[i] is { IsAir: false } scarab)
+			{
+				scarabs[i.ToString()] = ItemIO.Save(scarab);
+			}
+		}
+		if (scarabs.Count > 0) { tag.Add("scarabs", scarabs); }
+		if (ActiveScarabs.Length > 0) { tag.Add("activeScarabs", (TagCompound[])[.. ActiveScarabs.Select(entry => entry.Save())]); }
 	}
 	public override void LoadData(TagCompound tag)
 	{
@@ -559,6 +603,34 @@ internal class MapDeviceEntity : ModTileEntity
 					Storage[key] = item;
 				}
 			}
+		}
+
+		if (tag.TryGet("scarabs", out TagCompound scarabs))
+		{
+			var loadedFamilies = new HashSet<ScarabFamily>();
+			foreach (KeyValuePair<string, object> pair in scarabs)
+			{
+				if (int.TryParse(pair.Key, out int key) && key >= 0 && key < ScarabSlots.Length
+					&& ItemIO.Load((TagCompound)pair.Value) is { IsAir: false, ModItem: DomainScarab loadedScarab } scarab
+					&& loadedFamilies.Add(loadedScarab.Family))
+				{
+					scarab.stack = 1;
+					ScarabSlots[key] = scarab;
+				}
+			}
+		}
+
+		if (tag.TryGet("activeScarabs", out TagCompound[] activeScarabs))
+		{
+			var activeFamilies = new HashSet<ScarabFamily>();
+			ActiveScarabs = [.. activeScarabs.Select(ScarabEntry.Load)
+				.Where(ScarabCatalog.IsValid)
+				.Where(entry => activeFamilies.Add(entry.Family))
+				.Take(4)];
+		}
+		else
+		{
+			ActiveScarabs = [];
 		}
 	}
 
@@ -773,6 +845,10 @@ internal class MapDeviceEntity : ModTileEntity
 		{
 			// Acknowledge interaction.
 			Debug.Assert(netSender != null);
+			if (StoredMap.ModItem is Map serverMap)
+			{
+				serverMap.ApplyDomainState(ActiveScarabs);
+			}
 			MapDeviceInteraction.Send(ID, MapDeviceInteraction.Kind.EnterPortal, toClient: netSender.Value);
 		}
 
@@ -807,6 +883,11 @@ internal class MapDeviceEntity : ModTileEntity
 			return false;
 		}
 
+		if (!TryValidateScarabs(out ScarabEntry[] scarabEntries))
+		{
+			return false;
+		}
+
 		// Short-circuit in evaluation mode.
 		if (evalMode) { return true; }
 
@@ -824,6 +905,12 @@ internal class MapDeviceEntity : ModTileEntity
 		}
 
 		Subworld? destination = StoredMap is { IsAir: false, ModItem: Map storedMap } ? storedMap.GetDestination() : null;
+
+		ActiveScarabs = scarabEntries;
+		foreach (Item scarabSlot in ScarabSlots)
+		{
+			scarabSlot.TurnToAir();
+		}
 
 		// Ensure a newly opened portal starts from a fresh save.
 		MappingWorld.DeleteSavedSubworld(destination);
@@ -848,6 +935,7 @@ internal class MapDeviceEntity : ModTileEntity
 		if (Main.netMode == NetmodeID.Server)
 		{
 			MapDeviceInteraction.Send(ID, MapDeviceInteraction.Kind.OpenPortal);
+			MapDeviceSync.Send(ID, MapDeviceSync.Flags.Scarabs);
 		}
 
 		// Effects.
@@ -863,6 +951,45 @@ internal class MapDeviceEntity : ModTileEntity
 			});
 		}
 
+		return true;
+	}
+
+	private bool TryValidateScarabs(out ScarabEntry[] entries)
+	{
+		var found = new List<ScarabEntry>(ScarabSlots.Length);
+		var families = new HashSet<ScarabFamily>();
+
+		for (int i = 0; i < ScarabSlots.Length; i++)
+		{
+			if (ScarabSlots[i].IsAir)
+			{
+				continue;
+			}
+
+			if (i >= ScarabSystem.UnlockedSlotCount || ScarabSlots[i].ModItem is not DomainScarab scarab
+				|| !families.Add(scarab.Family))
+			{
+				entries = [];
+				return false;
+			}
+
+			found.Add(scarab.Entry);
+		}
+
+		if (found.Count > 0 && StoredMap.ModItem is not ExplorableMap)
+		{
+			entries = [];
+			return false;
+		}
+
+		if (found.Any(entry => entry.Kind == ScarabKind.Peril)
+			&& !StoredMap.GetInstanceData().Affixes.Any(affix => affix is Common.Systems.Affixes.Maps.MapAffix))
+		{
+			entries = [];
+			return false;
+		}
+
+		entries = [.. found];
 		return true;
 	}
 
@@ -922,6 +1049,12 @@ internal class MapDeviceEntity : ModTileEntity
 		PortalActive = false;
 		PortalUsesLeft = 0;
 		Injection = null;
+		ActiveScarabs = [];
+		ScarabSystem.ClearActive();
+		for (int i = 0; i < ScarabSlots.Length; i++)
+		{
+			ScarabSlots[i].TurnToAir();
+		}
 		MappingWorld.ClearActiveMapDevice();
 		MappingWorld.DeleteSavedSubworld(destination);
 
@@ -1105,6 +1238,21 @@ internal class MapDeviceInteraction : Handler
 
 		if (TileEntity.ByID.TryGetValue(entityId, out TileEntity? tileEntity) && tileEntity is MapDeviceEntity mapEntity)
 		{
+			if (Main.netMode == NetmodeID.Server)
+			{
+				if (sender >= Main.maxPlayers || !Main.player[sender].active)
+				{
+					return;
+				}
+
+				// Closing must remain possible after walking out of range. Every mutation and
+				// portal entry otherwise requires normal tile interaction reach.
+				if (kind != Kind.CloseInterface && !mapEntity.CanPlayerInteract(Main.player[sender]))
+				{
+					return;
+				}
+			}
+
 			switch (kind)
 			{
 				case Kind.OpenInterface: mapEntity.TryOpeningInterface(netSender: sender); break;
@@ -1128,7 +1276,8 @@ internal class MapDeviceSync : Handler
 		Map = 1 << 1,
 		Storage = 1 << 2,
 		Injection = 1 << 3,
-		FullSync = Status | Map | Storage | Injection,
+		Scarabs = 1 << 4,
+		FullSync = Status | Map | Storage | Injection | Scarabs,
 	}
 
 	public static void CorrectDesync(int entityId, byte? toClient, Flags flags)
@@ -1196,6 +1345,25 @@ internal class MapDeviceSync : Handler
 			writer.Write7BitEncodedInt(device.Injection?.Id ?? -1);
 			writer.Write7BitEncodedInt(device.Injection?.Amount ?? 0);
 		}
+
+		if (flags.HasFlag(Flags.Scarabs))
+		{
+			int[] scarabIndices = itemIndices is null
+				? [.. Enumerable.Range(0, device.ScarabSlots.Length)]
+				: [.. itemIndices.Where(i => i >= 0 && i < device.ScarabSlots.Length).Distinct()];
+			writer.Write7BitEncodedInt(scarabIndices.Length);
+			foreach (int index in scarabIndices)
+			{
+				writer.Write((byte)index);
+				ItemIO.Send(device.ScarabSlots[index], writer, writeStack: true);
+			}
+
+			writer.Write((byte)device.ActiveScarabs.Length);
+			foreach (ScarabEntry entry in device.ActiveScarabs)
+			{
+				entry.NetSend(writer);
+			}
+		}
 	}
 
 	private static bool Receive(byte sender, BinaryReader reader, out int entityId, out Flags flags)
@@ -1228,22 +1396,36 @@ internal class MapDeviceSync : Handler
 
 		if (flags.HasFlag(Flags.Map))
 		{
-			// On servers, refuse applying client's map item if the portal has already been opened.
-			bool useDummy = (Main.netMode == NetmodeID.Server && mapEntity?.PortalActive == true) || mapEntity?.StoredMap == null;
-			Item mapSlot = useDummy ? new() : mapEntity!.StoredMap;
-			ItemIO.Receive(mapSlot!, reader, readStack: true);
-
-			// Drop the received map if it went into a dummy slot.
-			if (Main.netMode == NetmodeID.Server && mapSlot != mapEntity?.StoredMap && mapSlot is { IsAir: false } && Main.player[sender] is { active: true } player)
+			if (Main.netMode == NetmodeID.Server)
 			{
-				Item.NewItem(null, player.Center, mapSlot);
+				var received = new Item();
+				ItemIO.Receive(received, reader, readStack: true);
+				bool ownsDevice = sender < Main.maxPlayers && mapEntity?.InteractingPlayer == sender
+					&& mapEntity.CanPlayerInteract(Main.player[sender]);
+				bool validItem = received.IsAir || received.ModItem is Map;
+
+				if (ownsDevice && mapEntity is { PortalActive: false } && validItem)
+				{
+					mapEntity.StoredMap = received;
+				}
+				else if (ownsDevice && !received.IsAir && sender < Main.maxPlayers && Main.player[sender] is { active: true } player)
+				{
+					Item.NewItem(null, player.Center, received);
+				}
+			}
+			else
+			{
+				Item mapSlot = mapEntity?.StoredMap ?? new Item();
+				ItemIO.Receive(mapSlot, reader, readStack: true);
 			}
 		}
 
 		if (flags.HasFlag(Flags.Storage))
 		{
 			// On servers, refuse applying client's storage items if they are not the one interacting with the device.
-			bool forceDummy = Main.netMode == NetmodeID.Server && mapEntity?.InteractingPlayer != sender;
+			bool forceDummy = Main.netMode == NetmodeID.Server
+				&& (sender >= Main.maxPlayers || mapEntity?.InteractingPlayer != sender
+					|| !mapEntity.CanPlayerInteract(Main.player[sender]));
 
 			int itemCount = reader.Read7BitEncodedInt();
 			for (int i = 0; i < itemCount; i++)
@@ -1266,13 +1448,77 @@ internal class MapDeviceSync : Handler
 				mapEntity.Injection = MapResources.TryGet(resourceId, out _) ? (resourceId, Math.Max(0, resourceAmount)) : null;
 			}
 		}
+
+		if (flags.HasFlag(Flags.Scarabs))
+		{
+			int itemCount = reader.Read7BitEncodedInt();
+			for (int i = 0; i < itemCount; i++)
+			{
+				int scarabIndex = reader.ReadByte();
+				if (Main.netMode == NetmodeID.Server)
+				{
+					var received = new Item();
+					ItemIO.Receive(received, reader, readStack: true);
+					bool ownsDevice = sender < Main.maxPlayers && mapEntity?.InteractingPlayer == sender
+						&& mapEntity.CanPlayerInteract(Main.player[sender]);
+					bool validIndex = scarabIndex >= 0 && scarabIndex < ScarabSystem.UnlockedSlotCount && scarabIndex < 4;
+					bool validItem = received.IsAir || received.ModItem is DomainScarab;
+					bool duplicateFamily = received.ModItem is DomainScarab incoming && mapEntity is not null
+						&& mapEntity.ScarabSlots.Where((item, index) => index != scarabIndex)
+							.Any(item => item.ModItem is DomainScarab other && other.Family == incoming.Family);
+
+					if (ownsDevice && mapEntity is { PortalActive: false } && validIndex && validItem && !duplicateFamily)
+					{
+						if (!received.IsAir && received.stack > 1)
+						{
+							int excess = received.stack - 1;
+							received.stack = 1;
+							if (sender < Main.maxPlayers && Main.player[sender] is { active: true } player)
+							{
+								Item.NewItem(null, player.Center, received.type, excess);
+							}
+						}
+
+						mapEntity.ScarabSlots[scarabIndex] = received;
+					}
+					else if (ownsDevice && received is { IsAir: false, ModItem: DomainScarab }
+						&& sender < Main.maxPlayers && Main.player[sender] is { active: true } senderPlayer)
+					{
+						Item.NewItem(null, senderPlayer.Center, received);
+					}
+				}
+				else
+				{
+					Item slot = scarabIndex < 4 && mapEntity is not null ? mapEntity.ScarabSlots[scarabIndex] : new Item();
+					ItemIO.Receive(slot, reader, readStack: true);
+				}
+			}
+
+			int serializedActiveCount = reader.ReadByte();
+			int activeCount = Math.Min(serializedActiveCount, 4);
+			var active = new ScarabEntry[activeCount];
+			for (int i = 0; i < serializedActiveCount; i++)
+			{
+				ScarabEntry entry = ScarabEntry.NetReceive(reader);
+				if (i < activeCount)
+				{
+					active[i] = entry;
+				}
+			}
+			if (mapEntity != null && Main.netMode != NetmodeID.Server)
+			{
+				mapEntity.ActiveScarabs = active;
+			}
+		}
 	}
 
 	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
 		if (Receive(sender, reader, out int entityId, out Flags flags))
 		{
-			Send(entityId, flags, null, ignoreClient: sender);
+			// Broadcast the authoritative result back to every client, including the sender, so rejected
+			// or normalized mutations cannot remain as client-local device state.
+			Send(entityId, flags);
 		}
 	}
 	internal override void ClientReceive(BinaryReader reader, byte sender)

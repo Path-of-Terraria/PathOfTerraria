@@ -154,6 +154,17 @@ Quest: {
 		// Description: ""
 	}
 
+	TheFirstBindingQuest: {
+		// Name: The First Binding
+		// Description: Break an ancient prison and learn to forge the power trapped within.
+		// TalkToThrain: Speak with Thrain in Ravencrest
+		// DefeatPrison: Find, release, and defeat the Runebound Prison
+		// CraftRunestone: Use the Faint Runestone of Vigor on the ring Thrain gave you
+		// ThrainStart: Those markings are not merely chains. They are molds. Whoever built these prisons meant to capture a creature's nature and hammer it into steel. If you break one, whatever the rune promises you, it also promises the thing trapped inside. Take this ring and seek the binding calling from beyond Ravencrest.
+		// CraftReminder: The Runestone remembers the creature's vitality. Apply it to the normal ring I gave you and the metal will remember it too.
+		// ThrainFinish: Good. Stronger bindings can preserve enchanted steel, elevate it further, or replace part of what was already forged. Read the rune before you break the seal. Decide whether you need what it carries, and whether you can survive what carries it.
+	}
+
 	DestroyerQuest: {
 		// Name: Heart of the Machine
 		// Description: ""

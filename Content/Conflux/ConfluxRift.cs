@@ -10,6 +10,7 @@ using PathOfTerraria.Common.Encounters;
 using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.MapContent;
+using PathOfTerraria.Common.Systems.Scarabs;
 using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Core.Camera;
@@ -621,6 +622,11 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile, 
 
 		// The amount of enemies spawned every second is scaled by map tier.
 		uint waveCount = 4;
+		if (ScarabSystem.FindFamily(ScarabFamily.Conflux) is { } conflux
+			&& (conflux.Kind == ScarabKind.TriuneConflux || conflux.Grade == ScarabGrade.Prismatic))
+		{
+			waveCount++;
+		}
 		uint nextWaveDelayAfterClear = (uint)(0.5f * TimeSystem.LogicFramerate);
 
 		EnemySpawnEffect spawnEffect = Kind switch
@@ -750,6 +756,11 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile, 
 
 	private void DropRewards()
 	{
+		if (BitFlags.HasFlag(Flags.PreGenerated))
+		{
+			ConfluxRifts.OnPreGeneratedRiftResolved(Kind);
+		}
+
 		int rewardType = Kind switch
 		{
 			ConfluxRiftKind.Glacial => ModContent.ItemType<GlacialConflux>(),
@@ -798,6 +809,15 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile, 
 			if (Main.netMode == NetmodeID.Server)
 			{
 				NetMessage.SendData(MessageID.SyncItem, number: itemIdx);
+			}
+		}
+
+		if (Progress >= 1f && ConfluxRifts.TryClaimTriuneReward(Kind))
+		{
+			int scarabType = ScarabCatalog.RollNormalType(ScarabGrade.Gilded);
+			if (scarabType > 0)
+			{
+				Item.NewItem(Projectile.GetSource_Death(), Projectile.Center, scarabType);
 			}
 		}
 	}

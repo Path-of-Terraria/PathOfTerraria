@@ -1,34 +1,20 @@
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.Maps;
-using System.Collections.Generic;
+using PathOfTerraria.Common.Systems.Scarabs;
 using System.IO;
 
 namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
 /// <summary>
-/// Sends mapping domain info (Level, Tier, Affixes) to the server.
+/// Applies server-authored mapping domain info received by a client.
 /// </summary>
 internal class SendMappingDomainInfoHandler : Handler
 {
-	public static void Send(short level, short tier, List<MapAffix> affixes)
-	{
-		ModPacket packet = Networking.GetPacket<SendMappingDomainInfoHandler>();
-		packet.Write(level);
-		packet.Write(tier);
-		packet.Write((byte)affixes.Count);
-
-		foreach (MapAffix item in affixes)
-		{
-			item.NetSend(packet);
-		}
-
-		packet.Send();
-	}
-
 	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
-		GetAndSetMappingDomainInfo(reader);
+		// Map state is derived from the server's MapDeviceEntity when portal entry is authorized.
+		// Never accept level, affix, or scarab state supplied by a client.
 	}
 
 	internal static void GetAndSetMappingDomainInfo(BinaryReader reader)
@@ -44,6 +30,19 @@ internal class SendMappingDomainInfoHandler : Handler
 			Affix affix = Affix.FromBReader(reader);
 			MappingWorld.Affixes.Add((MapAffix)affix);
 		}
+
+		int serializedScarabCount = reader.ReadByte();
+		int scarabCount = Math.Min(serializedScarabCount, 4);
+		var scarabs = new ScarabEntry[scarabCount];
+		for (int i = 0; i < serializedScarabCount; i++)
+		{
+			ScarabEntry entry = ScarabEntry.NetReceive(reader);
+			if (i < scarabCount)
+			{
+				scarabs[i] = entry;
+			}
+		}
+		ScarabSystem.SetActive(scarabs);
 
 		MappingWorld.AreaLevel = level;
 		MappingWorld.MapTier = tier;

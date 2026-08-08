@@ -1,13 +1,16 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.Items;
 using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.Systems.Scarabs;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Common.UI.Components;
 using PathOfTerraria.Common.UI.Elements;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Content.Items.Consumables.Maps;
+using PathOfTerraria.Content.Items.Mapping.Scarabs;
 using PathOfTerraria.Content.Tiles.Furniture;
 using PathOfTerraria.Core.Time;
 using PathOfTerraria.Core.UI;
@@ -331,6 +334,9 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 	private (StyleDimension X, StyleDimension Y) storagePositionDst;
 	private (StyleDimension X, StyleDimension Y) inventoryPositionSrc;
 	private (StyleDimension X, StyleDimension Y) inventoryPositionDst;
+#if DEBUG
+	private MapDeviceDebugMapMenu? debugMapMenu;
+#endif
 
 	private ref readonly MapResource CurrentMapResource => ref MapResources.Resources[MathUtils.Modulo(canisters.NonWrappedSelection, MapResources.Resources.Length)];
 
@@ -486,6 +492,16 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 
 		// Prevent button interaction during lock animations.
 		ActionButton!.IgnoresMouseInteraction = buttonLockFrame.CurrentRow != buttonTargetRow || buttonLockFrame.CurrentRow == ButtonFrameClosed;
+		if (!isPortalActive && ActionButtonInner is { } actionText && MapDeviceInterface.Entity is { } activeEntity)
+		{
+			ScarabEntry[] entries = activeEntity.ScarabSlots
+				.Where(item => item.ModItem is DomainScarab)
+				.Select(item => ((DomainScarab)item.ModItem).Entry)
+				.ToArray();
+			actionText.HoverText = entries.Length == 0
+				? string.Empty
+				: $"Map Threat: {entries.Sum(ScarabCatalog.GetThreat)}\n" + string.Join("\n", entries.Select(ScarabCatalog.DescribeEffect));
+		}
 
 		// Animate inventory and storage elements.
 		if ((forceUpdateAnimation || oldOpening != openingAnimation || oldClosing != closingAnimation) && StoragePanel != null && InventoryPanel != null)
@@ -595,7 +611,8 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 	}
 	private bool CanInteractWithCanisters()
 	{
-		return MapDeviceInterface.Entity is { StoredMap: not { IsAir: false }, Injection: null } && AreCanistersUnlocked();
+		return MapDeviceInterface.Entity is { StoredMap: not { IsAir: false }, Injection: null } entity
+			&& entity.ScarabSlots.All(item => item.IsAir) && AreCanistersUnlocked();
 	}
 	private bool CanInjectCurrentCanister()
 	{
@@ -935,6 +952,9 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 	public override void Refresh()
 	{
 		RemoveAllChildren();
+#if DEBUG
+		debugMapMenu = null;
+#endif
 
 		forceUpdateAnimation = true;
 
@@ -1015,33 +1035,61 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 			};
 		});
 
+#if DEBUG
+		Window.AddElement(new UIButton<string>("DBG"), e =>
+		{
+			e.SetDimensions(x: (0.5f, +34), y: (0.5f, -142), width: (0f, +46), height: (0f, +28));
+			e.OnLeftClick += (_, _) => ToggleDebugMapMenu(entity);
+			e.OnUpdate += self =>
+			{
+				if (self.IsMouseHovering)
+				{
+					Main.hoverItemName = Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.MapDevice.DebugMapBuilder.Open");
+				}
+			};
+		});
+#endif
+
 #endregion
 
-		#region Frags
-		//TODO: Frag slots are unimplemented!
-#if true
+		#region Scarabs
 		for (int i = 0; i < 4; i++)
 		{
-			Item[] dummyContainer = [new Item()];
-			var fragSlot = new UIImageItemSlot.SlotWrapper(() => dummyContainer[0], value => dummyContainer[0] = value);
+			int slotIndex = i;
+			var fragSlot = new UIImageItemSlot.SlotWrapper(() => (entity.ScarabSlots, slotIndex));
+			(string Key, object? Arg) scarabSlotHover = ($"Mods.{nameof(PathOfTerraria)}.UI.MapDevice.ScarabSlot", slotIndex + 1);
 
 			Asset<Texture2D> fragSlotTexture = ModContent.Request<Texture2D>($"{BasePath}/MapDevice_Frag_Slot", AssetRequestMode.ImmediateLoad);
 			Asset<Texture2D> fragIconTexture = ModContent.Request<Texture2D>($"{BasePath}/MapDevice_Frag_Icon", AssetRequestMode.ImmediateLoad);
 			Vector2 fragSlotSize = fragSlotTexture.Size();
-			Window.AddElement(new UIHoverImageItemSlot(fragSlotTexture, fragIconTexture, fragSlot, null, context: CustomSlotContext), e =>
+			Window.AddElement(new UIHoverImageItemSlot(fragSlotTexture, fragIconTexture, fragSlot, scarabSlotHover, context: CustomSlotContext), e =>
 			{
 				e.Initialize();
-				float xOffset = (i is 1 or 2 ? (+32) : (+90)) * (i is 0 or 1 ? (-1) : (1));
+				float xOffset = (slotIndex is 1 or 2 ? (+32) : (+90)) * (slotIndex is 0 or 1 ? (-1) : (1));
 				float yOffset = +156; //(i is 1 or 2 ? (-24) : (-24));
 				e.SetDimensions(x: (0.5f, xOffset - (+fragSlotSize.X * 0.5f)), y: (0.5f, yOffset), width: (0f, +fragSlotSize.X), height: (0f, +fragSlotSize.Y));
 
 				(e.InactiveScale, e.ActiveScale) = (1.00f, 1.00f);
 
-				e.Predicate = (newItem, oldItem) => false;
-				e.IsLocked = _ => true;
+				e.Predicate = (newItem, oldItem) =>
+				{
+					if (newItem.IsAir)
+					{
+						return true;
+					}
+
+					if (newItem.ModItem is not DomainScarab scarab)
+					{
+						return false;
+					}
+
+					return !entity.ScarabSlots.Where((item, index) => index != slotIndex)
+						.Any(item => item.ModItem is DomainScarab other && other.Family == scarab.Family);
+				};
+				e.IsLocked = _ => entity.PortalActive || slotIndex >= ScarabSystem.UnlockedSlotCount || entity.Injection != null;
+				e.OnModifyItem += (element, oldItem, newItem) => OnModifyScarabItem(element, oldItem, newItem, slotIndex);
 			});
 		}
-#endif
 		#endregion
 
 		#region Storage
@@ -1129,6 +1177,17 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 			});
 		}
 
+		Asset<Texture2D> trashIcon = ModContent.Request<Texture2D>($"Terraria/Images/Item_{ItemID.TrashCan}", AssetRequestMode.ImmediateLoad);
+		var trashSlot = new UIImageItemSlot.SlotWrapper(() => Main.LocalPlayer.trashItem, value => Main.LocalPlayer.trashItem = value);
+		(string Key, object? Arg) trashSlotHover = ($"Mods.{nameof(PathOfTerraria)}.UI.MapDevice.TrashSlot", null);
+		InventoryPanel.AddElement(new UIHoverImageItemSlot(itemFrame, trashIcon, trashSlot, trashSlotHover, context: ItemSlot.Context.TrashItem), e =>
+		{
+			e.Initialize();
+			e.SetDimensions(x: (1f, -inventorySlotSize.X), y: (0f, -inventorySlotSize.Y - 8), width: (0f, +inventorySlotSize.X), height: (0f, +inventorySlotSize.Y));
+
+			(e.InactiveScale, e.ActiveScale) = (inventorySlotScale, inventorySlotScale * 1.10f);
+		});
+
 		#endregion
 
 		AddCanisterElements();
@@ -1140,6 +1199,33 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		Recalculate();
 		Main.QueueMainThreadAction(Recalculate);
 	}
+
+#if DEBUG
+	private void ToggleDebugMapMenu(MapDeviceEntity entity)
+	{
+		if (debugMapMenu is not null)
+		{
+			CloseDebugMapMenu();
+			return;
+		}
+
+		debugMapMenu = new MapDeviceDebugMapMenu(entity, CloseDebugMapMenu);
+		Append(debugMapMenu);
+		debugMapMenu.Recalculate();
+		SoundEngine.PlaySound(SoundID.MenuOpen);
+	}
+
+	private void CloseDebugMapMenu()
+	{
+		if (debugMapMenu is null)
+		{
+			return;
+		}
+
+		RemoveChild(debugMapMenu);
+		debugMapMenu = null;
+	}
+#endif
 
 	private void OnModifyMapItem(UIElement element, Item oldItem, Item newItem)
 	{
@@ -1154,6 +1240,21 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 
 		MapDeviceSync.Send(device.ID, MapDeviceSync.Flags.Storage, [slotIndex]);
 
+		_ = (element, oldItem, newItem);
+	}
+
+	private void OnModifyScarabItem(UIElement element, Item oldItem, Item newItem, int slotIndex)
+	{
+		if (newItem is { IsAir: false, stack: > 1, ModItem: DomainScarab })
+		{
+			int excess = newItem.stack - 1;
+			newItem.stack = 1;
+			Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_Misc("MapDeviceScarabSplit"), newItem.type, excess);
+		}
+
+		if (Main.netMode != NetmodeID.MultiplayerClient || MapDeviceInterface.Entity is not { } device) { return; }
+
+		MapDeviceSync.Send(device.ID, MapDeviceSync.Flags.Scarabs, [slotIndex]);
 		_ = (element, oldItem, newItem);
 	}
 

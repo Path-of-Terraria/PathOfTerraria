@@ -15,6 +15,12 @@ public sealed class DeveloperConfig : ModConfig
 
 #if DEBUG
 	/// <summary>
+	/// Enables the in-map Map Content Inspector button and telemetry UI.
+	/// </summary>
+	[DefaultValue(true)]
+	public bool EnableMapContentInspector { get; set; } = true;
+
+	/// <summary>
 	///		When enabled, every time the item filter rejects a drop a chat line is printed showing the
 	///		filter, item, and which condition failed. Compiled out entirely in release builds since
 	///		end-users have no use for this and the visible spam would be noisy.

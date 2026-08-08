@@ -43,7 +43,10 @@ public class AffixRegistry : ILoadable
 		}
 	}
 
-	public virtual void Unload() { }
+	public virtual void Unload()
+	{
+		ClearRegistries();
+	}
 
 #nullable enable
 
@@ -108,7 +111,7 @@ public class AffixRegistry : ILoadable
 	/// </summary>
 	private static void LoadJsonFilesToMap()
 	{
-		AllItemData.Clear();
+		ClearRegistries();
 
 		var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
@@ -143,6 +146,14 @@ public class AffixRegistry : ILoadable
 				AddAffixData(affixType, data);
 			}
 		}
+	}
+
+	private static void ClearRegistries()
+	{
+		AllItemData.Clear();
+		ByAffix.Clear();
+		ByItemType.Clear();
+		ByAffixAndItemType.Clear();
 	}
 
 #nullable disable
@@ -212,6 +223,7 @@ public class AffixRegistry : ILoadable
 		}
 
 		IEnumerable<ItemAffixData> enumerable = AllItemData
+			.Where(affixData => affixData.CanRollNaturally)
 			.Where(affixData => (itemType & affixData.GetEquipTypes()) != ItemType.None);
 
 		if (excludedAffixes != null)
@@ -248,6 +260,7 @@ public class AffixRegistry : ILoadable
 
 		int itemLevel = GetItemLevel.Invoke(item);
 		IEnumerable<ItemAffixData> enumerable = AllItemData
+			.Where(affixData => affixData.CanRollNaturally)
 			.Where(affixData => (itemType & affixData.GetEquipTypes()) != ItemType.None)
 			.Where(affixData => CanApplyToItem(affixData, item))
 			.Where(affixData => affixData.CanRollAtLevel(itemLevel));
@@ -274,7 +287,8 @@ public class AffixRegistry : ILoadable
 		ItemType itemType = item.ResolveToSingleType(item.GetInstanceData().ItemType);
 
 		return itemType != ItemType.None && AllItemData.Any(affixData =>
-			(itemType & affixData.GetEquipTypes()) != ItemType.None
+			affixData.CanRollNaturally
+			&& (itemType & affixData.GetEquipTypes()) != ItemType.None
 			&& CanApplyToItem(affixData, item)
 			&& affixData.CanRollAtLevel(itemLevel));
 	}

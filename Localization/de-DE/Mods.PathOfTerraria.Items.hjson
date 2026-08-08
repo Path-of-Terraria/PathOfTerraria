@@ -8,6 +8,358 @@ MapCommon: {
 		''' */
 }
 
+// ScarabCommon.Usage: Place in an unlocked Map Device scarab slot; consumed when the portal opens
+
+CarvedScarabOfBinding: {
+	// DisplayName: Carved Scarab of Binding
+	// Tooltip: Adds 1 Runebound prison to an explorable map
+}
+
+GildedScarabOfBinding: {
+	// DisplayName: Gilded Scarab of Binding
+	// Tooltip: Adds 2 Runebound prisons; rewards have a 15% chance to upgrade one grade
+}
+
+PrismaticScarabOfBinding: {
+	// DisplayName: Prismatic Scarab of Binding
+	// Tooltip: Adds 3 Runebound prisons; rewards have a 30% chance to upgrade and prisoners gain an affix
+}
+
+CarvedScarabOfInfernalConflux: {
+	// DisplayName: Carved Scarab of Infernal Conflux
+	// Tooltip: Adds 1 Infernal Conflux rift to an explorable map
+}
+
+GildedScarabOfInfernalConflux: {
+	// DisplayName: Gilded Scarab of Infernal Conflux
+	// Tooltip: Adds 2 empowered Infernal Conflux rifts
+}
+
+PrismaticScarabOfInfernalConflux: {
+	// DisplayName: Prismatic Scarab of Infernal Conflux
+	// Tooltip: Adds 3 empowered Infernal Conflux rifts with an additional wave
+}
+
+CarvedScarabOfGlacialConflux: {
+	// DisplayName: Carved Scarab of Glacial Conflux
+	// Tooltip: Adds 1 Glacial Conflux rift to an explorable map
+}
+
+GildedScarabOfGlacialConflux: {
+	// DisplayName: Gilded Scarab of Glacial Conflux
+	// Tooltip: Adds 2 empowered Glacial Conflux rifts
+}
+
+PrismaticScarabOfGlacialConflux: {
+	// DisplayName: Prismatic Scarab of Glacial Conflux
+	// Tooltip: Adds 3 empowered Glacial Conflux rifts with an additional wave
+}
+
+CarvedScarabOfCelestialConflux: {
+	// DisplayName: Carved Scarab of Celestial Conflux
+	// Tooltip: Adds 1 Celestial Conflux rift to an explorable map
+}
+
+GildedScarabOfCelestialConflux: {
+	// DisplayName: Gilded Scarab of Celestial Conflux
+	// Tooltip: Adds 2 empowered Celestial Conflux rifts
+}
+
+PrismaticScarabOfCelestialConflux: {
+	// DisplayName: Prismatic Scarab of Celestial Conflux
+	// Tooltip: Adds 3 empowered Celestial Conflux rifts with an additional wave
+}
+
+CarvedScarabOfDevotion: {
+	// DisplayName: Carved Scarab of Devotion
+	// Tooltip: Adds 1 guarded Consecrated Shrine
+}
+
+GildedScarabOfDevotion: {
+	// DisplayName: Gilded Scarab of Devotion
+	// Tooltip: Adds 2 guarded Consecrated Shrines with longer blessings
+}
+
+PrismaticScarabOfDevotion: {
+	// DisplayName: Prismatic Scarab of Devotion
+	// Tooltip: Adds 3 heavily guarded Consecrated Shrines with longer blessings
+}
+
+CarvedScarabOfInfestation: {
+	// DisplayName: Carved Scarab of Infestation
+	// Tooltip: Explorable maps contain 15% more enemy packs
+}
+
+GildedScarabOfInfestation: {
+	// DisplayName: Gilded Scarab of Infestation
+	// Tooltip: Explorable maps contain 30% more enemy packs
+}
+
+PrismaticScarabOfInfestation: {
+	// DisplayName: Prismatic Scarab of Infestation
+	// Tooltip: Explorable maps contain 50% more enemy packs
+}
+
+CarvedScarabOfNemeses: {
+	// DisplayName: Carved Scarab of Nemeses
+	// Tooltip: Adds 2 reward-bearing rare captains with an additional affix
+}
+
+GildedScarabOfNemeses: {
+	// DisplayName: Gilded Scarab of Nemeses
+	// Tooltip: Adds 3 reward-bearing rare captains with 2 additional affixes
+}
+
+PrismaticScarabOfNemeses: {
+	// DisplayName: Prismatic Scarab of Nemeses
+	// Tooltip: Adds 4 reward-bearing rare captains with 3 additional affixes
+}
+
+CarvedScarabOfWardedWealth: {
+	// DisplayName: Carved Scarab of Warded Wealth
+	// Tooltip: Adds 1 Warded Cache defended by 2 waves
+}
+
+GildedScarabOfWardedWealth: {
+	// DisplayName: Gilded Scarab of Warded Wealth
+	// Tooltip: Adds 2 Warded Caches defended by 3 waves
+}
+
+PrismaticScarabOfWardedWealth: {
+	// DisplayName: Prismatic Scarab of Warded Wealth
+	// Tooltip: Adds 3 Warded Caches defended by 4 empowered waves
+}
+
+CarvedScarabOfCartography: {
+	// DisplayName: Carved Scarab of Cartography
+	// Tooltip: Map bosses have a 50% chance to drop an additional map; 15% chance to upgrade its tier
+}
+
+GildedScarabOfCartography: {
+	// DisplayName: Gilded Scarab of Cartography
+	// Tooltip: Map bosses drop an additional map with a 30% tier-up chance
+}
+
+PrismaticScarabOfCartography: {
+	// DisplayName: Prismatic Scarab of Cartography
+	// Tooltip: Map bosses drop an additional map and may drop another; 50% tier-up chance
+}
+
+CarvedScarabOfSovereignty: {
+	// DisplayName: Carved Scarab of Sovereignty
+	// Tooltip: Empowers the map boss and adds 1 boss reward roll
+}
+
+GildedScarabOfSovereignty: {
+	// DisplayName: Gilded Scarab of Sovereignty
+	// Tooltip: Greatly empowers the map boss and adds 2 boss reward rolls
+}
+
+PrismaticScarabOfSovereignty: {
+	// DisplayName: Prismatic Scarab of Sovereignty
+	// Tooltip: Massively empowers the map boss and adds 3 boss reward rolls
+}
+
+CarvedScarabOfPeril: {
+	// DisplayName: Carved Scarab of Peril
+	// Tooltip: Increases map-affix effects and reward strength by 10%
+}
+
+GildedScarabOfPeril: {
+	// DisplayName: Gilded Scarab of Peril
+	// Tooltip: Increases map-affix effects and reward strength by 20%
+}
+
+PrismaticScarabOfPeril: {
+	// DisplayName: Prismatic Scarab of Peril
+	// Tooltip: Increases map-affix effects and reward strength by 35%
+}
+
+ScarabOfTheRunicMenagerie: {
+	// DisplayName: Scarab of the Runic Menagerie
+	// Tooltip: Adds 3 empowered Runebound prisons; rewards have a 25% chance to upgrade one grade
+}
+
+ScarabOfTheTriuneConflux: {
+	// DisplayName: Scarab of the Triune Conflux
+	// Tooltip: Adds one empowered rift of every Conflux kind, each with an additional wave
+}
+
+ScarabOfTheCrownedTyrant: {
+	// DisplayName: Scarab of the Crowned Tyrant
+	// Tooltip: Transforms the map boss into a tyrant with reinforcements and 4 additional reward rolls
+}
+
+FaintRunestoneOfVigor: {
+	// DisplayName: Faint Runestone of Vigor
+	// Tooltip: Upgrades a Normal item to Magic and adds a life affix
+}
+
+GreaterRunestoneOfVigor: {
+	// DisplayName: Greater Runestone of Vigor
+	// Tooltip: Upgrades a Magic item to Rare and adds a life affix
+}
+
+PerfectRunestoneOfVigor: {
+	// DisplayName: Perfect Runestone of Vigor
+	// Tooltip: Replaces one explicit affix on a Rare item with a life affix
+}
+
+FaintRunestoneOfTheBastion: {
+	// DisplayName: Faint Runestone of the Bastion
+	// Tooltip: Upgrades a Normal item to Magic and adds a defense or block affix
+}
+
+GreaterRunestoneOfTheBastion: {
+	// DisplayName: Greater Runestone of the Bastion
+	// Tooltip: Upgrades a Magic item to Rare and adds a defense or block affix
+}
+
+PerfectRunestoneOfTheBastion: {
+	// DisplayName: Perfect Runestone of the Bastion
+	// Tooltip: Replaces one explicit affix on a Rare item with a defense or block affix
+}
+
+FaintRunestoneOfEmbers: {
+	// DisplayName: Faint Runestone of Embers
+	// Tooltip: Upgrades a Normal item to Magic and adds a fire affix
+}
+
+GreaterRunestoneOfEmbers: {
+	// DisplayName: Greater Runestone of Embers
+	// Tooltip: Upgrades a Magic item to Rare and adds a fire affix
+}
+
+PerfectRunestoneOfEmbers: {
+	// DisplayName: Perfect Runestone of Embers
+	// Tooltip: Replaces one explicit affix on a Rare item with a fire affix
+}
+
+FaintRunestoneOfRime: {
+	// DisplayName: Faint Runestone of Rime
+	// Tooltip: Upgrades a Normal item to Magic and adds a cold affix
+}
+
+GreaterRunestoneOfRime: {
+	// DisplayName: Greater Runestone of Rime
+	// Tooltip: Upgrades a Magic item to Rare and adds a cold affix
+}
+
+PerfectRunestoneOfRime: {
+	// DisplayName: Perfect Runestone of Rime
+	// Tooltip: Replaces one explicit affix on a Rare item with a cold affix
+}
+
+FaintRunestoneOfTempests: {
+	// DisplayName: Faint Runestone of Tempests
+	// Tooltip: Upgrades a Normal item to Magic and adds a lightning affix
+}
+
+GreaterRunestoneOfTempests: {
+	// DisplayName: Greater Runestone of Tempests
+	// Tooltip: Upgrades a Magic item to Rare and adds a lightning affix
+}
+
+PerfectRunestoneOfTempests: {
+	// DisplayName: Perfect Runestone of Tempests
+	// Tooltip: Replaces one explicit affix on a Rare item with a lightning affix
+}
+
+FaintRunestoneOfTheVoid: {
+	// DisplayName: Faint Runestone of the Void
+	// Tooltip: Upgrades a Normal item to Magic and adds a chaos affix
+}
+
+GreaterRunestoneOfTheVoid: {
+	// DisplayName: Greater Runestone of the Void
+	// Tooltip: Upgrades a Magic item to Rare and adds a chaos affix
+}
+
+PerfectRunestoneOfTheVoid: {
+	// DisplayName: Perfect Runestone of the Void
+	// Tooltip: Replaces one explicit affix on a Rare item with a chaos affix
+}
+
+FaintRunestoneOfMight: {
+	// DisplayName: Faint Runestone of Might
+	// Tooltip: Upgrades a Normal item to Magic and adds a class damage affix
+}
+
+GreaterRunestoneOfMight: {
+	// DisplayName: Greater Runestone of Might
+	// Tooltip: Upgrades a Magic item to Rare and adds a class damage affix
+}
+
+PerfectRunestoneOfMight: {
+	// DisplayName: Perfect Runestone of Might
+	// Tooltip: Replaces one explicit affix on a Rare item with a class damage affix
+}
+
+FaintRunestoneOfPrecision: {
+	// DisplayName: Faint Runestone of Precision
+	// Tooltip: Upgrades a Normal item to Magic and adds a critical strike affix
+}
+
+GreaterRunestoneOfPrecision: {
+	// DisplayName: Greater Runestone of Precision
+	// Tooltip: Upgrades a Magic item to Rare and adds a critical strike affix
+}
+
+PerfectRunestoneOfPrecision: {
+	// DisplayName: Perfect Runestone of Precision
+	// Tooltip: Replaces one explicit affix on a Rare item with a critical strike affix
+}
+
+FaintRunestoneOfHaste: {
+	// DisplayName: Faint Runestone of Haste
+	// Tooltip: Upgrades a Normal item to Magic and adds a speed affix
+}
+
+GreaterRunestoneOfHaste: {
+	// DisplayName: Greater Runestone of Haste
+	// Tooltip: Upgrades a Magic item to Rare and adds a speed affix
+}
+
+PerfectRunestoneOfHaste: {
+	// DisplayName: Perfect Runestone of Haste
+	// Tooltip: Replaces one explicit affix on a Rare item with a speed affix
+}
+
+FaintRunestoneOfSpirit: {
+	// DisplayName: Faint Runestone of Spirit
+	// Tooltip: Upgrades a Normal item to Magic and adds a mana affix
+}
+
+GreaterRunestoneOfSpirit: {
+	// DisplayName: Greater Runestone of Spirit
+	// Tooltip: Upgrades a Magic item to Rare and adds a mana affix
+}
+
+PerfectRunestoneOfSpirit: {
+	// DisplayName: Perfect Runestone of Spirit
+	// Tooltip: Replaces one explicit affix on a Rare item with a mana affix
+}
+
+ForbiddenRunestoneOfThePrism: {
+	// DisplayName: Forbidden Runestone of the Prism
+	// Tooltip: Replaces one explicit affix on a level 70 Rare item with a powerful all-resistances affix
+}
+
+ForbiddenRunestoneOfTheTitan: {
+	// DisplayName: Forbidden Runestone of the Titan
+	// Tooltip: Replaces one explicit affix on a level 70 Rare item with a powerful maximum-life affix
+}
+
+ForbiddenRunestoneOfAnnihilation: {
+	// DisplayName: Forbidden Runestone of Annihilation
+	// Tooltip: Replaces one explicit affix on a level 70 Rare item with a powerful universal-damage affix
+}
+
+ForbiddenRunestoneOfTrinity: {
+	// DisplayName: Forbidden Runestone of Trinity
+	// Tooltip: Replaces one explicit affix on a level 70 Rare item with a powerful all-attributes affix
+}
+
 HealingPotionPickup: {
 	// DisplayName: Healing Potion Pickup
 	// Tooltip: ""
