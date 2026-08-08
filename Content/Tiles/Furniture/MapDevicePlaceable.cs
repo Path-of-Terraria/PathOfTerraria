@@ -65,6 +65,8 @@ public sealed class MapDevicePlaceable : MapDeviceTile
 public class MapDeviceTile : ModTile
 {
 	private static Asset<Texture2D>? _portalTex;
+	private static Asset<Texture2D>? _portalGlowTex;
+	private static Asset<Texture2D>? _portalStarTex;
 	private static Asset<Texture2D>? _spikesTex;
 	private static Asset<Texture2D>? _backTex;
 
@@ -223,54 +225,16 @@ public class MapDeviceTile : ModTile
 	private void DrawPortal(SpriteBatch sb, Point16 tilePoint, Vector2 worldCenter, MapDeviceEntity entity, Vector2 screenPosition)
 	{
 		Texture2D portalTexture = AssetUtils.ImmediateValue(PortalTexturePath, ref _portalTex);
-		Texture2D? itemTex = null;
-		Color baseColor = entity.GetPortalColor();
-		Item portalItem = entity.StoredMap;
+		Texture2D glowTexture = AssetUtils.ImmediateValue("PathOfTerraria/Assets/UI/GlowSoft", ref _portalGlowTex);
+		Texture2D starTexture = AssetUtils.ImmediateValue("PathOfTerraria/Assets/UI/StarAlpha", ref _portalStarTex);
 
-		if (portalItem is { IsAir: false, type: int itemType })
-		{
-			itemTex = TextureAssets.Item[itemType].Value;
-		}
-
-		// Get the initial draw parameters
-		Tile tile = Main.tile[tilePoint];
-		var tileData = TileObjectData.GetTileData(tile);
-		int frameY = tile.TileFrameX % 90 / tileData.CoordinateFullWidth; // Picks the frame on the sheet based on the placeStyle of the item
-		Rectangle frame = portalTexture.Frame(1, 1, 0, frameY);
-		Vector2 origin = frame.Size() / 2f;
-		Color color = Color.Lerp(Lighting.GetColor(tilePoint.X, tilePoint.Y), Color.White, 0.4f).MultiplyRGBA(baseColor);
-		bool direction = tile.TileFrameY / tileData.CoordinateFullHeight != 0; // This is related to the alternate tile data we registered before
-		SpriteEffects effects = direction ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-
-		// Some math magic to make it smoothly move up and down over time
 		float offset = MathF.Sin(Main.GlobalTimeWrappedHourly * MathHelper.TwoPi / 5f);
 		Vector2 drawPos = worldCenter - screenPosition + new Vector2(0f, -36f) + new Vector2(0f, offset * 7f);
+		Color lightColor = Color.Lerp(Lighting.GetColor(tilePoint.X, tilePoint.Y), Color.White, 0.4f);
+		int? injectedItemType = entity.Injection is { } injection ? injection.Id : null;
 
-		// Draw the main texture
-		float baseScale = MathHelper.Lerp(0.1f, 2.0f, 1f - MathF.Pow(1f - entity.OpeningAnimation, 3f));
-		for (int k = 0; k < 3; ++k)
-		{
-			float rotation = Main.GlobalTimeWrappedHourly * 7f * (k % 2 == 0 ? -1 : 1);
-			Color drawColor = (color * (1 - (k * 0.2f)) * 0.7f) with { A = 112 };
-			sb.Draw(portalTexture, drawPos, frame, drawColor, rotation, origin, baseScale - k * 0.2f, effects, 0f);
-		}
-
-		if (itemTex != null)
-		{
-			float itemStep = 1f - MathF.Pow(1f - entity.OpeningAnimation, 3f);
-			var itemPos = Vector2.Lerp(drawPos + new Vector2(0, 48), drawPos, itemStep);
-			sb.Draw(itemTex, itemPos, null, new Color(140, 230, 255) * 0.95f, 0f, itemTex.Size() / 2f, 0.75f, effects, 0f);
-		}
-
-		// Draw the periodic glow effect
-		float scale = baseScale + (float)Math.Sin(Main.GlobalTimeWrappedHourly * MathHelper.TwoPi / 2f) * 0.5f;
-		Color effectColor = color;
-		effectColor.A = 0;
-		effectColor *= 0.1f * scale;
-		for (float num5 = 0f; num5 < 1f; num5 += 355f / (678f * (float)Math.PI))
-		{
-			sb.Draw(portalTexture, drawPos + (MathHelper.TwoPi * num5).ToRotationVector2() * (6f + offset * 2f), frame, effectColor, 0f, origin, 1f, effects, 0f);
-		}
+		MapPortalVisuals.Draw(sb, portalTexture, glowTexture, starTexture, drawPos, entity.OpeningAnimation,
+			lightColor, entity.StoredMap, injectedItemType, entity.GetPortalColor());
 	}
 
 	public override bool RightClick(int x, int y)
