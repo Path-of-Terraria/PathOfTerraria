@@ -20,7 +20,7 @@ internal sealed class RuneboundMapLayer : ModMapLayer
 			return;
 		}
 
-		icon = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Items/Placeable/Mapping/PoweredRunestoneItem");
+		icon = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/MapIcons/RuneboundSeal");
 	}
 
 	public override void Unload()
