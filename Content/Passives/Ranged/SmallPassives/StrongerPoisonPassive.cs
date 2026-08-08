@@ -7,6 +7,6 @@ internal class StrongerPoisonPassive : Passive
 {
 	public override void BuffPlayer(Player player)
 	{
-		player.GetModPlayer<PoisonedDebuff.PoisonPlayer>().PoisonDuration += Value / 100f;
+		player.GetModPlayer<PoisonedDebuff.PoisonPlayer>().PoisonDamage += Value / 100f;
 	}
 }

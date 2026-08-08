@@ -180,6 +180,11 @@ internal sealed class BossTracker : ModSystem
 		{
 			foreach (int type in CachedBossesDowned)
 			{
+				if (TryApplyCachedBossWithoutDeathReplay(type))
+				{
+					continue;
+				}
+
 				var npc = new NPC();
 				npc.SetDefaults(type);
 				npc.Center = Main.player[0].Center;
@@ -202,6 +207,25 @@ internal sealed class BossTracker : ModSystem
 
 			CachedBossesDowned.Clear();
 		}
+	}
+
+	private static bool TryApplyCachedBossWithoutDeathReplay(int type)
+	{
+		switch (type)
+		{
+			case NPCID.QueenBee:
+				// Queen Bee sets this flag during loot, before DoDeathEvents; replaying a synthetic death can crash on SP return.
+				NPC.SetEventFlagCleared(ref NPC.downedQueenBee, GameEventClearedID.DefeatedQueenBee);
+
+				if (Main.netMode == NetmodeID.Server)
+				{
+					NetMessage.SendData(MessageID.WorldData);
+				}
+
+				return true;
+		}
+
+		return false;
 	}
 
 	public override void SaveWorldData(TagCompound tag)

@@ -375,7 +375,7 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 		TileEntity.UpdateEnd();
 
 		FightState state = FightTracker.UpdateState();
-		GetData().CheckDowned<FishronDomain>(NPCID.DukeFishron);
+		GetData().MarkBossDownedIfDefeated<FishronDomain>(NPCID.DukeFishron);
 
 		if (state == FightState.NotStarted && MushroomsBroken >= 7 && !GetData().BossDowned)
 		{

@@ -44,7 +44,6 @@ public class MysticShard : CurrencyShard
 	{
 		PoTInstanceItemData data = slotItem.GetInstanceData();
 		data.Rarity = ItemRarity.Rare;
-		data.Affixes = [];
-		PoTItemHelper.Roll(slotItem, data.RealLevel);
+		PoTItemHelper.RerollAffixes(slotItem, data.RealLevel);
 	}
 }

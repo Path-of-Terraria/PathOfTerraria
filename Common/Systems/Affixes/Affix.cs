@@ -19,7 +19,14 @@ public abstract class Affix : ILocalizedModType
 {
 	public float MinValue;
 	public float MaxValue = 1f;
-	public float Value = 0;
+	private float _value = 0;
+
+	public float Value
+	{
+		get => _value;
+		set => _value = Round ? (float)Math.Round(value) : value;
+	}
+
 	public int Duration = 180; //3 Seconds by default
 	public bool IsCorruptedAffix = false;
 	public bool IsImplicit = false;
@@ -41,10 +48,6 @@ public abstract class Affix : ILocalizedModType
 		}
 
 		Value = Main.rand.NextFloat(MinValue, MaxValue);
-		if (Round)
-		{
-			Value = (float) Math.Round(Value);
-		}
 	}
 
 	/// <summary>
@@ -95,16 +98,16 @@ public abstract class Affix : ILocalizedModType
 	/// <returns></returns>
 	public static T FromTag<T>(TagCompound tag) where T : Affix
 	{
-		Type t = typeof(ItemAffix).Assembly.GetType(tag.GetString("type"));
+		string type = tag.GetString("type");
+		Type t = typeof(ItemAffix).Assembly.GetType(type) ?? typeof(ItemAffix).Assembly.GetType(type.Replace(".ItemTypes.", ".Maps."));
 
 		if (t is null)
 		{
-			PoTMod.Instance.Logger.Error($"Could not load affix {tag.GetString("type")}, was it removed?");
+			PoTMod.Instance.Logger.Error($"Could not load affix {type}, was it removed?");
 			return null;
 		}
 
-		string type = tag.GetString("type");
-		var affix = Activator.CreateInstance(Type.GetType(type)) as Affix;
+		var affix = Activator.CreateInstance(t) as Affix;
 		affix.InternalLoadFrom(tag);
 		return (T)affix;
 	}
@@ -160,11 +163,12 @@ public abstract class Affix : ILocalizedModType
 	/// <returns>The new affix.</returns>
 	public static Affix CreateAffix(Type type, float value)
 	{
-		Affix instance = (Affix)Activator.CreateInstance(type) ?? throw new Exception($"Could not create affix of type {type.Name}");
+		Affix instance = (Affix)Activator.CreateInstance(type) ??
+		                 throw new Exception($"Could not create affix of type {type.Name}");
 		instance.Value = value;
 		return instance;
 	}
-	
+
 	/// <summary>
 	/// Creates an affix with a value between <paramref name="minValue"/> and <paramref name="maxValue"/>.
 	/// </summary>
@@ -186,7 +190,8 @@ public abstract class Affix : ILocalizedModType
 	/// <returns>The new affix.</returns>
 	public static Affix CreateAffix(Type type, float minValue = 0f, float maxValue = 1f)
 	{
-		Affix instance = (Affix)Activator.CreateInstance(type) ?? throw new Exception($"Could not create affix of type {type.Name}");
+		Affix instance = (Affix)Activator.CreateInstance(type) ??
+		                 throw new Exception($"Could not create affix of type {type.Name}");
 		instance.MinValue = minValue;
 		instance.MaxValue = maxValue;
 		instance.Roll();
@@ -248,6 +253,11 @@ public abstract class Affix : ILocalizedModType
 		clone.MinValue = MinValue;
 		clone.MaxValue = MaxValue;
 		clone.Value = Value;
+		clone.Duration = Duration;
+		clone.IsCorruptedAffix = IsCorruptedAffix;
+		clone.IsImplicit = IsImplicit;
+		clone.Round = Round;
+		clone.Tier = Tier;
 
 		return clone;
 	}
@@ -309,7 +319,8 @@ internal class AffixHandler : ILoadable
 		return _itemAffixes
 			.Where(proto => proto.GetRequiredInfluence(item) == Influence.None ||
 			                proto.GetRequiredInfluence(item) == item.GetInstanceData().Influence)
-			.Where(proto => (item.GetInstanceData().ItemType & proto.GetPossibleTypes()) == item.GetInstanceData().ItemType)
+			.Where(proto =>
+				(item.GetInstanceData().ItemType & proto.GetPossibleTypes()) == item.GetInstanceData().ItemType)
 			.ToList();
 	}
 
@@ -322,6 +333,7 @@ internal class AffixHandler : ILoadable
 	{
 		return _itemAffixes[idx].GetType();
 	}
+
 	public static int IndexFromItemAffix(Affix affix)
 	{
 		ItemAffix a = _itemAffixes.First(a => affix.GetType() == a.GetType());
@@ -338,6 +350,7 @@ internal class AffixHandler : ILoadable
 	{
 		return _mobAffixesByName[name];
 	}
+
 	public static Type MobAffixTypeFromIndex(int idx)
 	{
 		if (idx < 0 || idx >= _mobAffixes.Count)
@@ -347,6 +360,7 @@ internal class AffixHandler : ILoadable
 
 		return _mobAffixes[idx].GetType();
 	}
+
 	public static int IndexFromMobAffix(MobAffix affix)
 	{
 		MobAffix a = _mobAffixes.FirstOrDefault(a => affix.GetType() == a.GetType());
@@ -363,7 +377,7 @@ internal class AffixHandler : ILoadable
 	public static WeightRand<MobAffix> GetMobAffixes(NPC npc, ItemRarity rarity)
 	{
 		var result = new WeightRand<MobAffix>(capacity: _mobAffixes.Count);
-	
+
 		foreach (MobAffix affix in _mobAffixes)
 		{
 			if (rarity >= affix.MinimumRarity && affix.CanApplyTo(npc))
@@ -400,7 +414,8 @@ internal class AffixHandler : ILoadable
 					_mobAffixes.Add(mobAffix);
 					_mobAffixesByName.Add(mobAffix.Name, mobAffix);
 
-					MobAffix.MobAffixIconsByAffixName[mobAffix.GetType().AssemblyQualifiedName] = ModContent.Request<Texture2D>(mobAffix.TexturePath);
+					MobAffix.MobAffixIconsByAffixName[mobAffix.GetType().AssemblyQualifiedName] =
+						ModContent.Request<Texture2D>(mobAffix.TexturePath);
 					break;
 			}
 		}
@@ -425,4 +440,3 @@ internal class AffixHandler : ILoadable
 		_mobAffixes.Clear();
 	}
 }
-

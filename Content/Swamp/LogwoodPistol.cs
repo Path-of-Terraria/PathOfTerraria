@@ -21,6 +21,11 @@ internal class LogwoodPistol : Gear
 		private bool _logWood = false;
 		private int _hits = 0;
 
+		public override bool AppliesToEntity(Projectile entity, bool lateInstantiation)
+		{
+			return !entity.sentry && !entity.minion && !entity.npcProj;
+		}
+
 		public override void OnSpawn(Projectile projectile, IEntitySource source)
 		{
 			if (source is EntitySource_ItemUse_WithAmmo { Item: Item item } && item.type == ModContent.ItemType<LogwoodPistol>())
@@ -56,7 +61,7 @@ internal class LogwoodPistol : Gear
 
 		public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (target.HasBuff<PoisonedDebuff>() && _hits < 5)
+			if (_logWood && target.HasBuff<PoisonedDebuff>() && _hits < 5)
 			{
 				_hitNpcs[_hits] = target.whoAmI;
 				_hits++;

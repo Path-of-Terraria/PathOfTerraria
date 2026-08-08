@@ -6,6 +6,6 @@ internal class FishingPowerPassive : Passive
 {
 	public override void BuffPlayer(Player player)
 	{
-		player.fishingSkill += Value;
+		player.fishingSkill += (int)Value;
 	}
 }

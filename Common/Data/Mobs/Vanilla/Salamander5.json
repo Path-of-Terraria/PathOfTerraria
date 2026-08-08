@@ -1,5 +1,16 @@
 {
   "netId": 502,
   "friendlyName": "Salamander5",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": {
+        "added": 15,
+        "conversion": 0.5
+      },
+      "lightning": null,
+      "cold": null
+    }
+  ],
   "entries": []
 }

@@ -1,5 +1,16 @@
 {
   "netId": 370,
   "friendlyName": "Duke Fishron",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": null,
+      "lightning": null,
+      "cold": {
+        "added": 60,
+        "conversion": 0.6
+      }
+    }
+  ],
   "entries": []
 }

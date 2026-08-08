@@ -5,7 +5,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class SkeletronMap() : PreHardmodeBossMap(40, () => NPC.downedBoss3)
+internal class SkeletronMap() : PreHardmodeBossMap(30, () => NPC.downedBoss3)
 {
 	public override void SetStaticDefaults()
 	{

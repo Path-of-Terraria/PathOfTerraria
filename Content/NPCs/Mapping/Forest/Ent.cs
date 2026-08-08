@@ -175,9 +175,14 @@ internal class Ent : ModNPC
 				int x = bottom.X + i * -NPC.spriteDirection;
 				int y = bottom.Y;
 
-				while (!WorldGen.SolidTile(x, y))
+				while (WorldGen.InWorld(x, y, 10) && !WorldGen.SolidTile(x, y))
 				{
 					y++;
+				}
+
+				if (!WorldGen.InWorld(x, y, 10))
+				{
+					continue;
 				}
 
 				Vector2 pos = new Point(x, y).ToWorldCoordinates(0, 0);

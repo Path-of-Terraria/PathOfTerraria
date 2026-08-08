@@ -1,6 +1,7 @@
 using PathOfTerraria.Common.Config;
 using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
+using PathOfTerraria.Common.Systems.VanillaModifications;
 using PathOfTerraria.Content.Buffs;
 using ReLogic.Content;
 
@@ -33,7 +34,7 @@ internal class MinionManaRegenAuraPassive : Passive
 			{
 				if (player.DistanceSQ(proj.Center) < PoTMod.NearbyDistanceSq && !player.HasBuff<MinionManaRegenAuraBuff>())
 				{
-					player.manaRegen += (int)(value / 100f);
+					player.GetModPlayer<ManaRegenRework.ManaRegenPlayer>().ManaRegen.Flat += ManaRegenRework.ManaPerSecondToManaRegen(value);
 					player.AddBuff(ModContent.BuffType<MinionManaRegenAuraBuff>(), 2);
 				}
 			}

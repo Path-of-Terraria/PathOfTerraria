@@ -1,5 +1,16 @@
 {
   "netId": 556,
   "friendlyName": "D D2 Goblin Bomber T2",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": {
+        "added": 0,
+        "conversion": 0.5
+      },
+      "lightning": null,
+      "cold": null
+    }
+  ],
   "entries": []
 }

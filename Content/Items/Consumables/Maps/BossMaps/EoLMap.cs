@@ -1,6 +1,6 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
+using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using PathOfTerraria.Common.Systems.Affixes;
-using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Common.Systems.Affixes.Maps;
 using PathOfTerraria.Content.Items.Currency;
 using PathOfTerraria.Core.Items;
 using SubworldLibrary;
@@ -9,7 +9,7 @@ using Terraria.Utilities;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class EoLMap() : HardmodeBossMap(8, () => NPC.downedEmpressOfLight)
+internal class EoLMap() : HardmodeBossMap(8, 70, () => NPC.downedEmpressOfLight)
 {
 	public override void SetStaticDefaults()
 	{

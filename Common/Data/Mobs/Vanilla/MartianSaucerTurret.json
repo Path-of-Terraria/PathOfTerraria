@@ -1,5 +1,16 @@
 {
   "netId": 393,
   "friendlyName": "Martian Saucer Turret",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": null,
+      "lightning": {
+        "added": 30,
+        "conversion": 0.75
+      },
+      "cold": null
+    }
+  ],
   "entries": []
 }

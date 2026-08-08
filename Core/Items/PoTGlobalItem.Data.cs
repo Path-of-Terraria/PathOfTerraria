@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Systems.Affixes;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Core.Items;
@@ -37,10 +38,11 @@ public sealed class PoTInstanceItemData : GlobalItem
 		clone.Influence = Influence;
 		clone.ImplicitCount = ImplicitCount;
 		clone.RealLevel = RealLevel;
-		clone.Affixes = Affixes;
+		clone.BaseEnergyShield = BaseEnergyShield;
+		clone.Affixes = [.. Affixes.Select(a => a.Clone<ItemAffix>())];
 		clone.Corrupted = Corrupted;
 		clone.Cloned = Cloned;
-		clone.NameAffix = NameAffix;
+		clone.NameAffix = new NameAffixes(NameAffix.Prefix, NameAffix.Suffix);
 		return clone;
 	}
 
@@ -89,6 +91,11 @@ public sealed class PoTInstanceItemData : GlobalItem
 	public int ImplicitCount { get; set; }
 
 	internal int RealLevel { get; set; }
+
+	/// <summary>
+	///		The item's rolled base Energy Shield value, before local Energy Shield affixes.
+	/// </summary>
+	public int BaseEnergyShield { get; set; }
 }
 
 /// <summary>
@@ -113,6 +120,31 @@ public sealed class PoTStaticItemData
 	///		The minimum level this item needs to be to drop.
 	/// </summary>
 	public int MinDropItemLevel { get; set; }
+
+	/// <summary>
+	///		Optional bounded item-level range this item can drop in. Items without this range are not bounded by it.
+	/// </summary>
+	public (int Min, int Max)? DropItemLevelRange { get; set; }
+
+	public void SetDropItemLevelRange(int min, int max)
+	{
+		if (min > max)
+		{
+			throw new ArgumentException("Drop item level range minimum cannot be greater than maximum.", nameof(min));
+		}
+
+		DropItemLevelRange = (min, max);
+	}
+
+	public bool CanDropAtItemLevel(int itemLevel)
+	{
+		if (MinDropItemLevel > itemLevel)
+		{
+			return false;
+		}
+
+		return DropItemLevelRange is not { } range || itemLevel >= range.Min && itemLevel <= range.Max;
+	}
 
 	/// <summary>
 	///		The item's description.

@@ -21,7 +21,7 @@ internal class LifeRegenCountPassive : Passive
 {
 	public override void BuffPlayer(Player player)
 	{
-		player.lifeRegen += Value * 2 * Level;
+		player.lifeRegen += (int)(Value * 2 * Level);
 	}
 }
 

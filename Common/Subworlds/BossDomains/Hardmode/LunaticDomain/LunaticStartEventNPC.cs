@@ -1,9 +1,8 @@
 ﻿using PathOfTerraria.Content.Projectiles.Utility;
+using PathOfTerraria.Utilities;
 using SubworldLibrary;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Terraria.DataStructures;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 
@@ -25,7 +24,10 @@ internal class LunaticStartEventNPC : GlobalNPC
 		else if (Main.netMode != NetmodeID.MultiplayerClient)
 		{ 
 			int type = ModContent.ProjectileType<MLPortal>();
-			Projectile.NewProjectile(new EntitySource_SpawnNPC(), new Vector2(Main.spawnTileX, Main.spawnTileY - 15) * 16, Vector2.Zero, type, 0, 0, Main.myPlayer);
+			Projectile.NewProjectile(new EntitySource_SpawnNPC(), new Vector2(Main.spawnTileX, Main.spawnTileY - 10) * 16, Vector2.Zero, type, 0, 0, Main.myPlayer);
+
+			type = ModContent.ProjectileType<ExitPortal>();
+			Projectile.NewProjectile(new EntitySource_SpawnNPC(), new Vector2(Main.spawnTileX, Main.spawnTileY - 22) * 16, Vector2.Zero, type, 0, 0, Main.myPlayer);
 
 			WorldGen.BroadcastText(NetworkText.FromKey("Mods.PathOfTerraria.Misc.ImpendingDoom"), 50, 255, 130);
 
@@ -80,5 +82,15 @@ internal class LunaticStartEventNPC : GlobalNPC
 		pool.Add(NPCID.CultistArcherBlue, 1);
 		pool.Add(NPCID.CultistArcherWhite, 1);
 		pool.Add(NPCID.CultistDragonHead, 0.1f);
+	}
+
+	public override bool PreAI(NPC npc)
+	{
+		if (SubworldSystem.Current is CultistDomain && npc.type is NPCID.CultistArcherBlue or NPCID.CultistArcherWhite)
+		{
+			npc.chaseable = true;
+		}
+
+		return true;
 	}
 }

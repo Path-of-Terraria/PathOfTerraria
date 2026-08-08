@@ -1,32 +1,30 @@
-﻿namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
-internal class BaseLifeAffix : ItemAffix
+internal abstract class LifeAffix : ItemAffix
+{
+	protected LifeAffix()
+	{
+		Round = true;
+	}
+}
+
+internal class BaseLifeAffix : LifeAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		modifier.MaximumLife.Base += Value;
 	}
-
-	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
-	{
-		return base.CreateDefaultTooltip(player, item) with { Value = (int)Math.Round(Value) };
-	}
 }
 
-internal class AddedLifeAffix : ItemAffix
+internal class AddedLifeAffix : LifeAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		modifier.MaximumLife += Value / 100;
 	}
-
-	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
-	{
-		return base.CreateDefaultTooltip(player, item) with { Value = (int)Math.Round(Value) };
-	}
 }
 
-internal class LifeRegenAffix : ItemAffix
+internal class LifeRegenAffix : LifeAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
@@ -34,7 +32,7 @@ internal class LifeRegenAffix : ItemAffix
 	}
 }
 
-internal class LifeRegenMultiplierAffix : ItemAffix
+internal class LifeRegenMultiplierAffix : LifeAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
@@ -42,7 +40,7 @@ internal class LifeRegenMultiplierAffix : ItemAffix
 	}
 }
 
-internal class LifePotionPowerAffix : ItemAffix
+internal class LifePotionPowerAffix : LifeAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
@@ -50,20 +48,15 @@ internal class LifePotionPowerAffix : ItemAffix
 	}
 }
 
-internal class LifePotionCapAffix : ItemAffix
+internal class LifePotionCapAffix : LifeAffix
 {
-	public LifePotionCapAffix()
-	{
-		Round = true;
-	}
-	
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		modifier.MaxHealthPotions += Value;
 	}
 }
 
-internal class LifePotionCooldownAffix : ItemAffix
+internal class LifePotionCooldownAffix : LifeAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{

@@ -940,7 +940,7 @@ internal class TwinsDomain : BossDomainSubworld
 		TileEntity.UpdateEnd();
 
 		FightState state = FightTracker.UpdateState();
-		GetData().CheckDowned<TwinsDomain>(NPCID.Retinazer, NPCID.Spazmatism);
+		GetData().MarkBossDownedIfDefeated<TwinsDomain>(NPCID.Retinazer, NPCID.Spazmatism);
 
 		if (state == FightState.NotStarted && !GetData().BossDowned)
 		{

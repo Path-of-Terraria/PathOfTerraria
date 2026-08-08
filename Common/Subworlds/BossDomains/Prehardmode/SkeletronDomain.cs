@@ -40,7 +40,7 @@ public class SkeletronDomain : BossDomainSubworld
 	}
 
 	public override int Width => 900;
-	public override int Height => 900;
+	public override int Height => 700;
 	public override (int time, bool isDay) ForceTime => ((int)Main.nightLength / 2, false);
 
 	const int BaseTunnelDepth = 90;
@@ -257,8 +257,8 @@ public class SkeletronDomain : BossDomainSubworld
 
 		WellBottom.X = DigChasm(WellBottom.Y - 1, WellBottom.Y + BaseTunnelDepth, WellBottom.X, 4, 6);
 		Point secondFloorStart = GenerateFirstFloor();
-		Point thirdFloorStart = GenerateSecondFloor(secondFloorStart.X, secondFloorStart.Y);
-		GenerateThirdFloor(thirdFloorStart.X, thirdFloorStart.Y);
+		//Point thirdFloorStart = GenerateSecondFloor(secondFloorStart.X, secondFloorStart.Y);
+		GenerateThirdFloor(secondFloorStart.X, secondFloorStart.Y);
 
 		ActuatorInfoByFloor.Clear();
 	}
@@ -754,7 +754,7 @@ public class SkeletronDomain : BossDomainSubworld
 		}
 
 		FightState state = FightTracker.UpdateState();
-		GetData().CheckDowned<SkeletronDomain>(NPCID.SkeletronHead);
+		GetData().MarkBossDownedIfDefeated<SkeletronDomain>(NPCID.SkeletronHead);
 
 		if (state == FightState.NotStarted && allInArena && !GetData().BossDowned)
 		{

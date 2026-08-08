@@ -10,7 +10,7 @@ internal class DangerMiningPassive : Passive
 		{
 			if (npc.DistanceSQ(player.Center) < PoTMod.NearbyDistanceSq)
 			{
-				player.pickSpeed *= 1 + Value / 100f;
+				player.pickSpeed *= MathHelper.Clamp(1f - Value / 100f, 0.1f, 1f);
 				break;
 			}
 		}

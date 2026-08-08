@@ -5,7 +5,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class DeerclopsMap() : PreHardmodeBossMap(35, () => NPC.downedDeerclops)
+internal class DeerclopsMap() : PreHardmodeBossMap(25, () => NPC.downedDeerclops)
 {
 	public override void SetStaticDefaults()
 	{

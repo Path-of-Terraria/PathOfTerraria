@@ -1,17 +1,5 @@
 {
   "netId": -36,
   "friendlyName": "Small Twiggy Zombie",
-  "entries": [
-    {
-      "scale": null,
-      "prefix": null,
-      "weight": 1,
-      "stats": {
-        "level": 4,
-        "experience": 4
-      },
-      "affixes": null,
-      "requirements": "PreHardmodeSurface"
-    }
-  ]
+  "entries": []
 }

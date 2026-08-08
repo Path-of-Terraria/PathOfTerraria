@@ -1,5 +1,16 @@
 {
   "netId": 129,
   "friendlyName": "Prime Saw",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": {
+        "added": 30,
+        "conversion": 0.5
+      },
+      "lightning": null,
+      "cold": null
+    }
+  ],
   "entries": []
 }

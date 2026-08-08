@@ -1,8 +1,8 @@
-﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mapping;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Affixes;
-using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Common.Systems.Affixes.Maps;
 using PathOfTerraria.Common.Systems.ModPlayers.LivesSystem;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Content.Tiles.Furniture;
@@ -21,26 +21,26 @@ namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
 #nullable enable
 
-public abstract class Map : ModItem, GenerateNameAffixes.IItem, GenerateAffixes.IItem, GenerateImplicits.IItem, IPoTGlobalItem, GetItemLevel.IItem, SetItemLevel.IItem
+public abstract class Map : ModItem, GenerateNameAffixes.IItem, GenerateAffixes.IItem, GenerateImplicits.IItem,
+	IPoTGlobalItem, SetItemLevel.IItem
 {
 	protected sealed override bool CloneNewInstances => true;
 
 	public abstract int MaxUses { get; }
 	public abstract bool CanDrop { get; }
 	public virtual int WorldLevel => WorldLevelBasedOnTier(Tier);
+	protected virtual bool RollsAdjacentTiers => true;
 
 	internal int Tier = 1;
-	internal int ItemLevel = 1;
 
 	public override ModItem Clone(Item newEntity)
 	{
 		var map = base.Clone(newEntity) as Map;
 		map!.Tier = Tier;
-		map.ItemLevel = ItemLevel;
 		return map;
 	}
 
-	public override void SetDefaults() 
+	public override void SetDefaults()
 	{
 		base.SetDefaults();
 
@@ -57,12 +57,14 @@ public abstract class Map : ModItem, GenerateNameAffixes.IItem, GenerateAffixes.
 
 	public override bool CanRightClick()
 	{
-		return SmartUiLoader.TryGetUiState(out MapDeviceState? map) && map is { Visible: true } && MapDeviceInterface.Entity is not null;
+		return SmartUiLoader.TryGetUiState(out MapDeviceState? map) && map is { Visible: true } &&
+		       MapDeviceInterface.Entity is not null;
 	}
 
 	public override void RightClick(Player player)
 	{
-		if (SmartUiLoader.TryGetUiState(out MapDeviceState? map) && MapDeviceInterface.Entity is not null && MapDeviceInterface.Entity.StoredMap is null or { IsAir: true })
+		if (SmartUiLoader.TryGetUiState(out MapDeviceState? map) && MapDeviceInterface.Entity is not null &&
+		    MapDeviceInterface.Entity.StoredMap is null or { IsAir: true })
 		{
 			Item invItem = Item.Clone();
 			Item.TurnToAir();
@@ -85,7 +87,8 @@ public abstract class Map : ModItem, GenerateNameAffixes.IItem, GenerateAffixes.
 
 	public virtual void OpenMap()
 	{
-		List<MapAffix> collection = [.. this.GetInstanceData().Affixes.Where(x => x is MapAffix).Select(x => (MapAffix)x)];
+		List<MapAffix> collection =
+			[.. this.GetInstanceData().Affixes.Where(x => x is MapAffix).Select(x => (MapAffix)x)];
 
 		if (Main.netMode == NetmodeID.SinglePlayer)
 		{
@@ -118,23 +121,25 @@ public abstract class Map : ModItem, GenerateNameAffixes.IItem, GenerateAffixes.
 
 		Item.NewItem(null, pos, Vector2.Zero, item);
 	}
-	
+
 	public override void SaveData(TagCompound tag)
 	{
 		tag.Add("tier", (short)Tier);
 	}
+
 	public override void LoadData(TagCompound tag)
 	{
-		Tier = tag.GetShort("tier");
+		Tier = Math.Clamp((int)tag.GetShort("tier"), 1, MaxMapTier);
 	}
 
 	public override void NetSend(BinaryWriter writer)
 	{
 		writer.Write((short)Tier);
 	}
+
 	public override void NetReceive(BinaryReader reader)
 	{
-		Tier = reader.ReadInt16();
+		Tier = Math.Clamp((int)reader.ReadInt16(), 1, MaxMapTier);
 	}
 
 	public abstract string GenerateName(string defaultName);
@@ -143,27 +148,26 @@ public abstract class Map : ModItem, GenerateNameAffixes.IItem, GenerateAffixes.
 	{
 	}
 
+	/// <summary>
+	/// The overworld caps at level 70. Tier 1 maps start one level above that and increase by 1 per tier.
+	/// </summary>
+	public const int MaxOverworldLevel = 70;
+
+	public const int MaxMapTier = 11;
+
 	public static int WorldLevelBasedOnTier(int tier)
 	{
-		return Math.Clamp(48 + tier * 2, 50, 72);
+		return Math.Clamp(MaxOverworldLevel + tier, MaxOverworldLevel + 1, MaxOverworldLevel + MaxMapTier);
 	}
 
 	public static int TierBasedOnWorldLevel(int area)
 	{
-		if (area < 45)
+		if (area <= MaxOverworldLevel)
 		{
 			return 0;
 		}
 
-		// Return 1 if we're post-WoF due to the gap of 45-48 in the formula below.
-		if (area >= 45 && area <= 48)
-		{
-			return 1;
-		}
-
-		// area is adjusted by 48 instead of 50 to increase the level by 1 per stage;
-		// i.e. a level 50 area gives a tier 1 map, which gives a level 52 area, which gives a tier 2...
-		return Math.Clamp((area - 48) / 2, 0, 11) + 1;
+		return Math.Clamp(area - MaxOverworldLevel, 1, MaxMapTier);
 	}
 
 	/// <summary>
@@ -196,23 +200,25 @@ public abstract class Map : ModItem, GenerateNameAffixes.IItem, GenerateAffixes.
 		return [];
 	}
 
-	int GetItemLevel.IItem.GetItemLevel(int realLevel)
-	{
-		return ItemLevel;
-	}
-
 	void SetItemLevel.IItem.SetItemLevel(int level, ref int realLevel)
 	{
-		//You can find maps 1 tier lower, on your current tier, and 1 tier higher with the below. 
-		//So if youre in tier 2, you can find tier 1 maps, tier 2 maps, and tier 3 maps.
-		if (level == PoTItemHelper.PickItemLevel() && level >= 50)
+		if (RollsAdjacentTiers && level >= MaxOverworldLevel)
 		{
-			level = Main.rand.Next(level - 3, level + 1);
+			level = RollAdjacentMapLevel(level);
 		}
 
 		realLevel = level;
-		ItemLevel = realLevel;
-		Tier = GetMapTier(ItemLevel);
+		Tier = GetMapTier(realLevel);
+	}
+
+	private static int RollAdjacentMapLevel(int level)
+	{
+		int baseTier = SubworldSystem.Current is MappingWorld && MappingWorld.MapTier > 0
+			? MappingWorld.MapTier
+			: TierBasedOnWorldLevel(level);
+
+		int rolledTier = Math.Clamp(baseTier + Main.rand.Next(-1, 2), 1, MaxMapTier);
+		return WorldLevelBasedOnTier(rolledTier);
 	}
 
 	(sbyte, sbyte) GenerateNameAffixes.IItem.GenerateAffixIds()

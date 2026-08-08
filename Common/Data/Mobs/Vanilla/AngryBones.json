@@ -1,17 +1,5 @@
 {
   "netId": 31,
   "friendlyName": "Angry Bones",
-  "entries": [
-    {
-      "scale": null,
-      "prefix": "",
-      "weight": 1,
-      "stats": {
-        "level": 9,
-        "experience": 14
-      },
-      "affixes": [],
-      "requirements": "PreHardmodeSurface"
-    }
-  ]
+  "entries": []
 }

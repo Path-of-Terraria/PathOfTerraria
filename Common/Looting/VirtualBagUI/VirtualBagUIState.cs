@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Common.Mapping;
+using PathOfTerraria.Common.Looting.ItemFiltering;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Common.UI.Components;
@@ -15,6 +15,8 @@ using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.Localization;
+using Terraria.ModLoader;
+using Terraria.ModLoader.UI;
 using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
 
@@ -23,7 +25,15 @@ namespace PathOfTerraria.Common.Looting.VirtualBagUI;
 internal class VirtualBagUIState : UIState, IMutuallyExclusiveUI, IAutopauseUI
 {
 	public const string Identifier = "Virtual Bag UI";
+
+	private const string MatchedTab = "matched";
+	private const string FilteredOutTab = "filteredOut";
+
 	private UIGrid _storageGrid;
+	private string _activeTab = MatchedTab;
+	private UIPanelTab _matchedTab;
+	private UIPanelTab _filteredOutTab;
+	private UIText _filterLabel;
 
 	public override void OnActivate()
 	{
@@ -51,8 +61,56 @@ internal class VirtualBagUIState : UIState, IMutuallyExclusiveUI, IAutopauseUI
 		close.OnLeftClick += Close;
 		panel.Append(close);
 
+		const int TabBarHeight = 32;
+		const int FilterLabelHeight = 22;
+
+		_matchedTab = new UIPanelTab(MatchedTab, Language.GetText(Path + "TabMatched"), 0.85f);
+		_matchedTab.SetPadding(6);
+		_matchedTab.Top = StyleDimension.FromPixels(GridBuffer);
+		_matchedTab.Left = StyleDimension.FromPixels(0);
+		_matchedTab.BackgroundColor.A = 255;
+		_matchedTab.OnLeftClick += (_, _) => SetActiveTab(MatchedTab);
+		panel.Append(_matchedTab);
+
+		_filteredOutTab = new UIPanelTab(FilteredOutTab, Language.GetText(Path + "TabFilteredOut"), 0.85f);
+		_filteredOutTab.SetPadding(6);
+		_filteredOutTab.Top = StyleDimension.FromPixels(GridBuffer);
+		_filteredOutTab.BackgroundColor.A = 255;
+		_filteredOutTab.OnLeftClick += (_, _) => SetActiveTab(FilteredOutTab);
+		panel.Append(_filteredOutTab);
+
+		// Position the second tab after the first one once it has measured itself.
+		_matchedTab.Recalculate();
+		_filteredOutTab.Left = StyleDimension.FromPixels(_matchedTab.GetDimensions().Width + 8);
+		_filteredOutTab.Recalculate();
+
+		_filterLabel = new UIText(BuildFilterLabel(), 0.85f)
+		{
+			Top = StyleDimension.FromPixels(GridBuffer + 4),
+			HAlign = 1f,
+			Left = StyleDimension.FromPixels(-128),
+		};
+		panel.Append(_filterLabel);
+
+		// Discoverable entry point to the filter editor — clicking this on the bag's header opens
+		// ItemFilterUIState. Mirrors the keybind so players don't have to know about it.
+		var editFilterButton = new UIButton<LocalizedText>(Language.GetText(Path + "EditFilter"))
+		{
+			Width = StyleDimension.FromPixels(112),
+			Height = StyleDimension.FromPixels(28),
+			Top = StyleDimension.FromPixels(GridBuffer + 1),
+			Left = StyleDimension.FromPixels(-12),
+			HAlign = 1f,
+		};
+		editFilterButton.OnLeftClick += (_, _) =>
+		{
+			SoundEngine.PlaySound(SoundID.MenuTick);
+			UIManager.TryToggleOrRegister(ItemFilterUIState.Identifier, "Vanilla: Mouse Text", new ItemFilterUIState(), 0, InterfaceScaleType.UI);
+		};
+		panel.Append(editFilterButton);
+
 		UIPanel gridPanel = new(ModContent.Request<Texture2D>(TexturePath + "Background"), ModContent.Request<Texture2D>(TexturePath + "Outline"));
-		gridPanel.SetDimensions((0, 0), (0, GridBuffer), (1, -30), (1, -GridBuffer));
+		gridPanel.SetDimensions((0, 0), (0, GridBuffer + TabBarHeight + FilterLabelHeight), (1, -30), (1, -(GridBuffer + TabBarHeight + FilterLabelHeight)));
 		panel.Append(gridPanel);
 
 		_storageGrid = new UIGrid();
@@ -76,70 +134,110 @@ internal class VirtualBagUIState : UIState, IMutuallyExclusiveUI, IAutopauseUI
 
 		gridPanel.Append(_storageGrid);
 
+		int gridTopOffset = GridBuffer + TabBarHeight + FilterLabelHeight;
+
 		UIScrollbar bar = new();
-		bar.SetDimensions((0, 0), (0, GridBuffer), (0, 20), (1, -GridBuffer));
+		bar.SetDimensions((0, 0), (0, gridTopOffset), (0, 20), (1, -gridTopOffset));
 		bar.HAlign = 1f;
 		_storageGrid.SetScrollbar(bar);
 		panel.Append(bar);
 
+		SetActiveTab(_activeTab);
 		RefreshStorage();
 
 		if (Main.LocalPlayer.TryGetModPlayer(out VirtualBagStoragePlayer plr))
 		{
-			List<UIText> textsToAdd = [];
-			int topOffset = 32;
+			UIElement summaryPanel = BuildLootSummaryPanel(plr, Path);
 
-			foreach (MapResource resource in MapResources.Resources)
+			if (summaryPanel is not null)
 			{
-				int id = resource.AssociatedItem;
+				panel.Append(summaryPanel);
+			}
+		}
+	}
 
-				if (plr.ConfluxResourcesCache.TryGetValue(id, out int value) && value < resource.Value)
+	private static UIPanel BuildLootSummaryPanel(VirtualBagStoragePlayer plr, string localizationPath)
+	{
+		List<UIElement> elements = [];
+		int topOffset = 0;
+
+		AddLootSection(elements, plr.ConfluxResourcesCollected, localizationPath + "Conflux", localizationPath + "ConfluxTooltip", ref topOffset);
+		AddLootSection(elements, plr.CurrencyShardsCollected, localizationPath + "CurrencyShards", localizationPath + "CurrencyShardsTooltip", ref topOffset);
+
+		if (elements.Count == 0)
+		{
+			return null;
+		}
+
+		UIPanel lootPanel = new()
+		{
+			HAlign = 1,
+			Left = StyleDimension.FromPixels(148),
+			Width = StyleDimension.FromPixels(132),
+			Height = StyleDimension.FromPixels(topOffset + 16),
+			Top = StyleDimension.FromPixels(-12)
+		};
+
+		foreach (UIElement element in elements)
+		{
+			lootPanel.Append(element);
+		}
+
+		return lootPanel;
+	}
+
+	private static void AddLootSection(List<UIElement> elements, Dictionary<int, int> loot, string titleKey, string tooltipKey, ref int topOffset)
+	{
+		if (loot.Count == 0)
+		{
+			return;
+		}
+
+		if (elements.Count > 0)
+		{
+			topOffset += 8;
+		}
+
+		var textUI = new UIText(Language.GetText(titleKey), 1.1f)
+		{
+			Top = StyleDimension.FromPixels(topOffset)
+		};
+
+		textUI.OnUpdate += (self) =>
+		{
+			if (self.ContainsPoint(Main.MouseScreen))
+			{
+				Tooltip.Create(new TooltipDescription()
 				{
-					textsToAdd.Add(new UIText($"[i:{resource.AssociatedItem}]: {(resource.Value - value)}x")
-					{
-						HAlign = 0,
-						VAlign = 0,
-						Top = StyleDimension.FromPixels(topOffset)
-					});
+					Identifier = tooltipKey,
+					SimpleSubtitle = Language.GetTextValue(tooltipKey)
+				});
+			}
+		};
 
-					topOffset += 28;
-				}
+		elements.Add(textUI);
+		topOffset += 24;
+
+		elements.Add(new UIImageFramed(TextureAssets.MagicPixel, new Rectangle(0, 0, 70, 2))
+		{
+			Top = StyleDimension.FromPixels(topOffset - 4)
+		});
+
+		foreach (KeyValuePair<int, int> entry in loot.OrderBy(x => x.Key))
+		{
+			if (!ContentSamples.ItemsByType.ContainsKey(entry.Key))
+			{
+				continue;
 			}
 
-			if (textsToAdd.Count > 0)
+			elements.Add(new UIText($"[i:{entry.Key}]: {entry.Value}x")
 			{
-				UIPanel confluxPanel = new()
-				{
-					HAlign = 1,
-					Left = StyleDimension.FromPixels(110),
-					Width = StyleDimension.FromPixels(94),
-					Height = StyleDimension.FromPixels(topOffset + 16),
-					Top = StyleDimension.FromPixels(-12)
-				};
-				panel.Append(confluxPanel);
+				HAlign = 0,
+				VAlign = 0,
+				Top = StyleDimension.FromPixels(topOffset)
+			});
 
-				var textUI = new UIText(Language.GetText(Path + "Conflux"), 1.1f);
-
-				textUI.OnUpdate += (self) =>
-				{
-					if (self.ContainsPoint(Main.MouseScreen))
-					{
-						Tooltip.Create(new TooltipDescription()
-						{
-							Identifier = "ConfluxTooltip",
-							SimpleSubtitle = Language.GetTextValue(Path + "ConfluxTooltip")
-						});
-					}
-				};
-
-				confluxPanel.Append(textUI);
-				confluxPanel.AddElement(new UIImageFramed(TextureAssets.MagicPixel, new Rectangle(0, 0, 70, 2)), x => x.Top = StyleDimension.FromPixels(20));
-
-				foreach (UIText text in textsToAdd)
-				{
-					confluxPanel.Append(text);
-				}
-			}
+			topOffset += 28;
 		}
 	}
 
@@ -170,11 +268,57 @@ internal class VirtualBagUIState : UIState, IMutuallyExclusiveUI, IAutopauseUI
 		}
 	}
 
+	private void SetActiveTab(string tab)
+	{
+		_activeTab = tab;
+
+		if (_matchedTab is not null)
+		{
+			_matchedTab.TextColor = tab == MatchedTab ? Color.Yellow : Color.White;
+		}
+
+		if (_filteredOutTab is not null)
+		{
+			_filteredOutTab.TextColor = tab == FilteredOutTab ? Color.Yellow : Color.White;
+		}
+
+		SoundEngine.PlaySound(SoundID.MenuTick);
+		RefreshStorage();
+	}
+
+	private static LocalizedText BuildFilterLabel()
+	{
+		const string Path = "Mods.PathOfTerraria.UI.VirtualBag.";
+
+		// Prefer the player's currently active filter (so the label reflects the live state even before
+		// any item has been processed). Fall back to LastFilterName for the historical record on items
+		// that were filtered with a previous selection.
+		ItemFilter active = Main.LocalPlayer.GetModPlayer<ItemFilterPlayer>().ActiveFilter;
+		string filterName = active?.Name
+			?? Main.LocalPlayer.GetModPlayer<VirtualBagStoragePlayer>().LastFilterName;
+
+		return string.IsNullOrEmpty(filterName)
+			? Language.GetText(Path + "NoFilter")
+			: Language.GetText(Path + "FilterLabel").WithFormatArgs(filterName);
+	}
+
+	private List<Item> GetActiveStorage(VirtualBagStoragePlayer player)
+	{
+		return _activeTab == FilteredOutTab ? player.FilteredOutStorage : player.MatchedStorage;
+	}
+
 	internal void RefreshStorage()
 	{
 		_storageGrid.Clear();
 
-		foreach (Item item in Main.LocalPlayer.GetModPlayer<VirtualBagStoragePlayer>().Storage)
+		VirtualBagStoragePlayer player = Main.LocalPlayer.GetModPlayer<VirtualBagStoragePlayer>();
+
+		if (_filterLabel is not null)
+		{
+			_filterLabel.SetText(BuildFilterLabel());
+		}
+
+		foreach (Item item in GetActiveStorage(player))
 		{
 			var storageIcon = new UIItemIcon(item, false)
 			{
@@ -241,7 +385,13 @@ internal class VirtualBagUIState : UIState, IMutuallyExclusiveUI, IAutopauseUI
 			return;
 		}
 
-		plr.GetModPlayer<VirtualBagStoragePlayer>().Storage.Remove(item);
+		VirtualBagStoragePlayer storage = plr.GetModPlayer<VirtualBagStoragePlayer>();
+
+		if (!storage.MatchedStorage.Remove(item))
+		{
+			storage.FilteredOutStorage.Remove(item);
+		}
+
 		RefreshStorage();
 		SoundEngine.PlaySound(SoundID.Grab);
 	}

@@ -20,6 +20,9 @@ public sealed class UIConfig : ModConfig
 	[DefaultValue(true)]
 	public bool UseVirtualBag { get; set; } = true;
 
+	[DefaultValue(true)]
+	public bool ShowLootBeams { get; set; } = true;
+
 	public override void OnChanged()
 	{
 		if (Main.gameMenu)

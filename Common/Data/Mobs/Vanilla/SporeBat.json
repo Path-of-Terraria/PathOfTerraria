@@ -1,5 +1,25 @@
 {
   "netId": 634,
   "friendlyName": "Spore Bat",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": null,
+      "lightning": null,
+      "cold": {
+        "added": 5,
+        "conversion": 0.5
+      }
+    },
+    {
+      "minLevel": 45,
+      "fire": null,
+      "lightning": null,
+      "cold": {
+        "added": 20,
+        "conversion": 0.5
+      }
+    }
+  ],
   "entries": []
 }

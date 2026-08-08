@@ -159,7 +159,7 @@ public class RavencrestSystem : ModSystem
 			{
 				OverworldOneTimeChecks();
 
-				if (NPC.downedBoss1 && SpawnedMorvenPos is null && !WorldGen.crimson && !EventTracker.HasFlagsAnywhere(EventFlags.DefeatedBrainOfCthulhu))
+				if (NPC.downedBoss1 && SpawnedMorvenPos is null && !WorldGen.crimson && !EventTracker.HasFlagsAnywhere(EventFlags.DefeatedBrainOfCthulhu) && !NPC.downedBoss2)
 				{
 					if (Main.netMode == NetmodeID.SinglePlayer)
 					{
@@ -464,6 +464,7 @@ public class RavencrestSystem : ModSystem
 
 	public override void NetSend(BinaryWriter writer)
 	{
+		writer.Write(SpawnedScout);
 		writer.Write((short)HasOverworldNPC.Count);
 
 		foreach (string npc in HasOverworldNPC)
@@ -483,6 +484,7 @@ public class RavencrestSystem : ModSystem
 
 	public override void NetReceive(BinaryReader reader)
 	{
+		SpawnedScout = reader.ReadBoolean();
 		HasOverworldNPC.Clear();
 		short count = reader.ReadInt16();
 

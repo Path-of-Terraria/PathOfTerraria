@@ -25,6 +25,8 @@ internal record struct StarterClassInfo()
 {
 	public required int WeaponItemId;
 	public required Type[] SkillTypes = [];
+	public int AmmoItemId = ItemID.None;
+	public int AmmoStack = 0;
 }
 
 public static class StarterClassExtensions
@@ -55,6 +57,8 @@ internal sealed class StarterClasses : ModSystem
 		{
 			WeaponItemId = ModContent.ItemType<WoodenShortBow>(),
 			SkillTypes = [typeof(RainOfArrows)],
+			AmmoItemId = ItemID.WoodenArrow,
+			AmmoStack = 100,
 		};
 		infoByClass[(int)StarterClass.Magic] = new()
 		{

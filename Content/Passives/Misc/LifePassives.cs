@@ -7,7 +7,7 @@ internal class AddedLifePassive : Passive
 {
 	public override void BuffPlayer(Player player)
 	{
-		player.statLifeMax2 += Value * Level;
+		player.statLifeMax2 += (int)(Value * Level);
 	}
 }
 
@@ -15,7 +15,7 @@ internal class LifeRegenPassive : Passive
 {
 	public override void BuffPlayer(Player player)
 	{
-		player.lifeRegen += Value * Level;
+		player.lifeRegen += (int)(Value * Level);
 	}
 }
 

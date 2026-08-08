@@ -34,7 +34,7 @@ public class SeveranceShard : CurrencyShard
 			return false;
 		}
 
-		if (data.Affixes.Count == 0)
+		if (!PoTItemHelper.HasNonImplicitAffixes(slotItem))
 		{
 			failKey = "NoAffixes";
 			return false;
@@ -51,7 +51,6 @@ public class SeveranceShard : CurrencyShard
 
 	public override void ApplyToItem(Item slotItem)
 	{
-		PoTInstanceItemData data = slotItem.GetInstanceData();
-		data.Affixes.RemoveAt(Main.rand.Next(data.Affixes.Count));
+		PoTItemHelper.RemoveRandomNonImplicitAffix(slotItem);
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using SubworldLibrary;
 using Terraria.ID;
 
@@ -15,12 +16,9 @@ internal class AncientTablet : ModItem
 
 	public override bool? UseItem(Player player)
 	{
-		if (Main.netMode != NetmodeID.MultiplayerClient)
-		{
-			NPC.SpawnBoss((int)player.Center.X, (int)player.Center.Y - 120, NPCID.CultistBoss, player.whoAmI);
-		}
-
-		return true;
+		return BossDomainSummonHandler.TrySummon(
+			BossDomainSummonHandler.BossDomainSummon.Cultist,
+			player);
 	}
 
 	public override void UpdateInventory(Player player)

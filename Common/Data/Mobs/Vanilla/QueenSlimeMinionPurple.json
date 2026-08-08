@@ -1,5 +1,22 @@
 {
   "netId": 660,
   "friendlyName": "Queen Slime Minion Purple",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": {
+        "added": 5,
+        "conversion": 0.25
+      },
+      "lightning": {
+        "added": 5,
+        "conversion": 0.25
+      },
+      "cold": {
+        "added": 5,
+        "conversion": 0.25
+      }
+    }
+  ],
   "entries": []
 }

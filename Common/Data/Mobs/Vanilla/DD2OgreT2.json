@@ -1,5 +1,16 @@
 {
   "netId": 576,
   "friendlyName": "D D2 Ogre T2",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": null,
+      "lightning": null,
+      "cold": {
+        "added": 20,
+        "conversion": 0.5
+      }
+    }
+  ],
   "entries": []
 }

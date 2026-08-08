@@ -3,6 +3,7 @@ using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.ModPlayers.SkillPlayers;
 using System.Runtime.CompilerServices;
 using Terraria.GameContent.UI.States;
+using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.VanillaModifications;
 
@@ -28,6 +29,27 @@ internal class AddClassSelectInPlayer : ModSystem
 		}
 
 		player.inventory[0].SetDefaults(info.WeaponItemId);
+		GiveStarterAmmo(player, info);
+	}
+
+	private static void GiveStarterAmmo(Player player, StarterClassInfo info)
+	{
+		if (info.AmmoItemId == ItemID.None || info.AmmoStack <= 0)
+		{
+			return;
+		}
+
+		foreach (Item t in player.inventory)
+		{
+			if (!t.IsAir)
+			{
+				continue;
+			}
+
+			t.SetDefaults(info.AmmoItemId);
+			t.stack = info.AmmoStack;
+			return;
+		}
 	}
 
 	private void FinishCreatingChar(On_UICharacterCreation.orig_FinishCreatingCharacter orig, UICharacterCreation self)

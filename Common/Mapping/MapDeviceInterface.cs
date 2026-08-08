@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework.Input;
+using PathOfTerraria.Common.Items;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Common.UI.Components;
@@ -20,6 +21,7 @@ using ReLogic.Utilities;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
 using Terraria.ID;
@@ -199,7 +201,8 @@ internal class MapDeviceShiftClickPlayer : ModPlayer
 
 	internal static void MoveItemIntoStorage(ref Item originalItem)
 	{
-		Item[] storage = MapDeviceInterface.Entity!.Storage;
+		MapDeviceEntity device = MapDeviceInterface.Entity!;
+		Item[] storage = device.Storage;
 
 		for (int i = 0; i < MapDeviceEntity.StorageSize; i++)
 		{
@@ -210,6 +213,12 @@ internal class MapDeviceShiftClickPlayer : ModPlayer
 			originalItem.TurnToAir();
 			item = invItem;
 			SoundEngine.PlaySound(SoundID.Grab);
+
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				MapDeviceSync.Send(device.ID, MapDeviceSync.Flags.Storage, [i]);
+			}
+
 			break;
 		}
 	}
@@ -316,6 +325,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 	private (float Speed, float Rotation, Vector2 Offset, SlotId Sound) gear;
 	private (int NonWrappedSelection, float Center, float Visibility, float EjectVisibility, float InjectionAnimation, SlotId Sound) canisters;
 	private SpriteFrame buttonLockFrame = new(1, 18);
+	private ulong? closeConfirmExpires;
 	private (Color? Injection, Color? Burst, SpriteFrame Frame) activationEffect = (null, null, new(4, 3));
 	private (StyleDimension X, StyleDimension Y) storagePositionSrc;
 	private (StyleDimension X, StyleDimension Y) storagePositionDst;
@@ -464,6 +474,16 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 			}
 		}
 
+		// Expire pending close confirmation, reverting button text.
+		if (closeConfirmExpires is { } expires && TimeSystem.UpdateCount >= expires)
+		{
+			closeConfirmExpires = null;
+			if (isPortalActive)
+			{
+				ActionButtonInner?.SetText(Language.GetTextValue($"Mods.{nameof(PathOfTerraria)}.UI.MapDevice.DeactivatePortal"));
+			}
+		}
+
 		// Prevent button interaction during lock animations.
 		ActionButton!.IgnoresMouseInteraction = buttonLockFrame.CurrentRow != buttonTargetRow || buttonLockFrame.CurrentRow == ButtonFrameClosed;
 
@@ -558,6 +578,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		openingAnimation = 0f;
 		closingAnimation = 0f;
 		buttonLockFrame = buttonLockFrame.With(0, 0);
+		closeConfirmExpires = null;
 		gear.Speed = 0f;
 		activationEffect.Burst = null;
 		activationEffect.Injection = null;
@@ -1165,15 +1186,41 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 				// Cycle the button lock - lock & unlock.
 				buttonLockFrame.CurrentRow = (byte)((buttonLockFrame.CurrentRow + 1) % buttonLockFrame.RowCount);
 			}
-		}
-		else
-		{
-			entity.TryClosingPortal();
 
-			state.activationEffect.Burst = ColorUtils.FromHexRgb(0x958982);
-			state.activationEffect.Injection = null;
-			state.activationEffect.Frame = state.activationEffect.Frame.With(0, 0);
+			return;
 		}
+
+		ClosePortalIfAvailable(entity, state);
+	}
+
+	internal static void ClosePortalIfAvailable(MapDeviceEntity entity, MapDeviceState? state, bool skipConfirmation = false)
+	{
+		// Closing the portal requires a second click within a short window.
+		const int CloseConfirmDurationTicks = 3 * 60;
+
+		if (state is not null && (state.closeConfirmExpires is not { } pendingExpires || TimeSystem.UpdateCount >= pendingExpires && !skipConfirmation))
+		{
+			state.closeConfirmExpires = TimeSystem.UpdateCount + CloseConfirmDurationTicks;
+			state.ActionButtonInner?.SetText(Language.GetTextValue($"Mods.{nameof(PathOfTerraria)}.UI.MapDevice.ConfirmClosePortal"));
+			return;
+		}
+
+		if (state != null)
+		{
+			state.closeConfirmExpires = null;
+		}
+
+		entity.TryClosingPortal();
+
+		if (state is null)
+		{ 
+			return;
+		}
+
+		state.activationEffect.Burst = ColorUtils.FromHexRgb(0x958982);
+		state.activationEffect.Injection = null;
+		state.activationEffect.Frame = state.activationEffect.Frame.With(0, 0);
+		return;
 	}
 
 	private void SetActivationEffect(MapDeviceEntity entity)

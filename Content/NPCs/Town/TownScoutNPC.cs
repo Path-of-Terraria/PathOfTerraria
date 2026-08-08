@@ -6,6 +6,7 @@ using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using SubworldLibrary;
+using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
@@ -44,8 +45,28 @@ public sealed class TownScoutNPC : ModNPC
 		bestiaryEntry.AddInfo(this, "Surface");
 	}
 
+	public override void OnSpawn(IEntitySource source)
+	{
+		if (Main.netMode != NetmodeID.MultiplayerClient && AnyPlayerCanEncounterSurveyor())
+		{
+			ModContent.GetInstance<RavencrestSystem>().SpawnedScout = true;
+		}
+	}
+
 	public override bool PreAI()
 	{
+		if (Main.netMode != NetmodeID.MultiplayerClient && !AnyPlayerCanEncounterSurveyor())
+		{
+			NPC.active = false;
+
+			if (Main.netMode == NetmodeID.Server)
+			{
+				NetMessage.SendData(MessageID.SyncNPC, number: NPC.whoAmI);
+			}
+
+			return false;
+		}
+
 		if (!HasPlayerBeenNear)
 		{
 			foreach (Player plr in Main.ActivePlayers)
@@ -78,8 +99,6 @@ public sealed class TownScoutNPC : ModNPC
 		}
 
 		NPC.direction = NPC.spriteDirection = Math.Sign(NPC.velocity.X);
-		ModContent.GetInstance<RavencrestSystem>().SpawnedScout = true;
-
 		Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
 
 		if (NPC.velocity.Y != 0)
@@ -113,39 +132,62 @@ public sealed class TownScoutNPC : ModNPC
 
 	public override float SpawnChance(NPCSpawnInfo spawnInfo)
 	{
-		bool anyHealthyPlayer = true;
-		bool forceQuestSpawn = false;
+		float questChance = GetQuestSpawnChance();
 
-		foreach (Player plr in Main.ActivePlayers)
-		{
-			QuestModPlayer questPlayer = plr.GetModPlayer<QuestModPlayer>();
-
-			if (questPlayer.QuestsByName.TryGetValue(ModContent.GetInstance<WizardStartQuest>().FullName, out Quest quest)
-				&& quest.Active
-				&& quest.ActiveStep.Id == "Start")
-			{
-				forceQuestSpawn = true;
-			}
-
-			if (plr.ConsumedLifeCrystals > 5)
-			{
-				anyHealthyPlayer = true;
-			}
-		}
-
-		if (!anyHealthyPlayer && !forceQuestSpawn)
+		if (questChance <= 0)
 		{
 			return 0;
 		}
 		
-		float chance = forceQuestSpawn ? 100f : (NPC.downedGoblins ? 0.1f : 5);
 		bool spawnedScout = ModContent.GetInstance<RavencrestSystem>().SpawnedScout;
 
-		return SubworldSystem.Current is RavencrestSubworld && spawnInfo.SpawnTileX < 180 && !spawnedScout ? chance : 0;
+		return SubworldSystem.Current is RavencrestSubworld && spawnInfo.SpawnTileX < 180 && !spawnedScout ? questChance : 0;
 	}
 
 	public override bool CheckActive()
 	{
 		return false;
+	}
+
+	private static bool AnyPlayerCanEncounterSurveyor()
+	{
+		return GetQuestSpawnChance() > 0;
+	}
+
+	private static float GetQuestSpawnChance()
+	{
+		string questName = ModContent.GetInstance<WizardStartQuest>().FullName;
+		bool questCompleted = false;
+
+		foreach (Player plr in Main.ActivePlayers)
+		{
+			QuestModPlayer questPlayer = plr.GetModPlayer<QuestModPlayer>();
+
+			if (Main.netMode != NetmodeID.SinglePlayer)
+			{
+				if (questPlayer.ActiveQuestStepsByName.TryGetValue(questName, out string activeStep)
+					&& activeStep == WizardStartQuest.SurveyorStepId)
+				{
+					return 100f;
+				}
+
+				questCompleted |= questPlayer.CompletedQuestsByName.Contains(questName);
+				continue;
+			}
+
+			if (!questPlayer.QuestsByName.TryGetValue(questName, out Quest quest))
+			{
+				continue;
+			}
+
+			if (quest.Active && quest.ActiveStep.Id == WizardStartQuest.SurveyorStepId)
+			{
+				return 100f;
+			}
+
+			questCompleted |= quest.Completed;
+		}
+
+		return questCompleted ? (NPC.downedGoblins ? 0.1f : 5) : 0;
 	}
 }

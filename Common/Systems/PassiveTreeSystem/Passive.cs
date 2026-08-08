@@ -56,7 +56,7 @@ public abstract class Passive : Allocatable, ILoadable
 	/// </summary>
 	public override string DisplayTooltip => Language.GetText($"Mods.PathOfTerraria.Passives.{Name}.Tooltip").Format(Value);
 
-	public int Value;
+	public float Value;
 
 	void ILoadable.Load(Mod mod)
 	{
@@ -96,7 +96,7 @@ public abstract class Passive : Allocatable, ILoadable
 			PassiveNameToId.Add(instance.Name, instance.ID);
 		}
 
-		MaxId = id - 1;
+		MaxId = id;
 	}
 
 	public static Passive GetPassiveFromData(PassiveData data)

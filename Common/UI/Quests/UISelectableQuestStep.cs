@@ -1,8 +1,12 @@
 ﻿using PathOfTerraria.Common.Systems.Questing;
+using PathOfTerraria.Common.UI.Elements;
 using PathOfTerraria.Common.UI.Utilities;
+using PathOfTerraria.Core.UI;
+using ReLogic.Content;
 using ReLogic.Text;
 using Terraria.Chat;
 using Terraria.GameContent;
+using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.Quests;
@@ -15,6 +19,8 @@ namespace PathOfTerraria.Common.UI.Quests;
 /// </summary>
 public class UISelectableQuestStep : UISelectableOutlineRectPanel
 {
+	internal static Asset<Texture2D> RecoveryTex = null!;
+
 	private QuestStep Step => quest.QuestSteps[index];
 	
 	private readonly Quest quest;

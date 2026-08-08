@@ -16,7 +16,7 @@ using System.Runtime.InteropServices;
 namespace PathOfTerraria.Common.Systems.PassiveTreeSystem;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-internal class PassiveTreePlayer : ModPlayer
+public class PassiveTreePlayer : ModPlayer
 {
 	/// <summary>
 	/// This should be equal to your level + any extra points you have.
@@ -30,9 +30,27 @@ internal class PassiveTreePlayer : ModPlayer
 
 	public float[] StrengthByPassive = new float[Passive.MaxId];
 	public List<Passive> ActiveNodes = [];
-	public List<Edge<Allocatable>> Edges = [];
+	internal List<Edge<Allocatable>> Edges = [];
 
 	private TagCompound _saveData = [];
+
+	public override void Load()
+	{
+		On_Player.UpdateEquips += EarlyUpdateEquips;
+	}
+
+	private static void EarlyUpdateEquips(On_Player.orig_UpdateEquips orig, Player self, int i)
+	{
+		if (self.TryGetModPlayer(out PassiveTreePlayer plr))
+		{
+			// This code is in a detour so it runs before other ModPlayer.UpdateEquip hooks.
+			// Since passives are not equips, the method order matters less,
+			// and this fixes some issues where passives would run too late to be used.
+			plr.ApplyPassives();
+		}
+
+		orig(self, i);
+	}
 
 	public override void OnEnterWorld()
 	{
@@ -72,7 +90,7 @@ internal class PassiveTreePlayer : ModPlayer
 			{
 				if (oldLevel < passive.Level)
 				{
-					AllocatePassive(passive, passive.Level - oldLevel, false);
+					AllocatePassive(passive, passive.Value * (passive.Level - oldLevel), false);
 				}
 				else if (oldLevel > passive.Level)
 				{
@@ -128,9 +146,17 @@ internal class PassiveTreePlayer : ModPlayer
 		}));
 	}
 
-	public override void UpdateEquips()
+	private void ApplyPassives()
 	{
-		ActiveNodes.Where(n => n.Level != 0).ToList().ForEach(n => n.BuffPlayer(Player));
+		foreach (Passive passive in ActiveNodes)
+		{
+			if (passive.Level == 0)
+			{
+				continue;
+			}
+
+			passive.BuffPlayer(Player);
+		}
 	}
 
 	public override void SaveData(TagCompound tag)
@@ -153,6 +179,27 @@ internal class PassiveTreePlayer : ModPlayer
 		tag["extraPoints"] = ExtraPoints;
 
 		_saveData = (TagCompound)tag.Clone();
+	}
+
+	public PassiveTreeSnapshot GetSnapshot()
+	{
+		List<PassiveTreeNodeSnapshot> allocatedNodes = ActiveNodes
+			.Where(passive => passive is not null && passive.Level > 0)
+			.Select(passive => new PassiveTreeNodeSnapshot
+			{
+				ReferenceId = passive.ReferenceId,
+				InternalIdentifier = passive.Name,
+				Level = passive.Level
+			})
+			.OrderBy(passive => passive.ReferenceId)
+			.ToList();
+
+		return new PassiveTreeSnapshot
+		{
+			Points = Points,
+			ExtraPoints = ExtraPoints,
+			AllocatedNodes = allocatedNodes
+		};
 	}
 
 	public void ResetAllNodes()
@@ -178,6 +225,7 @@ internal class PassiveTreePlayer : ModPlayer
 	{
 		_saveData = tag;
 		ExtraPoints = tag.GetInt("extraPoints");
+		StrengthByPassive = new float[Passive.MaxId];
 
 		ResetNodes();
 		SetTree(true);
@@ -188,7 +236,10 @@ internal class PassiveTreePlayer : ModPlayer
 	/// </summary>
 	internal float GetCumulativeValue<T>() where T : Passive
 	{
-		return StrengthByPassive[ModContent.GetInstance<T>().ID];
+		int id = ModContent.GetInstance<T>().ID;
+		EnsureStrengthCapacity(id);
+
+		return StrengthByPassive[id];
 	}
 
 	/// <summary>
@@ -225,6 +276,11 @@ internal class PassiveTreePlayer : ModPlayer
 		foreach (Edge<Allocatable> e in Edges)
 		{
 			if (!e.Contains(passive) || GetEffectiveLevel(e.Other(passive)) <= 0)
+			{
+				continue;
+			}
+			
+			if (e.Other(passive) is Passive { IsHidden: true })
 			{
 				continue;
 			}
@@ -373,7 +429,7 @@ internal class PassiveTreePlayer : ModPlayer
 		return new(false, []);
 	}
 
-	internal void AllocatePassive(Passive passive, int strength = 1, bool save = true)
+	internal void AllocatePassive(Passive passive, float strength = 1, bool save = true)
 	{
 		if (passive is MasteryPassive) // Hardcode for this, which doesn't work the same as any other passive
 		{
@@ -383,6 +439,7 @@ internal class PassiveTreePlayer : ModPlayer
 		Points--;
 		Player.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.AllocatedPassive);
 		int id = Passive.PassiveNameToId[passive.Name];
+		EnsureStrengthCapacity(id);
 		StrengthByPassive[id] += strength;
 
 		if (save)
@@ -391,7 +448,7 @@ internal class PassiveTreePlayer : ModPlayer
 		}
 	}
 
-	internal void DeallocatePassive(Passive passive, int valueLoss, int pointRefund, bool save = true)
+	internal void DeallocatePassive(Passive passive, float valueLoss, int pointRefund, bool save = true)
 	{
 		if (passive is MasteryPassive)
 		{
@@ -400,6 +457,7 @@ internal class PassiveTreePlayer : ModPlayer
 		}
 
 		int id = Passive.PassiveNameToId[passive.Name];
+		EnsureStrengthCapacity(id);
 
 		Points += pointRefund;
 		Player.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.DeallocatedPassive);
@@ -408,7 +466,7 @@ internal class PassiveTreePlayer : ModPlayer
 
 		if (str > 0)
 		{
-			str = Math.Max(0, str - valueLoss);
+			str = Math.Max(0, str - valueLoss * pointRefund);
 		}
 #if DEBUG
 		else
@@ -420,6 +478,16 @@ internal class PassiveTreePlayer : ModPlayer
 		if (save)
 		{
 			SaveData([]);
+		}
+	}
+
+	private void EnsureStrengthCapacity(int id)
+	{
+		int requiredLength = Math.Max(Passive.MaxId, id + 1);
+
+		if (StrengthByPassive.Length < requiredLength)
+		{
+			Array.Resize(ref StrengthByPassive, requiredLength);
 		}
 	}
 
@@ -519,6 +587,7 @@ internal class PassiveTreePlayer : ModPlayer
 		if (setStrengths && passive is not MasteryPassive)
 		{
 			int id = Passive.PassiveNameToId[passive.Name];
+			EnsureStrengthCapacity(id);
 			StrengthByPassive[id] = Math.Max(0, StrengthByPassive[id] - removedLevels);
 		}
 	}

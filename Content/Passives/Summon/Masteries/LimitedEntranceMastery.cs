@@ -19,19 +19,16 @@ internal class LimitedEntranceMastery : Passive
 
 		public override void OnSpawn(Projectile projectile, IEntitySource source)
 		{
-			if (source is EntitySource_Parent { Entity: Player plr } && HasNode(plr, out float value))
+			if (projectile.owner is < 0 or >= Main.maxPlayers)
+			{
+				return;
+			}
+
+			Player plr = Main.player[projectile.owner];
+			if (plr.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<LimitedEntranceMastery>(out float value))
 			{
 				_buffTime = (int)(value * 60);
 			}
-			else if (source is EntitySource_Parent { Entity: Projectile proj } && proj.TryGetOwner(out Player projOwner) && HasNode(projOwner, out float value2))
-			{
-				_buffTime = (int)(value2 * 60);
-			}
-		}
-
-		private static bool HasNode(Player plr, out float value)
-		{
-			return plr.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<LimitedEntranceMastery>(out value);
 		}
 
 		public override bool PreAI(Projectile projectile)

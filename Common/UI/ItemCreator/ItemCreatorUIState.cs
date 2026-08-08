@@ -46,6 +46,8 @@ internal class ItemCreatorPlayer : ModPlayer
 internal class ItemCreatorUIState : CloseableSmartUi
 {
 	private static readonly Point MainPanelSize = new(792, 770);
+	private const int EditSlotContext = ItemSlot.Context.ChestItem;
+	private static readonly ItemRarity[] EditableRarities = [ItemRarity.Normal, ItemRarity.Magic, ItemRarity.Rare, ItemRarity.Unique];
 
 	protected override bool IsCentered => true;
 
@@ -57,17 +59,28 @@ internal class ItemCreatorUIState : CloseableSmartUi
 	private UIText _disabledMessage = null!;
 	private UIButton<string> _addAffixButton = null!;
 	private UIButton<string> _clearAffixButton = null!;
+	private UINumberInput _itemLevelInput = null!;
 	private UIElement _shardBar = null!;
 	private AddAffixPanel? _addAffixOverlay;
 	private bool _isRefreshing;
+	private bool _syncingItemControls;
 
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{
 		return layers.FindIndex(x => x.Name == "Vanilla: Hotbar");
 	}
 
+	public override void SafeUpdate(GameTime gameTime)
+	{
+		if (IsVisible)
+		{
+			Main.playerInventory = true;
+		}
+	}
+
 	internal void Toggle()
 	{
+		Deactivate();
 		RemoveAllChildren();
 		_addAffixOverlay = null!;
 		_affixList = null!;
@@ -76,6 +89,7 @@ internal class ItemCreatorUIState : CloseableSmartUi
 
 		if (!IsVisible)
 		{
+			Main.playerInventory = false;
 			return;
 		}
 
@@ -95,10 +109,12 @@ internal class ItemCreatorUIState : CloseableSmartUi
 
 	protected override void DefaultClose()
 	{
+		Deactivate();
 		RemoveAllChildren();
 		_addAffixOverlay = null;
 		_affixList = null;
 		IsVisible = false;
+		Main.playerInventory = false;
 		SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
 	}
 
@@ -137,12 +153,13 @@ internal class ItemCreatorUIState : CloseableSmartUi
 		};
 		panel.Append(itemSection);
 
-		Asset<Texture2D> slotBg = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/ItemSlot");
+		Asset<Texture2D> slotBg =
+			ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/ItemSlot", AssetRequestMode.ImmediateLoad);
 
 		_itemSlot = new UIImageItemSlot(
 			slotBg, slotBg,
 			new UIImageItemSlot.SlotWrapper(() => _editItem, v => _editItem = v),
-			ItemSlot.Context.InventoryItem
+			EditSlotContext
 		)
 		{
 			Left = StyleDimension.FromPixels(10),
@@ -151,6 +168,9 @@ internal class ItemCreatorUIState : CloseableSmartUi
 		};
 		_itemSlot.OnModifyItem += (_, _, _) => OnItemChanged();
 		itemSection.Append(_itemSlot);
+
+		BuildItemLevelControl(itemSection);
+		BuildRarityControls(itemSection);
 
 		_addAffixButton = new UIButton<string>("Add Affix")
 		{
@@ -181,6 +201,61 @@ internal class ItemCreatorUIState : CloseableSmartUi
 		itemSection.Append(_itemInfoText);
 
 		UpdateItemInfo();
+	}
+
+	private void BuildItemLevelControl(UIElement itemSection)
+	{
+		itemSection.Append(new UIText("Item Level", 0.85f)
+		{
+			Left = StyleDimension.FromPixels(78),
+			Top = StyleDimension.FromPixels(8),
+			TextColor = Color.LightGray,
+		});
+
+		_itemLevelInput = new UINumberInput("Level", maxChars: 3)
+		{
+			Width = StyleDimension.FromPixels(54),
+			Height = StyleDimension.FromPixels(28),
+			Left = StyleDimension.FromPixels(162),
+			Top = StyleDimension.FromPixels(4),
+			Min = 1,
+			Max = byte.MaxValue,
+		};
+
+		_itemLevelInput.OnValueChanged += SetItemLevel;
+		itemSection.Append(_itemLevelInput);
+		SyncItemControls();
+	}
+
+	private void BuildRarityControls(UIElement itemSection)
+	{
+		const int Left = 78;
+		const int Top = 38;
+		const int Width = 70;
+		const int Gap = 6;
+
+		for (int i = 0; i < EditableRarities.Length; i++)
+		{
+			ItemRarity rarity = EditableRarities[i];
+			var button = new UIButton<string>(rarity.ToString())
+			{
+				Width = StyleDimension.FromPixels(Width),
+				Height = StyleDimension.FromPixels(28),
+				Left = StyleDimension.FromPixels(Left + i * (Width + Gap)),
+				Top = StyleDimension.FromPixels(Top),
+			};
+
+			button.OnLeftClick += (_, _) => SetRarity(rarity);
+			button.OnUpdate += element =>
+			{
+				var rarityButton = (UIButton<string>)element;
+				bool selected = HasEditableItem() && _editItem.GetInstanceData().Rarity == rarity;
+				rarityButton.BackgroundColor = selected ? new Color(73, 94, 171) : new Color(63, 82, 151) * 0.7f;
+				rarityButton.BorderColor = selected ? Color.Gold : Color.Black;
+			};
+
+			itemSection.Append(button);
+		}
 	}
 
 	private void BuildAffixEditor(UICloseablePanel panel)
@@ -222,8 +297,60 @@ internal class ItemCreatorUIState : CloseableSmartUi
 
 	private void OnItemChanged()
 	{
+		SyncItemControls();
 		RefreshAffixList();
 		UpdateItemInfo();
+	}
+
+	private void SetItemLevel(int? value)
+	{
+		if (_syncingItemControls || !HasEditableItem() || value is not { } level)
+		{
+			return;
+		}
+
+		if (GetItemLevel.Invoke(_editItem) == level)
+		{
+			return;
+		}
+
+		PathOfTerraria.Core.Items.SetItemLevel.Invoke(_editItem, level);
+		OnItemChanged();
+	}
+
+	private void SetRarity(ItemRarity rarity)
+	{
+		if (!HasEditableItem())
+		{
+			return;
+		}
+
+		PoTInstanceItemData data = _editItem.GetInstanceData();
+		if (data.Rarity == rarity)
+		{
+			return;
+		}
+
+		data.Rarity = rarity;
+		data.NameAffix = GenerateNameAffixes.Invoke(_editItem);
+		OnItemChanged();
+	}
+
+	private bool HasEditableItem()
+	{
+		return !_editItem.IsAir && _editItem.TryGetGlobalItem(out PoTGlobalItem _);
+	}
+
+	private void SyncItemControls()
+	{
+		if (_itemLevelInput == null)
+		{
+			return;
+		}
+
+		_syncingItemControls = true;
+		_itemLevelInput.Value = HasEditableItem() ? Math.Max(1, GetItemLevel.Invoke(_editItem)) : null;
+		_syncingItemControls = false;
 	}
 
 	private void RefreshAffixList()

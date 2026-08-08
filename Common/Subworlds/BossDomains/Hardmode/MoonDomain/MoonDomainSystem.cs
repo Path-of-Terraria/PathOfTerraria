@@ -71,7 +71,7 @@ internal class MoonDomainSystem : ModSystem
 			}
 		}
 
-		moonDomain.GetData().CheckDowned<MoonLordDomain>(NPCID.MoonLordCore);
+		moonDomain.GetData().MarkBossDownedIfDefeated<MoonLordDomain>(NPCID.MoonLordCore);
 
 		if (state == FightState.NotStarted && allPlayersAtop && Main.CurrentFrameFlags.ActivePlayersCount > 0 && !moonDomain.GetData().BossDowned)
 		{

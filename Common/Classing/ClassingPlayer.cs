@@ -8,7 +8,7 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Common.Classing;
 
-internal class ClassingPlayer : ModPlayer
+public class ClassingPlayer : ModPlayer
 {
 	public StarterClass Class { get; set; } = StarterClass.None;
 

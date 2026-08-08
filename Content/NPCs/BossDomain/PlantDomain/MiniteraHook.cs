@@ -69,13 +69,19 @@ internal class MiniteraHook : ModNPC
 		else if (Timer == 40)
 		{
 			Vector2 dir = Parent.DirectionTo(Main.player[Parent.target].Center) * 320;
-			Tile tile;
+			Target = Parent.Center;
 
-			do
+			for (int i = 0; i < 50; ++i)
 			{
-				Target = Parent.Center + dir + Main.rand.NextVector2CircularEdge(200, 200) * Main.rand.NextFloat(0.8f, 1.2f);
-				tile = Main.tile[Target.ToTileCoordinates16()];
-			} while (WorldGen.SolidTile(tile));
+				Vector2 target = Parent.Center + dir + Main.rand.NextVector2CircularEdge(200, 200) * Main.rand.NextFloat(0.8f, 1.2f);
+				Point tileCoordinates = target.ToTileCoordinates();
+
+				if (WorldGen.InWorld(tileCoordinates.X, tileCoordinates.Y, 10) && !WorldGen.SolidTile(Main.tile[tileCoordinates]))
+				{
+					Target = target;
+					break;
+				}
+			}
 
 			NPC.netUpdate = true;
 		}

@@ -19,7 +19,7 @@ internal class StopBuildingPlayer : ModPlayer
 	public static HashSet<int> InvalidItemsToUse = [ItemID.Wrench, ItemID.BlueWrench, ItemID.GreenWrench, ItemID.YellowWrench, ItemID.MulticolorWrench, ItemID.WireKite,
 		ItemID.ActuationRod, ItemID.ActuationAccessory, ItemID.Actuator, ItemID.RodofDiscord, ItemID.RodOfHarmony, ItemID.WetBomb, ItemID.HoneyBomb, ItemID.LavaBomb, 
 		ItemID.DirtBomb, ItemID.DirtStickyBomb, ItemID.DryBomb, ItemID.MagicConch, ItemID.DemonConch, ItemID.ShellphoneOcean, ItemID.ShellphoneHell, ItemID.Clentaminator, 
-		ItemID.Clentaminator2];
+		ItemID.Clentaminator2, ItemID.TeleportationPotion];
 
 	public static Dictionary<int, float> NerfedDomainItems = new() { { ItemID.Zenith, 0.2f } };
 

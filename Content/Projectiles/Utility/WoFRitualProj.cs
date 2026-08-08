@@ -107,13 +107,17 @@ internal class WoFRitualProj : ModProjectile
 			SoundEngine.PlaySound(SoundID.Item14 with { Pitch = -0.2f, Volume = 1f }, Projectile.Center);
 			Digging.CircleOpening(Projectile.Center / 16f, 8);
 
-			if (Main.myPlayer == Projectile.owner)
+			IEntitySource src = Projectile.GetSource_Death();
+
+			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
-				IEntitySource src = Projectile.GetSource_Death();
 				int type = ModContent.ProjectileType<WoFPortal>();
 				Projectile.NewProjectile(src, Projectile.Center, new Vector2(0, -1), type, 0, 0, Main.myPlayer);
+			}
 
-				type = ModContent.ProjectileType<ExplosionHitbox>();
+			if (Main.myPlayer == Projectile.owner)
+			{
+				int type = ModContent.ProjectileType<ExplosionHitbox>();
 				Projectile.NewProjectile(src, Projectile.Center, Vector2.Zero, type, 30, 6f, Projectile.owner, 18 * 8, 18 * 8);
 			}
 		}

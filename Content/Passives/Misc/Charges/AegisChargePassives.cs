@@ -28,6 +28,6 @@ internal class AegisChargeMaxChargesPassive : Passive
 {
 	public override void BuffPlayer(Player player)
 	{
-		player.GetModPlayer<AegisChargePlayer>().MaxCharges += Value * Level;
+		player.GetModPlayer<AegisChargePlayer>().MaxCharges += (int)(Value * Level);
 	}
 }

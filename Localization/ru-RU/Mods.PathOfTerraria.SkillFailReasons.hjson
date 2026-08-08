@@ -6,3 +6,5 @@ NotEnoughMana: Недостаточно маны для использовани
 // NoAmmo: Needs ammo
 // MissingAffix: Needs +{0} affix on any equipped item
 // Blocked: Placement is blocked
+// WrongAmmo: Held item uses the wrong ammo
+// BadChanneled: Item must not be channeled

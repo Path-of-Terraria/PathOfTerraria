@@ -1,5 +1,16 @@
 {
   "netId": 479,
   "friendlyName": "Mothron Spawn",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": null,
+      "lightning": {
+        "added": 20,
+        "conversion": 0.5
+      },
+      "cold": null
+    }
+  ],
   "entries": []
 }

@@ -652,7 +652,7 @@ public class Fireball : Skill
 				}
 
 				ElementalPlayer plr = Owner.GetModPlayer<ElementalPlayer>();
-				plr.Container.AddElementalValues((ElementType.Chaos, 0, 0, 0.25f), (ElementType.Fire, 0, 0, 0.25f));
+				plr.Container.AddElementalValues((ElementType.Chaos, 0, 0, 0.5f), (ElementType.Fire, 0, 0, 0.5f));
 			}
 
 			if (Owner.HasTreePassive<FireballTree, CrawlingFlame>() && Projectile.scale < MaxScale && Main.myPlayer == Projectile.owner)

@@ -1,5 +1,5 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
-using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
+using PathOfTerraria.Common.Systems.Affixes.Maps;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.NPCs.BossDomain.EoLDomain;
 using PathOfTerraria.Content.Projectiles.Utility;
@@ -58,7 +58,7 @@ internal class EmpressDomain : BossDomainSubworld, IOverrideBiome
 
 	public override void Update()
 	{
-		GetData().CheckDowned<EmpressDomain>(NPCID.HallowBoss); // HallowBoss is EoL
+		GetData().MarkBossDownedIfDefeated<EmpressDomain>(NPCID.HallowBoss); // HallowBoss is EoL
 		DoWaveFunctionality();
 
 		FightState state = FightTracker.UpdateState();

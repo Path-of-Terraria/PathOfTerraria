@@ -11,7 +11,7 @@ internal class RageResistancePassive : Passive
 		{
 			if (Player.HasBuff<RageStacksBuff>())
 			{
-				modifiers.FinalDamage -= Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<RageResistancePassive>();
+				modifiers.FinalDamage -= Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<RageResistancePassive>() / 100f;
 			}
 		}
 	}

@@ -203,13 +203,13 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 	{
 		quest = Quest.GetLocalPlayerInstance<KingSlimeQuest>();
 
-		if (!quest.Completed)
+		if (quest.QuestNotStarted || (quest.Active && !quest.Completed))
 		{
 			return true;
 		}
 
 		quest = Quest.GetLocalPlayerInstance<QueenSlimeQuest>();
-		return !quest.Completed;
+		return quest.Available() || (quest.Active && !quest.Completed);
 	}
 
 	public bool ForceSpawnInTavern()

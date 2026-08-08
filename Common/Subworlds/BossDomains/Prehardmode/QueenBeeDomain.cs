@@ -217,6 +217,7 @@ public class QueenBeeDomain : BossDomainSubworld
 		Main.moonPhase = (int)MoonPhase.Full;
 
 		FightState state = FightTracker.UpdateState();
+		GetData()?.MarkBossDownedIfDefeated<QueenBeeDomain>(NPCID.QueenBee);
 
 		if (state == FightState.JustCompleted)
 		{

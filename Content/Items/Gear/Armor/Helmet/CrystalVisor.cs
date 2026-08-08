@@ -1,10 +1,11 @@
 using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Items;
 using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Content.Items.Gear.Armor.Helmet;
 
 [AutoloadEquip(EquipType.Face)]
-internal class CrystalVisors : Gear
+internal class CrystalVisors : Gear, ITemporaryItem
 {
 	public class VisorPlayer : ModPlayer
 	{
@@ -50,5 +51,10 @@ internal class CrystalVisors : Gear
 	public override void UpdateAccessory(Player player, bool hideVisual)
 	{
 		player.GetModPlayer<VisorPlayer>().Active = true;
+	}
+
+	bool ITemporaryItem.DespawnCondition()
+	{
+		return NPC.downedEmpressOfLight;
 	}
 }
