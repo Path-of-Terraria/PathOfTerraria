@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
+using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.Passives;
 
 namespace PathOfTerraria.Common.Systems.ModPlayers;
@@ -36,5 +37,10 @@ internal class RagePlayer : ModPlayer
 	{
 		Rage = MathHelper.Min(Rage + add, MaxRage.Value);
 		_rageDecay = (int)(60 * (1 + Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<SlowRageDecayPassive>() * 0.01f));
+
+		if (Rage > 0)
+		{
+			Player.AddBuff(ModContent.BuffType<RageStacksBuff>(), 2);
+		}
 	}
 }

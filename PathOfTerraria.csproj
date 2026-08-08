@@ -29,8 +29,8 @@
 
 	<!-- References -->
 	<ItemGroup>
-		<PackageReference Include="JetBrains.Annotations" Version="2025.2.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.4" PrivateAssets="all" />
+		<PackageReference Include="JetBrains.Annotations" Version="2026.2.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="5.6.0" PrivateAssets="all" />
 	</ItemGroup>
 
 	<!-- Mod References -->
