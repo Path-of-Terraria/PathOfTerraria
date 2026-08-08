@@ -1,15 +1,12 @@
 float4 data;
 float uTime;
 float rotation;
-float2 pixelCalculationFormula;
-float canvasSize;
 matrix transform;
 float pixelSize;
-float additionalScale;
-float2 screenRes;
-texture sampleTexture;
 float paletteColorsAmount;
 float ditherSize;
+
+texture sampleTexture;
 sampler2D uImage0 : register(s0) = sampler_state
 {
 	texture = <sampleTexture>;
@@ -19,6 +16,7 @@ sampler2D uImage0 : register(s0) = sampler_state
 	AddressU = Clamp;
 	AddressV = Clamp;
 };
+
 sampler2D uImage1 : register(s1) = sampler_state
 {
 	texture = <sampleTexture>;
@@ -28,7 +26,6 @@ sampler2D uImage1 : register(s1) = sampler_state
 	AddressU = Clamp;
 	AddressV = Clamp;
 };
-
 
 texture bayerTexture;
 sampler2D uImage2 : register(s2) = sampler_state
@@ -51,23 +48,15 @@ struct VertexShaderInput
 struct VertexShaderOutput
 {
 	float4 Position : SV_POSITION;
-	float4 Color : COLOR0;
 	float3 TextureCoordinates : TEXCOORD0;
 };
-// pixelSize / length(canvasSize / additionalScale) / pixelSize; //the formula
+
 VertexShaderOutput VertexShaderFunction(in VertexShaderInput input)
 {
-	VertexShaderOutput output = (VertexShaderOutput) 0;
-	float2 vertexPixelSize = pixelSize;
-	input.Position.xy = floor(input.Position.xy * vertexPixelSize) / vertexPixelSize;
-	
-	float4 pos = mul(input.Position, transform);
-	
-	output.Position = pos;
-    
-	output.Color = input.Color;
+	VertexShaderOutput output = (VertexShaderOutput)0;
+	input.Position.xy = floor(input.Position.xy * pixelSize) / pixelSize;
+	output.Position = mul(input.Position, transform);
 	output.TextureCoordinates = input.TextureCoordinates;
-
 	return output;
 }
 
@@ -75,81 +64,41 @@ float2 Rotate(float2 uv, float angle, float2 pivot)
 {
 	float2x2 rotationMatrix = float2x2(cos(angle), sin(angle), -sin(angle), cos(angle));
 	uv -= pivot;
-	float2 r = mul(rotationMatrix, uv);
-	r += pivot;
-	
-	return r;
-    
+	uv = mul(rotationMatrix, uv);
+	return uv + pivot;
 }
-float2 SinBetween(float2 a, float2 b, float2 v)
+
+float3 PaletteColor(float index)
 {
-	float h = (b - a) / 2.;
-	return a + h + sin
-    (v) * h;
+	return tex2D(uImage1, float2(index, 0.0f)).rgb;
 }
 
-// returns the color
-float3 palette(float index)
+float PaletteIndex(float value)
 {
-	return tex2D(uImage1, float2(index, 0)).rgb;
+	return floor(value * paletteColorsAmount) / paletteColorsAmount;
 }
-
-float toIndex(float v)
-{
-	return floor(v * paletteColorsAmount) / paletteColorsAmount;
-
-}
-
-float3 Palette(float4 v)
-{
-	return palette(toIndex(saturate(length(v))));
-}
-
-
-//pixelSize: the amount of pixels in the canvas
 
 float4 PixelShaderFunction(VertexShaderOutput output) : COLOR0
 {
-	float oneLevel = 1 / paletteColorsAmount; // the indexer of the palette texture
-	float2 uv = output.TextureCoordinates;
-	float2 pixelSizeBasedOnCanvasSize = pixelSize; // pixel size
-	uv = ceil(uv * pixelSizeBasedOnCanvasSize) / pixelSizeBasedOnCanvasSize; // pixel effect uv
-	float4 col = 0; //  return value
-	float4 invertedCol = 0; //  return value
-	
-	// wave uv effect
-	uv = float2(uv.x + sin(uv.x + uTime * .05) * 0.01, uv.y + sin(uv.y + uTime * .05) * 0.01 );
-	
-	// draw the portal. then draw the dither texture which its pattern isnt visible when the alpha isnt equal to (index % 2 == 1)
-	float4 portalBase = tex2D(uImage0, Rotate(uv, rotation, float2(.5, .5)));
-	float2 ditherUV = uv;
-	ditherUV *= ditherSize;
-	float4 ditherPatternTexture = tex2D(uImage2, ditherUV);
-	float ditherPattern_NonInverted = ditherPatternTexture.r;
-	float ditherPattern_Inverted = step(ditherPatternTexture.r, 1);
-	
-	float3 currentColor = palette(toIndex(portalBase.r) - oneLevel); // add extra level to increase the color brightness
-	float3 prevColor = palette(saturate(toIndex(portalBase.r) - oneLevel * 2)); // same with this one
-	
-	// setup dither Textures to be added to col
-	
-	float ditherAlpha = lerp(1, 0, toIndex(portalBase.r));
-	
-	col += float4(currentColor * ditherPattern_Inverted,ditherPattern_NonInverted);
-	float alphaCut = smoothstep(.1 ,.995, toIndex(ditherAlpha));
-	float3 invertedDitherCol = lerp(portalBase.r, currentColor, alphaCut); //palette(saturate(toIndex(portalBase.r) - (oneLevel * (toIndex(ditherAlpha) % 2))));
-	invertedCol += float4(invertedDitherCol * ditherPattern_Inverted * alphaCut, alphaCut);
-	
-	//clean ups (remove flickering pixels bug, remove black pixels in both outside and inside the shader effect)
-	float4 finalCol = (col + invertedCol); //* step(0, length(uv * 2 - 1) - data.w);
-	finalCol *= step(length(uv * 2 - 1) - data.z,0);
-	
-	float4 blackHole = 0;
-	blackHole.a = smoothstep(.5, length(uv * 2 - 1) * 1.2 - data.w, data.w) * 2;
-	//finalCol += lerp(blackHole, finalCol, alphaCut);
-	finalCol = lerp(finalCol, step(0.1, finalCol.a), data.y);
+	float oneLevel = 1.0f / paletteColorsAmount;
+	float2 uv = output.TextureCoordinates.xy;
+	uv = ceil(uv * pixelSize) / pixelSize;
+	uv += sin(uv + (uTime * 0.05f)) * 0.01f;
 
-	return finalCol;
+	float4 portalBase = tex2D(uImage0, Rotate(uv, rotation, float2(0.5f, 0.5f)));
+	float ditherPattern = tex2D(uImage2, uv * ditherSize).r;
+	float invertedDitherPattern = 1.0f - ditherPattern;
+	float3 currentColor = PaletteColor(saturate(PaletteIndex(portalBase.r) - oneLevel));
+	float ditherAlpha = 1.0f - PaletteIndex(portalBase.r);
+
+	float4 color = float4(currentColor * invertedDitherPattern, ditherPattern);
+	float alphaCut = smoothstep(0.1f, 0.995f, PaletteIndex(ditherAlpha));
+	float3 invertedDitherColor = lerp(portalBase.rrr, currentColor, alphaCut);
+	color += float4(invertedDitherColor * invertedDitherPattern * alphaCut, alphaCut);
+
+	color *= step(length((uv * 2.0f) - 1.0f) - data.z, 0.0f);
+	float flash = step(0.1f, color.a);
+	return lerp(color, float4(flash, flash, flash, flash), data.y);
 }
 
 technique t0

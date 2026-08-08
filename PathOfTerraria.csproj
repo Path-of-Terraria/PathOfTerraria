@@ -51,8 +51,6 @@
 		<EmbeddedResource Remove="Content\NPCs\Mapping\Swamp\**" />
 		
 		<Folder Include="Common\Data\VanillaItemData\" />
-		
-		<Folder Include="Content\Particles\" />
 	</ItemGroup>
 
 	<!-- Altered build target, utilizing the BuildCommand variable. -->

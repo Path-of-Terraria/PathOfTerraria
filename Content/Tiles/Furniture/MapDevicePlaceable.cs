@@ -43,7 +43,7 @@ namespace PathOfTerraria.Content.Tiles.Furniture;
 public sealed class MapDevicePlaceable : MapDeviceTile
 {
 	protected override bool IsLegacy => true;
-	
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
@@ -66,12 +66,10 @@ public sealed class MapDevicePlaceable : MapDeviceTile
 
 public class MapDeviceTile : ModTile
 {
-	//private static Asset<Texture2D>? _portalTex;
 	private static Asset<Texture2D>? _spikesTex;
 	private static Asset<Texture2D>? _backTex;
 
 	protected virtual bool IsLegacy => false;
-	protected virtual string PortalTexturePath => $"{Texture}_Portal";
 	protected virtual string SpikesTexturePath => $"{Texture}_Spikes";
 	protected virtual string BackTexturePath => $"{Texture}_Background";
 
@@ -101,7 +99,7 @@ public class MapDeviceTile : ModTile
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style3x4);
 		// Visually spans [13, 7], logically [11, 6].
-		TileObjectData.newTile.Width = 11; 
+		TileObjectData.newTile.Width = 11;
 		TileObjectData.newTile.Height = 6;
 		TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 16, 16, 18];
 		TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(ModContent.GetInstance<MapDeviceEntity>().Hook_AfterPlacement, -1, 0, false);
@@ -169,7 +167,7 @@ public class MapDeviceTile : ModTile
 
 		if (entity.PortalActive)
 		{
-			DrawItemTexture(sb, tilePoint, worldCenter, entity, screenPosition);
+			DrawMapItem(sb, tilePoint, worldCenter, entity, screenPosition);
 		}
 	}
 
@@ -219,25 +217,19 @@ public class MapDeviceTile : ModTile
 
 			Vector2 spikePos = worldCenter + baseOffset + spikeOffset - screenPosition;
 
-			//additional animations to go with the new portal
-			float indexMultiplier = MathHelper.Lerp(-1,1,i / 4f);
+			// Additional animations to go with the new portal.
+			float indexMultiplier = MathHelper.Lerp(-1f, 1f, i / 4f);
 			float indexMultiplierPosY = MathHelper.Lerp(0, -7, readyAnim);
-			spikeRotation += (indexMultiplier * -.2f);
-			float waveProgress = MathF.Sin(Main.GameUpdateCount * 1f) *2;
-			spikeRotation -= (indexMultiplier * -.4f * openingAnim);
+			spikeRotation += indexMultiplier * -0.2f;
+			spikeRotation -= indexMultiplier * -0.4f * openingAnim;
 			spikePos.Y -= indexMultiplierPosY;
 
 			sb.Draw(spikesTexture, spikePos, srcRect, color, spikeRotation, spikeOrigin, 1f, 0, 0f);
 		}
 	}
-	/// <summary>
-	/// the portel itself is now a <see cref="PathOfTerraria.Common.Projectiles.BasePortalProjectile"/> 
-	/// </summary>
-	private void DrawItemTexture(SpriteBatch sb, Point16 tilePoint, Vector2 worldCenter, MapDeviceEntity entity, Vector2 screenPosition)
+	private void DrawMapItem(SpriteBatch sb, Point16 tilePoint, Vector2 worldCenter, MapDeviceEntity entity, Vector2 screenPosition)
 	{
-		//Texture2D portalTexture = AssetUtils.ImmediateValue(PortalTexturePath, ref _portalTex);
 		Texture2D? itemTex = null;
-		Color baseColor = entity.GetPortalColor();
 		Item portalItem = entity.StoredMap;
 
 		if (portalItem is { IsAir: false, type: int itemType })
@@ -245,45 +237,20 @@ public class MapDeviceTile : ModTile
 			itemTex = TextureAssets.Item[itemType].Value;
 		}
 
-		// Get the initial draw parameters
 		Tile tile = Main.tile[tilePoint];
 		var tileData = TileObjectData.GetTileData(tile);
-		int frameY = tile.TileFrameX % 90 / tileData.CoordinateFullWidth; // Picks the frame on the sheet based on the placeStyle of the item
-		//Rectangle frame = portalTexture.Frame(1, 1, 0, frameY);
-		//Vector2 origin = frame.Size() / 2f;
-		Color color = Color.Lerp(Lighting.GetColor(tilePoint.X, tilePoint.Y), Color.White, 0.4f).MultiplyRGBA(baseColor);
-		bool direction = tile.TileFrameY / tileData.CoordinateFullHeight != 0; // This is related to the alternate tile data we registered before
+		bool direction = tile.TileFrameY / tileData.CoordinateFullHeight != 0;
 		SpriteEffects effects = direction ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-		// Some math magic to make it smoothly move up and down over time
 		float offset = MathF.Sin(Main.GlobalTimeWrappedHourly * MathHelper.TwoPi / 5f);
-		Vector2 drawPos = worldCenter - screenPosition + new Vector2(0f, -65) + new Vector2(0f, offset * 7f);
-
-		// Draw the main texture
-		float baseScale = MathHelper.Lerp(0.1f, 2.0f, 1f - MathF.Pow(1f - entity.OpeningAnimation, 3f));
-		for (int k = 0; k < 3; ++k)
-		{
-			float rotation = Main.GlobalTimeWrappedHourly * 7f * (k % 2 == 0 ? -1 : 1);
-			Color drawColor = (color * (1 - (k * 0.2f)) * 0.7f) with { A = 112 };
-			//sb.Draw(portalTexture, drawPos, frame, drawColor, rotation, origin, baseScale - k * 0.2f, effects, 0f);
-		}
+		Vector2 drawPos = worldCenter - screenPosition + new Vector2(0f, -65f + offset * 7f);
 
 		if (itemTex != null)
 		{
 			float itemStep = 1f - MathF.Pow(1f - entity.OpeningAnimation, 3f);
-			var itemPos = Vector2.Lerp(drawPos + new Vector2(0, 129), drawPos, itemStep);
+			var itemPos = Vector2.Lerp(drawPos + new Vector2(0f, 129f), drawPos, itemStep);
 			sb.Draw(itemTex, itemPos, null, new Color(140, 230, 255) * 0.95f, 0f, itemTex.Size() / 2f, 0.75f, effects, 0f);
 		}
-
-		// Draw the periodic glow effect
-		float scale = baseScale + (float)Math.Sin(Main.GlobalTimeWrappedHourly * MathHelper.TwoPi / 2f) * 0.5f;
-		Color effectColor = color;
-		effectColor.A = 0;
-		effectColor *= 0.1f * scale;
-		//for (float num5 = 0f; num5 < 1f; num5 += 355f / (678f * (float)Math.PI))
-		//{
-		//	sb.Draw(portalTexture, drawPos + (MathHelper.TwoPi * num5).ToRotationVector2() * (6f + offset * 2f), frame, effectColor, 0f, origin, 1f, effects, 0f);
-		//}
 	}
 	public override bool RightClick(int x, int y)
 	{
@@ -393,23 +360,11 @@ internal class MapDeviceEntity : ModTileEntity
 	private SlotId engineSoundHandle;
 	private float portalSoundVolume;
 	private float engineSoundVolume;
-	private bool portalActive = false;
-	public int PortalProjWhoAmI = -1;
+	private int portalProjectileWhoAmI = -1;
+
 	public Item StoredMap { get; set; }
 	public Item[] Storage { get; set; }
-	public bool PortalActive { get => portalActive; set
-		{
-			portalActive = value;
-			if (value)
-			{
-				SpawnPortalProjectile();
-			}
-			else if(PortalProjWhoAmI != -1 && Main.projectile[PortalProjWhoAmI].type == ModContent.ProjectileType<BasePortalProjectile>())
-			{
-				Main.projectile[PortalProjWhoAmI].ai[0] = 1; //kill animation 
-			}
-		}
-	}
+	public bool PortalActive { get; set; }
 	public int PortalUsesLeft { get; set; }
 	public int? InteractingPlayer { get; private set; }
 	/// <summary> Which map destination resource is currently injected into the device, and what quantity of it. </summary>
@@ -464,16 +419,13 @@ internal class MapDeviceEntity : ModTileEntity
 			Item.NewItem(new EntitySource_TileBreak(Position.X, Position.Y), Position.ToWorldCoordinates(), StoredMap);
 		}
 
-		//Portal handling
-		Projectile portal = Main.projectile[PortalProjWhoAmI];
-		if (portal.type == ModContent.ProjectileType<BasePortalProjectile>())
-		{
-			portal.ai[0] = 1;
-		}
+		UpdatePortalProjectile(forceClose: true);
 	}
 
 	public override void Update()
 	{
+		UpdatePortalProjectile();
+
 		// Force temporary maps to despawn if completed
 		if (StoredMap is Item storedMap && storedMap.ModItem is ITemporaryItem temp && storedMap.GetGlobalItem<ITemporaryItem.TemporaryGlobalItem>().IsTemporary && temp.DespawnCondition())
 		{
@@ -606,7 +558,7 @@ internal class MapDeviceEntity : ModTileEntity
 	public void UpdateEffects(Vector2 center)
 	{
 		if (Main.dedServ) { return; }
-		
+
 		ActivationAnimation = MathUtils.StepTowards(ActivationAnimation, (InteractingPlayer.HasValue | PortalActive) ? 1 : 0, TimeSystem.RenderDeltaTime / 0.2f);
 		OpeningAnimation = MathUtils.StepTowards(OpeningAnimation, PortalActive ? 1 : 0, TimeSystem.RenderDeltaTime / 0.2f);
 		ReadyAnimation = MathUtils.StepTowards(ReadyAnimation, (PortalActive || TryOpeningPortal(evalMode: true)) ? 1 : 0, TimeSystem.RenderDeltaTime / 0.2f);
@@ -627,7 +579,7 @@ internal class MapDeviceEntity : ModTileEntity
 				musicVolume = MathHelper.Lerp(musicVolume, target, 0.1f);
 			}
 		}
-		
+
 		// Maintain a camera curio as long as this interface is open by the local player.
 		if (InteractingPlayer.HasValue && Main.player[InteractingPlayer.Value] is { } player && player == Main.LocalPlayer)
 		{
@@ -915,14 +867,67 @@ internal class MapDeviceEntity : ModTileEntity
 		}
 	}
 
-	/// <summary>
-	/// The Portal Drawing Projectile. The reason its a projectile is because dealing with shaders in tiles require a lot of effort and we could just use a projecitle which does the same thing but easier and more reliable
-	/// </summary>
-	private void SpawnPortalProjectile() 
+	private void UpdatePortalProjectile(bool forceClose = false)
 	{
-		Point16 tilePoint = Position;
-		Vector2 worldCenter = tilePoint.ToWorldCoordinates(88, -20f);
-		PortalProjWhoAmI = Projectile.NewProjectile(null, worldCenter, Vector2.Zero,ModContent.ProjectileType<BasePortalProjectile>(),0,0);
+		if (Main.netMode == NetmodeID.Server)
+		{
+			return;
+		}
+
+		bool portalExists = TryGetPortalProjectile(out Projectile? portal);
+		bool shouldPortalExist = PortalActive && !forceClose;
+
+		if (portalExists == shouldPortalExist)
+		{
+			if (portalExists && portal!.ai[0] == 0f)
+			{
+				portal.timeLeft = 2;
+			}
+
+			return;
+		}
+
+		if (shouldPortalExist)
+		{
+			SpawnPortalProjectile();
+		}
+		else
+		{
+			portal!.ai[0] = 1f;
+			portal.timeLeft = Math.Max(portal.timeLeft, 16);
+			portalProjectileWhoAmI = -1;
+		}
+	}
+
+	private bool TryGetPortalProjectile([NotNullWhen(true)] out Projectile? portal)
+	{
+		if (portalProjectileWhoAmI >= 0 && portalProjectileWhoAmI < Main.maxProjectiles)
+		{
+			Projectile candidate = Main.projectile[portalProjectileWhoAmI];
+			if (candidate.active && candidate.ModProjectile is BasePortalProjectile visual && visual.MapDeviceEntityId == ID && candidate.ai[0] == 0f)
+			{
+				portal = candidate;
+				return true;
+			}
+		}
+
+		portal = null;
+		return false;
+	}
+
+	private void SpawnPortalProjectile()
+	{
+		Vector2 worldCenter = Position.ToWorldCoordinates(88f, -20f);
+		Projectile portal = Projectile.NewProjectileDirect(
+			new EntitySource_TileEntity(this),
+			worldCenter,
+			Vector2.Zero,
+			ModContent.ProjectileType<BasePortalProjectile>(),
+			0,
+			0f,
+			Main.myPlayer,
+			ai1: ID);
+		portalProjectileWhoAmI = portal.whoAmI;
 	}
 
 	/// <summary>
@@ -977,7 +982,7 @@ internal class MapDeviceEntity : ModTileEntity
 		if (!Main.dedServ)
 		{
 			Main.instance.CameraModifiers.Add(new PunchCameraModifier(Position.ToWorldCoordinates(), new Vector2(1, -4), 1f, 2.5f, 45, 300, "PortalClosing"));
-	
+
 			SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/MapDevice/PortalClose", 2)
 			{
 				MaxInstances = 2,
@@ -1129,7 +1134,7 @@ internal class MapDeviceInteraction : Handler
 	public static void Send(int entityId, Kind kind, int arg = 0, int toClient = -1, int ignoreClient = -1)
 	{
 		DebugUtils.DebugLog($"Sending interaction confirmation: {kind}");
-		
+
 		ModPacket packet = Networking.GetPacket<MapDeviceInteraction>();
 		packet.Write((int)entityId);
 		packet.Write((byte)kind);
