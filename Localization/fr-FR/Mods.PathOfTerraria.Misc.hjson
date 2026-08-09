@@ -34,6 +34,11 @@ VoidPearlCondition: En mode difficile ou pendant la quête Déchaîner le chaos
 // RestockShop: Restock shop
 // RestockTooltip: (Can be used once per merchant)
 
+Yryoth: {
+	// RimeGathering: Rime is gathering...
+	// RimeEruption: The segment is about to erupt!
+}
+
 Element: {
 	// Fire.Name: Fire
 	// Cold.Name: Cold

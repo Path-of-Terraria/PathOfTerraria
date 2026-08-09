@@ -167,8 +167,8 @@ InfernalRealm: {
 }
 
 GlacialRealm: {
-	DisplayName: GlacialRealm
-	Description: GlacialRealm
+	DisplayName: Glacial Realm
+	Description: The Conflux has opened a path into a frozen grave. Defeat Yryoth, the betrayed ruler buried within.
 	Mining: "[i:1] Only torches and ropes can be mined"
 	Placing: "[i:2] Only torches and ropes can be placed"
 }

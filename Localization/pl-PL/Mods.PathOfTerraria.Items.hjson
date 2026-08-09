@@ -1749,6 +1749,26 @@ ProlifRing: {
 	// Tooltip: ""
 }
 
+YryothsCrown: {
+	// DisplayName: Yryoth's Crown
+	// Tooltip: The thoughts trapped beneath it have long since frozen
+}
+
+BetrayersCarapace: {
+	// DisplayName: Betrayer's Carapace
+	// Tooltip: Cold enough to preserve an ancient grievance
+}
+
+RimeboundTreads: {
+	// DisplayName: Rimebound Treads
+	// Tooltip: Every step leaves the warmth of the world farther behind
+}
+
+FrozenOrbit: {
+	// DisplayName: Frozen Orbit
+	// Tooltip: A dead moon caught forever in Yryoth's pull
+}
+
 Cryobrand: {
 	// DisplayName: Cryobrand
 	// Tooltip: ""

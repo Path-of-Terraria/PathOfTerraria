@@ -17,31 +17,40 @@ internal class RemoteInfoPlayer : ModPlayer
 	{
 		public static void Send(short returnToPlayer = -1)
 		{
-			Player plr = Main.LocalPlayer;
+			Send(Main.LocalPlayer, returnToPlayer);
+		}
+
+		public static void Send(Player plr, short returnToPlayer = -1)
+		{
+			if (Main.netMode == NetmodeID.SinglePlayer) { return; }
 
 			ModPacket packet = Networking.GetPacket<SendRemoteInfoHandler>();
+			if (Main.netMode == NetmodeID.Server)
+			{
+				packet.Write((byte)plr.whoAmI);
+			}
 			packet.Write((byte)plr.GetModPlayer<ClassingPlayer>().Class);
 			packet.Write((byte)plr.GetModPlayer<ExpModPlayer>().Level);
-			packet.Write(returnToPlayer);
-			packet.Send();
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				packet.Write(returnToPlayer);
+			}
+			if (Main.netMode == NetmodeID.Server) { packet.Send(returnToPlayer); }
+			else { packet.Send(); }
 		}
 
 		internal override void Receive(BinaryReader reader, byte sender)
 		{
-			int who = Main.dedServ ? sender : reader.ReadByte();
+			int who = Main.netMode == NetmodeID.Server ? sender : reader.ReadByte();
 			Player plr = Main.player[who];
 			plr.GetModPlayer<ClassingPlayer>().Class = (StarterClass)reader.ReadByte();
 			plr.GetModPlayer<ExpModPlayer>().Level = reader.ReadByte();
 
-			if (Main.dedServ)
+			if (Main.netMode == NetmodeID.Server)
 			{
 				short returnToPlayer = reader.ReadInt16();
 
-				ModPacket packet = Networking.GetPacket<SendRemoteInfoHandler>();
-				packet.Write((byte)plr.whoAmI);
-				packet.Write((byte)plr.GetModPlayer<ClassingPlayer>().Class);
-				packet.Write((byte)plr.GetModPlayer<ExpModPlayer>().Level);
-				packet.Send(returnToPlayer);
+				Send(plr, returnToPlayer);
 			}
 		}
 	}
@@ -59,7 +68,7 @@ internal class RemoteInfoPlayer : ModPlayer
 
 		internal override void Receive(BinaryReader reader, byte sender)
 		{
-			if (Main.dedServ)
+			if (Main.netMode == NetmodeID.Server)
 			{
 				ModPacket packet = Networking.GetPacket<RequestRemoteInfoHandler>();
 				packet.Write(sender);

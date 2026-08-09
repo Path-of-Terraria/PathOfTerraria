@@ -34,6 +34,11 @@ VoidPearlCondition: В сложном режиме или во время кве
 // RestockShop: Restock shop
 // RestockTooltip: (Can be used once per merchant)
 
+Yryoth: {
+	// RimeGathering: Rime is gathering...
+	// RimeEruption: The segment is about to erupt!
+}
+
 Element: {
 	// Fire.Name: Fire
 	// Cold.Name: Cold

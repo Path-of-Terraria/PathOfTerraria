@@ -1073,6 +1073,7 @@ InfernalBoss: {
 
 GlacialBoss: {
 	// DisplayName: Yryoth The Betrayed
+	// Entry: A colossal revenant entombed beneath the Glacial Realm. Its broken body circles the arena like a frozen world-serpent, guarding the Conflux power that betrayed it.
 	// OverlayTitle1: Yryoth
 	// OverlayTitle2: Yryoth
 	// OverlaySubTitle1: The Betrayed

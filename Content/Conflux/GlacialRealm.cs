@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using Mono.CompilerServices.SymbolWriter;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.World.Generation;
@@ -29,11 +28,19 @@ internal sealed class GlacialRealm : BossDomainSubworld, IOverrideBiome
 	{
 		public override void NetSend(BinaryWriter writer)
 		{
-			if (IsActive) { ArenaCenter.NetSend(writer); }
+			if (!IsActive) { return; }
+
+			ArenaCenter.NetSend(writer);
+			PlayerSpawn.NetSend(writer);
+			PlayerExit.NetSend(writer);
 		}
 		public override void NetReceive(BinaryReader reader)
 		{
-			if (IsActive) { ArenaCenter.NetReceive(reader); }
+			if (!IsActive) { return; }
+
+			ArenaCenter.NetReceive(reader);
+			PlayerSpawn.NetReceive(reader);
+			PlayerExit.NetReceive(reader);
 		}
 	}
 
@@ -43,6 +50,8 @@ internal sealed class GlacialRealm : BossDomainSubworld, IOverrideBiome
 	public static bool IsActive => SubworldSystem.IsActive<GlacialRealm>();
 
 	public FightTracker FightTracker;
+	private bool bossDefeated;
+	private bool exitPortalSpawned;
 
 	public override int Width => 1024;
 	public override int Height => 1024;
@@ -62,11 +71,20 @@ internal sealed class GlacialRealm : BossDomainSubworld, IOverrideBiome
 		base.OnEnter();
 		
 		ArenaCenter.Reset();
+		PlayerSpawn.Reset();
+		PlayerExit.Reset();
 		FightTracker = new([ModContent.NPCType<GlacialBoss>()])
 		{
 			ResetOnVanish = true,
 			HaltTimeOnVanish = 60 * 10,
 		};
+		bossDefeated = false;
+		exitPortalSpawned = false;
+	}
+
+	internal void SignalBossDefeated()
+	{
+		bossDefeated = true;
 	}
 	
 	public override void Update()
@@ -75,17 +93,33 @@ internal sealed class GlacialRealm : BossDomainSubworld, IOverrideBiome
 
 		if (ArenaCenter.Get() is not Point16 arenaCenter) { return; }
 		if (PlayerExit.Get() is not Point16 playerExit) { return; }
+		if (bossDefeated)
+		{
+			SpawnExitPortal(playerExit);
+			return;
+		}
 
 		if (state == FightState.NotStarted)
 		{
 			// Spawn the boss.
 			var spawnPos = (arenaCenter.ToWorldCoordinates() + new Vector2(0, -128)).ToPoint16();
-			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), spawnPos.X, spawnPos.Y, ModContent.NPCType<GlacialBoss>());
+
+			if (Main.netMode != NetmodeID.MultiplayerClient)
+			{
+				int npcIndex = NPC.NewNPC(Entity.GetSource_NaturalSpawn(), spawnPos.X, spawnPos.Y,
+					ModContent.NPCType<GlacialBoss>());
+
+				if (npcIndex >= 0 && npcIndex < Main.maxNPCs)
+				{
+					FightTracker.SignalStart();
+					Main.npc[npcIndex].netUpdate = true;
+				}
+			}
 		}
-		else if (state == FightState.JustCompleted)
+		else if (state == FightState.JustCompleted && Main.netMode != NetmodeID.MultiplayerClient)
 		{
-			IEntitySource src = Entity.GetSource_NaturalSpawn();
-			Projectile.NewProjectile(src, playerExit.ToWorldCoordinates(), Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0);
+			bossDefeated = true;
+			SpawnExitPortal(playerExit);
 		}
 
 		// Bias the camera towards the middle of the arena.
@@ -102,6 +136,16 @@ internal sealed class GlacialRealm : BossDomainSubworld, IOverrideBiome
 		// 		Range = new(Min: 200, Max: 1800, Exponent: 1.2f),
 		// 	});
 		// }
+	}
+
+	private void SpawnExitPortal(Point16 playerExit)
+	{
+		if (exitPortalSpawned || Main.netMode == NetmodeID.MultiplayerClient) { return; }
+
+		IEntitySource source = Entity.GetSource_NaturalSpawn();
+		Projectile.NewProjectile(source, playerExit.ToWorldCoordinates(), Vector2.Zero,
+			ModContent.ProjectileType<ExitPortal>(), 0, 0);
+		exitPortalSpawned = true;
 	}
 
 	public override bool ChangeAudio()
