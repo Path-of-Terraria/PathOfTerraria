@@ -168,37 +168,32 @@ public class TinkerNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnIn
 		randomOffset = 0.3f;
 	}
 
-	public bool CanSpawn(NPCSpawnTimeframe timeframe, bool alreadyExists)
+	bool ISpawnInRavencrestNPC.CanSpawn(NPCSpawnTimeframe timeframe, bool alreadyExists)
 	{
-		return Main.hardMode && (timeframe is NPCSpawnTimeframe.WorldLoad or NPCSpawnTimeframe.NaturalSpawn && !alreadyExists);
+		return Main.hardMode && !alreadyExists;
 	}
 
 	public bool HasQuestMarker(out Quest quest)
 	{
-		Quest tinkerIntroQuest = Quest.GetLocalPlayerInstance<TinkerIntroQuest>();
-		Quest twinsQuest = Quest.GetLocalPlayerInstance<TwinsQuest>();
-		Quest destroyerQuest = Quest.GetLocalPlayerInstance<DestroyerQuest>();
-		Quest skelePrimeQuest = Quest.GetLocalPlayerInstance<SkelePrimeQuest>();
-
-		if (tinkerIntroQuest.QuestNotStarted || (tinkerIntroQuest.Active && !tinkerIntroQuest.Completed))
+		if (ShouldShowMarker<TinkerIntroQuest>(out Quest tinkerIntroQuest))
 		{
 			quest = tinkerIntroQuest;
 			return true;
 		}
 
-		if (twinsQuest.QuestNotStarted || (twinsQuest.Active && !twinsQuest.Completed))
+		if (ShouldShowMarker<TwinsQuest>(out Quest twinsQuest))
 		{
 			quest = twinsQuest;
 			return true;
 		}
 
-		if (destroyerQuest.QuestNotStarted || (destroyerQuest.Active && !destroyerQuest.Completed))
+		if (ShouldShowMarker<DestroyerQuest>(out Quest destroyerQuest))
 		{
 			quest = destroyerQuest;
 			return true;
 		}
 
-		if (skelePrimeQuest.QuestNotStarted || (skelePrimeQuest.Active && !skelePrimeQuest.Completed))
+		if (ShouldShowMarker<SkelePrimeQuest>(out Quest skelePrimeQuest))
 		{
 			quest = skelePrimeQuest;
 			return true;
@@ -206,5 +201,11 @@ public class TinkerNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnIn
 	
 		quest = null;
 		return false;
+	}
+
+	private static bool ShouldShowMarker<T>(out Quest quest) where T : Quest
+	{
+		quest = Quest.GetLocalPlayerInstance<T>();
+		return QuestUnlockManager.CanStartQuest<T>() || (quest.Active && !quest.Completed);
 	}
 }

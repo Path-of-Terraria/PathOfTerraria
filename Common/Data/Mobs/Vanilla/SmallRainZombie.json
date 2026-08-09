@@ -1,5 +1,16 @@
 {
   "netId": -54,
   "friendlyName": "Small Rain Zombie",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": null,
+      "lightning": null,
+      "cold": {
+        "added": 10,
+        "conversion": 0.5
+      }
+    }
+  ],
   "entries": []
 }

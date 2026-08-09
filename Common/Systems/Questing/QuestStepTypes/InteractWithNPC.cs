@@ -104,17 +104,13 @@ internal class InteractWithNPC(string id, int npcId, LocalizedText reminder, Loc
 	public override bool Track(Player player)
 	{
 		bool talkingToNpc = player.TalkNPC is not null && player.TalkNPC.type == NpcId;
-		bool hasAllItems = !AllItemsAreOr;
 		bool goodToGo = false;
 
 		if (talkingToNpc)
 		{
 			if (RequiredItems is not null)
 			{
-				foreach (GiveItem item in RequiredItems)
-				{
-					CheckSingleItem(player, ref hasAllItems, item, AllItemsAreOr);
-				}
+				bool hasAllItems = CheckRequiredItems(player, out GiveItem? matchedOrItem);
 
 				if (hasAllItems)
 				{
@@ -122,21 +118,7 @@ internal class InteractWithNPC(string id, int npcId, LocalizedText reminder, Loc
 
 					if (RemoveItems)
 					{
-						foreach (GiveItem item in RequiredItems)
-						{
-							int totalCount = item.Stack;
-
-							for (int i = 0; i < item.Ids.Length; ++i)
-							{
-								int count = Math.Min(totalCount, player.CountItem(item.Ids[i]));
-								totalCount -= count;
-							
-								for (int j = 0; j < count; ++j)
-								{
-									player.ConsumeItem(item.Ids[i]);
-								}
-							}
-						}
+						ConsumeRequiredItems(player, matchedOrItem);
 					}
 				}
 			}
@@ -161,6 +143,27 @@ internal class InteractWithNPC(string id, int npcId, LocalizedText reminder, Loc
 		return finished;
 	}
 
+	private bool CheckRequiredItems(Player player, out GiveItem? matchedOrItem)
+	{
+		matchedOrItem = null;
+		bool hasAllItems = !AllItemsAreOr;
+
+		foreach (GiveItem item in RequiredItems)
+		{
+			bool hasItem = CheckSingleItem(player, ref hasAllItems, item, AllItemsAreOr);
+
+			if (!AllItemsAreOr || !hasItem)
+			{
+				continue;
+			}
+
+			matchedOrItem = item;
+			return true;
+		}
+
+		return hasAllItems;
+	}
+
 	private static bool CheckSingleItem(Player player, ref bool hasAllItems, GiveItem item, bool checkingOr)
 	{
 		int count = 0;
@@ -172,7 +175,11 @@ internal class InteractWithNPC(string id, int npcId, LocalizedText reminder, Loc
 
 		if (count < item.Stack)
 		{
-			hasAllItems = false;
+			if (!checkingOr)
+			{
+				hasAllItems = false;
+			}
+
 			return false;
 		}
 
@@ -182,6 +189,45 @@ internal class InteractWithNPC(string id, int npcId, LocalizedText reminder, Loc
 		}
 
 		return true;
+	}
+
+	private void ConsumeRequiredItems(Player player, GiveItem? matchedOrItem)
+	{
+		if (AllItemsAreOr)
+		{
+			if (matchedOrItem.HasValue)
+			{
+				ConsumeSingleItem(player, matchedOrItem.Value);
+			}
+
+			return;
+		}
+
+		foreach (GiveItem item in RequiredItems)
+		{
+			ConsumeSingleItem(player, item);
+		}
+	}
+
+	private static void ConsumeSingleItem(Player player, GiveItem item)
+	{
+		int totalCount = item.Stack;
+
+		for (int i = 0; i < item.Ids.Length; ++i)
+		{
+			int count = Math.Min(totalCount, player.CountItem(item.Ids[i]));
+			totalCount -= count;
+
+			for (int j = 0; j < count; ++j)
+			{
+				player.ConsumeItem(item.Ids[i]);
+			}
+
+			if (totalCount <= 0)
+			{
+				break;
+			}
+		}
 	}
 
 	public override string ReminderText(ref string title)
@@ -197,13 +243,6 @@ internal class InteractWithNPC(string id, int npcId, LocalizedText reminder, Loc
 			return defaultValue;
 		}
 
-		bool hasAllItems = !AllItemsAreOr;
-
-		foreach (GiveItem item in RequiredItems)
-		{
-			CheckSingleItem(Main.LocalPlayer, ref hasAllItems, item, AllItemsAreOr);
-		}
-
-		return defaultValue || hasAllItems;
+		return defaultValue || CheckRequiredItems(Main.LocalPlayer, out _);
 	}
 }

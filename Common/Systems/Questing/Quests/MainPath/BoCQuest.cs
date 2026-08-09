@@ -27,7 +27,7 @@ internal class BoCQuest : Quest
 	{
 		return
 		[
-			new ConditionCheck("SmashOrbs", (_) => DisableEvilOrbBossSpawning.ActualOrbsSmashed > 0, 1, this.GetLocalization("SmashOrb")),
+			new ConditionCheck("SmashOrbs", (_) => DisableEvilOrbBossSpawning.ActualOrbsSmashed > 0, 1, this.GetLocalization("SmashOrb"), Language.GetText("Mods.PathOfTerraria.NPCs.LloydNPC.Dialogue.Help")),
 			new ConditionCheck("EnterDomain", (_) => SubworldSystem.Current is BrainDomain, 1, this.GetLocalization("EnterDomain")),
 			new ConditionCheck("KillBrain", _ => BossTracker.DownedInDomain<BrainDomain>(NPCID.BrainofCthulhu), 1, this.GetLocalization("KillBrain"))
 			{

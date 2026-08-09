@@ -36,17 +36,22 @@ public enum ItemType : long
 	Quiver = 1 << 25,
 	Talisman = 1 << 26,
 	Focus = 1 << 27,
-	TypeCount = 28,
+	Summon = 1 << 28,
+	Yoyo = 1 << 29,
+	Accessory = 1L << 30,
+	Wings = 1L << 31,
+	JumpAccessories = 1L << 32,
+	TypeCount = 33,
 
 	Armor = Helmet | Chestplate | Leggings,
-	Accessories = Ring | Charm | Amulet,
-	Equipment = Armor | Accessories,
+	Accessories = Accessory,
+	Equipment = Armor | Ring | Charm | Amulet | Wings | JumpAccessories | Accessories,
 	Offhand = Shield | Quiver | Talisman | Focus,
 
-	Melee = Sword | Spear | MeleeFlail | WarShield | Battleaxe,
+	Melee = Sword | Spear | MeleeFlail | WarShield | Battleaxe | Yoyo,
 	Magic = Staff | Tome | Wand,
 	Ranged = Bow | Gun | Boomerang | RangedFlail | Launcher | Javelin,
-	Summoner = Whip | Grimoire,
+	Summoner = Whip | Grimoire | Summon,
 	MeleeOrRanged = Melee | Ranged,
 	Weapon = Melee | Magic | Ranged | Whip,
 
@@ -118,6 +123,11 @@ public static class ItemTypeExtensions
 			{
 				return ItemType.Focus;
 			}
+		}
+
+		if ((type & ItemType.JumpAccessories) != ItemType.None && item.IsJumpAccessory())
+		{
+			return ItemType.JumpAccessories;
 		}
 
 		if ((type & ItemType.Accessories) != ItemType.None)
@@ -209,6 +219,38 @@ public static class ItemTypeExtensions
 		}
 
 		return GetFirstSetFlag(type);
+	}
+
+	public static bool IsJumpAccessory(this Item item)
+	{
+		return item.type is
+			ItemID.AmphibianBoots or
+			ItemID.BalloonHorseshoeFart or
+			ItemID.BalloonHorseshoeHoney or
+			ItemID.BalloonHorseshoeSharkron or
+			ItemID.BalloonPufferfish or
+			ItemID.BlizzardinaBalloon or
+			ItemID.BlizzardinaBottle or
+			ItemID.BlueHorseshoeBalloon or
+			ItemID.BundleofBalloons or
+			ItemID.CloudinaBalloon or
+			ItemID.CloudinaBottle or
+			ItemID.FartInABalloon or
+			ItemID.FartinaJar or
+			ItemID.FrogFlipper or
+			ItemID.FrogGear or
+			ItemID.FrogLeg or
+			ItemID.FrogWebbing or
+			ItemID.HoneyBalloon or
+			ItemID.HorseshoeBundle or
+			ItemID.PartyBundleOfBalloonsAccessory or
+			ItemID.SandstorminaBalloon or
+			ItemID.SandstorminaBottle or
+			ItemID.SharkronBalloon or
+			ItemID.ShinyRedBalloon or
+			ItemID.TsunamiInABottle or
+			ItemID.WhiteHorseshoeBalloon or
+			ItemID.YellowHorseshoeBalloon;
 	}
 
 	private static ItemType GetFirstSetFlag(ItemType type)

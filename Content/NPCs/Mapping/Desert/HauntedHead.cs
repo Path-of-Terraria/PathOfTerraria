@@ -37,7 +37,7 @@ internal class HauntedHead : ModNPC
 	{
 		NPC.Size = new Vector2(34, 30);
 		NPC.aiStyle = -1;
-		NPC.lifeMax = 300;
+		NPC.lifeMax = 800;
 		NPC.defense = 0;
 		NPC.damage = 50;
 		NPC.HitSound = SoundID.NPCHit2;

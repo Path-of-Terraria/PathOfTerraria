@@ -132,6 +132,11 @@ internal class DesertArea : MappingWorld, IOverrideBiome, IExplorationWorld
 
 		progress.Set(1);
 		AddTrappers();
+
+		while (Collision.SolidCollision(new Vector2(Main.spawnTileX - 3, Main.spawnTileY - 3) * 16, 16 * 6, 16 * 6))
+		{
+			Main.spawnTileY--;
+		}
 	}
 
 	private static void AddTrappers()
@@ -460,6 +465,8 @@ internal class DesertArea : MappingWorld, IOverrideBiome, IExplorationWorld
 		miscChestLoot.Add((ItemID.CatBast, 1..1), 0.05f);
 		miscChestLoot.Add((ItemID.AncientHorn, 1..1), 0.005f);
 
+		using SmartLoot.Scope _ = SmartLoot.Begin();
+
 		for (int i = 0; i < Main.maxChests; ++i)
 		{
 			Chest chest = Main.chest[i];
@@ -470,16 +477,23 @@ internal class DesertArea : MappingWorld, IOverrideBiome, IExplorationWorld
 			}
 
 			Tile tile = Main.tile[chest.x, chest.y];
-			List<ItemDatabase.ItemRecord> drops = DropTable.RollManyMobDrops(3, PoTItemHelper.PickItemLevel(), 1f, random: WorldGen.genRand);
+			List<ItemDatabase.ItemRecord> drops = MapChestLoot.RollMobDrops();
 
 			if (tile.HasTile && TileID.Sets.BasicChest[tile.TileType])
 			{
-				for (int k = 0; k < 5; ++k)
+				int mobDropSlots = drops.Count;
+				int totalSlots = mobDropSlots + 2;
+
+				for (int k = 0; k < totalSlots && k < chest.item.Length; ++k)
 				{
-					if (k < 3)
+					if (k < mobDropSlots)
 					{
 						ItemDatabase.ItemRecord drop = drops[k];
-						chest.item[k] = new Item(drop.ItemId, drop.Item.stack);
+
+						if (drop.Item is not null)
+						{
+							chest.item[k] = MapChestLoot.BuildChestItem(drop);
+						}
 					}
 					else
 					{
@@ -852,8 +866,8 @@ internal class DesertArea : MappingWorld, IOverrideBiome, IExplorationWorld
 	public void OverrideBiome()
 	{
 		Main.bgStyle = 2;
-		Main.newMusic = MusicID.Desert;
-		Main.curMusic = MusicID.Desert;
+		//Main.newMusic = MusicID.Desert;
+		//Main.curMusic = MusicID.Desert;
 		Main.LocalPlayer.ZoneBeach = false;
 		Main.LocalPlayer.ZoneSandstorm = Sandstorm.Happening;
 	}

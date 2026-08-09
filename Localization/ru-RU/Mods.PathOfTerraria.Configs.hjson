@@ -6,7 +6,15 @@ DeveloperConfig: {
 		Tooltip: Рисует границы вокруг элементов пользовательского интерфейса, упрощая отладку макета.
 	}
 
-	Headers.Graphics: Графический заголовок
+	SaveSubworlds: {
+		// Label: Save Subworlds
+		// Tooltip: If subworlds should save or not. This is useful for testing subworlds.
+	}
+
+	LogFilterRejections: {
+		// Label: Log Item Filter Rejections
+		// Tooltip: When enabled, every item rejected by an active item filter prints a chat line and a Mod.Logger entry showing the filter, item, and which condition failed. Debug builds only.
+	}
 }
 
 UIConfig: {
@@ -27,6 +35,11 @@ UIConfig: {
 		// Label: Use Sack of Holding
 		// Tooltip: Allows use of the Sack of Holding in domains for easier inventory management.
 	}
+
+	ShowLootBeams: {
+		// Label: Show Loot Beams
+		// Tooltip: When enabled, loot filter Highlight rules draw beams over matching dropped items.
+	}
 }
 
 GameplayConfig: {
@@ -34,7 +47,7 @@ GameplayConfig: {
 	// Headers.Gameplay: Gameplay
 
 	NearbyAuras: {
-		// Label: Nearby Auras
+		Label: Ауры рядом
 		// Tooltip: When enabled, minions will have a visible aura when using the Minion Damage Aura passive. This may include more auras in the future.
 	}
 }

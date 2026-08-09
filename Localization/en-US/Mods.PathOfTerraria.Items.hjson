@@ -105,6 +105,156 @@ Treads: {
 	Tooltip: ""
 }
 
+BatteredHelm: {
+	DisplayName: Battered Helm
+	Tooltip: ""
+}
+
+IronboundHelm: {
+	DisplayName: Ironbound Helm
+	Tooltip: ""
+}
+
+HallowforgedHelm: {
+	DisplayName: Hallowforged Helm
+	Tooltip: ""
+}
+
+AstralforgedGreathelm: {
+	DisplayName: Astralforged Greathelm
+	Tooltip: ""
+}
+
+EternalforgedGreathelm: {
+	DisplayName: Eternalforged Greathelm
+	Tooltip: ""
+}
+
+BatteredMail: {
+	DisplayName: Battered Mail
+	Tooltip: ""
+}
+
+IronboundCuirass: {
+	DisplayName: Ironbound Cuirass
+	Tooltip: ""
+}
+
+HallowforgedCuirass: {
+	DisplayName: Hallowforged Cuirass
+	Tooltip: ""
+}
+
+AstralforgedAegis: {
+	DisplayName: Astralforged Aegis
+	Tooltip: ""
+}
+
+EternalforgedAegis: {
+	DisplayName: Eternalforged Aegis
+	Tooltip: ""
+}
+
+BatteredGreaves: {
+	DisplayName: Battered Greaves
+	Tooltip: ""
+}
+
+IronboundGreaves: {
+	DisplayName: Ironbound Greaves
+	Tooltip: ""
+}
+
+HallowforgedGreaves: {
+	DisplayName: Hallowforged Greaves
+	Tooltip: ""
+}
+
+AstralforgedSabatons: {
+	DisplayName: Astralforged Sabatons
+	Tooltip: ""
+}
+
+EternalforgedSabatons: {
+	DisplayName: Eternalforged Sabatons
+	Tooltip: ""
+}
+
+ApprenticeCap: {
+	DisplayName: Apprentice Cap
+	Tooltip: ""
+}
+
+AcolyteHood: {
+	DisplayName: Acolyte Hood
+	Tooltip: ""
+}
+
+MysticCirclet: {
+	DisplayName: Mystic Circlet
+	Tooltip: ""
+}
+
+SpectralVeil: {
+	DisplayName: Spectral Veil
+	Tooltip: ""
+}
+
+EtherealDiadem: {
+	DisplayName: Ethereal Diadem
+	Tooltip: ""
+}
+
+ApprenticeRobe: {
+	DisplayName: Apprentice Robe
+	Tooltip: ""
+}
+
+AcolyteVestment: {
+	DisplayName: Acolyte Vestment
+	Tooltip: ""
+}
+
+MysticGarb: {
+	DisplayName: Mystic Garb
+	Tooltip: ""
+}
+
+SpectralShroud: {
+	DisplayName: Spectral Shroud
+	Tooltip: ""
+}
+
+EtherealMantle: {
+	DisplayName: Ethereal Mantle
+	Tooltip: ""
+}
+
+ApprenticeSlippers: {
+	DisplayName: Apprentice Slippers
+	Tooltip: ""
+}
+
+AcolyteSandals: {
+	DisplayName: Acolyte Sandals
+	Tooltip: ""
+}
+
+MysticBoots: {
+	DisplayName: Mystic Boots
+	Tooltip: ""
+}
+
+SpectralStriders: {
+	DisplayName: Spectral Striders
+	Tooltip: ""
+}
+
+EtherealGreaves: {
+	DisplayName: Ethereal Greaves
+	Tooltip: ""
+}
+
 Codex: {
 	DisplayName: Codex
 	Tooltip: ""
@@ -473,12 +623,12 @@ MossHornetTriggerItem: {
 
 RoyalJelly: {
 	DisplayName: Royal Jelly
-	Tooltip: ""
+	Tooltip: Consume this to challenge The Queen
 }
 
 RoyalJellyClump: {
 	DisplayName: Royal Jelly Clump
-	Tooltip: ""
+	Tooltip: Combine two of these to make the Royal Jelly
 }
 
 RoyalJellyClumpPlacer: {
@@ -616,6 +766,15 @@ UnfoldingShard: {
 		'''
 		Upgrades a normal item to a magic item
 		'It almost looks like it's moving inside'
+		'''
+}
+
+RegalShard: {
+	DisplayName: Regal Shard
+	Tooltip:
+		'''
+		Upgrades a Magic item to Rare, keeping its affixes and adding one more
+		'Power refined into crystalline form'
 		'''
 }
 
@@ -1520,7 +1679,11 @@ SwampMap: {
 
 CrystalVisors: {
 	DisplayName: Crystal Visors
-	Tooltip: ""
+	Tooltip:
+		'''
+		Allows you to see into the half-dimension
+		'...and look awesome while doing it.'
+		'''
 }
 
 PrismShardItem: {
@@ -1540,7 +1703,68 @@ MangroveLeavesItem: {
 	Tooltip: ""
 }
 
+LogwoodPistol: {
+	DisplayName: Logwood Pistol
+	Description:
+		'''
+		Always inflicts Poison
+		Bullets hitting already poisoned enemies will bounce between up to 5 other poisoned enemies
+		'''
+	Tooltip: "'Wet for safety reasons.'"
+}
+
+BloatingLeech: {
+	DisplayName: Bloating Leech
+	Tooltip: ""
+	Description:
+		'''
+		Latches on to enemies, bloating with blood and exploding over time.
+		The leech bloats quicker on bleeding enemies
+		'''
+	AltUseDescription: "'Be glad it's on your side."
+}
+
 MetadataEntityPlacer: {
 	DisplayName: Metadata Entity Placer
-	Tooltip: Places tile entities that can be used to find specific positions in code"
+	Tooltip: Places tile entities that can be used to find specific positions in code
+}
+
+FirelordsWill: {
+	DisplayName: Firelord's Will
+	Tooltip: ""
+}
+
+PyralisHeart: {
+	DisplayName: Heart of Pyralis
+	Tooltip: ""
+}
+
+FallenKingsLegacy: {
+	DisplayName: Fallen King's Legacy
+	Tooltip: ""
+}
+
+ProlifRing: {
+	DisplayName: Ring of Proliferation
+	Tooltip: ""
+}
+
+Cryobrand: {
+	DisplayName: Cryobrand
+	Tooltip: ""
+	Description: Forged in the clash between fire and ice, Cryobrand wields both flame and frost.
+	AltUseDescription:
+		'''
+		Right click to switch between Sword (fire) and Shield (cold) forms.
+		Sword Form: 15% Increased Damage Done.
+		Shield Form: 15% Reduced Damage Taken.
+		Combos:
+		Sword-Sword-Shield: Fire slashes and spinning thrown shield.
+		Shield-Shield-Sword: Shield slams and a massive icy shockwave.
+		'''
+}
+
+MapRecoveryItem: {
+	DisplayName: Map Recovery Item
+	Tooltip: ""
 }

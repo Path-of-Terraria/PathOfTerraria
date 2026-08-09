@@ -9,7 +9,7 @@ internal class PoisonedRangedAttacksPassive : Passive
 	{
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (hit.DamageType.CountsAsClass(DamageClass.Ranged) && Player.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<PoisonedRangedAttacksPassive>(out float value)
+			if (Player.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<PoisonedRangedAttacksPassive>(out float value)
 				&& Main.rand.NextFloat() < value / 100f)
 			{
 				PoisonedDebuff.Apply(target, 5 * 60, Player);

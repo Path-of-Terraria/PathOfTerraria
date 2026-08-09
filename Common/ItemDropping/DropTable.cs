@@ -1,7 +1,9 @@
 ﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Data;
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Content.Items.Currency;
 using PathOfTerraria.Content.Items.Gear;
+using PathOfTerraria.Common.Systems.MobSystem;
 using PathOfTerraria.Core.Items;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,39 +13,70 @@ namespace PathOfTerraria.Common.ItemDropping;
 
 internal class DropTable
 {
+	public readonly record struct DropCategoryWeights(float Gear, float Currency, float Map);
+
+	private const float DefaultGearChance = 0.8f;
+	private const float DefaultCurrencyChance = 0.15f;
+	private const float DefaultMapChance = 0.05f;
+	private static readonly DropCategoryWeights DefaultCategoryWeights = new(DefaultGearChance, DefaultCurrencyChance, DefaultMapChance);
+
+	public static DropCategoryWeights GetDefaultDropCategoryWeights(int itemLevel)
+	{
+		return ApplyAreaLevelDropCategoryScaling(itemLevel, DefaultCategoryWeights);
+	}
+
 	/// <summary>
 	/// Drops an item based off of the following table:<br/>
 	/// <c>Gear:</c> Default 80%<br/>
 	/// <c>Currency:</c> Default 15%<br/>
 	/// <c>Maps:</c> Default 5%<br/>
 	/// </summary>
-	/// <param name="random">The random to 'seed' the choice with. Defaults to Main.rand.</param>
-	public static ItemDatabase.ItemRecord RollMobDrops(int itemLevel, float dropRarityModifier, float gearChance = 0.8f, float currencyChance = 0.15f, float mapChance = 0.05f, 
-		UnifiedRandom random = null, ItemRarity forceRarity = ItemRarity.Invalid, float uniqueModifier = 1f)
+	/// <param name="itemLevel">Level to drop the item at.</param>
+	/// <param name="dropRarityModifier">
+	/// The rarity modifier of the drops. 100 = 100% increase for both Rare and Unique drops, taken out of Magic's pool.<br/>
+	/// For example, if we have Magic at 90%, Rare at 7% and Unique at 3%, 100% <paramref name="dropRarityModifier"/> would turn it into Magic 80%, Rare 14% and Unique 6%.
+	/// </param>
+	/// <param name="categoryWeights">
+	/// Drop rates for <see cref="Gear"/>, <see cref="CurrencyShard"/>s and <see cref="Map"/>s. Defaults to 80%, 15% and 5%.<br/>
+	/// Note that in <see cref="Main.hardMode"/>, the map slice is split into 70% Explorable maps and 30% boss maps.
+	/// </param>
+	/// <param name="random">The random to 'seed' the choice with. Defaults to <see cref="Main.rand"/>.</param>
+	/// <param name="forceRarity">The rarity that <b>must</b> drop from this, if any. Defaults to <see cref="ItemRarity.Invalid"/>, which will allow any rarity. When set, the map pool is excluded.</param>
+	/// <param name="uniqueModifier">Multiplier applied to the weight of unique items in the gear/currency pools. Defaults to 1.</param>
+	/// <param name="applyAreaLevelCategoryScaling">If true, scales <paramref name="categoryWeights"/> based on <paramref name="itemLevel"/> (currency share decreases as level rises).</param>
+	public static ItemDatabase.ItemRecord RollMobDrops(int itemLevel, float dropRarityModifier, DropCategoryWeights? categoryWeights = null, UnifiedRandom random = null,
+		ItemRarity forceRarity = ItemRarity.Invalid, float uniqueModifier = 1f, bool applyAreaLevelCategoryScaling = true)
 	{
+		itemLevel = itemLevel == 0 ? PoTItemHelper.PickItemLevel() : itemLevel;
 		random ??= Main.rand;
-		var chances = new WeightedRandom<int>(random);
-		chances.Add(0, gearChance);
-		chances.Add(1, currencyChance);
-		chances.Add(2, mapChance);
-
-		int choice = chances.Get();
-		IEnumerable<ItemDatabase.ItemRecord> items = choice switch
+		DropCategoryWeights weights = categoryWeights ?? DefaultCategoryWeights;
+		
+		if (applyAreaLevelCategoryScaling)
 		{
-			//Gear
-			0 => ItemDatabase.GetItemByType<Gear>(),
-			//Currency
-			1 => ItemDatabase.GetItemByType<CurrencyShard>(),
-			//Maps
-			_ => GetMapPool(random),
-		};
-
-		if (forceRarity != ItemRarity.Invalid)
-		{
-			items = items.Where(x => x.Rarity == forceRarity);
+			weights = ApplyAreaLevelDropCategoryScaling(itemLevel, weights);
 		}
 
-		return RollList(itemLevel, dropRarityModifier, [.. items], x => true, 0f, null, uniqueModifier);
+		float gearRarityModifier = dropRarityModifier;
+		float currencyRarityModifier = dropRarityModifier;
+		WeightedRandom<ItemDatabase.ItemRecord> gearPool = GetGearPool(itemLevel, ref gearRarityModifier, [.. ItemDatabase.GetItemByType<Gear>()], IsRecordValid, 0f, random, uniqueModifier);
+		WeightedRandom<ItemDatabase.ItemRecord> currencyPool = GetGearPool(itemLevel, ref currencyRarityModifier, [.. ItemDatabase.GetItemByType<CurrencyShard>()], IsRecordValid, 0f, random, uniqueModifier);
+		WeightedRandom<ItemDatabase.ItemRecord> mapPool = GetWeightedMapPool(itemLevel, random);
+
+		var chances = new WeightedRandom<WeightedRandom<ItemDatabase.ItemRecord>>(random);
+		AddPool(chances, gearPool, weights.Gear);
+		AddPool(chances, currencyPool, weights.Currency);
+
+		if (forceRarity == ItemRarity.Invalid)
+		{
+			AddPool(chances, mapPool, weights.Map);
+		}
+
+		return chances.elements.Count == 0 ? ItemDatabase.InvalidItem : chances.Get().Get();
+
+		bool IsRecordValid(ItemDatabase.ItemRecord record)
+		{
+			return forceRarity == ItemRarity.Invalid || record.Rarity == forceRarity;
+		}
 	}
 
 	/// <summary>
@@ -58,29 +91,38 @@ internal class DropTable
 	/// The rarity modifier of the drops. 100 = 100% increase for both Rare and Unique drops, taken out of Magic's pool.<br/>
 	/// For exampe, if we have Magic at 90%, Rare at 7% and Unique at 3%, 100% <paramref name="dropRarityModifier"/> would turn it into Magic 80%, Rare 14% and Unique 6%.
 	/// </param>
-	/// <param name="gearChance">Drop rate for <see cref="Gear"/>. Defaults to 80%.</param>
-	/// <param name="currencyChance">Drop rate for <see cref="CurrencyShard"/>s. Defaults to 15%.</param>
-	/// <param name="mapChance">
-	/// Drop rate for <see cref="Map"/>s. Defaults to 5%.<br/>
+	/// <param name="categoryWeights">
+	/// Drop rates for <see cref="Gear"/>, <see cref="CurrencyShard"/>s and <see cref="Map"/>s. Defaults to 80%, 15% and 5%.<br/>
 	/// Note that in <see cref="Main.hardMode"/>, this is split into 70% Explorable maps, and 30% boss maps.
 	/// </param>
 	/// <param name="random">The <see cref="UnifiedRandom"/> to use for randomization. Use <see cref="WorldGen.genRand"/> for generation, such as placing items in chests.</param>
 	/// <param name="forceRarity">The rarity that <b>must</b> drop from this, if any. Defaults to <see cref="ItemRarity.Invalid"/>, which will allow any rarity.</param>
 	/// <returns></returns>
-	public static List<ItemDatabase.ItemRecord> RollManyMobDrops(int count, int itemLevel, float dropRarityModifier, float gearChance = 0.8f, float currencyChance = 0.15f, 
-		float mapChance = 0.05f, UnifiedRandom random = null, ItemRarity forceRarity = ItemRarity.Invalid, float itemRarityModifier = 0)
+	public static List<ItemDatabase.ItemRecord> RollManyMobDrops(int count, int itemLevel, float dropRarityModifier, DropCategoryWeights? categoryWeights = null, 
+		UnifiedRandom random = null, ItemRarity forceRarity = ItemRarity.Invalid, float itemRarityModifier = 0, float uniqueModifier = 1f, 
+		bool applyAreaLevelCategoryScaling = true)
 	{
+		itemLevel = itemLevel == 0 ? PoTItemHelper.PickItemLevel() : itemLevel;
 		random ??= Main.rand;
+		DropCategoryWeights weights = categoryWeights ?? DefaultCategoryWeights;
+		
+		if (applyAreaLevelCategoryScaling)
+		{
+			weights = ApplyAreaLevelDropCategoryScaling(itemLevel, weights);
+		}
+
+		float gearRarityModifier = dropRarityModifier;
+		float currencyRarityModifier = dropRarityModifier;
 		var chances = new WeightedRandom<WeightedRandom<ItemDatabase.ItemRecord>>(random);
-		chances.Add(GetGearPool(itemLevel, ref dropRarityModifier, [.. ItemDatabase.GetItemByType<Gear>()], IsRecordValid, itemRarityModifier, random), gearChance);
-		chances.Add(GetGearPool(itemLevel, ref dropRarityModifier, [.. ItemDatabase.GetItemByType<CurrencyShard>()], IsRecordValid, itemRarityModifier, random), currencyChance);
-		chances.Add(GetWeightedMapPool(random), mapChance);
+		AddPool(chances, GetGearPool(itemLevel, ref gearRarityModifier, [.. ItemDatabase.GetItemByType<Gear>()], IsRecordValid, itemRarityModifier, random, uniqueModifier), weights.Gear);
+		AddPool(chances, GetGearPool(itemLevel, ref currencyRarityModifier, [.. ItemDatabase.GetItemByType<CurrencyShard>()], IsRecordValid, itemRarityModifier, random, uniqueModifier), weights.Currency);
+		AddPool(chances, GetWeightedMapPool(itemLevel, random), weights.Map);
 
 		List<ItemDatabase.ItemRecord> items = [];
 
 		for (int i = 0; i < count; ++i)
 		{
-			items.Add(chances.Get().Get());
+			items.Add(chances.elements.Count == 0 ? ItemDatabase.InvalidItem : chances.Get().Get());
 		}
 
 		return items;
@@ -91,71 +133,63 @@ internal class DropTable
 		}
 	}
 
-	private static IEnumerable<ItemDatabase.ItemRecord> GetMapPool(UnifiedRandom random)
+	private static void AddPool(WeightedRandom<WeightedRandom<ItemDatabase.ItemRecord>> chances, WeightedRandom<ItemDatabase.ItemRecord> pool, float weight)
 	{
-		IEnumerable<ItemDatabase.ItemRecord> items;
+		if (pool.elements.Count > 0 && weight > 0)
+		{
+			chances.Add(pool, weight);
+		}
+	}
+
+	private static WeightedRandom<ItemDatabase.ItemRecord> GetWeightedMapPool(int itemLevel, UnifiedRandom random)
+	{
+		WeightedRandom<ItemDatabase.ItemRecord> items = new(random);
+		ItemDatabase.ItemRecord[] droppableMaps =
+		[
+			.. ItemDatabase.GetItemByType<Map>()
+				.Where(record => ((Map)record.Item.ModItem).CanDrop)
+		];
+		bool canRollMapAffixes = droppableMaps.Length > 0
+			&& AffixRegistry.HasEligibleAffix(droppableMaps[0].Item, itemLevel);
+		ItemDatabase.ItemRecord[] availableMaps =
+		[
+			.. droppableMaps.Where(record => record.Rarity == ItemRarity.Normal || canRollMapAffixes)
+		];
 
 		if (Main.hardMode)
 		{
-			IEnumerable<ItemDatabase.ItemRecord> allMaps = ItemDatabase.GetItemByType<Map>().Where(x => ((Map)x.Item.ModItem).CanDrop);
-			IEnumerable<ItemDatabase.ItemRecord> itemRecords = allMaps as ItemDatabase.ItemRecord[] ?? [.. allMaps];
-			IEnumerable<ItemDatabase.ItemRecord> explorableMaps = itemRecords.Where(x => x.Item.ModItem is Content.Items.Consumables.Maps.ExplorableMaps.ExplorableMap);
-			IEnumerable<ItemDatabase.ItemRecord> bossMaps = itemRecords.Where(x => x.Item.ModItem is not Content.Items.Consumables.Maps.ExplorableMaps.ExplorableMap);
+			ItemDatabase.ItemRecord[] explorableMaps = [.. availableMaps.Where(x => x.Item.ModItem is Content.Items.Consumables.Maps.ExplorableMaps.ExplorableMap)];
+			ItemDatabase.ItemRecord[] bossMaps = [.. availableMaps.Where(x => x.Item.ModItem is not Content.Items.Consumables.Maps.ExplorableMaps.ExplorableMap)];
 
-			var mapTypeChances = new WeightedRandom<int>(random ?? Main.rand);
-			mapTypeChances.Add(0, 0.7f); //70% explorable maps
-			mapTypeChances.Add(1, 0.3f); //30% boss domain maps
-			int mapTypeChoice = mapTypeChances.Get();
-
-			if (mapTypeChoice == 0)
-			{
-				items = explorableMaps;
-			}
-			else
-			{
-				items = bossMaps;
-			}
+			// Normalize per-category so explorable maps sum to 70% and boss maps sum to 30%, regardless of how many maps are in each category.
+			AddNormalizedMapCategory(items, explorableMaps, 0.7f);
+			AddNormalizedMapCategory(items, bossMaps, 0.3f);
 		}
 		else
 		{
-			items = ItemDatabase.GetItemByType<Map>().Where(x => (x.Item.ModItem as Map).CanDrop);
+			foreach (ItemDatabase.ItemRecord record in availableMaps)
+			{
+				items.Add(record, record.DropChance);
+			}
 		}
 
 		return items;
 	}
 
-	private static WeightedRandom<ItemDatabase.ItemRecord> GetWeightedMapPool(UnifiedRandom random)
+	private static void AddNormalizedMapCategory(WeightedRandom<ItemDatabase.ItemRecord> destination,
+		ItemDatabase.ItemRecord[] records, float categoryWeight)
 	{
-		WeightedRandom<ItemDatabase.ItemRecord> items = new(random);
+		float totalWeight = records.Sum(record => record.DropChance);
 
-		if (Main.hardMode)
+		if (totalWeight <= 0f)
 		{
-			IEnumerable<ItemDatabase.ItemRecord> allMaps = ItemDatabase.GetItemByType<Map>().Where(x => ((Map)x.Item.ModItem).CanDrop);
-			IEnumerable<ItemDatabase.ItemRecord> itemRecords = allMaps as ItemDatabase.ItemRecord[] ?? [.. allMaps];
-			IEnumerable<ItemDatabase.ItemRecord> explorableMaps = itemRecords.Where(x => x.Item.ModItem is Content.Items.Consumables.Maps.ExplorableMaps.ExplorableMap);
-			IEnumerable<ItemDatabase.ItemRecord> bossMaps = itemRecords.Where(x => x.Item.ModItem is not Content.Items.Consumables.Maps.ExplorableMaps.ExplorableMap);
-
-			foreach (ItemDatabase.ItemRecord record in explorableMaps)
-			{
-				items.Add(record, 0.7f);
-			}
-
-			foreach (ItemDatabase.ItemRecord record in bossMaps)
-			{
-				items.Add(record, 0.3f);
-			}
-		}
-		else
-		{
-			IEnumerable<ItemDatabase.ItemRecord> list = ItemDatabase.GetItemByType<Map>().Where(x => (x.Item.ModItem as Map).CanDrop);
-
-			foreach (ItemDatabase.ItemRecord record in list)
-			{
-				items.Add(record);
-			}
+			return;
 		}
 
-		return items;
+		foreach (ItemDatabase.ItemRecord record in records)
+		{
+			destination.Add(record, categoryWeight * record.DropChance / totalWeight);
+		}
 	}
 
 	private static ItemDatabase.ItemRecord RollList(int itemLevel, float rarityMod, List<ItemDatabase.ItemRecord> filteredGear, UnifiedRandom random = null, float uniqueModifier = 1f)
@@ -174,17 +208,29 @@ internal class DropTable
 		Func<ItemDatabase.ItemRecord, bool> additionalCondition, float itemRarityModifier, UnifiedRandom random = null, float uniqueModifier = 1f)
 	{
 		random ??= Main.rand;
-		dropRarityModifier += itemLevel / 10f; // Higher levels have a higher likelihood of being Magic, Rare or Unique
+		dropRarityModifier += itemLevel / 250f; // Higher levels have a higher likelihood of being Magic, Rare or Unique
 		WeightedRandom<ItemDatabase.ItemRecord> selection = new(random);
 
 		foreach (ItemDatabase.ItemRecord item in filteredGear)
 		{
-			if (additionalCondition.Invoke(item))
+			if (CanDropAtItemLevel(item, itemLevel) && additionalCondition.Invoke(item))
 			{
 				selection.Add(item, ItemDatabase.ApplyDropRateModifiers(item, dropRarityModifier, itemRarityModifier, uniqueModifier));
 			}
 		}
 
 		return selection;
+	}
+
+	private static DropCategoryWeights ApplyAreaLevelDropCategoryScaling(int itemLevel, DropCategoryWeights weights)
+	{
+		float progress = MathHelper.Clamp((itemLevel - 1f) / PoTMobHelper.AreaLevelScalingCap, 0f, 1f);
+		return weights with { Currency = weights.Currency * MathHelper.Lerp(0.5f, 0.2f, progress) };
+	}
+
+	public static bool CanDropAtItemLevel(ItemDatabase.ItemRecord record, int itemLevel)
+	{
+		PoTStaticItemData staticData = record.Item.GetStaticData();
+		return staticData.CanDropAtItemLevel(itemLevel);
 	}
 }

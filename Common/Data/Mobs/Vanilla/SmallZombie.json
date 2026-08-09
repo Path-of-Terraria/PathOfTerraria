@@ -1,17 +1,5 @@
 {
   "netId": -26,
   "friendlyName": "Small Zombie",
-  "entries": [
-    {
-      "scale": null,
-      "prefix": null,
-      "weight": 1,
-      "stats": {
-        "level": 1,
-        "experience": 1
-      },
-      "affixes": null,
-      "requirements": "PreHardmodeSurface"
-    }
-  ]
+  "entries": []
 }

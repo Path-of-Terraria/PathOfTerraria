@@ -5,7 +5,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class SkeletronMap() : PreHardmodeBossMap(40, () => NPC.downedBoss3)
+internal class SkeletronMap() : PreHardmodeBossMap(30, () => NPC.downedBoss3)
 {
 	public override void SetStaticDefaults()
 	{
@@ -22,9 +22,9 @@ internal class SkeletronMap() : PreHardmodeBossMap(40, () => NPC.downedBoss3)
 		Item.Size = new Vector2(36, 28);
 	}
 
-	protected override void OpenMapInternal()
+	internal override Subworld GetDestination()
 	{
-		SubworldSystem.Enter<SkeletronDomain>();
+		return ModContent.GetInstance<SkeletronDomain>();
 	}
 
 	public override string GenerateName(string defaultName)

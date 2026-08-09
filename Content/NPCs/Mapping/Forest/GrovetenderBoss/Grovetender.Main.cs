@@ -85,7 +85,7 @@ internal partial class Grovetender : ModNPC
 	{
 		NPC.Size = new Vector2(233, 183);
 		NPC.aiStyle = -1;
-		NPC.lifeMax = 13000;
+		NPC.lifeMax = 130000;
 		NPC.defense = 10;
 		NPC.damage = 0;
 		NPC.knockBackResist = 0f;
@@ -144,9 +144,8 @@ internal partial class Grovetender : ModNPC
 
 	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 	{
-		NPC.lifeMax = ModeUtils.ByMode(450, 600, 900);
+		NPC.lifeMax = ModeUtils.ByMode(90_000, 130_000, 200_000);
 		NPC.damage = ModeUtils.ByMode(65, 130, 195);
-		NPC.knockBackResist = ModeUtils.ByMode(0.3f, 0.27f, 0.23f);
 	}
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)

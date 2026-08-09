@@ -5,6 +5,34 @@ namespace PathOfTerraria.Common.Buffs;
 
 internal class DoTFunctionality
 {
+	public static void ApplyPlayerInteraction(NPC npc, Entity attacker)
+	{
+		if (attacker is Player player)
+		{
+			npc.ApplyInteraction(player.whoAmI);
+		}
+	}
+
+	public static void ApplyPlayerInteraction(NPC npc, Player player)
+	{
+		npc.ApplyInteraction(player.whoAmI);
+	}
+
+	public static void ApplyPlayerInteraction(NPC npc, int playerWhoAmI)
+	{
+		if (playerWhoAmI is < 0 or >= Main.maxPlayers)
+		{
+			return;
+		}
+
+		Player player = Main.player[playerWhoAmI];
+
+		if (player.active)
+		{
+			npc.ApplyInteraction(playerWhoAmI);
+		}
+	}
+
 	public static void ApplyDoT(NPC npc, int damage, ref float elapsedDoT, Color? lightColor = null, Color? darkColor = null)
 	{
 		lightColor ??= Color.OrangeRed;
@@ -16,15 +44,14 @@ internal class DoTFunctionality
 			damage = npc.life;
 		}
 
-		if (!npc.dontTakeDamage && !npc.immortal)
+		if (Main.netMode != NetmodeID.MultiplayerClient && !npc.dontTakeDamage && !npc.immortal)
 		{
-			if (npc.realLife == -1)
+			NPC lifeTarget = npc.realLife == -1 ? npc : Main.npc[npc.realLife];
+			lifeTarget.life -= damage;
+
+			if (Main.netMode == NetmodeID.Server)
 			{
-				npc.life -= damage;
-			}
-			else
-			{
-				Main.npc[npc.realLife].life -= damage;
+				lifeTarget.netUpdate = true;
 			}
 		}
 
@@ -40,7 +67,8 @@ internal class DoTFunctionality
 			info.HideCombatText = true;
 			info.Damage = 1;
 			info.DamageType = DamageClass.Default;
-			npc.StrikeNPC(info);
+			npc.StrikeNPC(info, false, true);
+
 
 			if (Main.dedServ)
 			{

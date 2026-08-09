@@ -32,14 +32,13 @@ internal class TinyHat : Wand
 
 	public override void SetDefaults()
 	{
-		base.SetDefaults();
-		
 		Item.damage = 44;
 		Item.mana = 3;
 		Item.useTime = Item.useAnimation = 25;
 		Item.UseSound = SoundID.Item7;
 		Item.value = Item.buyPrice(0, 15, 0, 0);
 		Item.noUseGraphic = true;
+		Item.DamageType = DamageClass.Magic;
 	}
 
 	public override void HoldItem(Player player)

@@ -10,7 +10,7 @@ internal class IgnitingProjectilesPassive : Passive
 		public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (projectile.TryGetOwner(out Player plr) && plr.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<IgnitingProjectilesPassive>(out float value) 
-				&& Main.rand.NextFloat() < value)
+				&& Main.rand.NextFloat() < value / 100f)
 			{
 				IgnitedDebuff.ApplyTo(plr, target, damageDone, 240);
 			}

@@ -49,7 +49,7 @@ internal class CanopyBird : ModNPC
 	{
 		NPC.Size = new Vector2(48, 54);
 		NPC.aiStyle = -1;
-		NPC.lifeMax = 300;
+		NPC.lifeMax = 3_000;
 		NPC.defense = 0;
 		NPC.damage = 50;
 		NPC.knockBackResist = 0;

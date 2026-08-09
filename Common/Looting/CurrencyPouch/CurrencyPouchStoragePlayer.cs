@@ -42,9 +42,71 @@ internal class CurrencyPouchStoragePlayer : ModPlayer
 		}
 	}
 
+	public override bool ShiftClickSlot(Item[] inventory, int context, int slot)
+	{
+		if (inventory != Player.inventory
+			|| context != ItemSlot.Context.InventoryItem
+			|| slot < 0
+			|| slot >= inventory.Length)
+		{
+			return false;
+		}
+
+		Item item = inventory[slot];
+
+		if (!CurrencyPouchAllowed(item))
+		{
+			return false;
+		}
+
+		if (!TryStoreItem(item, out int stored))
+		{
+			return false;
+		}
+
+		SoundEngine.PlaySound(SoundID.Grab);
+
+		if (UIManager.TryGet(CurrencyPouchUIState.Identifier, out UIManager.UIStateData data) && data.Enabled)
+		{
+			(data.Value as CurrencyPouchUIState).Toggle();
+			(data.Value as CurrencyPouchUIState).Toggle();
+		}
+
+		return true;
+	}
+
 	public static bool CurrencyPouchAllowed(Item item)
 	{
 		return item.ModItem is CurrencyShard;
+	}
+
+	public bool TryStoreItem(Item item, out int stored)
+	{
+		stored = 0;
+
+		if (!CurrencyPouchAllowed(item) || item.IsAir)
+		{
+			return false;
+		}
+
+		StorageByType.TryAdd(item.type, 0);
+		int storageSpace = item.maxStack - StorageByType[item.type];
+
+		if (storageSpace <= 0)
+		{
+			return false;
+		}
+
+		stored = Math.Min(item.stack, storageSpace);
+		StorageByType[item.type] += stored;
+		item.stack -= stored;
+
+		if (item.stack <= 0)
+		{
+			item.TurnToAir();
+		}
+
+		return stored > 0;
 	}
 
 	public override void Unload()

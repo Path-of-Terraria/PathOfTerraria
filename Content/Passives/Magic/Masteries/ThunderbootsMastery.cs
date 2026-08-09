@@ -53,12 +53,4 @@ internal class ThunderbootsMastery : Passive
 		ElementalContainer container = projectile.GetGlobalProjectile<ElementalProjectile>().Container;
 		container[ElementType.Lightning].DamageModifier.AddModifiers(0, 1);
 	}
-
-	public override void BuffPlayer(Player player)
-	{
-		if (player.statMana <= player.statManaMax2 * 0.5f)
-		{
-			player.GetDamage(DamageClass.Generic) += 0.12f;
-		}
-	}
 }

@@ -1,5 +1,16 @@
 {
   "netId": 402,
   "friendlyName": "Stardust Worm Head",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": null,
+      "lightning": null,
+      "cold": {
+        "added": 50,
+        "conversion": 0.75
+      }
+    }
+  ],
   "entries": []
 }

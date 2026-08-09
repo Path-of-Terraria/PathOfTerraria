@@ -15,7 +15,7 @@ NeedsWeapon: Требуется держать предмет {0}
 BaseDamage: Наносит {0} базового урона
 # This is for the hover text in the skills menu.
 CantEquip: Невозможно оснастить умение: {0}
-// TagsLine: Tags:
+TagsLine: Теги:
 // CantBeAdded: Skill cannot be added.
 // AlreadyAdded: Skill is already equipped.
 // ShowTags: (Shift to show tag names)
@@ -27,15 +27,15 @@ CantEquip: Невозможно оснастить умение: {0}
 
 Tags: {
 	// None: None
-	// Fire: Fire
-	// Cold: Cold
-	// Lightning: Lightning
-	// Chaos: Chaos
-	// Melee: Melee
-	// Ranged: Ranged
-	// Magic: Magic
-	// Summon: Summon
-	// Projectile: Projectile
+	Fire: Огонь
+	Cold: Холод
+	Lightning: Молния
+	Chaos: Хаос
+	Melee: Ближний бой
+	Ranged: Дальний бой
+	Magic: Магия
+	Summon: Призыв
+	Projectile: Снаряд
 	// Channeling: Channeling
 	// AreaOfEffect: Area of Effect
 	// Sentry: Sentry

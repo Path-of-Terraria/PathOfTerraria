@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework.Input;
+using PathOfTerraria.Common.Items;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Common.UI.Quests;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
@@ -16,6 +18,8 @@ public class QuestModPlayer : ModPlayer
 {
 	// ReSharper disable once InconsistentNaming
 	internal static ModKeybind ToggleQuestUIKey;
+
+	public bool HasAnyRecoveryItem { get; private set; }
 
 	/// <summary>
 	/// A non-synced list of every quest this player can have.
@@ -28,6 +32,16 @@ public class QuestModPlayer : ModPlayer
 	/// A fully synced list of the quests this player currently has active.
 	/// </summary>
 	public readonly HashSet<string> EnabledQuestsByName = [];
+
+	/// <summary>
+	/// A fully synced lookup of active quest names to their current step IDs.
+	/// </summary>
+	public readonly Dictionary<string, string> ActiveQuestStepsByName = [];
+
+	/// <summary>
+	/// A fully synced list of the quests this player has completed.
+	/// </summary>
+	public readonly HashSet<string> CompletedQuestsByName = [];
 
 	internal bool FirstQuest = true;
 	/// <summary> The full name of this player's pinned quest. </summary>
@@ -48,12 +62,17 @@ public class QuestModPlayer : ModPlayer
 	/// <param name="fromLoad">Skips the quest popups &amp; sound effects if true.</param>
 	public void StartQuest(string name, int step = -1, bool fromLoad = false)
 	{
-		QuestsByName[name].Start(Player, step == -1 ? 0 : step);
-		EnabledQuestsByName.Add(name);
+		Quest quest = QuestsByName[name];
+		quest.Start(Player, step == -1 ? 0 : step);
+
+		if (quest.Active)
+		{
+			SetSyncedQuestState(name, true, quest.ActiveStep.Id, false);
+		}
 
 		if (Main.myPlayer == Player.whoAmI && !fromLoad)
 		{
-			UIQuestPopupState.NewQuest = new UIQuestPopupState.PopupText(QuestsByName[name].DisplayName, 300, 1f, 1.2f);
+			UIQuestPopupState.NewQuest = new UIQuestPopupState.PopupText(quest.DisplayName, 300, 1f, 1.2f);
 			SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/QuestStart") { Volume = 0.5f });
 
 			if (FirstQuest) // Only display first quest popup on first quest (wow!)
@@ -63,26 +82,67 @@ public class QuestModPlayer : ModPlayer
 				FirstQuest = false;
 			}
 
-			if (Main.netMode != NetmodeID.SinglePlayer)
+			if (Main.netMode != NetmodeID.SinglePlayer && quest.Active)
 			{
-				SyncPlayerQuestActive.Send(name, true);
+				SyncPlayerQuestActive.Send(name, true, quest.ActiveStep.Id, false);
 			}
 		}
 	}
 
 	public override void OnEnterWorld()
 	{
+		EnabledQuestsByName.Clear();
+		ActiveQuestStepsByName.Clear();
+		CompletedQuestsByName.Clear();
+
 		foreach (Quest quest in QuestsByName.Values)
 		{
 			if (quest.Active)
 			{
-				EnabledQuestsByName.Add(quest.FullName);
+				SetSyncedQuestState(quest.FullName, true, quest.ActiveStep.Id, false);
 
-				if (Main.netMode != NetmodeID.SinglePlayer)
+				if (Player.whoAmI == Main.myPlayer && Main.netMode == NetmodeID.MultiplayerClient)
 				{
-					SyncPlayerQuestActive.Send(quest.FullName, true);
+					SyncPlayerQuestActive.Send(quest.FullName, true, quest.ActiveStep.Id, false);
 				}
 			}
+			else if (quest.Completed)
+			{
+				SetSyncedQuestState(quest.FullName, false, string.Empty, true);
+
+				if (Player.whoAmI == Main.myPlayer && Main.netMode == NetmodeID.MultiplayerClient)
+				{
+					SyncPlayerQuestActive.Send(quest.FullName, false, string.Empty, true);
+				}
+			}
+		}
+
+		if (Player.whoAmI == Main.myPlayer && Main.netMode == NetmodeID.MultiplayerClient)
+		{
+			RequestOtherQuestStatesHandler.Send();
+		}
+	}
+
+	internal void SetSyncedQuestState(string questName, bool active, string activeStep, bool completed)
+	{
+		if (active)
+		{
+			EnabledQuestsByName.Add(questName);
+			ActiveQuestStepsByName[questName] = activeStep;
+			CompletedQuestsByName.Remove(questName);
+			return;
+		}
+
+		EnabledQuestsByName.Remove(questName);
+		ActiveQuestStepsByName.Remove(questName);
+
+		if (completed)
+		{
+			CompletedQuestsByName.Add(questName);
+		}
+		else
+		{
+			CompletedQuestsByName.Remove(questName);
 		}
 	}
 
@@ -152,6 +212,7 @@ public class QuestModPlayer : ModPlayer
 	public override void PostUpdateMiscEffects()
 	{
 		MarkerTypeByLocation.Clear();
+		HasAnyRecoveryItem = false;
 
 		foreach (Quest quest in QuestsByName.Values)
 		{
@@ -161,6 +222,11 @@ public class QuestModPlayer : ModPlayer
 			}
 
 			quest.Update(Player);
+
+			if (!HasAnyRecoveryItem && quest.CurrentStep < quest.QuestSteps.Count && quest.ActiveStep.RecoveryItem != -1)
+			{
+				HasAnyRecoveryItem = true;
+			}
 
 			if (!quest.Completed)
 			{
@@ -182,18 +248,90 @@ public class QuestModPlayer : ModPlayer
 		}
 	}
 
-	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+	/// <summary>
+	/// Spawns all recovery items the player can obtain. Runs only on the client (not server).<br/>
+	/// Can also be used to check if the items can actually spawn, by checking <paramref name="itemToDisplay"/> == -1.
+	/// </summary>
+	public void SpawnRecoveryItems(Vector2 position, bool onlyReport, out int itemToDisplay)
 	{
-		if (target.life <= 0)
+		int[] ids = new int[QuestsByName.Count];
+		int current = 0;
+
+		foreach (Quest quest in QuestsByName.Values)
 		{
-			foreach (Quest quest in QuestsByName.Values)
+			if (!quest.Active)
 			{
-				if (quest.Active)
+				continue;
+			}
+
+			int type = quest.ActiveStep.RecoveryItem;
+
+			if (type != -1 && !Player.HasItem(type) && !ItemInWorld(type))
+			{
+				if (!onlyReport)
 				{
-					quest.ActiveStep.OnKillNPC(Player, target, hit, damageDone); // Quests in enabledQuests are necessarily active
+					Item item = Main.item[Item.NewItem(new EntitySource_Misc("RecoveryItem"), position, type)];
+					
+					if (item.TryGetGlobalItem(out ITemporaryItem.TemporaryGlobalItem temp))
+					{
+						temp.IsTemporary = true;
+					}
 				}
+
+				ids[current++] = type;
 			}
 		}
+
+		if (current == 0)
+		{
+			itemToDisplay = -1;
+		}
+		else
+		{
+			itemToDisplay = ids[(int)(Main.GameUpdateCount * 0.02f % current)];
+		}
+	}
+
+	/// <summary>
+	/// Checks if the item is dropped in-world.
+	/// </summary>
+	private static bool ItemInWorld(int type)
+	{
+		foreach (Item item in Main.ActiveItems)
+		{
+			if (item.type == type)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+	{
+	}
+
+	internal void OnKillNPC(NPC target, NPC.HitInfo hit, int damageDone)
+	{
+		foreach (Quest quest in QuestsByName.Values)
+		{
+			if (quest.Active)
+			{
+				quest.ActiveStep.OnKillNPC(Player, target, hit, damageDone);
+			}
+		}
+	}
+
+	internal void OnKillNPC(int targetType, int targetNetId, NPC.HitInfo hit, int damageDone)
+	{
+		NPC target = new()
+		{
+			type = targetType,
+			netID = targetNetId
+		};
+
+		OnKillNPC(target, hit, damageDone);
 	}
 
 	/// <summary>

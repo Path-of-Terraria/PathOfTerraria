@@ -111,17 +111,20 @@ internal class TutorialUIState : UIState
 			DrawBacked(spriteBatch, pos + new Vector2(56, 110), Localize("SkipGuide"), true, () =>
 			{
 				Step = 12;
+				TutorialPlayer tutorialPlayer = Main.LocalPlayer.GetModPlayer<TutorialPlayer>();
+				ExpModPlayer expPlayer = Main.LocalPlayer.GetModPlayer<ExpModPlayer>();
 
-				if (!Quest.GetLocalPlayerInstance<FirstQuest>().QuestNotStarted)
+				if (Quest.GetLocalPlayerInstance<FirstQuest>().QuestNotStarted)
 				{
 					Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<FirstQuest>();
 				}
 
-				if (!Main.LocalPlayer.GetModPlayer<TutorialPlayer>().Restarted)
+				if (!tutorialPlayer.Restarted)
 				{
-					if (Main.LocalPlayer.GetModPlayer<ExpModPlayer>().Level == 0)
+					if (!tutorialPlayer.ReceivedTutorialLevelReward && expPlayer.Level <= 0)
 					{
-						Main.LocalPlayer.GetModPlayer<ExpModPlayer>().Exp += Main.LocalPlayer.GetModPlayer<ExpModPlayer>().NextLevel + 1;
+						expPlayer.Exp += expPlayer.NextLevel + 1;
+						tutorialPlayer.ReceivedTutorialLevelReward = true;
 					}
 
 					Main.LocalPlayer.QuickSpawnItem(new EntitySource_Misc("Quest"), ModContent.ItemType<ArcaneObeliskItem>());
@@ -189,16 +192,18 @@ internal class TutorialUIState : UIState
 
 		Player plr = Main.LocalPlayer;
 		TutorialPlayer tutPlr = plr.GetModPlayer<TutorialPlayer>();
+		ExpModPlayer expPlayer = plr.GetModPlayer<ExpModPlayer>();
 		tutPlr.TutorialStep = (byte)Step;
 		StoredStep = Step;
 
-		if (Step == 1 && !FromLoad && plr.GetModPlayer<ExpModPlayer>().Level <= 0 && !tutPlr.Restarted)
+		if (Step == 1 && !FromLoad && !tutPlr.Restarted && !tutPlr.ReceivedTutorialLevelReward && expPlayer.Level <= 0)
 		{
-			plr.GetModPlayer<ExpModPlayer>().Exp += plr.GetModPlayer<ExpModPlayer>().NextLevel + 1;
+			expPlayer.Exp += expPlayer.NextLevel + 1;
+			tutPlr.ReceivedTutorialLevelReward = true;
 		}
 		else if (Step == 10)
 		{
-			if (!Quest.GetLocalPlayerInstance<FirstQuest>().Active)
+			if (Quest.GetLocalPlayerInstance<FirstQuest>().QuestNotStarted)
 			{
 				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<FirstQuest>();
 			}

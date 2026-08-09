@@ -53,6 +53,7 @@ internal partial class Mossmother
 		else if (State == BehaviorState.SpawnAnimation) // Does nothing but skip directly to the fight, as there is no spawn animation atm
 		{
 			NPC.GetGlobalNPC<ArenaEnemyNPC>().Arena = true;
+			NPC.GetGlobalNPC<ArenaEnemyNPC>().StillDropStuff = true;
 			NPC.dontTakeDamage = false;
 
 			SetState(BehaviorState.MoveToWall);

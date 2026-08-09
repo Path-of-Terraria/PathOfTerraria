@@ -1,17 +1,5 @@
 {
   "netId": 183,
   "friendlyName": "Crimslime",
-  "entries": [
-    {
-      "scale": null,
-      "prefix": null,
-      "weight": 1,
-      "stats": {
-        "level": 10,
-        "experience": 10
-      },
-      "affixes": null,
-      "requirements": "PreHardmodeSurface"
-    }
-  ]
+  "entries": []
 }

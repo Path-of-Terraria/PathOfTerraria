@@ -1,4 +1,5 @@
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
+using PathOfTerraria.Common.Utilities;
 
 namespace PathOfTerraria.Content.Passives;
 
@@ -6,13 +7,14 @@ internal class IncreasedMinionDamagePassive : Passive
 {
 	public sealed class IncreasedMinionDamagePassivePlayer : ModPlayer
 	{
-		public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref NPC.HitModifiers modifiers)
+		public override void ModifyHitNPCWithProj(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers)
 		{
-			float level = Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<IncreasedMinionDamagePassive>();
+			float value = Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<IncreasedMinionDamagePassive>();
 
-			if (proj.minion)
+			if (projectile.minion)
 			{
-				modifiers.FinalDamage += level / 100f;
+				Player projOwner = Main.player[projectile.owner];
+				AdditiveScalingModifier.ApplyAdditiveLikeScalingProjectile(projOwner, projectile, ref modifiers, value / 100f);
 			}
 		}
 	}

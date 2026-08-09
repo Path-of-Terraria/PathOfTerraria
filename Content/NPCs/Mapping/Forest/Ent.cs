@@ -61,7 +61,7 @@ internal class Ent : ModNPC
 	{
 		NPC.Size = new Vector2(50, 124);
 		NPC.aiStyle = -1;
-		NPC.lifeMax = 450;
+		NPC.lifeMax = 9_500;
 		NPC.defense = 35;
 		NPC.damage = 65;
 		NPC.knockBackResist = 0.3f;
@@ -175,9 +175,14 @@ internal class Ent : ModNPC
 				int x = bottom.X + i * -NPC.spriteDirection;
 				int y = bottom.Y;
 
-				while (!WorldGen.SolidTile(x, y))
+				while (WorldGen.InWorld(x, y, 10) && !WorldGen.SolidTile(x, y))
 				{
 					y++;
+				}
+
+				if (!WorldGen.InWorld(x, y, 10))
+				{
+					continue;
 				}
 
 				Vector2 pos = new Point(x, y).ToWorldCoordinates(0, 0);

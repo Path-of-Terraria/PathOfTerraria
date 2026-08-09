@@ -74,6 +74,17 @@ public static class PoTItemHelper
 		data.NameAffix = GenerateNameAffixes.Invoke(item);
 	}
 
+	public static void RerollAffixes(Item item, int itemLevel)
+	{
+		PoTInstanceItemData data = item.GetInstanceData();
+
+		SetItemLevel.Invoke(item, itemLevel);
+
+		RerollNonImplicitAffixes(item);
+		PostRoll.Invoke(item);
+		data.NameAffix = GenerateNameAffixes.Invoke(item);
+	}
+
 	private static void RollAffixes(Item item)
 	{
 		PoTInstanceItemData data = item.GetInstanceData();
@@ -82,6 +93,21 @@ public static class PoTItemHelper
 		data.Affixes.AddRange(GenerateImplicits.Invoke(item));
 		data.ImplicitCount = data.Affixes.Count;
 
+		RollNonImplicitAffixes(item, data);
+	}
+
+	private static void RerollNonImplicitAffixes(Item item)
+	{
+		PoTInstanceItemData data = item.GetInstanceData();
+
+		data.Affixes.RemoveAll(affix => !affix.IsImplicit);
+		data.ImplicitCount = data.Affixes.Count;
+
+		RollNonImplicitAffixes(item, data);
+	}
+
+	private static void RollNonImplicitAffixes(Item item, PoTInstanceItemData data)
+	{
 		int affixesToRoll = GetAffixCount(item);
 		for (int i = 0; i < affixesToRoll; i++)
 		{
@@ -97,6 +123,34 @@ public static class PoTItemHelper
 
 		data.Affixes.AddRange(uniqueItemAffixes);
 	}
+
+	public static bool RemoveRandomNonImplicitAffix(Item item)
+	{
+		PoTInstanceItemData data = item.GetInstanceData();
+		int nonImplicitAffixCount = data.Affixes.Count(affix => !affix.IsImplicit);
+
+		if (nonImplicitAffixCount == 0)
+		{
+			return false;
+		}
+
+		int selectedAffixIndex = Main.rand.Next(nonImplicitAffixCount);
+		for (int i = 0; i < data.Affixes.Count; i++)
+		{
+			if (data.Affixes[i].IsImplicit)
+			{
+				continue;
+			}
+
+			if (selectedAffixIndex-- == 0)
+			{
+				data.Affixes.RemoveAt(i);
+				return true;
+			}
+		}
+
+		return false;
+	}
 	
 	/// <summary>
 	/// Re-rolls the values of all affixes on an item. Keeping the tiers and affixes the same.
@@ -107,6 +161,11 @@ public static class PoTItemHelper
 	    PoTInstanceItemData data = item.GetInstanceData();
 	    foreach (ItemAffix affix in data.Affixes)
 	    {
+		    if (affix.IsImplicit)
+		    {
+			    continue;
+		    }
+		    
 	        affix.Value = AffixRegistry.GetRandomAffixValue(affix, item, GetItemLevel.Invoke(item));
 	    }
 	}
@@ -139,11 +198,6 @@ public static class PoTItemHelper
 		}
 
 		affix.Value = AffixRegistry.GetRandomAffixValue(affix, item, GetItemLevel.Invoke(item));
-		if (affix.Value == 0)
-		{
-			return; //If the affix has no value, don't add it. This usually happens when there's no TierData associated with the given item
-		}
-
 		data.Affixes.Add(affix);
 	}
 
@@ -197,6 +251,11 @@ public static class PoTItemHelper
 		return nonImplicitAffixCount >= GetMaxAffixCounts(data.Rarity);
 	}
 
+	public static bool HasNonImplicitAffixes(Item item)
+	{
+		return item.GetInstanceData().Affixes.Any(affix => !affix.IsImplicit);
+	}
+
 	public static void SetMouseItemToHeldItem(Player player)
 	{
 		if (player.selectedItem == 58)
@@ -208,31 +267,28 @@ public static class PoTItemHelper
 	#endregion
 
 	/// <summary>
-	/// Picks the most appropriate item level for the current world. This is the following:<br/>
-	/// For explorable maps, such as the Forest, it's variable and depends on the tier of the map.<br/>
-	/// Boss domains/overworld progression uses an additive system where each boss adds 5 levels:<br/>
-	/// Base level: 5<br/>
-	/// King Slime: +5 (total: 10)<br/>
-	/// Eye of Cthulhu: +5 (total: 15)<br/>
-	/// Eater of Worlds: +5 (total: 20)<br/>
-	/// Brain of Cthulhu: +5 (total: 25, or 30 if both corruption bosses killed)<br/>
-	/// Queen Bee: +5<br/>
-	/// Deerclops: +5<br/>
-	/// Skeletron: +5<br/>
-	/// <b>Hardmode minimum/crafting cap: 45</b><br/>
-	/// Queen Slime: +5 (total: 50)<br/>
-	/// Twins: +5 (total: 55)<br/>
-	/// Destroyer: +5 (total: 60)<br/>
-	/// Skeletron Prime: + (total: 65)br/>
-	/// Plantera: +5 (total: 70)<br/>
-	/// Golem: +5 (total: 75)<br/>
-	/// Cultist: +5 (total: 80)<br/>
-	/// Moon Lord: +5 (maximum: 85)
+	/// Picks the most appropriate item level for the current world. The overworld scales up to 70
+	/// based on boss progression; explorable maps continue past that with +1 per tier.<br/>
+	/// World start: 1<br/>
+	/// King Slime: 5<br/>
+	/// Eye of Cthulhu: 10<br/>
+	/// Evil Boss (Eater of Worlds OR Brain of Cthulhu): 15<br/>
+	/// Queen Bee: 20<br/>
+	/// Deerclops: 25<br/>
+	/// Skeletron: 30<br/>
+	/// Wall of Flesh: 35<br/>
+	/// Queen Slime: 40<br/>
+	/// Twins: 45<br/>
+	/// Destroyer: 50<br/>
+	/// Skeletron Prime: 55<br/>
+	/// Plantera: 60<br/>
+	/// Golem: 65<br/>
+	/// Cultist: 70<br/>
+	/// Moon Lord: 70 (cap)
 	/// </summary>
-	/// <param name="clampHardmode">Clamps level to hardmode maximum (45) for crafted items.</param>
-	/// <param name="isCrafted">Indicates if the item is being crafted, which applies hardmode capping.</param>
+	/// <param name="clampHardmode">Unused; retained for API compatibility. The overworld now scales to 70 naturally.</param>
+	/// <param name="isCrafted">If true, ignores the current <see cref="MappingWorld.AreaLevel"/> override and uses overworld progression.</param>
 	/// <returns>The calculated item level based on world progression.</returns>
-
 	public static int PickItemLevel(bool clampHardmode = true, bool isCrafted = false)
 	{
 		if (SubworldSystem.Current is MappingWorld && MappingWorld.AreaLevel > 0 && !isCrafted)
@@ -240,104 +296,84 @@ public static class PoTItemHelper
 			return MappingWorld.AreaLevel;
 		}
 
-		if (isCrafted && Main.hardMode) // This accounts for crafting level when you've progressed further than WoF
-		{
-			return 45;
-		}
-
-		if (clampHardmode && Main.hardMode) // Hardmode max if it's clamped.
-		{
-			return 45;
-		}
-
-		// Start with base level and add for each boss defeated
-		int level = 5;
+		int level = 1;
 
 		if (NPC.downedSlimeKing)
 		{
-			level += 5; // 10
+			level = 5;
 		}
 
 		if (NPC.downedBoss1)
 		{
-			level += 5; // 15
+			level = 10;
 		}
 
-		if (EventTracker.HasFlagsAnywhere(EventFlags.DefeatedEaterOfWorlds))
+		// Evil Boss: either Eater of Worlds OR Brain of Cthulhu satisfies the milestone.
+		// NPC.downedBoss2 is the vanilla flag set by either kill, and it's what external tools
+		// (DragonLens, etc.) toggle. The EventTracker flags are also checked so prog-aware code
+		// that flips them directly without going through vanilla still counts.
+		if (NPC.downedBoss2
+			|| EventTracker.HasFlagsAnywhere(EventFlags.DefeatedEaterOfWorlds)
+			|| EventTracker.HasFlagsAnywhere(EventFlags.DefeatedBrainOfCthulhu))
 		{
-			level += 5; // 20
-		}
-
-		if (EventTracker.HasFlagsAnywhere(EventFlags.DefeatedBrainOfCthulhu))
-		{
-			level += 5; // 20/25
+			level = 15;
 		}
 
 		if (NPC.downedQueenBee)
 		{
-			level += 5; // 25/30
+			level = 20;
 		}
 
 		if (NPC.downedDeerclops)
 		{
-			level += 5; // 30/35
+			level = 25;
 		}
 
 		if (NPC.downedBoss3)
 		{
-			level += 5; // 35/40
+			level = 30;
 		}
 
 		if (Main.hardMode)
 		{
+			level = 35;
+		}
+
+		if (NPC.downedQueenSlime)
+		{
+			level = 40;
+		}
+
+		if (NPC.downedMechBoss2)
+		{
 			level = 45;
 		}
 
-		// Continue with hardmode bosses if not clamped
-		if (!clampHardmode)
+		if (NPC.downedMechBoss1)
 		{
-			if (NPC.downedQueenSlime)
-			{
-				level += 5; // 50
-			}
+			level = 50;
+		}
 
-			if (NPC.downedMechBoss2)
-			{
-				level += 5; // 55
-			}
+		if (NPC.downedMechBoss3)
+		{
+			level = 55;
+		}
 
-			if (NPC.downedMechBoss1)
-			{
-				level += 5; // 60
-			}
+		if (NPC.downedPlantBoss)
+		{
+			level = 60;
+		}
 
-			if (NPC.downedMechBoss3) 
-			{
-				level += 5; // 65
-			}
+		if (NPC.downedGolemBoss)
+		{
+			level = 65;
+		}
 
-			if (NPC.downedPlantBoss)
-			{
-				level += 5; // 70
-			}
-
-			if (NPC.downedGolemBoss)
-			{
-				level += 5; // 75
-			}
-
-			if (NPC.downedAncientCultist)
-			{
-				level += 5; // 80
-			}
-
-			if (NPC.downedMoonlord)
-			{
-				level += 5; // 85
-			}
+		if (NPC.downedAncientCultist || NPC.downedMoonlord)
+		{
+			level = 70;
 		}
 
 		return level;
-
 	}
 }

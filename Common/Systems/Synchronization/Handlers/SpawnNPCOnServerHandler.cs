@@ -1,4 +1,5 @@
 using System.IO;
+using PathOfTerraria.Common.NPCs;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -38,6 +39,11 @@ internal class SpawnNPCOnServerHandler : Handler
 		if (paramCount > 2)
 		{
 			velocity = reader.ReadVector2();
+		}
+
+		if (ContentSamples.NpcsByNetId[type].ModNPC is ITavernNPC && NPC.AnyNPCs(type))
+		{
+			return;
 		}
 
 		int who = NPC.NewNPC(new EntitySource_SpawnNPC(), (int)pos.X, (int)pos.Y, type, Start: 1);

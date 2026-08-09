@@ -161,15 +161,8 @@ public class FishermanNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpaw
 
 	public bool HasQuestMarker(out Quest quest)
 	{
-		Quest fishronQuest = Quest.GetLocalPlayerInstance<FishronQuest>();
-
-		if (fishronQuest.QuestNotStarted || (fishronQuest.Active && !fishronQuest.Completed))
-		{
-			quest = fishronQuest;
-			return true;
-		}
-
-		quest = null;
-		return false;
+		quest = Quest.GetLocalPlayerInstance<FishronQuest>();
+	
+		return quest.Available() || (quest.Active && !quest.Completed);
 	}
 }

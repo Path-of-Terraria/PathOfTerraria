@@ -33,9 +33,22 @@ internal class ManaBomb : ModProjectile
 
 		Projectile.velocity = Vector2.Zero;
 		float rotationAngle = MathF.Sin(Projectile.Distance(RealTarget) / 80f) * MathHelper.PiOver2 + Projectile.whoAmI * MathHelper.Pi / 3f;
-		Vector2 offsetTarget = RealTarget + Projectile.DirectionTo(RealTarget).RotatedBy(rotationAngle) * 120;
+		Vector2 offset = Projectile.DirectionTo(RealTarget).RotatedBy(rotationAngle) * 120;
+
+		if (Timer > 60) // Force accuracy after a short time
+		{
+			offset *= Math.Max(0, 1 - (Timer - 60) / 120f);
+		}
+		
+		if (Timer > 180f)
+		{
+			Projectile.Kill();
+			return;
+		}
+
+		Vector2 offsetTarget = RealTarget + offset;
 		Vector2 oldCenter = Projectile.Center;
-		Projectile.Center = Vector2.Lerp(Projectile.Center, offsetTarget, 0.05f);
+		Projectile.Center = Vector2.Lerp(Projectile.Center, offsetTarget, 0.05f + Math.Min(Timer * 0.005f, 0.15f));
 		Projectile.rotation = (Projectile.Center - oldCenter).ToRotation() + MathHelper.PiOver2;
 	}
 

@@ -370,7 +370,8 @@ public class BrainDomain : BossDomainSubworld
 	{
 		bool hasProj = false;
 
-		if (!EventTracker.HasFlagsAnywhere(EventFlags.DefeatedBrainOfCthulhu) && !NPC.AnyNPCs(ModContent.NPCType<LloydNPC>()))
+		if ((!EventTracker.HasFlagsAnywhere(EventFlags.DefeatedBrainOfCthulhu) || BoCDomainSystem.AnyActivePlayerNeedsLloyd()) &&
+			!NPC.AnyNPCs(ModContent.NPCType<LloydNPC>()))
 		{
 			int npc = NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Main.spawnTileX * 16, Main.spawnTileY * 16, ModContent.NPCType<LloydNPC>());
 
@@ -408,8 +409,9 @@ public class BrainDomain : BossDomainSubworld
 		}
 
 		FightState state = FightTracker.UpdateState();
+		GetData().MarkBossDownedIfDefeated<BrainDomain>(NPCID.BrainofCthulhu);
 
-		if (state == FightState.NotStarted && allInArena)
+		if (state == FightState.NotStarted && allInArena && !GetData().BossDowned)
 		{
 			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Arena.Center.X, Arena.Center.Y - 400, NPCID.BrainofCthulhu);
 

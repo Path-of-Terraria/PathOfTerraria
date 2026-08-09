@@ -278,6 +278,8 @@ public class UIImageItemSlot
 
 		if (IsLocked?.Invoke(this) == true)
 		{
+			UpdateHoverTooltip();
+			Main.LocalPlayer.mouseInterface = true;
 			return;
 		}
 
@@ -308,14 +310,21 @@ public class UIImageItemSlot
 			OnModifyItem?.Invoke(this, oldItem, item);
 		}
 
-		if (HoverText is { } hoverText)
-		{
-			Main.hoverItemName = hoverText.Arg0 != null ? Language.GetTextValue(hoverText.Key, hoverText.Arg0) : Language.GetTextValue(hoverText.Key);
-			Main.HoverItem = Item.Clone();
-			Main.HoverItem.tooltipContext = Context;
-		}
+		UpdateHoverTooltip();
 
 		Main.LocalPlayer.mouseInterface = true;
+	}
+
+	private void UpdateHoverTooltip()
+	{
+		if (HoverText is not { } hoverText)
+		{
+			return;
+		}
+
+		Main.hoverItemName = hoverText.Arg0 != null ? Language.GetTextValue(hoverText.Key, hoverText.Arg0) : Language.GetTextValue(hoverText.Key);
+		Main.HoverItem = Item.Clone();
+		Main.HoverItem.tooltipContext = Context;
 	}
 
 	// Because we can't access the texture being used by the UIImage.

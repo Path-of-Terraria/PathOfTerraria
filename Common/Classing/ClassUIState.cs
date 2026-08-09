@@ -154,7 +154,7 @@ internal class ClassUIState(Action resetAction, Player player) : UIState
 
 		yOffset += 6;
 		string infoText = Language.GetTextValue("Mods.PathOfTerraria.UI.ClassPages." + classes + "." + info);
-		panel.AddElement(new UISimpleWrappableText(infoText, DefaultTextScale)
+		UISimpleWrappableText uiInfo = panel.AddElement(new UISimpleWrappableText(infoText, DefaultTextScale)
 		{
 			Wrappable = true,
 			Top = StyleDimension.FromPixels(yOffset),
@@ -163,7 +163,10 @@ internal class ClassUIState(Action resetAction, Player player) : UIState
 			Border = true,
 		});
 
-		yOffset += ChatManager.GetStringSize(FontAssets.MouseText.Value, infoText, new Vector2(DefaultTextScale), PaddedPanelWidth).Y;
+		string wrappedInfoText = UISimpleWrappableText.WrapText(FontAssets.MouseText.Value, infoText, PaddedPanelWidth, DefaultTextScale);
+		Vector2 stringSize = ChatManager.GetStringSize(FontAssets.MouseText.Value, wrappedInfoText, new Vector2(DefaultTextScale));
+		yOffset += stringSize.Y;
+		
 		return yOffset;
 	}
 

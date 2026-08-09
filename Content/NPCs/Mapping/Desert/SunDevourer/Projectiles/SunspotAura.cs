@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using Terraria.DataStructures;
+using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer.Projectiles;
 
@@ -74,14 +77,23 @@ public sealed class SunspotAura : ModProjectile
 	/// </summary>
 	public class SunspotPlayer : ModPlayer
 	{
+		int hurtTimer = 0;
+
 		public override void UpdateBadLifeRegen()
 		{
 			foreach (Projectile projectile in Main.ActiveProjectiles)
 			{
 				if (projectile.ModProjectile is SunspotAura aura && aura.Active && projectile.DistanceSQ(Player.Center) < MathF.Pow(217 * projectile.scale, 2))
 				{
-					Player.lifeRegen -= 60;
+					hurtTimer++;
 				}
+			}
+
+			if (hurtTimer > 3)
+			{
+				Player.hurtCooldowns[ImmunityCooldownID.TileContactDamage] = 0;
+				Player.Hurt(PlayerDeathReason.ByCustomReason(NetworkText.FromLiteral($"{Player.name} burnt up.")), 6, 0, false, false, ImmunityCooldownID.TileContactDamage, false, 0, 1);
+				hurtTimer = 0;
 			}
 		}
 	}

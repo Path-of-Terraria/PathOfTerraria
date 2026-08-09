@@ -54,7 +54,7 @@ internal class SwampCroc : ModNPC, IPreDrawAffix
 	public override void SetDefaults()
 	{
 		NPC.aiStyle = -1;
-		NPC.lifeMax = 600;
+		NPC.lifeMax = 7_000;
 		NPC.defense = 15;
 		NPC.damage = 50;
 		NPC.width = 142;

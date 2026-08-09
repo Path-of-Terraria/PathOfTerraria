@@ -159,9 +159,9 @@ internal partial class Grovetender : ModNPC
 			Main.instance.CameraModifiers.Add(modifier);
 		}
 
-		int speed = SecondPhase ? 6 : 7;
+		int speed = SecondPhase ? 3 : 5;
 
-		if (Timer > 20 && Timer < 120 && Timer % speed == 0 && Main.netMode != NetmodeID.MultiplayerClient)
+		if (Timer > 20 && Timer < 160 && Timer % speed == 0 && Main.netMode != NetmodeID.MultiplayerClient)
 		{
 			const int Variance = 80;
 
@@ -170,10 +170,10 @@ internal partial class Grovetender : ModNPC
 				int x = (int)(NPC.Center.X / 16f) + Main.rand.Next(-Variance, Variance);
 				int y = (int)(NPC.Center.Y / 16f) - 30;
 
-				if (Timer <= speed * 6)
+				if (Timer <= speed * 10)
 				{
 					x = (int)(Main.player[Main.rand.Next(Main.CurrentFrameFlags.ActivePlayersCount)].Center.X / 16f);
-					x += Main.rand.Next(-5, 5);
+					x += Main.rand.Next(-10, 10);
 				}
 
 				while (WorldGen.InWorld(x, y, 10) && (!Main.tile[x, y].HasTile || !Main.tile[x, y].HasUnactuatedTile || !ValidRainTiles.Contains(Main.tile[x, y].TileType)))
@@ -188,10 +188,10 @@ internal partial class Grovetender : ModNPC
 
 				y++;
 
-				var vel = new Vector2(0, Main.rand.NextFloat(1, 5));
+				var vel = new Vector2(0, Main.rand.NextFloat(3, 7));
 				Vector2 position = new Vector2(x, y).ToWorldCoordinates();
 				Tile above = Main.tile[x, y - 1];
-				int damage = ModeUtils.ProjectileDamage(70);
+				int damage = ModeUtils.ProjectileDamage(100);
 
 				if (above.TileType == TileID.LeafBlock && (Timer == speed * 7 || Timer == 15 * speed))
 				{
@@ -207,7 +207,7 @@ internal partial class Grovetender : ModNPC
 				break;
 			}
 		}
-		else if (Timer > 160)
+		else if (Timer > 180)
 		{
 			Timer = 0;
 			State = AIState.Idle;

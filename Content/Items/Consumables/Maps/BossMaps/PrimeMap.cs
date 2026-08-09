@@ -5,7 +5,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class PrimeMap() : HardmodeBossMap(4, () => NPC.downedMechBoss3)
+internal class PrimeMap() : HardmodeBossMap(4, 55, () => NPC.downedMechBoss3)
 {
 	public override void SetStaticDefaults()
 	{
@@ -20,9 +20,9 @@ internal class PrimeMap() : HardmodeBossMap(4, () => NPC.downedMechBoss3)
 		Item.Size = new Vector2(30, 34);
 	}
 
-	protected override void OpenMapInternal()
+	internal override Subworld GetDestination()
 	{
-		SubworldSystem.Enter<PrimeDomain>();
+		return ModContent.GetInstance<PrimeDomain>();
 	}
 
 	public override string GenerateName(string defaultName)

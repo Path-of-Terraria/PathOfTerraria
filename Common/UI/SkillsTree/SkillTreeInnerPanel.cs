@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.ModPlayers.SkillPlayers;
+using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Content.SkillPassives;
 using Terraria.UI;
@@ -29,7 +30,8 @@ internal class SkillTreeInnerPanel : AllocatableInnerPanel
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		AvailablePassivePointsText.DrawResettablePoints(spriteBatch, _skill.Tree.Points, GetRectangle().TopLeft() + new Vector2(35, 35), ref _resetTimer, () =>
+		SkillTreePlayer treePlayer = Main.LocalPlayer.GetModPlayer<SkillTreePlayer>();
+		AvailablePassivePointsText.DrawResettablePoints(spriteBatch, treePlayer.GetAvailableSkillPoints(_skill.Tree), GetRectangle().TopLeft() + new Vector2(35, 35), ref _resetTimer, () =>
 		{
 			foreach (SkillNode node in _skill.Tree.Nodes)
 			{

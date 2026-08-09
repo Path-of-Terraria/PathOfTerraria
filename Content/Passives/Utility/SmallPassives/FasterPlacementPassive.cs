@@ -6,6 +6,6 @@ internal class FasterPlacementPassive : Passive
 {
 	public override void BuffPlayer(Player player)
 	{
-		player.tileSpeed *= 1 + Value / 100f;
+		player.tileSpeed += Value / 100f;
 	}
 }

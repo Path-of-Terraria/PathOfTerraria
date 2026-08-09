@@ -1,6 +1,9 @@
-﻿using PathOfTerraria.Common.Subworlds.Passes;
+using PathOfTerraria.Common.Subworlds.Passes;
+using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
+using SubworldLibrary;
 using System.Collections.Generic;
+using Terraria.ModLoader.IO;
 using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds;
@@ -12,8 +15,44 @@ namespace PathOfTerraria.Common.Subworlds;
 /// </summary>
 public abstract class BossDomainSubworld : MappingWorld
 {
+	private const string RavencrestStructureStateKey = "ravencrestStructureState";
+
 	public override bool NoPlayerSaving => false;
 
 	// We are going to first set the world to be completely flat so we can build on top of that
 	public override List<GenPass> Tasks => [new FlatWorldPass()];
+
+	public override void CopyMainWorldData()
+	{
+		base.CopyMainWorldData();
+		CopyRavencrestStructureState();
+	}
+
+	public override void ReadCopiedMainWorldData()
+	{
+		base.ReadCopiedMainWorldData();
+		ReadRavencrestStructureState();
+	}
+
+	public override void CopySubworldData()
+	{
+		base.CopySubworldData();
+		CopyRavencrestStructureState();
+	}
+
+	public override void ReadCopiedSubworldData()
+	{
+		base.ReadCopiedSubworldData();
+		ReadRavencrestStructureState();
+	}
+
+	private static void CopyRavencrestStructureState()
+	{
+		SubworldSystem.CopyWorldData(RavencrestStructureStateKey, RavencrestSystem.SaveStructureState());
+	}
+
+	private static void ReadRavencrestStructureState()
+	{
+		RavencrestSystem.LoadStructureState(SubworldSystem.ReadCopiedWorldData<TagCompound>(RavencrestStructureStateKey));
+	}
 }

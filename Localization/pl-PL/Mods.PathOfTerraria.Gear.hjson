@@ -11,15 +11,17 @@ Tooltips: {
 	Tier: Poziom
 	Level: Poziom przedmiotu
 	Defense: Obrona
+	// BlockChance: Block Chance
+	// EnergyShield: Energy Shield
 	Pickaxe: Moc kilofa
 	Axe: Moc topora
 	Hammer: Moc młota
 	ManaCost: Koszt many
-	// AttackSpeed: Attack Speed
-	// CastSpeed: Cast Speed
-	// BuildBlocked: Blocked by the energies in the domain
+	AttackSpeed: Szybkość Ataku
+	CastSpeed: Szybkość Czarowania
+	BuildBlocked: Zablokowany przez energie w domenie
 	// ShootBlocked: Will be replaced by {0} [i:{1}] when shot
-	// WeaponNerfed: This weapon feels a little weaker
+	WeaponNerfed: Ta broń wydaje się trochę słabsza
 }
 
 Influence: {
@@ -111,19 +113,19 @@ Battleaxe: {
 }
 
 Boomerang: {
-	// Name: Boomerang
-	// AltUse: Right-click to send the boomerang in a quick spiral around you.
+	Name: Bumerang
+	AltUse: Kliknij prawym przyciskiem myszy, aby wysłać bumerang w szybki spiralny ruch wokół ciebie.
 
 	Prefixes: {
-		// 0: Spiraling
-		// 1: Quick
-		// 2: Razor
-		// 3: Enchanted
-		// 4: Storm
+		0: Wirujący
+		1: Szybki
+		2: Ostry
+		3: Zaczarowany
+		4: Burzowy
 	}
 
 	Suffixes: {
-		// 0: Return
+		0: Powracający
 		// 1: Slice
 		// 2: Glide
 		// 3: Arc
@@ -405,14 +407,16 @@ Talisman: {
 }
 
 Map.Name: Mapa
-ExplorableMap.Name: Mapa Eksploracyjna
-BossMap.Name: Mapa Bossa
+// ExplorableMap.Name: Explorable Map
+// BossMap.Name: Boss Map
 None.Name: Żadne
 Magic.Name: Magiczny
 Ranged.Name: Dystansowe
 Melee.Name: Wręcz
-Summon.Name: Przywoływanie
 Accessory.Name: Akcesoria
+// Charm.Name: Accessory
+// Wings.Name: Wings
+// JumpAccessories.Name: Jump Accessory
 
 Ring: {
 	// Name: Ring
@@ -473,3 +477,46 @@ Amulet: {
 		// 4: of Conviction
 	}
 }
+
+Gun: {
+	// Name: Gun
+
+	Prefixes: {
+		// 0: Explosive
+		// 1: Extended
+		// 2: Bulky
+		// 3: Scoped
+		// 4: Durable
+	}
+
+	Suffixes: {
+		// 0: of Legend
+		// 1: Reforged
+		// 2: of Agility
+		// 3: of Slaughter
+		// 4: of Silence
+	}
+}
+
+Summon: {
+	Name: Przywoływanie
+
+	Prefixes: {
+		// 0: Ancient
+		// 1: Eldritch
+		// 2: Forlorn
+		// 3: Beloathed
+		// 4: Despised
+	}
+
+	Suffixes: {
+		// 0: of Lore
+		// 1: Infinity
+		// 2: Secrecy
+		// 3: of Hatred
+		// 4: of Absolution
+	}
+}
+
+// Visors.Name: Visor
+// Yoyo.Name: Yoyo

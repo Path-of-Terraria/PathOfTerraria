@@ -1,5 +1,22 @@
 {
   "netId": 396,
   "friendlyName": "Moon Lord Head",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": {
+        "added": 25,
+        "conversion": 0.25
+      },
+      "lightning": {
+        "added": 25,
+        "conversion": 0.25
+      },
+      "cold": {
+        "added": 25,
+        "conversion": 0.25
+      }
+    }
+  ],
   "entries": []
 }

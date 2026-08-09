@@ -1,5 +1,16 @@
 {
   "netId": 413,
   "friendlyName": "Solar Crawltipede Body",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": {
+        "added": 60,
+        "conversion": 0.75
+      },
+      "lightning": null,
+      "cold": null
+    }
+  ],
   "entries": []
 }

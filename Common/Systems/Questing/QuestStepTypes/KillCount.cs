@@ -23,7 +23,8 @@ internal class KillCount(string id, Func<NPC, bool> includes, int count, Localiz
 
 	public override string DisplayString()
 	{
-		return Display.WithFormatArgs(MaxRemaining - _remaining, MaxRemaining).Value;	
+		int firstArg = Display.Value.Contains("{1}") ? MaxRemaining - _remaining : _remaining;
+		return Display.WithFormatArgs(firstArg, MaxRemaining).Value;	
 	}
 
 	public override void DrawQuestStep(Vector2 topLeft, out int uiHeight, StepCompletion currentStep)
@@ -35,7 +36,7 @@ internal class KillCount(string id, Func<NPC, bool> includes, int count, Localiz
 
 	public override void OnKillNPC(Player player, NPC target, NPC.HitInfo hitInfo, int damageDone)
 	{
-		if (player.whoAmI == Main.myPlayer && countsAsKill(target))
+		if (countsAsKill(target))
 		{
 			_remaining--;
 		}

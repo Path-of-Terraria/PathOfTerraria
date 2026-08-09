@@ -1,4 +1,4 @@
-// Confirm: Confirm
+Confirm: Подтвердить
 
 Gear: {
 	Buttons: {
@@ -23,10 +23,10 @@ Hotbar: {
 Slots: {
 	Head: Шлем
 	Body: Нагрудник
-	Legs: Поножи
+	Legs: Ноги
 	Weapon: Оружие
 	Necklace: Ожерелье
-	Offhand: Левая рука
+	// Offhand: Offhand
 	RingLeft: Левое кольцо
 	RingRight: Правое кольцо
 	Wings: Крылья
@@ -40,8 +40,9 @@ StatUI: {
 	// CharacterHeader: Progression
 	Level: Уровень
 	Experience: Опыт
-	// DefenseHeader: Defense
+	DefenseHeader: Защита
 	Life: Здоровье
+	// EnergyShield: Energy Shield
 	// LifeRegen: Life Regen/s
 	Mana: Мана
 	// ManaRegen: Mana Regen/s
@@ -52,23 +53,41 @@ StatUI: {
 	FireResistance: Сопротивление огню
 	ColdResistance: Сопротивление холоду
 	LightningResistance: Сопротивление молнии
-	// ChaosResistance: Chaos Resistance
+	ChaosResistance: Сопротивление хаосу
 	// OffenseHeader: Offense
-	// CriticalChance: Critical Strike Chance
-	// CriticalMultiplier: Critical Strike Multiplier
-	// ProjectileSpeed: Projectile Speed
-	// ProjectileCount: Additional Projectiles
-	// AttributesHeader: Attributes
+	CriticalChance: Шанс крит. удара
+	CriticalMultiplier: Множитель крит. удара
+	ProjectileSpeed: Скорость снарядов
+	ProjectileCount: Дополнительные снаряды
+	AttributesHeader: Аттрибуты
 	Strength: Сила
 	Dexterity: Ловкость
 	Intelligence: Интеллект
-	// ChargesHeader: Charges
+	ChargesHeader: Заряды
 	// HasteChargeChance: Haste Charge Chance On Kill
 	// FocusChargeChance: Focus Charge Chance On Kill
 	// AegisChargeChance: Aegis Charge Chance On Kill
 	// MaxHasteCharges: Maximum Haste Charges
 	// MaxFocusCharges: Maximum Focus Charges
 	// MaxAegisCharges: Maximum Aegis Charges
+	// GatheringHeader: Gathering
+	// MiningSpeed: Mining Speed
+	// BaitConservation: Bait Conservation
+	// TilePlacementSpeed: Tile Placement Speed
+	// WallPlacementSpeed: Wall Placement Speed
+	// ItemPickupRange: Item Pickup Range
+	// CoinPickupRange: Coin Pickup Range
+	// MobilityHeader: Mobility
+	// JumpHeight: Jump Height
+	// JumpSpeed: Jump Speed
+	// WingFlightTime: Wing Flight Time
+	// WingGlideControl: Wing Glide Control
+	// SwimSpeed: Swim Speed
+	// BreathCapacity: Breath Capacity
+	// SafeFallDistance: Safe Fall Distance
+	// ConsumablesHeader: Consumables
+	// PotionCooldownReduction: Potion Cooldown Reduction
+	// BuffDuration: Buff Duration
 	// MiscHeader: Misc
 	MaxMinions: Макс. миньонов
 	// AmmoConsumptionChance: Ammo Reservation
@@ -94,6 +113,15 @@ DropVisualizer: {
 	// RateMod: +Rate
 	Run: Запуск
 	SortBy: Сортировать по:
+	// Category: Category: {0}
+
+	Categories: {
+		// All: All
+		// Gear: Gear
+		// Currency: Currency
+		// Maps: Maps
+	}
+
 	UniqueItem: (Уникальный предмет)
 }
 
@@ -107,8 +135,8 @@ SkillUI: {
 Guide: {
 	Next: Далее
 	Skip: Пропустить
-	SkipGuide: "{$Skip} Все"
-	SkipStep: "{$Skip} Шаг"
+	SkipGuide: "{$Skip} все"
+	SkipStep: "{$Skip} шаг"
 	Hide: Скрыть
 	Show: Показать
 	# Welcome/hello, explain purpose of tutorial
@@ -117,7 +145,7 @@ Guide: {
 		Привет! Добро пожаловать в Path of Terraria.
 		Этот мод значительно меняет игру.
 		Это руководство объяснит изменения, механики и важные моменты.
-		Если хочешь пропустить, то можешь в любой момент нажать «Пропустить руководство» или «Пропустить шаг».
+		Если хочешь пропустить, то можешь в любой момент нажать «Пропустить все» или «Пропустить шаг».
 		В ином случае — жми «Далее».
 		'''
 	# Explain EXP bar, click on exp bar
@@ -249,7 +277,7 @@ SubworldHelp: {
 Grimoire: {
 	Storage: Хранилище
 	ClickMe: Нажми на меня!
-	// HelpLine: Help
+	HelpLine: Помощь
 	// AnyMaterial: Any Material
 	// AnyMaterialDesc: Allow all materials to be displayed.
 	// MinionMaterial: Minion-Specific Materials
@@ -281,7 +309,7 @@ Grimoire: {
 
 QuestReminderTitles: {
 	Dialogue: Диалог
-	// Reminder: Reminder
+	Reminder: Напоминание
 }
 
 Tips: {
@@ -317,17 +345,21 @@ Tips: {
 	// 28: Fear controls the Deerclops' domain. Keep in the light.
 	29: «\Если у тебя когда‑нибудь будет выбор — всегда выбирай взрывчатку.\» — Аларик
 	30: Всегда проверяй альтернативное применение оружия! Оно часто полезно не только для перемещения.
+	// 31: Missing quest items? Talk to Alaric, he'll get them for you.
+	// 32: If you're stuck on a quest, ask around Ravencrest! Always good to check in.
 }
 
-PointsRemaining: очков осталось
-// ResetPoints: Reset Points
+PointsRemaining: Очков осталось
+ResetPoints: Сброс очков
+// ExpGain: +{0} XP
 ExpBarHover:
 	'''
 	Уровень {0}
 	Опыт: {1} / {2} ({3}%)
-	Нажми чтобы открыть дерево навыков
+
+	Нажмите чтобы открыть дерево талантов
 	'''
-// AreaLevel: Area Level:
+AreaLevel: Уровень области:
 // Waypoints.TutorialTip: In order to use the Home waypoint, you must have an Arcane Obelisk placed in the main world. Use the Return button in your settings menu to proceed.
 
 VirtualBag: {
@@ -337,25 +369,97 @@ VirtualBag: {
 	// Review: Review your items (Closing this will exit the subworld)
 	// Conflux: Conflux
 	// ConfluxTooltip: Conflux gained from this domain
+	// CurrencyShards: Currency Shards
+	// CurrencyShardsTooltip: Currency shards gained from this domain
+	// TabMatched: Matched
+	// TabFilteredOut: Filtered Out
+	// FilterLabel: Filter: {0}
+	// NoFilter: No active filter
+	// EditFilter: Edit Filter
+}
+
+ItemFilter: {
+	// Title: Item Filters
+	// Filters: Filters
+	// Rules: Rules
+	// New: New
+	// Duplicate: Duplicate
+	// Delete: Delete
+	// AddRule: New
+	// DuplicateRule: Copy
+	// DeleteRule: Delete
+	// MoveUp: Move Up
+	// MoveDown: Move Down
+	// SetActive: Set Active
+	// ClearActive: Clear Active
+	// ActiveMarker: "[Active] {0}"
+	// DefaultName: New Filter
+	// DefaultRuleName: Rule {0}
+	// EmptyHint: Create or select a filter to begin editing.
+	// RuleEmptyHint: Add a rule to this filter to begin editing.
+	// FilterName: Filter Name
+	// RuleName: Rule Name
+	// RuleAction: Action
+	// RuleSummary: "{0}. {1}: {2}"
+	// ItemLevel: Item Level (min - max)
+	// Any: Any
+	// Rarity: Rarity (any if none selected)
+	// BaseTypes: Base Types (any if none selected)
+	// SelectAllBaseTypes: Select All
+	// DeselectAllBaseTypes: Deselect All
+
+	Actions: {
+		// Show: Show
+		// Hide: Hide
+		// Highlight: Highlight
+	}
+
+	Rarities: {
+		// Normal: Normal
+		// Magic: Magic
+		// Rare: Rare
+		// Unique: Unique
+	}
+
+	// BaseType.Fallback: "{0}"
+
+	Reason: {
+		// ItemMissing: item is null or air
+		// MissingData: no PoT data
+		// LevelBelowMin: Level {0} < Min {1}
+		// LevelAboveMax: Level {0} > Max {1}
+		// RarityNotAllowed: Rarity {0} not in {{{1}}}
+		// BaseTypeNotAllowed: BaseType {0} not in {1}
+		// NoMatchingRule: no matching rule
+		// ShownByRule: Rule '{0}' showed item
+		// HiddenByRule: Rule '{0}' hid item
+		// HighlightedByRule: Rule '{0}' highlighted item
+	}
+
+	// RejectionChat: Filter '{0}' rejected '{1}' — {2}
 }
 
 CurrencyPouch: {
 	// Title: Currency Pouch
 	// Apply: Right click to apply to held item
+	// ExtractOne: Ctrl + Left Click: take 1 out
+	// ExtractAll: Ctrl + Shift + Left Click: take all out
+	// StoreAll: Shift + Left Click: store all from inventory
 }
 
-PassiveTreeTab: Пассивные
-SkillTreeTab: Навыки
-QuestsAvailableTab: Доступный
-QuestsCompletedTab: Завершенный
-PlayerStatsTab: Статистика
+// PassiveTreeTab: Passives
+// MasteryRequiredNodes: Requires {0} connected nodes to allocate
+// SkillTreeTab: Skills
+// QuestsAvailableTab: Available
+// QuestsCompletedTab: Completed
+// PlayerStatsTab: Stats
 
 ClassPages: {
 	StarterClasses: {
-		// Melee: Melee
-		// Magic: Magic
-		// Ranged: Ranged
-		// Summon: Summon
+		Melee: Воин
+		Magic: Маг
+		Ranged: Стрелок
+		Summon: Призыватель
 	}
 
 	// PreferredWeapons: Preferred Weapons
@@ -402,8 +506,9 @@ ClassPages: {
 
 MapDevice: {
 	// MapSlot: Map Slot
-	// ActivatePortal: Open Portal
-	// DeactivatePortal: Close Portal
+	ActivatePortal: Открыть портал
+	DeactivatePortal: Закрыть портал
+	// ConfirmClosePortal: Confirm Close
 	// AlreadyInUse: This map device is already in use!
 	// InjectResource: Inject Resource
 	// EjectResource: Eject Resource
@@ -414,9 +519,25 @@ MapDevice: {
 }
 
 MigrateRavencrest: {
-	// Yes: Yes
-	// No: No
+	Yes: Да
+	No: Нет
 	// Question: Ravencrest is outdated, and may have issues. Do you want to update your save?
 	// Note: (It may take a minute)
 	// Title: Migrate Ravencrest?
 }
+
+OnlineModPopup: {
+	// Title: Path of Terraria Online
+	/* Description:
+		'''
+		We recommend pairing Path of Terraria with the online mod
+		PathOfTerrariaOnline is available on the Steam Workshop and enables:
+		- Global Leaderboards
+		- Global Trade System
+		- Global Chat System
+		''' */
+	// OpenWorkshop: Open Steam Workshop Page
+	// Decline: Decline
+}
+
+// RecoveryAvailable: Quest items can be recovered from Alaric

@@ -37,8 +37,6 @@ internal abstract class HybridAttributePassive : Passive
 
 internal class AddedIntelligenceStrengthPassive : HybridAttributePassive
 {
-	public override string TexturePath => $"{PoTMod.ModName}/Assets/Passives/Placeholder";
-
 	public override void BuffPlayer(Player player)
 	{
 		AttributesPlayer attributesPlayer = player.GetModPlayer<AttributesPlayer>();
@@ -51,8 +49,6 @@ internal class AddedIntelligenceStrengthPassive : HybridAttributePassive
 
 internal class AddedIntelligenceDexterityPassive : HybridAttributePassive
 {
-	public override string TexturePath => $"{PoTMod.ModName}/Assets/Passives/Placeholder";
-
 	public override void BuffPlayer(Player player)
 	{
 		AttributesPlayer attributesPlayer = player.GetModPlayer<AttributesPlayer>();
@@ -65,8 +61,6 @@ internal class AddedIntelligenceDexterityPassive : HybridAttributePassive
 
 internal class AddedDexterityStrengthPassive : HybridAttributePassive
 {
-	public override string TexturePath => $"{PoTMod.ModName}/Assets/Passives/Placeholder";
-
 	public override void BuffPlayer(Player player)
 	{
 		AttributesPlayer attributesPlayer = player.GetModPlayer<AttributesPlayer>();

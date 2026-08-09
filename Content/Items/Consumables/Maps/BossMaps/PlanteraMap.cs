@@ -5,7 +5,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class PlanteraMap() : HardmodeBossMap(5, () => NPC.downedPlantBoss)
+internal class PlanteraMap() : HardmodeBossMap(5, 60, () => NPC.downedPlantBoss)
 {
 	public override void SetStaticDefaults()
 	{
@@ -20,9 +20,9 @@ internal class PlanteraMap() : HardmodeBossMap(5, () => NPC.downedPlantBoss)
 		Item.Size = new Vector2(38, 28);
 	}
 
-	protected override void OpenMapInternal()
+	internal override Subworld GetDestination()
 	{
-		SubworldSystem.Enter<PlanteraDomain>();
+		return ModContent.GetInstance<PlanteraDomain>();
 	}
 
 	public override string GenerateName(string defaultName)

@@ -1,5 +1,16 @@
 {
   "netId": 551,
   "friendlyName": "D D2 Betsy",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": {
+        "added": 40,
+        "conversion": 0.75
+      },
+      "lightning": null,
+      "cold": null
+    }
+  ],
   "entries": []
 }

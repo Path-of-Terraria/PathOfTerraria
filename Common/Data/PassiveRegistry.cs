@@ -72,13 +72,13 @@ public class PassiveRegistry : ILoadable
 	private static Stream GetPassiveJsonStream()
 	{
 #if DEBUG || STAGING
-		string sourcePath = Path.Combine(PassiveFileWatcher.SourcePath, "Passives-dev.json");
+		string sourcePath = Path.Combine(PassiveFileWatcher.SourcePath, "Passives.json");
 		string tmodPath = Path.Combine(ModLoader.ModPath, PoTMod.ModName + ".tmod");
 
 		// If the mod was built later than the passives file was opened, open the internal file
 		if (File.GetLastWriteTime(sourcePath).CompareTo(File.GetLastWriteTime(tmodPath)) <= 0)
 		{
-			return PoTMod.Instance.GetFileStream($"Common/Data/Passives/Passives-dev.json");
+			return PoTMod.Instance.GetFileStream($"Common/Data/Passives/Passives.json");
 		}
 
 		// Otherwise, return the in-dev file

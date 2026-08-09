@@ -1,23 +1,29 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.SkeleDomain;
+﻿using PathOfTerraria.Common.ItemDropping;
+using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.SkeleDomain;
 using PathOfTerraria.Common.Subworlds.Tools;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.Projectiles.Utility;
+using PathOfTerraria.Core.Items;
 using SubworldLibrary;
 using System.Collections.Generic;
-using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.Localization;
+using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 
 internal class GolemDomain : BossDomainSubworld
 {
-	const int RoomCountPerTemple = 3;
+	/// <summary>
+	/// How many room *pairs* there are per domain.
+	/// </summary>
+	const int RoomCountPerTemple = 2;
 
 	private record PairingRoom(PlacedRoom Room, bool Exit, int PairingNumber);
 
@@ -78,7 +84,8 @@ internal class GolemDomain : BossDomainSubworld
 
 	private static void PairTeleporters()
 	{
-		for (int i = 0; i < RoomCountPerTemple + 3; ++i)
+		// I don't remember why, this needs to repeat RoomCountPerTemple * 2 times (to match each room on each side I think?)
+		for (int i = 0; i < RoomCountPerTemple * 2; ++i)
 		{
 			PairingRoom exit = Rooms.Find(x => x.Exit && x.PairingNumber == i);
 			PairingRoom entrance = Rooms.Find(x => !x.Exit && x.PairingNumber == i);
@@ -306,6 +313,51 @@ internal class GolemDomain : BossDomainSubworld
 		{
 			Decoration.GrowOnJungleGrass(grass.Key.X, grass.Key.Y, grass.Value);
 		}
+
+		WeightedRandom<(int type, Range stackRange)> miscChestLoot = new();
+		miscChestLoot.Add((ItemID.LihzahrdBrick, 6..40), 1f);
+		miscChestLoot.Add((ItemID.LunarTabletFragment, 2..6), 0.5f);
+		miscChestLoot.Add((ItemID.LizardEgg, 1..1), 0.0005f);
+		miscChestLoot.Add((ItemID.WoodenSpike, 3..8), 1);
+
+		using SmartLoot.Scope _ = SmartLoot.Begin();
+
+		for (int i = 0; i < Main.maxChests; ++i)
+		{
+			Chest chest = Main.chest[i];
+
+			if (chest is null)
+			{
+				continue;
+			}
+
+			Tile tile = Main.tile[chest.x, chest.y];
+			List<ItemDatabase.ItemRecord> drops = MapChestLoot.RollMobDrops();
+
+			if (tile.HasTile && TileID.Sets.BasicChest[tile.TileType])
+			{
+				int mobDropSlots = drops.Count;
+				int totalSlots = mobDropSlots + 3;
+
+				for (int k = 0; k < totalSlots && k < chest.item.Length; ++k)
+				{
+					if (k < mobDropSlots)
+					{
+						ItemDatabase.ItemRecord drop = drops[k];
+						if (drop.Item != null)
+						{
+							chest.item[k] = MapChestLoot.BuildChestItem(drop);
+						}
+					}
+					else
+					{
+						(int type, Range stackRange) = miscChestLoot.Get();
+						chest.item[k] = new Item(type,
+							Main.rand.Next(stackRange.Start.Value, stackRange.End.Value + 1));
+					}
+				}
+			}
+		}
 	}
 
 	private void GenTerrain(GenerationProgress progress, GameConfiguration configuration)
@@ -360,8 +412,9 @@ internal class GolemDomain : BossDomainSubworld
 		TileEntity.UpdateEnd();
 
 		FightState state = FightTracker.UpdateState();
+		GetData().MarkBossDownedIfDefeated<GolemDomain>(NPCID.Golem);
 
-		if (state == FightState.NotStarted)
+		if (state == FightState.NotStarted && !GetData().BossDowned)
 		{
 			bool canSpawn = Main.CurrentFrameFlags.ActivePlayersCount > 0;
 			HashSet<int> who = [];

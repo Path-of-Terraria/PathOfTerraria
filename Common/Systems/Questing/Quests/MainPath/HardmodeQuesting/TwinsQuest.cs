@@ -27,7 +27,7 @@ internal class TwinsQuest() : Quest
 		new ActionRewards((p, v) =>
 		{
 			p.GetModPlayer<ExpModPlayer>().Exp += 30000;
-			CompletionVisit = ModContent.GetInstance<RavencrestSubworld>().TimesEntered;
+			CompletionVisit = (uint)MappingWorld.GetTimesEntered<RavencrestSubworld>();
 		}, "30000 experience"),
 	];
 
@@ -61,13 +61,19 @@ internal class TwinsQuest() : Quest
 				Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerTwinsDialogue2"),
 				onSuccess: _ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<TwinsMap>())), //TODO: THIS WILL BE SOME TELEPORTER FEATURE IN THE FUTURE
 			
-			new ConditionCheck("Domain", _ => SubworldSystem.Current is TwinsDomain, 1, this.GetLocalization("EnterDomain")),
-			
+			new ConditionCheck("Domain", _ => SubworldSystem.Current is TwinsDomain, 1, this.GetLocalization("EnterDomain"))
+			{
+				RecoveryItem = ModContent.ItemType<TwinsMap>()
+			},
+
 			new ParallelQuestStep("Kill", [
 				new ConditionCheck("Retinazer", _ => BossTracker.DownedInDomain<TwinsDomain>(NPCID.Retinazer), 1, this.GetLocalization("Boss1")),
 				new ConditionCheck("Spazmatism", _ => BossTracker.DownedInDomain<TwinsDomain>(NPCID.Spazmatism), 1, this.GetLocalization("Boss2")),
-			], this.GetLocalization("EnterDomain")),
-	
+			], this.GetLocalization("EnterDomain"))
+			{
+				RecoveryItem = ModContent.ItemType<TwinsMap>()
+			},
+
 			new InteractWithNPC("Finish", NPCQuestGiver, this.GetLocalization("Boss1"), Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerTwinsDialogue3"))
 			{
 				CountsAsCompletedOnMarker = true
@@ -83,7 +89,6 @@ internal class TwinsQuest() : Quest
 	protected override bool InternalAvailable()
 	{
 		Quest tinkerIntroQuest = GetLocalPlayerInstance<TinkerIntroQuest>();
-		RavencrestSubworld subworld = ModContent.GetInstance<RavencrestSubworld>();
-		return tinkerIntroQuest.Completed && NPC.downedQueenSlime && subworld.TimesEntered != TinkerIntroQuest.CompletionVisit;
+		return tinkerIntroQuest.Completed && NPC.downedQueenSlime && MappingWorld.GetTimesEntered<RavencrestSubworld>() != TinkerIntroQuest.CompletionVisit;
 	}
 }

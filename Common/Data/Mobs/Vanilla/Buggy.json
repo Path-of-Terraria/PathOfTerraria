@@ -1,5 +1,19 @@
 {
   "netId": 487,
   "friendlyName": "Buggy",
-  "entries": []
+  "damage": null,
+  "entries": [
+    {
+      "scale": null,
+      "prefix": "",
+      "weight": 1,
+      "stats": {
+        "level": 0,
+        "experience": 0
+      },
+      "affixes": [],
+      "requirements": "",
+      "damageOverrides": null
+    }
+  ]
 }

@@ -94,26 +94,26 @@ public sealed partial class SunDevourerNPC : ModNPC
 		NPC.noTileCollide = true;
 		NPC.lavaImmune = true;
 		NPC.noGravity = true;
-		NPC.boss = false;
-		NPC.lifeMax = 10000;
-		NPC.defense = 20;
+		NPC.boss = true;
+		NPC.lifeMax = 100_000;
+		NPC.defense = 40;
 		NPC.aiStyle = -1;
 		NPC.knockBackResist = 0;
-		NPC.damage = 60;
+		NPC.damage = 80;
 		NPC.HitSound = SoundID.NPCHit1;
 		NPC.DeathSound = SoundID.NPCDeath1;
 		NPC.npcSlots = 15;
 		NPC.dontTakeDamage = true;
 		NPC.BossBar = ModContent.GetInstance<DevourerBossBar>();
 
-		Music = MusicID.Boss4;
+		Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/SunDevourer");
 	}
 
 	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 	{
-		NPC.lifeMax = ModeUtils.ByMode(10000, 15000, 19000, 25000);
-		NPC.defense = ModeUtils.ByMode(12, 20, 25, 40);
-		NPC.damage = ModeUtils.ByMode(60, 90, 120, 170);
+		NPC.lifeMax = ModeUtils.ByMode(100000, 150000, 190000, 250000);
+		NPC.defense = ModeUtils.ByMode(20, 32, 40, 50);
+		NPC.damage = ModeUtils.ByMode(80, 100, 140, 220);
 	}
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)

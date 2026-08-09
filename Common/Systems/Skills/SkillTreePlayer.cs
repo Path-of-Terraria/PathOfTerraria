@@ -1,6 +1,8 @@
 ﻿using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
+using PathOfTerraria.Content.SkillPassives;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -182,6 +184,25 @@ internal class SkillTreePlayer : ModPlayer
 		}
 
 		return null;
+	}
+
+	internal int GetTemporarySkillPointTotal()
+	{
+		int level = Player.GetModPlayer<ExpModPlayer>().Level;
+		return Math.Clamp(level / 10, 0, 10);
+	}
+
+	internal int GetSpentSkillPoints(SkillTree tree)
+	{
+		return tree.Nodes
+			.OfType<SkillPassive>()
+			.Where(static node => node is not Anchor)
+			.Sum(node => node.Level);
+	}
+
+	internal int GetAvailableSkillPoints(SkillTree tree)
+	{
+		return Math.Max(0, GetTemporarySkillPointTotal() - GetSpentSkillPoints(tree));
 	}
 
 	public override void SaveData(TagCompound tag)

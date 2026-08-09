@@ -1,20 +1,24 @@
-﻿using PathOfTerraria.Common.NPCs.DropRules;
+using PathOfTerraria.Common.ItemDropping;
+using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 using PathOfTerraria.Content.Items.Quest;
-using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode.QueenDomain;
 
 internal class QueenDomainCoreDrop : GlobalNPC
 {
-	public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
+	public override void OnKill(NPC npc)
 	{
 		if (npc.type == NPCID.QueenSlimeBoss)
 		{
-			LeadingConditionRule rule = new(new HasQuest(ModContent.GetInstance<QueenSlimeQuest>().FullName));
-			rule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<RoyalJellyCore>()));
-			npcLoot.Add(rule);
+			string questName = ModContent.GetInstance<QueenSlimeQuest>().FullName;
+			int itemType = ModContent.ItemType<RoyalJellyCore>();
+
+			// BossTracker advances this quest for every active quest owner, not only players recorded as interacting.
+			InstancedItemDrop.DropForEachEligiblePlayer(npc, itemType,
+				player => Quest.PlayerHasQuest(player.whoAmI, questName) && !player.HasItem(itemType),
+				interactionRequired: false);
 		}
 	}
 }

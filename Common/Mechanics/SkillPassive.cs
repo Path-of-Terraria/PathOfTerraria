@@ -16,21 +16,21 @@ public abstract class SkillPassive(SkillTree tree) : SkillNode(tree)
 
 	public override bool CanAllocate(Player player)
 	{
-		return base.CanAllocate(player) && Tree.Points > 0;
+		SkillTreePlayer treePlayer = player.GetModPlayer<SkillTreePlayer>();
+		return base.CanAllocate(player)
+			&& treePlayer.GetAvailableSkillPoints(Tree) > 0;
 	}
 
 	public override void OnAllocate(Player player)
 	{
 		base.OnAllocate(player);
-		Tree.Points--;
 		player.GetModPlayer<SkillTreePlayer>().ModifySkillPassive(Tree, GetType(), Level);
 	}
 
 	public override void OnDeallocate(Player player)
 	{
 		base.OnDeallocate(player);
-		Tree.Points++;
-		player.GetModPlayer<SkillTreePlayer>().ModifySkillPassive(Tree, GetType(), -Level);
+		player.GetModPlayer<SkillTreePlayer>().ModifySkillPassive(Tree, GetType(), Level);
 	}
 
 	public override string ToString()

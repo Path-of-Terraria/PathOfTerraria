@@ -12,6 +12,10 @@ namespace PathOfTerraria.Common.Systems.MapContent;
 /// </summary>
 internal interface IMapIcon
 {
+	bool ShowMapIcon(Projectile projectile)
+	{
+		return true;
+	}
 }
 
 internal class ProjectileMapIconLoader : ModSystem
@@ -43,12 +47,12 @@ internal class ProjectileMapLayer : ModMapLayer
 		{
 			Point mapPos = projectile.Center.ToTileCoordinates();
 
-			if (!WorldGen.InWorld(mapPos.X, mapPos.Y) || !Main.Map.IsRevealed(mapPos.X, mapPos.Y))
-			{
-				continue;
-			}
+			if (!WorldGen.InWorld(mapPos.X, mapPos.Y)) { continue; }
+			if (!Main.Map.IsRevealed(mapPos.X, mapPos.Y)) { continue; }
+			if (!IconsByType.TryGetValue(projectile.type, out Asset<Texture2D> asset)) { continue; }
+			if (projectile.ModProjectile is IMapIcon mapIcon && !mapIcon.ShowMapIcon(projectile)) { continue; }
 
-			if (IconsByType.TryGetValue(projectile.type, out Asset<Texture2D> asset) && context.Draw(asset.Value, projectile.Center / 16f, Alignment.Center).IsMouseOver)
+			if (context.Draw(asset.Value, projectile.Center / 16f, Alignment.Center).IsMouseOver)
 			{
 				text = projectile.Name;
 			}

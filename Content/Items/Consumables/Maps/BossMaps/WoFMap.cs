@@ -5,7 +5,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class WoFMap() : PreHardmodeBossMap(45, () => Main.hardMode)
+internal class WoFMap() : PreHardmodeBossMap(35, () => Main.hardMode)
 {
 	public override void SetStaticDefaults()
 	{
@@ -22,9 +22,9 @@ internal class WoFMap() : PreHardmodeBossMap(45, () => Main.hardMode)
 		Item.Size = new Vector2(38, 36);
 	}
 
-	protected override void OpenMapInternal()
+	internal override Subworld GetDestination()
 	{
-		SubworldSystem.Enter<WallOfFleshDomain>();
+		return ModContent.GetInstance<WallOfFleshDomain>();
 	}
 
 	public override string GenerateName(string defaultName)

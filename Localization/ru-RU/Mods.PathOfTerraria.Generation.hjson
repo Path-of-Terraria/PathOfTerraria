@@ -1,5 +1,5 @@
-RavencrestEntrancePass: Открытие Ravencrest
-FrozenRuinPass: ""
+RavencrestEntrancePass: Открытие Вороньего пика
+// FrozenRuinPass: ""
 Terrain: Генерация ландшафта
 Tunnels: Рытье туннелей
 PopulatingWorld: Заселение мира
@@ -11,8 +11,8 @@ TreesAndLeaves: Добавление деревьев и листвы
 Structures: Возведение построек
 Maze: Выход из лабиринта
 PopulatingMetals: Рассеивание металлов
-Hole: Копаение ям
-Growing: Выращивае травы
+Hole: Копание ям
+Growing: Выращивание травы
 Clouds: Исследование неба
 Space: Выход из атмосферы
 Scanning: Сканирование местности

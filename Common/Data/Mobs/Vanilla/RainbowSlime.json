@@ -1,17 +1,5 @@
 {
   "netId": 244,
   "friendlyName": "Rainbow Slime",
-  "entries": [
-    {
-      "scale": null,
-      "prefix": null,
-      "weight": 1,
-      "stats": {
-        "level": 25,
-        "experience": 50
-      },
-      "affixes": null,
-      "requirements": "PreHardmodeSurface"
-    }
-  ]
+  "entries": []
 }

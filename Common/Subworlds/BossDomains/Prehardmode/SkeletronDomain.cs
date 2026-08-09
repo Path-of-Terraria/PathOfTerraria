@@ -14,7 +14,6 @@ using PathOfTerraria.Common.Subworlds.Tools;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Common.Systems.DisableBuilding;
-using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Utilities.Extensions;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
@@ -41,7 +40,7 @@ public class SkeletronDomain : BossDomainSubworld
 	}
 
 	public override int Width => 900;
-	public override int Height => 900;
+	public override int Height => 700;
 	public override (int time, bool isDay) ForceTime => ((int)Main.nightLength / 2, false);
 
 	const int BaseTunnelDepth = 90;
@@ -258,8 +257,8 @@ public class SkeletronDomain : BossDomainSubworld
 
 		WellBottom.X = DigChasm(WellBottom.Y - 1, WellBottom.Y + BaseTunnelDepth, WellBottom.X, 4, 6);
 		Point secondFloorStart = GenerateFirstFloor();
-		Point thirdFloorStart = GenerateSecondFloor(secondFloorStart.X, secondFloorStart.Y);
-		GenerateThirdFloor(thirdFloorStart.X, thirdFloorStart.Y);
+		//Point thirdFloorStart = GenerateSecondFloor(secondFloorStart.X, secondFloorStart.Y);
+		GenerateThirdFloor(secondFloorStart.X, secondFloorStart.Y);
 
 		ActuatorInfoByFloor.Clear();
 	}
@@ -755,8 +754,9 @@ public class SkeletronDomain : BossDomainSubworld
 		}
 
 		FightState state = FightTracker.UpdateState();
+		GetData().MarkBossDownedIfDefeated<SkeletronDomain>(NPCID.SkeletronHead);
 
-		if (state == FightState.NotStarted && allInArena)
+		if (state == FightState.NotStarted && allInArena && !GetData().BossDowned)
 		{
 			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Arena.Center.X, Arena.Center.Y, NPCID.SkeletronHead, 1);
 

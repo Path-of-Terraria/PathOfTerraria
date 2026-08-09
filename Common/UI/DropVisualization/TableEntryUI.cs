@@ -1,5 +1,7 @@
-﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Content.Items.Currency;
 using Terraria.GameContent.UI.Elements;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.UI;
 
@@ -28,6 +30,12 @@ internal class TableEntryUI : UIElement
 		text.Append(new UIText($"#: {Result.Count}") { Left = StyleDimension.FromPixels(240) });
 		text.Append(new UIText($"%: {Result.Count / (float)Count * 100f:#0.####}%") { Left = StyleDimension.FromPixels(320) });
 
+		if (ContentSamples.ItemsByType[ItemId].ModItem is CurrencyShard)
+		{
+			Append(text);
+			return;
+		}
+
 		int xOff = 444;
 
 		if (Result.IsUnique)
@@ -49,7 +57,7 @@ internal class TableEntryUI : UIElement
 				xOff += 120;
 			}
 		}
-		
+
 		Append(text);
 	}
 }

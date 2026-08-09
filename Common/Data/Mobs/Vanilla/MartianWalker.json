@@ -1,5 +1,16 @@
 {
   "netId": 520,
   "friendlyName": "Martian Walker",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": null,
+      "lightning": {
+        "added": 35,
+        "conversion": 0.75
+      },
+      "cold": null
+    }
+  ],
   "entries": []
 }

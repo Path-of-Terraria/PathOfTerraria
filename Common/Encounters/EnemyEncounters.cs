@@ -22,20 +22,27 @@ internal record struct EncounterDescription()
 {
 	/// <summary> An identifier for this encounter. Does not do anything on its own. </summary>
 	public required string Identifier { get; set; } = string.Empty;
+
 	/// <summary> The encounter's activation center in world-space (pixels). </summary>
 	public required Vector2 ActivationOrigin { get; set; }
+
 	/// <summary> The encounter's activation range in world-space (pixels). </summary>
 	[Range(64f, 4096f), Increment(64f)]
 	public required float ActivationRange { get; set; }
+
 	/// <summary> The encounter's spawn area in tile-space. This will be supplied to all spawns with zeroed <see cref="SpawnPlacement.Area"/>. </summary>
 	public required Rectangle SpawnArea { get; set; }
+
 	/// <summary> The encounter's spawn center in tile-space. This will be supplied to all spawns with zeroed <see cref="SpawnPlacement.AreaOrigin"/>. </summary>
 	public required Point16 SpawnOrigin { get; set; }
+
 	/// <summary> The waves that this encounter consists of. </summary>
 	public required EncounterWave[] Waves { get; set; }
+
 	/// <summary> If set together with <see cref="SceneEffectPriority"/>, overrides played music when active and near. </summary>
 	[JsonConverter(typeof(EntityDefinitionJsonConverter))]
 	public MusicDefinition Music { get; set; } = new(0);
+
 	/// <summary> The priority to use for effects such as <see cref="Music"/>. </summary>
 	[JsonConverter(typeof(StringEnumConverter)), DefaultValue(SceneEffectPriority.None)]
 	public SceneEffectPriority SceneEffectPriority { get; set; }
@@ -44,8 +51,11 @@ internal record struct EncounterDescription()
 	public readonly void Verify()
 	{
 		if (Waves == null) { throw new ArgumentNullException(nameof(Waves)); }
+
 		if (Waves.Length == 0) { throw new ArgumentOutOfRangeException(nameof(Waves)); }
+
 		if (Identifier == null) { throw new ArgumentNullException(nameof(Identifier)); }
+
 		if (SpawnArea.Width == 0 | SpawnArea.Height == 0) { throw new ArgumentOutOfRangeException(nameof(SpawnArea)); }
 	}
 }
@@ -54,15 +64,22 @@ internal record struct EncounterWave()
 {
 	/// <summary> The enemies to spawn. </summary>
 	public required EnemySpawn[] Spawns { get; set; }
+
 	/// <summary> The kill score ratio that needs to be reached from killing enemies specifically spawned by this wave to advance to the next wave. </summary>
 	[Range(0f, 1f), DefaultValue(0.0f)]
 	public float TargetSpawnScore { get; set; } = 0.0f;
+
 	/// <summary> The kill score ratio that needs to be reached from killing any enemies during this wave to advance to the next wave. </summary>
 	[Range(0f, 1f), DefaultValue(0.8f)]
 	public float TargetWaveScore { get; set; } = 0.8f;
+
 	/// <summary> The kill score ratio that needs to be reached from killing enemies from this and all preceding waves to advance to the next wave. </summary>
 	[Range(0f, 1f), DefaultValue(0.0f)]
 	public float TargetEncounterScore { get; set; } = 0.0f;
+
+	/// <summary> The delay applied before spawning the next wave after this wave advances. </summary>
+	[Range(0, 5 * 60 * 60), DefaultValue(0)]
+	public uint NextWaveDelayInTicks { get; set; } = 0;
 }
 
 /// <summary> An encounter instance's activation state. </summary>
@@ -78,25 +95,34 @@ internal record struct EncounterInstance()
 {
 	/// <summary> The activation state. </summary>
 	public EncounterState State { get; set; } = EncounterState.NotStarted;
+
 	/// <summary> Whether the encounter is paused. </summary>
 	public bool IsPaused { get; set; }
+
 	/// <summary> The currently active wave. </summary>
 	public int WaveIndex { get; set; }
+
 	/// <summary> The amount of enemies that have been spawned for the current wave. </summary>
 	public int EnemiesSpawnedThisWave { get; set; }
+
 	/// <summary> The kill score that has been accumulated during the whole encounter. </summary>
 	public float EncounterScore { get; set; }
+
 	/// <summary> The kill score that has been accumulated from killing any enemies during the current wave. </summary>
 	public float WaveScore { get; set; }
+
 	/// <summary> The kill score that has been accumulated from killing enemies spawned specifically by the current wave. </summary>
 	public float SpawnScore { get; set; }
 
 	/// <summary> A sum of all waves' spawns possible kill score. </summary>
 	public float TotalBaseScore { get; set; }
+
 	/// <summary> The <see cref="EncounterScore"/> value that must be reached to advance to the next encounter. </summary>
 	public float TargetEncounterScore { get; set; }
+
 	/// <summary> The <see cref="WaveScore"/> value that must be reached to advance to the next encounter. </summary>
 	public float TargetWaveScore { get; set; }
+
 	/// <summary> The <see cref="SpawnScore"/> value that must be reached to advance to the next encounter. </summary>
 	public float TargetSpawnScore { get; set; }
 }
@@ -111,7 +137,8 @@ internal record struct Encounter(uint Index, uint Version) : IHandle
 	public readonly ref readonly EncounterInstance Instance => ref EnemyEncounters.encounters.Get(this).Instance;
 
 	/// <summary> An immutable reference to this encounter's data. </summary>
-	public readonly ref readonly EncounterDescription Description => ref EnemyEncounters.encounters.Get(this).Description;
+	public readonly ref readonly EncounterDescription Description =>
+		ref EnemyEncounters.encounters.Get(this).Description;
 
 	/// <summary> Starts (and unpauses) this encounter. </summary>
 	public readonly void Start()
@@ -211,7 +238,8 @@ internal record struct Encounter(uint Index, uint Version) : IHandle
 
 		for (int i = 0; i < Main.maxNPCs; i++)
 		{
-			if (Main.npc[i] is { active: true } npc && EnemyEncounters.enemyToEncounterMapping[npc.whoAmI].Encounter == this)
+			if (Main.npc[i] is { active: true } npc &&
+			    EnemyEncounters.enemyToEncounterMapping[npc.whoAmI].Encounter == this)
 			{
 				yield return npc;
 			}
@@ -278,6 +306,7 @@ internal sealed class EnemyEncounters : ModSystem
 	}
 
 	internal static readonly GenerationalArena<Encounter, InstanceData> encounters = new(initialCapacity: 16);
+
 	/// <summary> Maps spawned enemies to the encounter wave that spawned them, and their advancement score. </summary>
 	internal static readonly EnemyInstanceData[] enemyToEncounterMapping = new EnemyInstanceData[Main.maxNPCs + 1];
 
@@ -286,14 +315,14 @@ internal sealed class EnemyEncounters : ModSystem
 
 	static EnemyEncounters()
 	{
-		
 	}
 
 	public override void Load()
 	{
 		base.Load();
 
-		MonoModHooks.Modify(typeof(SceneEffectLoader).GetMethod(nameof(SceneEffectLoader.UpdateMusic)), SceneEffectLoaderUpdateMusicInjection);
+		MonoModHooks.Modify(typeof(SceneEffectLoader).GetMethod(nameof(SceneEffectLoader.UpdateMusic)),
+			SceneEffectLoaderUpdateMusicInjection);
 	}
 
 	public override void PostUpdateWorld()
@@ -309,10 +338,7 @@ internal sealed class EnemyEncounters : ModSystem
 	/// <summary> Creates an encounter with the given parameters. </summary>
 	public static Encounter CreateEncounter(in EncounterDescription description)
 	{
-		Encounter encounter = encounters.Add(new InstanceData
-		{
-			Description = description,
-		});
+		Encounter encounter = encounters.Add(new InstanceData { Description = description, });
 		return encounter;
 	}
 
@@ -373,11 +399,15 @@ internal sealed class EnemyEncounters : ModSystem
 			ref readonly EncounterWave wave = ref description.Waves[data.Instance.WaveIndex];
 
 			if (data.Instance.State != EncounterState.InProgress) { continue; }
+
 			if (data.SpawnCooldown > 0 && --data.SpawnCooldown > 0) { continue; }
+
 			if (data.Instance.IsPaused) { continue; }
 
 			// Spawn enemies for the current wave.
-			for (int enemyIndexInWave = data.Instance.EnemiesSpawnedThisWave; enemyIndexInWave < wave.Spawns.Length; enemyIndexInWave++)
+			for (int enemyIndexInWave = data.Instance.EnemiesSpawnedThisWave;
+			     enemyIndexInWave < wave.Spawns.Length;
+			     enemyIndexInWave++)
 			{
 				EnemySpawn spawn = wave.Spawns[enemyIndexInWave];
 
@@ -385,8 +415,13 @@ internal sealed class EnemyEncounters : ModSystem
 				if (spawn.SpawnPlacement is { } placement)
 				{
 					if (placement.Area == default) { placement.Area = description.SpawnArea; }
+
 					if (placement.AreaOrigin == default) { placement.AreaOrigin = description.SpawnOrigin; }
-					if (placement.CollisionSize == default) { placement.CollisionSize = ContentSamples.NpcsByNetId[spawn.NpcType.Type].Size.ToPoint(); }
+
+					if (placement.CollisionSize == default)
+					{
+						placement.CollisionSize = ContentSamples.NpcsByNetId[spawn.NpcType.Type].Size.ToPoint();
+					}
 
 					spawn.SpawnPlacement = placement;
 				}
@@ -448,6 +483,7 @@ internal sealed class EnemyEncounters : ModSystem
 			ref readonly EncounterWave wave = ref data.Description.Waves[data.Instance.WaveIndex];
 
 			if (data.Instance.State != EncounterState.InProgress) { continue; }
+
 			if (data.Instance.IsPaused) { continue; }
 
 			// Switch to next wave or end the encounter if enough of its spawned enemies have been killed.
@@ -467,18 +503,19 @@ internal sealed class EnemyEncounters : ModSystem
 					}
 					else
 					{
-						NextWave(encounter);
+						NextWave(encounter, wave.NextWaveDelayInTicks);
 					}
 				}
 			}
 		}
 	}
 
-	private static void NextWave(Encounter encounter)
+	private static void NextWave(Encounter encounter, uint spawnCooldown)
 	{
 		ref InstanceData data = ref encounters.Get(encounter);
 		data.Instance.WaveIndex++;
 		encounter.ResetWave();
+		data.SpawnCooldown = spawnCooldown;
 
 #if DEBUG
 		Main.NewText($"Wave {data.Instance.WaveIndex + 1} of {data.Description.Waves.Length}", Color.MediumVioletRed);
@@ -524,7 +561,9 @@ internal sealed class EnemyEncounters : ModSystem
 			ref readonly InstanceData data = ref encounters.Get(encounter);
 
 			if (data.Instance.State != EncounterState.InProgress) { continue; }
+
 			if (data.Description.Music.Type <= 0) { continue; }
+
 			if (data.Description.SceneEffectPriority < priority) { continue; }
 
 			float increasedSqrRange = MathF.Pow(data.Description.ActivationRange * 3f, 2f);
@@ -538,6 +577,5 @@ internal sealed class EnemyEncounters : ModSystem
 	[Conditional("DEBUG")]
 	private static void DebugEncounters()
 	{
-		
 	}
 }

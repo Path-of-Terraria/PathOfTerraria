@@ -105,6 +105,156 @@ Treads: {
 	Tooltip: ""
 }
 
+BatteredHelm: {
+	// DisplayName: Battered Helm
+	// Tooltip: ""
+}
+
+IronboundHelm: {
+	// DisplayName: Ironbound Helm
+	// Tooltip: ""
+}
+
+HallowforgedHelm: {
+	// DisplayName: Hallowforged Helm
+	// Tooltip: ""
+}
+
+AstralforgedGreathelm: {
+	// DisplayName: Astralforged Greathelm
+	// Tooltip: ""
+}
+
+EternalforgedGreathelm: {
+	// DisplayName: Eternalforged Greathelm
+	// Tooltip: ""
+}
+
+BatteredMail: {
+	// DisplayName: Battered Mail
+	// Tooltip: ""
+}
+
+IronboundCuirass: {
+	// DisplayName: Ironbound Cuirass
+	// Tooltip: ""
+}
+
+HallowforgedCuirass: {
+	// DisplayName: Hallowforged Cuirass
+	// Tooltip: ""
+}
+
+AstralforgedAegis: {
+	// DisplayName: Astralforged Aegis
+	// Tooltip: ""
+}
+
+EternalforgedAegis: {
+	// DisplayName: Eternalforged Aegis
+	// Tooltip: ""
+}
+
+BatteredGreaves: {
+	// DisplayName: Battered Greaves
+	// Tooltip: ""
+}
+
+IronboundGreaves: {
+	// DisplayName: Ironbound Greaves
+	// Tooltip: ""
+}
+
+HallowforgedGreaves: {
+	// DisplayName: Hallowforged Greaves
+	// Tooltip: ""
+}
+
+AstralforgedSabatons: {
+	// DisplayName: Astralforged Sabatons
+	// Tooltip: ""
+}
+
+EternalforgedSabatons: {
+	// DisplayName: Eternalforged Sabatons
+	// Tooltip: ""
+}
+
+ApprenticeCap: {
+	// DisplayName: Apprentice Cap
+	// Tooltip: ""
+}
+
+AcolyteHood: {
+	// DisplayName: Acolyte Hood
+	// Tooltip: ""
+}
+
+MysticCirclet: {
+	// DisplayName: Mystic Circlet
+	// Tooltip: ""
+}
+
+SpectralVeil: {
+	// DisplayName: Spectral Veil
+	// Tooltip: ""
+}
+
+EtherealDiadem: {
+	// DisplayName: Ethereal Diadem
+	// Tooltip: ""
+}
+
+ApprenticeRobe: {
+	// DisplayName: Apprentice Robe
+	// Tooltip: ""
+}
+
+AcolyteVestment: {
+	// DisplayName: Acolyte Vestment
+	// Tooltip: ""
+}
+
+MysticGarb: {
+	// DisplayName: Mystic Garb
+	// Tooltip: ""
+}
+
+SpectralShroud: {
+	// DisplayName: Spectral Shroud
+	// Tooltip: ""
+}
+
+EtherealMantle: {
+	// DisplayName: Ethereal Mantle
+	// Tooltip: ""
+}
+
+ApprenticeSlippers: {
+	// DisplayName: Apprentice Slippers
+	// Tooltip: ""
+}
+
+AcolyteSandals: {
+	// DisplayName: Acolyte Sandals
+	// Tooltip: ""
+}
+
+MysticBoots: {
+	// DisplayName: Mystic Boots
+	// Tooltip: ""
+}
+
+SpectralStriders: {
+	// DisplayName: Spectral Striders
+	// Tooltip: ""
+}
+
+EtherealGreaves: {
+	// DisplayName: Ethereal Greaves
+	// Tooltip: ""
+}
+
 Codex: {
 	DisplayName: Кодекс
 	Tooltip: ""
@@ -280,7 +430,7 @@ BloodOath: {
 
 GrimoireItem: {
 	DisplayName: Гримуар
-	AltUseDescription: Щелкните правой кнопкой мыши, чтобы открыть Менagerie.
+	AltUseDescription: Щелкните правой кнопкой мыши, чтобы открыть Зверинец.
 	Control: Управляйте {0} с помощью мыши.
 	ControlNone: "[c/999999:Не выбрано ни одного Существа! Выберите одного в Зверинце.]"
 	Description: "'Маленькая книга хранит большие секреты.'"
@@ -289,7 +439,11 @@ GrimoireItem: {
 
 BatWings: {
 	DisplayName: Пара крыльев летучей мыши
-	Tooltip: "'''"
+	Tooltip:
+		'''
+		{$Mods.PathOfTerraria.Misc.GrimoireMaterial}
+		'Удивительно сильны.'
+		'''
 }
 
 OwlFeather: {
@@ -335,7 +489,7 @@ PlatinumGlaive: {
 MoltenDangpa: {
 	DisplayName: Расплавленный дангпа
 	Tooltip: ""
-	AltUseDescription: Щелкните правой кнопкой мыши, чтобы расплавить оружие и бросить его, гарантируя 'В огне!' на каждом враге и разбрызгивая несколько магмовых пузырей вокруг.
+	AltUseDescription: Щелкните правой кнопкой мыши, чтобы расплавить оружие и бросить его, накладывая «В огне!» на каждого врага и разбрызгивая несколько магмовых пузырей вокруг.
 	Description: Горячее на ощупь, топливо для вашей силы.
 }
 
@@ -382,7 +536,7 @@ Bloodclotter: {
 }
 
 ArcaneObeliskItem: {
-	DisplayName: Арканный обелиск
+	DisplayName: Таинственный обелиск
 	Tooltip: ""
 }
 
@@ -396,7 +550,7 @@ StarlightBulwark: {
 Rottenbone: {
 	DisplayName: Гнилая кость
 	Tooltip: ""
-	AltUseDescription: Щелкните правой кнопкой мыши, чтобы бросить оружие, которое быстро распадается на множество частей, каждая из которых наносит дополнительный урон или накладывает Отравление.
+	AltUseDescription: Щелкните правой кнопкой мыши, чтобы бросить оружие, которое быстро распадается на множество частей, каждая из которых наносит дополнительный урон или накладывает «Отравление».
 	Description: Ее неприятно трогать. Еще неприятнее для ваших противников.
 }
 
@@ -566,39 +720,53 @@ PlatinumStaff: {
 
 GlimmeringShard: {
 	DisplayName: Мерцающий осколок
-	Tooltip: "'''"
+	Tooltip:
+		'''
+		Перебрасывает аффиксы на предметах магического качества.
+		Удерживайте предмет и нажмите ПКМ по этому осколку, чтобы изменить его свойства.
+		«Неестественно мерцает и сияет…»
+		'''
 }
 
 CorruptShard: {
-	DisplayName: Осколок Искажения
+	DisplayName: Осколок искажения
 	Tooltip:
 		'''
-		Хаотичный и нестабильный
-		Имеет шанс добавить дополнительное свойство и испортить предмет, отключив любые будущие взаимодействия с предметами
-		Имеет шанс превратить Уникальные предметы в Редкие того же типа, перебрасывая их на тот же уровень
-		Имеет большой шанс ничего не сделать
-		'Импульсы с дискомфортом'
+		Хаотичный и нестабильный.
+		Имеет шанс добавить дополнительный аффикс и осквернить любой предмет, навсегда блокируя дальнейшие действия с ним.
+		Может превратить уникальный предмет в редкий того же типа, пересоздав его с тем же уровнем.
+		Имеет высокий шанс не дать никакого эффекта.
+		«Пульсирует недугом…»
 		'''
 }
 
 AscendantShard: {
-	DisplayName: Осколок Возвышения
+	DisplayName: Осколок возвышения
 	Tooltip:
 		'''
-		Наделяет предмет дополнительным свойством
-		Удерживайте предмет, затем щелкните правой кнопкой мыши по этому осколку, чтобы добавить новое свойство
-		'От него исходит сильное чувство силы'
+		Добавляет новый аффикс предмету.
+		Удерживайте предмет и нажмите ПКМ по этому осколку, чтобы добавить новый аффикс.
+		«Источает сильную ауру могущества…»
 		'''
 }
 
 UnfoldingShard: {
-	DisplayName: Осколок Превращения
+	DisplayName: Раскрывающийся осколок
 	Tooltip:
 		'''
-		Улучшает обычный предмет до магического предмета
-		Удерживайте предмет, затем щелкните правой кнопкой мыши по этому осколку, чтобы улучшить его
-		'Кажется, будто оно движется внутри'
+		Улучшает обычный предмет до магического.
+		Удерживайте предмет и нажмите ПКМ по этому осколку, чтобы улучшить его.
+		«Кажется, внутри что-то шевелится…»
 		'''
+}
+
+RegalShard: {
+	// DisplayName: Regal Shard
+	/* Tooltip:
+		'''
+		Upgrades a Magic item to Rare, keeping its affixes and adding one more
+		'Power refined into crystalline form'
+		''' */
 }
 
 LunarLiquid: {
@@ -614,8 +782,8 @@ LunarShard: {
 	DisplayName: Лунный осколок
 	Tooltip:
 		'''
-		Небольшой элемент, используемый для призыва Глаза Ктулху
-		Можно отдать Элдрику после квеста «Восходящее знамение»
+		Фрагмент, открывающий путь во владения Глаза Ктулху.
+		Можно отдать Элдрику после задания «Восходящее знамение».
 		'''
 	InQuest: Во время квеста 'Восходящее знамение'
 }
@@ -648,22 +816,22 @@ EoWMap: {
 }
 
 EchoingShard: {
-	DisplayName: Осколок Эха
+	DisplayName: Осколок эха
 	Tooltip:
 		'''
-		Создает клон элемента
-		Удерживайте предмет, затем щелкните правой кнопкой мыши этот осколок, чтобы клонировать его
-		'Я вижу себя!'
+		Создаёт копию предмета.
+		Удерживайте предмет и нажмите ПКМ по этому осколку, чтобы создать копию.
+		«Я вижу самого себя!»
 		'''
 }
 
 RadiantShard: {
-	DisplayName: Осколок Сияния
+	DisplayName: Сияющий осколок
 	Tooltip:
 		'''
-		Изменяет значения свойства предмета
-		Удерживайте предмет, затем щелкните правой кнопкой мыши по этому Осколку, чтобы изменить значения свойства
-		'Трудно смотреть на это'
+		Перебрасывает значения аффиксов предмета.
+		Удерживайте предмет и нажмите ПКМ по этому осколку, чтобы изменить значения аффиксов.
+		«На него трудно смотреть…»
 		'''
 }
 
@@ -829,32 +997,32 @@ WoFMap: {
 }
 
 LimpidShard: {
-	DisplayName: Осколок Ясности
+	DisplayName: Чистый осколок
 	Tooltip:
 		'''
-		Превращает магический или редкий предмет в обычный
-		Удерживайте предмет, затем щелкните правой кнопкой мыши по этому Осколку, чтобы превратить предмет в обычный вид
-		'Это выглядит так просто'
+		Превращает магический или редкий предмет в обычный.
+		Удерживайте предмет и нажмите ПКМ по этому осколку, чтобы сделать его обычным.
+		«Выглядит совсем просто…».
 		'''
 }
 
 MysticShard: {
-	DisplayName: Осколок Мистики
+	DisplayName: Мистический осколок
 	Tooltip:
 		'''
 		Превращает обычный предмет в редкий
-		Удерживайте предмет, затем щелкните правой кнопкой мыши по этому осколку, чтобы сделать предмет редким
-		'Это как тлеющий уголек в темноте'
+		Удерживайте предмет и нажмите ПКМ по этому осколку, чтобы сделать его редким
+		«Словно искра во тьме…»
 		'''
 }
 
 ShiftingShard: {
-	DisplayName: Осколок Изменений
+	DisplayName: Изменяющийся осколок
 	Tooltip:
 		'''
-		Пересоздать  модификаторы на Редкий предмет
-		Удерживайте предмет, затем щелкните правой кнопкой мыши по этому Осколку, чтобы пересоздать модификаторы
-		'Я не могу понять, что он делает'
+		Перебрасывает модификаторы редкого предмета.
+		Удерживайте предмет и нажмите ПКМ по этому осколку, чтобы изменить модификаторы.
+		«Не могу понять, что он делает…».
 		'''
 }
 
@@ -1295,12 +1463,12 @@ CultistMap: {
 }
 
 AntlerShard: {
-	// DisplayName: Antler Shard
-	/* Tooltip:
+	DisplayName: Осколок рога
+	Tooltip:
 		'''
-		Show this to Rhine in Ravencrest
-		'It has a malice about it'
-		''' */
+		Покажи этот осколок Рейну в Вороньем пике.
+		«От него веет злым намерением…»
+		'''
 }
 
 RubyRing: {
@@ -1507,7 +1675,11 @@ SwampMap: {
 
 CrystalVisors: {
 	// DisplayName: Crystal Visors
-	// Tooltip: ""
+	/* Tooltip:
+		'''
+		Allows you to see into the half-dimension
+		'...and look awesome while doing it.'
+		''' */
 }
 
 PrismShardItem: {
@@ -1527,7 +1699,68 @@ MangroveLeavesItem: {
 	// Tooltip: ""
 }
 
+LogwoodPistol: {
+	// DisplayName: Logwood Pistol
+	/* Description:
+		'''
+		Always inflicts Poison
+		Bullets hitting already poisoned enemies will bounce between up to 5 other poisoned enemies
+		''' */
+	// Tooltip: "'Wet for safety reasons.'"
+}
+
+BloatingLeech: {
+	// DisplayName: Bloating Leech
+	// Tooltip: ""
+	/* Description:
+		'''
+		Latches on to enemies, bloating with blood and exploding over time.
+		The leech bloats quicker on bleeding enemies
+		''' */
+	// AltUseDescription: "'Be glad it's on your side."
+}
+
 MetadataEntityPlacer: {
 	// DisplayName: Metadata Entity Placer
-	// Tooltip: Places tile entities that can be used to find specific positions in code"
+	// Tooltip: Places tile entities that can be used to find specific positions in code
+}
+
+FirelordsWill: {
+	// DisplayName: Firelord's Will
+	// Tooltip: ""
+}
+
+PyralisHeart: {
+	// DisplayName: Heart of Pyralis
+	// Tooltip: ""
+}
+
+FallenKingsLegacy: {
+	// DisplayName: Fallen King's Legacy
+	// Tooltip: ""
+}
+
+ProlifRing: {
+	// DisplayName: Ring of Proliferation
+	// Tooltip: ""
+}
+
+Cryobrand: {
+	// DisplayName: Cryobrand
+	// Tooltip: ""
+	// Description: Forged in the clash between fire and ice, Cryobrand wields both flame and frost.
+	/* AltUseDescription:
+		'''
+		Right click to switch between Sword (fire) and Shield (cold) forms.
+		Sword Form: 15% Increased Damage Done.
+		Shield Form: 15% Reduced Damage Taken.
+		Combos:
+		Sword-Sword-Shield: Fire slashes and spinning thrown shield.
+		Shield-Shield-Sword: Shield slams and a massive icy shockwave.
+		''' */
+}
+
+MapRecoveryItem: {
+	// DisplayName: Map Recovery Item
+	// Tooltip: ""
 }

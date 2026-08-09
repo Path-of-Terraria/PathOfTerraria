@@ -51,7 +51,12 @@ internal class PuppeteerMastery : Passive
 
 		public override void PostAI(NPC npc)
 		{
-			if (YoyoIdentity == -1 || Yoyo is not Projectile { active: true } yoyo)
+			if (YoyoIdentity == -1)
+			{
+				return;
+			}
+
+			if (Yoyo is not Projectile { active: true } yoyo || yoyo.Center.HasNaNs() || yoyo.DistanceSQ(npc.Center) > 1500 * 1500)
 			{
 				YoyoIdentity = -1;
 				return;

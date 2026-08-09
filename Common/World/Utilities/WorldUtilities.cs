@@ -33,7 +33,7 @@ internal static class WorldUtilities
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool SolidUnslopedTile(Tile tile, bool noHalfBrick = false)
 	{
-		return Main.tileSolid[tile.TileType] && tile.HasTile && tile.Slope == Terraria.ID.SlopeType.Solid && (noHalfBrick || !tile.IsHalfBlock);
+		return Main.tileSolid[tile.TileType] && tile.HasTile && tile.Slope == SlopeType.Solid && (noHalfBrick || !tile.IsHalfBlock);
 	}
 
 	/// <summary>

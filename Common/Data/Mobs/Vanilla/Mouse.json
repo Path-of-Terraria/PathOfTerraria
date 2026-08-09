@@ -1,5 +1,6 @@
 {
   "netId": 300,
   "friendlyName": "Mouse",
+  "damage": null,
   "entries": []
 }

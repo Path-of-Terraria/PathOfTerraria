@@ -1,5 +1,16 @@
 {
   "netId": 437,
   "friendlyName": "Cultist Tablet",
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": null,
+      "lightning": null,
+      "cold": {
+        "added": 25,
+        "conversion": 0.75
+      }
+    }
+  ],
   "entries": []
 }

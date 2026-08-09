@@ -3,6 +3,7 @@ using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Core.Time;
 using PathOfTerraria.Utilities;
 using PathOfTerraria.Utilities.Terraria;
+using Terraria.DataStructures;
 
 #nullable enable
 
@@ -86,7 +87,12 @@ internal sealed class NPCMovement : NPCComponent<MovementData>
 		{
 			if (npc.velocity.Y == 0f) { Collision.StepDown(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY); }
 
-			Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
+			Point16 center = npc.Center.ToTileCoordinates16();
+
+			if (WorldGen.InWorld(center.X, center.Y, 10))
+			{
+				Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
+			}
 		}
 
 		if ((!npc.HasValidTarget && !Data.TargetOverride.HasValue) || Data.NoAccelerationTime.Value > 0)

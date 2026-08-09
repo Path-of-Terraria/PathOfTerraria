@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Systems.DisableBuilding;
+﻿using PathOfTerraria.Common.Conflux;
+using PathOfTerraria.Common.Systems.DisableBuilding;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Common.World.Passes;
@@ -33,6 +34,8 @@ public class WallOfFleshDomain : BossDomainSubworld
 	/// If the boss has surpassed the edge of the world (with the "Player was licked" kill message), don't count the kill.
 	/// </summary>
 	private bool licked = false;
+
+	private bool pendingPortalSpawn;
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new   PassLegacy("Base Terrain", Terrain),
 		new PassLegacy("Arenas", SpawnArenas), new PassLegacy("Settle Liquids", SettleLiquids), new PassLegacy("Pathway", SpawnPathway)];
@@ -667,18 +670,24 @@ public class WallOfFleshDomain : BossDomainSubworld
 				}
 			}
 		}
-		else if (state == FightState.JustCompleted)
+		else if (state == FightState.JustCompleted || pendingPortalSpawn)
 		{
 			if (licked)
 			{
 				FightTracker.Reset();
 				licked = false;
 			}
-			else
+			else if (!RiftIntroduction.RiftExists())
 			{
 				Player player = Main.rand.Next(Main.player.Where(x => x.active).ToArray());
-				Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), player.Center - new Vector2(0, 80),
-					Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
+				IEntitySource source = Entity.GetSource_NaturalSpawn();
+				Vector2 portalPos = player.Center - new Vector2(0, 0);
+				Projectile.NewProjectile(source, portalPos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
+				pendingPortalSpawn = false;
+			}
+			else
+			{
+				pendingPortalSpawn = true;
 			}
 		}
 	}

@@ -57,7 +57,8 @@ Quest: {
 	WizardStartQuest: {
 		Name: Retour Magique
 		// Description: ""
-		// KillScout: Kill a Goblin Surveyor in Ravencrest's outskirts
+		// KillScout: Kill a Goblin Scout in the Overworld
+		// KillSurveyor: Kill a Goblin Surveyor to the Left of Ravencrest
 	}
 
 	EoCQuest: {
@@ -89,6 +90,7 @@ Quest: {
 		Name: Une Aventure Royale
 		// Description: ""
 		KillQueen: Tuez la Reine des Abeilles
+		// EnterDomain: Submerge the Hornet summon from your Grimoire in Honey
 	}
 
 	DeerclopsQuest: {
@@ -144,7 +146,7 @@ Quest: {
 		// Wraiths: Defeat ({0}/{1}) Wraiths
 		// PossessedArmors: Defeat ({0}/{1}) Possessed Armors
 		// WanderingEyes: Defeat ({0}/{1}) Wandering Eyes
-		// CollectFragments: Collect ({0}/{1}) Lunar Fragments
+		// CollectFragments: Collect 5 Lunar Fragments from Wandering Eyes, Possessed Armors, or Wraiths.
 	}
 
 	TinkerIntroQuest: {
@@ -173,7 +175,7 @@ Quest: {
 		// Description: ""
 		// EnterDomain: Enter Plantera's domain
 		// Boss: Defeat Plantera
-		// Plantera: Defeat ({0}/{1}) Strange Growth Monsters TODO: Change this name to the actual mob we make.
+		// Plantera: Defeat ({0}/{1}) Strange Growth Monsters //TODO: Change this name to the actual mob we make.
 	}
 
 	GolemQuest: {

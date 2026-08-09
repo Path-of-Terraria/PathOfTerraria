@@ -58,7 +58,7 @@
 	},
 	{
 		"affixType": "LifeOnKillAffix",
-		"equipTypes": "Weapon",
+		"equipTypes": "Weapon Summoner",
 		"influences": "None",
 		"tiers": [
 			{
@@ -113,7 +113,7 @@
 	},
 	{
 		"affixType": "ManaOnKillAffix",
-		"equipTypes": "Weapon",
+		"equipTypes": "Weapon Grimoire",
 		"influences": "None",
 		"tiers": [
 			{

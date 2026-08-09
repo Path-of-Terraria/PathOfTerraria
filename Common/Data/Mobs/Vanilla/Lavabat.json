@@ -1,5 +1,16 @@
 {
   "netId": 151,
   "friendlyName": "Lavabat",
+  "damage": [
+    {
+      "minLevel": 45,
+      "fire": {
+        "added": 25,
+        "conversion": 0.5
+      },
+      "lightning": null,
+      "cold": null
+    }
+  ],
   "entries": []
 }

@@ -147,7 +147,7 @@ FishingBuff: {
 
 ScorchingFlamesDebuff: {
 	// DisplayName: Scorching Flames
-	// Description: Ow burn
+	// Description: Reduced flame resistance
 }
 
 SingleFocusBuff: {
@@ -271,8 +271,8 @@ FleaBellEnhancedBuff: {
 }
 
 RageStacksBuff: {
-	// DisplayName: Rage Stacks Buff
-	// Description: 1% increased ranged and melee damage per stack.
+	// DisplayName: Rage
+	// Description: "{0} rage. Gain 1% increased ranged and melee damage per rage."
 }
 
 SwampAlgaeBuff: {

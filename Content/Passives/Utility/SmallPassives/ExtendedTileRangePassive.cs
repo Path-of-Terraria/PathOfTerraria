@@ -6,6 +6,6 @@ internal class ExtendedTileRangePassive : Passive
 {
 	public override void BuffPlayer(Player player)
 	{
-		player.blockRange += Value;
+		player.blockRange += (int)Value;
 	}
 }

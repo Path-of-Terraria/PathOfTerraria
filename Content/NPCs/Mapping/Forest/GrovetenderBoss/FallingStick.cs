@@ -36,7 +36,7 @@ internal class FallingStick : ModProjectile
 			if (WaitTimer > 100)
 			{
 				var velocity = new Vector2(Main.rand.NextFloat(-0.4f, 0.4f), Main.rand.NextFloat(4, 10));
-				int type = DustID.WoodFurniture;
+				int type = Main.rand.NextBool(3) ? ModContent.DustType<EntDust>() : DustID.WoodFurniture;
 				Dust.NewDustPerfect(Projectile.Center, type, velocity, 0, default, Main.rand.NextFloat(1.5f, 2.5f));
 			}
 
@@ -49,7 +49,7 @@ internal class FallingStick : ModProjectile
 		}
 
 		Projectile.rotation += Projectile.velocity.Y * 0.005f;
-		Projectile.velocity.Y += 0.1f;
+		Projectile.velocity.Y += 0.15f;
 
 		if (!Projectile.tileCollide && !Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height))
 		{

@@ -5,7 +5,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class DestroyerMap() : HardmodeBossMap(3, () => NPC.downedMechBoss1)
+internal class DestroyerMap() : HardmodeBossMap(3, 50, () => NPC.downedMechBoss1)
 {
 	public override void SetStaticDefaults()
 	{
@@ -20,9 +20,9 @@ internal class DestroyerMap() : HardmodeBossMap(3, () => NPC.downedMechBoss1)
 		Item.Size = new Vector2(34, 32);
 	}
 
-	protected override void OpenMapInternal()
+	internal override Subworld GetDestination()
 	{
-		SubworldSystem.Enter<DestroyerDomain>();
+		return ModContent.GetInstance<DestroyerDomain>();
 	}
 
 	public override string GenerateName(string defaultName)

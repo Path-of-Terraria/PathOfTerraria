@@ -6,6 +6,7 @@ using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.ItemDropping;
 using PathOfTerraria.Common.NPCs;
+using PathOfTerraria.Common.NPCs.Worms;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.ElementalDamage;
@@ -32,13 +33,49 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 
 	public override bool InstancePerEntity => true;
 
-	public int? Experience;
+	/// <summary>Snapshot of lifeMax before rarity/map/area scaling, used for HP-scaled XP. -1 = not captured.</summary>
+	public int BaseLifeMax = -1;
+
 	public ItemRarity Rarity = ItemRarity.Normal;
 	public List<MobAffix> Affixes = [];
 
 	private readonly Player _lastPlayerHit = null;
 
 	private bool _synced = false;
+
+	public override void Load()
+	{
+		On_NPC.NPCLoot_DropItems += RerollVanillaDropsByRarity;
+	}
+
+	// Magic mobs get a 1.2x expected weighting on their vanilla drops, Rare mobs get 2x.
+	// Implemented as an extra full pool roll (20% chance for Magic, guaranteed for Rare).
+	private static void RerollVanillaDropsByRarity(On_NPC.orig_NPCLoot_DropItems orig, NPC self, Player closestPlayer)
+	{
+		orig(self, closestPlayer);
+
+		if (self.boss || self.SpawnedFromStatue || self.friendly || self.CountsAsACritter || self.lifeMax <= 5)
+		{
+			return;
+		}
+
+		if (!self.TryGetGlobalNPC(out ArpgNPC arpg))
+		{
+			return;
+		}
+
+		int extraRolls = arpg.Rarity switch
+		{
+			ItemRarity.Rare => 1,
+			ItemRarity.Magic => Main.rand.NextFloat() < 0.2f ? 1 : 0,
+			_ => 0
+		};
+
+		for (int i = 0; i < extraRolls; i++)
+		{
+			orig(self, closestPlayer);
+		}
+	}
 
 	// should somehow work together with magic find (that i assume we will have) to increase rarity / if its a unique
 	private float DropRarity
@@ -69,13 +106,13 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 			Affixes.ForEach(a => dropQuantity += a.DropQuantityFlat);
 			Affixes.ForEach(a => dropQuantity *= a.DropQuantityMultiplier);
 
-			if (SubworldSystem.Current is MappingWorld world)
+			if (SubworldSystem.Current is MappingWorld)
 			{
-				dropQuantity *= 1 + (int)(MappingWorld.TotalWeight() / 5f) / 100f;
-				dropQuantity *= 1 + (MappingWorld.AreaLevel - 50) / 100f;
+				dropQuantity *= 1 + MappingWorld.MapTier * 0.03f;
+				dropQuantity *= 1 + DomainDropRateBoost();
 			}
 
-			return dropQuantity;
+			return dropQuantity * GetProgressionDropRateScale(PoTMobHelper.GetAreaLevel());
 		}
 	}
 
@@ -110,7 +147,22 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 
 	public static float DomainRarityBoost(float? weight = null)
 	{
-		return (weight ?? MappingWorld.TotalWeight());
+		return (weight ?? MappingWorld.TotalWeight()) / 100f;
+	}
+
+	private static float GetProgressionDropRateScale(int areaLevel)
+	{
+		float progress = MathHelper.Clamp((areaLevel - 1f) / PoTMobHelper.AreaLevelScalingCap, 0f, 1f);
+		return MathHelper.Lerp(0.1f, 0.075f, progress);
+	}
+
+	// First caller wins so later SetDefaults modifiers (rarity, map affixes, area scaling) don't pollute the snapshot.
+	internal void CaptureBaseLifeMax(NPC npc)
+	{
+		if (BaseLifeMax < 0)
+		{
+			BaseLifeMax = npc.lifeMax;
+		}
 	}
 
 	public override void OnKill(NPC npc)
@@ -119,48 +171,51 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 		Affixes.ForEach(a => a.OnKill(npc));
 
 		// Early exit conditions
-		if (DropModifierNPC.GetDropRate(npc) < Main.rand.NextFloat() || npc.lifeMax <= 5 || npc.SpawnedFromStatue || npc.boss || npc.friendly || npc.CountsAsACritter)
+		if (DropModifierNPC.GetDropRate(npc) < Main.rand.NextFloat() || npc.lifeMax <= 5 || npc.SpawnedFromStatue ||
+		    npc.boss || npc.friendly || npc.CountsAsACritter)
 		{
 			return;
 		}
 
-		// Determine drop count
-		float minDrop = (DropQuantity * MinDropChanceScale * 100f);
-		float maxDrop = (int)(DropQuantity * 100f);
-		float rand = Main.rand.NextFloat(minDrop, maxDrop + 1);
-
-		int dropCount = 0;
-		while (rand > 99)
-		{
-			rand -= 100;
-			dropCount++;
-		}
-
-		if (rand < 25)
-		{
-			dropCount++;
-		}
-
-		// Calculate magic find
-		float magicFind = 0;
-		int itemLevel = 0;
+		// Calculate player drop modifiers before determining drop count.
+		float dropRateModifier = 1f;
+		float dropRarityModifier = DropRarity;
+		int itemLevel = PoTMobHelper.GetAreaLevel();
 		float uniqueMod = 1f;
 
 		if (_lastPlayerHit != null)
 		{
-			magicFind = 1f + _lastPlayerHit.GetModPlayer<ItemDropModifierPlayer>().MagicFind;
-			uniqueMod = _lastPlayerHit.GetModPlayer<ItemDropModifierPlayer>().UniqueFindMultiplier;
-
-			float dropRateModifier = _lastPlayerHit.GetModPlayer<ItemDropModifierPlayer>().ItemDropRateMultiplier;
-			minDrop *= dropRateModifier;
-			maxDrop *= dropRateModifier;
+			ItemDropModifierPlayer dropPlayer = _lastPlayerHit.GetModPlayer<ItemDropModifierPlayer>();
+			dropRateModifier = dropPlayer.ItemDropRateMultiplier;
+			dropRarityModifier += dropPlayer.MagicFind;
+			uniqueMod = dropPlayer.UniqueFindMultiplier;
 		}
 
-		if (SubworldSystem.Current is MappingWorld world)
+		if (SubworldSystem.Current is MappingWorld)
 		{
-			magicFind += DomainRarityBoost();
-			float modifier = MathF.Max(0, 1 + (MappingWorld.AreaLevel - 50) / 100f);
-			magicFind += modifier;
+			dropRarityModifier += DomainRarityBoost();
+		}
+
+		// Magic/Rare mobs bias their non-guaranteed drops toward higher rarities.
+		dropRarityModifier += Rarity switch
+		{
+			ItemRarity.Magic => 0.5f,
+			ItemRarity.Rare => 1.5f,
+			_ => 0f
+		};
+
+		// Determine drop count
+		float minDrop = (DropQuantity * MinDropChanceScale * 100f);
+		float maxDrop = (int)(DropQuantity * 100f);
+		minDrop *= dropRateModifier;
+		maxDrop *= dropRateModifier;
+		float dropBudget = Main.rand.NextFloat(minDrop, maxDrop + 1);
+		int dropCount = (int)(dropBudget / 100f);
+		float extraDropChance = dropBudget % 100f;
+
+		if (Main.rand.NextFloat(100f) < extraDropChance)
+		{
+			dropCount++;
 		}
 
 		List<ItemDatabase.ItemRecord> drops = [];
@@ -168,14 +223,15 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 		// Roll guaranteed rare/magic items first
 		if (Rarity is ItemRarity.Magic or ItemRarity.Rare)
 		{
-			drops.Add(DropTable.RollMobDrops(itemLevel, DropRarity * magicFind, gearChance: 0.8f, currencyChance: 0.15f, mapChance: 0.05f, null, Rarity, uniqueMod));
+			drops.Add(DropTable.RollMobDrops(itemLevel, dropRarityModifier, forceRarity: Rarity,
+				uniqueModifier: uniqueMod));
 		}
 
 		// Roll the remaining items normally
 		if (dropCount > 0)
 		{
-			drops.AddRange(DropTable.RollManyMobDrops(dropCount, itemLevel, DropRarity * magicFind,
-				gearChance: 0.8f, currencyChance: 0.15f, mapChance: 0.05f));
+			drops.AddRange(DropTable.RollManyMobDrops(dropCount, itemLevel, dropRarityModifier,
+				uniqueModifier: uniqueMod));
 		}
 
 		// Spawn all items
@@ -203,10 +259,12 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 	{
 		currentlyTransforming = true;
 	}
+
 	void INpcTransformCallbacks.PostTransform(NPC npc, int oldType)
 	{
 		currentlyTransforming = false;
 	}
+
 	void INpcTransformCallbacks.TransformTransfer(NPC npc, int oldType, INpcTransformCallbacks oldInstance)
 	{
 		if (oldInstance is ArpgNPC oldSelf)
@@ -225,30 +283,28 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 			return;
 		}
 
-		// We only want to trigger these changes on hostile non-boss, mortal & damageable non-critter NPCs that aren't in NoAffixesSet
-		if (npc.IsABestiaryIconDummy || npc.friendly || npc.boss || Main.gameMenu || npc.immortal || npc.dontTakeDamage || NPCID.Sets.ProjectileNPC[npc.type]
-			|| npc.CountsAsACritter || npc.realLife != -1 || NoAffixesSet.Contains(npc.type))
+		CaptureBaseLifeMax(npc);
+
+		// We only want to trigger these changes on hostile non-boss, mortal & damageable non-critter NPCs that aren't in NoAffixesSet.
+		// Worm segments are linked helper NPCs and should never roll independent rarity or affixes.
+		if (npc.IsABestiaryIconDummy || npc.friendly || npc.boss || Main.gameMenu || npc.immortal ||
+		    npc.dontTakeDamage || NPCID.Sets.ProjectileNPC[npc.type]
+		    || npc.CountsAsACritter || npc.realLife != -1 || npc.ModNPC is WormSegment || NoAffixesSet.Contains(npc.type))
 		{
 			return;
 		}
 
 		if (Main.netMode != NetmodeID.MultiplayerClient)
 		{
-			// Base chance is determined by item level; default is 300 - 5*4 (275).
-			// By hardmode it's 300 - 50*4 (100).
-			// Will need adjustment for hardmode.
-			int chance = 300;
-			chance -= (int)(PoTItemHelper.PickItemLevel() * 4f);
+			float progression = PoTMobHelper.GetStatScaling();
+			float rareChance = MathHelper.Lerp(0.003f, 0.015f, progression);
+			float magicChance = MathHelper.Lerp(0.04f, 0.12f, progression);
+			float rarityRoll = Main.rand.NextFloat();
 
-			if (chance < 16)
+			Rarity = rarityRoll switch
 			{
-				chance = 16;
-			}
-
-			Rarity = Main.rand.Next(chance) switch
-			{
-				< 2 => ItemRarity.Rare,
-				< 17 => ItemRarity.Magic,
+				_ when rarityRoll < rareChance => ItemRarity.Rare,
+				_ when rarityRoll < rareChance + magicChance => ItemRarity.Magic,
 				_ => ItemRarity.Normal
 			};
 
@@ -275,7 +331,7 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 		if (!fromNet)
 		{
 			Affixes = [];
-			
+
 			if (MobRegistry.TryGetMobData(npc.type, out MobData mobData))
 			{
 				MobEntry entry = MobRegistry.SelectMobEntry(mobData.NetId);
@@ -334,14 +390,16 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 			case ItemRarity.Normal:
 				break;
 			case ItemRarity.Magic:
-				npc.color = Color.Lerp(npc.color == Color.Transparent ? Color.White : npc.color, new Color(125, 125, 255), 0.5f);
+				npc.color = Color.Lerp(npc.color == Color.Transparent ? Color.White : npc.color,
+					new Color(125, 125, 255), 0.5f);
 				npc.lifeMax = (int)(npc.lifeMax * MathHelper.Lerp(1.35f, 2f, statScaling));
 				npc.life = currentlyTransforming ? npc.life : npc.lifeMax;
 				npc.damage = (int)(npc.damage * MathHelper.Lerp(1.04f, 1.1f, statScaling));
 				alwaysDisplayHealthbar = true;
 				break;
 			case ItemRarity.Rare:
-				npc.color = Color.Lerp(npc.color == Color.Transparent ? Color.White : npc.color, new Color(255, 255, 0), 0.5f);
+				npc.color = Color.Lerp(npc.color == Color.Transparent ? Color.White : npc.color, new Color(255, 255, 0),
+					0.5f);
 				npc.lifeMax = (int)(npc.lifeMax * MathHelper.Lerp(1.75f, 3f, statScaling));
 				npc.life = currentlyTransforming ? npc.life : npc.lifeMax;
 				npc.damage = (int)(npc.damage * MathHelper.Lerp(1.08f, 1.2f, statScaling));
@@ -367,11 +425,10 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 
 	private void ApplyMobEntry(NPC npc, MobEntry entry)
 	{
-		Experience = entry.Stats.Experience;
-
 		if (!string.IsNullOrEmpty(entry.Prefix))
 		{
-			npc.GivenName = $"{Language.GetTextValue($"Mods.{PoTMod.ModName}.EnemyPrefixes." + entry.Prefix)} {npc.GivenOrTypeName}";
+			npc.GivenName =
+				$"{Language.GetTextValue($"Mods.{PoTMod.ModName}.EnemyPrefixes." + entry.Prefix)} {npc.GivenOrTypeName}";
 		}
 
 		npc.scale *= entry.Scale ?? 1f;
@@ -395,7 +452,8 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 
 		npc.GivenName = Rarity switch
 		{
-			ItemRarity.Magic or ItemRarity.Rare => $"{Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.RarityNames." + Enum.GetName(Rarity))} {typeName}",
+			ItemRarity.Magic or ItemRarity.Rare =>
+				$"{Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.RarityNames." + Enum.GetName(Rarity))} {typeName}",
 			ItemRarity.Unique => "UNIQUE MOB",
 			_ => typeName
 		};
@@ -449,7 +507,11 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 		for (int i = 0; i < count; i++)
 		{
 			MobAffix affix = Affix.RecieveMobAffix(binaryReader);
-			Affixes.Add(affix);
+
+			if (affix is not null)
+			{
+				Affixes.Add(affix);
+			}
 		}
 
 		// TODO: Find cause of read overflow/underflow in subworlds

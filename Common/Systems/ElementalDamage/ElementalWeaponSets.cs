@@ -41,7 +41,10 @@ internal class ElementalWeaponSets
 	{
 		if (WeaponElementProportionsById.TryGetValue(itemId, out Dictionary<ElementType, float> value))
 		{
-			return value[type];
+			if (value.TryGetValue(type, out float proportion))
+			{
+				return proportion;
+			}
 		}
 
 		return 0;

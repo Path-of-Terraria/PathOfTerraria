@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using PathOfTerraria.Core.Items;
+using System.Collections.Generic;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 
-internal class BossGlobalItemDisabler : GlobalItem
+internal class BossGlobalItemDisabler : GlobalItem, InsertAdditionalTooltipLines.IGlobal
 {
 	public static readonly HashSet<int> BossSpawners = [ItemID.SlimeCrown,
 		ItemID.SuspiciousLookingEye,
@@ -32,5 +34,13 @@ internal class BossGlobalItemDisabler : GlobalItem
 	public override bool CanUseItem(Item item, Player player)
 	{
 		return false;
+	}
+
+	void InsertAdditionalTooltipLines.IGlobal.InsertAdditionalTooltipLines(Item item, List<TooltipLine> tooltips)
+	{
+		if (AppliesToEntity(item, true))
+		{
+			tooltips.Add(new TooltipLine(Mod, "Disabled", Language.GetTextValue("Mods.PathOfTerraria.TooltipNotices.Disabled")) { OverrideColor = new Color(255, 160, 160) });
+		}
 	}
 }

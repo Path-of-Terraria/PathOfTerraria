@@ -12,7 +12,7 @@ internal class DemolitionsExpertMastery : Passive
 	{
 		public override void OnSpawn(Projectile projectile, IEntitySource source)
 		{
-			if (source is EntitySource_ItemUse_WithAmmo ammo && ammo.Player.GetModPlayer<PassiveTreePlayer>().HasNode<DemolitionsExpertMastery>())
+			if (ProjectileID.Sets.Explosive[projectile.type] && source is EntitySource_ItemUse itemUse && itemUse.Player.GetModPlayer<PassiveTreePlayer>().HasNode<DemolitionsExpertMastery>())
 			{
 				projectile.damage = (int)(projectile.damage * (1 + DamageBoost / 100f));
 			}

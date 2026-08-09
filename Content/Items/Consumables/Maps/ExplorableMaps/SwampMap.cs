@@ -18,9 +18,9 @@ internal class SwampMap : ExplorableMap
 		staticData.DropChance = 1f;
 	}
 
-	protected override void OpenMapInternal()
+	internal override Subworld GetDestination()
 	{
-		SubworldSystem.Enter<SwampArea>();
+		return ModContent.GetInstance<SwampArea>();
 	}
 
 	public override string GenerateName(string defaultName)

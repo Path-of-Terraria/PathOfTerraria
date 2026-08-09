@@ -51,7 +51,7 @@ internal class ForestAreaNPC : GlobalNPC
 			return;
 		}
 
-		spawnRate = (int)(spawnRate * 0.7f);
-		maxSpawns += 2;
+		spawnRate = (int)(spawnRate * 0.4f);
+		maxSpawns += 6;
 	}
 }

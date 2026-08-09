@@ -5,7 +5,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class EoCMap() : PreHardmodeBossMap(15, () => NPC.downedBoss1)
+internal class EoCMap() : PreHardmodeBossMap(10, () => NPC.downedBoss1)
 {
 	public override void SetStaticDefaults()
 	{
@@ -22,9 +22,9 @@ internal class EoCMap() : PreHardmodeBossMap(15, () => NPC.downedBoss1)
 		Item.Size = new Vector2(44, 30);
 	}
 
-	protected override void OpenMapInternal()
+	internal override Subworld GetDestination()
 	{
-		SubworldSystem.Enter<EyeDomain>();
+		return ModContent.GetInstance<EyeDomain>();
 	}
 
 	public override string GenerateName(string defaultName)

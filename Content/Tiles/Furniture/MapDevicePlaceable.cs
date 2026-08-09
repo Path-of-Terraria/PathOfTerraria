@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Linq;
-using Mono.Cecil;
+﻿using Mono.Cecil;
+using PathOfTerraria.Common.Conflux;
+using PathOfTerraria.Common.Items;
 using PathOfTerraria.Common.Mapping;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.ModPlayers.LivesSystem;
@@ -14,12 +11,18 @@ using PathOfTerraria.Content.Items.Placeable;
 using PathOfTerraria.Core.Audio;
 using PathOfTerraria.Core.Camera;
 using PathOfTerraria.Core.Time;
+using PathOfTerraria.Core.UI.SmartUI;
 using PathOfTerraria.Utilities;
 using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
 using ReLogic.Content;
 using ReLogic.Utilities;
 using SubworldLibrary;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Linq;
 using Terraria.Audio;
 using Terraria.Chat;
 using Terraria.DataStructures;
@@ -327,6 +330,37 @@ public class MapDeviceTile : ModTile
 
 internal class MapDeviceEntity : ModTileEntity
 {
+	internal class ClearInfoHandler : Handler
+	{
+		public static void Send(string subworldName, bool reAdd)
+		{
+			if (Main.netMode == NetmodeID.SinglePlayer)
+			{
+				return;
+			}
+
+			ModPacket packet = Networking.GetPacket<ClearInfoHandler>();
+			BitsByte info = new(reAdd);
+			packet.Write(info);
+			packet.Write(subworldName);
+			packet.Send();
+		}
+
+		internal override void Receive(BinaryReader reader, byte sender)
+		{
+			BitsByte info = reader.ReadBitsByte();
+			string subworldName = reader.ReadString();
+			bool reAdd = info[0];
+
+			ResetPersistentMapInfo(subworldName, reAdd, true);
+
+			if (Main.netMode == NetmodeID.Server)
+			{
+				Send(subworldName, reAdd);
+			}
+		}
+	}
+
 	private static SoundStyle PortalSound = new($"{nameof(PathOfTerraria)}/Assets/Sounds/MapDevice/PortalLoop")
 	{
 		Volume = 0.4f,
@@ -408,6 +442,12 @@ internal class MapDeviceEntity : ModTileEntity
 
 	public override void Update()
 	{
+		// Force temporary maps to despawn if completed
+		if (StoredMap is Item storedMap && storedMap.ModItem is ITemporaryItem temp && storedMap.GetGlobalItem<ITemporaryItem.TemporaryGlobalItem>().IsTemporary && temp.DespawnCondition())
+		{
+			MapDeviceState.ClosePortalIfAvailable(this, null, true);
+		}
+
 		// If the local player has the map device open.
 		if (InteractingPlayer.HasValue && Main.player[InteractingPlayer.Value] is { } player)
 		{
@@ -425,14 +465,27 @@ internal class MapDeviceEntity : ModTileEntity
 			}
 		}
 
+		// World items are authoritative on the server. Letting clients collect them into their
+		// local tile entity creates storage that disappears on the next full synchronization.
+		if (Main.netMode == NetmodeID.MultiplayerClient)
+		{
+			return;
+		}
+
 		Vector2 center = Position.ToWorldCoordinates();
 		foreach (Item item in Main.ActiveItems)
 		{
-			if (item.ModItem is Map map && item.velocity.LengthSquared() < 4f && item.WithinRange(center, 128f) && Array.FindIndex(Storage, s => s.IsAir) is >= 0 and int freeSlot)
+			if (item.ModItem is Map && item.velocity.LengthSquared() < 4f && item.WithinRange(center, 128f) && Array.FindIndex(Storage, s => s.IsAir) is >= 0 and int freeSlot)
 			{
 				SoundEngine.PlaySound(SoundID.Grab, item.Center);
 				Storage[freeSlot] = item.Clone();
 				item.active = false;
+
+				if (Main.netMode == NetmodeID.Server)
+				{
+					NetMessage.SendData(MessageID.SyncItem, number: item.whoAmI);
+					MapDeviceSync.Send(ID, MapDeviceSync.Flags.Storage, [freeSlot]);
+				}
 			}
 		}
 	}
@@ -725,8 +778,14 @@ internal class MapDeviceEntity : ModTileEntity
 
 		if (Main.netMode != NetmodeID.MultiplayerClient)
 		{
+			MappingWorld.SetActiveMapDevice(Position);
 			Player player = Main.netMode == NetmodeID.SinglePlayer ? Main.LocalPlayer : Main.player[netSender!.Value];
 			player.GetModPlayer<BossDomainLivesPlayer>().SetActiveMapDevice(Position);
+		}
+		else
+		{
+			MappingWorld.SetActiveMapDevice(Position);
+			Main.LocalPlayer.GetModPlayer<BossDomainLivesPlayer>().SetActiveMapDevice(Position);
 		}
 
 		return true;
@@ -764,14 +823,19 @@ internal class MapDeviceEntity : ModTileEntity
 			return false;
 		}
 
+		Subworld? destination = StoredMap is { IsAir: false, ModItem: Map storedMap } ? storedMap.GetDestination() : null;
+
 		// Ensure a newly opened portal starts from a fresh save.
-		MappingWorld.DeleteSavedSubworld();
+		MappingWorld.DeleteSavedSubworld(destination);
 
 		PortalActive = true;
 		PortalUsesLeft = int.MaxValue;
 
 		if (StoredMap is { IsAir: false, ModItem: Map map })
 		{
+			destination ??= map.GetDestination();
+			ResetPersistentMapInfo(destination.FullName, true);
+
 			PortalUsesLeft = map.MaxUses;
 		}
 		else if (Injection is { } injection)
@@ -802,6 +866,23 @@ internal class MapDeviceEntity : ModTileEntity
 		return true;
 	}
 
+	private static void ResetPersistentMapInfo(string name, bool reAdd = false, bool fromNet = false)
+	{
+		if (!fromNet)
+		{
+			ClearInfoHandler.Send(name, reAdd);
+		}
+
+		MappingWorld.TimesEnteredByDomain.Remove(name);
+		MappingWorld.PersistentDomainInfo.Remove(name);
+
+		if (reAdd)
+		{
+			MappingWorld.TimesEnteredByDomain.Add(name, 0);
+			MappingWorld.PersistentDomainInfo.Add(name, new());
+		}
+	}
+
 	/// <summary>
 	/// Attempts to close the currently open portal.
 	/// <br/> Returns whether an attempt to perform the interaction will be made, not whether it will succeed.
@@ -829,12 +910,20 @@ internal class MapDeviceEntity : ModTileEntity
 			return false;
 		}
 
+		Subworld? destination = StoredMap.ModItem is Map map ? map.GetDestination() : null;
+
+		if (destination is not null)
+		{
+			ResetPersistentMapInfo(destination.FullName);
+		}
+
 		// The map is destroyed if the portal is ever closed.
 		StoredMap = new();
 		PortalActive = false;
 		PortalUsesLeft = 0;
 		Injection = null;
-		MappingWorld.DeleteSavedSubworld();
+		MappingWorld.ClearActiveMapDevice();
+		MappingWorld.DeleteSavedSubworld(destination);
 
 		// Broadcast the interaction.
 		if (Main.netMode == NetmodeID.Server)
@@ -1090,28 +1179,15 @@ internal class MapDeviceSync : Handler
 
 		if (flags.HasFlag(Flags.Storage))
 		{
-			// Write preceding masks.
-			Span<BitMask<byte>> masks = stackalloc BitMask<byte>[(int)MathF.Ceiling(device.Storage.Length / 8f)];
-			foreach (int storageIndex in itemIndices ?? Enumerable.Range(0, device.Storage.Length))
-			{
-				if (device.Storage[storageIndex] is { IsAir: false })
-				{
-					(int div, int rem) = Math.DivRem(storageIndex, 8);
-					masks[div].Set(rem);
-				}
-			}
-			foreach (BitMask<byte> mask in masks)
-			{
-				writer.Write((byte)mask.Value);
-			}
+			int[] storageIndices = itemIndices is null
+				? [.. Enumerable.Range(0, device.Storage.Length)]
+				: [.. itemIndices.Where(i => i >= 0 && i < device.Storage.Length).Distinct()];
 
-			// Write item data.
-			for (int maskIndex = 0, storageIndex = 0; maskIndex < masks.Length; maskIndex++)
+			writer.Write7BitEncodedInt(storageIndices.Length);
+			foreach (int storageIndex in storageIndices)
 			{
-				foreach (int bitIndex in masks[maskIndex])
-				{
-					ItemIO.Send(device.Storage[storageIndex], writer, writeStack: true);
-				}
+				writer.Write((byte)storageIndex);
+				ItemIO.Send(device.Storage[storageIndex], writer, writeStack: true);
 			}
 		}
 
@@ -1166,22 +1242,16 @@ internal class MapDeviceSync : Handler
 
 		if (flags.HasFlag(Flags.Storage))
 		{
-			// Read masks.
-			Span<BitMask<byte>> masks = stackalloc BitMask<byte>[(int)MathF.Ceiling(MapDeviceEntity.StorageSize / 8f)];
-			for (int i = 0; i < masks.Length; i++) { masks[i] = new(reader.ReadByte()); }
-
 			// On servers, refuse applying client's storage items if they are not the one interacting with the device.
 			bool forceDummy = Main.netMode == NetmodeID.Server && mapEntity?.InteractingPlayer != sender;
 
-			// Read items.
-			for (int maskIndex = 0, storageIndex = 0; maskIndex < masks.Length; maskIndex++)
+			int itemCount = reader.Read7BitEncodedInt();
+			for (int i = 0; i < itemCount; i++)
 			{
-				foreach (int bitIndex in masks[maskIndex])
-				{
-					bool useDummy = forceDummy || mapEntity?.Storage[storageIndex] == null;
-					Item item = useDummy ? new() : mapEntity!.Storage[storageIndex];
-					ItemIO.Receive(item, reader, readStack: true);
-				}
+				int storageIndex = reader.ReadByte();
+				bool useDummy = forceDummy || storageIndex >= MapDeviceEntity.StorageSize || mapEntity?.Storage[storageIndex] == null;
+				Item item = useDummy ? new() : mapEntity!.Storage[storageIndex];
+				ItemIO.Receive(item, reader, readStack: true);
 			}
 		}
 

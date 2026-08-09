@@ -1,27 +1,30 @@
-﻿namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
-internal class ManaAffix : ItemAffix
+internal abstract class ManaItemAffix : ItemAffix
 {
-	public ManaAffix()
+	protected ManaItemAffix()
 	{
 		Round = true;
 	}
-	
+}
+
+internal class ManaAffix : ManaItemAffix
+{
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		modifier.MaximumMana.Base += Value;
 	}
 }
 
-internal class ManaRegenAffix : ItemAffix
+internal class ManaRegenAffix : ManaItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		modifier.ManaRegen.Base += Value;
+		modifier.ManaRegen += Value / 100f;
 	}
 }
 
-internal class ManaPotionPowerAffix : ItemAffix
+internal class ManaPotionPowerAffix : ManaItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
@@ -29,20 +32,15 @@ internal class ManaPotionPowerAffix : ItemAffix
 	}
 }
 
-internal class ManaPotionCapAffix : ItemAffix
+internal class ManaPotionCapAffix : ManaItemAffix
 {
-	public ManaPotionCapAffix()
-	{
-		Round = true;
-	}
-	
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		modifier.MaxManaPotions += Value;
 	}
 }
 
-internal class ManaPotionCooldownAffix : ItemAffix
+internal class ManaPotionCooldownAffix : ManaItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{

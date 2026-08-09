@@ -3,6 +3,7 @@ using PathOfTerraria.Common.AccessorySlots;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using Terraria.DataStructures;
 using Terraria.UI;
+using Terraria.ModLoader.Core;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -30,7 +31,11 @@ public sealed partial class PoTGlobalItem : GlobalItem
 			data.Rarity = ItemRarity.Unique;
 		}
 
-		PoTItemHelper.Roll(item, PoTItemHelper.PickItemLevel());
+		// Avoid iterating custom hooks before associations for which items have which globals are built.
+		if (GlobalTypeLookups<GlobalItem>.Initialized)
+		{
+			PoTItemHelper.Roll(item, PoTItemHelper.PickItemLevel());
+		}
 	}
 
 	public override void UpdateEquip(Item item, Player player)
@@ -55,6 +60,11 @@ public sealed partial class PoTGlobalItem : GlobalItem
 	
 	public override void OnCreated(Item item, ItemCreationContext context)
 	{
+		if (context is BuyItemCreationContext)
+		{
+			return;
+		}
+
 		// Only apply to gear items that should use dynamic levels
 		if (GearGlobalItem.IsGearItem(item))
 		{
