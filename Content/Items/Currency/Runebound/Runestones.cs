@@ -12,7 +12,7 @@ internal abstract class Runestone : CurrencyShard
 	public abstract RuneboundFamily Family { get; }
 	public abstract RunestoneGrade Grade { get; }
 
-	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Currency/AscendantShard";
+	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Currency/Runebound/{GetType().Name}";
 
 	protected override void SetStaticData()
 	{
