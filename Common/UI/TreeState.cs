@@ -190,12 +190,13 @@ internal class TreeState : TabsUiState, IAutopauseUI
 		_passiveSearchBackground.Top.Set(DraggablePanelHeight + PassiveSearchPadding, 0f);
 		_passiveSearchBackground.Width.Set(PassiveSearchWidth, 0f);
 		_passiveSearchBackground.Height.Set(PassiveSearchHeight, 0f);
+		_passiveSearchBackground.SetPadding(0f);
 
 		_passiveSearchInput = new UIEditableText(backingText: Language.GetTextValue("Mods.PathOfTerraria.UI.PassiveTreeSearchPlaceholder"), maxChars: 25);
-		_passiveSearchInput.Left.Set(4f, 0f); 
-		_passiveSearchInput.Top.Set(6f, 0f);
-		_passiveSearchInput.Width.Set(-4f, 1f); 
-		_passiveSearchInput.Height.Set(10f, 0f); 
+		_passiveSearchInput.Left.Set(4f, 0f);
+		_passiveSearchInput.Top.Set(0f, 0f);
+		_passiveSearchInput.Width.Set(-8f, 1f);
+		_passiveSearchInput.Height.Set(0f, 1f);
 		_passiveSearchInput.CurrentValue = _passiveSearchQuery;
 
 		_passiveSearchBackground.Append(_passiveSearchInput);
