@@ -268,7 +268,7 @@ InvButtons: {
 SubworldHelp: {
 	// MapTier: "[i:4927] Map Tier: "
 	// Affixes: "[i:885] Affixes:"
-	// Scarabs: "[i:4348] Domain Scarabs:"
+	// Sigils: "[i:PathOfTerraria/CarvedSigilOfBinding] Domain Sigils:"
 	// MapStrength: "[i:29] Map strength modifier: "
 	// ExperienceBoost: "    [i:278] Experience boost: +"
 	// DropRateBoost: "    [i:278] Drop rate increase: +"
@@ -285,7 +285,7 @@ MapContentInspector: {
 		// Content: Content
 		// Containers: Containers
 		// Modifiers: Modifiers
-		// Scarabs: Scarabs
+		// Sigils: Sigils
 		// Diagnostics: Diagnostics
 	}
 }
@@ -517,7 +517,7 @@ ClassPages: {
 
 MapDevice: {
 	// MapSlot: Map Slot
-	// ScarabSlot: Scarab Slot {0}
+	// SigilSlot: Sigil Slot {0}
 	// TrashSlot: Trash
 	// ActivatePortal: Open Portal
 	// DeactivatePortal: Close Portal

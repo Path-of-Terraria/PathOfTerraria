@@ -1,7 +1,7 @@
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.Maps;
-using PathOfTerraria.Common.Systems.Scarabs;
+using PathOfTerraria.Common.Systems.Sigils;
 using System.IO;
 
 namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
@@ -14,7 +14,7 @@ internal class SendMappingDomainInfoHandler : Handler
 	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
 		// Map state is derived from the server's MapDeviceEntity when portal entry is authorized.
-		// Never accept level, affix, or scarab state supplied by a client.
+		// Never accept level, affix, or sigil state supplied by a client.
 	}
 
 	internal static void GetAndSetMappingDomainInfo(BinaryReader reader)
@@ -31,18 +31,18 @@ internal class SendMappingDomainInfoHandler : Handler
 			MappingWorld.Affixes.Add((MapAffix)affix);
 		}
 
-		int serializedScarabCount = reader.ReadByte();
-		int scarabCount = Math.Min(serializedScarabCount, 4);
-		var scarabs = new ScarabEntry[scarabCount];
-		for (int i = 0; i < serializedScarabCount; i++)
+		int serializedSigilCount = reader.ReadByte();
+		int sigilCount = Math.Min(serializedSigilCount, 4);
+		var sigils = new SigilEntry[sigilCount];
+		for (int i = 0; i < serializedSigilCount; i++)
 		{
-			ScarabEntry entry = ScarabEntry.NetReceive(reader);
-			if (i < scarabCount)
+			SigilEntry entry = SigilEntry.NetReceive(reader);
+			if (i < sigilCount)
 			{
-				scarabs[i] = entry;
+				sigils[i] = entry;
 			}
 		}
-		ScarabSystem.SetActive(scarabs);
+		SigilSystem.SetActive(sigils);
 
 		MappingWorld.AreaLevel = level;
 		MappingWorld.MapTier = tier;

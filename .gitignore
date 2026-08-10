@@ -342,3 +342,5 @@ MigrationBackup/
 # Agents
 .claude/
 .junie/
+
+tmp/

@@ -11,7 +11,7 @@ using PathOfTerraria.Common.Systems.Affixes.Maps;
 using PathOfTerraria.Common.Systems.MapContent;
 using PathOfTerraria.Common.Systems.MobSystem;
 using PathOfTerraria.Common.Systems.Runebound;
-using PathOfTerraria.Common.Systems.Scarabs;
+using PathOfTerraria.Common.Systems.Sigils;
 using PathOfTerraria.Content.Conflux;
 using PathOfTerraria.Content.Tiles.Maps;
 using SubworldLibrary;
@@ -97,7 +97,7 @@ internal static class MapContentInspection
 	internal const string ContentTab = "Content";
 	internal const string ContainersTab = "Containers";
 	internal const string ModifiersTab = "Modifiers";
-	internal const string ScarabsTab = "Scarabs";
+	internal const string SigilsTab = "Sigils";
 	internal const string DiagnosticsTab = "Diagnostics";
 
 	private static readonly Dictionary<string, Action<MapInspectionSnapshot>> Providers = [];
@@ -134,7 +134,7 @@ internal static class MapContentInspection
 		AddContent(snapshot);
 		AddContainers(snapshot);
 		AddModifiers(snapshot, world, player);
-		AddScarabs(snapshot);
+		AddSigils(snapshot);
 		AddDiagnostics(snapshot, world);
 
 		foreach ((string key, Action<MapInspectionSnapshot> provider) in Providers)
@@ -152,26 +152,26 @@ internal static class MapContentInspection
 		return snapshot;
 	}
 
-	private static void AddScarabs(MapInspectionSnapshot snapshot)
+	private static void AddSigils(MapInspectionSnapshot snapshot)
 	{
-		snapshot.Add(ScarabsTab, "Unlocked Device Slots", $"{ScarabSystem.UnlockedSlotCount}/4",
-			$"Highest completed exploration-map tier: {ScarabSystem.HighestCompletedMapTier}.");
-		snapshot.Add(ScarabsTab, "Active Scarabs", ScarabSystem.ActiveScarabs.Count);
-		snapshot.Add(ScarabsTab, "Map Threat", ScarabSystem.ActiveScarabs.Sum(ScarabCatalog.GetThreat));
-		for (int i = 0; i < ScarabSystem.ActiveScarabs.Count; i++)
+		snapshot.Add(SigilsTab, "Unlocked Device Slots", $"{SigilSystem.UnlockedSlotCount}/4",
+			$"Highest completed exploration-map tier: {SigilSystem.HighestCompletedMapTier}.");
+		snapshot.Add(SigilsTab, "Active Sigils", SigilSystem.ActiveSigils.Count);
+		snapshot.Add(SigilsTab, "Map Threat", SigilSystem.ActiveSigils.Sum(SigilCatalog.GetThreat));
+		for (int i = 0; i < SigilSystem.ActiveSigils.Count; i++)
 		{
-			ScarabEntry entry = ScarabSystem.ActiveScarabs[i];
-			snapshot.Add(ScarabsTab, $"Slot {i + 1}", entry.Kind,
-				$"Grade {entry.Grade}; family {entry.Family}; {ScarabCatalog.DescribeEffect(entry)}.");
+			SigilEntry entry = SigilSystem.ActiveSigils[i];
+			snapshot.Add(SigilsTab, $"Slot {i + 1}", entry.Kind,
+				$"Grade {entry.Grade}; family {entry.Family}; {SigilCatalog.DescribeEffect(entry)}.");
 		}
 
-		snapshot.Add(ScarabsTab, "Nemesis Captains", $"{ScarabEncounterSystem.SpawnedNemeses}/{ScarabEncounterSystem.RequestedNemeses}");
-		snapshot.Add(ScarabsTab, "Warded Caches", $"{ScarabEncounterSystem.SpawnedCaches}/{ScarabEncounterSystem.RequestedCaches}");
-		snapshot.Add(ScarabsTab, "Consecrated Shrines", $"{ScarabEncounterSystem.SpawnedShrines}/{ScarabEncounterSystem.RequestedShrines}");
-		int livingNemeses = Main.npc.Count(npc => npc.active && npc.GetGlobalNPC<ScarabEncounterNPC>().Nemesis);
-		int livingCaches = Main.npc.Count(npc => npc.active && npc.ModNPC is Content.NPCs.Mapping.Scarabs.WardedCacheNPC);
-		int livingShrines = Main.npc.Count(npc => npc.active && npc.ModNPC is Content.NPCs.Mapping.Scarabs.ConsecratedShrineNPC);
-		snapshot.Add(ScarabsTab, "Living Scarab Content", livingNemeses + livingCaches + livingShrines,
+		snapshot.Add(SigilsTab, "Nemesis Captains", $"{SigilEncounterSystem.SpawnedNemeses}/{SigilEncounterSystem.RequestedNemeses}");
+		snapshot.Add(SigilsTab, "Warded Caches", $"{SigilEncounterSystem.SpawnedCaches}/{SigilEncounterSystem.RequestedCaches}");
+		snapshot.Add(SigilsTab, "Consecrated Shrines", $"{SigilEncounterSystem.SpawnedShrines}/{SigilEncounterSystem.RequestedShrines}");
+		int livingNemeses = Main.npc.Count(npc => npc.active && npc.GetGlobalNPC<SigilEncounterNPC>().Nemesis);
+		int livingCaches = Main.npc.Count(npc => npc.active && npc.ModNPC is Content.NPCs.Mapping.Sigils.WardedCacheNPC);
+		int livingShrines = Main.npc.Count(npc => npc.active && npc.ModNPC is Content.NPCs.Mapping.Sigils.ConsecratedShrineNPC);
+		snapshot.Add(SigilsTab, "Living Sigil Content", livingNemeses + livingCaches + livingShrines,
 			$"Captains {livingNemeses}; caches {livingCaches}; shrines {livingShrines}.");
 	}
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Affixes.Maps;
-using PathOfTerraria.Common.Systems.Scarabs;
+using PathOfTerraria.Common.Systems.Sigils;
 using SubworldLibrary;
 using Terraria.ID;
 
@@ -48,7 +48,7 @@ internal class RequestMappingDomainInfoHandler : Handler
 			item.NetSend(packet);
 		}
 
-		ScarabSystem.WriteActive(packet);
+		SigilSystem.WriteActive(packet);
 
 		packet.Send(sender);
 	}

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using PathOfTerraria.Common.Data;
@@ -12,7 +12,7 @@ using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.ElementalDamage;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Runebound;
-using PathOfTerraria.Common.Systems.Scarabs;
+using PathOfTerraria.Common.Systems.Sigils;
 using PathOfTerraria.Core.Hooks;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Utilities.Terraria;
@@ -299,9 +299,9 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 		if (Main.netMode != NetmodeID.MultiplayerClient)
 		{
 			bool forcedRunebound = RuneboundSpawnContext.TryConsume(out RuneboundFamily runeboundFamily);
-			bool forcedScarabRare = ScarabSpawnContext.TryConsume(out int scarabBonusAffixes, out float scarabLifeMultiplier, out float scarabDamageMultiplier);
+			bool forcedSigilRare = SigilSpawnContext.TryConsume(out int sigilBonusAffixes, out float sigilLifeMultiplier, out float sigilDamageMultiplier);
 
-			if (forcedRunebound || forcedScarabRare)
+			if (forcedRunebound || forcedSigilRare)
 			{
 				Rarity = ItemRarity.Rare;
 			}
@@ -326,12 +326,12 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 				elemNPC.ApplyDamageTypes(npc);
 			}
 
-			ApplyRarity(npc, false, forcedRunebound ? RuneboundCrafting.GetMobAffixType(runeboundFamily) : null, scarabBonusAffixes);
-			if (forcedScarabRare)
+			ApplyRarity(npc, false, forcedRunebound ? RuneboundCrafting.GetMobAffixType(runeboundFamily) : null, sigilBonusAffixes);
+			if (forcedSigilRare)
 			{
-				npc.lifeMax = Math.Max(1, (int)(npc.lifeMax * scarabLifeMultiplier));
+				npc.lifeMax = Math.Max(1, (int)(npc.lifeMax * sigilLifeMultiplier));
 				npc.life = npc.lifeMax;
-				npc.damage = Math.Max(1, (int)(npc.damage * scarabDamageMultiplier));
+				npc.damage = Math.Max(1, (int)(npc.damage * sigilDamageMultiplier));
 			}
 			npc.netUpdate = true;
 		}

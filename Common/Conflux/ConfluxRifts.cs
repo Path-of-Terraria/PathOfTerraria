@@ -1,4 +1,4 @@
-﻿// #define DEBUG_LOG
+// #define DEBUG_LOG
 // #define INSTANT_REFILL
 
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using PathOfTerraria.Common.Encounters;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Subworlds.MappingAreas;
 using PathOfTerraria.Content.Conflux;
-using PathOfTerraria.Common.Systems.Scarabs;
+using PathOfTerraria.Common.Systems.Sigils;
 using PathOfTerraria.Core.Time;
 using PathOfTerraria.Utilities;
 using PathOfTerraria.Utilities.Terraria;
@@ -270,9 +270,9 @@ internal sealed class ConfluxRifts : ModSystem
 			if (generationTarget < 0)
 			{
 				generationTarget = Main.rand.NextFloat() < 0.10f ? 1 : 0;
-				if (ScarabSystem.FindFamily(ScarabFamily.Conflux) is { } scarab)
+				if (SigilSystem.FindFamily(SigilFamily.Conflux) is { } sigil)
 				{
-					generationTarget += scarab.Kind == ScarabKind.TriuneConflux ? 3 : ScarabCatalog.GetPower(scarab.Grade);
+					generationTarget += sigil.Kind == SigilKind.TriuneConflux ? 3 : SigilCatalog.GetPower(sigil.Grade);
 				}
 			}
 
@@ -285,7 +285,7 @@ internal sealed class ConfluxRifts : ModSystem
 	internal static void OnPreGeneratedRiftResolved(ConfluxRiftKind kind)
 	{
 		resolvedGeneratedRifts++;
-		if (ScarabSystem.Has(ScarabKind.TriuneConflux))
+		if (SigilSystem.Has(SigilKind.TriuneConflux))
 		{
 			triuneResolvedKindMask |= 1 << (int)kind;
 		}
@@ -293,7 +293,7 @@ internal sealed class ConfluxRifts : ModSystem
 
 	internal static bool TryClaimTriuneReward(ConfluxRiftKind kind)
 	{
-		if (triuneRewardClaimed || !ScarabSystem.Has(ScarabKind.TriuneConflux))
+		if (triuneRewardClaimed || !SigilSystem.Has(SigilKind.TriuneConflux))
 		{
 			return false;
 		}
@@ -311,13 +311,13 @@ internal sealed class ConfluxRifts : ModSystem
 	private static void SpawnConfiguredRifts(int remainingTarget)
 	{
 		int before = GetRiftLocations().Count;
-		if (ScarabSystem.FindFamily(ScarabFamily.Conflux) is not { } scarab)
+		if (SigilSystem.FindFamily(SigilFamily.Conflux) is not { } sigil)
 		{
 			SpawnRifts(generation: true, before + remainingTarget);
 			return;
 		}
 
-		if (scarab.Kind == ScarabKind.TriuneConflux)
+		if (sigil.Kind == SigilKind.TriuneConflux)
 		{
 			ConfluxRiftKind[] kinds = [ConfluxRiftKind.Infernal, ConfluxRiftKind.Glacial, ConfluxRiftKind.Celestial];
 			int missingDistinctKinds = kinds.Count(kind =>
@@ -325,35 +325,35 @@ internal sealed class ConfluxRifts : ModSystem
 				&& !Main.projectile.Any(projectile => projectile.active
 					&& projectile.ModProjectile is ConfluxRift rift && rift.Kind == kind
 					&& rift.BitFlags.HasFlag(ConfluxRift.Flags.PreGenerated)));
-			int spawnedForScarab = 0;
+			int spawnedForSigil = 0;
 			foreach (ConfluxRiftKind kind in kinds)
 			{
 				bool resolved = (triuneResolvedKindMask & (1 << (int)kind)) != 0;
 				bool alreadyLoaded = Main.projectile.Any(projectile => projectile.active
 					&& projectile.ModProjectile is ConfluxRift rift && rift.Kind == kind
 					&& rift.BitFlags.HasFlag(ConfluxRift.Flags.PreGenerated));
-				if (resolved || alreadyLoaded || spawnedForScarab >= remainingTarget)
+				if (resolved || alreadyLoaded || spawnedForSigil >= remainingTarget)
 				{
 					continue;
 				}
 
-				int spawned = SpawnRifts(generation: true, before + spawnedForScarab + 1, forcedKind: kind);
-				spawnedForScarab += spawned;
+				int spawned = SpawnRifts(generation: true, before + spawnedForSigil + 1, forcedKind: kind);
+				spawnedForSigil += spawned;
 			}
 
 			int randomExtras = Math.Max(0, remainingTarget - missingDistinctKinds);
-			SpawnRifts(generation: true, before + spawnedForScarab + randomExtras);
+			SpawnRifts(generation: true, before + spawnedForSigil + randomExtras);
 			return;
 		}
 		else
 		{
-			ConfluxRiftKind kind = scarab.Kind switch
+			ConfluxRiftKind kind = sigil.Kind switch
 			{
-				ScarabKind.InfernalConflux => ConfluxRiftKind.Infernal,
-				ScarabKind.GlacialConflux => ConfluxRiftKind.Glacial,
+				SigilKind.InfernalConflux => ConfluxRiftKind.Infernal,
+				SigilKind.GlacialConflux => ConfluxRiftKind.Glacial,
 				_ => ConfluxRiftKind.Celestial,
 			};
-			int forcedTarget = Math.Min(ScarabCatalog.GetPower(scarab.Grade), remainingTarget);
+			int forcedTarget = Math.Min(SigilCatalog.GetPower(sigil.Grade), remainingTarget);
 			int forcedSpawned = SpawnRifts(generation: true, before + forcedTarget, forcedKind: kind);
 			int randomExtras = remainingTarget - forcedTarget;
 			SpawnRifts(generation: true, before + forcedSpawned + randomExtras);

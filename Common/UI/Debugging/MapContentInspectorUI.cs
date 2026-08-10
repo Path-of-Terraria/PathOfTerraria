@@ -92,7 +92,7 @@ internal sealed class MapContentInspectorUI : TabsUiState, IMutuallyExclusiveUI
 		MapContentInspection.ContentTab,
 		MapContentInspection.ContainersTab,
 		MapContentInspection.ModifiersTab,
-		MapContentInspection.ScarabsTab,
+		MapContentInspection.SigilsTab,
 		MapContentInspection.DiagnosticsTab,
 	];
 

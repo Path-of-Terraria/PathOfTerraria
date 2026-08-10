@@ -9,7 +9,7 @@ using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Content.Items.Currency.Runebound;
 using PathOfTerraria.Content.NPCs.Runebound;
-using PathOfTerraria.Common.Systems.Scarabs;
+using PathOfTerraria.Common.Systems.Sigils;
 using PathOfTerraria.Utilities.Terraria;
 using SubworldLibrary;
 using Terraria.DataStructures;
@@ -183,10 +183,10 @@ internal sealed class RuneboundSystem : ModSystem
 
 	private static int GetGuaranteedMapEncounterCount()
 	{
-		int scarabBonus = ScarabSystem.FindFamily(ScarabFamily.Binding) is { } binding
-			? binding.Kind == ScarabKind.RunicMenagerie ? 3 : ScarabCatalog.GetPower(binding.Grade)
+		int sigilBonus = SigilSystem.FindFamily(SigilFamily.Binding) is { } binding
+			? binding.Kind == SigilKind.RunicMenagerie ? 3 : SigilCatalog.GetPower(binding.Grade)
 			: 0;
-		return 2 + (MappingWorld.MapTier >= 5 ? 1 : 0) + (MappingWorld.MapTier >= 10 ? 1 : 0) + scarabBonus;
+		return 2 + (MappingWorld.MapTier >= 5 ? 1 : 0) + (MappingWorld.MapTier >= 10 ? 1 : 0) + sigilBonus;
 	}
 
 	private static bool TryGetTutorialPlayer(out Player player)
@@ -326,10 +326,10 @@ internal sealed class RuneboundSystem : ModSystem
 		if (themed)
 		{
 			RuneboundSpawnContext.Prepare(encounter.Family);
-			if (ScarabSystem.FindFamily(ScarabFamily.Binding) is { } binding
-				&& (binding.Kind == ScarabKind.RunicMenagerie || binding.Grade == ScarabGrade.Prismatic))
+			if (SigilSystem.FindFamily(SigilFamily.Binding) is { } binding
+				&& (binding.Kind == SigilKind.RunicMenagerie || binding.Grade == SigilGrade.Prismatic))
 			{
-				ScarabSpawnContext.Prepare(1, 1.25f, 1.10f);
+				SigilSpawnContext.Prepare(1, 1.25f, 1.10f);
 			}
 		}
 
@@ -341,7 +341,7 @@ internal sealed class RuneboundSystem : ModSystem
 		finally
 		{
 			RuneboundSpawnContext.Clear();
-			ScarabSpawnContext.Clear();
+			SigilSpawnContext.Clear();
 		}
 
 		if (!enemy.active)
@@ -524,7 +524,7 @@ internal sealed class RuneboundSystem : ModSystem
 		if (encounter.MapEncounter)
 		{
 			mapEncountersCompleted++;
-			if (ScarabSystem.Has(ScarabKind.RunicMenagerie))
+			if (SigilSystem.Has(SigilKind.RunicMenagerie))
 			{
 				int familyIndex = encounter.Family switch
 				{
@@ -559,7 +559,7 @@ internal sealed class RuneboundSystem : ModSystem
 
 	private static RuneboundFamily RollFamily()
 	{
-		if (IsExplorationMap() && ScarabSystem.Has(ScarabKind.RunicMenagerie))
+		if (IsExplorationMap() && SigilSystem.Has(SigilKind.RunicMenagerie))
 		{
 			RuneboundFamily[] menagerie = [RuneboundFamily.Vigor, RuneboundFamily.Embers, RuneboundFamily.Void];
 			for (int i = 0; i < menagerie.Length; i++)
@@ -608,15 +608,15 @@ internal sealed class RuneboundSystem : ModSystem
 		}
 
 		RunestoneGrade rewardGrade = encounter.Grade;
-		if (ScarabSystem.FindFamily(ScarabFamily.Binding) is { } binding)
+		if (SigilSystem.FindFamily(SigilFamily.Binding) is { } binding)
 		{
-			int upgradeChance = binding.Kind == ScarabKind.RunicMenagerie ? 25 : binding.Grade switch
+			int upgradeChance = binding.Kind == SigilKind.RunicMenagerie ? 25 : binding.Grade switch
 			{
-				ScarabGrade.Gilded => 15,
-				ScarabGrade.Prismatic => 30,
+				SigilGrade.Gilded => 15,
+				SigilGrade.Prismatic => 30,
 				_ => 0,
 			};
-			if (binding.Kind == ScarabKind.RunicMenagerie && Main.rand.Next(100) < upgradeChance)
+			if (binding.Kind == SigilKind.RunicMenagerie && Main.rand.Next(100) < upgradeChance)
 			{
 				rewardGrade = RunestoneGrade.Perfect;
 			}

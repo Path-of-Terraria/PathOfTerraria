@@ -2,7 +2,7 @@ using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Subworlds.MappingAreas;
 using PathOfTerraria.Common.Systems.MobSystem;
-using PathOfTerraria.Common.Systems.Scarabs;
+using PathOfTerraria.Common.Systems.Sigils;
 using PathOfTerraria.Core.Items;
 using SubworldLibrary;
 using System.Collections.Generic;
@@ -32,9 +32,9 @@ internal sealed class BossLootExplosion : GlobalNPC
 
 		int areaLevel = PoTMobHelper.GetAreaLevel();
 		int count = ComputeBurstCount(areaLevel);
-		if (ScarabSystem.IsExplorationMap() && ScarabSystem.FindFamily(ScarabFamily.Sovereignty) is { } sovereignty)
+		if (SigilSystem.IsExplorationMap() && SigilSystem.FindFamily(SigilFamily.Sovereignty) is { } sovereignty)
 		{
-			count += sovereignty.Kind == ScarabKind.CrownedTyrant ? 4 : ScarabCatalog.GetPower(sovereignty.Grade);
+			count += sovereignty.Kind == SigilKind.CrownedTyrant ? 4 : SigilCatalog.GetPower(sovereignty.Grade);
 		}
 		float rarityModifier = BaseRarityBoost + ArpgNPC.DomainRarityBoost();
 

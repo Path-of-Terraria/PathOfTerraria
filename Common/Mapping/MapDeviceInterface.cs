@@ -1,16 +1,16 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.Items;
 using PathOfTerraria.Common.Systems;
-using PathOfTerraria.Common.Systems.Scarabs;
+using PathOfTerraria.Common.Systems.Sigils;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Common.UI.Components;
 using PathOfTerraria.Common.UI.Elements;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Content.Items.Consumables.Maps;
-using PathOfTerraria.Content.Items.Mapping.Scarabs;
+using PathOfTerraria.Content.Items.Mapping.Sigils;
 using PathOfTerraria.Content.Tiles.Furniture;
 using PathOfTerraria.Core.Time;
 using PathOfTerraria.Core.UI;
@@ -494,13 +494,13 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		ActionButton!.IgnoresMouseInteraction = buttonLockFrame.CurrentRow != buttonTargetRow || buttonLockFrame.CurrentRow == ButtonFrameClosed;
 		if (!isPortalActive && ActionButtonInner is { } actionText && MapDeviceInterface.Entity is { } activeEntity)
 		{
-			ScarabEntry[] entries = activeEntity.ScarabSlots
-				.Where(item => item.ModItem is DomainScarab)
-				.Select(item => ((DomainScarab)item.ModItem).Entry)
+			SigilEntry[] entries = activeEntity.SigilSlots
+				.Where(item => item.ModItem is DomainSigil)
+				.Select(item => ((DomainSigil)item.ModItem).Entry)
 				.ToArray();
 			actionText.HoverText = entries.Length == 0
 				? string.Empty
-				: $"Map Threat: {entries.Sum(ScarabCatalog.GetThreat)}\n" + string.Join("\n", entries.Select(ScarabCatalog.DescribeEffect));
+				: $"Map Threat: {entries.Sum(SigilCatalog.GetThreat)}\n" + string.Join("\n", entries.Select(SigilCatalog.DescribeEffect));
 		}
 
 		// Animate inventory and storage elements.
@@ -612,7 +612,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 	private bool CanInteractWithCanisters()
 	{
 		return MapDeviceInterface.Entity is { StoredMap: not { IsAir: false }, Injection: null } entity
-			&& entity.ScarabSlots.All(item => item.IsAir) && AreCanistersUnlocked();
+			&& entity.SigilSlots.All(item => item.IsAir) && AreCanistersUnlocked();
 	}
 	private bool CanInjectCurrentCanister()
 	{
@@ -1052,17 +1052,17 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 
 #endregion
 
-		#region Scarabs
+		#region Sigils
 		for (int i = 0; i < 4; i++)
 		{
 			int slotIndex = i;
-			var fragSlot = new UIImageItemSlot.SlotWrapper(() => (entity.ScarabSlots, slotIndex));
-			(string Key, object? Arg) scarabSlotHover = ($"Mods.{nameof(PathOfTerraria)}.UI.MapDevice.ScarabSlot", slotIndex + 1);
+			var fragSlot = new UIImageItemSlot.SlotWrapper(() => (entity.SigilSlots, slotIndex));
+			(string Key, object? Arg) sigilSlotHover = ($"Mods.{nameof(PathOfTerraria)}.UI.MapDevice.SigilSlot", slotIndex + 1);
 
 			Asset<Texture2D> fragSlotTexture = ModContent.Request<Texture2D>($"{BasePath}/MapDevice_Frag_Slot", AssetRequestMode.ImmediateLoad);
 			Asset<Texture2D> fragIconTexture = ModContent.Request<Texture2D>($"{BasePath}/MapDevice_Frag_Icon", AssetRequestMode.ImmediateLoad);
 			Vector2 fragSlotSize = fragSlotTexture.Size();
-			Window.AddElement(new UIHoverImageItemSlot(fragSlotTexture, fragIconTexture, fragSlot, scarabSlotHover, context: CustomSlotContext), e =>
+			Window.AddElement(new UIHoverImageItemSlot(fragSlotTexture, fragIconTexture, fragSlot, sigilSlotHover, context: CustomSlotContext), e =>
 			{
 				e.Initialize();
 				float xOffset = (slotIndex is 1 or 2 ? (+32) : (+90)) * (slotIndex is 0 or 1 ? (-1) : (1));
@@ -1078,16 +1078,16 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 						return true;
 					}
 
-					if (newItem.ModItem is not DomainScarab scarab)
+					if (newItem.ModItem is not DomainSigil sigil)
 					{
 						return false;
 					}
 
-					return !entity.ScarabSlots.Where((item, index) => index != slotIndex)
-						.Any(item => item.ModItem is DomainScarab other && other.Family == scarab.Family);
+					return !entity.SigilSlots.Where((item, index) => index != slotIndex)
+						.Any(item => item.ModItem is DomainSigil other && other.Family == sigil.Family);
 				};
-				e.IsLocked = _ => entity.PortalActive || slotIndex >= ScarabSystem.UnlockedSlotCount || entity.Injection != null;
-				e.OnModifyItem += (element, oldItem, newItem) => OnModifyScarabItem(element, oldItem, newItem, slotIndex);
+				e.IsLocked = _ => entity.PortalActive || slotIndex >= SigilSystem.UnlockedSlotCount || entity.Injection != null;
+				e.OnModifyItem += (element, oldItem, newItem) => OnModifySigilItem(element, oldItem, newItem, slotIndex);
 			});
 		}
 		#endregion
@@ -1243,18 +1243,18 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		_ = (element, oldItem, newItem);
 	}
 
-	private void OnModifyScarabItem(UIElement element, Item oldItem, Item newItem, int slotIndex)
+	private void OnModifySigilItem(UIElement element, Item oldItem, Item newItem, int slotIndex)
 	{
-		if (newItem is { IsAir: false, stack: > 1, ModItem: DomainScarab })
+		if (newItem is { IsAir: false, stack: > 1, ModItem: DomainSigil })
 		{
 			int excess = newItem.stack - 1;
 			newItem.stack = 1;
-			Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_Misc("MapDeviceScarabSplit"), newItem.type, excess);
+			Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_Misc("MapDeviceSigilSplit"), newItem.type, excess);
 		}
 
 		if (Main.netMode != NetmodeID.MultiplayerClient || MapDeviceInterface.Entity is not { } device) { return; }
 
-		MapDeviceSync.Send(device.ID, MapDeviceSync.Flags.Scarabs, [slotIndex]);
+		MapDeviceSync.Send(device.ID, MapDeviceSync.Flags.Sigils, [slotIndex]);
 		_ = (element, oldItem, newItem);
 	}
 

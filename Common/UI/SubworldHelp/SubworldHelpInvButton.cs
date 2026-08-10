@@ -4,7 +4,7 @@ using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.Maps;
 using PathOfTerraria.Common.Systems.MobSystem;
-using PathOfTerraria.Common.Systems.Scarabs;
+using PathOfTerraria.Common.Systems.Sigils;
 using PathOfTerraria.Core.UI.SmartUI;
 using SubworldLibrary;
 using Terraria.Audio;
@@ -105,13 +105,14 @@ public class SubworldHelpInvButton : SmartUiState
 			AddLine(lines, "RarityMod", Language.GetTextValue("Mods.PathOfTerraria.UI.SubworldHelp.DropRarityBoost") + (rarityModifier * 100f).ToString("#0.##") + "%", scale);
 		}
 
-		if (ScarabSystem.ActiveScarabs.Count > 0)
+		if (SigilSystem.ActiveSigils.Count > 0)
 		{
-			AddLine(lines, "ScarabHeading", Language.GetTextValue("Mods.PathOfTerraria.UI.SubworldHelp.Scarabs"), new Vector2(1f));
-			for (int i = 0; i < ScarabSystem.ActiveScarabs.Count; i++)
+			AddLine(lines, "SigilHeading", Language.GetTextValue("Mods.PathOfTerraria.UI.SubworldHelp.Sigils"), new Vector2(1f));
+			for (int i = 0; i < SigilSystem.ActiveSigils.Count; i++)
 			{
-				ScarabEntry scarab = ScarabSystem.ActiveScarabs[i];
-				AddLine(lines, "Scarab" + i, $"    [i:4348] {scarab.Grade} {scarab.Kind}", scale, ScarabCatalog.GetColor(scarab.Kind));
+				SigilEntry sigil = SigilSystem.ActiveSigils[i];
+			int itemType = SigilCatalog.GetItemType(sigil.Kind, sigil.Grade);
+			AddLine(lines, "Sigil" + i, $"    [i:{itemType}] {sigil.Grade} {sigil.Kind}", scale, SigilCatalog.GetColor(sigil.Kind));
 			}
 		}
 

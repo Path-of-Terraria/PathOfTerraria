@@ -8,185 +8,185 @@ MapCommon: {
 		'''
 }
 
-// ScarabCommon.Usage: Place in an unlocked Map Device scarab slot; consumed when the portal opens
+// SigilCommon.Usage: Place in an unlocked Map Device sigil slot; consumed when the portal opens
 
-CarvedScarabOfBinding: {
-	// DisplayName: Carved Scarab of Binding
+CarvedSigilOfBinding: {
+	// DisplayName: Carved Sigil of Binding
 	// Tooltip: Adds 1 Runebound prison to an explorable map
 }
 
-GildedScarabOfBinding: {
-	// DisplayName: Gilded Scarab of Binding
+GildedSigilOfBinding: {
+	// DisplayName: Gilded Sigil of Binding
 	// Tooltip: Adds 2 Runebound prisons; rewards have a 15% chance to upgrade one grade
 }
 
-PrismaticScarabOfBinding: {
-	// DisplayName: Prismatic Scarab of Binding
+PrismaticSigilOfBinding: {
+	// DisplayName: Prismatic Sigil of Binding
 	// Tooltip: Adds 3 Runebound prisons; rewards have a 30% chance to upgrade and prisoners gain an affix
 }
 
-CarvedScarabOfInfernalConflux: {
-	// DisplayName: Carved Scarab of Infernal Conflux
+CarvedSigilOfInfernalConflux: {
+	// DisplayName: Carved Sigil of Infernal Conflux
 	// Tooltip: Adds 1 Infernal Conflux rift to an explorable map
 }
 
-GildedScarabOfInfernalConflux: {
-	// DisplayName: Gilded Scarab of Infernal Conflux
+GildedSigilOfInfernalConflux: {
+	// DisplayName: Gilded Sigil of Infernal Conflux
 	// Tooltip: Adds 2 empowered Infernal Conflux rifts
 }
 
-PrismaticScarabOfInfernalConflux: {
-	// DisplayName: Prismatic Scarab of Infernal Conflux
+PrismaticSigilOfInfernalConflux: {
+	// DisplayName: Prismatic Sigil of Infernal Conflux
 	// Tooltip: Adds 3 empowered Infernal Conflux rifts with an additional wave
 }
 
-CarvedScarabOfGlacialConflux: {
-	// DisplayName: Carved Scarab of Glacial Conflux
+CarvedSigilOfGlacialConflux: {
+	// DisplayName: Carved Sigil of Glacial Conflux
 	// Tooltip: Adds 1 Glacial Conflux rift to an explorable map
 }
 
-GildedScarabOfGlacialConflux: {
-	// DisplayName: Gilded Scarab of Glacial Conflux
+GildedSigilOfGlacialConflux: {
+	// DisplayName: Gilded Sigil of Glacial Conflux
 	// Tooltip: Adds 2 empowered Glacial Conflux rifts
 }
 
-PrismaticScarabOfGlacialConflux: {
-	// DisplayName: Prismatic Scarab of Glacial Conflux
+PrismaticSigilOfGlacialConflux: {
+	// DisplayName: Prismatic Sigil of Glacial Conflux
 	// Tooltip: Adds 3 empowered Glacial Conflux rifts with an additional wave
 }
 
-CarvedScarabOfCelestialConflux: {
-	// DisplayName: Carved Scarab of Celestial Conflux
+CarvedSigilOfCelestialConflux: {
+	// DisplayName: Carved Sigil of Celestial Conflux
 	// Tooltip: Adds 1 Celestial Conflux rift to an explorable map
 }
 
-GildedScarabOfCelestialConflux: {
-	// DisplayName: Gilded Scarab of Celestial Conflux
+GildedSigilOfCelestialConflux: {
+	// DisplayName: Gilded Sigil of Celestial Conflux
 	// Tooltip: Adds 2 empowered Celestial Conflux rifts
 }
 
-PrismaticScarabOfCelestialConflux: {
-	// DisplayName: Prismatic Scarab of Celestial Conflux
+PrismaticSigilOfCelestialConflux: {
+	// DisplayName: Prismatic Sigil of Celestial Conflux
 	// Tooltip: Adds 3 empowered Celestial Conflux rifts with an additional wave
 }
 
-CarvedScarabOfDevotion: {
-	// DisplayName: Carved Scarab of Devotion
+CarvedSigilOfDevotion: {
+	// DisplayName: Carved Sigil of Devotion
 	// Tooltip: Adds 1 guarded Consecrated Shrine
 }
 
-GildedScarabOfDevotion: {
-	// DisplayName: Gilded Scarab of Devotion
+GildedSigilOfDevotion: {
+	// DisplayName: Gilded Sigil of Devotion
 	// Tooltip: Adds 2 guarded Consecrated Shrines with longer blessings
 }
 
-PrismaticScarabOfDevotion: {
-	// DisplayName: Prismatic Scarab of Devotion
+PrismaticSigilOfDevotion: {
+	// DisplayName: Prismatic Sigil of Devotion
 	// Tooltip: Adds 3 heavily guarded Consecrated Shrines with longer blessings
 }
 
-CarvedScarabOfInfestation: {
-	// DisplayName: Carved Scarab of Infestation
+CarvedSigilOfInfestation: {
+	// DisplayName: Carved Sigil of Infestation
 	// Tooltip: Explorable maps contain 15% more enemy packs
 }
 
-GildedScarabOfInfestation: {
-	// DisplayName: Gilded Scarab of Infestation
+GildedSigilOfInfestation: {
+	// DisplayName: Gilded Sigil of Infestation
 	// Tooltip: Explorable maps contain 30% more enemy packs
 }
 
-PrismaticScarabOfInfestation: {
-	// DisplayName: Prismatic Scarab of Infestation
+PrismaticSigilOfInfestation: {
+	// DisplayName: Prismatic Sigil of Infestation
 	// Tooltip: Explorable maps contain 50% more enemy packs
 }
 
-CarvedScarabOfNemeses: {
-	// DisplayName: Carved Scarab of Nemeses
+CarvedSigilOfNemeses: {
+	// DisplayName: Carved Sigil of Nemeses
 	// Tooltip: Adds 2 reward-bearing rare captains with an additional affix
 }
 
-GildedScarabOfNemeses: {
-	// DisplayName: Gilded Scarab of Nemeses
+GildedSigilOfNemeses: {
+	// DisplayName: Gilded Sigil of Nemeses
 	// Tooltip: Adds 3 reward-bearing rare captains with 2 additional affixes
 }
 
-PrismaticScarabOfNemeses: {
-	// DisplayName: Prismatic Scarab of Nemeses
+PrismaticSigilOfNemeses: {
+	// DisplayName: Prismatic Sigil of Nemeses
 	// Tooltip: Adds 4 reward-bearing rare captains with 3 additional affixes
 }
 
-CarvedScarabOfWardedWealth: {
-	// DisplayName: Carved Scarab of Warded Wealth
+CarvedSigilOfWardedWealth: {
+	// DisplayName: Carved Sigil of Warded Wealth
 	// Tooltip: Adds 1 Warded Cache defended by 2 waves
 }
 
-GildedScarabOfWardedWealth: {
-	// DisplayName: Gilded Scarab of Warded Wealth
+GildedSigilOfWardedWealth: {
+	// DisplayName: Gilded Sigil of Warded Wealth
 	// Tooltip: Adds 2 Warded Caches defended by 3 waves
 }
 
-PrismaticScarabOfWardedWealth: {
-	// DisplayName: Prismatic Scarab of Warded Wealth
+PrismaticSigilOfWardedWealth: {
+	// DisplayName: Prismatic Sigil of Warded Wealth
 	// Tooltip: Adds 3 Warded Caches defended by 4 empowered waves
 }
 
-CarvedScarabOfCartography: {
-	// DisplayName: Carved Scarab of Cartography
+CarvedSigilOfCartography: {
+	// DisplayName: Carved Sigil of Cartography
 	// Tooltip: Map bosses have a 50% chance to drop an additional map; 15% chance to upgrade its tier
 }
 
-GildedScarabOfCartography: {
-	// DisplayName: Gilded Scarab of Cartography
+GildedSigilOfCartography: {
+	// DisplayName: Gilded Sigil of Cartography
 	// Tooltip: Map bosses drop an additional map with a 30% tier-up chance
 }
 
-PrismaticScarabOfCartography: {
-	// DisplayName: Prismatic Scarab of Cartography
+PrismaticSigilOfCartography: {
+	// DisplayName: Prismatic Sigil of Cartography
 	// Tooltip: Map bosses drop an additional map and may drop another; 50% tier-up chance
 }
 
-CarvedScarabOfSovereignty: {
-	// DisplayName: Carved Scarab of Sovereignty
+CarvedSigilOfSovereignty: {
+	// DisplayName: Carved Sigil of Sovereignty
 	// Tooltip: Empowers the map boss and adds 1 boss reward roll
 }
 
-GildedScarabOfSovereignty: {
-	// DisplayName: Gilded Scarab of Sovereignty
+GildedSigilOfSovereignty: {
+	// DisplayName: Gilded Sigil of Sovereignty
 	// Tooltip: Greatly empowers the map boss and adds 2 boss reward rolls
 }
 
-PrismaticScarabOfSovereignty: {
-	// DisplayName: Prismatic Scarab of Sovereignty
+PrismaticSigilOfSovereignty: {
+	// DisplayName: Prismatic Sigil of Sovereignty
 	// Tooltip: Massively empowers the map boss and adds 3 boss reward rolls
 }
 
-CarvedScarabOfPeril: {
-	// DisplayName: Carved Scarab of Peril
+CarvedSigilOfPeril: {
+	// DisplayName: Carved Sigil of Peril
 	// Tooltip: Increases map-affix effects and reward strength by 10%
 }
 
-GildedScarabOfPeril: {
-	// DisplayName: Gilded Scarab of Peril
+GildedSigilOfPeril: {
+	// DisplayName: Gilded Sigil of Peril
 	// Tooltip: Increases map-affix effects and reward strength by 20%
 }
 
-PrismaticScarabOfPeril: {
-	// DisplayName: Prismatic Scarab of Peril
+PrismaticSigilOfPeril: {
+	// DisplayName: Prismatic Sigil of Peril
 	// Tooltip: Increases map-affix effects and reward strength by 35%
 }
 
-ScarabOfTheRunicMenagerie: {
-	// DisplayName: Scarab of the Runic Menagerie
+SigilOfTheRunicMenagerie: {
+	// DisplayName: Sigil of the Runic Menagerie
 	// Tooltip: Adds 3 empowered Runebound prisons; rewards have a 25% chance to upgrade one grade
 }
 
-ScarabOfTheTriuneConflux: {
-	// DisplayName: Scarab of the Triune Conflux
+SigilOfTheTriuneConflux: {
+	// DisplayName: Sigil of the Triune Conflux
 	// Tooltip: Adds one empowered rift of every Conflux kind, each with an additional wave
 }
 
-ScarabOfTheCrownedTyrant: {
-	// DisplayName: Scarab of the Crowned Tyrant
+SigilOfTheCrownedTyrant: {
+	// DisplayName: Sigil of the Crowned Tyrant
 	// Tooltip: Transforms the map boss into a tyrant with reinforcements and 4 additional reward rolls
 }
 

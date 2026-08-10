@@ -1,10 +1,10 @@
 using PathOfTerraria.Common.ItemDropping;
 using PathOfTerraria.Common.Encounters;
-using PathOfTerraria.Common.Systems.Scarabs;
+using PathOfTerraria.Common.Systems.Sigils;
 using PathOfTerraria.Core.Items;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.NPCs.Mapping.Scarabs;
+namespace PathOfTerraria.Content.NPCs.Mapping.Sigils;
 
 internal sealed class WardedCacheNPC : ModNPC
 {
@@ -57,7 +57,7 @@ internal sealed class WardedCacheNPC : ModNPC
 			return;
 		}
 
-		if (ScarabEncounterSystem.HasLivingChildren(NPC.whoAmI) || Timer-- > 0f)
+		if (SigilEncounterSystem.HasLivingChildren(NPC.whoAmI) || Timer-- > 0f)
 		{
 			return;
 		}
@@ -66,14 +66,14 @@ internal sealed class WardedCacheNPC : ModNPC
 		if (WavesSpawned < totalWaves)
 		{
 			WavesSpawned++;
-			ScarabEncounterSystem.SpawnElitePack(NPC.Center, 2 + (int)Power, Math.Max(1, (int)Power - 1), NPC.whoAmI);
+			SigilEncounterSystem.SpawnElitePack(NPC.Center, 2 + (int)Power, Math.Max(1, (int)Power - 1), NPC.whoAmI);
 			Timer = 60f;
 			NPC.netUpdate = true;
 			return;
 		}
 
 		DropRewards();
-		ScarabEncounterSystem.MarkCacheCompleted();
+		SigilEncounterSystem.MarkCacheCompleted();
 		NPC.active = false;
 		if (Main.netMode == NetmodeID.Server)
 		{
@@ -105,8 +105,8 @@ internal sealed class WardedCacheNPC : ModNPC
 
 		if (Main.rand.NextFloat() < 0.15f)
 		{
-			int scarab = ScarabCatalog.RollDropType(Common.Subworlds.MappingWorld.MapTier, allowUnique: false);
-			if (scarab > 0) { Item.NewItem(NPC.GetSource_Death(), NPC.Center, scarab); }
+			int sigil = SigilCatalog.RollDropType(Common.Subworlds.MappingWorld.MapTier, allowUnique: false);
+			if (sigil > 0) { Item.NewItem(NPC.GetSource_Death(), NPC.Center, sigil); }
 		}
 	}
 }

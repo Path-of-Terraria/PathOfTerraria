@@ -4,7 +4,7 @@ using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.Maps;
 using PathOfTerraria.Common.Systems.ModPlayers.LivesSystem;
-using PathOfTerraria.Common.Systems.Scarabs;
+using PathOfTerraria.Common.Systems.Sigils;
 using PathOfTerraria.Content.Tiles.Furniture;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI.SmartUI;
@@ -87,25 +87,25 @@ public abstract class Map : ModItem, GenerateNameAffixes.IItem, GenerateAffixes.
 
 	public virtual void OpenMap()
 	{
-		ScarabEntry[] scarabs = MapDeviceInterface.Entity?.ActiveScarabs ?? [];
-		ApplyDomainState(scarabs);
+		SigilEntry[] sigils = MapDeviceInterface.Entity?.ActiveSigils ?? [];
+		ApplyDomainState(sigils);
 
 		Subworld sub = GetDestination();
 		SubworldSystem.Enter(sub.FullName);
 	}
 
-	internal void ApplyDomainState(IReadOnlyList<ScarabEntry> scarabs)
+	internal void ApplyDomainState(IReadOnlyList<SigilEntry> sigils)
 	{
 		List<MapAffix> collection =
 			[.. this.GetInstanceData().Affixes.Where(x => x is MapAffix).Select(x => Affix.FromTag<MapAffix>(x.SaveAs()))];
-		ScarabSystem.SetActive(scarabs);
+		SigilSystem.SetActive(sigils);
 
-		if (scarabs.Any(entry => entry.Kind == ScarabKind.Peril) && ScarabSystem.FindFamily(ScarabFamily.Peril) is { } peril)
+		if (sigils.Any(entry => entry.Kind == SigilKind.Peril) && SigilSystem.FindFamily(SigilFamily.Peril) is { } peril)
 		{
 			float multiplier = 1f + (peril.Grade switch
 			{
-				ScarabGrade.Carved => 0.10f,
-				ScarabGrade.Gilded => 0.20f,
+				SigilGrade.Carved => 0.10f,
+				SigilGrade.Gilded => 0.20f,
 				_ => 0.35f,
 			});
 			foreach (MapAffix affix in collection)

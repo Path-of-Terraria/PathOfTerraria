@@ -11,10 +11,10 @@ using PathOfTerraria.Common.Systems.MobSystem;
 using PathOfTerraria.Content.Buffs.ShrineBuffs;
 using PathOfTerraria.Content.Conflux;
 using PathOfTerraria.Content.Items.Consumables.Maps;
-using PathOfTerraria.Content.Items.Mapping.Scarabs;
+using PathOfTerraria.Content.Items.Mapping.Sigils;
 using PathOfTerraria.Content.NPCs.Mapping.Desert;
 using PathOfTerraria.Content.NPCs.Mapping.Forest;
-using PathOfTerraria.Content.NPCs.Mapping.Scarabs;
+using PathOfTerraria.Content.NPCs.Mapping.Sigils;
 using PathOfTerraria.Content.Swamp;
 using PathOfTerraria.Content.Swamp.NPCs;
 using PathOfTerraria.Core.Items;
@@ -26,9 +26,9 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
 
-namespace PathOfTerraria.Common.Systems.Scarabs;
+namespace PathOfTerraria.Common.Systems.Sigils;
 
-internal static class ScarabSpawnContext
+internal static class SigilSpawnContext
 {
 	private static (int BonusAffixes, float LifeMultiplier, float DamageMultiplier)? pending;
 
@@ -57,7 +57,7 @@ internal static class ScarabSpawnContext
 	}
 }
 
-internal sealed class ScarabEncounterNPC : GlobalNPC
+internal sealed class SigilEncounterNPC : GlobalNPC
 {
 	public override bool InstancePerEntity => true;
 
@@ -84,13 +84,13 @@ internal sealed class ScarabEncounterNPC : GlobalNPC
 
 	public override void OnSpawn(NPC npc, IEntitySource source)
 	{
-		if (Main.netMode == NetmodeID.MultiplayerClient || !ScarabSystem.IsExplorationMap()
+		if (Main.netMode == NetmodeID.MultiplayerClient || !SigilSystem.IsExplorationMap()
 			|| npc.friendly || npc.boss || npc.lifeMax <= 5)
 		{
 			return;
 		}
 
-		if (ScarabSystem.FindFamily(ScarabFamily.Conflux) is not { } conflux)
+		if (SigilSystem.FindFamily(SigilFamily.Conflux) is not { } conflux)
 		{
 			return;
 		}
@@ -99,13 +99,13 @@ internal sealed class ScarabEncounterNPC : GlobalNPC
 		{
 			if (projectile.ModProjectile is ConfluxRift && projectile.DistanceSQ(npc.Center) < 1800f * 1800f)
 			{
-				float life = conflux.Kind == ScarabKind.TriuneConflux ? 1.30f : conflux.Grade switch
+				float life = conflux.Kind == SigilKind.TriuneConflux ? 1.30f : conflux.Grade switch
 				{
-					ScarabGrade.Gilded => 1.20f,
-					ScarabGrade.Prismatic => 1.30f,
+					SigilGrade.Gilded => 1.20f,
+					SigilGrade.Prismatic => 1.30f,
 					_ => 1f,
 				};
-				float damage = conflux.Kind == ScarabKind.TriuneConflux ? 1.20f : 1f;
+				float damage = conflux.Kind == SigilKind.TriuneConflux ? 1.20f : 1f;
 				npc.lifeMax = Math.Max(1, (int)(npc.lifeMax * life));
 				npc.life = npc.lifeMax;
 				npc.damage = Math.Max(1, (int)(npc.damage * damage));
@@ -117,18 +117,18 @@ internal sealed class ScarabEncounterNPC : GlobalNPC
 
 	public override void SetDefaults(NPC npc)
 	{
-		if (Main.netMode == NetmodeID.MultiplayerClient || !ScarabSystem.IsExplorationMap()
-			|| !npc.boss || ScarabSystem.FindFamily(ScarabFamily.Sovereignty) is not { } scarab)
+		if (Main.netMode == NetmodeID.MultiplayerClient || !SigilSystem.IsExplorationMap()
+			|| !npc.boss || SigilSystem.FindFamily(SigilFamily.Sovereignty) is not { } sigil)
 		{
 			return;
 		}
 
-		(float life, float damage) = scarab.Kind == ScarabKind.CrownedTyrant
+		(float life, float damage) = sigil.Kind == SigilKind.CrownedTyrant
 			? (2.50f, 1.50f)
-			: scarab.Grade switch
+			: sigil.Grade switch
 			{
-				ScarabGrade.Carved => (1.25f, 1.10f),
-				ScarabGrade.Gilded => (1.50f, 1.20f),
+				SigilGrade.Carved => (1.25f, 1.10f),
+				SigilGrade.Gilded => (1.50f, 1.20f),
 				_ => (2.00f, 1.35f),
 			};
 
@@ -139,7 +139,7 @@ internal sealed class ScarabEncounterNPC : GlobalNPC
 
 	public override void PostAI(NPC npc)
 	{
-		if (!npc.boss || !ScarabSystem.Has(ScarabKind.CrownedTyrant) || Main.netMode == NetmodeID.MultiplayerClient)
+		if (!npc.boss || !SigilSystem.Has(SigilKind.CrownedTyrant) || Main.netMode == NetmodeID.MultiplayerClient)
 		{
 			return;
 		}
@@ -149,53 +149,53 @@ internal sealed class ScarabEncounterNPC : GlobalNPC
 		{
 			TyrantReinforcementStage = 1;
 			npc.netUpdate = true;
-			ScarabEncounterSystem.SpawnElitePack(npc.Center, 3, 3, npc.whoAmI);
+			SigilEncounterSystem.SpawnElitePack(npc.Center, 3, 3, npc.whoAmI);
 		}
 		else if (TyrantReinforcementStage == 1 && lifeRatio <= 0.33f)
 		{
 			TyrantReinforcementStage = 2;
 			npc.netUpdate = true;
-			ScarabEncounterSystem.SpawnElitePack(npc.Center, 4, 3, npc.whoAmI);
+			SigilEncounterSystem.SpawnElitePack(npc.Center, 4, 3, npc.whoAmI);
 		}
 	}
 
 	public override void OnKill(NPC npc)
 	{
-		if (Main.netMode == NetmodeID.MultiplayerClient || !ScarabSystem.IsExplorationMap())
+		if (Main.netMode == NetmodeID.MultiplayerClient || !SigilSystem.IsExplorationMap())
 		{
 			return;
 		}
 
 		if (Nemesis)
 		{
-			ScarabEncounterSystem.MarkNemesisCompleted();
-			ScarabRewards.SpawnLootRoll(npc, new DropTable.DropCategoryWeights(0.80f, 0.15f, 0.05f));
+			SigilEncounterSystem.MarkNemesisCompleted();
+			SigilRewards.SpawnLootRoll(npc, new DropTable.DropCategoryWeights(0.80f, 0.15f, 0.05f));
 		}
 
 		bool isMapBoss = npc.boss && BossLootExplosion.ShouldCountBossKill(npc);
 		if (isMapBoss)
 		{
-			int previousTier = ScarabSystem.HighestCompletedMapTier;
-			int previousSlots = ScarabSystem.UnlockedSlotCount;
-			ScarabSystem.RecordMapCompletion(MappingWorld.MapTier);
+			int previousTier = SigilSystem.HighestCompletedMapTier;
+			int previousSlots = SigilSystem.UnlockedSlotCount;
+			SigilSystem.RecordMapCompletion(MappingWorld.MapTier);
 			if (previousTier == 0)
 			{
-				Item.NewItem(npc.GetSource_Death(), npc.Center, ModContent.ItemType<CarvedScarabOfBinding>());
+				Item.NewItem(npc.GetSource_Death(), npc.Center, ModContent.ItemType<CarvedSigilOfBinding>());
 			}
-			if (ScarabSystem.UnlockedSlotCount > previousSlots)
+			if (SigilSystem.UnlockedSlotCount > previousSlots)
 			{
-				AnnounceSlotUnlock(ScarabSystem.UnlockedSlotCount);
+				AnnounceSlotUnlock(SigilSystem.UnlockedSlotCount);
 			}
 			if (Main.netMode == NetmodeID.Server)
 			{
 				NetMessage.SendData(MessageID.WorldData);
 			}
 
-			ScarabRewards.TryDropCartographyMaps(npc);
-			if (ScarabSystem.Has(ScarabKind.CrownedTyrant))
+			SigilRewards.TryDropCartographyMaps(npc);
+			if (SigilSystem.Has(SigilKind.CrownedTyrant))
 			{
-				ScarabGrade grade = Main.rand.NextBool() ? ScarabGrade.Gilded : ScarabGrade.Prismatic;
-				int guaranteed = ScarabCatalog.RollNormalType(grade);
+				SigilGrade grade = Main.rand.NextBool() ? SigilGrade.Gilded : SigilGrade.Prismatic;
+				int guaranteed = SigilCatalog.RollNormalType(grade);
 				if (guaranteed > 0) { Item.NewItem(npc.GetSource_Death(), npc.Center, guaranteed); }
 			}
 		}
@@ -209,7 +209,7 @@ internal sealed class ScarabEncounterNPC : GlobalNPC
 
 		if (Main.rand.NextFloat() < chance)
 		{
-			int itemType = ScarabCatalog.RollDropType(MappingWorld.MapTier, allowUnique: isMapBoss);
+			int itemType = SigilCatalog.RollDropType(MappingWorld.MapTier, allowUnique: isMapBoss);
 			if (itemType > 0)
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Center, itemType);
@@ -219,7 +219,7 @@ internal sealed class ScarabEncounterNPC : GlobalNPC
 
 	private static void AnnounceSlotUnlock(int slots)
 	{
-		string key = $"Mods.{PoTMod.ModName}.Misc.Scarabs.SlotUnlocked";
+		string key = $"Mods.{PoTMod.ModName}.Misc.Sigils.SlotUnlocked";
 		Color color = new(221, 174, 76);
 		if (Main.netMode == NetmodeID.Server)
 		{
@@ -233,15 +233,15 @@ internal sealed class ScarabEncounterNPC : GlobalNPC
 
 	public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns)
 	{
-		if (!ScarabSystem.IsExplorationMap() || ScarabSystem.FindFamily(ScarabFamily.Infestation) is not { } scarab || spawnRate == int.MinValue)
+		if (!SigilSystem.IsExplorationMap() || SigilSystem.FindFamily(SigilFamily.Infestation) is not { } sigil || spawnRate == int.MinValue)
 		{
 			return;
 		}
 
-		float morePacks = scarab.Grade switch
+		float morePacks = sigil.Grade switch
 		{
-			ScarabGrade.Carved => 0.15f,
-			ScarabGrade.Gilded => 0.30f,
+			SigilGrade.Carved => 0.15f,
+			SigilGrade.Gilded => 0.30f,
 			_ => 0.50f,
 		};
 		spawnRate = Math.Max(1, (int)(spawnRate / (1f + morePacks)));
@@ -249,7 +249,7 @@ internal sealed class ScarabEncounterNPC : GlobalNPC
 	}
 }
 
-internal sealed class ScarabEncounterSystem : ModSystem
+internal sealed class SigilEncounterSystem : ModSystem
 {
 	private static bool initialized;
 	private static int spawnRetryTimer;
@@ -270,40 +270,40 @@ internal sealed class ScarabEncounterSystem : ModSystem
 		spawnRetryTimer = 0;
 		RequestedNemeses = RequestedCaches = RequestedShrines = 0;
 		completedNemeses = completedCaches = completedShrines = 0;
-		ScarabSpawnContext.Clear();
+		SigilSpawnContext.Clear();
 	}
 
 	public override void SaveWorldData(TagCompound tag)
 	{
-		if (!ScarabSystem.IsExplorationMap())
+		if (!SigilSystem.IsExplorationMap())
 		{
 			return;
 		}
 
-		tag["scarabCompletedNemeses"] = completedNemeses;
-		tag["scarabCompletedCaches"] = completedCaches;
-		tag["scarabCompletedShrines"] = completedShrines;
+		tag["sigilCompletedNemeses"] = completedNemeses;
+		tag["sigilCompletedCaches"] = completedCaches;
+		tag["sigilCompletedShrines"] = completedShrines;
 	}
 
 	public override void LoadWorldData(TagCompound tag)
 	{
-		completedNemeses = Math.Max(0, tag.GetInt("scarabCompletedNemeses"));
-		completedCaches = Math.Max(0, tag.GetInt("scarabCompletedCaches"));
-		completedShrines = Math.Max(0, tag.GetInt("scarabCompletedShrines"));
+		completedNemeses = Math.Max(0, tag.GetInt(tag.ContainsKey("sigilCompletedNemeses") ? "sigilCompletedNemeses" : "scarabCompletedNemeses"));
+		completedCaches = Math.Max(0, tag.GetInt(tag.ContainsKey("sigilCompletedCaches") ? "sigilCompletedCaches" : "scarabCompletedCaches"));
+		completedShrines = Math.Max(0, tag.GetInt(tag.ContainsKey("sigilCompletedShrines") ? "sigilCompletedShrines" : "scarabCompletedShrines"));
 	}
 
 	public override void PostUpdateWorld()
 	{
-		if (Main.netMode == NetmodeID.MultiplayerClient || !ScarabSystem.IsExplorationMap() || !HasActivePlayer())
+		if (Main.netMode == NetmodeID.MultiplayerClient || !SigilSystem.IsExplorationMap() || !HasActivePlayer())
 		{
 			return;
 		}
 
 		if (!initialized)
 		{
-			RequestedNemeses = ScarabSystem.Power(ScarabFamily.Nemeses) is int nemesisPower && nemesisPower > 0 ? nemesisPower + 1 : 0;
-			RequestedCaches = ScarabSystem.Power(ScarabFamily.WardedWealth);
-			RequestedShrines = ScarabSystem.Power(ScarabFamily.Devotion);
+			RequestedNemeses = SigilSystem.Power(SigilFamily.Nemeses) is int nemesisPower && nemesisPower > 0 ? nemesisPower + 1 : 0;
+			RequestedCaches = SigilSystem.Power(SigilFamily.WardedWealth);
+			RequestedShrines = SigilSystem.Power(SigilFamily.Devotion);
 			initialized = true;
 		}
 
@@ -319,11 +319,11 @@ internal sealed class ScarabEncounterSystem : ModSystem
 		}
 		else if (completedCaches + CountLivingCaches() < RequestedCaches)
 		{
-			spawned = TrySpawnStationary(ModContent.NPCType<WardedCacheNPC>(), ScarabSystem.Power(ScarabFamily.WardedWealth));
+			spawned = TrySpawnStationary(ModContent.NPCType<WardedCacheNPC>(), SigilSystem.Power(SigilFamily.WardedWealth));
 		}
 		else if (completedShrines + CountLivingShrines() < RequestedShrines)
 		{
-			spawned = TrySpawnStationary(ModContent.NPCType<ConsecratedShrineNPC>(), ScarabSystem.Power(ScarabFamily.Devotion));
+			spawned = TrySpawnStationary(ModContent.NPCType<ConsecratedShrineNPC>(), SigilSystem.Power(SigilFamily.Devotion));
 		}
 
 		spawnRetryTimer = spawned ? 15 : 90;
@@ -345,16 +345,16 @@ internal sealed class ScarabEncounterSystem : ModSystem
 			return false;
 		}
 
-		int power = ScarabSystem.Power(ScarabFamily.Nemeses);
-		ScarabSpawnContext.Prepare(power, 1f + power * 0.20f, 1f + power * 0.08f);
+		int power = SigilSystem.Power(SigilFamily.Nemeses);
+		SigilSpawnContext.Prepare(power, 1f + power * 0.20f, 1f + power * 0.08f);
 		NPC npc;
 		try
 		{
-			npc = NPC.NewNPCDirect(new EntitySource_Misc("ScarabNemesis"), position, ChooseMapEnemy());
+			npc = NPC.NewNPCDirect(new EntitySource_Misc("SigilNemesis"), position, ChooseMapEnemy());
 		}
 		finally
 		{
-			ScarabSpawnContext.Clear();
+			SigilSpawnContext.Clear();
 		}
 
 		if (!npc.active)
@@ -362,7 +362,7 @@ internal sealed class ScarabEncounterSystem : ModSystem
 			return false;
 		}
 
-		npc.GetGlobalNPC<ScarabEncounterNPC>().Nemesis = true;
+		npc.GetGlobalNPC<SigilEncounterNPC>().Nemesis = true;
 		npc.GetGlobalNPC<NPCDespawning>().NeverDespawn = true;
 		npc.netUpdate = true;
 		return true;
@@ -375,7 +375,7 @@ internal sealed class ScarabEncounterSystem : ModSystem
 			return false;
 		}
 
-		NPC npc = NPC.NewNPCDirect(new EntitySource_Misc("ScarabMapContent"), position, type, ai0: power);
+		NPC npc = NPC.NewNPCDirect(new EntitySource_Misc("SigilMapContent"), position, type, ai0: power);
 		npc.netUpdate = true;
 		return npc.active;
 	}
@@ -384,20 +384,20 @@ internal sealed class ScarabEncounterSystem : ModSystem
 	{
 		for (int i = 0; i < count; i++)
 		{
-			ScarabSpawnContext.Prepare(bonusAffixes, 1.25f, 1.10f);
+			SigilSpawnContext.Prepare(bonusAffixes, 1.25f, 1.10f);
 			NPC npc;
 			try
 			{
-				npc = NPC.NewNPCDirect(new EntitySource_Misc("ScarabEncounterWave"), center + Main.rand.NextVector2Circular(220f, 80f), ChooseMapEnemy());
+				npc = NPC.NewNPCDirect(new EntitySource_Misc("SigilEncounterWave"), center + Main.rand.NextVector2Circular(220f, 80f), ChooseMapEnemy());
 			}
 			finally
 			{
-				ScarabSpawnContext.Clear();
+				SigilSpawnContext.Clear();
 			}
 
 			if (npc.active)
 			{
-				npc.GetGlobalNPC<ScarabEncounterNPC>().EncounterOwner = owner;
+				npc.GetGlobalNPC<SigilEncounterNPC>().EncounterOwner = owner;
 				npc.GetGlobalNPC<NPCDespawning>().NeverDespawn = true;
 				npc.netUpdate = true;
 			}
@@ -408,7 +408,7 @@ internal sealed class ScarabEncounterSystem : ModSystem
 	{
 		foreach (NPC npc in Main.ActiveNPCs)
 		{
-			if (npc.GetGlobalNPC<ScarabEncounterNPC>().EncounterOwner == owner) { return true; }
+			if (npc.GetGlobalNPC<SigilEncounterNPC>().EncounterOwner == owner) { return true; }
 		}
 		return false;
 	}
@@ -422,7 +422,7 @@ internal sealed class ScarabEncounterSystem : ModSystem
 		int count = 0;
 		foreach (NPC npc in Main.ActiveNPCs)
 		{
-			if (npc.GetGlobalNPC<ScarabEncounterNPC>().Nemesis) { count++; }
+			if (npc.GetGlobalNPC<SigilEncounterNPC>().Nemesis) { count++; }
 		}
 		return count;
 	}
@@ -483,7 +483,7 @@ internal sealed class ScarabEncounterSystem : ModSystem
 	}
 }
 
-internal static class ScarabRewards
+internal static class SigilRewards
 {
 	public static void SpawnLootRoll(NPC source, DropTable.DropCategoryWeights weights)
 	{
@@ -499,15 +499,15 @@ internal static class ScarabRewards
 
 	public static void TryDropCartographyMaps(NPC boss)
 	{
-		if (ScarabSystem.FindFamily(ScarabFamily.Cartography) is not { } scarab)
+		if (SigilSystem.FindFamily(SigilFamily.Cartography) is not { } sigil)
 		{
 			return;
 		}
 
-		int rolls = scarab.Grade switch
+		int rolls = sigil.Grade switch
 		{
-			ScarabGrade.Carved => Main.rand.NextBool(2) ? 1 : 0,
-			ScarabGrade.Gilded => 1,
+			SigilGrade.Carved => Main.rand.NextBool(2) ? 1 : 0,
+			SigilGrade.Gilded => 1,
 			_ => 1 + (Main.rand.NextBool(2) ? 1 : 0),
 		};
 		for (int i = 0; i < rolls; i++)
@@ -521,10 +521,10 @@ internal static class ScarabRewards
 			var item = new Item(record.ItemId);
 			if (item.ModItem is Map map)
 			{
-				int upgradeChance = scarab.Grade switch
+				int upgradeChance = sigil.Grade switch
 				{
-					ScarabGrade.Carved => 15,
-					ScarabGrade.Gilded => 30,
+					SigilGrade.Carved => 15,
+					SigilGrade.Gilded => 30,
 					_ => 50,
 				};
 				map.Tier = Math.Clamp(MappingWorld.MapTier + (Main.rand.Next(100) < upgradeChance ? 1 : 0), 1, Map.MaxMapTier);

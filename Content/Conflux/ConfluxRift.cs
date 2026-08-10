@@ -1,4 +1,4 @@
-﻿// #define ALWAYS_DISPLAY_MAP_ICONS
+// #define ALWAYS_DISPLAY_MAP_ICONS
 
 using System.Collections.Generic;
 using System.Data;
@@ -10,7 +10,7 @@ using PathOfTerraria.Common.Encounters;
 using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.MapContent;
-using PathOfTerraria.Common.Systems.Scarabs;
+using PathOfTerraria.Common.Systems.Sigils;
 using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Core.Camera;
@@ -622,8 +622,8 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile, 
 
 		// The amount of enemies spawned every second is scaled by map tier.
 		uint waveCount = 4;
-		if (ScarabSystem.FindFamily(ScarabFamily.Conflux) is { } conflux
-			&& (conflux.Kind == ScarabKind.TriuneConflux || conflux.Grade == ScarabGrade.Prismatic))
+		if (SigilSystem.FindFamily(SigilFamily.Conflux) is { } conflux
+			&& (conflux.Kind == SigilKind.TriuneConflux || conflux.Grade == SigilGrade.Prismatic))
 		{
 			waveCount++;
 		}
@@ -814,10 +814,10 @@ internal abstract class ConfluxRift : ModProjectile, IRightClickableProjectile, 
 
 		if (Progress >= 1f && ConfluxRifts.TryClaimTriuneReward(Kind))
 		{
-			int scarabType = ScarabCatalog.RollNormalType(ScarabGrade.Gilded);
-			if (scarabType > 0)
+			int sigilType = SigilCatalog.RollNormalType(SigilGrade.Gilded);
+			if (sigilType > 0)
 			{
-				Item.NewItem(Projectile.GetSource_Death(), Projectile.Center, scarabType);
+				Item.NewItem(Projectile.GetSource_Death(), Projectile.Center, sigilType);
 			}
 		}
 	}

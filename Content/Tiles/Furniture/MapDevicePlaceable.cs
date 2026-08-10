@@ -1,15 +1,15 @@
-﻿using Mono.Cecil;
+using Mono.Cecil;
 using PathOfTerraria.Common.Conflux;
 using PathOfTerraria.Common.Items;
 using PathOfTerraria.Common.Mapping;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.ModPlayers.LivesSystem;
-using PathOfTerraria.Common.Systems.Scarabs;
+using PathOfTerraria.Common.Systems.Sigils;
 using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Content.Items.Consumables.Maps.ExplorableMaps;
-using PathOfTerraria.Content.Items.Mapping.Scarabs;
+using PathOfTerraria.Content.Items.Mapping.Sigils;
 using PathOfTerraria.Content.Items.Placeable;
 using PathOfTerraria.Core.Audio;
 using PathOfTerraria.Core.Camera;
@@ -388,8 +388,8 @@ internal class MapDeviceEntity : ModTileEntity
 
 	public Item StoredMap { get; set; }
 	public Item[] Storage { get; set; }
-	public Item[] ScarabSlots { get; set; }
-	public ScarabEntry[] ActiveScarabs { get; internal set; } = [];
+	public Item[] SigilSlots { get; set; }
+	public SigilEntry[] ActiveSigils { get; internal set; } = [];
 	public bool PortalActive { get; set; }
 	public int PortalUsesLeft { get; set; }
 	public int? InteractingPlayer { get; private set; }
@@ -405,8 +405,8 @@ internal class MapDeviceEntity : ModTileEntity
 		StoredMap = new();
 		Storage = new Item[StorageSize];
 		for (int i = 0; i < Storage.Length; i++) { Storage[i] = new(); }
-		ScarabSlots = new Item[4];
-		for (int i = 0; i < ScarabSlots.Length; i++) { ScarabSlots[i] = new(); }
+		SigilSlots = new Item[4];
+		for (int i = 0; i < SigilSlots.Length; i++) { SigilSlots[i] = new(); }
 	}
 
 	public override bool IsTileValidForEntity(int x, int y)
@@ -443,11 +443,11 @@ internal class MapDeviceEntity : ModTileEntity
 
 		if (!PortalActive)
 		{
-			foreach (Item scarab in ScarabSlots)
+			foreach (Item sigil in SigilSlots)
 			{
-				if (scarab is { IsAir: false })
+				if (sigil is { IsAir: false })
 				{
-					Item.NewItem(new EntitySource_TileBreak(Position.X, Position.Y), Position.ToWorldCoordinates(), scarab);
+					Item.NewItem(new EntitySource_TileBreak(Position.X, Position.Y), Position.ToWorldCoordinates(), sigil);
 				}
 			}
 		}
@@ -561,16 +561,16 @@ internal class MapDeviceEntity : ModTileEntity
 
 		if (storage.Count > 0) { tag.Add("storage", storage); }
 
-		var scarabs = new TagCompound();
-		for (int i = 0; i < ScarabSlots.Length; i++)
+		var sigils = new TagCompound();
+		for (int i = 0; i < SigilSlots.Length; i++)
 		{
-			if (ScarabSlots[i] is { IsAir: false } scarab)
+			if (SigilSlots[i] is { IsAir: false } sigil)
 			{
-				scarabs[i.ToString()] = ItemIO.Save(scarab);
+				sigils[i.ToString()] = ItemIO.Save(sigil);
 			}
 		}
-		if (scarabs.Count > 0) { tag.Add("scarabs", scarabs); }
-		if (ActiveScarabs.Length > 0) { tag.Add("activeScarabs", (TagCompound[])[.. ActiveScarabs.Select(entry => entry.Save())]); }
+		if (sigils.Count > 0) { tag.Add("sigils", sigils); }
+		if (ActiveSigils.Length > 0) { tag.Add("activeSigils", (TagCompound[])[.. ActiveSigils.Select(entry => entry.Save())]); }
 	}
 	public override void LoadData(TagCompound tag)
 	{
@@ -605,32 +605,32 @@ internal class MapDeviceEntity : ModTileEntity
 			}
 		}
 
-		if (tag.TryGet("scarabs", out TagCompound scarabs))
+		if (tag.TryGet("sigils", out TagCompound sigils) || tag.TryGet("scarabs", out sigils))
 		{
-			var loadedFamilies = new HashSet<ScarabFamily>();
-			foreach (KeyValuePair<string, object> pair in scarabs)
+			var loadedFamilies = new HashSet<SigilFamily>();
+			foreach (KeyValuePair<string, object> pair in sigils)
 			{
-				if (int.TryParse(pair.Key, out int key) && key >= 0 && key < ScarabSlots.Length
-					&& ItemIO.Load((TagCompound)pair.Value) is { IsAir: false, ModItem: DomainScarab loadedScarab } scarab
-					&& loadedFamilies.Add(loadedScarab.Family))
+				if (int.TryParse(pair.Key, out int key) && key >= 0 && key < SigilSlots.Length
+					&& ItemIO.Load((TagCompound)pair.Value) is { IsAir: false, ModItem: DomainSigil loadedSigil } sigil
+					&& loadedFamilies.Add(loadedSigil.Family))
 				{
-					scarab.stack = 1;
-					ScarabSlots[key] = scarab;
+					sigil.stack = 1;
+					SigilSlots[key] = sigil;
 				}
 			}
 		}
 
-		if (tag.TryGet("activeScarabs", out TagCompound[] activeScarabs))
+		if (tag.TryGet("activeSigils", out TagCompound[] activeSigils) || tag.TryGet("activeScarabs", out activeSigils))
 		{
-			var activeFamilies = new HashSet<ScarabFamily>();
-			ActiveScarabs = [.. activeScarabs.Select(ScarabEntry.Load)
-				.Where(ScarabCatalog.IsValid)
+			var activeFamilies = new HashSet<SigilFamily>();
+			ActiveSigils = [.. activeSigils.Select(SigilEntry.Load)
+				.Where(SigilCatalog.IsValid)
 				.Where(entry => activeFamilies.Add(entry.Family))
 				.Take(4)];
 		}
 		else
 		{
-			ActiveScarabs = [];
+			ActiveSigils = [];
 		}
 	}
 
@@ -847,7 +847,7 @@ internal class MapDeviceEntity : ModTileEntity
 			Debug.Assert(netSender != null);
 			if (StoredMap.ModItem is Map serverMap)
 			{
-				serverMap.ApplyDomainState(ActiveScarabs);
+				serverMap.ApplyDomainState(ActiveSigils);
 			}
 			MapDeviceInteraction.Send(ID, MapDeviceInteraction.Kind.EnterPortal, toClient: netSender.Value);
 		}
@@ -883,7 +883,7 @@ internal class MapDeviceEntity : ModTileEntity
 			return false;
 		}
 
-		if (!TryValidateScarabs(out ScarabEntry[] scarabEntries))
+		if (!TryValidateSigils(out SigilEntry[] sigilEntries))
 		{
 			return false;
 		}
@@ -906,10 +906,10 @@ internal class MapDeviceEntity : ModTileEntity
 
 		Subworld? destination = StoredMap is { IsAir: false, ModItem: Map storedMap } ? storedMap.GetDestination() : null;
 
-		ActiveScarabs = scarabEntries;
-		foreach (Item scarabSlot in ScarabSlots)
+		ActiveSigils = sigilEntries;
+		foreach (Item sigilSlot in SigilSlots)
 		{
-			scarabSlot.TurnToAir();
+			sigilSlot.TurnToAir();
 		}
 
 		// Ensure a newly opened portal starts from a fresh save.
@@ -935,7 +935,7 @@ internal class MapDeviceEntity : ModTileEntity
 		if (Main.netMode == NetmodeID.Server)
 		{
 			MapDeviceInteraction.Send(ID, MapDeviceInteraction.Kind.OpenPortal);
-			MapDeviceSync.Send(ID, MapDeviceSync.Flags.Scarabs);
+			MapDeviceSync.Send(ID, MapDeviceSync.Flags.Sigils);
 		}
 
 		// Effects.
@@ -954,26 +954,26 @@ internal class MapDeviceEntity : ModTileEntity
 		return true;
 	}
 
-	private bool TryValidateScarabs(out ScarabEntry[] entries)
+	private bool TryValidateSigils(out SigilEntry[] entries)
 	{
-		var found = new List<ScarabEntry>(ScarabSlots.Length);
-		var families = new HashSet<ScarabFamily>();
+		var found = new List<SigilEntry>(SigilSlots.Length);
+		var families = new HashSet<SigilFamily>();
 
-		for (int i = 0; i < ScarabSlots.Length; i++)
+		for (int i = 0; i < SigilSlots.Length; i++)
 		{
-			if (ScarabSlots[i].IsAir)
+			if (SigilSlots[i].IsAir)
 			{
 				continue;
 			}
 
-			if (i >= ScarabSystem.UnlockedSlotCount || ScarabSlots[i].ModItem is not DomainScarab scarab
-				|| !families.Add(scarab.Family))
+			if (i >= SigilSystem.UnlockedSlotCount || SigilSlots[i].ModItem is not DomainSigil sigil
+				|| !families.Add(sigil.Family))
 			{
 				entries = [];
 				return false;
 			}
 
-			found.Add(scarab.Entry);
+			found.Add(sigil.Entry);
 		}
 
 		if (found.Count > 0 && StoredMap.ModItem is not ExplorableMap)
@@ -982,7 +982,7 @@ internal class MapDeviceEntity : ModTileEntity
 			return false;
 		}
 
-		if (found.Any(entry => entry.Kind == ScarabKind.Peril)
+		if (found.Any(entry => entry.Kind == SigilKind.Peril)
 			&& !StoredMap.GetInstanceData().Affixes.Any(affix => affix is Common.Systems.Affixes.Maps.MapAffix))
 		{
 			entries = [];
@@ -1049,11 +1049,11 @@ internal class MapDeviceEntity : ModTileEntity
 		PortalActive = false;
 		PortalUsesLeft = 0;
 		Injection = null;
-		ActiveScarabs = [];
-		ScarabSystem.ClearActive();
-		for (int i = 0; i < ScarabSlots.Length; i++)
+		ActiveSigils = [];
+		SigilSystem.ClearActive();
+		for (int i = 0; i < SigilSlots.Length; i++)
 		{
-			ScarabSlots[i].TurnToAir();
+			SigilSlots[i].TurnToAir();
 		}
 		MappingWorld.ClearActiveMapDevice();
 		MappingWorld.DeleteSavedSubworld(destination);
@@ -1276,8 +1276,8 @@ internal class MapDeviceSync : Handler
 		Map = 1 << 1,
 		Storage = 1 << 2,
 		Injection = 1 << 3,
-		Scarabs = 1 << 4,
-		FullSync = Status | Map | Storage | Injection | Scarabs,
+		Sigils = 1 << 4,
+		FullSync = Status | Map | Storage | Injection | Sigils,
 	}
 
 	public static void CorrectDesync(int entityId, byte? toClient, Flags flags)
@@ -1346,20 +1346,20 @@ internal class MapDeviceSync : Handler
 			writer.Write7BitEncodedInt(device.Injection?.Amount ?? 0);
 		}
 
-		if (flags.HasFlag(Flags.Scarabs))
+		if (flags.HasFlag(Flags.Sigils))
 		{
-			int[] scarabIndices = itemIndices is null
-				? [.. Enumerable.Range(0, device.ScarabSlots.Length)]
-				: [.. itemIndices.Where(i => i >= 0 && i < device.ScarabSlots.Length).Distinct()];
-			writer.Write7BitEncodedInt(scarabIndices.Length);
-			foreach (int index in scarabIndices)
+			int[] sigilIndices = itemIndices is null
+				? [.. Enumerable.Range(0, device.SigilSlots.Length)]
+				: [.. itemIndices.Where(i => i >= 0 && i < device.SigilSlots.Length).Distinct()];
+			writer.Write7BitEncodedInt(sigilIndices.Length);
+			foreach (int index in sigilIndices)
 			{
 				writer.Write((byte)index);
-				ItemIO.Send(device.ScarabSlots[index], writer, writeStack: true);
+				ItemIO.Send(device.SigilSlots[index], writer, writeStack: true);
 			}
 
-			writer.Write((byte)device.ActiveScarabs.Length);
-			foreach (ScarabEntry entry in device.ActiveScarabs)
+			writer.Write((byte)device.ActiveSigils.Length);
+			foreach (SigilEntry entry in device.ActiveSigils)
 			{
 				entry.NetSend(writer);
 			}
@@ -1449,23 +1449,23 @@ internal class MapDeviceSync : Handler
 			}
 		}
 
-		if (flags.HasFlag(Flags.Scarabs))
+		if (flags.HasFlag(Flags.Sigils))
 		{
 			int itemCount = reader.Read7BitEncodedInt();
 			for (int i = 0; i < itemCount; i++)
 			{
-				int scarabIndex = reader.ReadByte();
+				int sigilIndex = reader.ReadByte();
 				if (Main.netMode == NetmodeID.Server)
 				{
 					var received = new Item();
 					ItemIO.Receive(received, reader, readStack: true);
 					bool ownsDevice = sender < Main.maxPlayers && mapEntity?.InteractingPlayer == sender
 						&& mapEntity.CanPlayerInteract(Main.player[sender]);
-					bool validIndex = scarabIndex >= 0 && scarabIndex < ScarabSystem.UnlockedSlotCount && scarabIndex < 4;
-					bool validItem = received.IsAir || received.ModItem is DomainScarab;
-					bool duplicateFamily = received.ModItem is DomainScarab incoming && mapEntity is not null
-						&& mapEntity.ScarabSlots.Where((item, index) => index != scarabIndex)
-							.Any(item => item.ModItem is DomainScarab other && other.Family == incoming.Family);
+					bool validIndex = sigilIndex >= 0 && sigilIndex < SigilSystem.UnlockedSlotCount && sigilIndex < 4;
+					bool validItem = received.IsAir || received.ModItem is DomainSigil;
+					bool duplicateFamily = received.ModItem is DomainSigil incoming && mapEntity is not null
+						&& mapEntity.SigilSlots.Where((item, index) => index != sigilIndex)
+							.Any(item => item.ModItem is DomainSigil other && other.Family == incoming.Family);
 
 					if (ownsDevice && mapEntity is { PortalActive: false } && validIndex && validItem && !duplicateFamily)
 					{
@@ -1479,9 +1479,9 @@ internal class MapDeviceSync : Handler
 							}
 						}
 
-						mapEntity.ScarabSlots[scarabIndex] = received;
+						mapEntity.SigilSlots[sigilIndex] = received;
 					}
-					else if (ownsDevice && received is { IsAir: false, ModItem: DomainScarab }
+					else if (ownsDevice && received is { IsAir: false, ModItem: DomainSigil }
 						&& sender < Main.maxPlayers && Main.player[sender] is { active: true } senderPlayer)
 					{
 						Item.NewItem(null, senderPlayer.Center, received);
@@ -1489,17 +1489,17 @@ internal class MapDeviceSync : Handler
 				}
 				else
 				{
-					Item slot = scarabIndex < 4 && mapEntity is not null ? mapEntity.ScarabSlots[scarabIndex] : new Item();
+					Item slot = sigilIndex < 4 && mapEntity is not null ? mapEntity.SigilSlots[sigilIndex] : new Item();
 					ItemIO.Receive(slot, reader, readStack: true);
 				}
 			}
 
 			int serializedActiveCount = reader.ReadByte();
 			int activeCount = Math.Min(serializedActiveCount, 4);
-			var active = new ScarabEntry[activeCount];
+			var active = new SigilEntry[activeCount];
 			for (int i = 0; i < serializedActiveCount; i++)
 			{
-				ScarabEntry entry = ScarabEntry.NetReceive(reader);
+				SigilEntry entry = SigilEntry.NetReceive(reader);
 				if (i < activeCount)
 				{
 					active[i] = entry;
@@ -1507,7 +1507,7 @@ internal class MapDeviceSync : Handler
 			}
 			if (mapEntity != null && Main.netMode != NetmodeID.Server)
 			{
-				mapEntity.ActiveScarabs = active;
+				mapEntity.ActiveSigils = active;
 			}
 		}
 	}

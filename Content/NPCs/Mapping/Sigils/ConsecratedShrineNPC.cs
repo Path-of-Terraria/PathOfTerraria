@@ -1,9 +1,9 @@
-using PathOfTerraria.Common.Systems.Scarabs;
+using PathOfTerraria.Common.Systems.Sigils;
 using PathOfTerraria.Common.Encounters;
 using PathOfTerraria.Content.Buffs.ShrineBuffs;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.NPCs.Mapping.Scarabs;
+namespace PathOfTerraria.Content.NPCs.Mapping.Sigils;
 
 internal sealed class ConsecratedShrineNPC : ModNPC
 {
@@ -46,12 +46,12 @@ internal sealed class ConsecratedShrineNPC : ModNPC
 		{
 			State = 1f;
 			Timer = 45f;
-			ScarabEncounterSystem.SpawnElitePack(NPC.Center, 3 + (int)Power, Math.Max(1, (int)Power - 1), NPC.whoAmI);
+			SigilEncounterSystem.SpawnElitePack(NPC.Center, 3 + (int)Power, Math.Max(1, (int)Power - 1), NPC.whoAmI);
 			NPC.netUpdate = true;
 			return;
 		}
 
-		if (State != 1f || Timer-- > 0f || ScarabEncounterSystem.HasLivingChildren(NPC.whoAmI))
+		if (State != 1f || Timer-- > 0f || SigilEncounterSystem.HasLivingChildren(NPC.whoAmI))
 		{
 			return;
 		}
@@ -79,7 +79,7 @@ internal sealed class ConsecratedShrineNPC : ModNPC
 			}
 		}
 
-		ScarabEncounterSystem.MarkShrineCompleted();
+		SigilEncounterSystem.MarkShrineCompleted();
 		NPC.active = false;
 		if (Main.netMode == NetmodeID.Server)
 		{
