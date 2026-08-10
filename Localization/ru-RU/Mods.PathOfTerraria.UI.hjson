@@ -525,6 +525,7 @@ ClassPages: {
 MapDevice: {
 	// MapSlot: Map Slot
 	// SigilSlot: Sigil Slot {0}
+	// SigilSlotLocked: Unlock by defeating a tier {0} map
 	// TrashSlot: Trash
 	ActivatePortal: Открыть портал
 	DeactivatePortal: Закрыть портал

@@ -239,18 +239,23 @@ internal static class SigilCatalog
 
 internal sealed class SigilSystem : ModSystem
 {
+	private static readonly int[] SlotUnlockTiers = [1, 4, 7, 10];
 	private static readonly List<SigilEntry> activeSigils = [];
 
 	public static IReadOnlyList<SigilEntry> ActiveSigils => activeSigils;
 	public static int HighestCompletedMapTier { get; private set; }
-	public static int UnlockedSlotCount => HighestCompletedMapTier switch
+	public static int UnlockedSlotCount => SlotUnlockTiers.Count(tier => tier <= HighestCompletedMapTier);
+
+	public static int GetSlotUnlockTier(int slotIndex)
 	{
-		>= 10 => 4,
-		>= 7 => 3,
-		>= 4 => 2,
-		>= 1 => 1,
-		_ => 0,
-	};
+		return SlotUnlockTiers[slotIndex];
+	}
+
+	public static bool IsSlotUnlocked(int slotIndex)
+	{
+		return slotIndex >= 0 && slotIndex < SlotUnlockTiers.Length
+			&& HighestCompletedMapTier >= SlotUnlockTiers[slotIndex];
+	}
 
 	public override void ClearWorld()
 	{

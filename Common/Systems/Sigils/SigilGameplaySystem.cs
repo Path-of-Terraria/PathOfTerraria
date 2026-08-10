@@ -177,7 +177,8 @@ internal sealed class SigilEncounterNPC : GlobalNPC
 		{
 			int previousTier = SigilSystem.HighestCompletedMapTier;
 			int previousSlots = SigilSystem.UnlockedSlotCount;
-			SigilSystem.RecordMapCompletion(MappingWorld.MapTier);
+			int completedTier = Math.Max(MappingWorld.MapTier, Map.TierBasedOnWorldLevel(MappingWorld.AreaLevel));
+			SigilSystem.RecordMapCompletion(completedTier);
 			if (previousTier == 0)
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Center, ModContent.ItemType<CarvedSigilOfBinding>());

@@ -9,9 +9,15 @@ namespace PathOfTerraria.Content.NPCs.Runebound;
 
 internal sealed class BindingMonolith : ModNPC
 {
+	private const string BreakBindingIconPath = $"{nameof(PathOfTerraria)}/Assets/NPCs/Runebound/BindingBreakIcon";
+	private const float InteractionRange = 320f;
+
+	private bool activateNextTick;
+
 	public int EncounterId => (int)NPC.ai[2];
 	public RuneboundFamily Family => (RuneboundFamily)(int)NPC.ai[0];
 	public RunestoneGrade Grade => (RunestoneGrade)(int)NPC.ai[1];
+	public bool UsesQuestDialog => NPC.ai[3] == 1f;
 
 	public override string Texture => $"Terraria/Images/NPC_{NPCID.DD2EterniaCrystal}";
 
@@ -30,6 +36,24 @@ internal sealed class BindingMonolith : ModNPC
 
 	public override void AI()
 	{
+		if (activateNextTick)
+		{
+			activateNextTick = false;
+			Main.CloseNPCChatOrSign();
+
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				RuneboundActivateHandler.Send((short)NPC.whoAmI);
+			}
+			else
+			{
+				Activate(Main.LocalPlayer);
+			}
+
+			SoundEngine.PlaySound(SoundID.DD2_EtherianPortalOpen, NPC.Center);
+			return;
+		}
+
 		NPC.velocity = Vector2.Zero;
 		NPC.color = RuneboundSystem.GetFamilyColor(Family);
 
@@ -43,7 +67,7 @@ internal sealed class BindingMonolith : ModNPC
 
 	public override bool CanChat()
 	{
-		return true;
+		return UsesQuestDialog;
 	}
 
 	public override string GetChat()
@@ -64,20 +88,48 @@ internal sealed class BindingMonolith : ModNPC
 			return;
 		}
 
-		// ActivateEncounter removes this NPC immediately in singleplayer. Close the chat while the
-		// NPC is still a valid target so vanilla chat drawing cannot retain its index for another frame.
-		Main.CloseNPCChatOrSign();
+		// Vanilla continues reading the current talk NPC after this callback returns. Defer closing
+		// chat and removing the monolith until the next update so that index remains valid for this draw.
+		activateNextTick = true;
+	}
 
-		if (Main.netMode == NetmodeID.MultiplayerClient)
+	public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+	{
+		if (UsesQuestDialog || activateNextTick || Main.netMode == NetmodeID.Server)
 		{
-			RuneboundActivateHandler.Send((short)NPC.whoAmI);
-		}
-		else
-		{
-			Activate(Main.LocalPlayer);
+			return;
 		}
 
-		SoundEngine.PlaySound(SoundID.DD2_EtherianPortalOpen, NPC.Center);
+		Player player = Main.LocalPlayer;
+		Texture2D icon = ModContent.Request<Texture2D>(BreakBindingIconPath).Value;
+		Vector2 iconCenter = NPC.Top + new Vector2(0f, -22f);
+		Rectangle interactionArea = new((int)(iconCenter.X - icon.Width / 2f), (int)(iconCenter.Y - icon.Height / 2f), icon.Width, icon.Height);
+		bool inRange = player.active && !player.dead && player.DistanceSQ(NPC.Center) <= InteractionRange * InteractionRange;
+		bool hovering = inRange && interactionArea.Contains(Main.MouseWorld.ToPoint());
+		float scale = hovering ? 1.12f : 1f;
+		Color color = inRange ? Color.White : Color.White * 0.45f;
+
+		spriteBatch.Draw(icon, iconCenter - screenPos, null, color, 0f, icon.Size() / 2f, scale, SpriteEffects.None, 0f);
+
+		if (!hovering)
+		{
+			return;
+		}
+
+		player.mouseInterface = true;
+		player.releaseUseItem = false;
+		Main.hoverItemName = Language.GetTextValue("Mods.PathOfTerraria.NPCs.BindingMonolith.BreakBinding");
+
+		bool leftClick = Main.mouseLeft && Main.mouseLeftRelease;
+		bool rightClick = Main.mouseRight && Main.mouseRightRelease;
+		if (!leftClick && !rightClick)
+		{
+			return;
+		}
+
+		Main.mouseLeftRelease &= !leftClick;
+		Main.mouseRightRelease &= !rightClick;
+		activateNextTick = true;
 	}
 
 	public void Activate(Player player)

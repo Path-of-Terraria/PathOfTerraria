@@ -272,6 +272,7 @@ internal sealed class RuneboundSystem : ModSystem
 		monolith.ai[0] = (float)family;
 		monolith.ai[1] = (float)grade;
 		monolith.ai[2] = encounterId;
+		monolith.ai[3] = tutorial ? 1f : 0f;
 		monolith.netUpdate = true;
 
 		var encounter = new EncounterData

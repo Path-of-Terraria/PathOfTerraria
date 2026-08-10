@@ -1012,7 +1012,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		// Map slot
 		Asset<Texture2D> mapSlotTexture = ModContent.Request<Texture2D>($"{BasePath}/MapDeviceBase_Map_Slot", AssetRequestMode.ImmediateLoad);
 		Asset<Texture2D> mapIconTexture = ModContent.Request<Texture2D>($"{BasePath}/MapDeviceBase_Map_Icon", AssetRequestMode.ImmediateLoad);
-		Asset<Texture2D> mapLockTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/LockIcon", AssetRequestMode.ImmediateLoad);
+		Asset<Texture2D> lockIconTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/LockIcon", AssetRequestMode.ImmediateLoad);
 		var mapSlot = new UIImageItemSlot.SlotWrapper(() => entity.StoredMap, value => entity.StoredMap = value);
 		(string Key, object? Arg) mapSlotHover = ($"Mods.{nameof(PathOfTerraria)}.UI.MapDevice.MapSlot", null);
 		Window.AddElement(new UIHoverImageItemSlot(mapSlotTexture, mapIconTexture, mapSlot, mapSlotHover, context: CustomSlotContext), e =>
@@ -1031,7 +1031,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 			e.IsLocked = static _ => MapDeviceInterface.Entity is not { } e || e is { PortalActive: true } || HasInjection();
 			e.OnUpdate += e =>
 			{
-				((UIImageItemSlot)e).IconTexture = HasInjection() ? mapLockTexture : mapIconTexture;
+				((UIImageItemSlot)e).IconTexture = HasInjection() ? lockIconTexture : mapIconTexture;
 			};
 		});
 
@@ -1058,6 +1058,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 			int slotIndex = i;
 			var fragSlot = new UIImageItemSlot.SlotWrapper(() => (entity.SigilSlots, slotIndex));
 			(string Key, object? Arg) sigilSlotHover = ($"Mods.{nameof(PathOfTerraria)}.UI.MapDevice.SigilSlot", slotIndex + 1);
+			(string Key, object? Arg) lockedSigilSlotHover = ($"Mods.{nameof(PathOfTerraria)}.UI.MapDevice.SigilSlotLocked", SigilSystem.GetSlotUnlockTier(slotIndex));
 
 			Asset<Texture2D> fragSlotTexture = ModContent.Request<Texture2D>($"{BasePath}/MapDevice_Frag_Slot", AssetRequestMode.ImmediateLoad);
 			Asset<Texture2D> fragIconTexture = ModContent.Request<Texture2D>($"{BasePath}/MapDevice_Frag_Icon", AssetRequestMode.ImmediateLoad);
@@ -1086,8 +1087,15 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 					return !entity.SigilSlots.Where((item, index) => index != slotIndex)
 						.Any(item => item.ModItem is DomainSigil other && other.Family == sigil.Family);
 				};
-				e.IsLocked = _ => entity.PortalActive || slotIndex >= SigilSystem.UnlockedSlotCount || entity.Injection != null;
+				e.IsLocked = _ => entity.PortalActive || !SigilSystem.IsSlotUnlocked(slotIndex) || entity.Injection != null;
 				e.OnModifyItem += (element, oldItem, newItem) => OnModifySigilItem(element, oldItem, newItem, slotIndex);
+				e.OnUpdate += self =>
+				{
+					var slot = (UIImageItemSlot)self;
+					bool progressionLocked = !SigilSystem.IsSlotUnlocked(slotIndex);
+					slot.IconTexture = progressionLocked ? lockIconTexture : fragIconTexture;
+					slot.HoverText = progressionLocked ? lockedSigilSlotHover : sigilSlotHover;
+				};
 			});
 		}
 		#endregion
