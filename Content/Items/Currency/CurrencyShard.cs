@@ -14,6 +14,7 @@ public abstract class CurrencyShard : ModItem, GenerateNameAffixes.IItem
 {
 	protected virtual int FrameCount => 4;
 	public virtual bool SupportsMouseItemTargeting => true;
+	public virtual bool SupportsPouchCrafting => true;
 
 	public override void SetStaticDefaults()
 	{

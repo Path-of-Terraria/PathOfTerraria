@@ -819,8 +819,7 @@ internal sealed class EncounterEditorState : SmartUiState
 
 			e.SetDimensions(x: (0.0f, +32), y: (1.00f, -(600 + 32)), width: (0.0f, +512), height: (0f, +600));
 
-			e.AddComponent(new UIPersistent("Encounters_MainWindow"));
-			e.AddComponent(new UIMouseDrag(canMove: true, canResize: true));
+			e.AddComponent(new UIMouseDrag("Encounters_MainWindow", canMove: true, canResize: true));
 		});
 		// Header.
 		window.AddElement(new UIText("Encounters"), e =>
@@ -1262,8 +1261,7 @@ internal sealed class EncounterEditorState : SmartUiState
 
 			e.SetDimensions(x: (1.0f, -(512 + 32)), y: (1.0f, -(300 + 32)), width: (0.0f, +512), height: (0.00f, +300));
 
-			e.AddComponent(new UIPersistent("Encounters_SpawningWindow"));
-			e.AddComponent(new UIMouseDrag(canMove: true, canResize: true));
+			e.AddComponent(new UIMouseDrag("Encounters_SpawningWindow", canMove: true, canResize: true));
 		});
 		// Header.
 		window.AddElement(new UIText(""), e =>

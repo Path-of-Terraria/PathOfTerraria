@@ -63,7 +63,7 @@ internal class InfiniteShardSlot : UIElement
 		{
 			Item editItem = _getEditItem();
 
-			if (editItem is { IsAir: false } && _displayItem.ModItem is CurrencyShard shard)
+			if (editItem is { IsAir: false } && _displayItem.ModItem is CurrencyShard { SupportsPouchCrafting: true } shard)
 			{
 				if (shard.CanUseInPouch(editItem, out _))
 				{
@@ -79,7 +79,7 @@ internal class InfiniteShardSlot : UIElement
 		{
 			Item editItem = _getEditItem();
 
-			if (editItem is { IsAir: false } && _displayItem.ModItem is CurrencyShard shard)
+			if (editItem is { IsAir: false } && _displayItem.ModItem is CurrencyShard { SupportsPouchCrafting: true } shard)
 			{
 				if (shard.CanUseInPouch(editItem, out _))
 				{

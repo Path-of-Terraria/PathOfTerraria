@@ -7,7 +7,11 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Currency.Runebound;
 
-internal abstract class Runestone : CurrencyShard
+internal interface IRunestoneItem
+{
+}
+
+internal abstract class Runestone : CurrencyShard, IRunestoneItem
 {
 	public abstract RuneboundFamily Family { get; }
 	public abstract RunestoneGrade Grade { get; }

@@ -8,6 +8,7 @@ namespace PathOfTerraria.Content.Items.Currency;
 internal class AugmentationOrb : CurrencyShard
 {
 	public override bool SupportsMouseItemTargeting => false;
+	public override bool SupportsPouchCrafting => false;
 
 	public override void SetStaticDefaults()
 	{
@@ -28,10 +29,11 @@ internal class AugmentationOrb : CurrencyShard
 		return false;
 	}
 
-	// Both of these hooks can't be used since this isn't a standard currency shard
+	// These hooks can't be used since this isn't a standard crafting currency.
 	public override bool CanUseInPouch(Item slotItem, [NotNullWhen(false)] out string failKey)
 	{
-		throw new NotImplementedException("How did you get here? This should not be run.");
+		failKey = "Invalid";
+		return false;
 	}
 
 	public override void ApplyToItem(Item slotItem)

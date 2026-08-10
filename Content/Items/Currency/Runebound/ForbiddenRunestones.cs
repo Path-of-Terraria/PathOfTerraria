@@ -8,11 +8,12 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Currency.Runebound;
 
-internal abstract class ForbiddenRunestone : CurrencyShard
+internal abstract class ForbiddenRunestone : CurrencyShard, IRunestoneItem
 {
 	protected abstract Type ChaseAffixType { get; }
+	protected abstract string RunestoneTextureName { get; }
 
-	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Currency/AscendantShard";
+	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Currency/Runebound/{RunestoneTextureName}";
 
 	protected override void SetStaticData()
 	{
@@ -69,19 +70,23 @@ internal abstract class ForbiddenRunestone : CurrencyShard
 internal sealed class ForbiddenRunestoneOfThePrism : ForbiddenRunestone
 {
 	protected override Type ChaseAffixType => typeof(RuneboundPrismaticAffix);
+	protected override string RunestoneTextureName => nameof(PerfectRunestoneOfTheBastion);
 }
 
 internal sealed class ForbiddenRunestoneOfTheTitan : ForbiddenRunestone
 {
 	protected override Type ChaseAffixType => typeof(RuneboundTitanAffix);
+	protected override string RunestoneTextureName => nameof(PerfectRunestoneOfVigor);
 }
 
 internal sealed class ForbiddenRunestoneOfAnnihilation : ForbiddenRunestone
 {
 	protected override Type ChaseAffixType => typeof(RuneboundAnnihilationAffix);
+	protected override string RunestoneTextureName => nameof(PerfectRunestoneOfMight);
 }
 
 internal sealed class ForbiddenRunestoneOfTrinity : ForbiddenRunestone
 {
 	protected override Type ChaseAffixType => typeof(RuneboundTrinityAffix);
+	protected override string RunestoneTextureName => nameof(PerfectRunestoneOfSpirit);
 }
