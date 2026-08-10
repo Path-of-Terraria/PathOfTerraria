@@ -2,6 +2,7 @@
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Staff;
 
@@ -97,7 +98,10 @@ internal abstract class StaffProjectile : ModProjectile
 			Charge += 7;
 		}
 
-		if (++Charge < MaxCharge || Owner.channel)
+		float implicitChargeSpeed = WeaponImplicitStrength.Get<StaffChargeSpeedImplicitAffix>(Owner.HeldItem);
+		Charge += 1f + implicitChargeSpeed / 100f;
+
+		if (Charge < MaxCharge || Owner.channel)
 		{
 			Projectile.timeLeft++;
 			Projectile.scale = Math.Min(1, Charge / MaxCharge);

@@ -5,6 +5,7 @@ using PathOfTerraria.Content.Items.Currency;
 using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Common.Systems.MobSystem;
 using PathOfTerraria.Core.Items;
+using PathOfTerraria.Content.Items.Gear.Weapons;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.Utilities;
@@ -14,6 +15,8 @@ namespace PathOfTerraria.Common.ItemDropping;
 internal class DropTable
 {
 	public readonly record struct DropCategoryWeights(float Gear, float Currency, float Map);
+	internal readonly record struct WeightedItemRecord(ItemDatabase.ItemRecord Record, double Weight);
+	private readonly record struct WeightCandidate(ItemDatabase.ItemRecord Record, double BaseWeight);
 
 	private const float DefaultGearChance = 0.8f;
 	private const float DefaultCurrencyChance = 0.15f;
@@ -211,15 +214,77 @@ internal class DropTable
 		dropRarityModifier += itemLevel / 250f; // Higher levels have a higher likelihood of being Magic, Rare or Unique
 		WeightedRandom<ItemDatabase.ItemRecord> selection = new(random);
 
-		foreach (ItemDatabase.ItemRecord item in filteredGear)
+		foreach (WeightedItemRecord item in BuildGearWeights(itemLevel, dropRarityModifier, filteredGear, additionalCondition, itemRarityModifier, uniqueModifier))
 		{
-			if (CanDropAtItemLevel(item, itemLevel) && additionalCondition.Invoke(item))
-			{
-				selection.Add(item, ItemDatabase.ApplyDropRateModifiers(item, dropRarityModifier, itemRarityModifier, uniqueModifier));
-			}
+			selection.Add(item.Record, item.Weight);
 		}
 
 		return selection;
+	}
+
+	/// <summary>
+	/// Returns the exact gear-pool weights used by the drop visualizer. The values are
+	/// within-gear weights; category weights are applied by the caller of <see cref="RollMobDrops"/>.
+	/// </summary>
+	internal static IReadOnlyList<WeightedItemRecord> GetGearWeightsForDebug(int itemLevel, float dropRarityModifier, float itemRarityModifier = 0f,
+		float uniqueModifier = 1f)
+	{
+		dropRarityModifier += itemLevel / 250f;
+		return BuildGearWeights(itemLevel, dropRarityModifier, [.. ItemDatabase.GetItemByType<Gear>()], _ => true, itemRarityModifier, uniqueModifier);
+	}
+
+	private static List<WeightedItemRecord> BuildGearWeights(int itemLevel, float dropRarityModifier,
+		List<ItemDatabase.ItemRecord> filteredGear, Func<ItemDatabase.ItemRecord, bool> additionalCondition,
+		float itemRarityModifier, float uniqueModifier)
+	{
+		List<WeightCandidate> candidates = [];
+
+		foreach (ItemDatabase.ItemRecord record in filteredGear)
+		{
+			if (!CanDropAtItemLevel(record, itemLevel) || !additionalCondition.Invoke(record))
+			{
+				continue;
+			}
+
+			double weight = ItemDatabase.ApplyDropRateModifiers(record, dropRarityModifier, itemRarityModifier, uniqueModifier);
+			if (weight > 0)
+			{
+				candidates.Add(new WeightCandidate(record, weight));
+			}
+		}
+
+		List<WeightedItemRecord> result = [];
+		IEnumerable<WeightCandidate> tiered = candidates.Where(candidate => WeaponBaseTierRegistry.IsTiered(candidate.Record.Item));
+		IEnumerable<WeightCandidate> ordinary = candidates.Where(candidate => !WeaponBaseTierRegistry.IsTiered(candidate.Record.Item));
+
+		result.AddRange(ordinary.Select(candidate => new WeightedItemRecord(candidate.Record, candidate.BaseWeight)));
+
+		foreach (IGrouping<(ItemType Type, ItemRarity Rarity), WeightCandidate> group in tiered.GroupBy(candidate =>
+		{
+			Item item = candidate.Record.Item;
+			return (item.ResolveToSingleType(item.GetInstanceData().ItemType), candidate.Record.Rarity);
+		}))
+		{
+			WeightCandidate[] entries = [.. group];
+			float familyWeight = entries[0].Record.Item.GetStaticData().BaseFamilyWeight;
+			double targetGroupWeight = entries.Average(entry => entry.BaseWeight) * familyWeight;
+			double biasedTotal = entries.Sum(entry => entry.BaseWeight *
+				WeaponBaseTierRegistry.GetTierWeight(entry.Record.Item.GetStaticData().BaseTier));
+
+			if (biasedTotal <= 0)
+			{
+				continue;
+			}
+
+			foreach (WeightCandidate entry in entries)
+			{
+				double biasedWeight = entry.BaseWeight *
+					WeaponBaseTierRegistry.GetTierWeight(entry.Record.Item.GetStaticData().BaseTier);
+				result.Add(new WeightedItemRecord(entry.Record, targetGroupWeight * biasedWeight / biasedTotal));
+			}
+		}
+
+		return result;
 	}
 
 	private static DropCategoryWeights ApplyAreaLevelDropCategoryScaling(int itemLevel, DropCategoryWeights weights)

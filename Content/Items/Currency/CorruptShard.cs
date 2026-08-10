@@ -1,4 +1,5 @@
 using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.ItemDropping;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Common.Systems.Affixes.Maps;
@@ -67,16 +68,16 @@ public class CorruptShard : CurrencyShard
 
 			if (delevel)
 			{
-				IEnumerable<ItemDatabase.ItemRecord> gear = ItemDatabase.AllItems.Where(x => x.Item.ModItem is GearItem &&
-					x.Item.GetInstanceData().ItemType == data.ItemType && x.Rarity == ItemRarity.Rare);
-				int count = gear.Count();
+				List<ItemDatabase.ItemRecord> gear = [.. ItemDatabase.AllItems.Where(x => x.Item.ModItem is GearItem &&
+					x.Item.GetInstanceData().ItemType == data.ItemType && x.Rarity == ItemRarity.Rare)];
+				ItemDatabase.ItemRecord chosenRecord = DropTable.RollList(data.RealLevel, 0f, gear, _ => true, 0f);
 
-				if (count == 0)
+				if (chosenRecord == ItemDatabase.InvalidItem)
 				{
 					return;
 				}
 
-				var chosenItem = gear.ElementAt(Main.rand.Next(count)).Item.ModItem as GearItem;
+				var chosenItem = chosenRecord.Item.ModItem as GearItem;
 				int oldLevel = data.RealLevel;
 
 				slotItem.SetDefaults(chosenItem.Type);

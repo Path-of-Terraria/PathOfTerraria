@@ -1,5 +1,6 @@
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Core.Items;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Content.Projectiles.Ranged.Javelin;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -147,7 +148,9 @@ internal abstract class Javelin : Gear
 			{
 				if (npc.Hitbox.Intersects(Player.Hitbox) && npc.CanBeChasedBy())
 				{
-					npc.SimpleStrikeNPC((int)(Player.HeldItem.damage * 1.5f), Math.Sign(StoredVelocity.X), true);
+					float implicitDamage = WeaponImplicitStrength.Get<JavelinDashDamageImplicitAffix>(Player.HeldItem);
+					int damage = (int)(Player.HeldItem.damage * 1.5f * (1f + implicitDamage / 100f));
+					npc.SimpleStrikeNPC(damage, Math.Sign(StoredVelocity.X), true);
 
 					altUsePlayer.SetAltCooldown(altUsePlayer.AltFunctionCooldown, 0);
 					Player.velocity = -StoredVelocity;
