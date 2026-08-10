@@ -1291,7 +1291,231 @@ DexterityMarksmanMastery: {
 
 HollowVesselKeystone: {
 	Name: Hollow Vessel
-	Tooltip: You are limited to 1 Maximum Life. Immune to Chaos Damage.
+	Tooltip: You are limited to 1 Maximum Life. Immune to Chaos Damage
+}
+
+GoliathMastery: {
+	Name: The Goliath
+	Tooltip: While above {0} [mechanic/shift:Strength], your melee damage done is increased by maximum life %
+}
+
+ArchmageMastery: {
+	Name: The Archmage
+	Tooltip: While above {0} [mechanic/shift:Intelligence], every 50 mana spent will create an elemental nova around you
+}
+
+TrueshotMastery: {
+	Name: The Trueshot
+	Tooltip: While above {0} Dexterity, all projectiles gain homing
+}
+
+KineticBulwarkMastery: {
+	Name: Kinetic Bulwark
+	Tooltip: Gain {0}% increased global damage based on your current energy shield
+}
+
+EldritchMasteryMastery: {
+	Name: Eldritch Mastery
+	Tooltip: "{0}% of Mana-cost is taken from Energy Shield before Mana"
+}
+
+CuratorMastery: {
+	Name: The Curator
+	Tooltip: "{0}% Increased Energy Shield for every unique item you have equipped"
+}
+
+AddedEnergyShieldPassive: {
+	Name: Added Energy Shield
+	Tooltip: Adds +{0} to maximum Energy Shield
+}
+
+IncreasedEnergyShieldPassive: {
+	Name: Increased Energy Shield
+	Tooltip: "{0}% increased maximum Energy Shield"
+}
+
+IncreasedEnergyShieldRechargeRatePassive: {
+	Name: Increased Energy Shield Recharge Rate
+	Tooltip: "{0}% increased Energy Shield recharge rate"
+}
+
+AddFasterEnergyShieldRechargeStartPassive: {
+	Name: Faster Energy Shield Recharge Start
+	Tooltip: "{0}% faster start of Energy Shield recharge"
+}
+
+AllResistanceManaNotable: {
+	Name: Elemental Fortification
+	Tooltip:
+		'''
+		10% to all resistances
+		5% increased maximum mana
+		'''
+}
+
+LifeManaDefenseNotable: {
+	Name: Balanced Foundation
+	Tooltip:
+		'''
+		5% increased maximum life
+		5% increased maximum mana
+		+3 defense
+		'''
+}
+
+ManaRegenLifeDefenseNotable: {
+	Name: Arcane Vitality
+	Tooltip:
+		'''
+		+2 mana regenerated per second
+		5% increased maximum life
+		+5 defense
+		'''
+}
+
+DamageReductionReducedManaCostNotable: {
+	Name: Efficient Endurance
+	Tooltip:
+		'''
+		3% damage reduction
+		5% reduced mana cost
+		'''
+}
+
+MovementSpeedLifeNotable: {
+	Name: Swift Vigor
+	Tooltip:
+		'''
+		5% increased movement speed
+		+30 maximum life
+		'''
+}
+
+LifeEnergyShieldNotable: {
+	Name: Protective Barrier
+	Tooltip:
+		'''
+		+25 maximum life
+		+25 energy shield
+		'''
+}
+
+AllResistanceProjectileSpeedMovementSpeedNotable: {
+	Name: Agile Resistance
+	Tooltip:
+		'''
+		5% to all resistances
+		5% increased projectile speed
+		3% increased movement speed
+		'''
+}
+
+LifeDefenseNoNearbyEnemiesNotable: {
+	Name: Isolated Fortress
+	Tooltip:
+		'''
+		5% increased maximum life
+		+5 defense while no nearby enemies
+		'''
+}
+
+LifeDefenseNotable: {
+	Name: Stalwart Constitution
+	Tooltip:
+		'''
+		5% increased maximum life
+		+5 defense
+		'''
+}
+
+DefenseWhileMovingMovementSpeedNotable: {
+	Name: Mobile Guardian
+	Tooltip:
+		'''
+		+7 defense while moving
+		5% increased movement speed
+		'''
+}
+
+LifeRegenDamageReductionNotable: {
+	Name: Resilient Recovery
+	Tooltip:
+		'''
+		+2 life regenerated per second
+		3% damage reduction
+		'''
+}
+
+BlockChanceLifeNotable: {
+	Name: Shield Bearer
+	Tooltip:
+		'''
+		5% increased block chance
+		+20 maximum life
+		'''
+}
+
+MinionMovementSpeedLifeNotable: {
+	Name: Commander's Vigor
+	Tooltip:
+		'''
+		5% increased minion movement speed
+		5% increased maximum life
+		'''
+}
+
+MovementSpeedLifeBlockChanceNotable: {
+	Name: Nimble Defender
+	Tooltip:
+		'''
+		5% increased movement speed
+		+15 maximum life
+		5% increased block chance
+		'''
+}
+
+LifeManaAllResistanceNotable: {
+	Name: Harmonious Balance
+	Tooltip:
+		'''
+		5% increased maximum life
+		5% increased maximum mana
+		3% to all resistances
+		'''
+}
+
+FlatLifeManaDefenseNotable: {
+	Name: Solid Foundation
+	Tooltip:
+		'''
+		+30 maximum life
+		+30 maximum mana
+		+3 defense
+		'''
+}
+
+EnergyShieldGlobalDamageNotable: {
+	Name: Empowered Ward
+	Tooltip:
+		'''
+		+30 energy shield
+		5% increased damage
+		'''
+}
+
+MassDebilitationMastery: {
+	Name: Mass Debilitation
+	Tooltip: Enemies killed by your Chaos Damage spread all of their Chaos-related debuffs to nearby enemies.
+}
+
+EmbraceChaosMastery: {
+	Name: Embrace Chaos
+	Tooltip: The lower your life, the more Chaos damage you deal, up to {0}% increased.
+}
+
+ChaosChaosChaosMastery: {
+	Name: Chaos Chaos Chaos!
+	Tooltip: Every 5 seconds while in combat (or upon entering combat), roll a dice with varying effects.
 }
 
 GoliathMastery: {

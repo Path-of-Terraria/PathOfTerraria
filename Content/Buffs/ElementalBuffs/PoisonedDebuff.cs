@@ -5,6 +5,7 @@ using ReLogic.Content;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using PathOfTerraria.Content.Passives.Misc.Masteries;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
@@ -81,6 +82,7 @@ internal class PoisonedDebuff : ModBuff
 	public override void SetStaticDefaults()
 	{
 		Main.debuff[Type] = true;
+		MassDebilitationMastery.RegisterChaosDebuff(Type);
 	}
 
 	public override void Update(NPC npc, ref int buffIndex)
