@@ -19478,10 +19478,10 @@
 		]
 	},
 	{
-		"internalIdentifier": "AbsoluteZeroMastery",
+		"internalIdentifier": "MassDebilitationMastery",
 		"referenceId": 1821,
 		"maxLevel": 1,
-		"value": 0,
+		"value": 1,
 		"position": {
 			"x": 1560,
 			"y": -430
@@ -19494,10 +19494,10 @@
 		]
 	},
 	{
-		"internalIdentifier": "AbsoluteZeroMastery",
+		"internalIdentifier": "EmbraceChaosMastery",
 		"referenceId": 1822,
 		"maxLevel": 1,
-		"value": 0,
+		"value": 40,
 		"position": {
 			"x": 1600,
 			"y": -380
@@ -19510,7 +19510,7 @@
 		]
 	},
 	{
-		"internalIdentifier": "AbsoluteZeroMastery",
+		"internalIdentifier": "ChaosChaosChaosMastery",
 		"referenceId": 1823,
 		"maxLevel": 1,
 		"value": 0,
@@ -19730,10 +19730,10 @@
 		]
 	},
 	{
-		"internalIdentifier": "AbsoluteZeroMastery",
+		"internalIdentifier": "EmbraceChaosMastery",
 		"referenceId": 1840,
 		"maxLevel": 1,
-		"value": 0,
+		"value": 40,
 		"position": {
 			"x": 1540,
 			"y": 1160
@@ -19746,10 +19746,10 @@
 		]
 	},
 	{
-		"internalIdentifier": "AbsoluteZeroMastery",
+		"internalIdentifier": "ChaosChaosChaosMastery",
 		"referenceId": 1841,
 		"maxLevel": 1,
-		"value": 0,
+		"value": 1,
 		"position": {
 			"x": 1620,
 			"y": 1080
@@ -19762,10 +19762,10 @@
 		]
 	},
 	{
-		"internalIdentifier": "AbsoluteZeroMastery",
+		"internalIdentifier": "MassDebilitationMastery",
 		"referenceId": 1842,
 		"maxLevel": 1,
-		"value": 0,
+		"value": 1,
 		"position": {
 			"x": 1700,
 			"y": 1160
@@ -19874,7 +19874,7 @@
 		]
 	},
 	{
-		"internalIdentifier": "AbsoluteZeroMastery",
+		"internalIdentifier": "ChaosChaosChaosMastery",
 		"referenceId": 1849,
 		"maxLevel": 1,
 		"value": 0,
@@ -19890,10 +19890,10 @@
 		]
 	},
 	{
-		"internalIdentifier": "AbsoluteZeroMastery",
+		"internalIdentifier": "EmbraceChaosMastery",
 		"referenceId": 1850,
 		"maxLevel": 1,
-		"value": 0,
+		"value": 40,
 		"position": {
 			"x": -770,
 			"y": 1720
@@ -19906,7 +19906,7 @@
 		]
 	},
 	{
-		"internalIdentifier": "AbsoluteZeroMastery",
+		"internalIdentifier": "MassDebilitationMastery",
 		"referenceId": 1851,
 		"maxLevel": 1,
 		"value": 0,

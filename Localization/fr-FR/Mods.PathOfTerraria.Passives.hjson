@@ -1502,3 +1502,18 @@ EnergyShieldGlobalDamageNotable: {
 		5% increased damage
 		''' */
 }
+
+MassDebilitationMastery: {
+	// Name: Mass Debilitation
+	// Tooltip: Enemies killed by your Chaos Damage spread all of their Chaos-related debuffs to nearby enemies.
+}
+
+EmbraceChaosMastery: {
+	// Name: Embrace Chaos
+	// Tooltip: The lower your life, the more Chaos damage you deal, up to {0}% increased.
+}
+
+ChaosChaosChaosMastery: {
+	// Name: Chaos Chaos Chaos!
+	// Tooltip: Every 5 seconds while in combat (or upon entering combat), roll a dice with varying effects.
+}
