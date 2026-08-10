@@ -317,6 +317,13 @@ internal class TreeState : TabsUiState, IAutopauseUI
 		}
 		
 		AvailablePassivePointsText.DrawResettablePoints(spriteBatch, points, GetRectangle().TopLeft() + pointsDrawPoin, ref _confirmTimer, LocalPassiveTreePlayer.ResetAllNodes);
+
+		if (passiveTreePlayer.RequiresTreeReset)
+		{
+			string warning = Language.GetTextValue("Mods.PathOfTerraria.UI.PassiveTreeResetRequired");
+			Vector2 warningPosition = GetRectangle().TopLeft() + new Vector2(GetRectangle().Width * 0.5f, DraggablePanelHeight + PassiveSearchReservedHeight + 8f);
+			Utils.DrawBorderString(spriteBatch, warning, warningPosition, Color.OrangeRed, 0.6f, 0.5f);
+		}
 	}
 
 	internal void SetSkillTree(Skill skill)

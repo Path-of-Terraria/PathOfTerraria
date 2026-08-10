@@ -135,6 +135,7 @@ public abstract class Passive : Allocatable, ILoadable
 		return
 			Level < MaxLevel &&
 			this is not AnchorPassive &&
+			!passivePlayer.RequiresTreeReset &&
 			Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().Points > 0 &&
 			passivePlayer.HasRequiredAllocatedEdges(this);
 	}
@@ -147,7 +148,9 @@ public abstract class Passive : Allocatable, ILoadable
 	{
 		PassiveTreePlayer passiveTreeSystem = player.GetModPlayer<PassiveTreePlayer>();
 
-		return Level > 0 && (Level > 1 || passiveTreeSystem.FullyLinkedWithout(this));
+		return !passiveTreeSystem.RequiresTreeReset
+			&& Level > 0
+			&& (Level > 1 || passiveTreeSystem.FullyLinkedWithout(this));
 	}
 
 	public override void OnAllocate(Player player)

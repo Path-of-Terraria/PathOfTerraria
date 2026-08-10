@@ -9,7 +9,11 @@ using PathOfTerraria.Content.Passives;
 using PathOfTerraria.Content.Passives.Misc;
 using PathOfTerraria.Core.UI.SmartUI;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using Terraria.Localization;
 using Terraria.ModLoader.IO;
 using System.Runtime.InteropServices;
 
@@ -18,6 +22,9 @@ namespace PathOfTerraria.Common.Systems.PassiveTreeSystem;
 // ReSharper disable once ClassNeverInstantiated.Global
 public class PassiveTreePlayer : ModPlayer
 {
+	private const string TreeFingerprintSaveKey = "passiveTreeFingerprint";
+	private static string _treeFingerprint;
+
 	/// <summary>
 	/// This should be equal to your level + any extra points you have.
 	/// </summary>
@@ -35,6 +42,12 @@ public class PassiveTreePlayer : ModPlayer
 	private ulong _edgeCountCacheFrame = ulong.MaxValue;
 
 	private TagCompound _saveData = [];
+
+	/// <summary>
+	/// True when this save contains allocated passives from a different tree revision.
+	/// The player must reset before changing their allocations.
+	/// </summary>
+	public bool RequiresTreeReset { get; private set; }
 
 	public override void Load()
 	{
@@ -57,6 +70,11 @@ public class PassiveTreePlayer : ModPlayer
 	public override void OnEnterWorld()
 	{
 		SmartUiLoader.GetUiState<TreeState>().RemoveAllChildren(); // is this really necessary?
+
+		if (RequiresTreeReset && Player.whoAmI == Main.myPlayer)
+		{
+			Main.NewText(Language.GetTextValue("Mods.PathOfTerraria.UI.PassiveTreeResetRequired"), Color.OrangeRed);
+		}
 	}
 
 	public void CreateTree()
@@ -183,6 +201,13 @@ public class PassiveTreePlayer : ModPlayer
 		
 		tag["extraPoints"] = ExtraPoints;
 
+		// Do not acknowledge an incompatible tree during an automatic save. ResetAllNodes is the
+		// only path that clears this requirement and writes the current tree fingerprint.
+		if (!RequiresTreeReset)
+		{
+			tag[TreeFingerprintSaveKey] = TreeFingerprint;
+		}
+
 		_saveData = (TagCompound)tag.Clone();
 	}
 
@@ -223,6 +248,7 @@ public class PassiveTreePlayer : ModPlayer
 			}
 		}
 
+		RequiresTreeReset = false;
 		SaveData([]);
 	}
 
@@ -231,6 +257,9 @@ public class PassiveTreePlayer : ModPlayer
 		_saveData = tag;
 		ExtraPoints = tag.GetInt("extraPoints");
 		StrengthByPassive = new float[Passive.MaxId];
+		RequiresTreeReset = HasAllocatedPassives(tag)
+			&& (!tag.TryGet(TreeFingerprintSaveKey, out string savedFingerprint)
+				|| !string.Equals(savedFingerprint, TreeFingerprint, StringComparison.Ordinal));
 
 		ResetNodes();
 		SetTree(true);
@@ -554,6 +583,52 @@ public class PassiveTreePlayer : ModPlayer
 		{
 			Array.Resize(ref StrengthByPassive, requiredLength);
 		}
+	}
+
+	private static bool HasAllocatedPassives(TagCompound tag)
+	{
+		foreach ((string key, object value) in tag)
+		{
+			if (int.TryParse(key, NumberStyles.None, CultureInfo.InvariantCulture, out _)
+			&& value is int level
+			&& level > 0)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private static string TreeFingerprint => _treeFingerprint ??= CreateTreeFingerprint();
+
+	private static string CreateTreeFingerprint()
+	{
+		var builder = new StringBuilder();
+
+		foreach (PassiveData passive in PassiveRegistry.GetPassiveData().OrderBy(passive => passive.ReferenceId))
+		{
+			builder.Append(passive.ReferenceId).Append('|')
+				.Append(passive.InternalIdentifier).Append('|')
+				.Append(passive.MaxLevel).Append('|')
+				.Append(passive.Value.ToString("R", CultureInfo.InvariantCulture)).Append('|')
+				.Append(passive.IsHidden).Append('|')
+				.Append(passive.IsChoiceNode).Append('|')
+				.Append(passive.RequiredAllocatedEdges).Append('|');
+
+			foreach (PassiveConnection connection in passive.Connections.OrderBy(connection => connection.ReferenceId)
+				.ThenBy(connection => connection.IsHidden)
+				.ThenBy(connection => connection.EffectsOnly))
+			{
+				builder.Append(connection.ReferenceId).Append(':')
+					.Append(connection.IsHidden).Append(':')
+					.Append(connection.EffectsOnly).Append('|');
+			}
+
+			builder.Append(';');
+		}
+
+		return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(builder.ToString())));
 	}
 
 	public bool IsAllowedAnchor(Passive passive)

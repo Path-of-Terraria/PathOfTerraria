@@ -351,6 +351,7 @@ Tips: {
 
 PointsRemaining: Очков осталось
 ResetPoints: Сброс очков
+// PassiveTreeResetRequired: Passive tree changed. Reset your tree before allocating passives.
 // ExpGain: +{0} XP
 ExpBarHover:
 	'''

@@ -133,6 +133,11 @@ internal class MultiPassiveElement : PassiveElement
 	public override void SafeRightClick(UIMouseEvent evt)
 	{
 		Player player = Main.LocalPlayer;
+		if (player.GetModPlayer<PassiveTreePlayer>().RequiresTreeReset)
+		{
+			return;
+		}
+
 		if (ActivePassive is Passive active)
 		{
 			// Ensure that removing this mastery won't leave any node disconnected from the tree.
