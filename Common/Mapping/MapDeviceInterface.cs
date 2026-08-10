@@ -201,7 +201,8 @@ internal class MapDeviceShiftClickPlayer : ModPlayer
 
 	internal static void MoveItemIntoStorage(ref Item originalItem)
 	{
-		Item[] storage = MapDeviceInterface.Entity!.Storage;
+		MapDeviceEntity device = MapDeviceInterface.Entity!;
+		Item[] storage = device.Storage;
 
 		for (int i = 0; i < MapDeviceEntity.StorageSize; i++)
 		{
@@ -212,6 +213,12 @@ internal class MapDeviceShiftClickPlayer : ModPlayer
 			originalItem.TurnToAir();
 			item = invItem;
 			SoundEngine.PlaySound(SoundID.Grab);
+
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				MapDeviceSync.Send(device.ID, MapDeviceSync.Flags.Storage, [i]);
+			}
+
 			break;
 		}
 	}

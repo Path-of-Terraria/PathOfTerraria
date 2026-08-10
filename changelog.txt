@@ -1,10 +1,23 @@
-v0.2.12
-- Fixed a critical issue where right clicking a non-equippable item could equip or even duplicate it.
-- Fixed a critical issue where right clicking an accessory could delete it forever.
-- Fixed an issue that could lead to crashes in accessory-adjacent code of other mods such as Calamity's Vanities.
-- Fixed hardmode accessory slots' unreachable items' effects being applied even in non-hardmode worlds.
-- Fixed accessories put in extra accessory slots not being visible.
-- Fixed right clicks not working on extra accessory slots.
-- Removes Desert explorable map spawn rate nerfs
-- Substantially boosts spawn rate in Forest map
-- Improves some Bestiary entries for PoT enemies
+v0.3.10
+Features
+
+- make it so chest contents have relative item levels for the chest style
+- Summoner QOL
+  - Bewitched and War Table buffs retain their remaining duration through world/subworld travel.
+  - Active minions and their summon buffs are restored after normal death.
+  - Minions are also restored after consuming a boss-domain life.
+  - Restoration is owner-gated for multiplayer and avoids duplicating surviving minions.
+- add in instanced item loot and queen slime jelly drop instanced
+
+Bug Fixes
+- Fixes blood rush and igniting projectile passives triggering 100% of the time
+- wof portal removed when owner enters
+- war shield not blocking projectiles when parrying
+- issues with affixes rolling when they shouldn't and maps having issues with tiers
+- syncing quest status for goblin surveyor spawn
+- poison damage over time not synced in MP
+- nerf mana regen by about 2/3
+- prevent ponds from blocking deerclops proogression
+- Crash related to augment slots
+- distance lookup with rifts for rifts not doing anything
+- map storage sync issues

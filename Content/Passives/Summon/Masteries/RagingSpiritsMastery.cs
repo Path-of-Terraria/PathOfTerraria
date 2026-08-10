@@ -11,7 +11,9 @@ internal class RagingSpiritsMastery : Passive
 	{
 		public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (projectile.minion && projectile.TryGetOwner(out Player owner) &&
+			// Raging Spirits are minions, so exclude the proc projectile to prevent recursive summon chains.
+			if (projectile.minion && projectile.type != ModContent.ProjectileType<RagingSpirit>() &&
+			    projectile.TryGetOwner(out Player owner) &&
 			    owner.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<RagingSpiritsMastery>(out float value) &&
 			    Main.rand.NextFloat() < value / 100f)
 			{

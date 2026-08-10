@@ -10,7 +10,7 @@ public class RageStacksBuff : ModBuff
 	public override void SetStaticDefaults()
 	{
 		Main.buffNoSave[Type] = true;
-		Main.buffNoTimeDisplay[Type] = false;
+		Main.buffNoTimeDisplay[Type] = true;
 		Main.debuff[Type] = false;
 	}
 
@@ -21,9 +21,11 @@ public class RageStacksBuff : ModBuff
 
 	public override void Update(Player player, ref int buffIndex)
 	{
-		player.buffTime[buffIndex]++;
-
-		if (player.GetModPlayer<RagePlayer>().Rage <= 0f)
+		if (player.GetModPlayer<RagePlayer>().Rage > 0f)
+		{
+			player.buffTime[buffIndex] = 2;
+		}
+		else
 		{
 			player.DelBuff(buffIndex);
 			buffIndex--;
@@ -34,15 +36,10 @@ public class RageStacksBuff : ModBuff
 	{
 		Player player = Main.LocalPlayer;
 		RagePlayer plr = player.GetModPlayer<RagePlayer>();
+		int displayedRage = GetDisplayedRage(plr);
 
-		buffName = DisplayName.Value;
-
-		if (plr.Rage > 1)
-		{
-			buffName += $" ({(int)plr.Rage})";
-		}
-
-		tip = Language.GetTextValue(Description.Key, (int)plr.Rage);
+		buffName = $"{DisplayName.Value} ({displayedRage})";
+		tip = Language.GetTextValue(Description.Key, displayedRage);
 	}
 
 	public override void PostDraw(SpriteBatch spriteBatch, int buffIndex, BuffDrawParams drawParams)
@@ -50,11 +47,16 @@ public class RageStacksBuff : ModBuff
 		Player player = Main.LocalPlayer;
 		RagePlayer plr = player.GetModPlayer<RagePlayer>();
 		
-		if (plr.Rage <= 1)
+		if (plr.Rage <= 0)
 		{
-			return; // Don't draw if 1 charges
+			return;
 		}
 
-		BuffUtils.DrawNumberOverBuff(drawParams, ((int)plr.Rage).ToString());
+		BuffUtils.DrawNumberOverBuff(drawParams, GetDisplayedRage(plr).ToString());
+	}
+
+	private static int GetDisplayedRage(RagePlayer player)
+	{
+		return Math.Max(1, (int)player.Rage);
 	}
 }

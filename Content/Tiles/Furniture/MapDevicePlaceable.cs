@@ -465,14 +465,27 @@ internal class MapDeviceEntity : ModTileEntity
 			}
 		}
 
+		// World items are authoritative on the server. Letting clients collect them into their
+		// local tile entity creates storage that disappears on the next full synchronization.
+		if (Main.netMode == NetmodeID.MultiplayerClient)
+		{
+			return;
+		}
+
 		Vector2 center = Position.ToWorldCoordinates();
 		foreach (Item item in Main.ActiveItems)
 		{
-			if (item.ModItem is Map map && item.velocity.LengthSquared() < 4f && item.WithinRange(center, 128f) && Array.FindIndex(Storage, s => s.IsAir) is >= 0 and int freeSlot)
+			if (item.ModItem is Map && item.velocity.LengthSquared() < 4f && item.WithinRange(center, 128f) && Array.FindIndex(Storage, s => s.IsAir) is >= 0 and int freeSlot)
 			{
 				SoundEngine.PlaySound(SoundID.Grab, item.Center);
 				Storage[freeSlot] = item.Clone();
 				item.active = false;
+
+				if (Main.netMode == NetmodeID.Server)
+				{
+					NetMessage.SendData(MessageID.SyncItem, number: item.whoAmI);
+					MapDeviceSync.Send(ID, MapDeviceSync.Flags.Storage, [freeSlot]);
+				}
 			}
 		}
 	}
@@ -1166,28 +1179,15 @@ internal class MapDeviceSync : Handler
 
 		if (flags.HasFlag(Flags.Storage))
 		{
-			// Write preceding masks.
-			Span<BitMask<byte>> masks = stackalloc BitMask<byte>[(int)MathF.Ceiling(device.Storage.Length / 8f)];
-			foreach (int storageIndex in itemIndices ?? Enumerable.Range(0, device.Storage.Length))
-			{
-				if (device.Storage[storageIndex] is { IsAir: false })
-				{
-					(int div, int rem) = Math.DivRem(storageIndex, 8);
-					masks[div].Set(rem);
-				}
-			}
-			foreach (BitMask<byte> mask in masks)
-			{
-				writer.Write((byte)mask.Value);
-			}
+			int[] storageIndices = itemIndices is null
+				? [.. Enumerable.Range(0, device.Storage.Length)]
+				: [.. itemIndices.Where(i => i >= 0 && i < device.Storage.Length).Distinct()];
 
-			// Write item data.
-			for (int maskIndex = 0, storageIndex = 0; maskIndex < masks.Length; maskIndex++)
+			writer.Write7BitEncodedInt(storageIndices.Length);
+			foreach (int storageIndex in storageIndices)
 			{
-				foreach (int bitIndex in masks[maskIndex])
-				{
-					ItemIO.Send(device.Storage[storageIndex], writer, writeStack: true);
-				}
+				writer.Write((byte)storageIndex);
+				ItemIO.Send(device.Storage[storageIndex], writer, writeStack: true);
 			}
 		}
 
@@ -1242,22 +1242,16 @@ internal class MapDeviceSync : Handler
 
 		if (flags.HasFlag(Flags.Storage))
 		{
-			// Read masks.
-			Span<BitMask<byte>> masks = stackalloc BitMask<byte>[(int)MathF.Ceiling(MapDeviceEntity.StorageSize / 8f)];
-			for (int i = 0; i < masks.Length; i++) { masks[i] = new(reader.ReadByte()); }
-
 			// On servers, refuse applying client's storage items if they are not the one interacting with the device.
 			bool forceDummy = Main.netMode == NetmodeID.Server && mapEntity?.InteractingPlayer != sender;
 
-			// Read items.
-			for (int maskIndex = 0, storageIndex = 0; maskIndex < masks.Length; maskIndex++)
+			int itemCount = reader.Read7BitEncodedInt();
+			for (int i = 0; i < itemCount; i++)
 			{
-				foreach (int bitIndex in masks[maskIndex])
-				{
-					bool useDummy = forceDummy || mapEntity?.Storage[storageIndex] == null;
-					Item item = useDummy ? new() : mapEntity!.Storage[storageIndex];
-					ItemIO.Receive(item, reader, readStack: true);
-				}
+				int storageIndex = reader.ReadByte();
+				bool useDummy = forceDummy || storageIndex >= MapDeviceEntity.StorageSize || mapEntity?.Storage[storageIndex] == null;
+				Item item = useDummy ? new() : mapEntity!.Storage[storageIndex];
+				ItemIO.Receive(item, reader, readStack: true);
 			}
 		}
 

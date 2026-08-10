@@ -141,7 +141,7 @@ public class ElementalPlayer : ModPlayer
 		foreach (ElementInstance element in container)
 		{
 			float conversion = GetRawConversion(element, item) * conversionScale;
-			float resistanceMultiplier = element.GetDamageMultiplier();
+			float resistanceMultiplier = other[element.Type].GetDamageMultiplier();
 			elementalDamage += conversion * element.Multiplier * resistanceMultiplier;
 		}
 

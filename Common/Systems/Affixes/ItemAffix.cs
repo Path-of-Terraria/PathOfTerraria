@@ -48,10 +48,21 @@ public abstract class ItemAffix : Affix
 			};
 		}
 
-		// PoTInstanceItemData itemData = item.GetInstanceData();
-		ItemAffixData.TierData tierData = data.Tiers[Tier];
-
 		(int tierMin, int tierMax) = data.GetPossibleTierRange(itemLevel);
+		if (tierMax < 0 || Tier < tierMin || Tier > tierMax || Tier >= data.Tiers.Count)
+		{
+			return new AffixTooltipLine
+			{
+				Text = this.GetLocalization("Description"),
+				Value = Value,
+				Tier = null,
+				ValueRollRange = null,
+				Corrupt = IsCorruptedAffix,
+				Implicit = IsImplicit,
+			};
+		}
+
+		ItemAffixData.TierData tierData = data.Tiers[Tier];
 
 		return new AffixTooltipLine
 		{

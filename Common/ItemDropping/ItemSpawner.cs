@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Core.Items;
+using PathOfTerraria.Content.Items.Consumables.Maps;
 using System.Collections.Generic;
 using System.Linq;
 using PathOfTerraria.Common.Enums;
@@ -170,8 +171,9 @@ internal class ItemSpawner
 	/// <param name="pos"></param>
 	public static void SpawnMap(Vector2 pos, int tier)
 	{
-		int type = DropTable.RollMobDrops(tier, 0, new DropTable.DropCategoryWeights(0, 0, 1)).Item.type;
+		int itemLevel = Map.WorldLevelBasedOnTier(tier);
+		int type = DropTable.RollMobDrops(itemLevel, 0, new DropTable.DropCategoryWeights(0, 0, 1)).Item.type;
 
-		SpawnItem(type, pos, tier);
+		SpawnItem(type, pos, itemLevel);
 	}
 }

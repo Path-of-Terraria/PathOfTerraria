@@ -192,11 +192,11 @@ public abstract class Quest : ModType, ILocalizedModType
 		OnCompleted();
 
 		QuestModPlayer quester = player.GetModPlayer<QuestModPlayer>();
-		quester.EnabledQuestsByName.Remove(FullName);
+		quester.SetSyncedQuestState(FullName, false, string.Empty, true);
 
 		if (player.whoAmI == Main.myPlayer && Main.netMode == NetmodeID.MultiplayerClient)
 		{
-			SyncPlayerQuestActive.Send(FullName, false);
+			SyncPlayerQuestActive.Send(FullName, false, string.Empty, true);
 		}
 	}
 
@@ -228,6 +228,17 @@ public abstract class Quest : ModType, ILocalizedModType
 				{
 					break;
 				}
+			}
+		}
+
+		if (Active)
+		{
+			QuestModPlayer quester = player.GetModPlayer<QuestModPlayer>();
+			quester.SetSyncedQuestState(FullName, true, ActiveStep.Id, false);
+
+			if (player.whoAmI == Main.myPlayer && Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				SyncPlayerQuestActive.Send(FullName, true, ActiveStep.Id, false);
 			}
 		}
 	}
@@ -324,7 +335,7 @@ public abstract class Quest : ModType, ILocalizedModType
 		QuestSteps = SetSteps();
 
 		QuestModPlayer quester = player.GetModPlayer<QuestModPlayer>();
-		quester.EnabledQuestsByName.Remove(FullName);
+		quester.SetSyncedQuestState(FullName, false, string.Empty, false);
 	}
 
 	/// <summary>
