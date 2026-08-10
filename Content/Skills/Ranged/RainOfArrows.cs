@@ -20,6 +20,23 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Skills.Ranged;
 
+public class RainOfArrowsSets
+{
+	public delegate bool GetShootDataDelegate(Player player, Item item, out int projToShoot, out float speed, out int damage, out float knockBack, out int usedAmmoItemId);
+	public delegate void PostModifyShootDelegate(Player player, Item item, Projectile projectile, int projWhoAmI);
+
+	/// <summary>
+	/// Allows invalid or channeled items to have Flurry functionality with custom code.
+	/// </summary>
+	public static readonly Dictionary<int, GetShootDataDelegate> CustomFunctionalities = [];
+
+	/// <summary>
+	/// Allows items to modify the projectile(s) spawned by Flurry. 
+	/// The item passed in to this hook will not be from <see cref="ContentSamples"/> when using <see cref="PiercingPrecision"/>.
+	/// </summary>
+	public static readonly Dictionary<int, PostModifyShootDelegate> PostModify = [];
+}
+
 public class RainOfArrows : Skill
 {
 	private static readonly HashSet<int> WeaponBlacklist = [ItemID.Harpoon, ItemID.Flamethrower, ItemID.ElfMelter];
@@ -58,18 +75,33 @@ public class RainOfArrows : Skill
 
 	protected override void InternalUseSkill(Player player)
 	{
-		if (!player.PickAmmo(player.HeldItem, out int projToShoot, out float speed, out int damage, out float knockBack, out int ammo, true))
+		int projToShoot;
+		float speed;
+		int damage;
+		float knockBack;
+		int ammo;
+		bool hasCustom = false;
+
+		if (hasCustom = RainOfArrowsSets.CustomFunctionalities.TryGetValue(player.HeldItem.type, out RainOfArrowsSets.GetShootDataDelegate info))
+		{
+			if (!info.Invoke(player, player.HeldItem, out projToShoot, out speed, out damage, out knockBack, out ammo))
+			{
+				return;
+			}
+		}
+		else if (!player.PickAmmo(player.HeldItem, out projToShoot, out speed, out damage, out knockBack, out ammo, true))
 		{
 			return;
 		}
 
-		if (player.HeldItem.ModItem is not null)
+		if (!hasCustom && player.HeldItem.ModItem is not null)
 		{
 			Vector2 throwaway = Vector2.Zero;
 			ItemLoader.ModifyShootStats(player.HeldItem, player, ref throwaway, ref throwaway, ref projToShoot, ref damage, ref knockBack);
 		}
 
 		damage = GetTotalDamage(damage * (1 + Level * 0.15f));
+		_ = speed; // Throwaway to remove the warning, this isn't used but may be used in the future
 
 		if (projToShoot <= 0)
 		{
@@ -99,6 +131,11 @@ public class RainOfArrows : Skill
 				Projectile projectile = Main.projectile[proj];
 				projectile.GetGlobalProjectile<RainProjectile>().SetRainProjectile(Main.projectile[proj], i == 0);
 
+				if (RainOfArrowsSets.PostModify.TryGetValue(player.HeldItem.type, out RainOfArrowsSets.PostModifyShootDelegate hook))
+				{
+					hook.Invoke(player, player.HeldItem, projectile, proj);
+				}
+
 				if (shattering)
 				{
 					projectile.scale *= 0.5f;
@@ -108,7 +145,7 @@ public class RainOfArrows : Skill
 		else
 		{
 			int type = ModContent.ProjectileType<PiercingPrecision.PrecisionSpawnerProjectile>();
-			Projectile.NewProjectile(src, player.Center, Vector2.Zero, type, damage, knockBack, player.whoAmI, projToShoot);
+			Projectile.NewProjectile(src, player.Center, Vector2.Zero, type, damage, knockBack, player.whoAmI, projToShoot, player.HeldItem.type);
 		}
 	}
 
@@ -138,7 +175,7 @@ public class RainOfArrows : Skill
 			return false;
 		}
 
-		if (Main.LocalPlayer.HeldItem.channel)
+		if (Main.LocalPlayer.HeldItem.channel && !RainOfArrowsSets.CustomFunctionalities.ContainsKey(Main.LocalPlayer.HeldItem.type))
 		{
 			failReason = new SkillFailure(SkillFailReason.Other, "BadChanneled");
 			return false;

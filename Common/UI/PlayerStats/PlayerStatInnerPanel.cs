@@ -164,7 +164,7 @@ internal class PlayerStatInnerPanel : SmartUiElement
 			float manaPercent = player.statMana / player.statManaMax * 100;
 			return $"{player.statMana}/{player.statManaMax2} ({manaPercent:#0.##}%)";
 		}));
-		list.Add(new PlayerStatUI(Localize("ManaRegen"), player => $"{player.GetModPlayer<ManaRegenRework.ManaRegenPlayer>().LastManaRegen}"));
+		list.Add(new PlayerStatUI(Localize("ManaRegen"), player => $"{player.GetModPlayer<ManaRegenRework.ManaRegenPlayer>().LastManaRegen:#0.##}"));
 		list.Add(new PlayerStatUI(Localize("DamageReduction"), player => $"{player.endurance * 100:#0.##}%"));
 		list.Add(new PlayerStatUI(Localize("BlockChance"), player => $"{player.GetModPlayer<BlockPlayer>().ActualBlockChance * 100:#0.##}%"));
 		list.Add(new PlayerStatUI(Localize("MaxBlock"), player => $"{player.GetModPlayer<BlockPlayer>().MaxBlockChance * 100:#0.##}%"));

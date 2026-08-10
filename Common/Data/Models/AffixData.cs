@@ -42,6 +42,11 @@ public class ItemAffixData
 		return (0, eligibleTiers.Count - 1);
 	}
 
+	public bool CanRollAtLevel(int level)
+	{
+		return Tiers.Any(tier => tier.MinimumLevel <= Math.Max(1, level));
+	}
+
 	public TierData GetAppropriateTierData(int level, out int tierIndex)
 	{
 		var eligibleTiers = Tiers.Where(t => t.MinimumLevel <= level).ToList();

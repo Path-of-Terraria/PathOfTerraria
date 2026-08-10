@@ -20,6 +20,8 @@ namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 public class DeerclopsDomain : BossDomainSubworld, IOverrideBiome
 {
 	public const int Surface = 200;
+	private const int MaxStructurePlacementAttempts = 20000;
+	private const int TunnelStructurePadding = 8;
 
 	internal static Asset<Texture2D> LightGlow = null;
 
@@ -220,7 +222,7 @@ public class DeerclopsDomain : BossDomainSubworld, IOverrideBiome
 
 		if (!skipPonds)
 		{
-			FindPondLocation(points);
+			FindPondLocation(points, chasmPoints);
 		}
 
 		FindWalls(points, 2, chasmPoints);
@@ -231,9 +233,9 @@ public class DeerclopsDomain : BossDomainSubworld, IOverrideBiome
 	{
 		for (int i = 0; i < wallCount; i++)
 		{
-			while (true)
+			for (int tries = 0; tries < MaxStructurePlacementAttempts; tries++)
 			{
-				Vector2 pos = Main.rand.Next(points);
+				Vector2 pos = WorldGen.genRand.Next(points);
 				int x = (int)pos.X;
 				int y = (int)pos.Y;
 
@@ -254,7 +256,7 @@ public class DeerclopsDomain : BossDomainSubworld, IOverrideBiome
 				int dist = Math.Abs(y - y2);
 				var checkingRect = new Rectangle(x, y - (int)(size.Y * 0.5f), size.X, size.Y);
 
-				if (chasmPoints.Any(x => checkingRect.Contains(x.ToPoint())))
+				if (IntersectsTunnel(checkingRect, chasmPoints))
 				{
 					continue;
 				}
@@ -269,21 +271,14 @@ public class DeerclopsDomain : BossDomainSubworld, IOverrideBiome
 		}
 	}
 
-	private static void FindPondLocation(Vector2[] points)
+	private static void FindPondLocation(Vector2[] points, Vector2[] chasmPoints)
 	{
-		int tries = 0;
-
-		while (true)
+		// Ponds are placed after the incoming tunnel is dug. Keep their large footprint away from that
+		// connector so the structure cannot overwrite the only route into the horizontal tunnel.
+		for (int tries = 0; tries < MaxStructurePlacementAttempts; tries++)
 		{
-			tries++;
-
-			if (tries > 20000)
-			{
-				break;
-			}
-
 			int pond = WorldGen.genRand.Next(3);
-			Vector2 pos = Main.rand.Next(points);
+			Vector2 pos = WorldGen.genRand.Next(points);
 			int x = (int)pos.X;
 			int y = (int)pos.Y;
 
@@ -301,10 +296,12 @@ public class DeerclopsDomain : BossDomainSubworld, IOverrideBiome
 				y2++;
 			}
 
-			if (Math.Abs(y2 - y) < 3 && GenVars.structures.CanPlace(new Rectangle(x, y, size.X, size.Y)))
+			var checkingRect = new Rectangle(x, y, size.X, size.Y);
+
+			if (Math.Abs(y2 - y) < 3 && CanPlaceWithoutBlockingTunnel(checkingRect, chasmPoints))
 			{
 				StructureTools.PlaceByOrigin(structure, new Point16(x, y), new Vector2(0));
-				GenVars.structures.AddProtectedStructure(new Rectangle(x, y, size.X, size.Y));
+				GenVars.structures.AddProtectedStructure(checkingRect);
 				break;
 			}
 			else
@@ -316,14 +313,27 @@ public class DeerclopsDomain : BossDomainSubworld, IOverrideBiome
 					y2++;
 				}
 
-				if (Math.Abs(y2 - y) < 3 && GenVars.structures.CanPlace(new Rectangle(x - size.X, y, size.X, size.Y)))
+				checkingRect = new Rectangle(x - size.X, y, size.X, size.Y);
+
+				if (Math.Abs(y2 - y) < 3 && CanPlaceWithoutBlockingTunnel(checkingRect, chasmPoints))
 				{
 					StructureTools.PlaceByOrigin(structure, new Point16(x, y), new Vector2(1, 0));
-					GenVars.structures.AddProtectedStructure(new Rectangle(x - size.X, y, size.X, size.Y));
+					GenVars.structures.AddProtectedStructure(checkingRect);
 					break;
 				}
 			}
 		}
+	}
+
+	private static bool CanPlaceWithoutBlockingTunnel(Rectangle structureArea, Vector2[] tunnelPoints)
+	{
+		return !IntersectsTunnel(structureArea, tunnelPoints) && GenVars.structures.CanPlace(structureArea);
+	}
+
+	private static bool IntersectsTunnel(Rectangle structureArea, Vector2[] tunnelPoints)
+	{
+		structureArea.Inflate(TunnelStructurePadding, TunnelStructurePadding);
+		return tunnelPoints.Any(point => structureArea.Contains(point.ToPoint()));
 	}
 
 	private void StartTunnel(FastNoiseLite noise, int firstTunnelXStart, out Vector2 last)

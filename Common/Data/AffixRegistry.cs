@@ -246,9 +246,11 @@ public class AffixRegistry : ILoadable
 			return null;
 		}
 
+		int itemLevel = GetItemLevel.Invoke(item);
 		IEnumerable<ItemAffixData> enumerable = AllItemData
 			.Where(affixData => (itemType & affixData.GetEquipTypes()) != ItemType.None)
-			.Where(affixData => CanApplyToItem(affixData, item));
+			.Where(affixData => CanApplyToItem(affixData, item))
+			.Where(affixData => affixData.CanRollAtLevel(itemLevel));
 
 		if (excludedAffixes != null)
 		{
@@ -265,6 +267,16 @@ public class AffixRegistry : ILoadable
 		int randomIndex = Main.rand.Next(0, filteredAffixData.Count);
 
 		return filteredAffixData[randomIndex];
+	}
+
+	public static bool HasEligibleAffix(Item item, int itemLevel)
+	{
+		ItemType itemType = item.ResolveToSingleType(item.GetInstanceData().ItemType);
+
+		return itemType != ItemType.None && AllItemData.Any(affixData =>
+			(itemType & affixData.GetEquipTypes()) != ItemType.None
+			&& CanApplyToItem(affixData, item)
+			&& affixData.CanRollAtLevel(itemLevel));
 	}
 
 	private static bool CanApplyToItem(ItemAffixData affixData, Item item)

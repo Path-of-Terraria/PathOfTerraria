@@ -2,8 +2,8 @@
 
 internal class PlankShield : Shield
 {
-	protected override float BlockChance => 0.02f;
-	protected override float SpeedReduction => 1.5f;
+	internal override float BaseBlockChance => 0.22f;
+	protected override float SpeedReduction => 5f;
 
 	protected override void InternalDefaults()
 	{

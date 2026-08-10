@@ -1,10 +1,13 @@
 ﻿using PathOfTerraria.Common.Buffs;
 using PathOfTerraria.Common.Systems.MobSystem;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using ReLogic.Content;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.ModLoader.IO;
 using Terraria.UI.Chat;
 
 namespace PathOfTerraria.Content.Buffs.ElementalBuffs;
@@ -45,6 +48,16 @@ internal class PoisonedDebuff : ModBuff
 
 	public static void Apply(NPC npc, int time, Player? player = null)
 	{
+		if (Main.netMode == NetmodeID.MultiplayerClient)
+		{
+			if (player is null || player.whoAmI == Main.myPlayer)
+			{
+				PoisonStackHandler.Send(npc, time, player);
+			}
+
+			return;
+		}
+
 		float damage = 4f;
 		float tickRate = 60;
 
@@ -62,6 +75,7 @@ internal class PoisonedDebuff : ModBuff
 
 		ref float tick = ref npc.GetGlobalNPC<PoisonNPC>().LastTickRate;
 		tick = MathF.Min(tickRate, tick);
+		npc.netUpdate = true;
 	}
 
 	public override void SetStaticDefaults()
@@ -129,6 +143,8 @@ internal class PoisonNPC : GlobalNPC
 
 	public override bool PreAI(NPC npc)
 	{
+		int previousStackCount = _stacks.Count;
+
 		for (int i = 0; i < _stacks.Count; i++)
 		{
 			PoisonStack stack = _stacks[i];
@@ -138,6 +154,12 @@ internal class PoisonNPC : GlobalNPC
 		}
 
 		_stacks.RemoveAll(x => x.Time <= 0);
+
+		if (Main.netMode == NetmodeID.Server && _stacks.Count != previousStackCount)
+		{
+			npc.netUpdate = true;
+		}
+
 		_timer++;
 
 		if (_timer > LastTickRate && _stacks.Count > 0 && ElapsedDoT >= 1)
@@ -158,6 +180,53 @@ internal class PoisonNPC : GlobalNPC
 		}
 
 		return true;
+	}
+
+	public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
+	{
+		bool hasStacks = _stacks.Count > 0;
+		bitWriter.WriteBit(hasStacks);
+
+		if (!hasStacks)
+		{
+			return;
+		}
+
+		binaryWriter.Write((ushort)_stacks.Count);
+
+		foreach (PoisonStack stack in _stacks)
+		{
+			binaryWriter.Write(stack.Time);
+			binaryWriter.Write(stack.DamagePerTick);
+		}
+
+		binaryWriter.Write(ElapsedDoT);
+		binaryWriter.Write(LastTickRate);
+		binaryWriter.Write(_timer);
+	}
+
+	public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
+	{
+		_stacks.Clear();
+
+		if (!bitReader.ReadBit())
+		{
+			ElapsedDoT = 0;
+			LastTickRate = 60;
+			_timer = 0;
+			return;
+		}
+
+		ushort count = binaryReader.ReadUInt16();
+
+		for (int i = 0; i < count; i++)
+		{
+			_stacks.Add(new PoisonStack(binaryReader.ReadInt32(), binaryReader.ReadSingle()));
+		}
+
+		ElapsedDoT = binaryReader.ReadSingle();
+		LastTickRate = binaryReader.ReadSingle();
+		_timer = binaryReader.ReadSingle();
 	}
 
 	public override Color? GetAlpha(NPC npc, Color drawColor)

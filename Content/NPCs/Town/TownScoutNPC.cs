@@ -6,6 +6,7 @@ using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using SubworldLibrary;
+using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
@@ -42,6 +43,14 @@ public sealed class TownScoutNPC : ModNPC
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
 	{
 		bestiaryEntry.AddInfo(this, "Surface");
+	}
+
+	public override void OnSpawn(IEntitySource source)
+	{
+		if (Main.netMode != NetmodeID.MultiplayerClient && AnyPlayerCanEncounterSurveyor())
+		{
+			ModContent.GetInstance<RavencrestSystem>().SpawnedScout = true;
+		}
 	}
 
 	public override bool PreAI()
@@ -90,8 +99,6 @@ public sealed class TownScoutNPC : ModNPC
 		}
 
 		NPC.direction = NPC.spriteDirection = Math.Sign(NPC.velocity.X);
-		ModContent.GetInstance<RavencrestSystem>().SpawnedScout = true;
-
 		Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
 
 		if (NPC.velocity.Y != 0)
@@ -155,6 +162,18 @@ public sealed class TownScoutNPC : ModNPC
 		foreach (Player plr in Main.ActivePlayers)
 		{
 			QuestModPlayer questPlayer = plr.GetModPlayer<QuestModPlayer>();
+
+			if (Main.netMode != NetmodeID.SinglePlayer)
+			{
+				if (questPlayer.ActiveQuestStepsByName.TryGetValue(questName, out string activeStep)
+					&& activeStep == WizardStartQuest.SurveyorStepId)
+				{
+					return 100f;
+				}
+
+				questCompleted |= questPlayer.CompletedQuestsByName.Contains(questName);
+				continue;
+			}
 
 			if (!questPlayer.QuestsByName.TryGetValue(questName, out Quest quest))
 			{

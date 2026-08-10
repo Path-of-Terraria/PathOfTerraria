@@ -22,7 +22,7 @@ namespace PathOfTerraria.Content.Items.Consumables.Maps;
 #nullable enable
 
 public abstract class Map : ModItem, GenerateNameAffixes.IItem, GenerateAffixes.IItem, GenerateImplicits.IItem,
-	IPoTGlobalItem, GetItemLevel.IItem, SetItemLevel.IItem
+	IPoTGlobalItem, SetItemLevel.IItem
 {
 	protected sealed override bool CloneNewInstances => true;
 
@@ -32,13 +32,11 @@ public abstract class Map : ModItem, GenerateNameAffixes.IItem, GenerateAffixes.
 	protected virtual bool RollsAdjacentTiers => true;
 
 	internal int Tier = 1;
-	internal int ItemLevel = 1;
 
 	public override ModItem Clone(Item newEntity)
 	{
 		var map = base.Clone(newEntity) as Map;
 		map!.Tier = Tier;
-		map.ItemLevel = ItemLevel;
 		return map;
 	}
 
@@ -131,7 +129,7 @@ public abstract class Map : ModItem, GenerateNameAffixes.IItem, GenerateAffixes.
 
 	public override void LoadData(TagCompound tag)
 	{
-		Tier = tag.GetShort("tier");
+		Tier = Math.Clamp((int)tag.GetShort("tier"), 1, MaxMapTier);
 	}
 
 	public override void NetSend(BinaryWriter writer)
@@ -141,7 +139,7 @@ public abstract class Map : ModItem, GenerateNameAffixes.IItem, GenerateAffixes.
 
 	public override void NetReceive(BinaryReader reader)
 	{
-		Tier = reader.ReadInt16();
+		Tier = Math.Clamp((int)reader.ReadInt16(), 1, MaxMapTier);
 	}
 
 	public abstract string GenerateName(string defaultName);
@@ -202,21 +200,15 @@ public abstract class Map : ModItem, GenerateNameAffixes.IItem, GenerateAffixes.
 		return [];
 	}
 
-	int GetItemLevel.IItem.GetItemLevel(int realLevel)
-	{
-		return ItemLevel;
-	}
-
 	void SetItemLevel.IItem.SetItemLevel(int level, ref int realLevel)
 	{
-		if (RollsAdjacentTiers && level > MaxOverworldLevel)
+		if (RollsAdjacentTiers && level >= MaxOverworldLevel)
 		{
 			level = RollAdjacentMapLevel(level);
 		}
 
 		realLevel = level;
-		ItemLevel = realLevel;
-		Tier = GetMapTier(ItemLevel);
+		Tier = GetMapTier(realLevel);
 	}
 
 	private static int RollAdjacentMapLevel(int level)

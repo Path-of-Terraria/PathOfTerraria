@@ -94,6 +94,8 @@ internal class AddValidShieldParryItems : ModSystem
 			return;
 		}
 
+		self.hasRaisableShield = true;
+
 		bool canRaiseShield = true;
 		IParryItem parryItem = null;
 
@@ -103,7 +105,7 @@ internal class AddValidShieldParryItems : ModSystem
 			canRaiseShield = parryItem.CanRaiseShield(self);
 		}
 
-		if (canRaiseShield && theGeneralCheck && self.hasRaisableShield && !self.mount.Active && (self.itemAnimation == 0 || mouseRight))
+		if (canRaiseShield && theGeneralCheck && !self.mount.Active && (self.itemAnimation == 0 || mouseRight))
 		{
 			shouldGuard = true;
 			parryItem?.OnRaiseShield(self);
