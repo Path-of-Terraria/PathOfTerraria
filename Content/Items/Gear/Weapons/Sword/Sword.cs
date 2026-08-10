@@ -11,6 +11,12 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 internal abstract class Sword : Gear
 {
 	private const int AltCooldownTime = 60 * 4;
+
+	/// <summary>
+	/// Standard sword alternate use is input-driven so it can be used during a swing.
+	/// Unique swords opt out by default and retain their own alternate-use behavior.
+	/// </summary>
+	protected virtual bool HasIndependentLifeStealAlt => !Item.GetStaticData().IsUnique;
 	
 	protected override string GearLocalizationCategory => "Sword";
 
@@ -48,12 +54,33 @@ internal abstract class Sword : Gear
 	
 	public override bool AltFunctionUse(Player player)
 	{
-		if (!player.CheckMana(5))
+		return false;
+	}
+
+	public override void HoldItem(Player player)
+	{
+		if (!HasIndependentLifeStealAlt || player.whoAmI != Main.myPlayer || !Main.mouseRight || !Main.mouseRightRelease)
 		{
-			return false;
+			return;
 		}
-		
-		return !player.GetModPlayer<AltUsePlayer>().OnCooldown;
+
+		AltUsePlayer altUsePlayer = player.GetModPlayer<AltUsePlayer>();
+		if (!altUsePlayer.AltFunctionAvailable || !player.CheckMana(5, false, false))
+		{
+			return;
+		}
+
+		player.CheckMana(5, true);
+
+		Vector2 position = player.RotatedRelativePoint(player.MountedCenter);
+		Vector2 velocity = player.DirectionTo(Main.MouseWorld) * Item.shootSpeed;
+		int damage = (int)player.GetWeaponDamage(Item);
+		float knockback = player.GetWeaponKnockback(Item, Item.knockBack);
+		IEntitySource source = player.GetSource_ItemUse(Item);
+		Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<LifeStealProjectile>(), damage, knockback, player.whoAmI);
+
+		altUsePlayer.SetAltCooldown(AltCooldownTime);
+		Main.mouseRightRelease = false;
 	}
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position,
@@ -71,14 +98,4 @@ internal abstract class Sword : Gear
 		return false;
 	}
 
-	public override void ModifyShootStats(
-		Player player,
-		ref Vector2 position,
-		ref Vector2 velocity,
-		ref int type,
-		ref int damage,
-		ref float knockback)
-	{
-		type = ModContent.ProjectileType<LifeStealProjectile>();
-	}
 }
