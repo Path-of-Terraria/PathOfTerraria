@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using PathOfTerraria.Common.Systems.ElementalDamage;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
+using PathOfTerraria.Content.Buffs.ElementalBuffs;
 using PathOfTerraria.Content.Projectiles.PassiveProjectiles;
 using Terraria.ID;
 
@@ -75,6 +76,7 @@ internal sealed class MassDebilitationMastery : Passive
 			}
 
 			List<(int buff, int time)> debuffsToSpread = [];
+			int poisonBuffType = ModContent.BuffType<PoisonedDebuff>();
 
 			for (int i = 0; i < NPC.maxBuffs; ++i)
 			{
@@ -101,7 +103,14 @@ internal sealed class MassDebilitationMastery : Passive
 
 				foreach ((int buff, int time) in debuffsToSpread)
 				{
-					npc.AddBuff(buff, time);
+					if (buff == poisonBuffType)
+					{
+						PoisonedDebuff.Spread(target, npc, Player);
+					}
+					else
+					{
+						npc.AddBuff(buff, time);
+					}
 				}
 			}
 		}

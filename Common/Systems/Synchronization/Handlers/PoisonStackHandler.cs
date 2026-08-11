@@ -12,9 +12,22 @@ internal class PoisonStackHandler : Handler
 {
 	public static void Send(NPC npc, int time, Player? player)
 	{
-		ModPacket packet = Networking.GetPacket<PoisonStackHandler>(8);
+		ModPacket packet = Networking.GetPacket<PoisonStackHandler>(9);
 		packet.Write((short)npc.whoAmI);
+		packet.Write(false);
 		packet.Write(time);
+		packet.Write(player is not null);
+		packet.Send();
+	}
+
+	public static void SendExistingStack(NPC npc, int time, float damagePerTick, float tickRate, Player? player)
+	{
+		ModPacket packet = Networking.GetPacket<PoisonStackHandler>(17);
+		packet.Write((short)npc.whoAmI);
+		packet.Write(true);
+		packet.Write(time);
+		packet.Write(damagePerTick);
+		packet.Write(tickRate);
 		packet.Write(player is not null);
 		packet.Send();
 	}
@@ -22,10 +35,14 @@ internal class PoisonStackHandler : Handler
 	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
 		short npcWhoAmI = reader.ReadInt16();
+		bool isExistingStack = reader.ReadBoolean();
 		int time = reader.ReadInt32();
+		float damagePerTick = isExistingStack ? reader.ReadSingle() : 0f;
+		float tickRate = isExistingStack ? reader.ReadSingle() : 0f;
 		bool hasPlayerSource = reader.ReadBoolean();
 
-		if (sender >= Main.maxPlayers || npcWhoAmI < 0 || npcWhoAmI >= Main.maxNPCs || time <= 0)
+		if (sender >= Main.maxPlayers || npcWhoAmI < 0 || npcWhoAmI >= Main.maxNPCs || time <= 0
+			|| isExistingStack && (!float.IsFinite(damagePerTick) || damagePerTick < 0f || !float.IsFinite(tickRate) || tickRate <= 0f))
 		{
 			return;
 		}
@@ -38,6 +55,13 @@ internal class PoisonStackHandler : Handler
 			return;
 		}
 
-		PoisonedDebuff.Apply(npc, time, player);
+		if (isExistingStack)
+		{
+			PoisonedDebuff.ApplyExistingStack(npc, time, damagePerTick, tickRate, player);
+		}
+		else
+		{
+			PoisonedDebuff.Apply(npc, time, player);
+		}
 	}
 }

@@ -10,10 +10,10 @@ internal class TemporalCompressionMastery : Passive
 	{
 		float modifier = Value / 100f;
 		// Buffs
-		player.GetModPlayer<BuffModifierPlayer>().BuffBonus += modifier;
+		player.GetModPlayer<BuffModifierPlayer>().BuffBonus -= modifier;
 		// Skills
-		player.GetModPlayer<SkillCombatPlayer>().GlobalBuff.Duration += modifier;
+		player.GetModPlayer<SkillCombatPlayer>().GlobalBuff.Duration -= modifier;
 		// Projectiles
-		player.GetModPlayer<DurationPlayer>().DurationModifier += modifier;
+		player.GetModPlayer<DurationPlayer>().DurationModifier -= modifier;
 	}
 }

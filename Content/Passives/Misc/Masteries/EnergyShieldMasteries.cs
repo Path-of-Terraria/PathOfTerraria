@@ -39,6 +39,7 @@ internal class EldritchMasteryMastery : Passive
 		public override void Load()
 		{
 			On_Player.CheckMana_int_bool_bool += HijackCheckMana;
+			On_Player.CheckMana_Item_int_bool_bool += HijackItemCheckMana;
 		}
 
 		private static bool HijackCheckMana(On_Player.orig_CheckMana_int_bool_bool orig, Player self, int amount, bool pay, bool blockQuickMana)
@@ -64,6 +65,40 @@ internal class EldritchMasteryMastery : Passive
 			int remainingManaCost = amount - shieldCost;
 
 			bool success = orig(self, remainingManaCost, pay, blockQuickMana);
+			if (pay && success && shieldCost > 0)
+			{
+				shieldPlayer.ConsumeEnergyShield(shieldCost);
+			}
+
+			return success;
+		}
+
+		private static bool HijackItemCheckMana(On_Player.orig_CheckMana_Item_int_bool_bool orig, Player self, Item item, int amount, bool pay,
+			bool blockQuickMana)
+		{
+			int manaCost = amount <= -1 ? self.GetManaCost(item) : amount;
+
+			if (manaCost <= 0)
+			{
+				return orig(self, item, amount, pay, blockQuickMana);
+			}
+
+			if (!self.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<EldritchMasteryMastery>(out float value))
+			{
+				return orig(self, item, amount, pay, blockQuickMana);
+			}
+
+			float shieldFraction = MathHelper.Clamp(value / 100f, 0f, 1f);
+			if (shieldFraction <= 0f)
+			{
+				return orig(self, item, amount, pay, blockQuickMana);
+			}
+
+			EnergyShieldPlayer shieldPlayer = self.GetModPlayer<EnergyShieldPlayer>();
+			int shieldCost = CalculateShieldCost(shieldPlayer, manaCost, shieldFraction);
+			int remainingManaCost = manaCost - shieldCost;
+
+			bool success = orig(self, item, remainingManaCost, pay, blockQuickMana);
 			if (pay && success && shieldCost > 0)
 			{
 				shieldPlayer.ConsumeEnergyShield(shieldCost);
