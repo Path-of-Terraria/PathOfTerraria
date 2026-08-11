@@ -144,6 +144,7 @@ public class PassiveTreePlayer : ModPlayer
 		_edgeCountCacheFrame = ulong.MaxValue;
 
 		Dictionary<int, Passive> passives = [];
+		Dictionary<(int StartId, int EndId), EdgeFlags> connections = [];
 		List<PassiveData> data = PassiveRegistry.GetPassiveData();
 
 		data.ForEach(n =>
@@ -164,6 +165,20 @@ public class PassiveTreePlayer : ModPlayer
 				EdgeFlags flags = 0;
 				flags |= c.IsHidden ? EdgeFlags.Hidden : 0;
 				flags |= c.EffectsOnly ? EdgeFlags.EffectsOnly : 0;
+
+				(int StartId, int EndId) key = n.ReferenceId < c.ReferenceId
+					? (n.ReferenceId, c.ReferenceId)
+					: (c.ReferenceId, n.ReferenceId);
+
+				if (!connections.TryAdd(key, flags))
+				{
+#if DEBUG
+					Debug.Assert(connections[key] == flags,
+						$"Passive connection {key.StartId}<->{key.EndId} has conflicting flags.");
+#endif
+					return;
+				}
+
 				Edges.Add(new(passives[n.ReferenceId], passives[c.ReferenceId], flags));
 			}
 		}));
