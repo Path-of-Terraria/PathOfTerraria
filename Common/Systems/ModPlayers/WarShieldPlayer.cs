@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Content.Items.Gear.Weapons.WarShields;
 using Terraria.Audio;
 using Terraria.ID;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
 namespace PathOfTerraria.Common.Systems.ModPlayers;
 
@@ -66,7 +67,9 @@ internal class WarShieldPlayer : ModPlayer
 					NPC.HitModifiers modifiers = npc.GetIncomingStrikeModifiers(Player.HeldItem.DamageType, dir);
 
 					CombinedHooks.ModifyPlayerHitNPCWithItem(Player, Player.HeldItem, npc, ref modifiers);
-					var strike = modifiers.ToHitInfo(Player.HeldItem.damage, isCrit, 6f, damageVariation: true, Player.luck);
+					float implicitDamage = WeaponImplicitStrength.Get<WarShieldCounterDamageImplicitAffix>(Player.HeldItem);
+					int baseDamage = (int)(Player.HeldItem.damage * (1f + implicitDamage / 100f));
+					var strike = modifiers.ToHitInfo(baseDamage, isCrit, 6f, damageVariation: true, Player.luck);
 					npc.StrikeNPC(strike);
 					CombinedHooks.OnPlayerHitNPCWithItem(Player, Player.HeldItem, npc, in strike, strike.Damage);
 				}

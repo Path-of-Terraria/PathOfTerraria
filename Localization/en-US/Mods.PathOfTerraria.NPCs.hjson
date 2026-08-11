@@ -1,6 +1,15 @@
 Shop: Shop
 Quest: Quest
 
+BindingMonolith: {
+	DisplayName: Binding Monolith
+	Preview: A {0} Runestone of {1} is sealed within. Breaking the binding will release every captive.
+	BreakBinding: Break the Binding
+}
+
+WardedCacheNPC.DisplayName: Warded Cache
+ConsecratedShrineNPC.DisplayName: Consecrated Shrine
+
 BlacksmithNPC: {
 	DisplayName: Thrain Ironfist
 

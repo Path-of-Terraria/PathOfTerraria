@@ -6,13 +6,19 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.Components;
 
-/// <summary> Makes an element movable and resizable using the left mouse button. </summary>
-internal sealed class UIMouseDrag(bool canMove, bool canResize) : UIComponent
+/// <summary>
+/// Makes an element movable and resizable using the left mouse button, preserving its last dimensions by identifier.
+/// </summary>
+internal sealed class UIMouseDrag(string persistenceIdentifier, bool canMove, bool canResize) : UIComponent
 {
+	private const float ViewportPadding = 8f;
+
 	private RectangleDrag drag;
+	private readonly UIPersistent persistence = new(persistenceIdentifier, preservePosition: canMove || canResize, preserveSize: canResize);
 
 	public bool CanMove { get; set;  } = canMove;
 	public bool CanResize { get; set; } = canResize;
+	public string PersistenceIdentifier => persistence.Identifier;
 
 	public bool IsDragging => drag.Move.Axis != default || drag.Resize.Axis != default;
 
@@ -20,9 +26,11 @@ internal sealed class UIMouseDrag(bool canMove, bool canResize) : UIComponent
 	{
 		element.OnUpdate += OnUpdate;
 		element.OnLeftMouseDown += OnLeftMouseDown;
+		persistence.AttachTo(element);
 	}
 	protected override void OnDetach(UIElement element)
 	{
+		persistence.DetachFrom(element);
 		element.OnUpdate -= OnUpdate;
 		element.OnLeftMouseDown -= OnLeftMouseDown;
 	}
@@ -36,29 +44,64 @@ internal sealed class UIMouseDrag(bool canMove, bool canResize) : UIComponent
 			Main.cursorOverride = 2;
 		}
 
-		if (!IsDragging)
+		if (IsDragging)
+		{
+			//TODO: Deal in calculated space, to account for factors and not violate min/max sizes.
+			Vector2 oldPosition = new(element.Left.Pixels, element.Top.Pixels);
+			Vector2 oldSize = new(element.Width.Pixels, element.Height.Pixels);
+			(Vector2 newPosition, Vector2 newSize) = drag.Calculate(mousePosition);
+
+			if (newPosition != oldPosition || newSize != oldSize)
+			{
+				element.Left.Pixels = newPosition.X;
+				element.Top.Pixels = newPosition.Y;
+				element.Width.Pixels = newSize.X;
+				element.Height.Pixels = newSize.Y;
+				element.Recalculate();
+			}
+		}
+
+		KeepInsideViewport(element);
+
+		if (IsDragging && !Main.mouseLeft)
+		{
+			drag = default;
+		}
+	}
+
+	private static void KeepInsideViewport(UIElement element)
+	{
+		if (element.Parent is not UIElement parent)
 		{
 			return;
 		}
 
-		//TODO: Deal in calculated space, to account for factors and not violate min/max sizes.
-		Vector2 oldPosition = new(element.Left.Pixels, element.Top.Pixels);
-		Vector2 oldSize = new(element.Width.Pixels, element.Height.Pixels);
-		(Vector2 newPosition, Vector2 newSize) = drag.Calculate(mousePosition);
-
-		if (newPosition != oldPosition || newSize != oldSize)
+		CalculatedStyle viewport = parent.GetInnerDimensions();
+		if (viewport.Width <= 0f || viewport.Height <= 0f)
 		{
-			element.Left.Pixels = newPosition.X;
-			element.Top.Pixels = newPosition.Y;
-			element.Width.Pixels = newSize.X;
-			element.Height.Pixels = newSize.Y;
-			element.Recalculate();
+			return;
 		}
 
-		if (!Main.mouseLeft)
+		CalculatedStyle bounds = element.GetOuterDimensions();
+		float availableWidth = Math.Max(0f, viewport.Width - ViewportPadding * 2f);
+		float availableHeight = Math.Max(0f, viewport.Height - ViewportPadding * 2f);
+
+		float targetX = bounds.Width <= availableWidth
+			? Math.Clamp(bounds.X, viewport.X + ViewportPadding, viewport.X + viewport.Width - ViewportPadding - bounds.Width)
+			: viewport.X + (viewport.Width - bounds.Width) * 0.5f;
+		float targetY = bounds.Height <= availableHeight
+			? Math.Clamp(bounds.Y, viewport.Y + ViewportPadding, viewport.Y + viewport.Height - ViewportPadding - bounds.Height)
+			: viewport.Y + (viewport.Height - bounds.Height) * 0.5f;
+
+		Vector2 correction = new(targetX - bounds.X, targetY - bounds.Y);
+		if (Math.Abs(correction.X) <= 0.01f && Math.Abs(correction.Y) <= 0.01f)
 		{
-			drag = default;
+			return;
 		}
+
+		element.Left.Pixels += correction.X;
+		element.Top.Pixels += correction.Y;
+		element.Recalculate();
 	}
 
 	private void OnLeftMouseDown(UIMouseEvent evt, UIElement element)

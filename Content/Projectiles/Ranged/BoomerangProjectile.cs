@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Utilities;
 using Terraria.ID;
+using PathOfTerraria.Content.Items.Gear.Weapons;
 
 namespace PathOfTerraria.Content.Projectiles.Ranged;
 
@@ -17,6 +18,7 @@ internal class BoomerangProjectile : ModProjectile
 
 	private ref float ItemId => ref Projectile.ai[1];
 	private ref float Timer => ref Projectile.ai[2];
+	private ref float ReturnDamageImplicit => ref Projectile.localAI[0];
 
 	private float _originalMagnitude = 0;
 	private sbyte _originalDirection = 0;
@@ -43,6 +45,7 @@ internal class BoomerangProjectile : ModProjectile
 			Vector2 size = ContentSamples.ItemsByType[(int)ItemId].Size;
 			int edge = (int)Math.Min(size.X, size.Y);
 			Projectile.width = Projectile.height = edge; // Adjust hitbox to be a square
+			ReturnDamageImplicit = WeaponImplicitFactory.Create(ContentSamples.ItemsByType[(int)ItemId])?.Value ?? 0f;
 		}
 
 		if (Orbit)
@@ -109,6 +112,16 @@ internal class BoomerangProjectile : ModProjectile
 	{
 		Reflect();
 		return false;
+	}
+
+	public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+	{
+		if (Timer <= 30)
+		{
+			return;
+		}
+
+		modifiers.FinalDamage *= 1f + ReturnDamageImplicit / 100f;
 	}
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)

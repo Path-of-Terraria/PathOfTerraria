@@ -108,6 +108,8 @@ public class UIImageItemSlot
 
 	/// <summary> Controls whether to render the stack value. </summary>
 	public bool DrawStack { get; set; } = true;
+	/// <summary> Controls the tint and opacity used to render the contained item. </summary>
+	public Color ItemDrawColor { get; set; } = Color.White;
 
 	/// <summary>
 	///    The localization key and optional argument to use for tooltip hover.
@@ -253,7 +255,7 @@ public class UIImageItemSlot
 			Main.spriteBatch.Draw(tex, center, null, Color.White, 0f, tex.Size() / 2f, MathHelper.Lerp(baseScale, 0.8f, 0.5f), SpriteEffects.None, 0);
 		}
 
-		ItemSlot.DrawItemIcon(Item, ItemSlot.Context.InventoryItem, sb, center, baseScale, sizeLimit, Color.White);
+		ItemSlot.DrawItemIcon(Item, ItemSlot.Context.InventoryItem, sb, center, baseScale, sizeLimit, ItemDrawColor);
 
 		if (DrawStack && Item.stack > 1)
 		{

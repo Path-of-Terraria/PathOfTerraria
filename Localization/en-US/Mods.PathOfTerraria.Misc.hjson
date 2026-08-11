@@ -52,6 +52,7 @@ ShardInvalidations: {
 	NotMagic: Needs a Magic rarity item
 	NotRare: Needs a Rare rarity item
 	NotNormal: Needs a Normal rarity item
+	RuneboundInvalidType: This runestone cannot bind an affix to this item or item level
 }
 
 RavencrestSigns: {
@@ -70,3 +71,6 @@ Rifts: {
 	NaturalSpawn: A rift has opened somewhere in your world!
 	Introduction: An ancient force sealed behind the wall begins to manifest around your world.
 }
+
+Runebound.TutorialSpawn: A binding answers Thrain's runestone nearby...
+Sigils.SlotUnlocked: The Map Device resonates. Domain Sigil slots unlocked: {0}/4.

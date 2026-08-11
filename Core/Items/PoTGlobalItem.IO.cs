@@ -3,6 +3,7 @@ using PathOfTerraria.Common.Systems.Affixes;
 using System.Collections.Generic;
 using System.IO;
 using Terraria.ModLoader.IO;
+using PathOfTerraria.Content.Items.Gear.Weapons;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -69,6 +70,7 @@ partial class PoTGlobalItem : GlobalItem
 		}
 
 		RemoveInvalidZeroValueAffixes(item, data);
+		WeaponImplicitFactory.EnsureImplicit(item);
 		PostRoll.Invoke(item);
 	}
 
@@ -118,6 +120,7 @@ partial class PoTGlobalItem : GlobalItem
 		}
 
 		RemoveInvalidZeroValueAffixes(item, data);
+		WeaponImplicitFactory.EnsureImplicit(item);
 		PostRoll.Invoke(item);
 	}
 

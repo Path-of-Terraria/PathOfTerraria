@@ -45,6 +45,7 @@ public abstract class ItemAffix : Affix
 				ValueRollRange = null,
 				Corrupt = IsCorruptedAffix,
 				Implicit = IsImplicit,
+				OverrideColor = GetRuneboundTooltipColor(),
 			};
 		}
 
@@ -59,6 +60,7 @@ public abstract class ItemAffix : Affix
 				ValueRollRange = null,
 				Corrupt = IsCorruptedAffix,
 				Implicit = IsImplicit,
+				OverrideColor = GetRuneboundTooltipColor(),
 			};
 		}
 
@@ -72,7 +74,18 @@ public abstract class ItemAffix : Affix
 			ValueRollRange = (tierData.MinValue, tierData.MaxValue),
 			Corrupt = IsCorruptedAffix,
 			Implicit = IsImplicit,
+			OverrideColor = GetRuneboundTooltipColor(),
 		};
+	}
+
+	private Color? GetRuneboundTooltipColor()
+	{
+		if (IsRuneboundChaseAffix)
+		{
+			return new Color(218, 126, 255);
+		}
+
+		return IsRuneboundAffix ? new Color(79, 213, 182) : null;
 	}
 
 	protected virtual AffixTooltipLine CreateDefaultTooltip(Player player, Item item)

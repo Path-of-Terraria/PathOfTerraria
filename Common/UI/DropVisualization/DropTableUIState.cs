@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework.Input;
+using System.Linq;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.ItemDropping;
 using PathOfTerraria.Common.Systems.MobSystem;
 using PathOfTerraria.Common.UI.Elements;
 using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Content.Items.Currency;
+using PathOfTerraria.Content.Items.Gear.Weapons;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.GameContent.UI.Elements;
@@ -45,6 +47,7 @@ internal class DropResult(int count)
 {
 	public int Count = count;
 	public bool IsUnique = false;
+	public double ExpectedGearPoolShare;
 	public Dictionary<ItemRarity, int> CountsPerRarity = [];
 
 	public void IncrementRarityCount(ItemRarity rarity)
@@ -62,6 +65,9 @@ internal class DropResult(int count)
 internal class DropTableUIState : CloseableSmartUi
 {
 	public static readonly Point MainPanelSize = new(1320, 900);
+	private const int ControlsPanelHeight = 80;
+	private const int CategoryDropdownHeight = 120;
+	private const int PanelGap = 4;
 
 	private enum SortMode
 	{
@@ -129,7 +135,7 @@ internal class DropTableUIState : CloseableSmartUi
 		var bottomPanel = new UIPanel()
 		{
 			Width = StyleDimension.Fill,
-			Height = StyleDimension.FromPixelsAndPercent(-184, 1),
+			Height = StyleDimension.FromPixelsAndPercent(-(ControlsPanelHeight + PanelGap), 1),
 			VAlign = 1f
 		};
 
@@ -190,7 +196,7 @@ internal class DropTableUIState : CloseableSmartUi
 		var topPanel = new UIPanel()
 		{
 			Width = StyleDimension.Fill,
-			Height = StyleDimension.FromPixels(180),
+			Height = StyleDimension.FromPixels(ControlsPanelHeight),
 		};
 
 		panel.Append(topPanel);
@@ -309,17 +315,20 @@ internal class DropTableUIState : CloseableSmartUi
 		_categoryDropdown = new UIPanel
 		{
 			Width = StyleDimension.FromPixels(150),
-			Height = StyleDimension.FromPixels(112),
-			Left = StyleDimension.FromPixels(1108),
-			Top = StyleDimension.FromPixels(64)
+			Height = StyleDimension.FromPixels(CategoryDropdownHeight)
 		};
+
+		CalculatedStyle buttonDimensions = listeningElement.GetDimensions();
+		CalculatedStyle panelDimensions = Panel.GetInnerDimensions();
+		_categoryDropdown.Left = StyleDimension.FromPixels(buttonDimensions.X - panelDimensions.X);
+		_categoryDropdown.Top = StyleDimension.FromPixels(buttonDimensions.Y + buttonDimensions.Height - panelDimensions.Y + PanelGap);
 
 		AddCategoryOption(CategoryFilter.All, 0);
 		AddCategoryOption(CategoryFilter.Gear, 28);
 		AddCategoryOption(CategoryFilter.Currency, 56);
 		AddCategoryOption(CategoryFilter.Maps, 84);
 
-		listeningElement.Parent.Append(_categoryDropdown);
+		Panel.Append(_categoryDropdown);
 	}
 
 	private void AddCategoryOption(CategoryFilter filter, int top)
@@ -341,9 +350,15 @@ internal class DropTableUIState : CloseableSmartUi
 		_categoryButton.SetText(GetCategoryButtonText());
 		_categoryDropdown.Remove();
 		_categoryDropdown = null;
+		RunDatabase();
 	}
 
 	private void RunDatabase(UIMouseEvent evt, UIElement listeningElement)
+	{
+		RunDatabase();
+	}
+
+	private void RunDatabase()
 	{
 		_resultList.Clear();
 
@@ -351,12 +366,44 @@ internal class DropTableUIState : CloseableSmartUi
 		Dictionary<int, DropResult> resultsById = [];
 
 		RollDatabase(count, resultsById);
+		int itemLevel = (int)Math.Round(_level.Value * 100);
+		AddWeaponBaseDiagnostics(itemLevel, resultsById);
 
 		int check = 0;
 		foreach (KeyValuePair<int, DropResult> item in resultsById)
 		{
 			check += item.Value.Count;
-			_resultList.Add(new TableEntryUI(item.Key, item.Value, count));
+			_resultList.Add(new TableEntryUI(item.Key, item.Value, count, itemLevel));
+		}
+	}
+
+	private void AddWeaponBaseDiagnostics(int itemLevel, Dictionary<int, DropResult> resultsById)
+	{
+		if (_categoryFilter is not CategoryFilter.All and not CategoryFilter.Gear)
+		{
+			return;
+		}
+
+		IReadOnlyList<DropTable.WeightedItemRecord> weights = DropTable.GetGearWeightsForDebug(itemLevel,
+			(float)_rarityMod.Value, (float)_rateMod.Value);
+		double totalWeight = weights.Sum(entry => entry.Weight);
+
+		if (totalWeight > 0d)
+		{
+			foreach (IGrouping<int, DropTable.WeightedItemRecord> group in weights.GroupBy(entry => entry.Record.ItemId))
+			{
+				if (!resultsById.TryGetValue(group.Key, out DropResult result))
+				{
+					resultsById.Add(group.Key, result = new DropResult(0));
+				}
+
+				result.ExpectedGearPoolShare = group.Sum(entry => entry.Weight) / totalWeight;
+			}
+		}
+
+		foreach (int itemId in WeaponBaseTierRegistry.AllTieredItemIds)
+		{
+			resultsById.TryAdd(itemId, new DropResult(0));
 		}
 	}
 

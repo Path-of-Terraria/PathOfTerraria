@@ -71,15 +71,25 @@ public interface IChatButton
 
 		private void DrawInnerChat(On_Main.orig_GUIChatDrawInner orig, Main self)
 		{
+			Player player = Main.LocalPlayer;
+			int talkNpcIndex = player.talkNPC;
+			if (talkNpcIndex < -1 || talkNpcIndex >= Main.maxNPCs
+				|| talkNpcIndex >= 0 && !Main.npc[talkNpcIndex].active)
+			{
+				player.SetTalkNPC(-1);
+				Main.npcChatText = string.Empty;
+			}
+
 			orig(self);
 
-			if (Main.LocalPlayer.talkNPC < 0 && Main.LocalPlayer.sign == -1)
+			if (player.talkNPC < 0 && player.sign == -1)
 			{
 				Main.npcChatText = "";
 				return;
 			}
 
-			if (Main.LocalPlayer.TalkNPC.ModNPC is IChatButton button)
+			NPC? talkNpc = player.TalkNPC;
+			if (talkNpc?.ModNPC is IChatButton button)
 			{
 				ChatButton[] buttons = button.ReportButtons();
 				int numLines = (GetNumLines() + 1) * 30;
@@ -93,7 +103,7 @@ public interface IChatButton
 						continue;
 					}
 
-					buttons[i].Draw(drawPosition, Main.LocalPlayer.TalkNPC, out float width);
+					buttons[i].Draw(drawPosition, talkNpc, out float width);
 					drawPosition.X -= width + 20;
 				}
 			}

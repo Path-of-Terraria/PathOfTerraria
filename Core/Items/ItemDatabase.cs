@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using Terraria.ID;
+using PathOfTerraria.Content.Items.Gear.Weapons;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -50,6 +51,7 @@ public sealed class ItemDatabase : ModSystem
 	public override void PostSetupContent()
 	{
 		base.PostSetupContent();
+		WeaponBaseTierRegistry.Apply();
 
 		for (int i = 0; i < ItemLoader.ItemCount; i++)
 		{
@@ -122,6 +124,7 @@ public sealed class ItemDatabase : ModSystem
 		_items = null;
 		_vanillaItems = null;
 		_uniqueVanillaItems = null;
+		WeaponBaseTierRegistry.Clear();
 	}
 
 	public static void AddItem(float dropChance, ItemRarity rarity, int itemId, Item item)

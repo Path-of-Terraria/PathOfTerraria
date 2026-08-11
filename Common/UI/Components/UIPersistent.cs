@@ -6,7 +6,7 @@ using Terraria.UI;
 namespace PathOfTerraria.Common.UI.Components;
 
 /// <summary> When added to an element, preserves various data, such as dimensions and scrollbar positions, in a global hashmap, accessed by a string identifier. </summary>
-internal sealed class UIPersistent(string Identifier) : UIComponent
+internal sealed class UIPersistent(string identifier, bool preservePosition = true, bool preserveSize = true) : UIComponent
 {
 	private struct Data
 	{
@@ -16,7 +16,7 @@ internal sealed class UIPersistent(string Identifier) : UIComponent
 
 	private static readonly Dictionary<string, Data> cache = [];
 
-	public string Identifier { get; } = Identifier;
+	public string Identifier { get; } = identifier;
 
 	private bool performedImportInUpdate;
 
@@ -36,7 +36,15 @@ internal sealed class UIPersistent(string Identifier) : UIComponent
 	{
 		if (cache.TryGetValue(Identifier, out Data data))
 		{
-			(element.Left, element.Top, element.Width, element.Height) = data.Dimensions;
+			if (preservePosition)
+			{
+				(element.Left, element.Top) = (data.Dimensions.Left, data.Dimensions.Top);
+			}
+
+			if (preserveSize)
+			{
+				(element.Width, element.Height) = (data.Dimensions.Width, data.Dimensions.Height);
+			}
 
 			if (element is UIScrollbar scrollbar)
 			{
@@ -50,9 +58,12 @@ internal sealed class UIPersistent(string Identifier) : UIComponent
 		// Scrollbars use clamps that might not have yet been adequate in OnAttach.
 		if (!performedImportInUpdate)
 		{
-			Import(element);
+			if (element is UIScrollbar)
+			{
+				Import(element);
+			}
+
 			performedImportInUpdate = true;
-			return;
 		}
 
 		cache[Identifier] = new Data

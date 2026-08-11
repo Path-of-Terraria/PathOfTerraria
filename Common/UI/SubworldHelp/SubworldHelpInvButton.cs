@@ -4,6 +4,7 @@ using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.Maps;
 using PathOfTerraria.Common.Systems.MobSystem;
+using PathOfTerraria.Common.Systems.Sigils;
 using PathOfTerraria.Core.UI.SmartUI;
 using SubworldLibrary;
 using Terraria.Audio;
@@ -16,6 +17,11 @@ namespace PathOfTerraria.Common.UI.SubworldHelp;
 
 public class SubworldHelpInvButton : SmartUiState
 {
+	internal const int ButtonX = 60;
+	internal const int ButtonY = 260;
+	internal const int ButtonWidth = 50;
+	internal const int ButtonHeight = 52;
+
 	public override bool Visible => Main.playerInventory && SubworldSystem.Current is MappingWorld;
 
 	private static MappingWorld CurrentWorld => SubworldSystem.Current as MappingWorld;
@@ -30,7 +36,7 @@ public class SubworldHelpInvButton : SmartUiState
 	public override void Draw(SpriteBatch spriteBatch)
 	{
 		Texture2D texture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/WorldInfoButton").Value;
-		bool hover = UIHelper.GetInvButtonInfo(260, out Vector2 pos, new Point16(50, 52), 60);
+		bool hover = UIHelper.GetInvButtonInfo(ButtonY, out Vector2 pos, new Point16(ButtonWidth, ButtonHeight), ButtonX);
 
 		if (hover)
 		{
@@ -71,13 +77,13 @@ public class SubworldHelpInvButton : SmartUiState
 			AddLine(lines, "Tier", Language.GetTextValue("Mods.PathOfTerraria.UI.SubworldHelp.MapTier") + MappingWorld.MapTier, scale);
 		}
 
-		if (MappingWorld.Affixes.Count > 0)
+		if (MappingWorld.Affixes is { Count: > 0 } affixes)
 		{
 			AffixTooltips tooltips = new();
 			float totalStrength = 0;
 			AddLine(lines, "AffixHeading", Language.GetTextValue("Mods.PathOfTerraria.UI.SubworldHelp.Affixes"), new Vector2(1f));
 
-			foreach (MapAffix affix in MappingWorld.Affixes)
+			foreach (MapAffix affix in affixes)
 			{
 				affix.ApplyTooltips(Main.LocalPlayer, ItemType.Map, MappingWorld.AreaLevel, tooltips);
 				totalStrength += affix.Strength;
@@ -97,6 +103,17 @@ public class SubworldHelpInvButton : SmartUiState
 
 			float rarityModifier = ArpgNPC.DomainRarityBoost(totalStrength);
 			AddLine(lines, "RarityMod", Language.GetTextValue("Mods.PathOfTerraria.UI.SubworldHelp.DropRarityBoost") + (rarityModifier * 100f).ToString("#0.##") + "%", scale);
+		}
+
+		if (SigilSystem.ActiveSigils.Count > 0)
+		{
+			AddLine(lines, "SigilHeading", Language.GetTextValue("Mods.PathOfTerraria.UI.SubworldHelp.Sigils"), new Vector2(1f));
+			for (int i = 0; i < SigilSystem.ActiveSigils.Count; i++)
+			{
+				SigilEntry sigil = SigilSystem.ActiveSigils[i];
+			int itemType = SigilCatalog.GetItemType(sigil.Kind, sigil.Grade);
+			AddLine(lines, "Sigil" + i, $"    [i:{itemType}] {sigil.Grade} {sigil.Kind}", scale, SigilCatalog.GetColor(sigil.Kind));
+			}
 		}
 
 		CurrentWorld.ModifyHelpTooltips(lines, scale);
@@ -119,7 +136,7 @@ public class SubworldHelpInvButton : SmartUiState
 
 	public override void SafeClick(UIMouseEvent evt)
 	{
-		if (!UIHelper.GetInvButtonInfo(260, out Vector2 pos, new Point16(50, 52), 60))
+		if (!UIHelper.GetInvButtonInfo(ButtonY, out _, new Point16(ButtonWidth, ButtonHeight), ButtonX))
 		{
 			return;
 		}

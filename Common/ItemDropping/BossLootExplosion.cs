@@ -2,6 +2,7 @@ using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Subworlds.MappingAreas;
 using PathOfTerraria.Common.Systems.MobSystem;
+using PathOfTerraria.Common.Systems.Sigils;
 using PathOfTerraria.Core.Items;
 using SubworldLibrary;
 using System.Collections.Generic;
@@ -31,6 +32,10 @@ internal sealed class BossLootExplosion : GlobalNPC
 
 		int areaLevel = PoTMobHelper.GetAreaLevel();
 		int count = ComputeBurstCount(areaLevel);
+		if (SigilSystem.IsExplorationMap() && SigilSystem.FindFamily(SigilFamily.Sovereignty) is { } sovereignty)
+		{
+			count += sovereignty.Kind == SigilKind.CrownedTyrant ? 4 : SigilCatalog.GetPower(sovereignty.Grade);
+		}
 		float rarityModifier = BaseRarityBoost + ArpgNPC.DomainRarityBoost();
 
 		List<ItemDatabase.ItemRecord> drops;
@@ -108,7 +113,7 @@ internal sealed class BossLootExplosion : GlobalNPC
 			return false;
 		}
 
-		// Lunar pillars aren't the climax — Cultist and Moon Lord are.
+		// Lunar pillars aren't the climax; Cultist and Moon Lord are.
 		if (npc.type is NPCID.LunarTowerNebula or NPCID.LunarTowerSolar or NPCID.LunarTowerStardust or NPCID.LunarTowerVortex)
 		{
 			return false;
@@ -118,7 +123,7 @@ internal sealed class BossLootExplosion : GlobalNPC
 		return SubworldSystem.Current is BossDomainSubworld or MappingWorld;
 	}
 
-	private static bool ShouldCountBossKill(NPC npc)
+	internal static bool ShouldCountBossKill(NPC npc)
 	{
 		return npc.type switch
 		{

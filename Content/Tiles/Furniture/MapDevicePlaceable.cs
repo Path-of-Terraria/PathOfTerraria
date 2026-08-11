@@ -1,15 +1,19 @@
-﻿using Mono.Cecil;
+using Mono.Cecil;
 using PathOfTerraria.Common.Conflux;
 using PathOfTerraria.Common.Items;
 using PathOfTerraria.Common.Mapping;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.ModPlayers.LivesSystem;
+using PathOfTerraria.Common.Systems.Sigils;
 using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Content.Items.Consumables.Maps;
+using PathOfTerraria.Content.Items.Consumables.Maps.ExplorableMaps;
+using PathOfTerraria.Content.Items.Mapping.Sigils;
 using PathOfTerraria.Content.Items.Placeable;
 using PathOfTerraria.Core.Audio;
 using PathOfTerraria.Core.Camera;
+using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.Time;
 using PathOfTerraria.Core.UI.SmartUI;
 using PathOfTerraria.Utilities;
@@ -384,6 +388,8 @@ internal class MapDeviceEntity : ModTileEntity
 
 	public Item StoredMap { get; set; }
 	public Item[] Storage { get; set; }
+	public Item[] SigilSlots { get; set; }
+	public SigilEntry[] ActiveSigils { get; internal set; } = [];
 	public bool PortalActive { get; set; }
 	public int PortalUsesLeft { get; set; }
 	public int? InteractingPlayer { get; private set; }
@@ -399,6 +405,8 @@ internal class MapDeviceEntity : ModTileEntity
 		StoredMap = new();
 		Storage = new Item[StorageSize];
 		for (int i = 0; i < Storage.Length; i++) { Storage[i] = new(); }
+		SigilSlots = new Item[4];
+		for (int i = 0; i < SigilSlots.Length; i++) { SigilSlots[i] = new(); }
 	}
 
 	public override bool IsTileValidForEntity(int x, int y)
@@ -433,6 +441,17 @@ internal class MapDeviceEntity : ModTileEntity
 			Item.NewItem(new EntitySource_TileBreak(Position.X, Position.Y), Position.ToWorldCoordinates(), item);
 		}
 
+		if (!PortalActive)
+		{
+			foreach (Item sigil in SigilSlots)
+			{
+				if (sigil is { IsAir: false })
+				{
+					Item.NewItem(new EntitySource_TileBreak(Position.X, Position.Y), Position.ToWorldCoordinates(), sigil);
+				}
+			}
+		}
+
 		// Drop the map, but only if the portal has not been activated.
 		if (!PortalActive && StoredMap is { IsAir: false })
 		{
@@ -451,14 +470,8 @@ internal class MapDeviceEntity : ModTileEntity
 		// If the local player has the map device open.
 		if (InteractingPlayer.HasValue && Main.player[InteractingPlayer.Value] is { } player)
 		{
-			var tileData = TileObjectData.GetTileData(Main.tile[Position].TileType, 1);
-			var worldPos = Position.ToWorldCoordinates(0, 0).ToPoint();
-			var tileRect = new Rectangle(worldPos.X, worldPos.Y, tileData.Width * TileUtils.TileSizeInPixels, tileData.Height * TileUtils.TileSizeInPixels);
-			Vector2 worldCenter = tileRect.Center();
-
 			// Close UI if player is dead, gone, or too far away.
-			Point checkPoint = tileRect.ClosestPointInRect(player.Center).ToTileCoordinates();
-			if (!player.active || player.dead || !player.IsInTileInteractionRange(checkPoint.X, checkPoint.Y, TileReachCheckSettings.Simple))
+			if (!CanPlayerInteract(player))
 			{
 				TryClosingInterface();
 				return;
@@ -488,6 +501,26 @@ internal class MapDeviceEntity : ModTileEntity
 				}
 			}
 		}
+	}
+
+	internal bool CanPlayerInteract(Player player)
+	{
+		if (!player.active || player.dead || !WorldGen.InWorld(Position.X, Position.Y))
+		{
+			return false;
+		}
+
+		TileObjectData tileData = TileObjectData.GetTileData(Main.tile[Position].TileType, 1);
+		if (tileData is null)
+		{
+			return false;
+		}
+
+		Point worldPos = Position.ToWorldCoordinates(0, 0).ToPoint();
+		var tileRect = new Rectangle(worldPos.X, worldPos.Y, tileData.Width * TileUtils.TileSizeInPixels,
+			tileData.Height * TileUtils.TileSizeInPixels);
+		Point checkPoint = tileRect.ClosestPointInRect(player.Center).ToTileCoordinates();
+		return player.IsInTileInteractionRange(checkPoint.X, checkPoint.Y, TileReachCheckSettings.Simple);
 	}
 
 	public override void SaveData(TagCompound tag)
@@ -527,6 +560,17 @@ internal class MapDeviceEntity : ModTileEntity
 		}
 
 		if (storage.Count > 0) { tag.Add("storage", storage); }
+
+		var sigils = new TagCompound();
+		for (int i = 0; i < SigilSlots.Length; i++)
+		{
+			if (SigilSlots[i] is { IsAir: false } sigil)
+			{
+				sigils[i.ToString()] = ItemIO.Save(sigil);
+			}
+		}
+		if (sigils.Count > 0) { tag.Add("sigils", sigils); }
+		if (ActiveSigils.Length > 0) { tag.Add("activeSigils", (TagCompound[])[.. ActiveSigils.Select(entry => entry.Save())]); }
 	}
 	public override void LoadData(TagCompound tag)
 	{
@@ -559,6 +603,34 @@ internal class MapDeviceEntity : ModTileEntity
 					Storage[key] = item;
 				}
 			}
+		}
+
+		if (tag.TryGet("sigils", out TagCompound sigils) || tag.TryGet("scarabs", out sigils))
+		{
+			var loadedFamilies = new HashSet<SigilFamily>();
+			foreach (KeyValuePair<string, object> pair in sigils)
+			{
+				if (int.TryParse(pair.Key, out int key) && key >= 0 && key < SigilSlots.Length
+					&& ItemIO.Load((TagCompound)pair.Value) is { IsAir: false, ModItem: DomainSigil loadedSigil } sigil
+					&& loadedFamilies.Add(loadedSigil.Family))
+				{
+					sigil.stack = 1;
+					SigilSlots[key] = sigil;
+				}
+			}
+		}
+
+		if (tag.TryGet("activeSigils", out TagCompound[] activeSigils) || tag.TryGet("activeScarabs", out activeSigils))
+		{
+			var activeFamilies = new HashSet<SigilFamily>();
+			ActiveSigils = [.. activeSigils.Select(SigilEntry.Load)
+				.Where(SigilCatalog.IsValid)
+				.Where(entry => activeFamilies.Add(entry.Family))
+				.Take(4)];
+		}
+		else
+		{
+			ActiveSigils = [];
 		}
 	}
 
@@ -773,6 +845,10 @@ internal class MapDeviceEntity : ModTileEntity
 		{
 			// Acknowledge interaction.
 			Debug.Assert(netSender != null);
+			if (StoredMap.ModItem is Map serverMap)
+			{
+				serverMap.ApplyDomainState(ActiveSigils);
+			}
 			MapDeviceInteraction.Send(ID, MapDeviceInteraction.Kind.EnterPortal, toClient: netSender.Value);
 		}
 
@@ -807,6 +883,11 @@ internal class MapDeviceEntity : ModTileEntity
 			return false;
 		}
 
+		if (!TryValidateSigils(out SigilEntry[] sigilEntries))
+		{
+			return false;
+		}
+
 		// Short-circuit in evaluation mode.
 		if (evalMode) { return true; }
 
@@ -824,6 +905,12 @@ internal class MapDeviceEntity : ModTileEntity
 		}
 
 		Subworld? destination = StoredMap is { IsAir: false, ModItem: Map storedMap } ? storedMap.GetDestination() : null;
+
+		ActiveSigils = sigilEntries;
+		foreach (Item sigilSlot in SigilSlots)
+		{
+			sigilSlot.TurnToAir();
+		}
 
 		// Ensure a newly opened portal starts from a fresh save.
 		MappingWorld.DeleteSavedSubworld(destination);
@@ -848,6 +935,7 @@ internal class MapDeviceEntity : ModTileEntity
 		if (Main.netMode == NetmodeID.Server)
 		{
 			MapDeviceInteraction.Send(ID, MapDeviceInteraction.Kind.OpenPortal);
+			MapDeviceSync.Send(ID, MapDeviceSync.Flags.Sigils);
 		}
 
 		// Effects.
@@ -863,6 +951,45 @@ internal class MapDeviceEntity : ModTileEntity
 			});
 		}
 
+		return true;
+	}
+
+	private bool TryValidateSigils(out SigilEntry[] entries)
+	{
+		var found = new List<SigilEntry>(SigilSlots.Length);
+		var families = new HashSet<SigilFamily>();
+
+		for (int i = 0; i < SigilSlots.Length; i++)
+		{
+			if (SigilSlots[i].IsAir)
+			{
+				continue;
+			}
+
+			if (i >= SigilSystem.UnlockedSlotCount || SigilSlots[i].ModItem is not DomainSigil sigil
+				|| !families.Add(sigil.Family))
+			{
+				entries = [];
+				return false;
+			}
+
+			found.Add(sigil.Entry);
+		}
+
+		if (found.Count > 0 && StoredMap.ModItem is not ExplorableMap)
+		{
+			entries = [];
+			return false;
+		}
+
+		if (found.Any(entry => entry.Kind == SigilKind.Peril)
+			&& !StoredMap.GetInstanceData().Affixes.Any(affix => affix is Common.Systems.Affixes.Maps.MapAffix))
+		{
+			entries = [];
+			return false;
+		}
+
+		entries = [.. found];
 		return true;
 	}
 
@@ -922,6 +1049,12 @@ internal class MapDeviceEntity : ModTileEntity
 		PortalActive = false;
 		PortalUsesLeft = 0;
 		Injection = null;
+		ActiveSigils = [];
+		SigilSystem.ClearActive();
+		for (int i = 0; i < SigilSlots.Length; i++)
+		{
+			SigilSlots[i].TurnToAir();
+		}
 		MappingWorld.ClearActiveMapDevice();
 		MappingWorld.DeleteSavedSubworld(destination);
 
@@ -1105,6 +1238,21 @@ internal class MapDeviceInteraction : Handler
 
 		if (TileEntity.ByID.TryGetValue(entityId, out TileEntity? tileEntity) && tileEntity is MapDeviceEntity mapEntity)
 		{
+			if (Main.netMode == NetmodeID.Server)
+			{
+				if (sender >= Main.maxPlayers || !Main.player[sender].active)
+				{
+					return;
+				}
+
+				// Closing must remain possible after walking out of range. Every mutation and
+				// portal entry otherwise requires normal tile interaction reach.
+				if (kind != Kind.CloseInterface && !mapEntity.CanPlayerInteract(Main.player[sender]))
+				{
+					return;
+				}
+			}
+
 			switch (kind)
 			{
 				case Kind.OpenInterface: mapEntity.TryOpeningInterface(netSender: sender); break;
@@ -1128,7 +1276,8 @@ internal class MapDeviceSync : Handler
 		Map = 1 << 1,
 		Storage = 1 << 2,
 		Injection = 1 << 3,
-		FullSync = Status | Map | Storage | Injection,
+		Sigils = 1 << 4,
+		FullSync = Status | Map | Storage | Injection | Sigils,
 	}
 
 	public static void CorrectDesync(int entityId, byte? toClient, Flags flags)
@@ -1196,6 +1345,25 @@ internal class MapDeviceSync : Handler
 			writer.Write7BitEncodedInt(device.Injection?.Id ?? -1);
 			writer.Write7BitEncodedInt(device.Injection?.Amount ?? 0);
 		}
+
+		if (flags.HasFlag(Flags.Sigils))
+		{
+			int[] sigilIndices = itemIndices is null
+				? [.. Enumerable.Range(0, device.SigilSlots.Length)]
+				: [.. itemIndices.Where(i => i >= 0 && i < device.SigilSlots.Length).Distinct()];
+			writer.Write7BitEncodedInt(sigilIndices.Length);
+			foreach (int index in sigilIndices)
+			{
+				writer.Write((byte)index);
+				ItemIO.Send(device.SigilSlots[index], writer, writeStack: true);
+			}
+
+			writer.Write((byte)device.ActiveSigils.Length);
+			foreach (SigilEntry entry in device.ActiveSigils)
+			{
+				entry.NetSend(writer);
+			}
+		}
 	}
 
 	private static bool Receive(byte sender, BinaryReader reader, out int entityId, out Flags flags)
@@ -1228,22 +1396,36 @@ internal class MapDeviceSync : Handler
 
 		if (flags.HasFlag(Flags.Map))
 		{
-			// On servers, refuse applying client's map item if the portal has already been opened.
-			bool useDummy = (Main.netMode == NetmodeID.Server && mapEntity?.PortalActive == true) || mapEntity?.StoredMap == null;
-			Item mapSlot = useDummy ? new() : mapEntity!.StoredMap;
-			ItemIO.Receive(mapSlot!, reader, readStack: true);
-
-			// Drop the received map if it went into a dummy slot.
-			if (Main.netMode == NetmodeID.Server && mapSlot != mapEntity?.StoredMap && mapSlot is { IsAir: false } && Main.player[sender] is { active: true } player)
+			if (Main.netMode == NetmodeID.Server)
 			{
-				Item.NewItem(null, player.Center, mapSlot);
+				var received = new Item();
+				ItemIO.Receive(received, reader, readStack: true);
+				bool ownsDevice = sender < Main.maxPlayers && mapEntity?.InteractingPlayer == sender
+					&& mapEntity.CanPlayerInteract(Main.player[sender]);
+				bool validItem = received.IsAir || received.ModItem is Map;
+
+				if (ownsDevice && mapEntity is { PortalActive: false } && validItem)
+				{
+					mapEntity.StoredMap = received;
+				}
+				else if (ownsDevice && !received.IsAir && sender < Main.maxPlayers && Main.player[sender] is { active: true } player)
+				{
+					Item.NewItem(null, player.Center, received);
+				}
+			}
+			else
+			{
+				Item mapSlot = mapEntity?.StoredMap ?? new Item();
+				ItemIO.Receive(mapSlot, reader, readStack: true);
 			}
 		}
 
 		if (flags.HasFlag(Flags.Storage))
 		{
 			// On servers, refuse applying client's storage items if they are not the one interacting with the device.
-			bool forceDummy = Main.netMode == NetmodeID.Server && mapEntity?.InteractingPlayer != sender;
+			bool forceDummy = Main.netMode == NetmodeID.Server
+				&& (sender >= Main.maxPlayers || mapEntity?.InteractingPlayer != sender
+					|| !mapEntity.CanPlayerInteract(Main.player[sender]));
 
 			int itemCount = reader.Read7BitEncodedInt();
 			for (int i = 0; i < itemCount; i++)
@@ -1266,13 +1448,77 @@ internal class MapDeviceSync : Handler
 				mapEntity.Injection = MapResources.TryGet(resourceId, out _) ? (resourceId, Math.Max(0, resourceAmount)) : null;
 			}
 		}
+
+		if (flags.HasFlag(Flags.Sigils))
+		{
+			int itemCount = reader.Read7BitEncodedInt();
+			for (int i = 0; i < itemCount; i++)
+			{
+				int sigilIndex = reader.ReadByte();
+				if (Main.netMode == NetmodeID.Server)
+				{
+					var received = new Item();
+					ItemIO.Receive(received, reader, readStack: true);
+					bool ownsDevice = sender < Main.maxPlayers && mapEntity?.InteractingPlayer == sender
+						&& mapEntity.CanPlayerInteract(Main.player[sender]);
+					bool validIndex = sigilIndex >= 0 && sigilIndex < SigilSystem.UnlockedSlotCount && sigilIndex < 4;
+					bool validItem = received.IsAir || received.ModItem is DomainSigil;
+					bool duplicateFamily = received.ModItem is DomainSigil incoming && mapEntity is not null
+						&& mapEntity.SigilSlots.Where((item, index) => index != sigilIndex)
+							.Any(item => item.ModItem is DomainSigil other && other.Family == incoming.Family);
+
+					if (ownsDevice && mapEntity is { PortalActive: false } && validIndex && validItem && !duplicateFamily)
+					{
+						if (!received.IsAir && received.stack > 1)
+						{
+							int excess = received.stack - 1;
+							received.stack = 1;
+							if (sender < Main.maxPlayers && Main.player[sender] is { active: true } player)
+							{
+								Item.NewItem(null, player.Center, received.type, excess);
+							}
+						}
+
+						mapEntity.SigilSlots[sigilIndex] = received;
+					}
+					else if (ownsDevice && received is { IsAir: false, ModItem: DomainSigil }
+						&& sender < Main.maxPlayers && Main.player[sender] is { active: true } senderPlayer)
+					{
+						Item.NewItem(null, senderPlayer.Center, received);
+					}
+				}
+				else
+				{
+					Item slot = sigilIndex < 4 && mapEntity is not null ? mapEntity.SigilSlots[sigilIndex] : new Item();
+					ItemIO.Receive(slot, reader, readStack: true);
+				}
+			}
+
+			int serializedActiveCount = reader.ReadByte();
+			int activeCount = Math.Min(serializedActiveCount, 4);
+			var active = new SigilEntry[activeCount];
+			for (int i = 0; i < serializedActiveCount; i++)
+			{
+				SigilEntry entry = SigilEntry.NetReceive(reader);
+				if (i < activeCount)
+				{
+					active[i] = entry;
+				}
+			}
+			if (mapEntity != null && Main.netMode != NetmodeID.Server)
+			{
+				mapEntity.ActiveSigils = active;
+			}
+		}
 	}
 
 	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
 		if (Receive(sender, reader, out int entityId, out Flags flags))
 		{
-			Send(entityId, flags, null, ignoreClient: sender);
+			// Broadcast the authoritative result back to every client, including the sender, so rejected
+			// or normalized mutations cannot remain as client-local device state.
+			Send(entityId, flags);
 		}
 	}
 	internal override void ClientReceive(BinaryReader reader, byte sender)

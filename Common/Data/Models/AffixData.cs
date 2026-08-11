@@ -32,6 +32,10 @@ public class ItemAffixData
 	public string Influences { get; set; }
 	public bool RequiresPathOfTerrariaItem { get; set; }
 	public bool RequiresEnergyShieldItem { get; set; }
+	/// <summary>
+	/// Whether ordinary item rolling may select this affix. Craft-only affixes remain registered for direct lookup.
+	/// </summary>
+	public bool CanRollNaturally { get; set; } = true;
 	public bool Round { get; set; }
 	public List<TierData> Tiers { get; set; }
 

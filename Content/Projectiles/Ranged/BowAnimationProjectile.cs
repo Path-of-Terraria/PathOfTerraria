@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -101,7 +102,8 @@ internal class BowAnimationProjectile : ModProjectile
 		Owner.PickAmmo(Owner.HeldItem, out int type, out float speed, out int damage, out float kB, out int ammoUsed);
 		Owner.GetModPlayer<AltUsePlayer>().SetAltCooldown((int)(Cooldown * 60f));
 
-		damage = (int)(damage * 3f);
+		float implicitDamage = WeaponImplicitStrength.Get<BowChargedShotDamageImplicitAffix>(Owner.HeldItem);
+		damage = (int)(damage * 3f * (1f + implicitDamage / 100f));
 		Vector2 vel = Projectile.DirectionTo(Main.MouseWorld) * speed * 1.5f;
 		IEntitySource src = Owner.GetSource_ItemUse_WithPotentialAmmo(Owner.HeldItem, ammoUsed);
 		Projectile.NewProjectile(src, Projectile.Center, vel, type, damage, kB, Owner.whoAmI);
