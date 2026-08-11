@@ -2,6 +2,7 @@
 using System.IO;
 using Terraria.GameContent;
 using Terraria.ID;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
 using WhipItem = PathOfTerraria.Content.Items.Gear.Weapons.Whip.Whip;
 
@@ -135,6 +136,26 @@ internal abstract class WhipProjectile : ModProjectile
 	{
 		Projectile.WhipSettings.Segments = reader.ReadInt16();
 		Projectile.WhipSettings.RangeMultiplier = (float)reader.ReadHalf();
+	}
+
+	public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+	{
+		var controlPoints = new List<Vector2>();
+		Projectile.FillWhipControlPoints(Projectile, controlPoints);
+
+		if (controlPoints.Count == 0)
+		{
+			return;
+		}
+
+		Vector2 tip = controlPoints[^1];
+		float tipRadius = Math.Max(target.width, target.height) * 0.5f + 24f;
+
+		if (Vector2.DistanceSquared(tip, target.Center) <= tipRadius * tipRadius)
+		{
+			float implicitDamage = WeaponImplicitStrength.Get<WhipTipDamageImplicitAffix>(Owner.HeldItem);
+			modifiers.FinalDamage *= 1f + implicitDamage / 100f;
+		}
 	}
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)

@@ -4,7 +4,7 @@ using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.Maps;
 using PathOfTerraria.Common.Systems.ModPlayers.LivesSystem;
-using PathOfTerraria.Common.Systems.Synchronization.Handlers;
+using PathOfTerraria.Common.Systems.Sigils;
 using PathOfTerraria.Content.Tiles.Furniture;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI.SmartUI;
@@ -87,23 +87,37 @@ public abstract class Map : ModItem, GenerateNameAffixes.IItem, GenerateAffixes.
 
 	public virtual void OpenMap()
 	{
-		List<MapAffix> collection =
-			[.. this.GetInstanceData().Affixes.Where(x => x is MapAffix).Select(x => (MapAffix)x)];
-
-		if (Main.netMode == NetmodeID.SinglePlayer)
-		{
-			MappingWorld.AreaLevel = WorldLevel;
-			MappingWorld.MapTier = Tier;
-			MappingWorld.Affixes = [];
-			MappingWorld.Affixes.AddRange(collection);
-		}
-		else
-		{
-			SendMappingDomainInfoHandler.Send((short)WorldLevel, (short)Tier, collection);
-		}
+		SigilEntry[] sigils = MapDeviceInterface.Entity?.ActiveSigils ?? [];
+		ApplyDomainState(sigils);
 
 		Subworld sub = GetDestination();
 		SubworldSystem.Enter(sub.FullName);
+	}
+
+	internal void ApplyDomainState(IReadOnlyList<SigilEntry> sigils)
+	{
+		List<MapAffix> collection =
+			[.. this.GetInstanceData().Affixes.Where(x => x is MapAffix).Select(x => Affix.FromTag<MapAffix>(x.SaveAs()))];
+		SigilSystem.SetActive(sigils);
+
+		if (sigils.Any(entry => entry.Kind == SigilKind.Peril) && SigilSystem.FindFamily(SigilFamily.Peril) is { } peril)
+		{
+			float multiplier = 1f + (peril.Grade switch
+			{
+				SigilGrade.Carved => 0.10f,
+				SigilGrade.Gilded => 0.20f,
+				_ => 0.35f,
+			});
+			foreach (MapAffix affix in collection)
+			{
+				affix.Value *= multiplier;
+				affix.Strength *= multiplier;
+			}
+		}
+
+		MappingWorld.AreaLevel = WorldLevel;
+		MappingWorld.MapTier = Tier;
+		MappingWorld.Affixes = collection;
 	}
 
 	internal abstract Subworld GetDestination();

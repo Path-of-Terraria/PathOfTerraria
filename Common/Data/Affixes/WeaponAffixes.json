@@ -214,6 +214,7 @@
 	{
 		"affixType": "MoltenShellAffix",
 		"equipTypes": "Melee",
+		"canRollNaturally": false,
 		"influences": "None",
 		"round": true,
 		"tiers": [
@@ -240,6 +241,7 @@
 	{
 		"affixType": "BloodSiphonAffix",
 		"equipTypes": "Ranged",
+		"canRollNaturally": false,
 		"influences": "None",
 		"round": true,
 		"tiers": [
@@ -266,6 +268,7 @@
 	{
 		"affixType": "FetidCarapaceAffix",
 		"equipTypes": "Ranged",
+		"canRollNaturally": false,
 		"influences": "None",
 		"round": true,
 		"tiers": [

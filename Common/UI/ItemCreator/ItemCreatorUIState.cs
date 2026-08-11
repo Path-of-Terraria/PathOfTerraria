@@ -13,6 +13,7 @@ using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader.UI;
 using Terraria.UI;
 
@@ -47,6 +48,9 @@ internal class ItemCreatorUIState : CloseableSmartUi
 {
 	private static readonly Point MainPanelSize = new(792, 770);
 	private const int EditSlotContext = ItemSlot.Context.ChestItem;
+	private const int TabHeaderHeight = 40;
+	private const string EditorTab = "editor";
+	private const string CraftingTab = "crafting";
 	private static readonly ItemRarity[] EditableRarities = [ItemRarity.Normal, ItemRarity.Magic, ItemRarity.Rare, ItemRarity.Unique];
 
 	protected override bool IsCentered => true;
@@ -56,12 +60,16 @@ internal class ItemCreatorUIState : CloseableSmartUi
 	private UIPanel _affixEditorPanel = null!;
 	private UIList? _affixList;
 	private UIText _itemInfoText = null!;
+	private UIText _craftingItemInfoText = null!;
 	private UIText _disabledMessage = null!;
 	private UIButton<string> _addAffixButton = null!;
 	private UIButton<string> _clearAffixButton = null!;
 	private UINumberInput _itemLevelInput = null!;
-	private UIElement _shardBar = null!;
+	private UITabsPanel _tabsPanel = null!;
+	private UIElement _editorTabContent = null!;
+	private UIElement _craftingTabContent = null!;
 	private AddAffixPanel? _addAffixOverlay;
+	private string _activeTab = EditorTab;
 	private bool _isRefreshing;
 	private bool _syncingItemControls;
 
@@ -98,10 +106,12 @@ internal class ItemCreatorUIState : CloseableSmartUi
 
 		Main.playerInventory = true;
 
-		CreateMainPanel(false, MainPanelSize, false);
-		BuildShardBar(Panel);
-		BuildItemSection(Panel);
-		BuildAffixEditor(Panel);
+		CreateTabbedPanel();
+		BuildEditorTab();
+		BuildCraftingTab();
+		_tabsPanel.SetActivePage(_activeTab);
+		ShowActiveTab(activate: false);
+		_tabsPanel.OnActiveTabChanged += OnActiveTabChanged;
 		AddCloseButton();
 		Activate();
 		Recalculate();
@@ -118,55 +128,142 @@ internal class ItemCreatorUIState : CloseableSmartUi
 		SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
 	}
 
-	private void BuildShardBar(UICloseablePanel panel)
+	private void CreateTabbedPanel()
 	{
-		_shardBar = new UIPanel
+		LocalizedText editorText = Language.GetOrRegister("Mods.PathOfTerraria.UI.ItemCreator.EditorTab", () => "Editor");
+		LocalizedText craftingText = Language.GetOrRegister("Mods.PathOfTerraria.UI.ItemCreator.CraftingTab", () => "Crafting");
+
+		_tabsPanel = new UITabsPanel(false, false,
+			[(EditorTab, editorText), (CraftingTab, craftingText)], TabHeaderHeight)
+		{
+			HAlign = 0.5f,
+			VAlign = 0.5f,
+			Width = StyleDimension.FromPixels(MainPanelSize.X),
+			Height = StyleDimension.FromPixels(MainPanelSize.Y),
+		};
+
+		Panel = _tabsPanel;
+		Append(Panel);
+	}
+
+	private void BuildEditorTab()
+	{
+		_editorTabContent = CreateTabContent();
+		BuildItemSection(_editorTabContent);
+		BuildAffixEditor(_editorTabContent);
+	}
+
+	private void BuildCraftingTab()
+	{
+		_craftingTabContent = CreateTabContent();
+
+		var targetSection = new UIElement
 		{
 			Width = StyleDimension.Fill,
-			Height = StyleDimension.FromPixels(50),
-			BackgroundColor = new Color(40, 40, 60) * 0.8f,
+			Height = StyleDimension.FromPixels(96),
+			Top = StyleDimension.FromPixels(8),
 		};
-		panel.Append(_shardBar);
+		_craftingTabContent.Append(targetSection);
+
+		UIImageItemSlot craftingItemSlot = CreateEditItemSlot();
+		craftingItemSlot.Left = StyleDimension.FromPixels(10);
+		craftingItemSlot.Top = StyleDimension.FromPixels(4);
+		targetSection.Append(craftingItemSlot);
+
+		targetSection.Append(new UIText("Crafting Target", 0.95f)
+		{
+			Left = StyleDimension.FromPixels(78),
+			Top = StyleDimension.FromPixels(10),
+			TextColor = Color.LightGray,
+		});
+
+		_craftingItemInfoText = new UIText("", 0.85f)
+		{
+			Left = StyleDimension.FromPixels(78),
+			Top = StyleDimension.FromPixels(42),
+			TextColor = Color.LightGray,
+		};
+		targetSection.Append(_craftingItemInfoText);
+
+		var materialsPanel = new UIPanel
+		{
+			Width = StyleDimension.Fill,
+			Height = StyleDimension.FromPixelsAndPercent(-112, 1f),
+			Top = StyleDimension.FromPixels(112),
+			BackgroundColor = new Color(30, 30, 50) * 0.6f,
+		};
+		_craftingTabContent.Append(materialsPanel);
+
+		materialsPanel.Append(new UIText("Infinite Crafting Materials", 0.95f)
+		{
+			HAlign = 0.5f,
+			Top = StyleDimension.FromPixels(8),
+			TextColor = Color.LightGray,
+		});
 
 		int[] shardTypes = GetAllShardTypes();
-		float xOffset = 4;
+		const int Columns = 16;
+		const int SlotStep = 40;
+		const int SlotSize = 36;
+		float startX = (MainPanelSize.X - (Columns - 1) * SlotStep - SlotSize) * 0.5f;
 
-		foreach (int shardType in shardTypes)
+		for (int i = 0; i < shardTypes.Length; i++)
 		{
-			var slot = new InfiniteShardSlot(shardType, () => _editItem, RefreshAffixList)
+			var slot = new InfiniteShardSlot(shardTypes[i], () => _editItem, RefreshAffixList)
 			{
-				Left = StyleDimension.FromPixels(xOffset),
-				VAlign = 0.5f,
+				Left = StyleDimension.FromPixels(startX + i % Columns * SlotStep),
+				Top = StyleDimension.FromPixels(40 + i / Columns * SlotStep),
 			};
-			_shardBar.Append(slot);
-			xOffset += 40;
+			materialsPanel.Append(slot);
+		}
+
+		UpdateItemInfo();
+	}
+
+	private static UIElement CreateTabContent()
+	{
+		return new UIElement
+		{
+			Width = StyleDimension.Fill,
+			Height = StyleDimension.FromPixelsAndPercent(-TabHeaderHeight, 1f),
+			Top = StyleDimension.FromPixels(TabHeaderHeight),
+		};
+	}
+
+	private void OnActiveTabChanged()
+	{
+		_activeTab = _tabsPanel.ActiveTab;
+		ShowActiveTab(activate: true);
+	}
+
+	private void ShowActiveTab(bool activate)
+	{
+		_editorTabContent.Remove();
+		_craftingTabContent.Remove();
+
+		UIElement activeContent = _activeTab == CraftingTab ? _craftingTabContent : _editorTabContent;
+		Panel.Append(activeContent);
+
+		if (activate)
+		{
+			activeContent.Activate();
+			Panel.Recalculate();
 		}
 	}
 
-	private void BuildItemSection(UICloseablePanel panel)
+	private void BuildItemSection(UIElement panel)
 	{
 		var itemSection = new UIElement
 		{
 			Width = StyleDimension.Fill,
 			Height = StyleDimension.FromPixels(96),
-			Top = StyleDimension.FromPixels(56),
+			Top = StyleDimension.FromPixels(8),
 		};
 		panel.Append(itemSection);
 
-		Asset<Texture2D> slotBg =
-			ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/ItemSlot", AssetRequestMode.ImmediateLoad);
-
-		_itemSlot = new UIImageItemSlot(
-			slotBg, slotBg,
-			new UIImageItemSlot.SlotWrapper(() => _editItem, v => _editItem = v),
-			EditSlotContext
-		)
-		{
-			Left = StyleDimension.FromPixels(10),
-			Top = StyleDimension.FromPixels(4),
-			Predicate = (newItem, _) => newItem.IsAir || newItem.TryGetGlobalItem(out PoTGlobalItem _)
-		};
-		_itemSlot.OnModifyItem += (_, _, _) => OnItemChanged();
+		_itemSlot = CreateEditItemSlot();
+		_itemSlot.Left = StyleDimension.FromPixels(10);
+		_itemSlot.Top = StyleDimension.FromPixels(4);
 		itemSection.Append(_itemSlot);
 
 		BuildItemLevelControl(itemSection);
@@ -201,6 +298,23 @@ internal class ItemCreatorUIState : CloseableSmartUi
 		itemSection.Append(_itemInfoText);
 
 		UpdateItemInfo();
+	}
+
+	private UIImageItemSlot CreateEditItemSlot()
+	{
+		Asset<Texture2D> slotBg =
+			ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/ItemSlot", AssetRequestMode.ImmediateLoad);
+
+		var slot = new UIImageItemSlot(
+			slotBg, slotBg,
+			new UIImageItemSlot.SlotWrapper(() => _editItem, v => _editItem = v),
+			EditSlotContext
+		)
+		{
+			Predicate = (newItem, _) => newItem.IsAir || newItem.TryGetGlobalItem(out PoTGlobalItem _)
+		};
+		slot.OnModifyItem += (_, _, _) => OnItemChanged();
+		return slot;
 	}
 
 	private void BuildItemLevelControl(UIElement itemSection)
@@ -258,13 +372,13 @@ internal class ItemCreatorUIState : CloseableSmartUi
 		}
 	}
 
-	private void BuildAffixEditor(UICloseablePanel panel)
+	private void BuildAffixEditor(UIElement panel)
 	{
 		_affixEditorPanel = new UIPanel
 		{
 			Width = StyleDimension.Fill,
-			Height = StyleDimension.FromPixelsAndPercent(-160, 1),
-			Top = StyleDimension.FromPixels(160),
+			Height = StyleDimension.FromPixelsAndPercent(-112, 1),
+			Top = StyleDimension.FromPixels(112),
 			BackgroundColor = new Color(30, 30, 50) * 0.6f,
 		};
 		panel.Append(_affixEditorPanel);
@@ -407,14 +521,15 @@ internal class ItemCreatorUIState : CloseableSmartUi
 
 	private void UpdateItemInfo()
 	{
-		if (_itemInfoText == null)
+		if (_itemInfoText == null && _craftingItemInfoText == null)
 		{
 			return;
 		}
 
 		if (_editItem.IsAir || !_editItem.TryGetGlobalItem(out PoTGlobalItem _))
 		{
-			_itemInfoText.SetText("No item inserted");
+			_itemInfoText?.SetText("No item inserted");
+			_craftingItemInfoText?.SetText("No item inserted");
 			return;
 		}
 
@@ -431,7 +546,8 @@ internal class ItemCreatorUIState : CloseableSmartUi
 			info += " | CLONED";
 		}
 
-		_itemInfoText.SetText(info);
+		_itemInfoText?.SetText(info);
+		_craftingItemInfoText?.SetText(info);
 	}
 
 	private void ShowAddAffixPanel()
@@ -485,7 +601,10 @@ internal class ItemCreatorUIState : CloseableSmartUi
 
 			foreach (CurrencyShard shard in ModContent.GetContent<CurrencyShard>())
 			{
-				itemIDs.Add(shard.Item.type);
+				if (shard.SupportsPouchCrafting)
+				{
+					itemIDs.Add(shard.Item.type);
+				}
 			}
 
 			_shardTypes = itemIDs.ToArray();

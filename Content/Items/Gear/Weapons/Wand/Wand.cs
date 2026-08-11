@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Content.Projectiles.Magic;
 using PathOfTerraria.Core.Items;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
@@ -55,11 +56,14 @@ internal abstract class Wand : Gear
 	{
 		if (player.altFunctionUse == 2)
 		{
+			float implicitDamage = WeaponImplicitStrength.Get<WandFlurryDamageImplicitAffix>(Item);
+			int flurryDamage = (int)(damage * (1f + implicitDamage / 100f));
+
 			for (int i = 0; i < 4; ++i)
 			{
 				Vector2 adjSpeed = velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(0.9f, 1.1f);
 
-				Projectile.NewProjectile(source, position, adjSpeed, type, damage, knockback, player.whoAmI);
+				Projectile.NewProjectile(source, position, adjSpeed, type, flurryDamage, knockback, player.whoAmI);
 			}
 
 			player.CheckMana(Item.mana * 3, true, false);

@@ -1,4 +1,4 @@
-﻿// #define DEBUG_LOG
+// #define DEBUG_LOG
 // #define INSTANT_REFILL
 
 using System.Collections.Generic;
@@ -9,6 +9,7 @@ using PathOfTerraria.Common.Encounters;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Subworlds.MappingAreas;
 using PathOfTerraria.Content.Conflux;
+using PathOfTerraria.Common.Systems.Sigils;
 using PathOfTerraria.Core.Time;
 using PathOfTerraria.Utilities;
 using PathOfTerraria.Utilities.Terraria;
@@ -42,6 +43,17 @@ internal sealed class ConfluxRifts : ModSystem
 	}
 	
 	private static bool ranGeneration;
+	private static int generationTarget = -1;
+	private static int resolvedGeneratedRifts;
+	private static bool triuneRewardClaimed;
+	private static int triuneResolvedKindMask;
+	private static int triuneCompletedKindMask;
+	private static int generationRetryTimer;
+#if DEBUG
+	private static int debugGenerationTarget = -1;
+	internal static bool DebugGenerationEvaluated => ranGeneration;
+	internal static int DebugGenerationTarget => debugGenerationTarget;
+#endif
 	private static float progressBarAlpha;
 	private static float progressBarProgress;
 	private static float progressBarPulse;
@@ -59,11 +71,28 @@ internal sealed class ConfluxRifts : ModSystem
 	public override void ClearWorld()
 	{
 		ranGeneration = false;
+		generationTarget = -1;
+		resolvedGeneratedRifts = 0;
+		triuneRewardClaimed = false;
+		triuneResolvedKindMask = 0;
+		triuneCompletedKindMask = 0;
+		generationRetryTimer = 0;
+		naturalRifts.Clear();
+		accumulatedTime = 0;
+		numSpawnsToAnnounce = 0;
+#if DEBUG
+		debugGenerationTarget = -1;
+#endif
 	}
 
 	public override void SaveWorldData(TagCompound tag)
 	{
 		tag["accumulatedTime"] = accumulatedTime;
+		if (generationTarget >= 0) { tag["generationTarget"] = generationTarget; }
+		tag["resolvedGeneratedRifts"] = resolvedGeneratedRifts;
+		tag["triuneRewardClaimed"] = triuneRewardClaimed;
+		tag["triuneResolvedKindMask"] = triuneResolvedKindMask;
+		tag["triuneCompletedKindMask"] = triuneCompletedKindMask;
 		tag["naturalRifts"] = new TagCompound {
 			{ "count", naturalRifts.Count },
 			{ "kinds", naturalRifts.Select(r => r.Kind.ToString()).ToArray() },
@@ -74,12 +103,18 @@ internal sealed class ConfluxRifts : ModSystem
 	{
 		naturalRifts.Clear();
 		accumulatedTime = tag.TryGet("accumulatedTime", out double time) ? time : 0;
+		generationTarget = tag.TryGet("generationTarget", out int savedTarget) ? Math.Max(0, savedTarget) : -1;
+		resolvedGeneratedRifts = Math.Max(0, tag.GetInt("resolvedGeneratedRifts"));
+		triuneRewardClaimed = tag.GetBool("triuneRewardClaimed");
+		triuneResolvedKindMask = tag.GetInt("triuneResolvedKindMask") & 0b111;
+		triuneCompletedKindMask = tag.GetInt("triuneCompletedKindMask") & 0b111;
 
 		if (tag.TryGet("naturalRifts", out TagCompound tagNatural))
 		{
-			int count = tagNatural.GetInt("count");
+			int count = Math.Max(0, tagNatural.GetInt("count"));
 			IList<string> kinds = tagNatural.GetList<string>("kinds");
 			IList<Vector2> positions = tagNatural.GetList<Vector2>("positions");
+			count = Math.Min(count, Math.Min(kinds.Count, positions.Count));
 
 			for (int i = 0; i < count; i++)
 			{
@@ -116,6 +151,11 @@ internal sealed class ConfluxRifts : ModSystem
 
 	public override void PostUpdateWorld()
 	{
+		if (Main.netMode == NetmodeID.MultiplayerClient)
+		{
+			return;
+		}
+
 		NaturalSpawnCfg naturalCfg = GetNaturalSpawnConfig();
 #if INSTANT_REFILL
 		naturalCfg.AccumulationTimeRate = 1;
@@ -143,10 +183,26 @@ internal sealed class ConfluxRifts : ModSystem
 		// Spawn rifts.
 		if (HasActivePlayers())
 		{
-			if (!ranGeneration && GetGenerationConfig() is { } genCfg && genCfg.MaxAmount > 0)
+			GenerationCfg genCfg = GetGenerationConfig();
+			if (!ranGeneration)
 			{
-				SpawnRifts(generation: true, genCfg.MaxAmount);
+#if DEBUG
+				debugGenerationTarget = genCfg.MaxAmount;
+#endif
 				ranGeneration = true;
+				generationRetryTimer = 0;
+			}
+
+			if (generationRetryTimer-- <= 0)
+			{
+				int loadedGenerated = Main.projectile.Count(projectile => projectile.active
+					&& projectile.ModProjectile is ConfluxRift rift && rift.BitFlags.HasFlag(ConfluxRift.Flags.PreGenerated));
+				int remaining = Math.Max(0, genCfg.MaxAmount - resolvedGeneratedRifts - loadedGenerated);
+				if (remaining > 0)
+				{
+					SpawnConfiguredRifts(remaining);
+				}
+				generationRetryTimer = 300;
 			}
 
 			const int naturalSpawnOneInXChance = 100;
@@ -208,20 +264,101 @@ internal sealed class ConfluxRifts : ModSystem
 
 	public static GenerationCfg GetGenerationConfig()
 	{
-		// Spawn on exploration maps.
+		// Conflux is a previous-league mechanic. It may still appear in maps, but is no longer guaranteed.
 		if (SubworldSystem.Current is MappingWorld and IExplorationWorld and not RavencrestSubworld)
 		{
-			WeightRand<int> targetRiftPool = new()
+			if (generationTarget < 0)
 			{
-				{ 3, 0.1f + (MathF.Pow(MappingWorld.MapTier - 1.0f, 2.50f) * 0.3f) },
-				{ 2, 0.3f + (MathF.Pow(MappingWorld.MapTier - 1.0f, 2.05f) * 0.6f) },
-				{ 1, 0.7f }
-			};
+				generationTarget = Main.rand.NextFloat() < 0.10f ? 1 : 0;
+				if (SigilSystem.FindFamily(SigilFamily.Conflux) is { } sigil)
+				{
+					generationTarget += sigil.Kind == SigilKind.TriuneConflux ? 3 : SigilCatalog.GetPower(sigil.Grade);
+				}
+			}
 
-			return new(targetRiftPool.RollValue());
+			return new(MaxAmount: generationTarget);
 		}
 
 		return default;
+	}
+
+	internal static void OnPreGeneratedRiftResolved(ConfluxRiftKind kind)
+	{
+		resolvedGeneratedRifts++;
+		if (SigilSystem.Has(SigilKind.TriuneConflux))
+		{
+			triuneResolvedKindMask |= 1 << (int)kind;
+		}
+	}
+
+	internal static bool TryClaimTriuneReward(ConfluxRiftKind kind)
+	{
+		if (triuneRewardClaimed || !SigilSystem.Has(SigilKind.TriuneConflux))
+		{
+			return false;
+		}
+
+		triuneCompletedKindMask |= 1 << (int)kind;
+		if ((triuneCompletedKindMask & 0b111) != 0b111)
+		{
+			return false;
+		}
+
+		triuneRewardClaimed = true;
+		return true;
+	}
+
+	private static void SpawnConfiguredRifts(int remainingTarget)
+	{
+		int before = GetRiftLocations().Count;
+		if (SigilSystem.FindFamily(SigilFamily.Conflux) is not { } sigil)
+		{
+			SpawnRifts(generation: true, before + remainingTarget);
+			return;
+		}
+
+		if (sigil.Kind == SigilKind.TriuneConflux)
+		{
+			ConfluxRiftKind[] kinds = [ConfluxRiftKind.Infernal, ConfluxRiftKind.Glacial, ConfluxRiftKind.Celestial];
+			int missingDistinctKinds = kinds.Count(kind =>
+				(triuneResolvedKindMask & (1 << (int)kind)) == 0
+				&& !Main.projectile.Any(projectile => projectile.active
+					&& projectile.ModProjectile is ConfluxRift rift && rift.Kind == kind
+					&& rift.BitFlags.HasFlag(ConfluxRift.Flags.PreGenerated)));
+			int spawnedForSigil = 0;
+			foreach (ConfluxRiftKind kind in kinds)
+			{
+				bool resolved = (triuneResolvedKindMask & (1 << (int)kind)) != 0;
+				bool alreadyLoaded = Main.projectile.Any(projectile => projectile.active
+					&& projectile.ModProjectile is ConfluxRift rift && rift.Kind == kind
+					&& rift.BitFlags.HasFlag(ConfluxRift.Flags.PreGenerated));
+				if (resolved || alreadyLoaded || spawnedForSigil >= remainingTarget)
+				{
+					continue;
+				}
+
+				int spawned = SpawnRifts(generation: true, before + spawnedForSigil + 1, forcedKind: kind);
+				spawnedForSigil += spawned;
+			}
+
+			int randomExtras = Math.Max(0, remainingTarget - missingDistinctKinds);
+			SpawnRifts(generation: true, before + spawnedForSigil + randomExtras);
+			return;
+		}
+		else
+		{
+			ConfluxRiftKind kind = sigil.Kind switch
+			{
+				SigilKind.InfernalConflux => ConfluxRiftKind.Infernal,
+				SigilKind.GlacialConflux => ConfluxRiftKind.Glacial,
+				_ => ConfluxRiftKind.Celestial,
+			};
+			int forcedTarget = Math.Min(SigilCatalog.GetPower(sigil.Grade), remainingTarget);
+			int forcedSpawned = SpawnRifts(generation: true, before + forcedTarget, forcedKind: kind);
+			int randomExtras = remainingTarget - forcedTarget;
+			SpawnRifts(generation: true, before + forcedSpawned + randomExtras);
+			return;
+		}
 	}
 	public static NaturalSpawnCfg GetNaturalSpawnConfig()
 	{

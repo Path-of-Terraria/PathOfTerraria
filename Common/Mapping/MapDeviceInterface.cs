@@ -1,13 +1,16 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.Items;
 using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.Systems.Sigils;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Common.UI.Components;
 using PathOfTerraria.Common.UI.Elements;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Content.Items.Consumables.Maps;
+using PathOfTerraria.Content.Items.Mapping.Sigils;
 using PathOfTerraria.Content.Tiles.Furniture;
 using PathOfTerraria.Core.Time;
 using PathOfTerraria.Core.UI;
@@ -331,6 +334,9 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 	private (StyleDimension X, StyleDimension Y) storagePositionDst;
 	private (StyleDimension X, StyleDimension Y) inventoryPositionSrc;
 	private (StyleDimension X, StyleDimension Y) inventoryPositionDst;
+#if DEBUG
+	private MapDeviceDebugMapMenu? debugMapMenu;
+#endif
 
 	private ref readonly MapResource CurrentMapResource => ref MapResources.Resources[MathUtils.Modulo(canisters.NonWrappedSelection, MapResources.Resources.Length)];
 
@@ -486,6 +492,16 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 
 		// Prevent button interaction during lock animations.
 		ActionButton!.IgnoresMouseInteraction = buttonLockFrame.CurrentRow != buttonTargetRow || buttonLockFrame.CurrentRow == ButtonFrameClosed;
+		if (!isPortalActive && ActionButtonInner is { } actionText && MapDeviceInterface.Entity is { } activeEntity)
+		{
+			SigilEntry[] entries = activeEntity.SigilSlots
+				.Where(item => item.ModItem is DomainSigil)
+				.Select(item => ((DomainSigil)item.ModItem).Entry)
+				.ToArray();
+			actionText.HoverText = entries.Length == 0
+				? string.Empty
+				: $"Map Threat: {entries.Sum(SigilCatalog.GetThreat)}\n" + string.Join("\n", entries.Select(SigilCatalog.DescribeEffect));
+		}
 
 		// Animate inventory and storage elements.
 		if ((forceUpdateAnimation || oldOpening != openingAnimation || oldClosing != closingAnimation) && StoragePanel != null && InventoryPanel != null)
@@ -595,7 +611,8 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 	}
 	private bool CanInteractWithCanisters()
 	{
-		return MapDeviceInterface.Entity is { StoredMap: not { IsAir: false }, Injection: null } && AreCanistersUnlocked();
+		return MapDeviceInterface.Entity is { StoredMap: not { IsAir: false }, Injection: null } entity
+			&& entity.SigilSlots.All(item => item.IsAir) && AreCanistersUnlocked();
 	}
 	private bool CanInjectCurrentCanister()
 	{
@@ -935,6 +952,9 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 	public override void Refresh()
 	{
 		RemoveAllChildren();
+#if DEBUG
+		debugMapMenu = null;
+#endif
 
 		forceUpdateAnimation = true;
 
@@ -992,7 +1012,7 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		// Map slot
 		Asset<Texture2D> mapSlotTexture = ModContent.Request<Texture2D>($"{BasePath}/MapDeviceBase_Map_Slot", AssetRequestMode.ImmediateLoad);
 		Asset<Texture2D> mapIconTexture = ModContent.Request<Texture2D>($"{BasePath}/MapDeviceBase_Map_Icon", AssetRequestMode.ImmediateLoad);
-		Asset<Texture2D> mapLockTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/LockIcon", AssetRequestMode.ImmediateLoad);
+		Asset<Texture2D> lockIconTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/LockIcon", AssetRequestMode.ImmediateLoad);
 		var mapSlot = new UIImageItemSlot.SlotWrapper(() => entity.StoredMap, value => entity.StoredMap = value);
 		(string Key, object? Arg) mapSlotHover = ($"Mods.{nameof(PathOfTerraria)}.UI.MapDevice.MapSlot", null);
 		Window.AddElement(new UIHoverImageItemSlot(mapSlotTexture, mapIconTexture, mapSlot, mapSlotHover, context: CustomSlotContext), e =>
@@ -1011,37 +1031,73 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 			e.IsLocked = static _ => MapDeviceInterface.Entity is not { } e || e is { PortalActive: true } || HasInjection();
 			e.OnUpdate += e =>
 			{
-				((UIImageItemSlot)e).IconTexture = HasInjection() ? mapLockTexture : mapIconTexture;
+				((UIImageItemSlot)e).IconTexture = HasInjection() ? lockIconTexture : mapIconTexture;
 			};
 		});
 
+#if DEBUG
+		Window.AddElement(new UIButton<string>("DBG"), e =>
+		{
+			e.SetDimensions(x: (0.5f, +34), y: (0.5f, -142), width: (0f, +46), height: (0f, +28));
+			e.OnLeftClick += (_, _) => ToggleDebugMapMenu(entity);
+			e.OnUpdate += self =>
+			{
+				if (self.IsMouseHovering)
+				{
+					Main.hoverItemName = Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.MapDevice.DebugMapBuilder.Open");
+				}
+			};
+		});
+#endif
+
 #endregion
 
-		#region Frags
-		//TODO: Frag slots are unimplemented!
-#if true
+		#region Sigils
 		for (int i = 0; i < 4; i++)
 		{
-			Item[] dummyContainer = [new Item()];
-			var fragSlot = new UIImageItemSlot.SlotWrapper(() => dummyContainer[0], value => dummyContainer[0] = value);
+			int slotIndex = i;
+			var fragSlot = new UIImageItemSlot.SlotWrapper(() => (entity.SigilSlots, slotIndex));
+			(string Key, object? Arg) sigilSlotHover = ($"Mods.{nameof(PathOfTerraria)}.UI.MapDevice.SigilSlot", slotIndex + 1);
+			(string Key, object? Arg) lockedSigilSlotHover = ($"Mods.{nameof(PathOfTerraria)}.UI.MapDevice.SigilSlotLocked", SigilSystem.GetSlotUnlockTier(slotIndex));
 
 			Asset<Texture2D> fragSlotTexture = ModContent.Request<Texture2D>($"{BasePath}/MapDevice_Frag_Slot", AssetRequestMode.ImmediateLoad);
 			Asset<Texture2D> fragIconTexture = ModContent.Request<Texture2D>($"{BasePath}/MapDevice_Frag_Icon", AssetRequestMode.ImmediateLoad);
 			Vector2 fragSlotSize = fragSlotTexture.Size();
-			Window.AddElement(new UIHoverImageItemSlot(fragSlotTexture, fragIconTexture, fragSlot, null, context: CustomSlotContext), e =>
+			Window.AddElement(new UIHoverImageItemSlot(fragSlotTexture, fragIconTexture, fragSlot, sigilSlotHover, context: CustomSlotContext), e =>
 			{
 				e.Initialize();
-				float xOffset = (i is 1 or 2 ? (+32) : (+90)) * (i is 0 or 1 ? (-1) : (1));
+				float xOffset = (slotIndex is 1 or 2 ? (+32) : (+90)) * (slotIndex is 0 or 1 ? (-1) : (1));
 				float yOffset = +156; //(i is 1 or 2 ? (-24) : (-24));
 				e.SetDimensions(x: (0.5f, xOffset - (+fragSlotSize.X * 0.5f)), y: (0.5f, yOffset), width: (0f, +fragSlotSize.X), height: (0f, +fragSlotSize.Y));
 
 				(e.InactiveScale, e.ActiveScale) = (1.00f, 1.00f);
 
-				e.Predicate = (newItem, oldItem) => false;
-				e.IsLocked = _ => true;
+				e.Predicate = (newItem, oldItem) =>
+				{
+					if (newItem.IsAir)
+					{
+						return true;
+					}
+
+					if (newItem.ModItem is not DomainSigil sigil)
+					{
+						return false;
+					}
+
+					return !entity.SigilSlots.Where((item, index) => index != slotIndex)
+						.Any(item => item.ModItem is DomainSigil other && other.Family == sigil.Family);
+				};
+				e.IsLocked = _ => entity.PortalActive || !SigilSystem.IsSlotUnlocked(slotIndex) || entity.Injection != null;
+				e.OnModifyItem += (element, oldItem, newItem) => OnModifySigilItem(element, oldItem, newItem, slotIndex);
+				e.OnUpdate += self =>
+				{
+					var slot = (UIImageItemSlot)self;
+					bool progressionLocked = !SigilSystem.IsSlotUnlocked(slotIndex);
+					slot.IconTexture = progressionLocked ? lockIconTexture : fragIconTexture;
+					slot.HoverText = progressionLocked ? lockedSigilSlotHover : sigilSlotHover;
+				};
 			});
 		}
-#endif
 		#endregion
 
 		#region Storage
@@ -1129,6 +1185,17 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 			});
 		}
 
+		Asset<Texture2D> trashIcon = ModContent.Request<Texture2D>($"Terraria/Images/Item_{ItemID.TrashCan}", AssetRequestMode.ImmediateLoad);
+		var trashSlot = new UIImageItemSlot.SlotWrapper(() => Main.LocalPlayer.trashItem, value => Main.LocalPlayer.trashItem = value);
+		(string Key, object? Arg) trashSlotHover = ($"Mods.{nameof(PathOfTerraria)}.UI.MapDevice.TrashSlot", null);
+		InventoryPanel.AddElement(new UIHoverImageItemSlot(itemFrame, trashIcon, trashSlot, trashSlotHover, context: ItemSlot.Context.TrashItem), e =>
+		{
+			e.Initialize();
+			e.SetDimensions(x: (1f, -inventorySlotSize.X), y: (0f, -inventorySlotSize.Y - 8), width: (0f, +inventorySlotSize.X), height: (0f, +inventorySlotSize.Y));
+
+			(e.InactiveScale, e.ActiveScale) = (inventorySlotScale, inventorySlotScale * 1.10f);
+		});
+
 		#endregion
 
 		AddCanisterElements();
@@ -1140,6 +1207,33 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 		Recalculate();
 		Main.QueueMainThreadAction(Recalculate);
 	}
+
+#if DEBUG
+	private void ToggleDebugMapMenu(MapDeviceEntity entity)
+	{
+		if (debugMapMenu is not null)
+		{
+			CloseDebugMapMenu();
+			return;
+		}
+
+		debugMapMenu = new MapDeviceDebugMapMenu(entity, CloseDebugMapMenu);
+		Append(debugMapMenu);
+		debugMapMenu.Recalculate();
+		SoundEngine.PlaySound(SoundID.MenuOpen);
+	}
+
+	private void CloseDebugMapMenu()
+	{
+		if (debugMapMenu is null)
+		{
+			return;
+		}
+
+		RemoveChild(debugMapMenu);
+		debugMapMenu = null;
+	}
+#endif
 
 	private void OnModifyMapItem(UIElement element, Item oldItem, Item newItem)
 	{
@@ -1154,6 +1248,21 @@ internal sealed class MapDeviceState : SmartUiState //UIState
 
 		MapDeviceSync.Send(device.ID, MapDeviceSync.Flags.Storage, [slotIndex]);
 
+		_ = (element, oldItem, newItem);
+	}
+
+	private void OnModifySigilItem(UIElement element, Item oldItem, Item newItem, int slotIndex)
+	{
+		if (newItem is { IsAir: false, stack: > 1, ModItem: DomainSigil })
+		{
+			int excess = newItem.stack - 1;
+			newItem.stack = 1;
+			Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_Misc("MapDeviceSigilSplit"), newItem.type, excess);
+		}
+
+		if (Main.netMode != NetmodeID.MultiplayerClient || MapDeviceInterface.Entity is not { } device) { return; }
+
+		MapDeviceSync.Send(device.ID, MapDeviceSync.Flags.Sigils, [slotIndex]);
 		_ = (element, oldItem, newItem);
 	}
 

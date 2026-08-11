@@ -36,7 +36,7 @@ internal class Spellbook : Gear
 		Item.mana = 3;
 
 		PoTInstanceItemData data = this.GetInstanceData();
-		data.ItemType = ItemType.Wand;
+		data.ItemType = ItemType.Tome;
 
 		Item.shoot = ModContent.ProjectileType<TomeProjectile>();
 		Item.SetShopValues(ItemRarityColor.Green2, 10000);
