@@ -21,6 +21,10 @@ internal class RavencrestSubworld : MappingWorld
 	public override int Width => 900;
 	public override int Height => 340;
 	public override bool ShouldSave => true;
+
+	// Ravencrest is the persistent hub, not an instanced run. Map device portals must never wipe it -
+	// its save holds every building the party has unlocked.
+	public override bool DeleteSaveOnMapReset => false;
 	public override int[] WhitelistedMiningTiles => [TileID.Tombstones];
 	public override int[] WhitelistedPlaceableTiles => [TileID.Tombstones];
 
