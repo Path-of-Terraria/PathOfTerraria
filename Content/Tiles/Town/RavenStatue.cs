@@ -3,7 +3,7 @@ using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Tiles;
 using PathOfTerraria.Common.UI.Guide;
 using PathOfTerraria.Core.UI;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;

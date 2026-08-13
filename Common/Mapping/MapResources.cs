@@ -7,7 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Core.Subworlds;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 

@@ -2,7 +2,7 @@
 using PathOfTerraria.Content.NPCs.BossDomain.EoLDomain;
 using PathOfTerraria.Content.NPCs.BossDomain.PlantDomain;
 using PathOfTerraria.Content.NPCs.Mapping.Forest;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.ID;

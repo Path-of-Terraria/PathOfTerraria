@@ -4,7 +4,7 @@ using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Content.Items.Pickups;
 using ReLogic.Content;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using Terraria.GameContent;
 using Terraria.GameContent.Drawing;
 using Terraria.ID;

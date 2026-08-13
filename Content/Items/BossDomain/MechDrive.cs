@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.BossDomain;

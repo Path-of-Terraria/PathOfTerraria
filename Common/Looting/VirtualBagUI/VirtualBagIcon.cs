@@ -3,7 +3,7 @@ using PathOfTerraria.Common.UI;
 using PathOfTerraria.Core.UI;
 using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using System.Collections.Generic;
 using Terraria.Audio;
 using Terraria.ID;

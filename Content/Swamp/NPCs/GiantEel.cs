@@ -10,7 +10,7 @@ using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.Dusts;
 using PathOfTerraria.Content.Gores;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using System.IO;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;

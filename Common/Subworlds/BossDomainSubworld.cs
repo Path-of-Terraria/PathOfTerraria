@@ -1,7 +1,7 @@
-using PathOfTerraria.Common.Subworlds.Passes;
+﻿using PathOfTerraria.Common.Subworlds.Passes;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using System.Collections.Generic;
 using Terraria.ModLoader.IO;
 using Terraria.WorldBuilding;
