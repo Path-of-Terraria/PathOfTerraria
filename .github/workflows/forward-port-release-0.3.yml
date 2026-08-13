@@ -1,0 +1,69 @@
+name: Forward-port 0.3 maintenance fixes
+
+on:
+  push:
+    branches:
+      - release/0.3
+
+# A PR created by GITHUB_TOKEN can be created only when repository Actions
+# settings allow GitHub Actions to create and approve pull requests.
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: forward-port-release-0.3
+  cancel-in-progress: true
+
+jobs:
+  open-forward-port-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Open or refresh the release/0.3 forward-port PR
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const head = `${owner}:release/0.3`;
+            const base = 'develop';
+
+            const comparison = await github.rest.repos.compareCommits({
+              owner,
+              repo,
+              base,
+              head: 'release/0.3',
+            });
+
+            if (comparison.data.ahead_by === 0) {
+              core.notice('release/0.3 has no commits that are missing from develop.');
+              return;
+            }
+
+            const { data: openPullRequests } = await github.rest.pulls.list({
+              owner,
+              repo,
+              state: 'open',
+              base,
+              head,
+            });
+
+            if (openPullRequests.length > 0) {
+              core.notice(`Forward-port PR #${openPullRequests[0].number} already exists and will include this push.`);
+              return;
+            }
+
+            const { data: pullRequest } = await github.rest.pulls.create({
+              owner,
+              repo,
+              base,
+              head: 'release/0.3',
+              title: 'chore: forward-port release/0.3 fixes to develop',
+              body: [
+                'Automated forward-port of maintenance fixes from `release/0.3` into `develop`.',
+                '',
+                'This pull request updates automatically as new commits are pushed to `release/0.3`.',
+                'Resolve any conflicts here before merging so `develop` retains every 0.3.x fix.',
+              ].join('\n'),
+            });
+
+            core.notice(`Opened forward-port PR #${pullRequest.number}.`);
