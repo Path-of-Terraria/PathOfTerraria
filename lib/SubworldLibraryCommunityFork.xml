@@ -230,13 +230,13 @@
         <member name="M:SubworldLibraryCommunityFork.SubworldSystem.LoadWorldData(Terraria.ModLoader.IO.TagCompound)">
             <inheritdoc />
         </member>
-        <member name="P:SubworldLibraryCommunityFork.SubworldSystem.noReturn">
+        <member name="F:SubworldLibraryCommunityFork.SubworldSystem.noReturn">
             <summary>
             Hides the Return button.
             <br/>Its value is reset before <see cref="M:SubworldLibraryCommunityFork.Subworld.OnEnter"/> is called, and after <see cref="M:SubworldLibraryCommunityFork.Subworld.OnExit"/> is called.
             </summary>
         </member>
-        <member name="P:SubworldLibraryCommunityFork.SubworldSystem.hideUnderworld">
+        <member name="F:SubworldLibraryCommunityFork.SubworldSystem.hideUnderworld">
             <summary>
             Hides the Underworld background.
             <br/>Its value is reset before <see cref="M:SubworldLibraryCommunityFork.Subworld.OnEnter"/> is called, and after <see cref="M:SubworldLibraryCommunityFork.Subworld.OnExit"/> is called.
