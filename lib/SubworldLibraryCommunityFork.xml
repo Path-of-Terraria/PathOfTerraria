@@ -4,6 +4,25 @@
         <name>SubworldLibraryCommunityFork</name>
     </assembly>
     <members>
+        <member name="T:SubworldLibraryCommunityFork.SubworldLibrary">
+            <summary>
+            Provides the community fork's tModLoader entry point and runtime integration hooks.
+            </summary>
+        </member>
+        <member name="M:SubworldLibraryCommunityFork.SubworldLibrary.Load">
+            <inheritdoc />
+        </member>
+        <member name="M:SubworldLibraryCommunityFork.SubworldLibrary.Call(System.Object[])">
+            <inheritdoc />
+        </member>
+        <member name="M:SubworldLibraryCommunityFork.SubworldLibrary.HandlePacket(System.IO.BinaryReader,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="T:SubworldLibraryCommunityFork.ICopyWorldData">
+            <summary>
+            Defines callbacks for copying persistent data between the main world and subworlds.
+            </summary>
+        </member>
         <member name="M:SubworldLibraryCommunityFork.ICopyWorldData.CopyMainWorldData">
             <summary>
             Called on all content with the <see cref="T:SubworldLibraryCommunityFork.ICopyWorldData"/> interface, before <see cref="M:SubworldLibraryCommunityFork.Subworld.OnEnter"/>, and after <see cref="M:SubworldLibraryCommunityFork.Subworld.OnExit"/>.
@@ -16,6 +35,30 @@
             Called on all content with this interface before a subworld generates, or after a subworld loads from file.
             <br/>This is where you read data copied from the main world to a subworld, via <see cref="M:SubworldLibraryCommunityFork.SubworldSystem.ReadCopiedWorldData``1(System.String)"/>.
             <code>DownedSystem.downedBoss = SubworldSystem.ReadCopiedWorldData&lt;bool&gt;(nameof(DownedSystem.downedBoss));</code>
+            </summary>
+        </member>
+        <member name="T:SubworldLibraryCommunityFork.Subworld">
+            <summary>
+            Defines a world managed independently from Terraria's main world.
+            </summary>
+        </member>
+        <member name="P:SubworldLibraryCommunityFork.Subworld.LocalizationCategory">
+            <inheritdoc />
+        </member>
+        <member name="P:SubworldLibraryCommunityFork.Subworld.DisplayName">
+            <summary>
+            Gets the localized display name shown for this subworld.
+            </summary>
+        </member>
+        <member name="M:SubworldLibraryCommunityFork.Subworld.Register">
+            <inheritdoc />
+        </member>
+        <member name="M:SubworldLibraryCommunityFork.Subworld.SetupContent">
+            <inheritdoc />
+        </member>
+        <member name="P:SubworldLibraryCommunityFork.Subworld.FileName">
+            <summary>
+            Gets the file name used to persist this subworld.
             </summary>
         </member>
         <member name="P:SubworldLibraryCommunityFork.Subworld.Width">
@@ -31,6 +74,11 @@
         <member name="P:SubworldLibraryCommunityFork.Subworld.Tasks">
             <summary>
             The subworld's generation tasks.
+            </summary>
+        </member>
+        <member name="P:SubworldLibraryCommunityFork.Subworld.Config">
+            <summary>
+            Gets the world-generation configuration supplied to this subworld's generation passes.
             </summary>
         </member>
         <member name="P:SubworldLibraryCommunityFork.Subworld.ReturnDestination">
@@ -85,12 +133,18 @@
             <br/>This can be used to make things happen in the subworld.
             </summary>
         </member>
+        <member name="M:SubworldLibraryCommunityFork.Subworld.CopyMainWorldData">
+            <inheritdoc />
+        </member>
         <member name="M:SubworldLibraryCommunityFork.Subworld.CopySubworldData">
             <summary>
             Called before <see cref="M:SubworldLibraryCommunityFork.Subworld.OnExit"/>.
             <br/>This is where you copy data from the subworld to another world, via <see cref="M:SubworldLibraryCommunityFork.SubworldSystem.CopyWorldData(System.String,System.Object)"/>.
             <code>SubworldSystem.CopyWorldData(nameof(DownedSystem.downedBoss), DownedSystem.downedBoss);</code>
             </summary>
+        </member>
+        <member name="M:SubworldLibraryCommunityFork.Subworld.ReadCopiedMainWorldData">
+            <inheritdoc />
         </member>
         <member name="M:SubworldLibraryCommunityFork.Subworld.ReadCopiedSubworldData">
             <summary>
@@ -159,13 +213,30 @@
             <br/>Default: false
             </summary>
         </member>
-        <member name="F:SubworldLibraryCommunityFork.SubworldSystem.noReturn">
+        <member name="T:SubworldLibraryCommunityFork.SubworldSystem">
+            <summary>
+            Coordinates subworld registration, transitions, persistence, and multiplayer routing.
+            </summary>
+        </member>
+        <member name="M:SubworldLibraryCommunityFork.SubworldSystem.OnModLoad">
+            <inheritdoc />
+        </member>
+        <member name="M:SubworldLibraryCommunityFork.SubworldSystem.Unload">
+            <inheritdoc />
+        </member>
+        <member name="M:SubworldLibraryCommunityFork.SubworldSystem.SaveWorldData(Terraria.ModLoader.IO.TagCompound)">
+            <inheritdoc />
+        </member>
+        <member name="M:SubworldLibraryCommunityFork.SubworldSystem.LoadWorldData(Terraria.ModLoader.IO.TagCompound)">
+            <inheritdoc />
+        </member>
+        <member name="P:SubworldLibraryCommunityFork.SubworldSystem.noReturn">
             <summary>
             Hides the Return button.
             <br/>Its value is reset before <see cref="M:SubworldLibraryCommunityFork.Subworld.OnEnter"/> is called, and after <see cref="M:SubworldLibraryCommunityFork.Subworld.OnExit"/> is called.
             </summary>
         </member>
-        <member name="F:SubworldLibraryCommunityFork.SubworldSystem.hideUnderworld">
+        <member name="P:SubworldLibraryCommunityFork.SubworldSystem.hideUnderworld">
             <summary>
             Hides the Underworld background.
             <br/>Its value is reset before <see cref="M:SubworldLibraryCommunityFork.Subworld.OnEnter"/> is called, and after <see cref="M:SubworldLibraryCommunityFork.Subworld.OnExit"/> is called.
