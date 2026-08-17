@@ -320,7 +320,7 @@ internal class CurrencyPouchStoragePlayer : ModPlayer
 	{
 		name = null;
 
-		if (type <= ItemID.None || type >= ItemLoader.ItemCount || ItemLoader.GetItem(type) is not CurrencyShard shard)
+		if (ItemLoader.GetItem(type) is not CurrencyShard shard)
 		{
 			return false;
 		}

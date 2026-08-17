@@ -543,10 +543,7 @@ internal sealed class BossTracker : ModSystem
 
 	private static bool IsPathOfTerrariaBoss(int type)
 	{
-		return type >= NPCID.Count
-			&& type < NPCLoader.NPCCount
-			&& NPCLoader.GetNPC(type) is ModNPC npc
-			&& npc.Mod == PoTMod.Instance
+		return NPCLoader.GetNPC(type) is { Mod: PoTMod }
 			&& ContentSamples.NpcsByNetId.TryGetValue(type, out NPC sample)
 			&& (sample.boss || NPCID.Sets.ShouldBeCountedAsBoss[type]);
 	}
