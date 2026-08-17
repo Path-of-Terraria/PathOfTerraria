@@ -408,7 +408,7 @@ internal sealed class MapDeviceDebugMapMenu : UIPanel
 			data.Affixes.Clear();
 			data.ImplicitCount = 0;
 
-			int affixCount = PoTItemHelper.GetAffixCount(rarity);
+			int affixCount = PoTItemHelper.GetAffixCount(rarity, data.ItemType);
 			for (int i = 0; i < affixCount; i++)
 			{
 				PoTItemHelper.AddNewAffix(preview, data);
