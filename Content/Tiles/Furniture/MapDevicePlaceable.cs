@@ -45,7 +45,7 @@ namespace PathOfTerraria.Content.Tiles.Furniture;
 public sealed class MapDevicePlaceable : MapDeviceTile
 {
 	protected override bool IsLegacy => true;
-	
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
@@ -105,7 +105,7 @@ public class MapDeviceTile : ModTile
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style3x4);
 		// Visually spans [13, 7], logically [11, 6].
-		TileObjectData.newTile.Width = 11; 
+		TileObjectData.newTile.Width = 11;
 		TileObjectData.newTile.Height = 6;
 		TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 16, 16, 18];
 		TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(ModContent.GetInstance<MapDeviceEntity>().Hook_AfterPlacement, -1, 0, false);
@@ -220,9 +220,9 @@ public class MapDeviceTile : ModTile
 				spikeOffset += new Vector2(0, offInt * -1);
 				spikeRotation = rotInt * -0.015f * (openingAnim > 0f ? 1 : 0);
 			}
-			
+
 			Vector2 spikePos = worldCenter + baseOffset + spikeOffset - screenPosition;
-			
+
 			sb.Draw(spikesTexture, spikePos, srcRect, color, spikeRotation, spikeOrigin, 1f, 0, 0f);
 		}
 	}
@@ -610,7 +610,7 @@ internal class MapDeviceEntity : ModTileEntity
 	public void UpdateEffects(Vector2 center)
 	{
 		if (Main.dedServ) { return; }
-		
+
 		ActivationAnimation = MathUtils.StepTowards(ActivationAnimation, (InteractingPlayer.HasValue | PortalActive) ? 1 : 0, TimeSystem.RenderDeltaTime / 0.2f);
 		OpeningAnimation = MathUtils.StepTowards(OpeningAnimation, PortalActive ? 1 : 0, TimeSystem.RenderDeltaTime / 0.2f);
 		ReadyAnimation = MathUtils.StepTowards(ReadyAnimation, (PortalActive || TryOpeningPortal(evalMode: true)) ? 1 : 0, TimeSystem.RenderDeltaTime / 0.2f);
@@ -631,7 +631,7 @@ internal class MapDeviceEntity : ModTileEntity
 				musicVolume = MathHelper.Lerp(musicVolume, target, 0.1f);
 			}
 		}
-		
+
 		// Maintain a camera curio as long as this interface is open by the local player.
 		if (InteractingPlayer.HasValue && Main.player[InteractingPlayer.Value] is { } player && player == Main.LocalPlayer)
 		{
@@ -870,14 +870,17 @@ internal class MapDeviceEntity : ModTileEntity
 
 		Subworld? destination = StoredMap is { IsAir: false, ModItem: Map storedMap } ? storedMap.GetDestination() : null;
 
+		// Do not consume the map or sigils if an existing multiplayer instance is still occupied.
+		if (!MappingWorld.DeleteSavedSubworld(destination))
+		{
+			return false;
+		}
+
 		ActiveSigils = sigilEntries;
 		foreach (Item sigilSlot in SigilSlots)
 		{
 			sigilSlot.TurnToAir();
 		}
-
-		// Ensure a newly opened portal starts from a fresh save.
-		MappingWorld.DeleteSavedSubworld(destination);
 
 		PortalActive = true;
 		PortalUsesLeft = int.MaxValue;
@@ -1003,6 +1006,12 @@ internal class MapDeviceEntity : ModTileEntity
 
 		Subworld? destination = StoredMap.ModItem is Map map ? map.GetDestination() : null;
 
+		// Keep the device open while players still occupy the corresponding subserver.
+		if (!MappingWorld.DeleteSavedSubworld(destination))
+		{
+			return false;
+		}
+
 		if (destination is not null)
 		{
 			ResetPersistentMapInfo(destination.FullName);
@@ -1020,7 +1029,6 @@ internal class MapDeviceEntity : ModTileEntity
 			SigilSlots[i].TurnToAir();
 		}
 		MappingWorld.ClearActiveMapDevice();
-		MappingWorld.DeleteSavedSubworld(destination);
 
 		// Broadcast the interaction.
 		if (Main.netMode == NetmodeID.Server)
@@ -1032,7 +1040,7 @@ internal class MapDeviceEntity : ModTileEntity
 		if (!Main.dedServ)
 		{
 			Main.instance.CameraModifiers.Add(new PunchCameraModifier(Position.ToWorldCoordinates(), new Vector2(1, -4), 1f, 2.5f, 45, 300, "PortalClosing"));
-	
+
 			SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/MapDevice/PortalClose", 2)
 			{
 				MaxInstances = 2,
@@ -1184,7 +1192,7 @@ internal class MapDeviceInteraction : Handler
 	public static void Send(int entityId, Kind kind, int arg = 0, int toClient = -1, int ignoreClient = -1)
 	{
 		DebugUtils.DebugLog($"Sending interaction confirmation: {kind}");
-		
+
 		ModPacket packet = Networking.GetPacket<MapDeviceInteraction>();
 		packet.Write((int)entityId);
 		packet.Write((byte)kind);

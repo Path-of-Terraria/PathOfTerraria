@@ -17,6 +17,7 @@ internal class ExitPortal : ModProjectile, IRightClickableProjectile, IMapIcon
 	private static Asset<Texture2D> Highlight = null;
 
 	private ref float ItemMagnetTimer => ref Projectile.ai[0];
+	protected virtual bool IsPlayerCreatedReturnPortal => false;
 
 	public override void SetStaticDefaults()
 	{
@@ -33,6 +34,7 @@ internal class ExitPortal : ModProjectile, IRightClickableProjectile, IMapIcon
 		Projectile.tileCollide = false;
 		Projectile.Size = new Vector2(80, 80);
 		Projectile.Opacity = 0f;
+		Projectile.netImportant = true;
 	}
 
 	public override bool? CanDamage()
@@ -55,7 +57,7 @@ internal class ExitPortal : ModProjectile, IRightClickableProjectile, IMapIcon
 
 		Lighting.AddLight(Projectile.Center, TorchID.Red);
 
-		if (ItemMagnetTimer++ == 60)
+		if (!IsPlayerCreatedReturnPortal && ItemMagnetTimer++ == 60)
 		{
 			MagnetizeItems();
 		}
@@ -143,6 +145,54 @@ internal class ExitPortal : ModProjectile, IRightClickableProjectile, IMapIcon
 		return false;
 	}
 
+	internal static bool OpenFor(Player player)
+	{
+		int portalType = ModContent.ProjectileType<ReturnPortal>();
+
+		foreach (Projectile projectile in Main.ActiveProjectiles)
+		{
+			if (projectile.type != portalType)
+			{
+				continue;
+			}
+
+			// Mapping worlds use one shared return portal. Keeping it world-owned makes it survive
+			// the period between a subserver loading and its first player reconnecting, and lets the
+			// server authoritatively synchronize later hotkey relocations.
+			projectile.owner = Main.maxPlayers;
+			projectile.Center = player.Center;
+			projectile.velocity = Vector2.Zero;
+			projectile.ai[0] = 0f;
+			projectile.timeLeft = 2;
+			projectile.netUpdate = true;
+
+			if (Main.netMode == NetmodeID.Server)
+			{
+				NetMessage.SendData(MessageID.SyncProjectile, number: projectile.whoAmI);
+			}
+
+			return true;
+		}
+
+		int index = Projectile.NewProjectile(player.GetSource_Misc("OpenReturnPortal"), player.Center, Vector2.Zero,
+			portalType, 0, 0f, Main.maxPlayers);
+
+		if (index < 0 || index >= Main.maxProjectiles)
+		{
+			return false;
+		}
+
+		Projectile portal = Main.projectile[index];
+		portal.netUpdate = true;
+
+		if (Main.netMode == NetmodeID.Server)
+		{
+			NetMessage.SendData(MessageID.SyncProjectile, number: index);
+		}
+
+		return true;
+	}
+
 	bool IRightClickableProjectile.RightClick(Player player, bool mouseDirectlyOver)
 	{
 		if (Main.mouseRight && Main.mouseRightRelease)
@@ -156,7 +206,8 @@ internal class ExitPortal : ModProjectile, IRightClickableProjectile, IMapIcon
 			Tooltip.Create(new TooltipDescription
 			{
 				Identifier = "Portal",
-				SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),
+				SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc."
+					+ (IsPlayerCreatedReturnPortal ? "ReturnToOverworld" : "Enter")),
 			});
 		}
 
