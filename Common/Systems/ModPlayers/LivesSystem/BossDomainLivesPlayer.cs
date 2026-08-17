@@ -60,7 +60,10 @@ internal class BossDomainLivesPlayer : ModPlayer
 
 	public override void OnEnterWorld()
 	{
-		bool inDomain = SubworldSystem.Current is MappingWorld;
+		// Ravencrest is a MappingWorld too, so the unqualified check made the hub run on domain rules:
+		// deaths there burned lives (one per player at four players), and running out set Player.ghost
+		// and force-called SubworldSystem.Exit from the Ghost detour.
+		bool inDomain = MappingWorld.InInstancedDomain;
 
 		if (inDomain && !InDomain)
 		{
