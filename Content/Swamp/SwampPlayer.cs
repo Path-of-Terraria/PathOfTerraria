@@ -1,6 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems.ModPlayers.LivesSystem;
 using PathOfTerraria.Content.Buffs;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 
 namespace PathOfTerraria.Content.Swamp;
 

@@ -1,10 +1,13 @@
+﻿using System.IO;
+using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.Systems.Affixes.Maps;
+using SubworldLibraryCommunityFork;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Affixes.Maps;
 using PathOfTerraria.Common.Systems.Sigils;
-using SubworldLibrary;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;

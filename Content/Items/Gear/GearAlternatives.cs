@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Core.Items;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using Terraria.DataStructures;
 using Terraria.ID;
 

@@ -1,5 +1,5 @@
 ﻿using MonoMod.Cil;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode.DukeDomain;
 

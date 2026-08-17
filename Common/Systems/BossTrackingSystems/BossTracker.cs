@@ -7,7 +7,8 @@ using PathOfTerraria.Common.Subworlds.MappingAreas;
 using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Content.Swamp.NPCs.SwampBoss;
-using SubworldLibrary;
+using PathOfTerraria.Utilities.Terraria;
+using SubworldLibraryCommunityFork;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 
@@ -138,17 +139,9 @@ internal sealed class BossTracker : ModSystem
 	{
 		int type = self.type;
 
-		if (type is NPCID.EaterofWorldsHead or NPCID.EaterofWorldsTail or NPCID.EaterofWorldsBody) // EoW should only count once every other EoW is dead
+		if (NPCUtil.IsEaterOfWorldsPart(type)) // EoW should only count once every other EoW segment is dead
 		{
-			foreach (NPC npc in Main.ActiveNPCs)
-			{
-				if (npc.whoAmI != self.whoAmI && self.type == NPCID.EaterofWorldsBody)
-				{
-					return false;
-				}
-			}
-
-			return true;
+			return NPCUtil.IsLastEaterOfWorldsPart(self);
 		}
 
 		// Only count as downed when there's 1 mossmother left

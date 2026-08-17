@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Common.NPCs;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using System.IO;
 using System.Linq;
 using Terraria.Audio;

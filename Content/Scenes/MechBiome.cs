@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 
 namespace PathOfTerraria.Content.Scenes;
 

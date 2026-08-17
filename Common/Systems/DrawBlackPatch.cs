@@ -1,4 +1,4 @@
-﻿using SubworldLibrary;
+﻿using SubworldLibraryCommunityFork;
 
 namespace PathOfTerraria.Common.Systems;
 

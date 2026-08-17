@@ -1,9 +1,9 @@
-using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.Maps;
 using PathOfTerraria.Content.Items.Currency;
 using PathOfTerraria.Core.Items;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using Terraria.Localization;
 using Terraria.Utilities;
 

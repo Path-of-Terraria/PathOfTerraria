@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Affixes;
@@ -6,7 +6,7 @@ using PathOfTerraria.Common.Systems.Affixes.Maps;
 using PathOfTerraria.Common.Systems.MobSystem;
 using PathOfTerraria.Common.Systems.Sigils;
 using PathOfTerraria.Core.UI.SmartUI;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;

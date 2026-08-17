@@ -3,7 +3,7 @@ using PathOfTerraria.Common.Systems.ModPlayers.LivesSystem;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.Projectiles.PassiveProjectiles;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;

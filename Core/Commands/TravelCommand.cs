@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 
 namespace PathOfTerraria.Core.Commands;
 

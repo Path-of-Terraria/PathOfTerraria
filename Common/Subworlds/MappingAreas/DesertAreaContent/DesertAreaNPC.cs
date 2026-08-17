@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Content.NPCs.Mapping.Desert;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using System.Collections.Generic;
 using Terraria.ID;
 

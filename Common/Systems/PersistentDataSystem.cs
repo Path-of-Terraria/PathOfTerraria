@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Common.Subworlds;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;

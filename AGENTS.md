@@ -291,7 +291,7 @@ Primary project file:
 Build notes:
 
 - The project imports `..\tModLoader.targets`.
-- References include `SubworldLibrary`, `HousingAPI`, `NPCUtils`, `StructureHelper`, and `Wayfarer` from `lib/`.
+- References include `SubworldLibraryCommunityFork`, `HousingAPI`, `NPCUtils`, `StructureHelper`, and `Wayfarer` from `lib/`.
 - Custom shader build tools live under `BuildTools/ShaderCompiler/`.
 
 If you are validating a change, prefer:

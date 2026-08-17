@@ -1,8 +1,8 @@
-using PathOfTerraria.Common.Config;
+﻿using PathOfTerraria.Common.Config;
 using PathOfTerraria.Common.Looting.ItemFiltering;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using Terraria.GameContent.UI.States;
 using Terraria.ID;
 using Terraria.Localization;

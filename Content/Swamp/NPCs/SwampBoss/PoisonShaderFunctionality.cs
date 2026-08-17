@@ -1,6 +1,6 @@
 ﻿using PathOfTerraria.Content.Buffs;
 using ReLogic.Content;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;

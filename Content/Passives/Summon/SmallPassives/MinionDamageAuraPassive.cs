@@ -1,7 +1,6 @@
 using PathOfTerraria.Common.Config;
 using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
-using PathOfTerraria.Content.Buffs;
 using ReLogic.Content;
 
 namespace PathOfTerraria.Content.Passives;
@@ -20,25 +19,6 @@ internal class MinionDamageAuraPassive : Passive
 		public override bool AppliesToEntity(Projectile entity, bool lateInstantiation)
 		{
 			return entity.minion && !CustomProjectileSets.MultisegmentMinionProjectiles[entity.type];
-		}
-
-		public override bool PreAI(Projectile proj)
-		{
-			if (!proj.TryGetOwner(out Player owner) || !owner.GetModPlayer<PassiveTreePlayer>().TryGetCumulativeValue<MinionDamageAuraPassive>(out float value))
-			{
-				return true;
-			}
-
-			foreach (Player player in Main.ActivePlayers)
-			{
-				if (player.DistanceSQ(proj.Center) < PoTMod.NearbyDistanceSq && !player.HasBuff<MinionDamageAuraBuff>())
-				{
-					player.GetDamage(DamageClass.Generic) += value / 100f;
-					player.AddBuff(ModContent.BuffType<MinionDamageAuraBuff>(), 2);
-				}
-			}
-
-			return true;
 		}
 
 		public override bool PreDraw(Projectile proj, ref Color lightColor)
