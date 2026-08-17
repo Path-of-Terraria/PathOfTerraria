@@ -43,7 +43,7 @@ internal class VirtualBagStoragePlayer : ModPlayer
 
 	private static bool IsVirtualBagActiveContext()
 	{
-		return SubworldSystem.Current is MappingWorld and not RavencrestSubworld;
+		return MappingWorld.InInstancedDomain;
 	}
 
 	public override void Load()
