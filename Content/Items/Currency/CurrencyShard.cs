@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.UI;
 
 namespace PathOfTerraria.Content.Items.Currency;
@@ -104,8 +105,13 @@ internal sealed class CurrencyShardMouseItemTargetingSystem : ModSystem
 
 		Item targetItem = inv[slot];
 
-		if (!shard.CanUseInPouch(targetItem, out _))
+		if (!shard.CanUseInPouch(targetItem, out string failKey))
 		{
+			// Mirror the reason the currency pouch shows in its tooltip. Without this the click is
+			// swallowed silently and a valid rejection looks identical to a broken shard.
+			Main.NewText(Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.ShardInvalidations.{failKey}"), ItemTooltips.Colors.Negative);
+			SoundEngine.PlaySound(SoundID.MenuTick);
+			Main.mouseRightRelease = false;
 			return;
 		}
 

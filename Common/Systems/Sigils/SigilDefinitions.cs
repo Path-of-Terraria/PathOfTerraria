@@ -4,7 +4,7 @@ using System.Linq;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Subworlds.MappingAreas;
 using PathOfTerraria.Content.Items.Mapping.Sigils;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.Sigils;

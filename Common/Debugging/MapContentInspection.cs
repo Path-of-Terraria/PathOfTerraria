@@ -14,7 +14,7 @@ using PathOfTerraria.Common.Systems.Runebound;
 using PathOfTerraria.Common.Systems.Sigils;
 using PathOfTerraria.Content.Conflux;
 using PathOfTerraria.Content.Tiles.Maps;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using Terraria.DataStructures;
 using Terraria.ID;
 
