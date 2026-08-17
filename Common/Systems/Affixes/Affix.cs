@@ -30,6 +30,8 @@ public abstract class Affix : ILocalizedModType
 	public int Duration = 180; //3 Seconds by default
 	public bool IsCorruptedAffix = false;
 	public bool IsImplicit = false;
+	public bool IsRuneboundAffix = false;
+	public bool IsRuneboundChaseAffix = false;
 	public bool Round = false;
 	public int Tier = 1;
 
@@ -89,6 +91,8 @@ public abstract class Affix : ILocalizedModType
 		tag["tier"] = Tier;
 		tag["implicit"] = IsImplicit;
 		tag["corrupt"] = IsCorruptedAffix;
+		tag["runebound"] = IsRuneboundAffix;
+		tag["runeboundChase"] = IsRuneboundChaseAffix;
 	}
 
 	/// <summary>
@@ -120,6 +124,8 @@ public abstract class Affix : ILocalizedModType
 		Tier = tag.GetInt("tier");
 		IsImplicit = tag.GetBool("implicit");
 		IsCorruptedAffix = tag.GetBool("corrupt");
+		IsRuneboundAffix = tag.GetBool("runebound");
+		IsRuneboundChaseAffix = tag.GetBool("runeboundChase");
 	}
 
 	public virtual void NetSend(BinaryWriter writer)
@@ -132,6 +138,8 @@ public abstract class Affix : ILocalizedModType
 		writer.Write((byte)Tier);
 		writer.Write(IsImplicit);
 		writer.Write(IsCorruptedAffix);
+		writer.Write(IsRuneboundAffix);
+		writer.Write(IsRuneboundChaseAffix);
 	}
 
 	public virtual void NetReceive(BinaryReader reader)
@@ -142,6 +150,8 @@ public abstract class Affix : ILocalizedModType
 		Tier = reader.ReadByte();
 		IsImplicit = reader.ReadBoolean();
 		IsCorruptedAffix = reader.ReadBoolean();
+		IsRuneboundAffix = reader.ReadBoolean();
+		IsRuneboundChaseAffix = reader.ReadBoolean();
 	}
 
 	/// <summary>
@@ -256,6 +266,8 @@ public abstract class Affix : ILocalizedModType
 		clone.Duration = Duration;
 		clone.IsCorruptedAffix = IsCorruptedAffix;
 		clone.IsImplicit = IsImplicit;
+		clone.IsRuneboundAffix = IsRuneboundAffix;
+		clone.IsRuneboundChaseAffix = IsRuneboundChaseAffix;
 		clone.Round = Round;
 		clone.Tier = Tier;
 

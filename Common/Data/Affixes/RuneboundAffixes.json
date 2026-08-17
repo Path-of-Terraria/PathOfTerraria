@@ -1,0 +1,54 @@
+[
+	{
+		"affixType": "RuneboundPrismaticAffix",
+		"equipTypes": "Armor Shield Ring Amulet",
+		"canRollNaturally": false,
+		"tiers": [
+			{
+				"minValue": 18,
+				"maxValue": 24,
+				"minimumLevel": 70,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "RuneboundTitanAffix",
+		"equipTypes": "Armor Shield Ring Amulet",
+		"canRollNaturally": false,
+		"tiers": [
+			{
+				"minValue": 25,
+				"maxValue": 35,
+				"minimumLevel": 70,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "RuneboundAnnihilationAffix",
+		"equipTypes": "Weapon Shield Quiver Talisman Focus Grimoire Summon",
+		"canRollNaturally": false,
+		"tiers": [
+			{
+				"minValue": 30,
+				"maxValue": 40,
+				"minimumLevel": 70,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "RuneboundTrinityAffix",
+		"equipTypes": "Weapon Armor Shield Quiver Talisman Focus Grimoire Summon Ring Amulet",
+		"canRollNaturally": false,
+		"tiers": [
+			{
+				"minValue": 20,
+				"maxValue": 30,
+				"minimumLevel": 70,
+				"weight": 1
+			}
+		]
+	}
+]

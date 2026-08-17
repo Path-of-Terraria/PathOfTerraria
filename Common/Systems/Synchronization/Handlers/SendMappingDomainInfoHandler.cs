@@ -1,34 +1,20 @@
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.Maps;
-using System.Collections.Generic;
+using PathOfTerraria.Common.Systems.Sigils;
 using System.IO;
 
 namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
 /// <summary>
-/// Sends mapping domain info (Level, Tier, Affixes) to the server.
+/// Applies server-authored mapping domain info received by a client.
 /// </summary>
 internal class SendMappingDomainInfoHandler : Handler
 {
-	public static void Send(short level, short tier, List<MapAffix> affixes)
-	{
-		ModPacket packet = Networking.GetPacket<SendMappingDomainInfoHandler>();
-		packet.Write(level);
-		packet.Write(tier);
-		packet.Write((byte)affixes.Count);
-
-		foreach (MapAffix item in affixes)
-		{
-			item.NetSend(packet);
-		}
-
-		packet.Send();
-	}
-
 	internal override void ServerReceive(BinaryReader reader, byte sender)
 	{
-		GetAndSetMappingDomainInfo(reader);
+		// Map state is derived from the server's MapDeviceEntity when portal entry is authorized.
+		// Never accept level, affix, or sigil state supplied by a client.
 	}
 
 	internal static void GetAndSetMappingDomainInfo(BinaryReader reader)
@@ -44,6 +30,19 @@ internal class SendMappingDomainInfoHandler : Handler
 			Affix affix = Affix.FromBReader(reader);
 			MappingWorld.Affixes.Add((MapAffix)affix);
 		}
+
+		int serializedSigilCount = reader.ReadByte();
+		int sigilCount = Math.Min(serializedSigilCount, 4);
+		var sigils = new SigilEntry[sigilCount];
+		for (int i = 0; i < serializedSigilCount; i++)
+		{
+			SigilEntry entry = SigilEntry.NetReceive(reader);
+			if (i < sigilCount)
+			{
+				sigils[i] = entry;
+			}
+		}
+		SigilSystem.SetActive(sigils);
 
 		MappingWorld.AreaLevel = level;
 		MappingWorld.MapTier = tier;

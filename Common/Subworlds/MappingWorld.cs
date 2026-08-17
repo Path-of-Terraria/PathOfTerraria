@@ -4,6 +4,7 @@ using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.Maps;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.DisableBuilding;
+using PathOfTerraria.Common.Systems.Sigils;
 using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Common.UI;
@@ -480,6 +481,8 @@ public abstract class MappingWorld : Subworld
 			worldInfoTag.Add("affixes", (TagCompound[])[.. Affixes.Select(x => x.SaveAs())]);
 		}
 
+		worldInfoTag.Add("sigils", SigilSystem.SaveActive());
+
 		SubworldSystem.CopyWorldData("worldInfo", worldInfoTag);
 	}
 
@@ -514,6 +517,14 @@ public abstract class MappingWorld : Subworld
 			? new Point16(activeMapDeviceX, activeMapDeviceY)
 			: new Point16(-1, -1);
 		Affixes = [];
+		if (worldInfoTag.TryGet("sigils", out TagCompound sigils) || worldInfoTag.TryGet("scarabs", out sigils))
+		{
+			SigilSystem.LoadActive(sigils);
+		}
+		else
+		{
+			SigilSystem.ClearActive();
+		}
 
 		if (worldInfoTag.TryGet("affixes", out TagCompound[] affixes))
 		{

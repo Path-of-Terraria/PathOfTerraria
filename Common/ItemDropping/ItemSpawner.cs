@@ -120,13 +120,17 @@ internal class ItemSpawner
 	/// <param name="rarity">Rarity of the item</param>
 	public static int SpawnItemFromCategory<T>(Vector2 pos, int itemLevel = 0, params ItemRarity[] rarity) where T : ModItem
 	{
+		itemLevel = itemLevel == 0 ? PoTItemHelper.PickItemLevel() : itemLevel;
 		HashSet<ItemRarity> validRarity = [.. rarity];
 		bool noRarityCheck = rarity is null || rarity.Length == 0;
-		ItemDatabase.ItemRecord[] array = [.. ItemDatabase.AllItems.Where(x => (noRarityCheck || validRarity.Contains(x.Rarity)) && x.Item.ModItem is T)];
+		List<ItemDatabase.ItemRecord> candidates = [.. ItemDatabase.AllItems.Where(x =>
+			(noRarityCheck || validRarity.Contains(x.Rarity))
+			&& x.Item.ModItem is T
+			&& DropTable.CanDropAtItemLevel(x, itemLevel))];
 
-		if (array.Length > 0)
+		if (candidates.Count > 0)
 		{
-			ItemDatabase.ItemRecord record = Main.rand.Next(array);
+			ItemDatabase.ItemRecord record = DropTable.RollList(itemLevel, 0f, candidates, _ => true, 0f);
 			return SpawnItem(record.ItemId, pos, itemLevel, record.Rarity);
 		}
 

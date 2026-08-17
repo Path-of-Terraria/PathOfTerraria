@@ -261,6 +261,7 @@ InvButtons: {
 	// Stats: Stats
 	// RestartTutorial: Restart Tutorial
 	// DomainInformation: Domain Information
+	// MapContentInspector: Map Content Inspector (Debug)
 	// VirtualBag: Sack of Holding
 	// CurrencyPouch: Currency Pouch
 }
@@ -268,11 +269,26 @@ InvButtons: {
 SubworldHelp: {
 	// MapTier: "[i:4927] Map Tier: "
 	// Affixes: "[i:885] Affixes:"
+	// Sigils: "[i:PathOfTerraria/CarvedSigilOfBinding] Domain Sigils:"
 	// MapStrength: "[i:29] Map strength modifier: "
 	// ExperienceBoost: "    [i:278] Experience boost: +"
 	// DropRateBoost: "    [i:278] Drop rate increase: +"
 	// DropRarityBoost: "    [i:278] Rarity boost: +"
 	// Info: (Domain Information)
+}
+
+MapContentInspector: {
+	// Loading: Requesting map snapshot
+	// Empty: No entries in this section
+
+	Tabs: {
+		// Overview: Overview
+		// Content: Content
+		// Containers: Containers
+		// Modifiers: Modifiers
+		// Sigils: Sigils
+		// Diagnostics: Diagnostics
+	}
 }
 
 Grimoire: {
@@ -435,7 +451,11 @@ ItemFilter: {
 
 CurrencyPouch: {
 	// Title: Currency Pouch
-	// Apply: Right click to apply to held item
+	// TabCurrency: Currency
+	// TabRunestones: Runestones
+	// Apply: Right click to apply to the slotted item
+	// CraftingHint: Right click a currency to apply it to this item
+	// ModifierRemoved: Removed: {0}
 	// ExtractOne: Ctrl + Left Click: take 1 out
 	// ExtractAll: Ctrl + Shift + Left Click: take all out
 	// StoreAll: Shift + Left Click: store all from inventory
@@ -500,6 +520,9 @@ ClassPages: {
 
 MapDevice: {
 	// MapSlot: Map Slot
+	// SigilSlot: Sigil Slot {0}
+	// SigilSlotLocked: Unlock by defeating a tier {0} map
+	// TrashSlot: Trash
 	// ActivatePortal: Open Portal
 	// DeactivatePortal: Close Portal
 	// ConfirmClosePortal: Confirm Close
@@ -510,6 +533,23 @@ MapDevice: {
 	// ClosePortalMapWarning: Closing the portal will discard the map!
 	// ClosePortalResourceWarning: Closing the portal will discard the portal fluid!
 	// InjectionModuleUnavailable: ???
+
+	DebugMapBuilder: {
+		// Open: Open Debug Map Builder
+		// Title: Debug Map Builder
+		// BossDomains: Boss Domains
+		// ExplorableMaps: Explorable Maps
+		// NoMaps: No maps are registered for this category.
+		// ExplorationSummary: Tier {0}  |  Area Level {1}  |  {2}
+		// BossSummary: Tier {0}  |  Area Level {1}
+		// Tier: Tier {0}
+		// Magic: Magic
+		// Rare: Rare
+		// Reroll: Reroll
+		// Modifiers: Map Modifiers
+		// NoModifiers: No modifiers
+		// Confirm: Insert Map
+	}
 }
 
 MigrateRavencrest: {

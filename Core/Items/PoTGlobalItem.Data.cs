@@ -105,6 +105,18 @@ public sealed class PoTInstanceItemData : GlobalItem
 public sealed class PoTStaticItemData
 {
 	/// <summary>
+	/// 		The progression tier of an ordinary weapon base. Zero means the item does not
+	/// 		participate in tiered base selection.
+	/// </summary>
+	public int BaseTier { get; set; }
+
+	/// <summary>
+	/// 		The total selection weight reserved for this weapon family and rarity after
+	/// 		base-tier weighting is normalized. Tiered bases in one family must agree.
+	/// </summary>
+	public float BaseFamilyWeight { get; set; } = 1f;
+
+	/// <summary>
 	///		The drop chance of this item.<br/>
 	///		If this is null (the default value), then this item does not specify a drop chance AT ALL (DIFFERENT from 0%), and should not be
 	///		registered. This is most prominent in things like vanilla items that should never drop.<br/>

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.Affixes;
@@ -199,6 +200,78 @@ public static class PoTItemHelper
 
 		affix.Value = AffixRegistry.GetRandomAffixValue(affix, item, GetItemLevel.Invoke(item));
 		data.Affixes.Add(affix);
+	}
+
+	/// <summary>Creates a specific explicit affix without mutating the item.</summary>
+	public static bool TryCreateSpecificAffix(Item item, Type affixType, [NotNullWhen(true)] out ItemAffix affix)
+	{
+		affix = null;
+		PoTInstanceItemData data = item.GetInstanceData();
+
+		if (data.Affixes.Any(existing => existing.GetType() == affixType))
+		{
+			return false;
+		}
+
+		ItemAffixData affixData = AffixRegistry.TryGetItemData(affixType, item);
+		int itemLevel = GetItemLevel.Invoke(item);
+
+		if (affixData is null || !affixData.CanRollAtLevel(itemLevel))
+		{
+			return false;
+		}
+
+		affix = AffixRegistry.ConvertToItemAffix(affixData);
+
+		if (affix is null)
+		{
+			return false;
+		}
+
+		affix.Value = AffixRegistry.GetRandomAffixValue(affix, item, itemLevel);
+		affix.IsRuneboundAffix = true;
+		return true;
+	}
+
+	/// <summary>Adds a specific affix if the item's current rarity has room for another explicit.</summary>
+	public static bool TryAddSpecificAffix(Item item, Type affixType)
+	{
+		PoTInstanceItemData data = item.GetInstanceData();
+
+		if (HasMaxAffixesForRarity(item) || !TryCreateSpecificAffix(item, affixType, out ItemAffix affix))
+		{
+			return false;
+		}
+
+		data.Affixes.Add(affix);
+		data.NameAffix = GenerateNameAffixes.Invoke(item);
+		return true;
+	}
+
+	/// <summary>Atomically replaces one random explicit affix with a specific one.</summary>
+	public static bool TryReplaceRandomExplicitAffix(Item item, Type affixType, bool chaseAffix = false)
+	{
+		PoTInstanceItemData data = item.GetInstanceData();
+		List<int> candidates = [];
+
+		for (int i = 0; i < data.Affixes.Count; i++)
+		{
+			if (!data.Affixes[i].IsImplicit)
+			{
+				candidates.Add(i);
+			}
+		}
+
+		if (candidates.Count == 0 || !TryCreateSpecificAffix(item, affixType, out ItemAffix affix))
+		{
+			return false;
+		}
+
+		affix.IsRuneboundChaseAffix = chaseAffix;
+		int replaceIndex = candidates[Main.rand.Next(candidates.Count)];
+		data.Affixes[replaceIndex] = affix;
+		data.NameAffix = GenerateNameAffixes.Invoke(item);
+		return true;
 	}
 
 	#endregion

@@ -117,7 +117,7 @@ public sealed class QuestDebugState : SmartUiState
 				e.SetDimensions(x: (0.5f, -256), y: (0.10f, +0), width: (0.0f, +512), height: (0.80f, +0));
 			}
 
-			e.AddComponent(new UIMouseDrag(canMove: true, canResize: true));
+			e.AddComponent(new UIMouseDrag("QuestDebugging_MainWindow", canMove: true, canResize: true));
 		});
 
 		// Header

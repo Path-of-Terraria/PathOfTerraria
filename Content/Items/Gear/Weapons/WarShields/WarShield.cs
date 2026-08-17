@@ -2,6 +2,7 @@ using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.VanillaModifications;
 using PathOfTerraria.Core.Items;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using Terraria.ID;
 using Terraria.Localization;
 
@@ -120,6 +121,8 @@ internal abstract class WarShield : Gear, IParryItem
 
 	public virtual bool ParryProjectile(Player player, Projectile projectile)
 	{
+		float implicitDamage = WeaponImplicitStrength.Get<WarShieldCounterDamageImplicitAffix>(player.HeldItem);
+		projectile.damage = (int)(projectile.damage * (1f + implicitDamage / 100f));
 		projectile.velocity *= -1;
 		projectile.friendly = true;
 		projectile.owner = player.whoAmI;

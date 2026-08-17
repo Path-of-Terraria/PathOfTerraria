@@ -1,0 +1,122 @@
+[
+	{
+		"affixType": "SwordCriticalMultiplierImplicitAffix",
+		"equipTypes": "Sword",
+		"canRollNaturally": false,
+		"tiers": [
+			{ "minValue": 2, "maxValue": 2, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 4, "maxValue": 4, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 6, "maxValue": 6, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 8, "maxValue": 8, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 10, "maxValue": 10, "minimumLevel": 1, "weight": 1 }
+		]
+	},
+	{
+		"affixType": "BattleaxeExecuteDamageImplicitAffix",
+		"equipTypes": "Battleaxe",
+		"canRollNaturally": false,
+		"tiers": [
+			{ "minValue": 4, "maxValue": 4, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 6, "maxValue": 6, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 8, "maxValue": 8, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 10, "maxValue": 10, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 12, "maxValue": 12, "minimumLevel": 1, "weight": 1 }
+		]
+	},
+	{
+		"affixType": "BowChargedShotDamageImplicitAffix",
+		"equipTypes": "Bow",
+		"canRollNaturally": false,
+		"tiers": [
+			{ "minValue": 4, "maxValue": 4, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 6, "maxValue": 6, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 8, "maxValue": 8, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 10, "maxValue": 10, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 12, "maxValue": 12, "minimumLevel": 1, "weight": 1 }
+		]
+	},
+	{
+		"affixType": "BoomerangReturnDamageImplicitAffix",
+		"equipTypes": "Boomerang",
+		"canRollNaturally": false,
+		"tiers": [
+			{ "minValue": 5, "maxValue": 5, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 8, "maxValue": 8, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 11, "maxValue": 11, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 14, "maxValue": 14, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 17, "maxValue": 17, "minimumLevel": 1, "weight": 1 }
+		]
+	},
+	{
+		"affixType": "JavelinDashDamageImplicitAffix",
+		"equipTypes": "Javelin",
+		"canRollNaturally": false,
+		"tiers": [
+			{ "minValue": 5, "maxValue": 5, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 8, "maxValue": 8, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 11, "maxValue": 11, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 14, "maxValue": 14, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 17, "maxValue": 17, "minimumLevel": 1, "weight": 1 }
+		]
+	},
+	{
+		"affixType": "StaffChargeSpeedImplicitAffix",
+		"equipTypes": "Staff",
+		"canRollNaturally": false,
+		"tiers": [
+			{ "minValue": 3, "maxValue": 3, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 5, "maxValue": 5, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 7, "maxValue": 7, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 9, "maxValue": 9, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 11, "maxValue": 11, "minimumLevel": 1, "weight": 1 }
+		]
+	},
+	{
+		"affixType": "TomeManaOnKillImplicitAffix",
+		"equipTypes": "Tome",
+		"canRollNaturally": false,
+		"tiers": [
+			{ "minValue": 1, "maxValue": 1, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 2, "maxValue": 2, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 3, "maxValue": 3, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 4, "maxValue": 4, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 5, "maxValue": 5, "minimumLevel": 1, "weight": 1 }
+		]
+	},
+	{
+		"affixType": "WandFlurryDamageImplicitAffix",
+		"equipTypes": "Wand",
+		"canRollNaturally": false,
+		"tiers": [
+			{ "minValue": 3, "maxValue": 3, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 5, "maxValue": 5, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 7, "maxValue": 7, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 9, "maxValue": 9, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 11, "maxValue": 11, "minimumLevel": 1, "weight": 1 }
+		]
+	},
+	{
+		"affixType": "WarShieldCounterDamageImplicitAffix",
+		"equipTypes": "WarShield",
+		"canRollNaturally": false,
+		"tiers": [
+			{ "minValue": 5, "maxValue": 5, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 10, "maxValue": 10, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 15, "maxValue": 15, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 20, "maxValue": 20, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 25, "maxValue": 25, "minimumLevel": 1, "weight": 1 }
+		]
+	},
+	{
+		"affixType": "WhipTipDamageImplicitAffix",
+		"equipTypes": "Whip",
+		"canRollNaturally": false,
+		"tiers": [
+			{ "minValue": 4, "maxValue": 4, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 7, "maxValue": 7, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 10, "maxValue": 10, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 13, "maxValue": 13, "minimumLevel": 1, "weight": 1 },
+			{ "minValue": 16, "maxValue": 16, "minimumLevel": 1, "weight": 1 }
+		]
+	}
+]

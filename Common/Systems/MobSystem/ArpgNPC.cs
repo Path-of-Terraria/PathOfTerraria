@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using PathOfTerraria.Common.Data;
@@ -11,6 +11,8 @@ using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.ElementalDamage;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.Runebound;
+using PathOfTerraria.Common.Systems.Sigils;
 using PathOfTerraria.Core.Hooks;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Utilities.Terraria;
@@ -297,17 +299,27 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 
 		if (Main.netMode != NetmodeID.MultiplayerClient)
 		{
-			float progression = PoTMobHelper.GetStatScaling();
-			float rareChance = MathHelper.Lerp(0.003f, 0.015f, progression);
-			float magicChance = MathHelper.Lerp(0.04f, 0.12f, progression);
-			float rarityRoll = Main.rand.NextFloat();
+			bool forcedRunebound = RuneboundSpawnContext.TryConsume(out RuneboundFamily runeboundFamily);
+			bool forcedSigilRare = SigilSpawnContext.TryConsume(out int sigilBonusAffixes, out float sigilLifeMultiplier, out float sigilDamageMultiplier);
 
-			Rarity = rarityRoll switch
+			if (forcedRunebound || forcedSigilRare)
 			{
-				_ when rarityRoll < rareChance => ItemRarity.Rare,
-				_ when rarityRoll < rareChance + magicChance => ItemRarity.Magic,
-				_ => ItemRarity.Normal
-			};
+				Rarity = ItemRarity.Rare;
+			}
+			else
+			{
+				float progression = PoTMobHelper.GetStatScaling();
+				float rareChance = MathHelper.Lerp(0.003f, 0.015f, progression);
+				float magicChance = MathHelper.Lerp(0.04f, 0.12f, progression);
+				float rarityRoll = Main.rand.NextFloat();
+
+				Rarity = rarityRoll switch
+				{
+					_ when rarityRoll < rareChance => ItemRarity.Rare,
+					_ when rarityRoll < rareChance + magicChance => ItemRarity.Magic,
+					_ => ItemRarity.Normal
+				};
+			}
 
 			// Apply common damage types
 			if (npc.TryGetGlobalNPC(out ElementalNPC elemNPC))
@@ -315,7 +327,13 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 				elemNPC.ApplyDamageTypes(npc);
 			}
 
-			ApplyRarity(npc, false);
+			ApplyRarity(npc, false, forcedRunebound ? RuneboundCrafting.GetMobAffixType(runeboundFamily) : null, sigilBonusAffixes);
+			if (forcedSigilRare)
+			{
+				npc.lifeMax = Math.Max(1, (int)(npc.lifeMax * sigilLifeMultiplier));
+				npc.life = npc.lifeMax;
+				npc.damage = Math.Max(1, (int)(npc.damage * sigilDamageMultiplier));
+			}
 			npc.netUpdate = true;
 		}
 	}
@@ -325,7 +343,7 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 		SetName(npc);
 	}
 
-	public void ApplyRarity(NPC npc, bool fromNet)
+	public void ApplyRarity(NPC npc, bool fromNet, Type forcedAffixType = null, int bonusAffixes = 0)
 	{
 		string typeName = SetName(npc);
 
@@ -352,6 +370,12 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 			{
 				DebugUtils.DebugLog($"MobData not found for NPC ID {npc.type} ({typeName})!");
 			}
+
+			if (forcedAffixType is not null && Activator.CreateInstance(forcedAffixType) is MobAffix forcedAffix
+				&& forcedAffix.CanApplyTo(npc))
+			{
+				Affixes.Add(forcedAffix);
+			}
 		}
 
 		if (Rarity == ItemRarity.Normal || Rarity == ItemRarity.Unique)
@@ -374,7 +398,7 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 				}
 			}
 
-			int maxRolled = PoTMobHelper.GetAffixCount(Rarity, areaLevel) - Affixes.Count;
+			int maxRolled = PoTMobHelper.GetAffixCount(Rarity, areaLevel) + Math.Max(0, bonusAffixes) - Affixes.Count;
 			if (maxRolled > 0)
 			{
 				Affixes.AddRange(Affix.GenerateAffixes(in possible, maxRolled));

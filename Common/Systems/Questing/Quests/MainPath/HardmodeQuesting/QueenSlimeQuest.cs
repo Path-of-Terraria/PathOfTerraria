@@ -68,6 +68,6 @@ internal class QueenSlimeQuest() : Quest
 
 	protected override bool InternalAvailable()
 	{
-		return Main.hardMode;
+		return Main.hardMode && Quest.GetLocalPlayerInstance<TheFirstBindingQuest>().Completed;
 	}
 }
