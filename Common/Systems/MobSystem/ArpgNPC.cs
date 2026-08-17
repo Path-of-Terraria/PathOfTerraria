@@ -14,7 +14,7 @@ using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Core.Hooks;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Utilities.Terraria;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
@@ -170,9 +170,10 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 		// Trigger affixes
 		Affixes.ForEach(a => a.OnKill(npc));
 
-		// Early exit conditions
+		// Early exit conditions. The Eater's segments don't set NPC.boss, so they'd otherwise each roll a full mob
+		// drop; the whole worm is a boss and pays out once, through BossLootExplosion, on the final segment's death.
 		if (DropModifierNPC.GetDropRate(npc) < Main.rand.NextFloat() || npc.lifeMax <= 5 || npc.SpawnedFromStatue ||
-		    npc.boss || npc.friendly || npc.CountsAsACritter)
+		    npc.boss || npc.friendly || npc.CountsAsACritter || NPCUtil.IsEaterOfWorldsPart(npc.type))
 		{
 			return;
 		}

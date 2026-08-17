@@ -1,7 +1,7 @@
-using PathOfTerraria.Common.Enums;
+﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.ModPlayers;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.MobSystem;

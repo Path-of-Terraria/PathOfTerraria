@@ -4,7 +4,7 @@ using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using System.Collections.Generic;
 using Terraria.Audio;
 using Terraria.GameInput;
@@ -43,7 +43,7 @@ internal class VirtualBagStoragePlayer : ModPlayer
 
 	private static bool IsVirtualBagActiveContext()
 	{
-		return SubworldSystem.Current is MappingWorld and not RavencrestSubworld;
+		return MappingWorld.InInstancedDomain;
 	}
 
 	public override void Load()

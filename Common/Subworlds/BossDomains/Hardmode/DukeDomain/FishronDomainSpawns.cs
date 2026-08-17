@@ -1,4 +1,4 @@
-﻿using SubworldLibrary;
+﻿using SubworldLibraryCommunityFork;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.ID;

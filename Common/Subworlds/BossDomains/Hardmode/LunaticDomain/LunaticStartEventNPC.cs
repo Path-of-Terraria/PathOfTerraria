@@ -1,6 +1,6 @@
 ﻿using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Utilities;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.ID;

@@ -41,7 +41,7 @@ using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
 using ReLogic.Content;
 using ReLogic.Utilities;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;

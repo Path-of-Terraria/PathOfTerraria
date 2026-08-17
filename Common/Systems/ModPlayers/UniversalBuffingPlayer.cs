@@ -18,11 +18,11 @@ internal class UniversalBuffingPlayer : ModPlayer
 
 	public override void UpdateEquips()
 	{
-		int mainItem = Main.mouseItem.IsAir || Main.mouseItem.damage <= 0 ? 0 : 58;
+		Item mainItem = GetActiveMainItem(Player);
 
-		if (!Player.inventory[mainItem].IsAir)
+		if (!mainItem.IsAir)
 		{
-			PoTItemHelper.ApplyAffixes(Player.inventory[mainItem], UniversalModifier, Player);
+			PoTItemHelper.ApplyAffixes(mainItem, UniversalModifier, Player);
 		}
 
 		// Apply universal stat modifiers during equip updates so max life/mana are available
@@ -30,6 +30,12 @@ internal class UniversalBuffingPlayer : ModPlayer
 		UniversalModifier.ApplyTo(Player);
 
 		Player.statLifeMax = Math.Min(400, Player.statLifeMax2);
+	}
+
+	internal static Item GetActiveMainItem(Player player)
+	{
+		int slot = Main.mouseItem.IsAir || Main.mouseItem.damage <= 0 ? 0 : 58;
+		return player.inventory[slot];
 	}
 
 	public override void ResetEffects()

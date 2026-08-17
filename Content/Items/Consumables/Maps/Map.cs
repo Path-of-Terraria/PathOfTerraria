@@ -1,4 +1,4 @@
-using PathOfTerraria.Common.Enums;
+﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mapping;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Affixes;
@@ -8,7 +8,7 @@ using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Content.Tiles.Furniture;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI.SmartUI;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;

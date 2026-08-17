@@ -19,7 +19,7 @@ using ReLogic.Content;
 using Terraria.Graphics.Effects;
 using Terraria.Localization;
 using Terraria.UI;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.ElementalDamage;
 using Terraria.ID;
@@ -365,7 +365,7 @@ public sealed partial class ItemTooltips : GlobalItem
 			float baseMinDamage = baseDamage * 0.85f;
 			float baseMaxDamage = baseDamage * 1.15f;
 
-			ElementalContainer playerElements = player.GetModPlayer<ElementalPlayer>().Container;
+			ElementalContainer playerElements = BuildElementalPreview(player, item);
 
 			// Calculate total flat damage to add to main tooltip
 			float totalFlatDamage = playerElements.Sum(x => x.GetFlatDamage(0) * x.Multiplier);

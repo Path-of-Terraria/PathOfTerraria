@@ -1,6 +1,6 @@
 ﻿using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.ID;

@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Common.Subworlds;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 
 namespace PathOfTerraria.Common.Systems.DisableBuilding;
 

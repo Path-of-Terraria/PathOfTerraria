@@ -1,4 +1,4 @@
-using PathOfTerraria.Common.NPCs.Components;
+﻿using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -15,7 +15,7 @@ using Terraria.DataStructures;
 using Terraria.Audio;
 using Terraria.ModLoader.IO;
 using System.IO;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using Terraria.Chat;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;

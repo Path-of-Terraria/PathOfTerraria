@@ -1,9 +1,10 @@
-using PathOfTerraria.Common.Enums;
+﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Subworlds.MappingAreas;
 using PathOfTerraria.Common.Systems.MobSystem;
 using PathOfTerraria.Core.Items;
-using SubworldLibrary;
+using PathOfTerraria.Utilities.Terraria;
+using SubworldLibraryCommunityFork;
 using System.Collections.Generic;
 using Terraria.ID;
 
@@ -96,7 +97,8 @@ internal sealed class BossLootExplosion : GlobalNPC
 
 	private static bool ShouldBurst(NPC npc)
 	{
-		bool isBoss = npc.boss || NPCID.Sets.ShouldBeCountedAsBoss[npc.type];
+		// Only the Eater's head is in ShouldBeCountedAsBoss, but the last segment left alive isn't guaranteed to be one.
+		bool isBoss = npc.boss || NPCID.Sets.ShouldBeCountedAsBoss[npc.type] || NPCUtil.IsEaterOfWorldsPart(npc.type);
 
 		if (!isBoss)
 		{
@@ -125,7 +127,8 @@ internal sealed class BossLootExplosion : GlobalNPC
 			NPCID.Retinazer => !NPC.AnyNPCs(NPCID.Spazmatism),
 			NPCID.Spazmatism => !NPC.AnyNPCs(NPCID.Retinazer),
 			NPCID.GolemFistLeft or NPCID.GolemFistRight or NPCID.GolemHead or NPCID.GolemHeadFree => false,
-			NPCID.EaterofWorldsBody or NPCID.EaterofWorldsTail => false,
+			// Segments split into new worms as they die; only the kill that ends the fight pays out.
+			NPCID.EaterofWorldsHead or NPCID.EaterofWorldsBody or NPCID.EaterofWorldsTail => NPCUtil.IsLastEaterOfWorldsPart(npc),
 			NPCID.TheDestroyerBody or NPCID.TheDestroyerTail => false,
 			_ => true,
 		};

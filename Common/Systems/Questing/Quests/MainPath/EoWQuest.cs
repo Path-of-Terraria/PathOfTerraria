@@ -9,7 +9,7 @@ using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Common.Systems.VanillaModifications;
 using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 using PathOfTerraria.Content.NPCs.Town;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using System.Collections.Generic;
 using Terraria.ID;
 using Terraria.Localization;

@@ -2,7 +2,7 @@
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader.Core;
@@ -60,7 +60,10 @@ internal class BossDomainLivesPlayer : ModPlayer
 
 	public override void OnEnterWorld()
 	{
-		bool inDomain = SubworldSystem.Current is MappingWorld;
+		// Ravencrest is a MappingWorld too, so the unqualified check made the hub run on domain rules:
+		// deaths there burned lives (one per player at four players), and running out set Player.ghost
+		// and force-called SubworldSystem.Exit from the Ghost detour.
+		bool inDomain = MappingWorld.InInstancedDomain;
 
 		if (inDomain && !InDomain)
 		{

@@ -29,14 +29,16 @@
 
 	<!-- References -->
 	<ItemGroup>
-		<PackageReference Include="JetBrains.Annotations" Version="2025.2.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.4" PrivateAssets="all" />
+		<PackageReference Include="JetBrains.Annotations" Version="2026.2.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="5.6.0" PrivateAssets="all" />
 	</ItemGroup>
 
 	<!-- Mod References -->
 	<ItemGroup>
 		<Reference Include="StructureHelper" HintPath="lib\StructureHelper.dll" />
-		<Reference Include="SubworldLibrary" HintPath="lib\SubworldLibrary.dll" />
+		<!-- Community fork: https://github.com/Path-of-Terraria/SubworldLibraryCommunityFork
+		     The public API namespace, assembly, and dependency ID are SubworldLibraryCommunityFork. -->
+		<Reference Include="SubworldLibraryCommunityFork" HintPath="lib\SubworldLibraryCommunityFork.dll" />
 		<Reference Include="NPCUtils" HintPath="lib\NPCUtils.dll" />
 		<Reference Include="HousingAPI" HintPath="lib\HousingAPI.dll" />
 		<Reference Include="Wayfarer" HintPath="lib\Wayfarer.dll" />
