@@ -1,23 +1,18 @@
-v0.3.10
+v0.3.12
+
 Features
 
-- make it so chest contents have relative item levels for the chest style
-- Summoner QOL
-  - Bewitched and War Table buffs retain their remaining duration through world/subworld travel.
-  - Active minions and their summon buffs are restored after normal death.
-  - Minions are also restored after consuming a boss-domain life.
-  - Restoration is owner-gated for multiplayer and avoids duplicating surviving minions.
-- add in instanced item loot and queen slime jelly drop instanced
+- Add in the rage buff icon with number of rage displayed
+- add player presence validation and resync system; improve subworld handling rules
 
 Bug Fixes
-- Fixes blood rush and igniting projectile passives triggering 100% of the time
-- wof portal removed when owner enters
-- war shield not blocking projectiles when parrying
-- issues with affixes rolling when they shouldn't and maps having issues with tiers
-- syncing quest status for goblin surveyor spawn
-- poison damage over time not synced in MP
-- nerf mana regen by about 2/3
-- prevent ponds from blocking deerclops proogression
-- Crash related to augment slots
-- distance lookup with rifts for rifts not doing anything
-- map storage sync issues
+
+- Fixes shadowflame pyre projectile landing weird with collision
+- flickering text for minion aura buffs
+- item previews not showing correct damage numbers
+  - Simulates the damage in the preview with your character
+  - Fixes some damage types not rendering correctly
+- The alt use for swords are now independent of the swing
+  - You may now use the alt use while mid-swing and using the alt use does not swing the sword anymore
+- forwarding action
+- EoW not respecting the other worm-like loot checks
