@@ -33,6 +33,8 @@ SubworldItemDisabler: You cannot use this item in a subworld.
 Damage: "{0} damage"
 RestockShop: Restock shop
 RestockTooltip: (Can be used once per merchant)
+# Shown when the Nurse's heal refills your health & mana potion charges.
+PotionsRefilled: Potions refilled!
 
 Element: {
 	Fire.Name: Fire
