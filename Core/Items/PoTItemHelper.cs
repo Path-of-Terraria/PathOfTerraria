@@ -179,7 +179,7 @@ public static class PoTItemHelper
 	public static void AddNewAffix(Item item, [CanBeNull] PoTInstanceItemData data = null)
 	{
 		data ??= item.GetInstanceData();
-		if ((data.Affixes.Count - data.ImplicitCount) >= GetMaxAffixCounts(data.Rarity))
+		if ((data.Affixes.Count - data.ImplicitCount) >= GetMaxAffixCounts(data.Rarity, data.ItemType))
 		{
 			return;
 		}
@@ -292,27 +292,51 @@ public static class PoTItemHelper
 		item.GetInstanceData().Affixes.Clear();
 	}
 
-	public static int GetAffixCount(Item item)
+	/// <summary>The maximum explicit affix count on <see cref="ItemRarity.Magic"/> items.</summary>
+	public const int MaxMagicAffixes = 2;
+
+	/// <summary>The maximum explicit affix count on <see cref="ItemRarity.Rare"/> items.</summary>
+	public const int MaxRareAffixes = 6;
+
+	/// <summary>
+	///		The maximum explicit affix count on <see cref="ItemRarity.Rare"/> items whose type is capped lower than
+	///		<see cref="MaxRareAffixes"/>. See <see cref="UsesReducedAffixCap"/> for which types those are.
+	/// </summary>
+	public const int MaxReducedRareAffixes = 4;
+
+	/// <summary>
+	///		Types that keep the smaller <see cref="MaxReducedRareAffixes"/> cap: accessory-slot gear, maps, and
+	///		anything that never opted into the gear system (<see cref="ItemType.None"/>).
+	/// </summary>
+	private static bool UsesReducedAffixCap(ItemType itemType)
 	{
-		return GetAffixCount(item.GetInstanceData().Rarity);
+		return itemType == ItemType.None || (itemType & (ItemType.AccessorySlot | ItemType.Map)) != ItemType.None;
 	}
 
-	public static int GetAffixCount(ItemRarity rarity)
+	public static int GetAffixCount(Item item)
 	{
+		PoTInstanceItemData data = item.GetInstanceData();
+		return GetAffixCount(data.Rarity, data.ItemType);
+	}
+
+	public static int GetAffixCount(ItemRarity rarity, ItemType itemType)
+	{
+		int maxAffixes = GetMaxAffixCounts(rarity, itemType);
+
 		return rarity switch
 		{
-			ItemRarity.Magic => Main.rand.Next(1, GetMaxAffixCounts(rarity) + 1),
-			ItemRarity.Rare => Main.rand.Next(3, GetMaxAffixCounts(rarity) + 1),
+			ItemRarity.Magic => Main.rand.Next(1, maxAffixes + 1),
+			ItemRarity.Rare => Main.rand.Next(3, maxAffixes + 1),
 			_ => 0
 		};
 	}
 
-	public static int GetMaxAffixCounts(ItemRarity rarity)
+	public static int GetMaxAffixCounts(ItemRarity rarity, ItemType itemType)
 	{
 		return rarity switch
 		{
-			ItemRarity.Magic => 2,
-			ItemRarity.Rare => 4,
+			ItemRarity.Magic => MaxMagicAffixes,
+			ItemRarity.Rare => UsesReducedAffixCap(itemType) ? MaxReducedRareAffixes : MaxRareAffixes,
 			_ => 0
 		};
 	}
@@ -321,7 +345,7 @@ public static class PoTItemHelper
 	{
 		PoTInstanceItemData data = item.GetInstanceData();
 		int nonImplicitAffixCount = data.Affixes.Count(affix => !affix.IsImplicit);
-		return nonImplicitAffixCount >= GetMaxAffixCounts(data.Rarity);
+		return nonImplicitAffixCount >= GetMaxAffixCounts(data.Rarity, data.ItemType);
 	}
 
 	public static bool HasNonImplicitAffixes(Item item)

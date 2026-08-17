@@ -45,7 +45,13 @@ public enum ItemType : long
 
 	Armor = Helmet | Chestplate | Leggings,
 	Accessories = Accessory,
-	Equipment = Armor | Ring | Charm | Amulet | Wings | JumpAccessories | Accessories,
+
+	/// <summary>
+	/// Everything that occupies an accessory slot. Note that <see cref="ResolveToSingleType"/> collapses
+	/// a generic <see cref="Accessories"/> down to <see cref="Charm"/>, so both are included here.
+	/// </summary>
+	AccessorySlot = Ring | Charm | Amulet | Wings | JumpAccessories | Accessories,
+	Equipment = Armor | AccessorySlot,
 	Offhand = Shield | Quiver | Talisman | Focus,
 
 	Melee = Sword | Spear | MeleeFlail | WarShield | Battleaxe | Yoyo,
