@@ -3,6 +3,7 @@ using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Content.Passives.Summon.Masteries;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader.Core;
 
 namespace PathOfTerraria.Common.Systems;
@@ -117,6 +118,36 @@ internal class PotionPlayer : ModPlayer
 		{
 			HotbarPotionHandler.Send(false, (byte)mp.ManaLeft);
 		}
+	}
+
+	public override void PostNurseHeal(NPC nurse, int health, bool removeDebuffs, int price)
+	{
+		RefillPotions();
+	}
+
+	/// <summary>
+	/// Refills both hotbar potion charges to their maximum, syncing the new values in multiplayer.
+	/// </summary>
+	internal void RefillPotions()
+	{
+		bool refilled = HealingLeft < MaxHealing || ManaLeft < MaxMana;
+
+		HealingLeft = MaxHealing;
+		ManaLeft = MaxMana;
+
+		if (Main.netMode != NetmodeID.SinglePlayer)
+		{
+			HotbarPotionHandler.Send(true, (byte)HealingLeft);
+			HotbarPotionHandler.Send(false, (byte)ManaLeft);
+		}
+
+		if (!refilled)
+		{
+			return;
+		}
+
+		CombatText.NewText(Player.Hitbox, new Color(255, 200, 200), Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.PotionsRefilled"));
+		SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/PickupPotion") { Pitch = -0.2f });
 	}
 
 	public override void ResetEffects()
