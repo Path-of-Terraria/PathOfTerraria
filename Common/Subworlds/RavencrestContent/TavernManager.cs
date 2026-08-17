@@ -1,6 +1,6 @@
 ﻿using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;

@@ -19,7 +19,7 @@ using ReLogic.Content;
 using Terraria.Graphics.Effects;
 using Terraria.Localization;
 using Terraria.UI;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.ElementalDamage;
 using Terraria.ID;

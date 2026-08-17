@@ -5,7 +5,7 @@ using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
 using PathOfTerraria.Content.NPCs.Town;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using System.Collections.Generic;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using Terraria.ID;

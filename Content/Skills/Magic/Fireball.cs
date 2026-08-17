@@ -248,6 +248,10 @@ public class Fireball : Skill
 
 		public override void OnKill(int timeLeft)
 		{
+			bool landedOnGround = Collision.SolidCollision(Projectile.BottomLeft, Projectile.width, 2, true);
+			Vector2 impactCenter = Projectile.Center;
+			float impactBottom = Projectile.Bottom.Y;
+
 			if (!Main.dedServ)
 			{
 				SpawnDust(20);
@@ -292,13 +296,12 @@ public class Fireball : Skill
 				int type = ModContent.ProjectileType<ShadowflamePyreProjectile>();
 				float timeExtension = Owner.GetPassiveStrength<FireballTree, EverburningPyre>() is not 0 and int value 
 					? ShadowflamePyreProjectile.MaxTimeLeft * value * EverburningPyre.DurationModifier : 0;
-				Vector2 placePos = Projectile.Center;
 				Vector2 projBaseSize = ShadowflamePyreProjectile.BaseSize;
-				
-				while (Collision.SolidCollision(placePos - projBaseSize / 2, (int)projBaseSize.X, (int)projBaseSize.Y) && placePos.Y > 0)
-				{
-					placePos.Y--;
-				}
+				// Ground impacts root the pyre at the landing point. Other impacts remain centered on their target.
+				// Neither placement requires the full, tall hitbox to be unobstructed, which moved pyres above cave ceilings.
+				Vector2 placePos = landedOnGround
+					? new Vector2(impactCenter.X, impactBottom - projBaseSize.Y / 2f)
+					: impactCenter;
 
 				int proj = Projectile.NewProjectile(Projectile.GetSource_Death(), placePos, Vector2.Zero, type, Projectile.damage, 0, Projectile.owner, timeExtension);
 				Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>().AddElementalValues((ElementType.Chaos, 0, 1), (ElementType.Fire, 0, 1));

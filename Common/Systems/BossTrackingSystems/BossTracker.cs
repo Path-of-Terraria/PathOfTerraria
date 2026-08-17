@@ -8,7 +8,7 @@ using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Content.Swamp.NPCs.SwampBoss;
 using PathOfTerraria.Utilities.Terraria;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 

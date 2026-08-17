@@ -1,4 +1,4 @@
-using PathOfTerraria.Common.Config;
+﻿using PathOfTerraria.Common.Config;
 using PathOfTerraria.Common.Subworlds.Passes;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.Maps;
@@ -9,7 +9,7 @@ using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Core.Subworlds;
 using ReLogic.Content;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -183,6 +183,19 @@ public abstract class MappingWorld : Subworld
 #endif
 
 	public override bool NoPlayerSaving => false;
+
+	/// <summary>
+	/// Whether this subworld's save files may be deleted when a map device portal is opened or closed.
+	/// Instanced domains are wiped so every run starts fresh, but persistent hubs must survive along with
+	/// everything built in them - see <see cref="RavencrestSubworld"/>.
+	/// </summary>
+	public virtual bool DeleteSaveOnMapReset => true;
+
+	/// <summary>
+	/// Whether the player is currently inside an instanced domain, as opposed to the persistent hub.
+	/// Systems that should not apply in Ravencrest - the lives system, the virtual bag - gate on this.
+	/// </summary>
+	public static bool InInstancedDomain => SubworldSystem.Current is MappingWorld and not RavencrestSubworld;
 
 	/// <summary>
 	/// These tiles are allowed to be mined by the player using a pickaxe.
@@ -537,50 +550,122 @@ public abstract class MappingWorld : Subworld
 			return;
 		}
 
+		// LastSubworldSavePath/FullName track the most recent subworld *anyone* loaded, which includes
+		// persistent hubs - Ravencrest is a MappingWorld and registers there exactly like a domain does.
+		// Wiping it here would stop its subserver with players still inside and delete the town along
+		// with everything built in it, so only instanced domains are eligible.
+		bool lastIsDeletable = AllowsSaveDeletion(LastSubworldFullName);
+
 		// In MP, the subserver process holds the .wld file open and silent IO failures here are how the
 		// "boss didn't reset / spawn point in arena / stale switches" bugs sneak in. Stop any subserver
 		// that could be holding the destination and the previously-entered subworld before deleting.
-		if (Main.netMode == NetmodeID.Server)
-		{
-			TryStopSubserver(subworld?.FullName);
-			TryStopSubserver(LastSubworldFullName);
-		}
+		bool canDeleteDestination = Main.netMode != NetmodeID.Server || TryStopSubserver(subworld?.FullName);
+		bool canDeleteLast = lastIsDeletable && (Main.netMode != NetmodeID.Server || TryStopSubserver(LastSubworldFullName));
 
-		if (LastSubworldSavePath is { Length: > 0 } path)
+		if (canDeleteLast && LastSubworldSavePath is { Length: > 0 } path)
 		{
 			DeleteSubworldFiles(path);
 		}
 
-		if (subworld is not null && TryGetSavePath(subworld) is { Length: > 0 } destinationPath && destinationPath != LastSubworldSavePath)
+		if (canDeleteDestination && subworld is not null && AllowsSaveDeletion(subworld.FullName)
+			&& TryGetSavePath(subworld) is { Length: > 0 } destinationPath && destinationPath != LastSubworldSavePath)
 		{
 			DeleteSubworldFiles(destinationPath);
 		}
 
-		LastSubworldSavePath = null;
-		LastSubworldFullName = null;
+		if (lastIsDeletable)
+		{
+			LastSubworldSavePath = null;
+			LastSubworldFullName = null;
+		}
 	}
 
-	private static void TryStopSubserver(string? fullName)
+	/// <summary>
+	/// Whether the subworld with the given <see cref="ModType.FullName"/> opts into having its save wiped
+	/// on map reset. Anything that is not one of our <see cref="MappingWorld"/>s keeps the old behaviour.
+	/// </summary>
+	private static bool AllowsSaveDeletion(string? fullName)
 	{
 		if (fullName is null or { Length: 0 })
 		{
-			return;
+			return false;
+		}
+
+		foreach (MappingWorld world in ModContent.GetContent<MappingWorld>())
+		{
+			if (world.FullName == fullName)
+			{
+				return world.DeleteSaveOnMapReset;
+			}
+		}
+
+		return true;
+	}
+
+	/// <summary> Returns whether the subserver is stopped, and therefore whether its files can be deleted. </summary>
+	private static bool TryStopSubserver(string? fullName)
+	{
+		if (fullName is null or { Length: 0 })
+		{
+			return true;
 		}
 
 		int index = SubworldSystem.GetIndex(fullName);
 
 		if (index < 0)
 		{
-			return;
+			return true;
+		}
+
+		int occupants = CountPlayersInSubworld(index);
+
+		if (occupants > 0)
+		{
+			// Stopping a subserver out from under players strands them: the main server keeps their
+			// SubworldLibrary location and their Main.player[].active state, which is one of the ways
+			// players end up invisible to everyone once they are bounced back.
+			PoTMod.Instance.Logger.Warn($"[DeleteSavedSubworld] Not stopping subserver for '{fullName}': {occupants} player(s) still inside. Leaving its files alone.");
+			return false;
 		}
 
 		try
 		{
 			SubworldSystem.StopSubserver(index);
+			return true;
 		}
 		catch (Exception ex)
 		{
-			PoTMod.Instance.Logger.Warn($"[DeleteSavedSubworld] Failed to stop subserver for '{fullName}'. Subsequent file deletion may fail. {ex.Message}");
+			PoTMod.Instance.Logger.Warn($"[DeleteSavedSubworld] Failed to stop subserver for '{fullName}'. Skipping its file deletion. {ex.Message}");
+			return false;
+		}
+	}
+
+	[UnsafeAccessor(UnsafeAccessorKind.StaticField, Name = "playerLocations")]
+	private static extern ref int[] GetPlayerLocations(SubworldSystem sys);
+
+	private static int CountPlayersInSubworld(int index)
+	{
+		try
+		{
+			int[] locations = GetPlayerLocations(ModContent.GetInstance<SubworldSystem>());
+			int count = 0;
+
+			for (int i = 0; i < locations.Length; ++i)
+			{
+				if (locations[i] == index)
+				{
+					count++;
+				}
+			}
+
+			return count;
+		}
+		catch (Exception ex)
+		{
+			// If SubworldLibrary's internals ever move, fall back to the old unconditional behaviour
+			// rather than blocking every deletion forever.
+			PoTMod.Instance.Logger.Warn($"[DeleteSavedSubworld] Could not read subworld player locations: {ex.Message}");
+			return 0;
 		}
 	}
 

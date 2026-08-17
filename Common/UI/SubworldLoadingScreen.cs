@@ -1,7 +1,7 @@
 ﻿using PathOfTerraria.Common.Subworlds;
 using ReLogic.Content;
 using ReLogic.Graphics;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;

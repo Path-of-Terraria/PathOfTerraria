@@ -1,4 +1,4 @@
-﻿using SubworldLibrary;
+﻿using SubworldLibraryCommunityFork;
 using System.IO;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.WoFDomain;

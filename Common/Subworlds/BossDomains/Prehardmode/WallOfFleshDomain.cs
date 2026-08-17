@@ -6,7 +6,7 @@ using PathOfTerraria.Common.World.Passes;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using ReLogic.Utilities;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;

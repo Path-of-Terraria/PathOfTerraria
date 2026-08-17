@@ -1,10 +1,10 @@
-using PathOfTerraria.Common.Config;
+﻿using PathOfTerraria.Common.Config;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.ModPlayers.LivesSystem;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI.SmartUI;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using System.Collections.Generic;
 using Terraria.GameContent;
 using Terraria.Localization;

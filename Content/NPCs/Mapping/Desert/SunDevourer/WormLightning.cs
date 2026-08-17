@@ -4,7 +4,7 @@ using PathOfTerraria.Common.NPCs.Worms;
 using PathOfTerraria.Common.Subworlds.MappingAreas;
 using PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer.Projectiles;
 using ReLogic.Content;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
