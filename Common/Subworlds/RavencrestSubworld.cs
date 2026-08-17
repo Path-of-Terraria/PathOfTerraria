@@ -16,7 +16,7 @@ using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds;
 
-internal class RavencrestSubworld : MappingWorld
+internal class RavencrestSubworld : TownSubworld
 {
 	public override int Width => 900;
 	public override int Height => 340;

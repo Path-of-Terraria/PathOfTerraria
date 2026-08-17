@@ -185,6 +185,8 @@ public abstract class MappingWorld : Subworld
 
 	public override bool NoPlayerSaving => false;
 
+	public override SubworldReturnPositionMode ReturnPositionMode => SubworldReturnPositionMode.Shared;
+
 	/// <summary>
 	/// Whether this subworld's save files may be deleted when a map device portal is opened or closed.
 	/// Instanced domains are wiped so every run starts fresh, but persistent hubs must survive along with
@@ -551,14 +553,14 @@ public abstract class MappingWorld : Subworld
 		ReadConsistentInfo();
 	}
 
-	internal static void DeleteSavedSubworld(Subworld? subworld = null)
+	internal static bool DeleteSavedSubworld(Subworld? subworld = null)
 	{
 		if (Main.netMode == NetmodeID.MultiplayerClient)
 		{
 			DeleteOnServerHandler.Send();
 			LastSubworldSavePath = null;
 			LastSubworldFullName = null;
-			return;
+			return true;
 		}
 
 		// LastSubworldSavePath/FullName track the most recent subworld *anyone* loaded, which includes
@@ -572,6 +574,24 @@ public abstract class MappingWorld : Subworld
 		// that could be holding the destination and the previously-entered subworld before deleting.
 		bool canDeleteDestination = Main.netMode != NetmodeID.Server || TryStopSubserver(subworld?.FullName);
 		bool canDeleteLast = lastIsDeletable && (Main.netMode != NetmodeID.Server || TryStopSubserver(LastSubworldFullName));
+
+		bool destinationIsDeletable = subworld is not null && AllowsSaveDeletion(subworld.FullName);
+		if ((lastIsDeletable && !canDeleteLast) || (destinationIsDeletable && !canDeleteDestination))
+		{
+			// An occupied subserver must keep both its instance and its map-device entry path.
+			return false;
+		}
+
+		if (canDeleteLast)
+		{
+			SubworldSystem.InvalidateReturnInstance(LastSubworldFullName!);
+		}
+
+		if (canDeleteDestination && subworld is not null && destinationIsDeletable
+			&& subworld.FullName != LastSubworldFullName)
+		{
+			SubworldSystem.InvalidateReturnInstance(subworld.FullName);
+		}
 
 		if (canDeleteLast && LastSubworldSavePath is { Length: > 0 } path)
 		{
@@ -589,6 +609,8 @@ public abstract class MappingWorld : Subworld
 			LastSubworldSavePath = null;
 			LastSubworldFullName = null;
 		}
+
+		return true;
 	}
 
 	/// <summary>

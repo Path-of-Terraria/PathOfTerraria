@@ -23,6 +23,7 @@ NPCLeftWithoutDying: "{0} сбежал!"
 AffixTooltipFrom: от
 Enter: Войти
 Exit: Выйти
+// ReturnToOverworld: Return to Overworld
 EnterRavencrest: "{$Enter} в Вороний пик"
 Activate: Активировать
 # Two new messages for fishron and impending doom (Lunar event beaten) in their respective domains
