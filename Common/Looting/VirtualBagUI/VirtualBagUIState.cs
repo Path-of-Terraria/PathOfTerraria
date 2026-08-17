@@ -1,4 +1,4 @@
-using PathOfTerraria.Common.Looting.ItemFiltering;
+﻿using PathOfTerraria.Common.Looting.ItemFiltering;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Common.UI.Components;
@@ -6,7 +6,7 @@ using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI;
 using PathOfTerraria.Core.UI.SmartUI;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;

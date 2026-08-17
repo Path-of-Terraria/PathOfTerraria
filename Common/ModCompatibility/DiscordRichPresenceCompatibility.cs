@@ -1,4 +1,4 @@
-using PathOfTerraria.Common.Subworlds;
+﻿using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 using PathOfTerraria.Common.Subworlds.MappingAreas;
@@ -7,7 +7,7 @@ using PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
 using PathOfTerraria.Content.NPCs.Mapping.Forest.GrovetenderBoss;
 using PathOfTerraria.Content.Swamp;
 using PathOfTerraria.Content.Swamp.NPCs.SwampBoss;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using System.Collections.Generic;
 using System.Reflection;
 

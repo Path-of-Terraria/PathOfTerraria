@@ -1,6 +1,6 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using PathOfTerraria.Core.Items;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;

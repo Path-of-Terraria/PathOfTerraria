@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems.Synchronization.Handlers;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.ModPlayers;

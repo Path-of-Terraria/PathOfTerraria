@@ -5,7 +5,7 @@ using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Subworlds.MappingAreas;
 using PathOfTerraria.Content.Buffs;
 using ReLogic.Content;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using System.Collections.Generic;
 using System.IO;
 using Terraria.Audio;

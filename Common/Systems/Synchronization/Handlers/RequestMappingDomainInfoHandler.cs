@@ -1,7 +1,7 @@
-using System.IO;
+﻿using System.IO;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Affixes.Maps;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;

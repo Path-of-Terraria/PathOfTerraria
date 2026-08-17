@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Content.NPCs.BossDomain.Mech;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using System.Collections.Generic;
 using Terraria.ID;
 

@@ -8,7 +8,7 @@ using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Data;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Utilities;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using System.Linq;

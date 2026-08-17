@@ -1,7 +1,7 @@
 ﻿using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Core.UI;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;

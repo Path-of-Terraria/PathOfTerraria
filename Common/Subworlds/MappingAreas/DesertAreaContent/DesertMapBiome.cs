@@ -1,4 +1,4 @@
-﻿using SubworldLibrary;
+﻿using SubworldLibraryCommunityFork;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Subworlds.MappingAreas.DesertAreaContent;

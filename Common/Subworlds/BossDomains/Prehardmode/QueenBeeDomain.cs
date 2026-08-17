@@ -10,7 +10,7 @@ using Terraria.DataStructures;
 using PathOfTerraria.Common.World.Passes;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Content.Projectiles.Utility;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using Terraria.GameContent.Tile_Entities;
 using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;

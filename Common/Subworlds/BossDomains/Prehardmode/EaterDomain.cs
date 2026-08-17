@@ -4,7 +4,7 @@ using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.BossDomain;
-using SubworldLibrary;
+using SubworldLibraryCommunityFork;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
