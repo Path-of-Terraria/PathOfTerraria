@@ -33,6 +33,7 @@ Activate: Aktywuj
 // Damage: "{0} damage"
 // RestockShop: Restock shop
 // RestockTooltip: (Can be used once per merchant)
+// BossTrackerLegacyRecoveryWarning: Some older modded boss history could not be identified after the mod or Path of Terraria version changed. Progression data is still preserved. Restore the previous mod list and Path of Terraria version, load and save this world once, then change versions or mods again.
 
 Element: {
 	// Fire.Name: Fire

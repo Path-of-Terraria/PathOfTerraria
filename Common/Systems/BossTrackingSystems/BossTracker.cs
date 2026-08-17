@@ -10,6 +10,7 @@ using PathOfTerraria.Content.Swamp.NPCs.SwampBoss;
 using PathOfTerraria.Utilities.Terraria;
 using SubworldLibraryCommunityFork;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.BossTrackingSystems;
@@ -29,6 +30,22 @@ internal sealed class BossTracker : ModSystem
 	/// </summary>
 	public static HashSet<int> TotalBossesDowned = [];
 
+	private const int StableBossIdFormatVersion = 1;
+	private const string FormatVersionKey = "StableBossIdFormatVersion";
+	private const string VanillaIdsSuffix = "VanillaIds";
+	private const string ModdedNamesSuffix = "ModdedNames";
+	private const string UnresolvedLegacyIdsSuffix = "UnresolvedLegacyIds";
+	private const string LegacyBackupIdsSuffix = "LegacyBackupIds";
+
+	private static readonly HashSet<string> UnresolvedCachedBossNames = [];
+	private static readonly HashSet<string> UnresolvedTotalBossNames = [];
+	private static readonly HashSet<int> UnresolvedCachedLegacyIds = [];
+	private static readonly HashSet<int> UnresolvedTotalLegacyIds = [];
+	private static readonly HashSet<int> CachedLegacyBackupIds = [];
+	private static readonly HashSet<int> TotalLegacyBackupIds = [];
+
+	private static bool _legacyRecoveryWarningPending;
+
 	public static bool SkipWoFBox;
 	public static bool AlwaysSkipWoFBox = true;
 
@@ -38,6 +55,22 @@ internal sealed class BossTracker : ModSystem
 	{
 		On_NPC.DoDeathEvents += HijackDeathEffects;
 		On_NPC.CreateBrickBoxForWallOfFlesh += StopBrickBox;
+	}
+
+	public override void ClearWorld()
+	{
+		ClearTrackedData();
+	}
+
+	public override void PostUpdateWorld()
+	{
+		if (!_legacyRecoveryWarningPending || Main.netMode == NetmodeID.Server || Main.gameMenu || !Main.LocalPlayer.active)
+		{
+			return;
+		}
+
+		_legacyRecoveryWarningPending = false;
+		Main.NewText(Language.GetTextValue("Mods.PathOfTerraria.Misc.BossTrackerLegacyRecoveryWarning"), Color.OrangeRed);
 	}
 
 	public static void AddDowned(int id, bool fromSync = false, bool setBossDowned = false, bool dontCache = false)
@@ -223,14 +256,12 @@ internal sealed class BossTracker : ModSystem
 
 	public override void SaveWorldData(TagCompound tag)
 	{
-		tag.Add(nameof(CachedBossesDowned), (int[])[.. CachedBossesDowned]);
-		tag.Add(nameof(TotalBossesDowned), (int[])[.. TotalBossesDowned]);
+		WritePersistentData(tag, nameof(CachedBossesDowned), nameof(TotalBossesDowned));
 	}
 	public override void LoadWorldData(TagCompound tag)
 	{
-		CachedBossesDowned.Clear();
-		CachedBossesDowned = [.. tag.GetIntArray(nameof(CachedBossesDowned))];
-		TotalBossesDowned = [.. tag.GetIntArray(nameof(TotalBossesDowned))];
+		ClearTrackedData();
+		ReadPersistentData(tag, nameof(CachedBossesDowned), nameof(TotalBossesDowned));
 
 		// Load legacy data.
 		if (tag.ContainsKey("DownedFlags"))
@@ -241,6 +272,11 @@ internal sealed class BossTracker : ModSystem
 			// at the time this is loaded players can't be joined to the server already
 			if (oldMask[0]) { EventTracker.CompleteEvent(EventFlags.DefeatedEaterOfWorlds, fromSync: true); }
 			if (oldMask[1]) { EventTracker.CompleteEvent(EventFlags.DefeatedBrainOfCthulhu, fromSync: true); }
+		}
+
+		if (HasUnresolvedBossHistory)
+		{
+			PoTMod.Instance.Logger.Warn("Some legacy modded boss history could not be identified. The raw ids were preserved for recovery with the previous mod/content layout.");
 		}
 	}
 
@@ -257,11 +293,12 @@ internal sealed class BossTracker : ModSystem
 		{
 			writer.Write(item);
 		}
+
+		writer.Write(HasUnresolvedBossHistory);
 	}
 	public override void NetReceive(BinaryReader reader)
 	{
-		CachedBossesDowned.Clear();
-		TotalBossesDowned.Clear();
+		ClearTrackedData();
 
 		for (int i = 0, count = reader.ReadInt32(); i < count; ++i)
 		{
@@ -272,17 +309,267 @@ internal sealed class BossTracker : ModSystem
 		{
 			TotalBossesDowned.Add(reader.ReadInt32());
 		}
+
+		_legacyRecoveryWarningPending = reader.ReadBoolean();
 	}
 
 	public static void WriteConsistentInfo(TagCompound tag)
 	{
-		tag.Add("total", (int[])[.. TotalBossesDowned]);
-		tag.Add("cached", (int[])[.. CachedBossesDowned]);
+		WritePersistentData(tag, "cached", "total");
 	}
 	public static void ReadConsistentInfo(TagCompound tag)
 	{
-		TotalBossesDowned = [.. tag.GetIntArray("total")];
-		CachedBossesDowned = [.. tag.GetIntArray("cached")];
+		ClearTrackedData();
+		ReadPersistentData(tag, "cached", "total");
+	}
+
+	private static bool HasUnresolvedBossHistory => UnresolvedCachedBossNames.Count > 0
+		|| UnresolvedTotalBossNames.Count > 0
+		|| UnresolvedCachedLegacyIds.Count > 0
+		|| UnresolvedTotalLegacyIds.Count > 0;
+
+	private static void WritePersistentData(TagCompound tag, string cachedKey, string totalKey)
+	{
+		tag[FormatVersionKey] = StableBossIdFormatVersion;
+		WriteBossSet(tag, cachedKey, CachedBossesDowned, UnresolvedCachedBossNames, UnresolvedCachedLegacyIds, CachedLegacyBackupIds);
+		WriteBossSet(tag, totalKey, TotalBossesDowned, UnresolvedTotalBossNames, UnresolvedTotalLegacyIds, TotalLegacyBackupIds);
+	}
+
+	private static void WriteBossSet(TagCompound tag, string key, HashSet<int> bosses, HashSet<string> unresolvedNames,
+		HashSet<int> unresolvedLegacyIds, HashSet<int> legacyBackupIds)
+	{
+		List<int> vanillaIds = [];
+		HashSet<string> moddedNames = [.. unresolvedNames];
+		HashSet<int> compatibilityIds = [.. unresolvedLegacyIds];
+
+		foreach (int id in bosses)
+		{
+			compatibilityIds.Add(id);
+
+			if (IsVanillaNpcId(id))
+			{
+				vanillaIds.Add(id);
+			}
+			else if (TryGetModdedNpcName(id, out string name))
+			{
+				moddedNames.Add(name);
+			}
+			else
+			{
+				compatibilityIds.Add(id);
+			}
+		}
+
+		// Kept for one-version rollback compatibility. Current code ignores this field once FormatVersionKey is present.
+		tag[key] = (int[])[.. compatibilityIds];
+		tag[key + VanillaIdsSuffix] = (int[])[.. vanillaIds];
+		tag[key + ModdedNamesSuffix] = new List<string>(moddedNames);
+
+		if (unresolvedLegacyIds.Count > 0)
+		{
+			tag[key + UnresolvedLegacyIdsSuffix] = (int[])[.. unresolvedLegacyIds];
+		}
+
+		if (legacyBackupIds.Count > 0)
+		{
+			tag[key + LegacyBackupIdsSuffix] = (int[])[.. legacyBackupIds];
+		}
+	}
+
+	private static void ReadPersistentData(TagCompound tag, string cachedKey, string totalKey)
+	{
+		ReadStableBossSet(tag, cachedKey, CachedBossesDowned, UnresolvedCachedBossNames, UnresolvedCachedLegacyIds,
+			CachedLegacyBackupIds);
+		ReadStableBossSet(tag, totalKey, TotalBossesDowned, UnresolvedTotalBossNames, UnresolvedTotalLegacyIds,
+			TotalLegacyBackupIds);
+
+		if (tag.GetInt(FormatVersionKey) < StableBossIdFormatVersion)
+		{
+			MigrateLegacyBossSets(tag.GetIntArray(cachedKey), tag.GetIntArray(totalKey));
+		}
+
+		_legacyRecoveryWarningPending = HasUnresolvedBossHistory;
+	}
+
+	private static void ReadStableBossSet(TagCompound tag, string key, HashSet<int> bosses, HashSet<string> unresolvedNames,
+		HashSet<int> unresolvedLegacyIds, HashSet<int> legacyBackupIds)
+	{
+		foreach (int id in tag.GetIntArray(key + VanillaIdsSuffix))
+		{
+			if (IsVanillaNpcId(id))
+			{
+				bosses.Add(id);
+			}
+		}
+
+		foreach (string name in tag.GetList<string>(key + ModdedNamesSuffix))
+		{
+			if (ModContent.TryFind(name, out ModNPC npc))
+			{
+				bosses.Add(npc.Type);
+			}
+			else
+			{
+				unresolvedNames.Add(name);
+			}
+		}
+
+		unresolvedLegacyIds.UnionWith(tag.GetIntArray(key + UnresolvedLegacyIdsSuffix));
+		legacyBackupIds.UnionWith(tag.GetIntArray(key + LegacyBackupIdsSuffix));
+	}
+
+	private static void MigrateLegacyBossSets(int[] cachedIds, int[] totalIds)
+	{
+		HashSet<int> moddedIds = [];
+
+		AddVanillaAndCollectModded(cachedIds, CachedBossesDowned, moddedIds);
+		AddVanillaAndCollectModded(totalIds, TotalBossesDowned, moddedIds);
+
+		if (moddedIds.Count == 0)
+		{
+			return;
+		}
+
+		int offset = 0;
+		bool canMigrate = LegacyBossIdsMatchOffset(moddedIds, offset) || TryFindUniqueLegacyBossOffset(moddedIds, out offset);
+
+		MigrateLegacyBossSet(cachedIds, CachedBossesDowned, UnresolvedCachedLegacyIds, CachedLegacyBackupIds, canMigrate, offset);
+		MigrateLegacyBossSet(totalIds, TotalBossesDowned, UnresolvedTotalLegacyIds, TotalLegacyBackupIds, canMigrate, offset);
+	}
+
+	private static void AddVanillaAndCollectModded(IEnumerable<int> ids, HashSet<int> bosses, HashSet<int> moddedIds)
+	{
+		foreach (int id in ids)
+		{
+			if (IsVanillaNpcId(id))
+			{
+				bosses.Add(id);
+			}
+			else
+			{
+				moddedIds.Add(id);
+			}
+		}
+	}
+
+	private static void MigrateLegacyBossSet(IEnumerable<int> ids, HashSet<int> bosses, HashSet<int> unresolvedLegacyIds,
+		HashSet<int> legacyBackupIds, bool canMigrate, int offset)
+	{
+		foreach (int id in ids)
+		{
+			if (IsVanillaNpcId(id))
+			{
+				continue;
+			}
+
+			if (canMigrate)
+			{
+				bosses.Add(id + offset);
+				legacyBackupIds.Add(id);
+			}
+			else
+			{
+				unresolvedLegacyIds.Add(id);
+			}
+		}
+	}
+
+	private static bool TryFindUniqueLegacyBossOffset(HashSet<int> legacyIds, out int offset)
+	{
+		offset = 0;
+		bool found = false;
+		int firstId = 0;
+
+		foreach (int id in legacyIds)
+		{
+			firstId = id;
+			break;
+		}
+
+		foreach (ModNPC npc in ModContent.GetContent<ModNPC>())
+		{
+			if (!IsPathOfTerrariaBoss(npc.Type))
+			{
+				continue;
+			}
+
+			long candidateValue = (long)npc.Type - firstId;
+
+			if (candidateValue is < int.MinValue or > int.MaxValue)
+			{
+				continue;
+			}
+
+			int candidate = (int)candidateValue;
+
+			if (!LegacyBossIdsMatchOffset(legacyIds, candidate))
+			{
+				continue;
+			}
+
+			if (found)
+			{
+				return false;
+			}
+
+			found = true;
+			offset = candidate;
+		}
+
+		return found;
+	}
+
+	private static bool LegacyBossIdsMatchOffset(IEnumerable<int> legacyIds, int offset)
+	{
+		foreach (int id in legacyIds)
+		{
+			long mappedType = (long)id + offset;
+
+			if (mappedType < NPCID.Count || mappedType > int.MaxValue || !IsPathOfTerrariaBoss((int)mappedType))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	private static bool IsPathOfTerrariaBoss(int type)
+	{
+		return NPCLoader.GetNPC(type) is { Mod: PoTMod }
+			&& ContentSamples.NpcsByNetId.TryGetValue(type, out NPC sample)
+			&& (sample.boss || NPCID.Sets.ShouldBeCountedAsBoss[type]);
+	}
+
+	private static bool IsVanillaNpcId(int id)
+	{
+		return id < NPCID.Count;
+	}
+
+	private static bool TryGetModdedNpcName(int type, out string name)
+	{
+		name = null;
+
+		if (type < NPCID.Count || type >= NPCLoader.NPCCount || NPCLoader.GetNPC(type) is not ModNPC npc)
+		{
+			return false;
+		}
+
+		name = npc.FullName;
+		return true;
+	}
+
+	private static void ClearTrackedData()
+	{
+		CachedBossesDowned.Clear();
+		TotalBossesDowned.Clear();
+		UnresolvedCachedBossNames.Clear();
+		UnresolvedTotalBossNames.Clear();
+		UnresolvedCachedLegacyIds.Clear();
+		UnresolvedTotalLegacyIds.Clear();
+		CachedLegacyBackupIds.Clear();
+		TotalLegacyBackupIds.Clear();
+		_legacyRecoveryWarningPending = false;
 	}
 
 	public class BossTrackerNPC : GlobalNPC
