@@ -258,9 +258,25 @@ public class ElementalContainer : IEnumerable<ElementInstance>
 		}
 	}
 
+	/// <summary>
+	/// Creates a fully independent copy of this container.<br/>
+	/// This must not be a <see cref="object.MemberwiseClone"/>, as <see cref="Instances"/> holds reference types -
+	/// a shallow copy would leave the clone sharing (and mutating) the original's <see cref="ElementInstance"/>s.
+	/// </summary>
 	public ElementalContainer Clone()
 	{
-		return (ElementalContainer)MemberwiseClone();
+		var clone = new ElementalContainer();
+
+		foreach (ElementInstance instance in this)
+		{
+			ElementInstance target = clone[instance.Type];
+			target.DamageModifier = instance.DamageModifier;
+			target.Multiplier = instance.Multiplier;
+			target.Resistance = instance.Resistance;
+			target.playerIsImmune = instance.playerIsImmune;
+		}
+
+		return clone;
 	}
 
 	public IEnumerator<ElementInstance> GetEnumerator()

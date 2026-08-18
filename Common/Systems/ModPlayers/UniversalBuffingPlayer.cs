@@ -34,8 +34,9 @@ internal class UniversalBuffingPlayer : ModPlayer
 
 	internal static Item GetActiveMainItem(Player player)
 	{
-		int slot = Main.mouseItem.IsAir || Main.mouseItem.damage <= 0 ? 0 : 58;
-		return player.inventory[slot];
+		// Main.mouseItem only describes the local client's cursor, so it must not be consulted for other players.
+		bool usingMouseItem = Main.myPlayer == player.whoAmI && !Main.mouseItem.IsAir && Main.mouseItem.damage > 0;
+		return player.inventory[usingMouseItem ? 58 : player.selectedItem];
 	}
 
 	public override void ResetEffects()

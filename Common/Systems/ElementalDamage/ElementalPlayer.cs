@@ -78,7 +78,7 @@ public class ElementalPlayer : ModPlayer
 	{
 		if (target.TryGetGlobalNPC(out ElementalNPC elemNPC) && proj.TryGetGlobalProjectile(out ElementalProjectile elemProj))
 		{
-			Item? item = elemProj.SourceItem == -1 ? null : ContentSamples.ItemsByType[elemProj.SourceItem];
+			Item? item = elemProj.SourceItem > ItemID.None ? ContentSamples.ItemsByType[elemProj.SourceItem] : null;
 			ElementModifyDamage(elemProj.Container, elemNPC.Container, ref Unsafe.NullRef<MultipliableFloat>(), ref modifiers.FinalDamage, ref modifiers.FinalDamage, true, item);
 		}
 	}
@@ -201,7 +201,7 @@ public class ElementalPlayer : ModPlayer
 
 			if (proj.TryGetGlobalProjectile(out ElementalProjectile elemProj) && elemProj.SourceItem > ItemID.None)
 			{
-				item = new(elemProj.SourceItem);
+				item = ContentSamples.ItemsByType[elemProj.SourceItem];
 			}
 
 			ElementOnHit(target, Player, Container, elemNPC.Container, hit.Damage, new HitInfoContainer(hit, null), item);

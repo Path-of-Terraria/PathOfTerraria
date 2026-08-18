@@ -44,29 +44,33 @@ internal class ElementalProjectile : GlobalProjectile
 			}
 		}
 
+		// EntitySource_ItemUse_WithAmmo derives from EntitySource_Parent with Entity being the using player,
+		// so the container is already cloned above. Only the originating weapon needs tracking here,
+		// which is used for elemental debuffs and ElementalWeaponSets conversion.
 		if (source is EntitySource_ItemUse_WithAmmo { Item: Item item })
 		{
-			//Keeping track of the original weapon for elemental debuff purposes
 			SourceItem = item.type;
-
-			//if (ElementalWeaponSets.GetElementalProportions(item.type, out Dictionary<ElementType, float> value))
-			//{
-			//	foreach (KeyValuePair<ElementType, float> pair in value)
-			//	{
-			//		ref ElementalDamage mod = ref Container[pair.Key].DamageModifier;
-			//		mod = mod.AddModifiers(null, pair.Value);
-			//	}
-			//}
+			projectile.netUpdate = true;
 		}
 	}
 
 	public override void SendExtraAI(Projectile projectile, BitWriter bitWriter, BinaryWriter binaryWriter)
 	{
 		Container.WriteTo(bitWriter, binaryWriter);
+
+		bool hasSourceItem = SourceItem > ItemID.None;
+		bitWriter.WriteBit(hasSourceItem);
+
+		if (hasSourceItem)
+		{
+			binaryWriter.Write7BitEncodedInt(SourceItem);
+		}
 	}
 
 	public override void ReceiveExtraAI(Projectile projectile, BitReader bitReader, BinaryReader binaryReader)
 	{
 		Container.ReadFrom(bitReader, binaryReader);
+
+		SourceItem = bitReader.ReadBit() ? binaryReader.Read7BitEncodedInt() : ItemID.None;
 	}
 }

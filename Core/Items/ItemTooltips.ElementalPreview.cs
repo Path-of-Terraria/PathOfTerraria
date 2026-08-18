@@ -10,29 +10,13 @@ public sealed partial class ItemTooltips
 {
 	private static ElementalContainer BuildElementalPreview(Player player, Item previewItem)
 	{
-		ElementalContainer preview = CopyElementalContainer(player.GetModPlayer<ElementalPlayer>().Container);
+		ElementalContainer preview = player.GetModPlayer<ElementalPlayer>().Container.Clone();
 		Item activeItem = UniversalBuffingPlayer.GetActiveMainItem(player);
 
 		ApplyElementalAffixDelta(preview, activeItem, -1);
 		ApplyElementalAffixDelta(preview, previewItem, 1);
 
 		return preview;
-	}
-
-	private static ElementalContainer CopyElementalContainer(ElementalContainer source)
-	{
-		var copy = new ElementalContainer();
-
-		foreach (ElementInstance sourceElement in source)
-		{
-			ElementInstance targetElement = copy[sourceElement.Type];
-			targetElement.playerIsImmune = sourceElement.playerIsImmune;
-			targetElement.Resistance = sourceElement.Resistance;
-			targetElement.DamageModifier = sourceElement.DamageModifier;
-			targetElement.Multiplier = sourceElement.Multiplier;
-		}
-
-		return copy;
 	}
 
 	private static void ApplyElementalAffixDelta(ElementalContainer container, Item item, int direction)
