@@ -20,6 +20,11 @@ DeveloperConfig: {
 		Label: Log Item Filter Rejections
 		Tooltip: When enabled, every item rejected by an active item filter prints a chat line and a Mod.Logger entry showing the filter, item, and which condition failed. Debug builds only.
 	}
+
+	UseShaderShockVisuals: {
+		Label: Use Shader Shock Visuals
+		Tooltip: ""
+	}
 }
 
 UIConfig: {

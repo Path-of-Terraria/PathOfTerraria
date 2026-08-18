@@ -13,6 +13,15 @@ public sealed class DeveloperConfig : ModConfig
 	[DefaultValue(true)]
 	public bool SaveSubworlds { get; set; }
 
+	/// <summary>
+	/// Uses the experimental shader-based shocked-entity effect instead of the
+	/// existing procedural SpriteBatch primitives. This is client-side and visual only.
+	/// </summary>
+	[DefaultValue(false)]
+	public bool UseShaderShockVisuals { get; set; }
+
+	public static bool ShaderShockVisualsEnabled => ModContent.GetInstance<DeveloperConfig>()?.UseShaderShockVisuals ?? false;
+
 #if DEBUG
 	/// <summary>
 	/// Enables the in-map Map Content Inspector button and telemetry UI.

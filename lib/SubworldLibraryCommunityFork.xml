@@ -4,20 +4,6 @@
         <name>SubworldLibraryCommunityFork</name>
     </assembly>
     <members>
-        <member name="T:SubworldLibraryCommunityFork.SubworldLibrary">
-            <summary>
-            Provides the community fork's tModLoader entry point and runtime integration hooks.
-            </summary>
-        </member>
-        <member name="M:SubworldLibraryCommunityFork.SubworldLibrary.Load">
-            <inheritdoc />
-        </member>
-        <member name="M:SubworldLibraryCommunityFork.SubworldLibrary.Call(System.Object[])">
-            <inheritdoc />
-        </member>
-        <member name="M:SubworldLibraryCommunityFork.SubworldLibrary.HandlePacket(System.IO.BinaryReader,System.Int32)">
-            <inheritdoc />
-        </member>
         <member name="T:SubworldLibraryCommunityFork.ICopyWorldData">
             <summary>
             Defines callbacks for copying persistent data between the main world and subworlds.
@@ -99,6 +85,28 @@
             <summary>
             Reverts changes to players when they leave the subworld.
             <br/>Default: false
+            </summary>
+        </member>
+        <member name="P:SubworldLibraryCommunityFork.Subworld.ReturnToPreviousPosition">
+            <summary>
+            Compatibility opt-in for per-player return positions. New implementations can override
+            <see cref="P:SubworldLibraryCommunityFork.Subworld.ReturnPositionMode"/> to select per-player or shared behavior explicitly.
+            <br/>Default: false
+            </summary>
+        </member>
+        <member name="P:SubworldLibraryCommunityFork.Subworld.ReturnPositionMode">
+            <summary>
+            Controls whether players return to their own saved positions or to one shared position.
+            <br/>Saved subworlds persist their instance identity in the main world, including across game
+            restarts and empty multiplayer subserver restarts. Per-player return markers are saved with the player.
+            <br/>Call <see cref="M:SubworldLibraryCommunityFork.SubworldSystem.InvalidateReturnInstance(System.String)"/> before deleting or replacing a saved instance.
+            <br/>Defaults to <see cref="F:SubworldLibraryCommunityFork.SubworldReturnPositionMode.PerPlayer"/> when <see cref="P:SubworldLibraryCommunityFork.Subworld.ReturnToPreviousPosition"/> is true; otherwise disabled.
+            </summary>
+        </member>
+        <member name="M:SubworldLibraryCommunityFork.Subworld.GetReturnPosition(Terraria.Player)">
+            <summary>
+            Selects the position saved when a player leaves. Shared mode publishes this position
+            to the other players returning to the same instance.
             </summary>
         </member>
         <member name="P:SubworldLibraryCommunityFork.Subworld.NormalUpdates">
@@ -213,6 +221,34 @@
             <br/>Default: false
             </summary>
         </member>
+        <member name="T:SubworldLibraryCommunityFork.SubworldReturnPositionMode">
+            <summary>
+            Controls how an opted-in subworld restores player positions when the same instance is revisited.
+            </summary>
+        </member>
+        <member name="F:SubworldLibraryCommunityFork.SubworldReturnPositionMode.Disabled">
+            <summary>Do not remember or restore return positions.</summary>
+        </member>
+        <member name="F:SubworldLibraryCommunityFork.SubworldReturnPositionMode.PerPlayer">
+            <summary>Each player returns to the position they saved when leaving.</summary>
+        </member>
+        <member name="F:SubworldLibraryCommunityFork.SubworldReturnPositionMode.Shared">
+            <summary>Players who previously left return to the most recently saved shared position.</summary>
+        </member>
+        <member name="T:SubworldLibraryCommunityFork.SubworldLibrary">
+            <summary>
+            Provides the community fork's tModLoader entry point and runtime integration hooks.
+            </summary>
+        </member>
+        <member name="M:SubworldLibraryCommunityFork.SubworldLibrary.Load">
+            <inheritdoc />
+        </member>
+        <member name="M:SubworldLibraryCommunityFork.SubworldLibrary.Call(System.Object[])">
+            <inheritdoc />
+        </member>
+        <member name="M:SubworldLibraryCommunityFork.SubworldLibrary.HandlePacket(System.IO.BinaryReader,System.Int32)">
+            <inheritdoc />
+        </member>
         <member name="T:SubworldLibraryCommunityFork.SubworldSystem">
             <summary>
             Coordinates subworld registration, transitions, persistence, and multiplayer routing.
@@ -230,13 +266,13 @@
         <member name="M:SubworldLibraryCommunityFork.SubworldSystem.LoadWorldData(Terraria.ModLoader.IO.TagCompound)">
             <inheritdoc />
         </member>
-        <member name="F:SubworldLibraryCommunityFork.SubworldSystem.noReturn">
+        <member name="P:SubworldLibraryCommunityFork.SubworldSystem.noReturn">
             <summary>
             Hides the Return button.
             <br/>Its value is reset before <see cref="M:SubworldLibraryCommunityFork.Subworld.OnEnter"/> is called, and after <see cref="M:SubworldLibraryCommunityFork.Subworld.OnExit"/> is called.
             </summary>
         </member>
-        <member name="F:SubworldLibraryCommunityFork.SubworldSystem.hideUnderworld">
+        <member name="P:SubworldLibraryCommunityFork.SubworldSystem.hideUnderworld">
             <summary>
             Hides the Underworld background.
             <br/>Its value is reset before <see cref="M:SubworldLibraryCommunityFork.Subworld.OnEnter"/> is called, and after <see cref="M:SubworldLibraryCommunityFork.Subworld.OnExit"/> is called.
@@ -307,6 +343,31 @@
         <member name="M:SubworldLibraryCommunityFork.SubworldSystem.MovePlayerToMainWorld(System.Int32)">
             <summary>
             Sends the specified player to the main world.
+            </summary>
+        </member>
+        <member name="M:SubworldLibraryCommunityFork.SubworldSystem.ClearReturnPosition(System.String)">
+            <summary>
+            Discards the remembered position for the specified subworld. The removal is
+            persisted the next time the player and main world are saved.
+            </summary>
+            <param name="id">The subworld's full content name, such as <c>MyMod/MySubworld</c>.</param>
+        </member>
+        <member name="M:SubworldLibraryCommunityFork.SubworldSystem.ClearReturnPosition``1">
+            <summary>
+            Discards the remembered position for the specified subworld type.
+            </summary>
+        </member>
+        <member name="M:SubworldLibraryCommunityFork.SubworldSystem.InvalidateReturnInstance(System.String)">
+            <summary>
+            Invalidates the active instance identity for the specified subworld and discards
+            its remembered local return position. Call this before deleting or replacing a
+            saved subworld instance.
+            </summary>
+            <param name="id">The subworld's full content name, such as <c>MyMod/MySubworld</c>.</param>
+        </member>
+        <member name="M:SubworldLibraryCommunityFork.SubworldSystem.InvalidateReturnInstance``1">
+            <summary>
+            Invalidates the active instance identity for the specified subworld type.
             </summary>
         </member>
         <member name="M:SubworldLibraryCommunityFork.SubworldSystem.UpdateRejoiningPlayers">
