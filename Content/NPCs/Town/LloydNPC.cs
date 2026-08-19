@@ -15,7 +15,7 @@ using Terraria.DataStructures;
 using Terraria.Audio;
 using Terraria.ModLoader.IO;
 using System.IO;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using Terraria.Chat;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;

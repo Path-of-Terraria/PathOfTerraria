@@ -11,7 +11,7 @@ using PathOfTerraria.Content.Items.Currency.Runebound;
 using PathOfTerraria.Content.NPCs.Runebound;
 using PathOfTerraria.Common.Systems.Sigils;
 using PathOfTerraria.Utilities.Terraria;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader.IO;

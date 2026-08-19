@@ -7,7 +7,7 @@ using Terraria.IO;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
 using PathOfTerraria.Common.World.Generation;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using Terraria.Enums;
 using Terraria.Localization;
 using PathOfTerraria.Common.World.Generation.Tools;

@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Common.Subworlds;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Scenes;

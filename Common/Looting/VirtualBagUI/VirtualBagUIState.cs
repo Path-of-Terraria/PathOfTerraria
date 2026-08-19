@@ -6,7 +6,7 @@ using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI;
 using PathOfTerraria.Core.UI.SmartUI;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;

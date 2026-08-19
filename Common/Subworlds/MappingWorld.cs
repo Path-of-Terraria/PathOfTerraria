@@ -10,7 +10,7 @@ using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Core.Subworlds;
 using ReLogic.Content;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;

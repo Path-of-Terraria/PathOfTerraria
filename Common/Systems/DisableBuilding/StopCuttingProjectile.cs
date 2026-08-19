@@ -3,7 +3,7 @@ using MonoMod.Cil;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using PathOfTerraria.Common.Subworlds.MappingAreas;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using System.Data;
 using Terraria.DataStructures;
 using Terraria.ID;

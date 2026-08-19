@@ -4,7 +4,7 @@ using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.BossDomain.Mech;
 using System.Collections.Generic;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;

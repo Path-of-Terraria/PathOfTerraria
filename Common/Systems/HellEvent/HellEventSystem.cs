@@ -1,7 +1,7 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 
 namespace PathOfTerraria.Common.Systems.HellEvent;
 

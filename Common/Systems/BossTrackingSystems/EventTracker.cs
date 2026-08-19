@@ -6,7 +6,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Synchronization;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using Terraria.GameContent.Events;
 using Terraria.ID;
 using Terraria.ModLoader.IO;

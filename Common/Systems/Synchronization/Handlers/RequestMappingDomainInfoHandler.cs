@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Affixes.Maps;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;

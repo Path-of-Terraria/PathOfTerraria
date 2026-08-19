@@ -19,7 +19,7 @@ using PathOfTerraria.Content.Swamp;
 using PathOfTerraria.Content.Swamp.NPCs;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Utilities.Terraria;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using Terraria.DataStructures;
 using Terraria.Chat;
 using Terraria.ID;

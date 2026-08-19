@@ -5,7 +5,7 @@ using PathOfTerraria.Content.NPCs.Mapping.Desert;
 using PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Core.Items;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;

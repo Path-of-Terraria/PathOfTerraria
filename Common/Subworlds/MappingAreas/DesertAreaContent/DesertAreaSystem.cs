@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using Terraria.GameContent.Events;
 
 namespace PathOfTerraria.Common.Subworlds.MappingAreas.DesertAreaContent;

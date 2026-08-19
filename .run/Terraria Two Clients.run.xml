@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Terraria: Two Clients" type="CompoundRunConfigurationType">
+    <toRun name="PathOfTerraria: TerrariaClient1" type="LaunchSettings" />
+    <toRun name="PathOfTerraria: TerrariaClient2" type="LaunchSettings" />
+    <method v="2" />
+  </configuration>
+</component>

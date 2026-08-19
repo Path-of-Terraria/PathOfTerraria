@@ -2,7 +2,7 @@
 using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode.MoonDomain.Generation;
 using PathOfTerraria.Common.World.Generation;
 using ReLogic.Content;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;

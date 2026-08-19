@@ -6,6 +6,18 @@
       "commandLineArgs": "$(tMLCommandLineArgs)",
       "workingDirectory": "$(tMLSteamPath)"
     },
+    "TerrariaClient1": {
+      "commandName": "Executable",
+      "executablePath": "$(tMLSteamPath)dotnet/dotnet.exe",
+      "commandLineArgs": "$(tMLPath)",
+      "workingDirectory": "$(tMLSteamPath)"
+    },
+    "TerrariaClient2": {
+      "commandName": "Executable",
+      "executablePath": "$(tMLSteamPath)dotnet/dotnet.exe",
+      "commandLineArgs": "$(tMLPath)",
+      "workingDirectory": "$(tMLSteamPath)"
+    },
     "TerrariaServer": {
       "commandName": "Executable",
       "executablePath": "$(executablePath)",
