@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.Utilities;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using System.Collections;
 using System.Collections.Generic;
 using Terraria.Chat;

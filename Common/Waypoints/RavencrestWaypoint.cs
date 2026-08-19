@@ -1,6 +1,6 @@
 ﻿using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.ModPlayers;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 
 namespace PathOfTerraria.Common.Waypoints;
 

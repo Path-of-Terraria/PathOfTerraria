@@ -4,7 +4,7 @@ using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using PathOfTerraria.Content.Items.BossDomain;
 using PathOfTerraria.Content.Items.Gear.Armor.Helmet;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using System.IO;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;

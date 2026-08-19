@@ -4,7 +4,7 @@ using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using System.Collections.Generic;
 using Terraria.Audio;
 using Terraria.GameInput;

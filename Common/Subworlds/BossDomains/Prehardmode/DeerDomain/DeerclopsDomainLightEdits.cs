@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Utilities;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using System.Reflection;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.DeerDomain;

@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Content.NPCs.BossDomain.BrainDomain;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using System.Collections.Generic;
 using Terraria.ID;
 

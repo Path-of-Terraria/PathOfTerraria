@@ -15,7 +15,7 @@ using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
 using ReLogic.Content;
 using ReLogic.Graphics;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using Terraria.Chat;
 using Terraria.DataStructures;
 using Terraria.GameContent;

@@ -14,7 +14,7 @@ using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Core.Hooks;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Utilities.Terraria;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;

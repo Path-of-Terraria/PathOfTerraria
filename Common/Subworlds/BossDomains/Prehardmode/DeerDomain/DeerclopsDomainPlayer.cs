@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Common.NPCs;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using Terraria.DataStructures;
 using Terraria.ID;
 

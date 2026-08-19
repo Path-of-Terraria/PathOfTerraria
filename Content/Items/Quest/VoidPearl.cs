@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Content.Projectiles.Utility;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent;

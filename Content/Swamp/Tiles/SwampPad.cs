@@ -1,6 +1,6 @@
 ﻿using PathOfTerraria.Common.Tiles.FramingKinds;
 using PathOfTerraria.Content.Swamp;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Swamp.Tiles;
