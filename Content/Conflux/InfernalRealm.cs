@@ -10,7 +10,7 @@ using PathOfTerraria.Core.Structures;
 using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
 using ReLogic.Content;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;

@@ -1,4 +1,4 @@
-﻿using SubworldLibraryCommunityFork;
+﻿using SubworldLibrary;
 using Terraria.Audio;
 using Terraria.ID;
 

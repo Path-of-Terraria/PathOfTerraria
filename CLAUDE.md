@@ -16,7 +16,7 @@ Do not duplicate that file's guidance here. When a task touches gameplay systems
 
 ## Build, lint, run
 
-This is a tModLoader mod targeting `net8.0`. It builds against tModLoader via `..\tModLoader.targets` (one directory above the repo root) — see `.github/README.md` for the local setup, including how to wire up `SubworldLibraryCommunityFork`.
+This is a tModLoader mod targeting `net8.0`. It builds against tModLoader via `..\tModLoader.targets` (one directory above the repo root) — see `.github/README.md` for the local setup, including how to wire up `SubworldLibrary`.
 
 - Build: `dotnet build PathOfTerraria.sln --configuration Release`
 - Lint (CI runs this and fails on diff): `dotnet format style PathOfTerraria.sln --verify-no-changes --severity error`

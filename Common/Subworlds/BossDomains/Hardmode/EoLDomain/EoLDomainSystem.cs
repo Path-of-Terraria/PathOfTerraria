@@ -1,4 +1,4 @@
-﻿using SubworldLibraryCommunityFork;
+﻿using SubworldLibrary;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode.EoLDomain;
 

@@ -8,7 +8,7 @@ using PathOfTerraria.Common.World.Utilities;
 using PathOfTerraria.Core.Time;
 using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;

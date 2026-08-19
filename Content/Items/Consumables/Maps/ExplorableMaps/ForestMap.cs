@@ -1,6 +1,6 @@
 ﻿using PathOfTerraria.Common.Subworlds.MappingAreas;
 using PathOfTerraria.Core.Items;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.ExplorableMaps;

@@ -5,7 +5,7 @@ using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using PathOfTerraria.Common.Utilities;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 

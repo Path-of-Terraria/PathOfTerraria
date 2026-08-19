@@ -1,6 +1,6 @@
 ﻿using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.Swamp.NPCs;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using System.Collections.Generic;
 
 namespace PathOfTerraria.Content.Swamp;

@@ -1,4 +1,4 @@
-﻿using SubworldLibraryCommunityFork;
+﻿using SubworldLibrary;
 using Terraria.DataStructures;
 
 namespace PathOfTerraria.Common.Subworlds;

@@ -7,7 +7,7 @@ using PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
 using PathOfTerraria.Content.NPCs.Mapping.Forest.GrovetenderBoss;
 using PathOfTerraria.Content.Swamp;
 using PathOfTerraria.Content.Swamp.NPCs.SwampBoss;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using System.Collections.Generic;
 using System.Reflection;
 

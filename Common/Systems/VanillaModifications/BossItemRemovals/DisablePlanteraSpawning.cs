@@ -1,7 +1,7 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 
 namespace PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 

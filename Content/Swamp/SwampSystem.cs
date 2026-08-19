@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Content.Swamp;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using System.IO;
 using Terraria.ModLoader.IO;
 

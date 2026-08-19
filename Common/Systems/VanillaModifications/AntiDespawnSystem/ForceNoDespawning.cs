@@ -1,6 +1,6 @@
 ﻿using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Utilities;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using System.Reflection;
 using Terraria.ID;
 

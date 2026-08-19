@@ -1,4 +1,4 @@
-﻿using SubworldLibraryCommunityFork;
+﻿using SubworldLibrary;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode.QueenDomain;

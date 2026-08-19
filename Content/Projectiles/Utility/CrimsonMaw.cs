@@ -4,7 +4,7 @@ using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.BoCDomain;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.VanillaModifications;
 using PathOfTerraria.Content.NPCs.Town;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using Terraria.Audio;
 using Terraria.ID;
 

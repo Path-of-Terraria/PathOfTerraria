@@ -35,12 +35,24 @@ internal class SaveProjectileSystem : ModSystem
 		for (int i = 0; i < count; ++i)
 		{
 			TagCompound proj = projCompound.GetCompound("projectile" + i);
-			int type = ModContent.Find<ModProjectile>(proj.GetString("name")).Type;
+			string name = proj.GetString("name");
+
+			// Projectiles that have since been renamed or removed must not take the rest of the world data
+			// with them. Find throws on a missing key, and that throw aborts LoadWorldData for every later
+			// entry and for every other tag this system owns.
+			if (!ModContent.TryFind(name, out ModProjectile saveProjectile))
+			{
+				PoTMod.Instance.Logger.Warn($"Skipping saved projectile '{name}': that content no longer exists.");
+				continue;
+			}
+
 			Vector2 pos = proj.Get<Vector2>("pos");
 
-			int index = Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, type, 0, 0, -1);
-			var savedProj = Main.projectile[index].ModProjectile as ISaveProjectile;
-			savedProj.LoadData(proj, Main.projectile[index]);
+			int index = Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, saveProjectile.Type, 0, 0, -1);
+			if (Main.projectile[index].ModProjectile is ISaveProjectile savedProj)
+			{
+				savedProj.LoadData(proj, Main.projectile[index]);
+			}
 		}
 	}
 }

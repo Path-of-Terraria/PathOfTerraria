@@ -1,6 +1,6 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode.QueenDomain;
 using PathOfTerraria.Content.NPCs.BossDomain.Mech;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using System.Collections.Generic;
 using Terraria.ID;
 
