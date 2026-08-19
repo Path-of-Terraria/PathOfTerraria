@@ -6,7 +6,7 @@ using PathOfTerraria.Content.NPCs.Town;
 using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
 using ReLogic.Graphics;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using System.Collections.Generic;
 using Terraria.GameContent;
 using Terraria.ID;

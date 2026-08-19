@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Common.Subworlds.MappingAreas;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using Terraria.DataStructures;
 using Terraria.Localization;
 

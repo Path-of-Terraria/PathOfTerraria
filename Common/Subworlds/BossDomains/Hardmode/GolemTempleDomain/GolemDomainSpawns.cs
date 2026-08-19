@@ -1,4 +1,4 @@
-﻿using SubworldLibraryCommunityFork;
+﻿using SubworldLibrary;
 using System.Collections.Generic;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode.GolemTempleDomain;

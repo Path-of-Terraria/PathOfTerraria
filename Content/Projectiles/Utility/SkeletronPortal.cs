@@ -3,7 +3,7 @@ using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 using PathOfTerraria.Common.Systems.MapContent;
 using PathOfTerraria.Common.UI;
 using ReLogic.Content;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;

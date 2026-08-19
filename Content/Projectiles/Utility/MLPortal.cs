@@ -4,7 +4,7 @@ using PathOfTerraria.Common.Systems.MapContent;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using ReLogic.Content;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;

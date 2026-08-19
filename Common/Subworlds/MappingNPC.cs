@@ -1,7 +1,7 @@
 ﻿using PathOfTerraria.Common.Systems.Affixes.Maps;
 using PathOfTerraria.Common.Systems.MobSystem;
 using PathOfTerraria.Core.Items;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using System.IO;
 using Terraria.ModLoader.IO;
 

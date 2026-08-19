@@ -3,7 +3,7 @@ using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using System.Collections.Generic;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath;

@@ -1,7 +1,7 @@
 using System.IO;
 using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;

@@ -11,7 +11,7 @@ using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using PathOfTerraria.Content.NPCs.Town;
 using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using Terraria.ID;
 using Terraria.Localization;
 

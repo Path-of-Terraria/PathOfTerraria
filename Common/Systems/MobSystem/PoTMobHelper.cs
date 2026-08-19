@@ -1,7 +1,7 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Core.Items;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 
 namespace PathOfTerraria.Common.Systems.MobSystem;
 

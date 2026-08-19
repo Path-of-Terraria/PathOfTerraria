@@ -8,7 +8,7 @@ using PathOfTerraria.Common.Systems.Sigils;
 using PathOfTerraria.Content.Tiles.Furniture;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI.SmartUI;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;

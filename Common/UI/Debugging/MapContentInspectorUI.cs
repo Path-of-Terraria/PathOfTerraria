@@ -6,7 +6,7 @@ using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Common.UI.SubworldHelp;
 using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Core.UI.SmartUI;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.UI.Elements;

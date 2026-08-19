@@ -12,7 +12,7 @@ using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Core.UI;
 using ReLogic.Graphics;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using Terraria.Chat;
 using Terraria.DataStructures;
 using Terraria.GameContent;

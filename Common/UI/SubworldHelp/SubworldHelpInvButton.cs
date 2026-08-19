@@ -6,7 +6,7 @@ using PathOfTerraria.Common.Systems.Affixes.Maps;
 using PathOfTerraria.Common.Systems.MobSystem;
 using PathOfTerraria.Common.Systems.Sigils;
 using PathOfTerraria.Core.UI.SmartUI;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;

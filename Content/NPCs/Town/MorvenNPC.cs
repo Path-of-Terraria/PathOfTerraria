@@ -15,7 +15,7 @@ using PathOfTerraria.Content.Tiles.Town;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using Terraria.DataStructures;
 using Terraria.Audio;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 using Terraria.ModLoader.IO;
 using System.IO;

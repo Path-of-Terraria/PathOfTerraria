@@ -2,7 +2,7 @@
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader.Core;

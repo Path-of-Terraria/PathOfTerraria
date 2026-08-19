@@ -3,7 +3,7 @@ using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.Maps;
 using PathOfTerraria.Content.Items.Currency;
 using PathOfTerraria.Core.Items;
-using SubworldLibraryCommunityFork;
+using SubworldLibrary;
 using Terraria.Localization;
 using Terraria.Utilities;
 
