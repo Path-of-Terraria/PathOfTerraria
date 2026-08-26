@@ -31,7 +31,7 @@ internal class AddIgnitedStackHandler : Handler
 			packet.Write(who);
 			packet.Write(hitDamage);
 			packet.Write((short)time);
-			packet.Send();
+			packet.Send(-1, sender);
 		}
 	}
 }

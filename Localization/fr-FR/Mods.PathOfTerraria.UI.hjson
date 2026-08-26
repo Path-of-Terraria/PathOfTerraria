@@ -353,6 +353,7 @@ Tips: {
 
 // PointsRemaining: Points Remaining
 // ResetPoints: Reset Points
+// PassiveTreeResetRequired: Passive tree changed. Reset your tree before allocating passives.
 // ExpGain: +{0} XP
 /* ExpBarHover:
 	'''
@@ -455,6 +456,7 @@ CurrencyPouch: {
 }
 
 PassiveTreeTab: Passifs
+// PassiveTreeSearchPlaceholder: Search passives...
 // MasteryRequiredNodes: Requires {0} connected nodes to allocate
 SkillTreeTab: Compétences
 QuestsAvailableTab: Disponible

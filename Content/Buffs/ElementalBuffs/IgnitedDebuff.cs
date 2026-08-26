@@ -19,13 +19,15 @@ internal class IgnitedDebuff : ModBuff
 	/// </summary>
 	public static void ApplyTo(Entity? attacker, Entity victim, int hitDamage, int time = 4 * 60, bool fromNet = false)
 	{
+		int baseTime = time;
 		int stackDamage = hitDamage;
 		float tickRate = DefaultTickRate;
 
 		if (attacker is Player atkPlayer)
 		{
 			IgnitedPlayer ignitedPlayer = atkPlayer.GetModPlayer<IgnitedPlayer>();
-			tickRate = ignitedPlayer.IgniteDuration.ApplyTo(DefaultTickRate);
+			time = (int)ignitedPlayer.IgniteDuration.ApplyTo(time);
+			tickRate = ignitedPlayer.IgniteTickRate.ApplyTo(DefaultTickRate);
 			stackDamage = (int)ignitedPlayer.IgniteDamage.ApplyTo(hitDamage);
 		}
 		
@@ -33,7 +35,7 @@ internal class IgnitedDebuff : ModBuff
 		{
 			if (Main.netMode == NetmodeID.MultiplayerClient && !fromNet)
 			{
-				AddIgnitedStackHandler.Send(npc, hitDamage, time);
+				AddIgnitedStackHandler.Send(npc, hitDamage, baseTime);
 			}
 
 			DoTFunctionality.ApplyPlayerInteraction(npc, attacker);
@@ -192,6 +194,7 @@ public class IgnitedPlayer : ModPlayer
 {
 	public StatModifier IgniteDuration = new();
 	public StatModifier IgniteDamage = new();
+	public StatModifier IgniteTickRate = new();
 	public float AddedIgniteChance = 0;
 
 	public List<IgnitedStack> Stacks = [];
@@ -200,6 +203,7 @@ public class IgnitedPlayer : ModPlayer
 	{
 		IgniteDuration = new();
 		IgniteDamage = new();
+		IgniteTickRate = new();
 		AddedIgniteChance = 0;
 	}
 

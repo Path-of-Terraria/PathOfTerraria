@@ -13,7 +13,7 @@ public class AvailablePassivePointsText
 		string text = Language.GetTextValue("Mods.PathOfTerraria.UI." + (confirmTimer <= 0 ? "ResetPoints" : "Confirm"));
 		Vector2 size = ChatManager.GetStringSize(FontAssets.DeathText.Value, text, new(0.6f));
 		size.Y = 28; // For some reason the string size above is twice the height
-		Vector2 resetPosition = position + new Vector2(-20, 30);
+		Vector2 resetPosition = position + new Vector2(260, -25);
 		bool hover = new Rectangle((int)resetPosition.X, (int)resetPosition.Y, (int)size.X, (int)size.Y).Contains(Main.MouseScreen.ToPoint());
 		Color col = hover ? Color.Gray : Color.White;
 
@@ -44,9 +44,9 @@ public class AvailablePassivePointsText
 	{
 		Texture2D tex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/PassiveFrameSmall").Value;
 
-		spriteBatch.Draw(tex, position, null, Color.White, 0, tex.Size() / 2f, 1, 0, 0);
-		Utils.DrawBorderStringBig(spriteBatch, $"{points}", position, points > 0 ? Color.Yellow : Color.Gray, 0.5f, 0.5f, 0.35f);
+		spriteBatch.Draw(tex, position + new Vector2(0, -10), null, Color.White, 0, tex.Size() / 2f, 1, 0, 0);
+		Utils.DrawBorderStringBig(spriteBatch, $"{points}", position, points > 0 ? Color.Yellow : Color.Gray, 0.5f, 0.5f, 0.65f);
 		Utils.DrawBorderStringBig(spriteBatch, Language.GetTextValue("Mods.PathOfTerraria.UI.PointsRemaining"),
-			position + new Vector2(138, 0), Color.White, 0.6f, 0.5f, 0.35f);
+			position + new Vector2(138, 0), Color.White, 0.6f, 0.5f, 0.65f);
 	}
 }

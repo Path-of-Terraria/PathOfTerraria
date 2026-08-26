@@ -41,7 +41,8 @@ public enum Mechanic : byte
 	Siphon,
 	Intelligence,
 	Strength,
-	Dexterity
+	Dexterity,
+	Duration
 }
 
 internal class MechanicsTagHandler : ITagHandler

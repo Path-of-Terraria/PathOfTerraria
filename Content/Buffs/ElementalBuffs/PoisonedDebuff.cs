@@ -5,6 +5,7 @@ using ReLogic.Content;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using PathOfTerraria.Content.Passives.Misc.Masteries;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
@@ -78,9 +79,51 @@ internal class PoisonedDebuff : ModBuff
 		npc.netUpdate = true;
 	}
 
+	internal static void Spread(NPC source, NPC destination, Player player)
+	{
+		PoisonNPC sourcePoison = source.GetGlobalNPC<PoisonNPC>();
+		float tickRate = sourcePoison.LastTickRate;
+
+		foreach (PoisonNPC.PoisonStack stack in sourcePoison.Stacks)
+		{
+			ApplyExistingStack(destination, stack.Time, stack.DamagePerTick, tickRate, player);
+		}
+	}
+
+	internal static void ApplyExistingStack(NPC npc, int time, float damagePerTick, float tickRate, Player? player)
+	{
+		if (time <= 0)
+		{
+			return;
+		}
+
+		if (Main.netMode == NetmodeID.MultiplayerClient)
+		{
+			if (player is null || player.whoAmI == Main.myPlayer)
+			{
+				PoisonStackHandler.SendExistingStack(npc, time, damagePerTick, tickRate, player);
+			}
+
+			return;
+		}
+
+		if (player is not null)
+		{
+			DoTFunctionality.ApplyPlayerInteraction(npc, player);
+		}
+
+		npc.AddBuff(ModContent.BuffType<PoisonedDebuff>(), time);
+
+		PoisonNPC poison = npc.GetGlobalNPC<PoisonNPC>();
+		poison.AddStack(new PoisonNPC.PoisonStack(time, damagePerTick));
+		poison.LastTickRate = MathF.Min(tickRate, poison.LastTickRate);
+		npc.netUpdate = true;
+	}
+
 	public override void SetStaticDefaults()
 	{
 		Main.debuff[Type] = true;
+		MassDebilitationMastery.RegisterChaosDebuff(Type);
 	}
 
 	public override void Update(NPC npc, ref int buffIndex)

@@ -9,7 +9,11 @@ using PathOfTerraria.Content.Passives;
 using PathOfTerraria.Content.Passives.Misc;
 using PathOfTerraria.Core.UI.SmartUI;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using Terraria.Localization;
 using Terraria.ModLoader.IO;
 using System.Runtime.InteropServices;
 
@@ -18,6 +22,9 @@ namespace PathOfTerraria.Common.Systems.PassiveTreeSystem;
 // ReSharper disable once ClassNeverInstantiated.Global
 public class PassiveTreePlayer : ModPlayer
 {
+	private const string TreeFingerprintSaveKey = "passiveTreeFingerprint";
+	private static string _treeFingerprint;
+
 	/// <summary>
 	/// This should be equal to your level + any extra points you have.
 	/// </summary>
@@ -31,8 +38,16 @@ public class PassiveTreePlayer : ModPlayer
 	public float[] StrengthByPassive = new float[Passive.MaxId];
 	public List<Passive> ActiveNodes = [];
 	internal List<Edge<Allocatable>> Edges = [];
+	private readonly Dictionary<Allocatable, int> _allocatedEdgeCounts = [];
+	private ulong _edgeCountCacheFrame = ulong.MaxValue;
 
 	private TagCompound _saveData = [];
+
+	/// <summary>
+	/// True when this save contains allocated passives from a different tree revision.
+	/// The player must reset before changing their allocations.
+	/// </summary>
+	public bool RequiresTreeReset { get; private set; }
 
 	public override void Load()
 	{
@@ -55,6 +70,11 @@ public class PassiveTreePlayer : ModPlayer
 	public override void OnEnterWorld()
 	{
 		SmartUiLoader.GetUiState<TreeState>().RemoveAllChildren(); // is this really necessary?
+
+		if (RequiresTreeReset && Player.whoAmI == Main.myPlayer)
+		{
+			Main.NewText(Language.GetTextValue("Mods.PathOfTerraria.UI.PassiveTreeResetRequired"), Color.OrangeRed);
+		}
 	}
 
 	public void CreateTree()
@@ -112,6 +132,7 @@ public class PassiveTreePlayer : ModPlayer
 			}
 		}
 
+		InvalidateEdgeCountCache();
 		// PruneDisconnectedNodes(setStrengths);
 	}
 
@@ -119,8 +140,11 @@ public class PassiveTreePlayer : ModPlayer
 	{
 		ActiveNodes = [];
 		Edges = [];
+		_allocatedEdgeCounts.Clear();
+		_edgeCountCacheFrame = ulong.MaxValue;
 
 		Dictionary<int, Passive> passives = [];
+		Dictionary<(int StartId, int EndId), EdgeFlags> connections = [];
 		List<PassiveData> data = PassiveRegistry.GetPassiveData();
 
 		data.ForEach(n =>
@@ -141,6 +165,20 @@ public class PassiveTreePlayer : ModPlayer
 				EdgeFlags flags = 0;
 				flags |= c.IsHidden ? EdgeFlags.Hidden : 0;
 				flags |= c.EffectsOnly ? EdgeFlags.EffectsOnly : 0;
+
+				(int StartId, int EndId) key = n.ReferenceId < c.ReferenceId
+					? (n.ReferenceId, c.ReferenceId)
+					: (c.ReferenceId, n.ReferenceId);
+
+				if (!connections.TryAdd(key, flags))
+				{
+#if DEBUG
+					Debug.Assert(connections[key] == flags,
+						$"Passive connection {key.StartId}<->{key.EndId} has conflicting flags.");
+#endif
+					return;
+				}
+
 				Edges.Add(new(passives[n.ReferenceId], passives[c.ReferenceId], flags));
 			}
 		}));
@@ -177,6 +215,13 @@ public class PassiveTreePlayer : ModPlayer
 		}
 		
 		tag["extraPoints"] = ExtraPoints;
+
+		// Do not acknowledge an incompatible tree during an automatic save. ResetAllNodes is the
+		// only path that clears this requirement and writes the current tree fingerprint.
+		if (!RequiresTreeReset)
+		{
+			tag[TreeFingerprintSaveKey] = TreeFingerprint;
+		}
 
 		_saveData = (TagCompound)tag.Clone();
 	}
@@ -218,6 +263,7 @@ public class PassiveTreePlayer : ModPlayer
 			}
 		}
 
+		RequiresTreeReset = false;
 		SaveData([]);
 	}
 
@@ -226,6 +272,9 @@ public class PassiveTreePlayer : ModPlayer
 		_saveData = tag;
 		ExtraPoints = tag.GetInt("extraPoints");
 		StrengthByPassive = new float[Passive.MaxId];
+		RequiresTreeReset = HasAllocatedPassives(tag)
+			&& (!tag.TryGet(TreeFingerprintSaveKey, out string savedFingerprint)
+				|| !string.Equals(savedFingerprint, TreeFingerprint, StringComparison.Ordinal));
 
 		ResetNodes();
 		SetTree(true);
@@ -433,6 +482,7 @@ public class PassiveTreePlayer : ModPlayer
 	{
 		if (passive is MasteryPassive) // Hardcode for this, which doesn't work the same as any other passive
 		{
+			InvalidateEdgeCountCache(); 
 			return;
 		}
 
@@ -446,6 +496,8 @@ public class PassiveTreePlayer : ModPlayer
 		{
 			SaveData([]); // Instantly save the result because _saveData is needed whenever the element reloads - same in DeallocatePassive
 		}
+
+		InvalidateEdgeCountCache();
 	}
 
 	internal void DeallocatePassive(Passive passive, float valueLoss, int pointRefund, bool save = true)
@@ -479,6 +531,63 @@ public class PassiveTreePlayer : ModPlayer
 		{
 			SaveData([]);
 		}
+
+		InvalidateEdgeCountCache();
+	}
+
+	internal bool HasRequiredAllocatedEdges(Allocatable allocatable)
+	{
+		UpdateAllocatedEdgeCounts();
+		return _allocatedEdgeCounts.TryGetValue(allocatable, out int count) && count >= allocatable.RequiredAllocatedEdges;
+	}
+
+	private void UpdateAllocatedEdgeCounts()
+	{
+		ulong frame = Main.GameUpdateCount;
+		if (_edgeCountCacheFrame == frame)
+		{
+			return;
+		}
+
+		_edgeCountCacheFrame = frame;
+		_allocatedEdgeCounts.Clear();
+
+		foreach (Edge<Allocatable> edge in Edges)
+		{
+			Allocatable start = edge.Start;
+			Allocatable end = edge.End;
+
+			if (start == null || end == null)
+			{
+				continue;
+			}
+
+			if (start.Level > 0)
+			{
+				IncrementAllocatedEdgeCount(end);
+			}
+
+			if (end.Level > 0)
+			{
+				IncrementAllocatedEdgeCount(start);
+			}
+		}
+	}
+
+	private void IncrementAllocatedEdgeCount(Allocatable allocatable)
+	{
+		if (_allocatedEdgeCounts.TryGetValue(allocatable, out int count))
+		{
+			_allocatedEdgeCounts[allocatable] = count + 1;
+			return;
+		}
+
+		_allocatedEdgeCounts[allocatable] = 1;
+	}
+
+	private void InvalidateEdgeCountCache()
+	{
+		_edgeCountCacheFrame = ulong.MaxValue;
 	}
 
 	private void EnsureStrengthCapacity(int id)
@@ -489,6 +598,52 @@ public class PassiveTreePlayer : ModPlayer
 		{
 			Array.Resize(ref StrengthByPassive, requiredLength);
 		}
+	}
+
+	private static bool HasAllocatedPassives(TagCompound tag)
+	{
+		foreach ((string key, object value) in tag)
+		{
+			if (int.TryParse(key, NumberStyles.None, CultureInfo.InvariantCulture, out _)
+			&& value is int level
+			&& level > 0)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private static string TreeFingerprint => _treeFingerprint ??= CreateTreeFingerprint();
+
+	private static string CreateTreeFingerprint()
+	{
+		var builder = new StringBuilder();
+
+		foreach (PassiveData passive in PassiveRegistry.GetPassiveData().OrderBy(passive => passive.ReferenceId))
+		{
+			builder.Append(passive.ReferenceId).Append('|')
+				.Append(passive.InternalIdentifier).Append('|')
+				.Append(passive.MaxLevel).Append('|')
+				.Append(passive.Value.ToString("R", CultureInfo.InvariantCulture)).Append('|')
+				.Append(passive.IsHidden).Append('|')
+				.Append(passive.IsChoiceNode).Append('|')
+				.Append(passive.RequiredAllocatedEdges).Append('|');
+
+			foreach (PassiveConnection connection in passive.Connections.OrderBy(connection => connection.ReferenceId)
+				.ThenBy(connection => connection.IsHidden)
+				.ThenBy(connection => connection.EffectsOnly))
+			{
+				builder.Append(connection.ReferenceId).Append(':')
+					.Append(connection.IsHidden).Append(':')
+					.Append(connection.EffectsOnly).Append('|');
+			}
+
+			builder.Append(';');
+		}
+
+		return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(builder.ToString())));
 	}
 
 	public bool IsAllowedAnchor(Passive passive)

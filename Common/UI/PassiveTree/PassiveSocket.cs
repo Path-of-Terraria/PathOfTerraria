@@ -25,6 +25,11 @@ internal class PassiveSocket : PassiveElement
 
 	public override void SafeClick(UIMouseEvent evt)
 	{
+		if (Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().RequiresTreeReset)
+		{
+			return;
+		}
+
 		if (_passive.Level == _passive.MaxLevel)
 		{
 			if (Main.mouseItem.ModItem is Jewel)
@@ -62,6 +67,11 @@ internal class PassiveSocket : PassiveElement
 
 	public override void SafeRightClick(UIMouseEvent evt)
 	{
+		if (Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().RequiresTreeReset)
+		{
+			return;
+		}
+
 		if (!_passive.CanDeallocate(Main.LocalPlayer) || _socketed != null)
 		{
 			return;
