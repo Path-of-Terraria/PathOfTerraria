@@ -77,12 +77,20 @@ UnstoppableBuff: {
 
 FrostflameDebuff: {
 	DisplayName: Frostflame
-	Description: Mods.PathOfTerraria.Buffs.FrostflameDebuff.Description
+	Description:
+		'''
+		Life regeneration is set to -8
+		Player is slowed
+		'''
 }
 
 SporeDebuff: {
 	DisplayName: Spore
-	Description: Mods.PathOfTerraria.Buffs.SporeDebuff.Description
+	Description:
+		'''
+		Poison damage over time
+		Ignores defense
+		'''
 }
 
 BlindedDebuff: {
@@ -237,22 +245,26 @@ WideSwingsBuff: {
 
 DwarvishBuff: {
 	DisplayName: Dwarvish
-	Description: Mods.PathOfTerraria.Buffs.DwarvishBuff.Description
+	Description: Increased mining speed
 }
 
 AvariceBuff: {
 	DisplayName: Avarice
-	Description: Mods.PathOfTerraria.Buffs.AvariceBuff.Description
+	Description: +120% movement speed
 }
 
 SlowburnDebuff: {
 	DisplayName: Slowburn
-	Description: Mods.PathOfTerraria.Buffs.SlowburnDebuff.Description
+	Description: Enemy is slowed by 50%
 }
 
 EverburningShadowflameDebuff: {
 	DisplayName: Everburning Shadowflame
-	Description: Mods.PathOfTerraria.Buffs.EverburningShadowflameDebuff.Description
+	Description:
+		'''
+		Enemy life regeneration is -30
+		Improved by Pyremaniac passive
+		'''
 }
 
 PrismaticOrbBuff: {
