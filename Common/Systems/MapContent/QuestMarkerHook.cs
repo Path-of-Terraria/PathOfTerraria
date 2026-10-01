@@ -54,8 +54,17 @@ internal class QuestMarkerHook : GlobalNPC
 
 	private static void EmitModifyOldManName(ILCursor cursor)
 	{
+		int npcSlotLoc = -1;
+
+		// Each DrawNPCHeadFriendly call sits in its own loop with its own NPC index local, so grab the one used to index Main.npc here
+		if (!cursor.Clone().TryGotoPrev(x => x.MatchLdsfld<Main>(nameof(Main.npc)), x => x.MatchLdloc(out npcSlotLoc), x => x.MatchLdelemRef()))
+		{
+			PoTMod.Instance.Logger.Error("IL edit QuestMarkerHook.HideOldManText failed: couldn't find NPC index local.");
+			return;
+		}
+
 		cursor.Emit(OpCodes.Ldloca_S, (byte)0);
-		cursor.Emit(OpCodes.Ldloc_S, (byte)77);
+		cursor.Emit(OpCodes.Ldloc, cursor.Body.Variables[npcSlotLoc]);
 		cursor.EmitDelegate(HideName);
 	}
 
